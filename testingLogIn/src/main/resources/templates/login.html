@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+</head>
+
+<body>
+<div class="wrapper">
+    <div id="left-login-block">
+        <img src="/images/al-furqan-bg.jpg" alt="bg">
+    </div>
+    <div id="right-login-block">
+        <img src="/images/al-furqan logo.jpg" alt="logo" id="school-logo"> <br> <br>
+        <h3>Al-Furqan Islamic Institute Inc.</h3>
+        <form action="/login" method="post" id="login-form">
+            <div class="input-group">
+                <input class="input-group-input" type="email" name="username" id="username" required>
+                <label class="input-group-label" for="username">Email</label>
+            </div>
+
+            <div class="input-group">
+                <input class="input-group-input" type="password" name="password" id="password" required>
+                <label class="input-group-label" for="password">Password</label>
+            </div>
+            <a href="" id="forgot-pass">Forgot Password?</a> <br> <br>
+            <button type="submit" id="login-btn">Log In</button>
+        </form>
+        <h4 id="signup-link">Don't have an account? <a href="http://localhost:8080/signin">Sign up here.</a></h4>
+    </div>
+</div>
+</body>
+
+</html>

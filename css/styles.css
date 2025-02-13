@@ -162,11 +162,117 @@ input:valid + label {
   margin-top: 10px;
 }
 #account-type-div select {
-    width: 100%;
-    padding: 10px 10px;
-    border-radius: 4px;
-    border: 1px solid #333;
-    outline: none;
-    font-size: 13px;
-    background: transparent;
+  width: 100%;
+  padding: 10px 10px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  outline: none;
+  font-size: 13px;
+  background: transparent;
+}
+
+/* This is for the dashboard */
+.sidebar {
+  width: 320px;
+  background: rgb(246, 246, 246);
+  min-height: 100vh;
+  color: white;
+  padding-top: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: 0.3s;
+  overflow: hidden;
+}
+.sidebar a {
+  color: rgb(30, 30, 30);
+  padding: 10px;
+  display: block;
+  text-decoration: none;
+}
+.sidebar a.active,
+.sidebar a:hover {
+  background: #27ae60;
+  border-radius: 5px;
+}
+.dashboard-container {
+  margin-left: 320px;
+  padding: 20px;
+  transition: margin-left 0.3s;
+  min-height: 100vh;
+  background-color: rgb(255, 255, 255);
+}
+.account-text {
+  font-size: 15px;
+  font-weight: 900;
+  color: rgb(30, 30, 30);
+}
+.text-center {
+  font-weight: bold;
+  font-size: 15px;
+  color: rgb(30, 30, 30);
+}
+.card {
+  border-bottom: 5px solid #27ae60;
+  background-color: rgb(246, 246, 246);
+}
+.card-div {
+  display: flex;
+  gap: 12px;
+}
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.logo img {
+  width: 100px;
+  display: block;
+  margin: 0 auto;
+}
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0px;
+}
+
+.hamburger img {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.user-icon img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.user-icon {
+  font-size: 24px;
+  cursor: pointer;
+}
+/* Hide Sidebar */
+.collapsed-sidebar {
+  display: none;
+}
+.collapsed-content {
+  margin-left: 0 !important;
+}
+.institute-name {
+  font-size: 20px;
+  font-weight: 900;
+  color: rgb(30, 30, 30);
+  font-family: "Poppins", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.text-link {
+    display: flex;
+    gap: 30px;
+    padding: 10px 0px;
+}
+.text-link h4 {
+    font-size: 20px;
+    font-weight: bold;
 }

@@ -1,9 +1,6 @@
 package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import lombok.Builder;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,12 +20,16 @@ import java.util.List;
 public class UserModel implements UserDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    String username;
-    String password;
+    private String username;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     Role role;
+
+    private String firstname;
+    private String lastname;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

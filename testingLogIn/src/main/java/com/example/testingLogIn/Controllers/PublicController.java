@@ -1,4 +1,4 @@
-package com.example.testingLogIn;
+package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
@@ -35,12 +35,6 @@ public class PublicController {
     @GetMapping("/signing")
     public String signPage(){
         return "signin";
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> registerMe(){
-        System.out.println("Someone registered");
-        return new ResponseEntity<>("Doneee",HttpStatus.OK);
     }
 
     @GetMapping("/ipaddress")

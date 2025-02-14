@@ -1,5 +1,6 @@
 package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
+import com.example.testingLogIn.Models.AccountRegister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,9 +12,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private UserRepo userRepo;
 
+    public boolean registerNewUser(AccountRegister accountRegister){
+        userRepo.save(AccountRegToUserModel(accountRegister));
+        return true;
+    }
+
     @Autowired
     public CustomUserDetailsService(UserRepo userRepo) {
         this.userRepo = userRepo;
+    }
+
+    public boolean usernameExist(String username){
+        return userRepo.findByUsername(username) != null;
     }
 
     @Override
@@ -29,5 +39,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         System.out.println(username+" ang nag log in");
         return userRepo.findByUsername(username) != null;
     }
+
+    
+    private UserModel AccountRegToUserModel(AccountRegister accountRegister){
+        return UserModel.builder()
+                .firstname(accountRegister.getFirstname())
+                .lastname(accountRegister.getLastname())
+                .role(accountRegister.getRole())
+                .username(accountRegister.getUsername())
+                .password(accountRegister.getPassword())
+                .build();
+    }
+    
 }
 

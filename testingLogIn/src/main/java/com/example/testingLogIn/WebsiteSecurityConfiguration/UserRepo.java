@@ -1,4 +1,4 @@
-package com.example.testingLogIn;
+package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

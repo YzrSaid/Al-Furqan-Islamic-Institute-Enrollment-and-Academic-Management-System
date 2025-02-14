@@ -1,4 +1,4 @@
-package com.example.testingLogIn;
+package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -30,7 +29,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())  // Disable CSRF protection
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers("/css/**","/images/*","/js/*","/signin","/register").permitAll();
+                    req.requestMatchers("/css/**","/images/*","/js/*","/signing",
+                                                    "/register","/ipaddress").permitAll();
                     req.anyRequest().authenticated();
                 })// Require authentication for all requests
                 .formLogin(form -> form.loginPage("/login").permitAll()

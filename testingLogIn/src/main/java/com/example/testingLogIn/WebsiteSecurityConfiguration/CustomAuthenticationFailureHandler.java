@@ -1,4 +1,4 @@
-package com.example.testingLogIn;
+package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,17 +27,16 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
         String errorMessage;
         if (exception instanceof UsernameNotFoundException) {
-            errorMessage = "Username does not exist."; // Specifically for missing username
+            errorMessage = "Username does not exist.";
         } else if (exception instanceof BadCredentialsException) {
-            // Check if the username exists to determine if the password is wrong
             String username = request.getParameter("username");
-            if (isUsernameValid(username)) { // Replace with your logic to check if the username exists
-                errorMessage = "Incorrect password."; // Username exists, so password is wrong
+            if (isUsernameValid(username)) {
+                errorMessage = "Incorrect password.";
             } else {
-                errorMessage = "Username does not exist."; // Username doesn't exist
+                errorMessage = "Username does not exist.";
             }
         } else {
-            errorMessage = "Authentication failed: " + exception.getMessage(); // Generic error message
+            errorMessage = "Authentication failed: " + exception.getMessage();
         }
 
         response.setContentType("application/json");

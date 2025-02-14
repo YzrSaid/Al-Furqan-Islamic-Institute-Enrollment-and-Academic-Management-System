@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Furqan Islamic Institute Incorporated</title>
     <link rel="stylesheet" th:href="@{/css/styles.css?=v2}">
+    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
 </head>
 
 <body>
@@ -54,9 +55,8 @@
             </div> <br>
             <button type="submit" id="login-btn">Sign Up</button>
         </form>
-        <h4 id="signup-link">Already have an account? <a href="http://localhost:8080/login">Log in here.</a></h4>
+        <h4 id="signup-link">Already have an account? <a onclick="proceed('login')">Log in here.</a></h4>
     </div>
 </div>
 </body>
-
 </html>

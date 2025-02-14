@@ -1,4 +1,4 @@
-package com.example.testingLogIn;
+package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public boolean isUsernameValid(String username) {
+        System.out.println(username+" ang nag log in");
         return userRepo.findByUsername(username) != null;
     }
 }

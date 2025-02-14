@@ -30,7 +30,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())  // Disable CSRF protection
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers("/css/*","/images/*","/js/*","/signin","/register").permitAll();
+                    req.requestMatchers("/css/**","/images/*","/js/*","/signin","/register").permitAll();
                     req.anyRequest().authenticated();
                 })// Require authentication for all requests
                 .formLogin(form -> form.loginPage("/login").permitAll()

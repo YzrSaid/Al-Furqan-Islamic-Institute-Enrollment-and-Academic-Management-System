@@ -29,9 +29,13 @@
             <a href="" id="forgot-pass">Forgot Password?</a> <br> <br>
             <button type="submit" id="login-btn">Log In</button>
         </form>
-        <h4 id="signup-link">Don't have an account? <a href="http://localhost:8080/signin">Sign up here.</a></h4>
+        <h4 id="signup-link">Don't have an account? <a onclick="proceed()">Sign up here.</a></h4>
     </div>
 </div>
 </body>
-
+<script>
+    function proceed(){
+        window.location='http://localhost:8081/signing'
+    }
+</script>
 </html>

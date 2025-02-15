@@ -1,7 +1,7 @@
 package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
 public enum Role {
-    USER,
-    ADMIN,
+    ADMIN_ENROLLMENT,
+    SUPER_ADMIN,
     TEACHER
 }

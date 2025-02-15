@@ -14,10 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-/**
- *
- * @author magno
- */
 @RequestMapping("/register")
 @Controller
 public class AccountRegisterController {
@@ -32,8 +28,8 @@ public class AccountRegisterController {
     }
 
     @PostMapping
-    public ResponseEntity<String> registerAccount(@RequestBody AccountRegister accountRegister){
-
+    public ResponseEntity<String> registerAccount(@ModelAttribute AccountRegister accountRegister){
+        System.out.println(accountRegister.toString());
         if(customUserDetailsService.usernameExist(accountRegister.getUsername()))
             return new ResponseEntity<>("Email Already Used",HttpStatus.CONFLICT);
         else{

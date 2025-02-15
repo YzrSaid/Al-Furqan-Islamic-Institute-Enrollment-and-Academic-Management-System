@@ -19,38 +19,38 @@
             <img src="/images/al-furqan logo.jpg" alt="logo" id="school-logo"> <br> <br>
             <h3>Al-Furqan Islamic Institute Inc.</h3>
         </div>
-        <form action="" id="login-form">
+        <form action="/register" method="post" id="login-form">
             <div class="input-group-half">
                 <div class="input-group">
-                    <input class="input-group-input" type="text" id="first-name" required>
-                    <label class="input-group-label" for="first-name">First Name</label>
+                    <input class="input-group-input" type="text" name="firstname" id="firstname" required>
+                    <label class="input-group-label" for="firstname">First Name</label>
                 </div>
                 <div class="input-group">
-                    <input class="input-group-input" type="text" id="last-name" required>
-                    <label class="input-group-label" for="last-name">Last Name</label>
+                    <input class="input-group-input" type="text" name="lastname" id="lastname" required>
+                    <label class="input-group-label" for="lastname">Last Name</label>
                 </div>
             </div>
             <div class="input-group">
-                <input class="input-group-input" type="email" id="email" required>
+                <input class="input-group-input" type="email" name="username" id="email" required>
                 <label class="input-group-label" for="email">Email</label>
             </div>
             <div class="input-group">
                 <div id="account-type-div">
                     <label class="normal-label" for="account-type">Account Type</label>
-                    <select name="account-type" id="account-type">
+                    <select name="role"  id="account-type">
                         <option value="" disabled selected>Choose</option>
-                        <option value="Super Admin">Super Admin</option>
-                        <option value="Admin - Enrollment">Admin - Enrollment</option>
-                        <option value="Teacher">Teacher</option>
+                        <option value="SUPER_ADMIN">Super Admin</option>
+                        <option value="ADMIN_ENROLLMENT">Admin - Enrollment</option>
+                        <option value="TEACHER">Teacher</option>
                     </select>
                 </div>
             </div>
             <div class="input-group">
-                <input class="input-group-input" type="password" id="password" required>
+                <input class="input-group-input" type="password" name="password" id="password" required>
                 <label class="input-group-label" id="label" for="password">Password</label>
             </div>
             <div class="input-group">
-                <input class="input-group-input" type="password" id="confirm-pass" required>
+                <input class="input-group-input" type="password" name="password_confirm" id="confirm-pass" required>
                 <label class="input-group-label" id="label" for="confirm-pass">Confirm Password</label>
             </div> <br>
             <button type="submit" id="login-btn">Sign Up</button>
@@ -59,4 +59,32 @@
     </div>
 </div>
 </body>
+<script>
+    document.getElementById('login-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.text().then(text => {
+                alert(text);
+                window.location.href = '/login';
+            });
+        } else {
+            return response.text().then(text => {
+                alert(text); // Display error message
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>
 </html>

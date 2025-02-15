@@ -11,30 +11,6 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="../static/css/styles.css">
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-
-        savedSubmenus.forEach(submenuId => {
-            let submenu = document.getElementById(submenuId);
-            if (submenu) {
-                submenu.classList.add("open");
-
-                // Make sure parent menus are also opened
-                let parentMenu = submenu.closest(".submenu");
-                if (parentMenu) {
-                    parentMenu.classList.add("open");
-                }
-
-                // Update arrow icon
-                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-                if (arrowIconImg) {
-                    arrowIconImg.src = "../static/images/icons/greater-than.png";
-                }
-            }
-        });
-    });
-</script>
 
 <body>
     <!-- Sidebar -->
@@ -53,7 +29,7 @@
             <img src="../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
             <img src="../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
             <span class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
@@ -64,7 +40,7 @@
                         alt="arrow-down"></span>
             </a>
             <div class="submenu" id="enrollment-submenu">
-                <a href="listing.html" class="second-active">Listing/Register</a>
+                <a href="listing.html">Listing/Register</a>
                 <a href="#">Assessment</a>
                 <a href="#">Payment</a>
                 <a href="#">Enrolled</a>
@@ -73,7 +49,7 @@
             <a href="#">Book Distribution</a>
         </div>
 
-        <a href="grade-management.html" class="sidebar-icons">
+        <a href="#" class="active sidebar-icons">
             <img src="../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
         </a>
 
@@ -146,21 +122,10 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>Listing/Register</h4>
+            <h4>Grade Management</h4>
             <p>Main</p>
             <p>/</p>
-            <p>Transaction</p>
-            <p>/</p>
-            <p>Enrollment</p>
-            <p>/</p>
-            <p>Listing/Register</p>
-        </div>
-
-        <!-- Enrollment Buttons -->
-        <div class="enrollment-buttons">
-            <button class="new-student" id="openStudentModal">New Student</button>
-            <button id="old-student">OLD STUDENT</button>
-            <button id="transferee">TRANSFEREE</button>
+            <p>Grade Management</p>
         </div>
 
         <div class="search-div">
@@ -182,26 +147,26 @@
         </div>
 
         <!-- Table -->
-        <table class="listing-table">
+        <table class="grade-management-table">
             <thead>
                 <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
                     <th>Grade Level</th>
-                    <th>Type</th>
+                    <th>Section</th>
+                    <th>Total Students</th>
+                    <th>Adviser</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
-                    <td>Batman</td>
-                    <td>25</td>
+                    <td>Grade 1</td>
+                    <td>Rose</td>
+                    <td>999</td>
                     <td>WMSU</td>
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
-                                <div class="status" id="status-registration">Registered</div>
+                                <div class="status" id="status-grade-management">Registered</div>
                                 <button class="dropdown-status-btn">
                                     <i class="fas fa-chevron-down"></i> <!-- Icon is the button -->
                                 </button>

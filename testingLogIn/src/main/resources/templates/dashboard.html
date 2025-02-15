@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="../static/css/styles.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -38,7 +38,7 @@
                         alt="arrow-down"></span>
             </a>
             <div class="submenu" id="enrollment-submenu">
-                <a href="/listing">Listing/Register</a>
+                <a href="listing.html">Listing/Register</a>
                 <a href="#">Assessment</a>
                 <a href="#">Payment</a>
                 <a href="#">Enrolled</a>
@@ -48,8 +48,8 @@
         </div>
 
 
-        <a href="#" class="sidebar-icons">
-            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
+        <a href="grade-management.html" class="sidebar-icons">
+            <img src="../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
         </a>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
@@ -67,7 +67,7 @@
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="#">School Year</a>
-            <a href="#">Grade Level</a>
+            <a href="grade-level-maintenance.html">Grade Level</a>
             <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
                 <span class="arrow-icon third-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
                         alt="arrow-down"></span>
@@ -165,7 +165,7 @@
             </div>
         </div>
     </div>
-    <script th:src="@{/js/script.js}"></script>
+    <script src="../static/js/script.js"></script>
 </body>
 
 </html>

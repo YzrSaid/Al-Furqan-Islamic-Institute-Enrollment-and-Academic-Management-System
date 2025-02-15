@@ -114,13 +114,6 @@ body {
   pointer-events: none;
 }
 
-input:focus + label,
-input:valid + label {
-  bottom: 30px;
-  font-size: 12px;
-  color: rgb(4, 210, 9);
-}
-
 #signup-link {
   margin-top: 10px;
   font-size: 13px;
@@ -567,34 +560,88 @@ td {
   text-align: left;
 }
 th {
+  text-align: center;
   background-color: rgb(87, 88, 89);
   color: white;
 }
 tr:nth-child(even) {
   background-color: #f2f2f2;
 }
-th:nth-child(1),
-td:nth-child(1) {
+.listing-table th:nth-child(1),
+.listing-table td:nth-child(1) {
   width: 10%;
-} /* First column */
-th:nth-child(2),
-td:nth-child(2) {
+}
+.listing-table th:nth-child(2),
+.listing-table td:nth-child(2) {
   width: 30%;
-} /* Second column */
-th:nth-child(3),
-td:nth-child(3) {
+}
+.listing-table th:nth-child(3),
+.listing-table td:nth-child(3) {
   width: 20%;
-} /* Third column */
-th:nth-child(4),
-td:nth-child(4) {
+}
+.listing-table th:nth-child(4),
+.listing-table td:nth-child(4) {
   width: 15%;
-} /* Fourth column */
-th:nth-child(5),
-td:nth-child(5) {
+}
+.listing-table th:nth-child(5),
+.listing-table td:nth-child(5) {
   width: 20%;
-} /* Fifth column */
+}
+
+/* for grade management table */
+.grade-management-table th:nth-child(1),
+.grade-management-table td:nth-child(1) {
+  width: 20%;
+}
+.grade-management-table th:nth-child(2),
+.grade-management-table td:nth-child(2) {
+  width: 30%;
+}
+.grade-management-table th:nth-child(3),
+.grade-management-table td:nth-child(3) {
+  width: 20%;
+}
+.grade-management-table th:nth-child(4),
+.grade-management-table td:nth-child(4) {
+  width: 15%;
+}
+.grade-management-table th:nth-child(5),
+.grade-management-table td:nth-child(5) {
+  width: 20%;
+}
+
+/* for grade level (maintenance */
+.grade-level-table th:nth-child(1),
+.grade-level-table td:nth-child(1) {
+  width: 40%;
+}
+.grade-level-table th:nth-child(2),
+.grade-level-table td:nth-child(2) {
+  width: 30%;
+}
+.grade-level-table th:nth-child(3),
+.grade-level-table td:nth-child(3) {
+  width: 15%;
+}
+
+table td {
+  text-align: center;
+}
+
+.status-container {
+  justify-content: center;
+  align-items: center;
+}
 
 .listing-table {
+  width: 91.5%;
+  margin: 0px 50px;
+}
+.grade-management-table {
+  width: 91.5%;
+  margin: 0px 50px;
+}
+.grade-level-table {
   width: 91.5%;
   margin: 0px 50px;
 }
@@ -613,6 +660,24 @@ td:nth-child(5) {
   align-items: center;
   justify-content: center;
 }
+
+.action img {
+  color: white;
+  padding: 5px 0px;
+  border-radius: 5px;
+  font-weight: 500;
+  width: 20px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.action img:hover {
+  cursor: pointer;
+}
+#status-grade-level {
+  width: 185px;
+}
 .dropdown {
   cursor: pointer;
   padding: 5px;
@@ -620,6 +685,12 @@ td:nth-child(5) {
 .status-container {
   display: flex;
   align-items: center;
+  gap: 10px;
+}
+.action-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 .dropdown-status-content {
@@ -704,7 +775,8 @@ td:nth-child(5) {
 
 /* student modal */
 .student-modal {
-  display: none; /* Hidden by default */
+  visibility: hidden; /* Prevents flashing */
+  opacity: 0; /* Makes it fully invisible */
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -712,11 +784,18 @@ td:nth-child(5) {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out; /* Smooth appearance */
+}
+
+.student-modal.show {
+  visibility: visible; /* Show properly */
+  opacity: 1;
+  transition-delay: 0s; /* Removes delay when opening */
 }
 
 .student-modal-content {
   background: white !important; /* Ensure solid white background */
-  padding: 20px;
+  padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
@@ -727,20 +806,24 @@ td:nth-child(5) {
   position: relative; /* Ensure proper stacking */
   z-index: 1001; /* Make sure it's above the semi-transparent modal */
 }
-.student-modal-content h2 {
+.student-modal-content h2,
+.grade-level-modal-content h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 30px;
   margin-top: 10px;
 }
-.student-modal-content label {
+.student-modal-content label,
+.grade-level-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
 
 .student-modal-content input,
-.student-modal-content select {
+.grade-level-modal-content input,
+.student-modal-content select,
+.grade-level-modal-content select {
   width: 100%;
   padding: 8px;
   margin: 5px 0;
@@ -748,10 +831,45 @@ td:nth-child(5) {
   border-radius: 5px;
 }
 
-.student-modal-buttons {
+.student-modal-buttons,
+.grade-level-modal-buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
+}
+
+/* grade level modal */
+.grade-level-modal {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
+}
+
+.grade-level-modal.show {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.grade-level-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 500px;
+  height: 40vh;
+  overflow-y: scroll;
+
+  text-align: left;
+  position: relative;
+  z-index: 1001;
 }
 
 .student-form-group {
@@ -759,23 +877,48 @@ td:nth-child(5) {
   gap: 20px;
 }
 .student-form-group input {
-  width: 32.7%;
+  width: 32%;
 }
 #address {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 .student-form-group select {
   font-size: 13px;
 }
 #birthdate {
-    font-size: 13px;
+  font-size: 13px;
 }
 #studentForm label {
   margin-top: 15px;
 }
-#gradeLevelOld, #gradeLevelNew {
-    width: 23.7%;
+#gradeLevelOld,
+#gradeLevelNew {
+  width: 23.7%;
 }
-#gender, #birthdate {
-    margin-bottom: 20px;
+#gender,
+#birthdate {
+  margin-bottom: 20px;
+}
+#studentForm h6 {
+  font-weight: bold;
+}
+
+.add-something-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+.add-something-btn:hover {
+  background-color: #218838;
+}
+.add-something-btn-container {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  margin: 40px 50px 0px 0px;
 }

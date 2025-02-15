@@ -61,7 +61,7 @@ function toggleSubMenu(submenuId, event) {
       let otherArrowIcon =
         otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
       if (otherArrowIcon) {
-        otherArrowIcon.src = "../images/icons/arrow-down.png";
+        otherArrowIcon.src = "../static/images/icons/arrow-down.png";
       }
     }
   });
@@ -69,8 +69,8 @@ function toggleSubMenu(submenuId, event) {
   // Toggle the clicked submenu
   submenu.classList.toggle("open", !isOpen);
   arrowIconImg.src = isOpen
-    ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
-    : "../images/icons/greater-than.png"; // Change to right arrow if opening
+    ? "../static/images/icons/arrow-down.png" // Change back to down arrow if closing
+    : "../static/images/icons/greater-than.png"; // Change to right arrow if opening
 
   // *🔹 Save submenu state only if it is a submenu of a submenu*
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
@@ -86,78 +86,112 @@ function clearSubmenus() {
     .forEach((submenu) => submenu.classList.remove("open"));
   document
     .querySelectorAll(".arrow-icon img")
-    .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
+    .forEach((img) => (img.src = "../static/images/icons/arrow-down.png"));
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Select all dropdown links inside dropdown-status-content
-    const dropdownLinks = document.querySelectorAll(".dropdown-status-content a");
-    const modal = document.getElementById("confirmationModal");
-    const modalText = document.getElementById("modalText");
-    const confirmButton = document.querySelector(".btn-confirm");
-    const cancelButton = document.querySelector(".btn-cancel");
+  // Select all dropdown links inside dropdown-status-content
+  const dropdownLinks = document.querySelectorAll(".dropdown-status-content a");
+  const modal = document.getElementById("confirmationModal");
+  const modalText = document.getElementById("modalText");
+  const confirmButton = document.querySelector(".btn-confirm");
+  const cancelButton = document.querySelector(".btn-cancel");
 
-    // Hide modal when page loads
-    modal.style.display = "none";
+  // Hide modal when page loads
+  modal.style.display = "none";
 
-    dropdownLinks.forEach((link) => {
-      link.addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent the default link behavior
+  dropdownLinks.forEach((link) => {
+    link.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent the default link behavior
 
-        let action = this.getAttribute("data-action"); // Get the action (Proceed or Cancel)
+      let action = this.getAttribute("data-action"); // Get the action (Proceed or Cancel)
 
-        if (action === "proceed") {
-          modalText.textContent = "Are you sure you want to proceed?";
-        } else if (action === "cancel") {
-          modalText.textContent = "Are you sure you want to cancel registration?";
-        }
-
-        modal.style.display = "block"; // Show the modal
-
-        // Handle the confirmation button
-        confirmButton.onclick = function () {
-          console.log(action + " confirmed!"); // Add actual functionality here
-          modal.style.display = "none"; // Close modal after action
-        };
-      });
-    });
-
-    // Close modal when clicking the cancel button
-    cancelButton.addEventListener("click", function () {
-      modal.style.display = "none";
-    });
-
-    // Close modal when clicking outside of it
-    window.onclick = function (event) {
-      if (event.target === modal) {
-        modal.style.display = "none";
+      if (action === "proceed") {
+        modalText.textContent = "Are you sure you want to proceed?";
+      } else if (action === "cancel") {
+        modalText.textContent = "Are you sure you want to cancel registration?";
       }
-    };
-  });
 
-//   student modal
+      modal.style.display = "block"; // Show the modal
+
+      // Handle the confirmation button
+      confirmButton.onclick = function () {
+        console.log(action + " confirmed!"); // Add actual functionality here
+        modal.style.display = "none"; // Close modal after action
+      };
+    });
+  });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
+    // Student Information Modal
     const studentInfoModal = document.getElementById("studentInfoModal");
-    const openStudentModal = document.getElementById("openStudentModal"); // Button that opens modal
+    const openStudentModal = document.getElementById("openStudentModal"); 
     const confirmStudent = document.getElementById("confirmStudent");
     const cancelStudent = document.getElementById("cancelStudent");
 
-    openStudentModal.addEventListener("click", function () {
-        studentInfoModal.style.display = "flex"; // Show modal
-    });
+    if (studentInfoModal) {
+        studentInfoModal.classList.remove("show");
+    }
 
-    cancelStudent.addEventListener("click", function () {
-        studentInfoModal.style.display = "none"; // Hide modal
-    });
+    if (openStudentModal) {
+        openStudentModal.addEventListener("click", function () {
+            studentInfoModal.classList.add("show");
+        });
+    }
 
-    confirmStudent.addEventListener("click", function () {
-        alert("Student information submitted!");
-        studentInfoModal.style.display = "none";
-    });
+    if (cancelStudent) {
+        cancelStudent.addEventListener("click", function () {
+            studentInfoModal.classList.remove("show");
+        });
+    }
 
-    window.onclick = function (event) {
+    if (confirmStudent) {
+        confirmStudent.addEventListener("click", function () {
+            alert("Student information submitted!");
+            studentInfoModal.classList.remove("show");
+        });
+    }
+
+    window.addEventListener("click", function (event) {
         if (event.target === studentInfoModal) {
-            studentInfoModal.style.display = "none";
+            studentInfoModal.classList.remove("show");
         }
-    };
+    });
+
+    // Grade Level Modal
+    const gradeLevelModal = document.getElementById("gradeLevelModal");
+    const openGradeLevelModal = document.getElementById("openGradeLevelModal"); // Button to open modal
+    const confirmGradeLevel = document.getElementById("confirmGradeLevel");
+    const cancelGradeLevel = document.getElementById("cancelGradeLevel");
+
+    if (gradeLevelModal) {
+        gradeLevelModal.classList.remove("show");
+    }
+
+    if (openGradeLevelModal) {
+        openGradeLevelModal.addEventListener("click", function () {
+            gradeLevelModal.classList.add("show");
+        });
+    }
+
+    if (cancelGradeLevel) {
+        cancelGradeLevel.addEventListener("click", function () {
+            gradeLevelModal.classList.remove("show");
+        });
+    }
+
+    if (confirmGradeLevel) {
+        confirmGradeLevel.addEventListener("click", function () {
+            alert("Grade Level information saved!");
+            gradeLevelModal.classList.remove("show");
+        });
+    }
+
+    window.addEventListener("click", function (event) {
+        if (event.target === gradeLevelModal) {
+            gradeLevelModal.classList.remove("show");
+        }
+    });
 });
+

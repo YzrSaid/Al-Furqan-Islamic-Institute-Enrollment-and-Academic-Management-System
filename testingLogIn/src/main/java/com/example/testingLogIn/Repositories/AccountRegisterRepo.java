@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AccountRegisterRepo extends JpaRepository<AccountRegister,Integer> {
+public interface AccountRegisterRepo extends JpaRepository<AccountRegister,String> {
 
+    AccountRegister findById(int id);
 }

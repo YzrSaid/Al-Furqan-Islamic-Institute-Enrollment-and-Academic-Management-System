@@ -1,5 +1,6 @@
 package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
+import com.example.testingLogIn.Enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class UserModel implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private     int staffId;
     private String username;
     private String password;
 

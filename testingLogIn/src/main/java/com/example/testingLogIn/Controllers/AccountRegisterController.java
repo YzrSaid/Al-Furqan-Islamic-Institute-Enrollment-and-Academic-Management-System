@@ -4,6 +4,7 @@
  */
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.Repositories.AccountRegisterRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
@@ -29,19 +30,35 @@ public class AccountRegisterController {
 
     @PostMapping
     public ResponseEntity<String> registerAccount(@ModelAttribute AccountRegister accountRegister){
-        System.out.println(accountRegister.toString());
         if(customUserDetailsService.usernameExist(accountRegister.getUsername()))
             return new ResponseEntity<>("Email Already Used",HttpStatus.CONFLICT);
         else{
+            accountRegister.setStatus(RegistrationStatus.PENDING);
             accountRegRepo.save(accountRegister);
             return new ResponseEntity<>("Account Successfully Sent for Registration",HttpStatus.OK);
         }
     }
     
-    @DeleteMapping("/{id}")
+    @PutMapping("/confirm/{id}")
+    public ResponseEntity<String> confirmAccountRegistration(@PathVariable int id){
+        AccountRegister accountToConfirm = accountRegRepo.findById(id);
+        customUserDetailsService.registerNewUser(accountToConfirm);
+        accountToConfirm.setStatus(RegistrationStatus.APPROVED);
+        accountRegRepo.save(accountToConfirm);
+        return new ResponseEntity<>("Account Approved!",HttpStatus.OK);
+    }
+    
+    @PutMapping("/reject/{id}")
+    public ResponseEntity<String> rejectAccountRegistration(@PathVariable int id){
+        AccountRegister accountToConfirm = accountRegRepo.findById(id);
+        accountToConfirm.setStatus(RegistrationStatus.REJECTED);
+        accountRegRepo.save(accountToConfirm);
+        return new ResponseEntity<>("Account Rejected Successfully",HttpStatus.OK);
+    }
+    
     public ResponseEntity<String> removeDetails(@PathVariable int id){
         try{
-            AccountRegister todelete=accountRegRepo.findById(id).get();
+            AccountRegister todelete=accountRegRepo.findById(id);
             accountRegRepo.delete(todelete);
             return new ResponseEntity<>("Account Successfully Deleted",HttpStatus.OK);
         }catch(NoSuchElementException nosee){

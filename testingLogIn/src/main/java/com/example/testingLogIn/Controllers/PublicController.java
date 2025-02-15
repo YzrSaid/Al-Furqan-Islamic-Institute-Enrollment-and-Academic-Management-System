@@ -1,8 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
-import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +23,11 @@ public class PublicController {
     }
 
 
-    @GetMapping("/newpage")
-    public String newPage(HttpServletRequest request){
-        UserModel model = userRepo.findByUsername(request.getUserPrincipal().getName());
-        System.out.println(model.getUsername());
-        return "newpage";
-    }
+//    @GetMapping("/newpage")
+//    public String newPage(HttpServletRequest request){
+//        Users model = userRepo.findByUsername(request.getUserPrincipal().getName());
+//        return "newpage";
+//    }
 
     @GetMapping("/signing")
     public String signPage(){

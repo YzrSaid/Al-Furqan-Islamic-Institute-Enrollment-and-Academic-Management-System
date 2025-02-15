@@ -17,4 +17,9 @@ public class PrivateTemplateControllers {
     public String getListing(){
         return "listing";
     }
+
+    @GetMapping("/gradelevelmaintenance")
+    public String getGradeLevelMaintenance(){
+        return "grade-level-maintenance";
+    }
 }

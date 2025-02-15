@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Models;
 
-import com.example.testingLogIn.WebsiteSecurityConfiguration.Role;
+import com.example.testingLogIn.Enums.RegistrationStatus;
+import com.example.testingLogIn.Enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,11 +20,14 @@ public class AccountRegister {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    Role role;
+    private Role role;
 
+    @Enumerated(EnumType.STRING)
+    private RegistrationStatus status;
+    
     private String firstname;
     private String lastname;
-
+    
     @Override
     public String toString() {
         return "AccountRegister{" +

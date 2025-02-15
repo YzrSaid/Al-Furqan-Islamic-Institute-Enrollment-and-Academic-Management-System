@@ -53,7 +53,7 @@
         })
         .then(response => {
             if (response.ok) {
-                // Redirect to the home page or dashboard on successful login
+                alert('Go to Dashboard');
                 window.location.href = '/home';
             } else {
                 return response.json(); // Parse the error response

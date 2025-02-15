@@ -12,14 +12,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private UserRepo userRepo;
 
-    public boolean registerNewUser(AccountRegister accountRegister){
-        userRepo.save(AccountRegToUserModel(accountRegister));
-        return true;
-    }
-
     @Autowired
     public CustomUserDetailsService(UserRepo userRepo) {
         this.userRepo = userRepo;
+    }
+
+    public boolean registerNewUser(AccountRegister accountRegister){
+        userRepo.save(AccountRegToUserModel(accountRegister));
+        return true;
     }
 
     public boolean usernameExist(String username){
@@ -36,7 +36,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public boolean isUsernameValid(String username) {
-        System.out.println(username+" ang nag log in");
         return userRepo.findByUsername(username) != null;
     }
 

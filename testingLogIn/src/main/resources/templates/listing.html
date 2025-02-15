@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
@@ -41,7 +41,7 @@
 <div class="sidebar" id="sidebar">
     <div class="text-center">
         <div class="logo">
-            <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+            <img th:src="@{/images/al-furqan logo.jpg}" alt="School Logo">
         </div>
         <p class="mt-2">S.Y. 2024-2025</p>
         <div class="welcome-div">
@@ -124,7 +124,6 @@
     </div>
 </div>
 
-
 <!-- Topbar with Hamburger & User Icon -->
 <div class="dashboard-container" id="content">
     <div class="topbar">
@@ -159,7 +158,7 @@
 
     <!-- Enrollment Buttons -->
     <div class="enrollment-buttons">
-        <button id="new-student">NEW STUDENT</button>
+        <button class="new-student" id="openStudentModal">New Student</button>
         <button id="old-student">OLD STUDENT</button>
         <button id="transferee">TRANSFEREE</button>
     </div>
@@ -211,7 +210,6 @@
                         <a href="#" data-action="proceed">Proceed</a>
                         <a href="#" data-action="cancel">Cancel Registration</a>
                     </div>
-
                 </div>
             </td>
         </tr>
@@ -229,12 +227,17 @@
     </div>
 
     <!-- Modal for new student enrollment -->
-    <div id="studentModal" class="modal">
-        <div class="modal-content">
+    <div id="studentInfoModal" class="student-modal">
+        <div class="student-modal-content">
             <h2>Student Information</h2>
             <form id="studentForm">
-                <label for="studentName">Name:</label>
-                <input type="text" id="studentName" required>
+                <div class="student-form-group">
+                    <label for="studentFirstName">First Name:</label>
+                    <input type="text" id="studentFirstName" required>
+
+                    <label for="studentLastName">Last Name:</label>
+                    <input type="text" id="studentLastName" required>
+                </div>
 
                 <label for="contactNumber">Cellphone/Contact Number:</label>
                 <input type="tel" id="contactNumber" required>
@@ -242,24 +245,34 @@
                 <label for="address">Address:</label>
                 <input type="text" id="address" required>
 
-                <label for="gender">Gender:</label>
-                <select id="gender" required>
-                    <option value="" disabled selected>Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
+                <div class="student-form-group">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
 
-                <label for="birthdate">Birthdate:</label>
-                <input type="date" id="birthdate" required>
+                    <label for="birthdate">Birthdate:</label>
+                    <input type="date" id="birthdate" required>
+                </div>
 
-                <label for="gradeLevelOld">Previous Grade Level:</label>
-                <input type="text" id="gradeLevelOld" required>
+                <div class="student-form-group">
+                    <label for="gradeLevelOld">Prev. Grade Level:</label>
+                    <input type="text" id="gradeLevelOld" required>
 
-                <label for="gradeLevelNew">Enrolling Grade Level:</label>
-                <input type="text" id="gradeLevelNew" required>
+                    <label for="gradeLevelNew">Enrolling Grade Level:</label>
+                    <input type="text" id="gradeLevelNew" required>
+                </div>
 
-                <label for="contactPerson">Emergency Contact (Name & Number):</label>
+                <br> <br>
+
+                <h6>Emergency Contact</h6>
+
+                <label for="contactPersonFirstName">First Name:</label>
+                <input type="text" id="contactPerson" required>
+
+                <label for="contactPersonLastName">Last Name:</label>
                 <input type="text" id="contactPerson" required>
 
                 <div class="modal-buttons">

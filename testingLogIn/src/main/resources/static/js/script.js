@@ -72,7 +72,7 @@ function toggleSubMenu(submenuId, event) {
     ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
     : "../images/icons/greater-than.png"; // Change to right arrow if opening
 
-  // **🔹 Save submenu state only if it is a submenu of a submenu**
+  // *🔹 Save submenu state only if it is a submenu of a submenu*
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
     (sub) => sub.id
   );
@@ -86,7 +86,7 @@ function clearSubmenus() {
     .forEach((submenu) => submenu.classList.remove("open"));
   document
     .querySelectorAll(".arrow-icon img")
-    .forEach((img) => (img.src = "../static/images/icons/arrow-down.png"));
+    .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -96,24 +96,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalText = document.getElementById("modalText");
     const confirmButton = document.querySelector(".btn-confirm");
     const cancelButton = document.querySelector(".btn-cancel");
-  
+
     // Hide modal when page loads
-    modal.style.display = "none"; 
-  
+    modal.style.display = "none";
+
     dropdownLinks.forEach((link) => {
       link.addEventListener("click", function (event) {
         event.preventDefault(); // Prevent the default link behavior
-  
+
         let action = this.getAttribute("data-action"); // Get the action (Proceed or Cancel)
-  
+
         if (action === "proceed") {
           modalText.textContent = "Are you sure you want to proceed?";
         } else if (action === "cancel") {
           modalText.textContent = "Are you sure you want to cancel registration?";
         }
-  
+
         modal.style.display = "block"; // Show the modal
-  
+
         // Handle the confirmation button
         confirmButton.onclick = function () {
           console.log(action + " confirmed!"); // Add actual functionality here
@@ -121,12 +121,12 @@ document.addEventListener("DOMContentLoaded", function () {
         };
       });
     });
-  
+
     // Close modal when clicking the cancel button
     cancelButton.addEventListener("click", function () {
       modal.style.display = "none";
     });
-  
+
     // Close modal when clicking outside of it
     window.onclick = function (event) {
       if (event.target === modal) {
@@ -134,4 +134,30 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
   });
-  
+
+//   student modal
+document.addEventListener("DOMContentLoaded", function () {
+    const studentInfoModal = document.getElementById("studentInfoModal");
+    const openStudentModal = document.getElementById("openStudentModal"); // Button that opens modal
+    const confirmStudent = document.getElementById("confirmStudent");
+    const cancelStudent = document.getElementById("cancelStudent");
+
+    openStudentModal.addEventListener("click", function () {
+        studentInfoModal.style.display = "flex"; // Show modal
+    });
+
+    cancelStudent.addEventListener("click", function () {
+        studentInfoModal.style.display = "none"; // Hide modal
+    });
+
+    confirmStudent.addEventListener("click", function () {
+        alert("Student information submitted!");
+        studentInfoModal.style.display = "none";
+    });
+
+    window.onclick = function (event) {
+        if (event.target === studentInfoModal) {
+            studentInfoModal.style.display = "none";
+        }
+    };
+});

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "../static/images/icons/greater-than.png";
+                }
+            }
+        });
+    });
+</script>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="text-center">
+            <div class="logo">
+                <img src="../static/images/al-furqanlogo.jpg" alt="School Logo">
+            </div>
+            <p class="mt-2">S.Y. 2024-2025</p>
+            <div class="welcome-div">
+                <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+            </div>
+        </div>
+
+        <a href="dashboard.html" class="sidebar-icons" onclick="clearSubmenus()">
+            <img src="../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
+        </a>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+            <img src="../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="transaction-submenu">
+            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
+                Enrollment
+                <span class="arrow-icon second-arrow-icon"><img src="../static/images/icons/arrow-down.png"
+                        alt="arrow-down"></span>
+            </a>
+            <div class="submenu" id="enrollment-submenu">
+                <a href="listing.html">Listing/Register</a>
+                <a href="#">Assessment</a>
+                <a href="#">Payment</a>
+                <a href="#">Enrolled</a>
+            </div>
+            <a href="#">Tuition</a>
+            <a href="#">Book Distribution</a>
+        </div>
+
+        <a href="grade-management.html" class="sidebar-icons">
+            <img src="../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
+        </a>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
+            <img src="../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span
+                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="class-submenu">
+            <a href="#">Class List</a>
+            <a href="#">Schedule</a>
+        </div>
+
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
+            <img src="../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="maintenance-submenu">
+            <a href="school-year-maintenance.html">School Year</a>
+            <a href="grade-level-maintenance.html">Grade Level</a>
+            <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
+                <span class="arrow-icon third-arrow-icon"><img src="../static/images/icons/arrow-down.png"
+                        alt="arrow-down"></span>
+            </a>
+            <div class="submenu" id="schedule-submenu">
+                <a href="#">For Teachers</a>
+                <a href="#">For Students</a>
+            </div>
+            <a href="subject-maintenance.html" class="second-active">Subject</a>
+            <a href="#">Teacher</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
+            <img src="../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="reports-submenu">
+            <a href="#">Book Distribution Report</a>
+            <a href="#">Payment Report</a>
+        </div>
+        <a href="#" class="sidebar-icons"><img src="../static/images/icons/account.png" alt="Account Icon"> Account</a>
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
+            <img src="../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="settings-submenu">
+            <a href="#">Create User</a>
+            <a href="#">Archive</a>
+        </div>
+    </div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="topbar">
+            <div class="main-topbar">
+                <span class="hamburger" onclick="toggleSidebar()">
+                    <img src="../static/images/icons/burger_menu_icon.png" alt="Menu">
+                </span>
+
+                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+            </div>
+            <div class="dropdown">
+                <div class="user-icon dropdown-toggle">
+                    <img src="../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
+                        alt="User Icon">
+                    <div id="dropdownUserIcon" class="dropdown-content">
+                        <h6><span>Super Admin</span></h6>
+                        <a href="login.html">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-link">
+            <h4>Subject</h4>
+            <p>Main</p>
+            <p>/</p>
+            <p>Maintenance</p>
+            <p>/</p>
+            <p>Subject</p>
+        </div>
+
+        <div class="search-div">
+            <!-- Searchbox and sort btn -->
+            <div class="search">
+                <div class="search-container">
+                    <input type="text" placeholder="Search..." class="search-input" />
+                    <button class="search-btn">Search</button>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table class="subject-table">
+            <thead>
+                <tr>
+                    <th>Subject Code</th>
+                    <th>Subject Name</th>
+                    <th>Enrolled</th>
+                    <th>Teacher</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>IT 134</td>
+                    <td>Software Engineering</td>
+                    <td>30</td>
+                    <td>Ma'am Balan</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status" id="status-school-year">Active</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-container">
+                            <div class="action" id="action-grade-level"><img src="../static/images/icons/compose.png"
+                                    alt=""></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- add school year button -->
+        <div class="add-something-btn-container">
+            <button class="add-something-btn" id="openSubjectModal">Add Subject</button>
+        </div>
+        <!-- Modal for status -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p id="modalText">Are you sure?</p>
+                <div class="modal-buttons">
+                    <button id="confirmBtn" class="btn-confirm">Confirm</button>
+                    <button id="cancelBtn" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for adding subject -->
+        <div id="subjectModal" class="subject-modal">
+            <div class="subject-modal-content">
+                <h2>Add New Subject</h2>
+                <form id="subjectForm">  
+                    <div class="subject-form-group">
+                        <label for="subject-id">Subject ID:</label>
+                        <input type="text" id="subjectID" required>
+
+                        <label for="subject-name">Subject Name:</label>
+                        <input type="text" id="subjectName" required>
+                    </div>
+                    
+                    <label for="assigned-teacher">Teacher:</label>
+                    <select name="assigned-teacher" id="assigned-teacher" required>
+                        <option value="" disabled selected>Select Teacher</option>
+                    </select>
+                    <br><br>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" id="confirmSubject">Confirm</button>
+                        <button type="button" class="btn-cancel" id="cancelSubject">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="../static/js/script.js"></script>
+</body>
+
+</html>

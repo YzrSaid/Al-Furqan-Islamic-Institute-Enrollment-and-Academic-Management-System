@@ -197,5 +197,77 @@ document.addEventListener("DOMContentLoaded", function () {
             gradeLevelModal.classList.remove("show");
         }
     });
+
+
+    // School Year Modal
+    const schoolYearModal = document.getElementById("schoolYearModal");
+    const openSchoolYearModal = document.getElementById("openSchoolYearModal"); // Button to open modal
+    const confirmSchoolYear = document.getElementById("confirmSchoolYear");
+    const cancelSchoolYear = document.getElementById("cancelSchoolYear");
+
+    if (schoolYearModal) {
+        schoolYearModal.classList.remove("show");
+    }
+
+    if (openSchoolYearModal) {
+        openSchoolYearModal.addEventListener("click", function () {
+            schoolYearModal.classList.add("show");
+        });
+    }
+
+    if (cancelSchoolYear) {
+        cancelSchoolYear.addEventListener("click", function () {
+            schoolYearModal.classList.remove("show");
+        });
+    }
+
+    if (confirmSchoolYear) {
+        confirmSchoolYear.addEventListener("click", function () {
+            alert("Grade Level information saved!");
+            schoolYearModal.classList.remove("show");
+        });
+    }
+
+    window.addEventListener("click", function (event) {
+        if (event.target === schoolYearModal) {
+            schoolYearModal.classList.remove("show");
+        }
+    });
+
+
+    // Subject Modal
+    const subjectModal = document.getElementById("subjectModal");
+    const openSubjectModal = document.getElementById("openSubjectModal"); // Button to open modal
+    const confirmSubject = document.getElementById("confirmSubject");
+    const cancelSubject = document.getElementById("cancelSubject");
+
+    if (subjectModal) {
+        subjectModal.classList.remove("show");
+    }
+
+    if (openSubjectModal) {
+        openSubjectModal.addEventListener("click", function () {
+            subjectModal.classList.add("show");
+        });
+    }
+
+    if (cancelSubject) {
+        cancelSubject.addEventListener("click", function () {
+            subjectModal.classList.remove("show");
+        });
+    }
+
+    if (confirmSubject) {
+        confirmSubject.addEventListener("click", function () {
+            alert("Grade Level information saved!");
+            subjectModal.classList.remove("show");
+        });
+    }
+
+    window.addEventListener("click", function (event) {
+        if (event.target === subjectModal) {
+            subjectModal.classList.remove("show");
+        }
+    });
 });
 

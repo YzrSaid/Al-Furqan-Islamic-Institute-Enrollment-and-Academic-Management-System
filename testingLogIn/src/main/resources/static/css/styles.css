@@ -624,6 +624,46 @@ tr:nth-child(even) {
   width: 15%;
 }
 
+/* for grade level (maintenance) */
+.school-year-table th:nth-child(1),
+.school-year-table td:nth-child(1) {
+  width: 30%;
+}
+.school-year-table th:nth-child(2),
+.school-year-table td:nth-child(2) {
+  width: 20%;
+}
+.school-year-table th:nth-child(3),
+.school-year-table td:nth-child(3) {
+  width: 15%;
+}
+
+/* for subject table (maintenance) */
+.subject-table th:nth-child(1),
+.subject-table td:nth-child(1) {
+  width: 13%;
+}
+.subject-table th:nth-child(2),
+.subject-table td:nth-child(2) {
+  width: 18%;
+}
+.subject-table th:nth-child(3),
+.subject-table td:nth-child(3) {
+  width: 12%;
+}
+.subject-table th:nth-child(4),
+.subject-table td:nth-child(4) {
+  width: 20%;
+}
+.subject-table th:nth-child(5),
+.subject-table td:nth-child(5) {
+  width: 12%;
+}
+.subject-table th:nth-child(6),
+.subject-table td:nth-child(6) {
+  width: 10%;
+}
+
 table td {
   text-align: center;
 }
@@ -645,7 +685,14 @@ table td {
   width: 91.5%;
   margin: 0px 50px;
 }
-
+.school-year-table {
+  width: 91.5%;
+  margin: 0px 50px;
+}
+.subject-table {
+  width: 91.5%;
+  margin: 0px 50px;
+}
 .status {
   background-color: #28a745;
   color: white;
@@ -677,6 +724,9 @@ table td {
 }
 #status-grade-level {
   width: 185px;
+}
+#status-school-year {
+  width: 140px;
 }
 .dropdown {
   cursor: pointer;
@@ -746,7 +796,7 @@ table td {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 300px; /* Adjust based on your design */
+  width: 300px;
   text-align: center;
 }
 
@@ -766,80 +816,17 @@ table td {
 .btn-confirm {
   background-color: #28a745;
   color: white;
+  font-weight: 500;
 }
 
 .btn-cancel {
   background-color: #dc3545;
   color: white;
+  font-weight: 500;
 }
 
 /* student modal */
 .student-modal {
-  visibility: hidden; /* Prevents flashing */
-  opacity: 0; /* Makes it fully invisible */
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out; /* Smooth appearance */
-}
-
-.student-modal.show {
-  visibility: visible; /* Show properly */
-  opacity: 1;
-  transition-delay: 0s; /* Removes delay when opening */
-}
-
-.student-modal-content {
-  background: white !important; /* Ensure solid white background */
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 700px;
-  height: 80vh;
-  overflow-y: scroll;
-
-  text-align: left;
-  position: relative; /* Ensure proper stacking */
-  z-index: 1001; /* Make sure it's above the semi-transparent modal */
-}
-.student-modal-content h2,
-.grade-level-modal-content h2 {
-  font-size: 25px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 30px;
-  margin-top: 10px;
-}
-.student-modal-content label,
-.grade-level-modal-content label {
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.student-modal-content input,
-.grade-level-modal-content input,
-.student-modal-content select,
-.grade-level-modal-content select {
-  width: 100%;
-  padding: 8px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.student-modal-buttons,
-.grade-level-modal-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
-}
-
-/* grade level modal */
-.grade-level-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -852,13 +839,82 @@ table td {
   transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
 }
 
-.grade-level-modal.show {
+.student-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
 }
 
-.grade-level-modal-content {
+.student-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 700px;
+  height: 80vh;
+  overflow-y: scroll;
+
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+.student-modal-content h2,
+.grade-level-modal-content h2,
+.school-year-modal-content h2,
+.subject-modal-content h2 {
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+.student-modal-content label,
+.grade-level-modal-content label,
+.school-year-modal-content label,
+.subject-modal-content label {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.student-modal-content input,
+.grade-level-modal-content input,
+.school-year-modal-content input,
+.subject-modal-content input,
+.student-modal-content select,
+.school-year-modal-content select,
+.grade-level-modal-content select,
+.subject-modal-content select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* grade level modal and school year modal*/
+.grade-level-modal,
+.school-year-modal {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
+}
+
+.grade-level-modal.show,
+.school-year-modal.show {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.grade-level-modal-content,
+.school-year-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 10px;
@@ -872,17 +928,60 @@ table td {
   z-index: 1001;
 }
 
-.student-form-group {
+/* subject modal */
+.subject-modal {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
+}
+
+.subject-modal.show {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.subject-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 700px;
+  height: 50vh;
+  overflow-y: scroll;
+
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+
+.student-form-group,
+.subject-form-group {
+  align-items: center;
   display: flex;
   gap: 20px;
 }
 .student-form-group input {
   width: 32%;
 }
-#address {
-  margin-bottom: 20px;
+.subject-form-group {
+    margin-bottom: 20px;
 }
+#address {
+  margin-bottom: 30px;
+}
+
 .student-form-group select {
+  font-size: 13px;
+}
+#subjectForm select {
   font-size: 13px;
 }
 #birthdate {
@@ -898,6 +997,10 @@ table td {
 #gender,
 #birthdate {
   margin-bottom: 20px;
+}
+#subjectID,
+#subjectName {
+  width: 30.5%;
 }
 #studentForm h6 {
   font-weight: bold;

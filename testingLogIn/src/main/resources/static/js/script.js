@@ -134,4 +134,31 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
   });
+
+//   student modal
+document.addEventListener("DOMContentLoaded", function () {
+    const studentInfoModal = document.getElementById("studentInfoModal");
+    const openStudentModal = document.getElementById("openStudentModal"); // Button that opens modal
+    const confirmStudent = document.getElementById("confirmStudent");
+    const cancelStudent = document.getElementById("cancelStudent");
+
+    openStudentModal.addEventListener("click", function () {
+        studentInfoModal.style.display = "flex"; // Show modal
+    });
+
+    cancelStudent.addEventListener("click", function () {
+        studentInfoModal.style.display = "none"; // Hide modal
+    });
+
+    confirmStudent.addEventListener("click", function () {
+        alert("Student information submitted!");
+        studentInfoModal.style.display = "none";
+    });
+
+    window.onclick = function (event) {
+        if (event.target === studentInfoModal) {
+            studentInfoModal.style.display = "none";
+        }
+    };
+});
   

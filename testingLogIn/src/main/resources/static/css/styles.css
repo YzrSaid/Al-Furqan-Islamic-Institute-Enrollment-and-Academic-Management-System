@@ -584,28 +584,6 @@ tr:nth-child(even) {
   width: 20%;
 }
 
-/* for grade management table */
-.grade-management-table th:nth-child(1),
-.grade-management-table td:nth-child(1) {
-  width: 20%;
-}
-.grade-management-table th:nth-child(2),
-.grade-management-table td:nth-child(2) {
-  width: 30%;
-}
-.grade-management-table th:nth-child(3),
-.grade-management-table td:nth-child(3) {
-  width: 20%;
-}
-.grade-management-table th:nth-child(4),
-.grade-management-table td:nth-child(4) {
-  width: 15%;
-}
-.grade-management-table th:nth-child(5),
-.grade-management-table td:nth-child(5) {
-  width: 20%;
-}
-
 /* for grade level (maintenance */
 .grade-level-table th:nth-child(1),
 .grade-level-table td:nth-child(1) {
@@ -704,6 +682,28 @@ tr:nth-child(even) {
   width: 10%;
 }
 
+/* for verify-accounts table */
+.verify-accounts-table th:nth-child(1),
+.verify-accounts-table td:nth-child(1) {
+  width: 20%;
+}
+.verify-accounts-table th:nth-child(2),
+.verify-accounts-table td:nth-child(2) {
+  width: 30%;
+}
+.verify-accounts-table th:nth-child(3),
+.verify-accounts-table td:nth-child(3) {
+  width: 20%;
+}
+.verify-accounts-table th:nth-child(4),
+.verify-accounts-table td:nth-child(4) {
+  width: 15%;
+}
+.verify-accounts-table th:nth-child(5),
+.verify-accounts-table td:nth-child(5) {
+  width: 20%;
+}
+
 table td {
   text-align: center;
 }
@@ -719,13 +719,29 @@ table td {
 .school-year-table,
 .subject-table,
 .teacher-table,
-.section-table {
+.section-table,
+.verify-accounts-table {
   width: 91.5%;
   margin: 0px 50px;
 }
 
 .status {
   background-color: #28a745;
+  color: white;
+  padding: 5px 0px;
+  border-radius: 5px;
+  font-weight: 500;
+  width: 105px;
+  font-size: 13px;
+  text-align: center;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pending {
+  background-color: rgb(206, 221, 45);
   color: white;
   padding: 5px 0px;
   border-radius: 5px;
@@ -746,6 +762,18 @@ table td {
   font-weight: 500;
   width: 20px;
   height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#action-verify-account img {
+  color: white;
+  padding: 5px 0px;
+  border-radius: 5px;
+  font-weight: 500;
+  width: 30px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1085,9 +1113,9 @@ table td {
   gap: 0;
 }
 .inputID select {
-    height: 45px;
-    width: 200px;
-    margin-right: 100px;
+  height: 45px;
+  width: 200px;
+  margin-right: 100px;
 }
 
 #subjectID,

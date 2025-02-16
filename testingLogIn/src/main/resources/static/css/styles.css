@@ -403,10 +403,6 @@ body {
   top: 88%;
   transform: translateY(-50%);
 }
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
 
 .dropdown-content {
   display: none;
@@ -638,6 +634,28 @@ tr:nth-child(even) {
   width: 15%;
 }
 
+/* for section (maintenance) */
+.section-table th:nth-child(1),
+.section-table td:nth-child(1) {
+  width: 30%;
+}
+.section-table th:nth-child(2),
+.section-table td:nth-child(2) {
+  width: 20%;
+}
+.section-table th:nth-child(3),
+.section-table td:nth-child(3) {
+  width: 20%;
+}
+.section-table th:nth-child(4),
+.section-table td:nth-child(4) {
+  width: 15%;
+}
+.section-table th:nth-child(5),
+.section-table td:nth-child(5) {
+  width: 15%;
+}
+
 /* for subject table (maintenance) */
 .subject-table th:nth-child(1),
 .subject-table td:nth-child(1) {
@@ -664,6 +682,28 @@ tr:nth-child(even) {
   width: 10%;
 }
 
+/* for teacher table (maintenance) */
+.teacher-table th:nth-child(1),
+.teacher-table td:nth-child(1) {
+  width: 10%;
+}
+.teacher-table th:nth-child(2),
+.techer-table td:nth-child(2) {
+  width: 18%;
+}
+.teacher-table th:nth-child(3),
+.teacher-table td:nth-child(3) {
+  width: 18%;
+}
+.teacher-table th:nth-child(4),
+.teacher-table td:nth-child(4) {
+  width: 10%;
+}
+.teacher-table th:nth-child(5),
+.teacher-table td:nth-child(5) {
+  width: 10%;
+}
+
 table td {
   text-align: center;
 }
@@ -673,26 +713,17 @@ table td {
   align-items: center;
 }
 
-.listing-table {
+.listing-table,
+.grade-management-table,
+.grade-level-table,
+.school-year-table,
+.subject-table,
+.teacher-table,
+.section-table {
   width: 91.5%;
   margin: 0px 50px;
 }
-.grade-management-table {
-  width: 91.5%;
-  margin: 0px 50px;
-}
-.grade-level-table {
-  width: 91.5%;
-  margin: 0px 50px;
-}
-.school-year-table {
-  width: 91.5%;
-  margin: 0px 50px;
-}
-.subject-table {
-  width: 91.5%;
-  margin: 0px 50px;
-}
+
 .status {
   background-color: #28a745;
   color: white;
@@ -728,9 +759,18 @@ table td {
 #status-school-year {
   width: 140px;
 }
+#status-teacher {
+  width: 100px;
+}
 .dropdown {
-  cursor: pointer;
+  /* cursor: pointer; */
   padding: 5px;
+}
+.dropdown {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
 }
 .status-container {
   display: flex;
@@ -825,8 +865,9 @@ table td {
   font-weight: 500;
 }
 
-/* student modal */
-.student-modal {
+/* student modal and teacher modal*/
+.student-modal,
+.teacher-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -839,13 +880,15 @@ table td {
   transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
 }
 
-.student-modal.show {
+.student-modal.show,
+.teacher-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
 }
 
-.student-modal-content {
+.student-modal-content,
+.teacher-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 10px;
@@ -861,7 +904,9 @@ table td {
 .student-modal-content h2,
 .grade-level-modal-content h2,
 .school-year-modal-content h2,
-.subject-modal-content h2 {
+.subject-modal-content h2,
+.teacher-modal-content h2,
+.section-modal-content h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -871,7 +916,9 @@ table td {
 .student-modal-content label,
 .grade-level-modal-content label,
 .school-year-modal-content label,
-.subject-modal-content label {
+.subject-modal-content label,
+.teacher-modal-content label,
+.section-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -880,10 +927,14 @@ table td {
 .grade-level-modal-content input,
 .school-year-modal-content input,
 .subject-modal-content input,
+.teacher-modal-content input,
+.section-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
-.subject-modal-content select {
+.subject-modal-content select,
+.teacher-modal-content select,
+.section-modal-content select {
   width: 100%;
   padding: 8px;
   margin: 5px 0;
@@ -962,24 +1013,57 @@ table td {
   z-index: 1001;
 }
 
+/* section modal */
+.section-modal {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
+}
+
+.section-modal.show {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.section-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 600px;
+  height: 50vh;
+  overflow-y: scroll;
+
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+
 .student-form-group,
 .subject-form-group {
-  align-items: center;
+  justify-content: space-between;
   display: flex;
   gap: 20px;
 }
 .student-form-group input {
-  width: 32%;
+  width: 200px;
 }
 .subject-form-group {
-    margin-bottom: 20px;
-}
-#address {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .student-form-group select {
   font-size: 13px;
+  width: 200px;
+  margin-left: 20px;
 }
 #subjectForm select {
   font-size: 13px;
@@ -994,10 +1078,18 @@ table td {
 #gradeLevelNew {
   width: 23.7%;
 }
-#gender,
-#birthdate {
+
+.inputID {
+  width: 400px;
   margin-bottom: 20px;
+  gap: 0;
 }
+.inputID select {
+    height: 45px;
+    width: 200px;
+    margin-right: 100px;
+}
+
 #subjectID,
 #subjectName {
   width: 30.5%;

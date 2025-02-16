@@ -91,7 +91,7 @@
                 class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="maintenance-submenu">
-            <a href="school-year-maintenance.html" class="second-active">School Year</a>
+            <a href="school-year-maintenance.html">School Year</a>
             <a href="grade-level-maintenance.html">Grade Level</a>
             <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
                 <span class="arrow-icon third-arrow-icon"><img src="../static/images/icons/arrow-down.png"
@@ -101,9 +101,9 @@
                 <a href="#">For Teachers</a>
                 <a href="#">For Students</a>
             </div>
-            <a href="#">Subject</a>
-            <a href="#">Section</a>
-            <a href="#">Teacher</a>
+            <a href="subject-maintenance.html">Subject</a>
+            <a href="section-maintenance.html" class="second-active">Section</a>
+            <a href="teacher-maintenance.html">Teacher</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
@@ -147,12 +147,12 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>School Year</h4>
+            <h4>Section</h4>
             <p>Main</p>
             <p>/</p>
             <p>Maintenance</p>
             <p>/</p>
-            <p>School Year</p>
+            <p>Section</p>
         </div>
 
         <div class="search-div">
@@ -174,25 +174,29 @@
         </div>
 
         <!-- Table -->
-        <table class="school-year-table">
+        <table class="section-table">
             <thead>
                 <tr>
-                    <th>School Year</th>
+                    <th>Section</th>
+                    <th>Capacity</th>
+                    <th>Enrolled</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>2023-2024</td>
+                    <td>Rizal</td>
+                    <td>30</td>
+                    <td>25</td>
                     <td>
                         <div class="status-container">
-                            <div class="status" id="status-school-year">Active</div>
+                            <div class="status" id="status-teacher">Active</div>
                         </div>
                     </td>
                     <td>
                         <div class="action-container">
-                            <div class="action" id="action-grade-level"><img src="../static/images/icons/compose.png"
+                            <div class="action" id="action-teacher"><img src="../static/images/icons/compose.png"
                                     alt=""></div>
                         </div>
                     </td>
@@ -200,9 +204,9 @@
             </tbody>
         </table>
 
-        <!-- add school year button -->
+        <!-- add section button -->
         <div class="add-something-btn-container">
-            <button class="add-something-btn" id="openSchoolYearModal">Add School Year</button>
+            <button class="add-something-btn" id="openSectionModal">Add a Section</button>
         </div>
         <!-- Modal for status -->
         <div id="confirmationModal" class="modal">
@@ -215,18 +219,21 @@
             </div>
         </div>
 
-        <!-- Modal for adding school year -->
-        <div id="schoolYearModal" class="school-year-modal">
-            <div class="school-year-modal-content">
-                <h2>Add New School Year</h2>
-                <form id="schoolYearForm">  
-                    <label for="school-year-name">School Year:</label>
-                    <input type="text" id="schoolYearName" required>
+        <!-- Modal for adding a section -->
+        <div id="sectionModal" class="section-modal">
+            <div class="section-modal-content">
+                <h2>Add New Section</h2>
+                <form method="post" id="gradeLevelForm">
+                    <label for="sectionName">Grade Level Name:</label>
+                    <input type="text" id="levelName" name="levelName" required>
+
+                    <label for="capacity">Capacity:</label>
+                    <input type="number" id="capacity" name="capacity" required>
                     <br><br>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmSchoolYear">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelSchoolYear">Cancel</button>
+                        <button type="submit" class="btn-confirm" id="confirmSection">Confirm</button>
+                        <button type="button" class="btn-cancel" id="cancelSection">Cancel</button>
                     </div>
                 </form>
             </div>

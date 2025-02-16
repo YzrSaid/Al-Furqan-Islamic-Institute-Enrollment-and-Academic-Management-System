@@ -61,8 +61,8 @@ function toggleSubMenu(submenuId, event) {
       let otherArrowIcon =
         otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
       if (otherArrowIcon) {
-      otherArrowIcon.src = "../images/icons/arrow-down.png";
-//        otherArrowIcon.src = "../static/images/icons/arrow-down.png";
+        //   otherArrowIcon.src = "../images/icons/arrow-down.png";
+        otherArrowIcon.src = "../static/images/icons/arrow-down.png";
       }
     }
   });
@@ -70,10 +70,10 @@ function toggleSubMenu(submenuId, event) {
   // Toggle the clicked submenu
   submenu.classList.toggle("open", !isOpen);
   arrowIconImg.src = isOpen
-      ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
-      : "../images/icons/greater-than.png"; // Change to right arrow if opening
-//    ? "../static/images/icons/arrow-down.png" // Change back to down arrow if closing
-//    : "../static/images/icons/greater-than.png"; // Change to right arrow if opening
+    ? //   ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
+      //   : "../images/icons/greater-than.png"; // Change to right arrow if opening
+      "../static/images/icons/arrow-down.png" // Change back to down arrow if closing
+    : "../static/images/icons/greater-than.png"; // Change to right arrow if opening
 
   // *🔹 Save submenu state only if it is a submenu of a submenu*
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
@@ -89,8 +89,8 @@ function clearSubmenus() {
     .forEach((submenu) => submenu.classList.remove("open"));
   document
     .querySelectorAll(".arrow-icon img")
-    .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
-//    .forEach((img) => (img.src = "../static/images/icons/arrow-down.png"));
+    // .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
+    .forEach((img) => (img.src = "../static/images/icons/arrow-down.png"));
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -128,146 +128,214 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Student Information Modal
-    const studentInfoModal = document.getElementById("studentInfoModal");
-    const openStudentModal = document.getElementById("openStudentModal"); 
-    const confirmStudent = document.getElementById("confirmStudent");
-    const cancelStudent = document.getElementById("cancelStudent");
+  // Student Information Modal
+  const studentInfoModal = document.getElementById("studentInfoModal");
+  const openStudentModal = document.getElementById("openStudentModal");
+  const confirmStudent = document.getElementById("confirmStudent");
+  const cancelStudent = document.getElementById("cancelStudent");
 
-    if (studentInfoModal) {
-        studentInfoModal.classList.remove("show");
-    }
+  if (studentInfoModal) {
+    studentInfoModal.classList.remove("show");
+  }
 
-    if (openStudentModal) {
-        openStudentModal.addEventListener("click", function () {
-            studentInfoModal.classList.add("show");
-        });
-    }
-
-    if (cancelStudent) {
-        cancelStudent.addEventListener("click", function () {
-            studentInfoModal.classList.remove("show");
-        });
-    }
-
-    if (confirmStudent) {
-        confirmStudent.addEventListener("click", function () {
-            alert("Student information submitted!");
-            studentInfoModal.classList.remove("show");
-        });
-    }
-
-    window.addEventListener("click", function (event) {
-        if (event.target === studentInfoModal) {
-            studentInfoModal.classList.remove("show");
-        }
+  if (openStudentModal) {
+    openStudentModal.addEventListener("click", function () {
+      studentInfoModal.classList.add("show");
     });
+  }
 
-    // Grade Level Modal
-    const gradeLevelModal = document.getElementById("gradeLevelModal");
-    const openGradeLevelModal = document.getElementById("openGradeLevelModal"); // Button to open modal
-    const confirmGradeLevel = document.getElementById("confirmGradeLevel");
-    const cancelGradeLevel = document.getElementById("cancelGradeLevel");
-
-    if (gradeLevelModal) {
-        gradeLevelModal.classList.remove("show");
-    }
-
-    if (openGradeLevelModal) {
-        openGradeLevelModal.addEventListener("click", function () {
-            gradeLevelModal.classList.add("show");
-        });
-    }
-
-    if (cancelGradeLevel) {
-        cancelGradeLevel.addEventListener("click", function () {
-            gradeLevelModal.classList.remove("show");
-        });
-    }
-
-    if (confirmGradeLevel) {
-        confirmGradeLevel.addEventListener("click", function () {
-            alert("Grade Level information saved!");
-            gradeLevelModal.classList.remove("show");
-        });
-    }
-
-    window.addEventListener("click", function (event) {
-        if (event.target === gradeLevelModal) {
-            gradeLevelModal.classList.remove("show");
-        }
+  if (cancelStudent) {
+    cancelStudent.addEventListener("click", function () {
+      studentInfoModal.classList.remove("show");
     });
+  }
 
-
-    // School Year Modal
-    const schoolYearModal = document.getElementById("schoolYearModal");
-    const openSchoolYearModal = document.getElementById("openSchoolYearModal"); // Button to open modal
-    const confirmSchoolYear = document.getElementById("confirmSchoolYear");
-    const cancelSchoolYear = document.getElementById("cancelSchoolYear");
-
-    if (schoolYearModal) {
-        schoolYearModal.classList.remove("show");
-    }
-
-    if (openSchoolYearModal) {
-        openSchoolYearModal.addEventListener("click", function () {
-            schoolYearModal.classList.add("show");
-        });
-    }
-
-    if (cancelSchoolYear) {
-        cancelSchoolYear.addEventListener("click", function () {
-            schoolYearModal.classList.remove("show");
-        });
-    }
-
-    if (confirmSchoolYear) {
-        confirmSchoolYear.addEventListener("click", function () {
-            alert("Grade Level information saved!");
-            schoolYearModal.classList.remove("show");
-        });
-    }
-
-    window.addEventListener("click", function (event) {
-        if (event.target === schoolYearModal) {
-            schoolYearModal.classList.remove("show");
-        }
+  if (confirmStudent) {
+    confirmStudent.addEventListener("click", function () {
+      alert("Student information submitted!");
+      studentInfoModal.classList.remove("show");
     });
+  }
 
-
-    // Subject Modal
-    const subjectModal = document.getElementById("subjectModal");
-    const openSubjectModal = document.getElementById("openSubjectModal"); // Button to open modal
-    const confirmSubject = document.getElementById("confirmSubject");
-    const cancelSubject = document.getElementById("cancelSubject");
-
-    if (subjectModal) {
-        subjectModal.classList.remove("show");
+  window.addEventListener("click", function (event) {
+    if (event.target === studentInfoModal) {
+      studentInfoModal.classList.remove("show");
     }
+  });
 
-    if (openSubjectModal) {
-        openSubjectModal.addEventListener("click", function () {
-            subjectModal.classList.add("show");
-        });
-    }
+  // Grade Level Modal
+  const gradeLevelModal = document.getElementById("gradeLevelModal");
+  const openGradeLevelModal = document.getElementById("openGradeLevelModal"); // Button to open modal
+  const confirmGradeLevel = document.getElementById("confirmGradeLevel");
+  const cancelGradeLevel = document.getElementById("cancelGradeLevel");
 
-    if (cancelSubject) {
-        cancelSubject.addEventListener("click", function () {
-            subjectModal.classList.remove("show");
-        });
-    }
+  if (gradeLevelModal) {
+    gradeLevelModal.classList.remove("show");
+  }
 
-    if (confirmSubject) {
-        confirmSubject.addEventListener("click", function () {
-            alert("Grade Level information saved!");
-            subjectModal.classList.remove("show");
-        });
-    }
-
-    window.addEventListener("click", function (event) {
-        if (event.target === subjectModal) {
-            subjectModal.classList.remove("show");
-        }
+  if (openGradeLevelModal) {
+    openGradeLevelModal.addEventListener("click", function () {
+      gradeLevelModal.classList.add("show");
     });
+  }
+
+  if (cancelGradeLevel) {
+    cancelGradeLevel.addEventListener("click", function () {
+      gradeLevelModal.classList.remove("show");
+    });
+  }
+
+  if (confirmGradeLevel) {
+    confirmGradeLevel.addEventListener("click", function () {
+      alert("Grade Level information saved!");
+      gradeLevelModal.classList.remove("show");
+    });
+  }
+
+  window.addEventListener("click", function (event) {
+    if (event.target === gradeLevelModal) {
+      gradeLevelModal.classList.remove("show");
+    }
+  });
+
+  // School Year Modal
+  const schoolYearModal = document.getElementById("schoolYearModal");
+  const openSchoolYearModal = document.getElementById("openSchoolYearModal"); // Button to open modal
+  const confirmSchoolYear = document.getElementById("confirmSchoolYear");
+  const cancelSchoolYear = document.getElementById("cancelSchoolYear");
+
+  if (schoolYearModal) {
+    schoolYearModal.classList.remove("show");
+  }
+
+  if (openSchoolYearModal) {
+    openSchoolYearModal.addEventListener("click", function () {
+      schoolYearModal.classList.add("show");
+    });
+  }
+
+  if (cancelSchoolYear) {
+    cancelSchoolYear.addEventListener("click", function () {
+      schoolYearModal.classList.remove("show");
+    });
+  }
+
+  if (confirmSchoolYear) {
+    confirmSchoolYear.addEventListener("click", function () {
+      alert("Grade Level information saved!");
+      schoolYearModal.classList.remove("show");
+    });
+  }
+
+  window.addEventListener("click", function (event) {
+    if (event.target === schoolYearModal) {
+      schoolYearModal.classList.remove("show");
+    }
+  });
+
+  // Subject Modal
+  const subjectModal = document.getElementById("subjectModal");
+  const openSubjectModal = document.getElementById("openSubjectModal"); // Button to open modal
+  const confirmSubject = document.getElementById("confirmSubject");
+  const cancelSubject = document.getElementById("cancelSubject");
+
+  if (subjectModal) {
+    subjectModal.classList.remove("show");
+  }
+
+  if (openSubjectModal) {
+    openSubjectModal.addEventListener("click", function () {
+      subjectModal.classList.add("show");
+    });
+  }
+
+  if (cancelSubject) {
+    cancelSubject.addEventListener("click", function () {
+      subjectModal.classList.remove("show");
+    });
+  }
+
+  if (confirmSubject) {
+    confirmSubject.addEventListener("click", function () {
+      alert("Grade Level information saved!");
+      subjectModal.classList.remove("show");
+    });
+  }
+
+  window.addEventListener("click", function (event) {
+    if (event.target === subjectModal) {
+      subjectModal.classList.remove("show");
+    }
+  });
+
+  // Teacher Modal
+  const teacherModal = document.getElementById("teacherModal");
+  const openTeacherModal = document.getElementById("openTeacherModal"); // Button to open modal
+  const confirmTeacher = document.getElementById("confirmTeacher");
+  const cancelTeacher = document.getElementById("cancelTeacher");
+
+  if (teacherModal) {
+    teacherModal.classList.remove("show");
+  }
+
+  if (openTeacherModal) {
+    openTeacherModal.addEventListener("click", function () {
+      teacherModal.classList.add("show");
+    });
+  }
+
+  if (cancelTeacher) {
+    cancelTeacher.addEventListener("click", function () {
+      teacherModal.classList.remove("show");
+    });
+  }
+
+  if (confirmTeacher) {
+    confirmTeacher.addEventListener("click", function () {
+      alert("Grade Level information saved!");
+      teacherModal.classList.remove("show");
+    });
+  }
+
+  window.addEventListener("click", function (event) {
+    if (event.target === teacherModal) {
+      teacherModal.classList.remove("show");
+    }
+  });
+
+
+  // Section Modal
+  const sectionModal = document.getElementById("sectionModal");
+  const openSectionModal = document.getElementById("openSectionModal"); // Button to open modal
+  const confirmSection = document.getElementById("confirmSection");
+  const cancelSection = document.getElementById("cancelSection");
+
+  if (sectionModal) {
+    sectionModal.classList.remove("show");
+  }
+
+  if (openSectionModal) {
+    openSectionModal.addEventListener("click", function () {
+      sectionModal.classList.add("show");
+    });
+  }
+
+  if (cancelSection) {
+    cancelSection.addEventListener("click", function () {
+      sectionModal.classList.remove("show");
+    });
+  }
+
+  if (confirmSection) {
+    confirmSection.addEventListener("click", function () {
+      alert("Grade Level information saved!");
+      sectionModal.classList.remove("show");
+    });
+  }
+
+  window.addEventListener("click", function (event) {
+    if (event.target === sectionModal) {
+      sectionModal.classList.remove("show");
+    }
+  });
 });
-

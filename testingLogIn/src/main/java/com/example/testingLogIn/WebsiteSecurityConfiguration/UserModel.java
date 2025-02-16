@@ -22,7 +22,7 @@ public class UserModel implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private     int staffId;
+    private int staffId;
     private String username;
     private String password;
 

@@ -1,5 +1,6 @@
 package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
+import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.Models.AccountRegister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,9 +8,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
     private UserRepo userRepo;
 
     @Autowired
@@ -17,6 +20,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepo = userRepo;
     }
 
+    public UserModel getuser(int staffId){
+        return userRepo.findById(staffId).orElse(null);
+    }
+
+    public List<UserModel> getTeachersAccount(){
+        return userRepo.findAll()
+                .stream()
+                .filter(userModel -> userModel.role == Role.TEACHER)
+                .collect(Collectors.toList());
+    }
+    
     public boolean registerNewUser(AccountRegister accountRegister){
         userRepo.save(AccountRegToUserModel(accountRegister));
         return true;

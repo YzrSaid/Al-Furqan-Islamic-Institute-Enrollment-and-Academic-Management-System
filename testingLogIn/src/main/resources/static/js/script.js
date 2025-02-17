@@ -61,14 +61,20 @@ function toggleSubMenu(submenuId, event) {
       let otherArrowIcon =
         otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
       if (otherArrowIcon) {
+<<<<<<< Updated upstream
            otherArrowIcon.src = "../images/icons/arrow-down.png";
 //        otherArrowIcon.src = "../static/images/icons/arrow-down.png";
+=======
+        //   otherArrowIcon.src = "../images/icons/arrow-down.png";
+        ("/testingLogIn/src/main/resources/static/images/icons/arrow-down.png");
+>>>>>>> Stashed changes
       }
     }
   });
 
   // Toggle the clicked submenu
   submenu.classList.toggle("open", !isOpen);
+<<<<<<< Updated upstream
   arrowIconImg.src = isOpen?
    "../images/icons/arrow-down.png" // Change back to down arrow if closing
    : "../images/icons/greater-than.png"; // Change to right arrow if opening
@@ -76,6 +82,15 @@ function toggleSubMenu(submenuId, event) {
 //    : "../static/images/icons/greater-than.png"; // Change to right arrow if opening
 
   // *🔹 Save submenu state only if it is a submenu of a submenu*
+=======
+  arrowIconImg.src = isOpen
+    ? //   ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
+      //   : "../images/icons/greater-than.png"; // Change to right arrow if opening
+      "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png"
+    : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
+  
+  // * Save submenu state only if it is a submenu of a submenu*
+>>>>>>> Stashed changes
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
     (sub) => sub.id
   );
@@ -90,13 +105,23 @@ function clearSubmenus() {
   document
     .querySelectorAll(".arrow-icon img")
     // .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
-    .forEach((img) => (img.src = "../static/images/icons/arrow-down.png"));
+    .forEach((img) => (img.src = "./static/images/icons/arrow-down.png"));
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   // Select all dropdown links inside dropdown-status-content
   const dropdownLinks = document.querySelectorAll(".dropdown-status-content a");
+
+  // this is for listing/registration status buttons   
+  const dropdownLinksListing = document.querySelectorAll("#dropdown-listing a");
+
+  // this is for school year maintenance
+  const dropdownLinksSchoolYear = document.querySelectorAll("#dropdown-school-year a");
+
+  const verificationBtns = document.querySelectorAll(".dropdown-status-content-verify div");
+
   const modal = document.getElementById("confirmationModal");
+
   const modalText = document.getElementById("modalText");
   const confirmButton = document.querySelector(".btn-confirm");
   const cancelButton = document.querySelector(".btn-cancel");
@@ -104,27 +129,113 @@ document.addEventListener("DOMContentLoaded", function () {
   // Hide modal when page loads
   modal.style.display = "none";
 
-  dropdownLinks.forEach((link) => {
+  dropdownLinksListing.forEach((link) => {
     link.addEventListener("click", function (event) {
       event.preventDefault(); // Prevent the default link behavior
 
       let action = this.getAttribute("data-action"); // Get the action (Proceed or Cancel)
 
-      if (action === "proceed") {
+      if (action === "proceed-enrollment") {
         modalText.textContent = "Are you sure you want to proceed?";
-      } else if (action === "cancel") {
+      } else if (action === "cancel-enrollment") {
         modalText.textContent = "Are you sure you want to cancel registration?";
+      } else {
+
       }
 
       modal.style.display = "block"; // Show the modal
 
       // Handle the confirmation button
       confirmButton.onclick = function () {
-        console.log(action + " confirmed!"); // Add actual functionality here
+        if (action === "proceed-enrollment") {
+            console.log(action + " confirmed!");
+            // code for verification
+        } else if (action === "cancel-enrollment"){
+            console.log("boogsh")
+            // code for reject
+        }
+        modal.style.display = "none";
+      };
+
+      // Handle the cancel button 
+      cancelButton.onclick = function () {
+        modal.style.display = "none";
+      }
+    });
+  });
+
+  dropdownLinksSchoolYear.forEach((link) => {
+    link.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent the default link behavior
+
+      let action = this.getAttribute("data-action"); // Get the action (Proceed or Cancel)
+
+      if (action === "make-active") {
+        modalText.textContent = "Are you sure you want to make this school year active?";
+      } else if (action === "make-inactive") {
+        modalText.textContent = "Are you sure you want to make this school year inactive?";
+      } else if (action === "archive") {
+        modalText.textContent = "Are you sure you want to archive this school year? Take note, you cannot access this schoole year once it is already in your archive"
+      }
+
+      modal.style.display = "block"; // Show the modal
+
+      // Handle the confirmation button
+      confirmButton.onclick = function () {
+        if (action === "proceed-enrollmen") {
+            console.log(action + " confirmed!");
+            // code for verification
+        } else if (action === "cancel-enrolment"){
+            console.log("boogsh")
+            // code for reject
+        }
+       
         modal.style.display = "none"; // Close modal after action
+      };
+      // Handle the cancel button  
+      cancelButton.onclick = function () {
+        modal.style.display = "none";
+      }
+    });
+  });
+
+  verificationBtns.forEach((link)=> {
+    link.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent the default link behavior
+
+      let action = this.getAttribute("data-action"); // Get the action (Proceed or Cancel)
+
+      if (action === "verify") {
+        modalText.textContent =
+        "Are you sure you want to verify this account?";
+      } else if (action === "reject") {
+        modalText.textContent =
+        "Are you sure you want to reject this account?";
+      }
+
+      modal.style.display = "block"; // Show the modal
+
+      // Handle the confirmation button
+      confirmButton.onclick = function () {
+        if (action === "verify") {
+            console.log(action + " confirmed!");
+            // code for verification
+        } else if (action === "reject"){
+            console.log("boogsh")
+            // code for reject
+        }
+       
+        modal.style.display = "none"; // Close modal after action
+      };
+
+      cancelButton.onclick = function () {
+        console.log(action + " cancel!");
+        modal.style.display = "none";
       };
     });
   });
+
+  
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -302,7 +413,6 @@ document.addEventListener("DOMContentLoaded", function () {
       teacherModal.classList.remove("show");
     }
   });
-
 
   // Section Modal
   const sectionModal = document.getElementById("sectionModal");

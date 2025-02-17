@@ -175,7 +175,6 @@ input:valid + label {
 .welcome-div {
   display: flex;
   height: 55px;
-  padding-top: 15px;
   margin-bottom: 20px;
   align-items: center;
   justify-content: center;
@@ -223,7 +222,7 @@ input:valid + label {
   border-bottom: 2px solid rgb(52, 217, 56);
   display: inline-block; /* Adjust width based on text */
   font-weight: bold;
-  padding-bottom: 6px;
+  padding-bottom: 4.5px;
 }
 
 .submenu {
@@ -278,9 +277,13 @@ input:valid + label {
   color: rgb(30, 30, 30);
 }
 .text-center {
+  text-align: center;
   font-weight: bold;
   font-size: 15px;
   color: rgb(30, 30, 30);
+}
+.text-center p {
+  margin: 15px;
 }
 .card {
   border-bottom: 5px solid #27ae60;
@@ -450,10 +453,58 @@ input:valid + label {
   font-weight: bold;
   font-size: 15px;
 }
+
+.dropdown-logout-content {
+  display: none;
+  position: absolute;
+  top: 10%;
+  transform: translateX(-80%);
+  background-color: #f9f9f9;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  width: 160px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dropdown-logout-content.show {
+  display: block;
+  opacity: 1;
+}
+
+.dropdown-logout-content a {
+  width: 100px;
+  font-weight: bold;
+  font-size: 14px;
+  color: black;
+  margin: 0px;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-logout-content h6 {
+  background-color: #d8d6d6;
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 100;
+}
+.dropdown-logout-content span {
+  font-weight: bold;
+  font-size: 15px;
+}
+
 .dropdown-toggle::after {
   content: none !important;
 }
+.dropdown-logout-toggle::after {
+  content: none !important;
+}
 .dropdown-content a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.dropdown-logout-content a:hover {
   cursor: pointer;
   text-decoration: underline;
 }
@@ -807,6 +858,12 @@ table td {
   align-items: center;
   justify-content: center;
 }
+.dropdown-logout {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
 .status-container {
   display: flex;
   align-items: center;
@@ -829,6 +886,7 @@ table td {
   z-index: 10;
   font-size: 13px;
 }
+
 .dropdown-status-btn {
   outline: none;
   border: none;
@@ -855,6 +913,7 @@ table td {
 
 /* modal design */
 .modal {
+  align-content: center;
   display: none;
   position: fixed;
   z-index: 1000;
@@ -864,19 +923,20 @@ table td {
 
 .modal-content {
   display: flex;
-  top: 30%;
-  align-content: center;
+  flex-direction: column;
   justify-self: center;
   background: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 300px;
+  min-width: 150px;
+  max-width: 450px;
+  min-height: 150px;
   text-align: center;
 }
 
 .modal-buttons {
-  margin-top: 15px;
+  margin-top: 35px;
   display: flex;
   justify-content: space-around;
 }
@@ -891,12 +951,14 @@ table td {
 .btn-confirm {
   background-color: #28a745;
   color: white;
+  width: 100px;
   font-weight: 500;
 }
 
 .btn-cancel {
   background-color: #dc3545;
   color: white;
+  width: 100px;
   font-weight: 500;
 }
 
@@ -929,9 +991,8 @@ table td {
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
-  height: 80vh;
+  min-height: 80vh;
   overflow-y: scroll;
-
   text-align: left;
   position: relative;
   z-index: 1001;
@@ -1074,7 +1135,7 @@ table td {
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 600px;
-  height: 50vh;
+  min-height: 50vh;
   overflow-y: scroll;
 
   text-align: left;
@@ -1084,6 +1145,7 @@ table td {
 
 .student-form-group,
 .subject-form-group {
+    align-items: center;
   justify-content: space-between;
   display: flex;
   gap: 20px;
@@ -1109,6 +1171,9 @@ table td {
 #studentForm label {
   margin-top: 15px;
 }
+#teacherForm label {
+  margin-top: 15px;
+}
 #gradeLevelOld,
 #gradeLevelNew {
   width: 23.7%;
@@ -1130,6 +1195,9 @@ table td {
   width: 30.5%;
 }
 #studentForm h6 {
+  font-weight: bold;
+}
+#teacherForm h6 {
   font-weight: bold;
 }
 

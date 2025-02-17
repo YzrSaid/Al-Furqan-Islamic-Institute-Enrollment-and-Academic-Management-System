@@ -114,7 +114,15 @@
             <a href="#">Book Distribution Report</a>
             <a href="#">Payment Report</a>
         </div>
-        <a href="#" class="sidebar-icons"><img src="../static/images/icons/account.png" alt="Account Icon"> Account</a>
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
+            <img src="../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
+                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="account-submenu">
+            <a href="verify-accounts.html" class="second-active">Verify Accounts</a>
+            <a href="#">Manage Accounts</a>
+            <a href="#">My Account</a>
+        </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
             <img src="../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
                     src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
@@ -135,11 +143,11 @@
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
-            <div class="dropdown">
-                <div class="user-icon dropdown-toggle">
+            <div class="dropdown-logout">
+                <div class="user-icon dropdown-logout-toggle">
                     <img src="../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
-                    <div id="dropdownUserIcon" class="dropdown-content">
+                    <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
                         <a href="login.html">Log Out</a>
                     </div>
@@ -156,19 +164,11 @@
         </div>
 
         <div class="search-div">
-            <!-- Searchbox and sort btn -->
+            <!-- Searchbox -->
             <div class="search">
                 <div class="search-container">
                     <input type="text" placeholder="Search..." class="search-input" />
                     <button class="search-btn">Search</button>
-                </div>
-                <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -179,21 +179,20 @@
                 <tr>
                     <th>School Year</th>
                     <th>Status</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>2023-2024</td>
                     <td>
-                        <div class="status-container">
-                            <div class="status" id="status-school-year">Active</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="action-container">
-                            <div class="action" id="action-grade-level"><img src="../static/images/icons/compose.png"
-                                    alt=""></div>
+                        <div class="dropdown">
+                            <div class="status-container">
+                                <div class="status" id="status-school-year">Active</div>
+                            </div>
+                            <div class="dropdown-status-content" id="dropdown-school-year">
+                                <a href="#" data-action="make-inactive">Make Inactive</a>
+                                <a href="#" data-action="archive">Archive</a>
+                            </div>
                         </div>
                     </td>
                 </tr>

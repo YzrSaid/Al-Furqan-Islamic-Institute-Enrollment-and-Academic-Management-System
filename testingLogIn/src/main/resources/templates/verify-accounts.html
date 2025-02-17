@@ -116,7 +116,7 @@
         </div>
 
         <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img src="../static/images/icons/account.png" alt="Account Icon"> Accounts <span class="arrow-icon"><img
+            <img src="../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
                     src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
@@ -144,11 +144,11 @@
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
-            <div class="dropdown">
-                <div class="user-icon dropdown-toggle">
+            <div class="dropdown-logout">
+                <div class="user-icon dropdown-logout-toggle">
                     <img src="../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
-                    <div id="dropdownUserIcon" class="dropdown-content">
+                    <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
                         <a href="login.html">Log Out</a>
                     </div>
@@ -204,9 +204,9 @@
                         </div>
                     </td>
                     <td>
-                        <div class="action-container">
-                            <div class="action" id="action-verify-account"><img src="../static/images/icons/check.png" alt="check-icon"></div>
-                            <div class="action" id="action-verify-account"><img src="../static/images/icons/cross.png"
+                        <div class="action-container dropdown-status-content-verify">
+                            <div class="action" data-action="verify" id="action-verify-account"><img src="../static/images/icons/check.png" alt="check-icon"></div>
+                            <div class="action" data-action="reject" id="action-verify-account"><img src="../static/images/icons/cross.png"
                                     alt="cross-icon"></div>
                         </div>
                     </td>
@@ -217,7 +217,7 @@
         <!-- Modal for status -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
-                <p id="modalText">Are you sure?</p>
+                <p id="modalText"></p>
                 <div class="modal-buttons">
                     <button id="confirmBtn" class="btn-confirm">Confirm</button>
                     <button id="cancelBtn" class="btn-cancel">Cancel</button>

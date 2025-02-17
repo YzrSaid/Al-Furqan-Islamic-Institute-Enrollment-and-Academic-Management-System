@@ -90,7 +90,15 @@
             <a href="#">Book Distribution Report</a>
             <a href="#">Payment Report</a>
         </div>
-        <a href="#" class="sidebar-icons"><img src="../static/images/icons/account.png" alt="Account Icon"> Account</a>
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
+            <img src="../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
+                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="account-submenu">
+            <a href="verify-accounts.html" class="second-active">Verify Accounts</a>
+            <a href="#">Manage Accounts</a>
+            <a href="#">My Account</a>
+        </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
             <img src="../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
                     src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
@@ -111,17 +119,17 @@
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
-            <div class="dropdown">
-                <div class="user-icon dropdown-toggle">
+            <div class="dropdown-logout">
+                <div class="user-icon dropdown-logout-toggle">
                     <img src="../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
-                    <div id="dropdownUserIcon" class="dropdown-content">
+                    <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
                         <a href="login.html">Log Out</a>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
         <div class="text-link">
             <h4>Grade Management</h4>
             <p>Main</p>
@@ -167,14 +175,13 @@
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
-                                <div class="status" id="status-grade-management">Registered</div>
+                                <div class="status" id="status-grade-management">20/20</div>
                                 <button class="dropdown-status-btn">
                                     <i class="fas fa-chevron-down"></i> <!-- Icon is the button -->
                                 </button>
                             </div>
-                            <div class="dropdown-status-content">
-                                <a href="#" data-action="proceed">Proceed</a>
-                                <a href="#" data-action="cancel">Cancel Registration</a>
+                            <div class="action-container">
+                               <a href=""><img src="" alt=""></a>
                             </div>
                         </div>
                     </td>

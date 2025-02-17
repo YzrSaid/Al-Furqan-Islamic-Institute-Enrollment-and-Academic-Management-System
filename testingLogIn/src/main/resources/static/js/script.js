@@ -67,6 +67,9 @@ function toggleSubMenu(submenuId, event) {
 =======
         //   otherArrowIcon.src = "../images/icons/arrow-down.png";
         ("/testingLogIn/src/main/resources/static/images/icons/arrow-down.png");
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       }
     }
@@ -90,6 +93,9 @@ function toggleSubMenu(submenuId, event) {
     : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
   
   // * Save submenu state only if it is a submenu of a submenu*
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
     (sub) => sub.id

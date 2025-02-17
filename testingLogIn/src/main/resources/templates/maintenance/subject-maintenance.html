@@ -29,7 +29,7 @@
                 // Update arrow icon
                 let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
                 if (arrowIconImg) {
-                    arrowIconImg.src = "../static/images/icons/greater-than.png";
+                    arrowIconImg.src = "/testingLogIn/src/main/resources/static/images/icons/greater-than.png";
                 }
             }
         });
@@ -86,7 +86,7 @@
             <a href="#">Schedule</a>
         </div>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
             <img src="../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
                 class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
@@ -101,9 +101,9 @@
                 <a href="#">For Teachers</a>
                 <a href="#">For Students</a>
             </div>
-            <a href="subject-maintenance.html">Subject</a>
+            <a href="subject-maintenance.html" class="second-active">Subject</a>
             <a href="#">Section</a>
-            <a href="teacher-maintenance.html" class="second-active">Teacher</a>
+            <a href="#">Teacher</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
@@ -114,8 +114,7 @@
             <a href="#">Book Distribution Report</a>
             <a href="#">Payment Report</a>
         </div>
-
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
             <img src="../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
                     src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
@@ -156,12 +155,12 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>Verify Accounts</h4>
+            <h4>Subject</h4>
             <p>Main</p>
             <p>/</p>
-            <p>Accounts</p>
+            <p>Maintenance</p>
             <p>/</p>
-            <p>Verify Accounts</p>
+            <p>Subject</p>
         </div>
 
         <div class="search-div">
@@ -183,37 +182,42 @@
         </div>
 
         <!-- Table -->
-        <table class="verify-accounts-table">
+        <table class="subject-table">
             <thead>
                 <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Account Type</th>
+                    <th>Subject Code</th>
+                    <th>Subject Name</th>
+                    <th>Enrolled</th>
+                    <th>Teacher</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>134</td>
+                    <td>IT 134</td>
+                    <td>Software Engineering</td>
+                    <td>30</td>
                     <td>Ma'am Balan</td>
-                    <td>TEACHER</td>
                     <td>
                         <div class="status-container">
-                            <div class="pending" id="status-verify-account">Pending</div>
+                            <div class="status" id="status-school-year">Active</div>
                         </div>
                     </td>
                     <td>
-                        <div class="action-container dropdown-status-content-verify">
-                            <div class="action" data-action="verify" id="action-verify-account"><img src="../static/images/icons/check.png" alt="check-icon"></div>
-                            <div class="action" data-action="reject" id="action-verify-account"><img src="../static/images/icons/cross.png"
-                                    alt="cross-icon"></div>
+                        <div class="action-container">
+                            <div class="action" id="action-grade-level"><img src="../static/images/icons/compose.png"
+                                    alt=""></div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
+        <!-- add school year button -->
+        <div class="add-something-btn-container">
+            <button class="add-something-btn" id="openSubjectModal">Add Subject</button>
+        </div>
         <!-- Modal for status -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
@@ -225,47 +229,27 @@
             </div>
         </div>
 
-        <!-- Modal for adding a teacher -->
-        <div id="teacherModal" class="teacher-modal">
-            <div class="teacher-modal-content">
-                <h2>Teacher Information</h2>
-                <form id="studentForm">
-                    <div class="student-form-group inputID" id="">
-                        <label for="teacherID">Teacher ID:</label>
-                        <select name="teacherID" id="teacherID">
-                            <option value="" disabled selected>Select Teacher ID</option>
-                        </select>
+        <!-- Modal for adding subject -->
+        <div id="subjectModal" class="subject-modal">
+            <div class="subject-modal-content">
+                <h2>Add New Subject</h2>
+                <form id="subjectForm">  
+                    <div class="subject-form-group">
+                        <label for="subject-id">Subject ID:</label>
+                        <input type="text" id="subjectID" required>
+
+                        <label for="subject-name">Subject Name:</label>
+                        <input type="text" id="subjectName" required>
                     </div>
-                    <h6>Personal Information</h6>
-                    <div class="student-form-group">
-                        <label for="teacherFirstName">First Name:</label>
-                        <input type="text" id="teacherFirstName" required>
-
-                        <label for="teacherLastName">Last Name:</label>
-                        <input type="text" id="teacherLastName" required>
-                    </div>
-                    <div class="student-form-group">
-                        <label for="gender" id="gender">Gender:</label>
-                        <select id="gender" required>
-                            <option value="" disabled selected>Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-
-                        <label for="birthdate">Birthdate:</label>
-                        <input type="date" id="birthdate" required>
-                    </div>
-                    <label for="address">Address:</label>
-                    <input type="text" id="address" required>
-
-                    <label for="contactNumber">Cellphone/Contact Number:</label>
-                    <input type="tel" id="contactNumber" required>
-
-                    <br>
+                    
+                    <label for="assigned-teacher">Teacher:</label>
+                    <select name="assigned-teacher" id="assigned-teacher" required>
+                        <option value="" disabled selected>Select Teacher</option>
+                    </select>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmTeacher">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelTeacher">Cancel</button>
+                        <button type="button" class="btn-confirm" id="confirmSubject">Confirm</button>
+                        <button type="button" class="btn-cancel" id="cancelSubject">Cancel</button>
                     </div>
                 </form>
             </div>

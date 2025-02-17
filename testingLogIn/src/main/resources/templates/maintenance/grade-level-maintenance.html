@@ -9,9 +9,9 @@
     <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
     <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <!-- <link rel="stylesheet" th:href="@{/css/styles.css}"> -->
     <!--    <link rel="stylesheet" href="../static/css/styles.css">-->
-    <!--    <link rel="stylesheet" href="../static/css/styles.css">-->
+    <link rel="stylesheet" href="../../static/css/styles.css">
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -31,10 +31,8 @@
                 // Update arrow icon
                 let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
                 if (arrowIconImg) {
-                    arrowIconImg.thsrc = "@{/images/icons/greater-than.png}";
-                    // <!--                    arrowIconImg.src = "../static/images/icons/greater-than.png";-->
-                    arrowIconImg.thsrc = "@{/images/icons/greater-than.png}";
-                    // <!--                    arrowIconImg.src = "../static/images/icons/greater-than.png";-->
+                    arrowIconImg.src = "/testingLogIn/src/main/resources/static/images/icons/greater-than.png";
+                    // arrowIconImg.thsrc = "@{/images/icons/greater-than.png}";
                 }
             }
         });
@@ -46,9 +44,8 @@
     <div class="sidebar" id="sidebar">
         <div class="text-center">
             <div class="logo">
-                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
-                <!--                <img src="../static/images/al-furqanlogo.jpg" alt="School Logo">-->
-                <!--                <img src="../static/images/al-furqanlogo.jpg" alt="School Logo">-->
+                <!-- <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo"> -->
+                <img src="../../static/images/al-furqanlogo.jpg" alt="School Logo">
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
             <div class="welcome-div">
@@ -57,27 +54,21 @@
         </div>
 
         <a href="dashboard.html" class="sidebar-icons" onclick="clearSubmenus()">
-            <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
-            <!--            <img src="../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard-->
-            <!--            <img src="../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard-->
+            <!-- <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard -->
+            <img src="../../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
         </a>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-            <!--            <img src="../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction-->
-            <!--            <span class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
-            <!--            <img src="../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction-->
-            <!--            <span class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
+            <!-- <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+            <img src="../../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
-            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
-                Enrollment
-                <!--                <span class="arrow-icon second-arrow-icon"><img src="../static/images/icons/arrow-down.png"-->
-                <!--                <span class="arrow-icon second-arrow-icon"><img src="../static/images/icons/arrow-down.png"-->
-                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
-                        alt="arrow-down"></span>
-                        alt="arrow-down"></span>
+            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">Enrollment
+                <span class="arrow-icon second-arrow-icon"><img src="../../static/images/icons/arrow-down.png">
+                    <!-- <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
+                        alt="arrow-down"></span> -->
             </a>
             <div class="submenu" id="enrollment-submenu">
                 <a href="listing.html">Listing/Register</a>
@@ -90,18 +81,18 @@
         </div>
 
         <a href="grade-management.html" class="sidebar-icons">
-            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
-            <!--            <img src="../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management-->
-            <!--            <img src="../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management-->
+            <!-- <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management -->
+            <img src="../../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
         </a>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
-            <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-            <!--            <img src="../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span-->
-            <!--                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
-            <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+            <!-- <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+            <img src="../../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+
+            <!-- <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
             <!--            <img src="../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span-->
             <!--                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
         </a>
@@ -111,21 +102,20 @@
         </div>
 
         <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-            <!--            <img src="../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span-->
-            <!--                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
-            <!--            <img src="../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span-->
-            <!--                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
+            <!-- <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+            <img src="../../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="#">School Year</a>
             <a href="grade-level-maintenance.html" class="second-active">Grade Level</a>
             <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
-                <!--                <span class="arrow-icon third-arrow-icon"><img src="../static/images/icons/arrow-down.png"-->
-                <!--                <span class="arrow-icon third-arrow-icon"><img src="../static/images/icons/arrow-down.png"-->
-                <span class="arrow-icon third-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
-                        alt="arrow-down"></span>
+                <span class="arrow-icon third-arrow-icon"><img src="../../static/images/icons/arrow-down.png"></span>
+
+
+                <!-- <span class="arrow-icon third-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
+                        alt="arrow-down"></span> -->
             </a>
             <div class="submenu" id="schedule-submenu">
                 <a href="#">For Teachers</a>
@@ -137,42 +127,30 @@
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-            <!--            <img src="../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img-->
-            <!--                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-            <!--            <img src="../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img-->
-            <!--                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
+            <!-- <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+
+            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
             <a href="#">Book Distribution Report</a>
             <a href="#">Payment Report</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img src="../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
-                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
+                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
-            <a href="verify-accounts.html" class="second-active">Verify Accounts</a>
+            <a href="verify-accounts.html">Verify Accounts</a>
             <a href="#">Manage Accounts</a>
             <a href="#">My Account</a>
         </div>
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img src="../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
-                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="account-submenu">
-            <a href="verify-accounts.html" class="second-active">Verify Accounts</a>
-            <a href="#">Manage Accounts</a>
-            <a href="#">My Account</a>
-        </div>
-        <!--        <a href="#" class="sidebar-icons"><img src="../static/images/icons/account.png" alt="Account Icon"> Account</a>-->
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-            <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-            <!--            <img src="../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img-->
-            <!--                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
+            <!-- <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+            <img src="../../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
             <a href="#">Create User</a>
@@ -185,15 +163,15 @@
         <div class="topbar">
             <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
-                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
-                    <!--                    <img src="../static/images/icons/burger_menu_icon.png" alt="Menu">-->
+                    <!-- <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu"> -->
+                    <img src="../../static/images/icons/burger_menu_icon.png" alt="Menu">
                 </span>
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
             <div class="dropdown-logout">
                 <div class="user-icon dropdown-logout-toggle">
-                    <img src="../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
+                    <img src="../../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
@@ -248,9 +226,8 @@
                     </td>
                     <td>
                         <div class="action-container">
-                            <!--                            <div class="action" id="action-grade-level"><img src="../static/images/icons/compose.png"-->
-                            <div class="action" id="action-grade-level"><img th:src="@{/images/icons/compose.png}"
-                                    alt=""></div>
+                            <div class="action" id="action-grade-level"><img src="../../static/images/icons/compose.png"
+                                    alt="grade-level-icon"></div>
                         </div>
                     </td>
                 </tr>
@@ -289,11 +266,11 @@
             </div>
         </div>
     </div>
-    <script th:src="@{/js/script.js}"></script>
+    <!-- <script th:src="@{/js/script.js}"></script> -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Define the API endpoint
-                const apiUrl = 'http://localhost:8081/gradelevelmaintenance/all';
+            const apiUrl = 'http://localhost:8081/gradelevelmaintenance/all';
 
             // Make the GET request to the API
             fetch('http://192.168.254.108:8081/gradelevelmaintenance/all', {
@@ -350,7 +327,7 @@
                 });
         });
     </script>
-    <!--    <script src="../static/js/script.js"></script>-->
+    <script src="../../static/js/script.js"></script>
 </body>
 
 </html>

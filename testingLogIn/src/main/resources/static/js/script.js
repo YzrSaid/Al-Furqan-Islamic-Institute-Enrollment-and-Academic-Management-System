@@ -61,31 +61,27 @@ function toggleSubMenu(submenuId, event) {
       let otherArrowIcon =
         otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
       if (otherArrowIcon) {
-<<<<<<< Updated upstream
+
            otherArrowIcon.src = "../images/icons/arrow-down.png";
 //        otherArrowIcon.src = "../static/images/icons/arrow-down.png";
-=======
+
         //   otherArrowIcon.src = "../images/icons/arrow-down.png";
         ("/testingLogIn/src/main/resources/static/images/icons/arrow-down.png");
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+        ("/testingLogIn/src/main/resources/static/images/icons/arrow-down.png");
       }
     }
   });
 
   // Toggle the clicked submenu
   submenu.classList.toggle("open", !isOpen);
-<<<<<<< Updated upstream
-  arrowIconImg.src = isOpen?
-   "../images/icons/arrow-down.png" // Change back to down arrow if closing
-   : "../images/icons/greater-than.png"; // Change to right arrow if opening
+
+//   arrowIconImg.src = isOpen
+//    "../images/icons/arrow-down.png" // Change back to down arrow if closing
+//    : "../images/icons/greater-than.png"; // Change to right arrow if opening
 //      "../static/images/icons/arrow-down.png" // Change back to down arrow if closing
 //    : "../static/images/icons/greater-than.png"; // Change to right arrow if opening
 
   // *🔹 Save submenu state only if it is a submenu of a submenu*
-=======
   arrowIconImg.src = isOpen
     ? //   ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
       //   : "../images/icons/greater-than.png"; // Change to right arrow if opening
@@ -93,10 +89,9 @@ function toggleSubMenu(submenuId, event) {
     : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
   
   // * Save submenu state only if it is a submenu of a submenu*
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+  
+  // * Save submenu state only if it is a submenu of a submenu*
+
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
     (sub) => sub.id
   );
@@ -128,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const modal = document.getElementById("confirmationModal");
 
+
   const modalText = document.getElementById("modalText");
   const confirmButton = document.querySelector(".btn-confirm");
   const cancelButton = document.querySelector(".btn-cancel");
@@ -136,15 +132,86 @@ document.addEventListener("DOMContentLoaded", function () {
   modal.style.display = "none";
 
   dropdownLinksListing.forEach((link) => {
+      event.preventDefault(); // Prevent the default link behavior
+
+      let action = this.getAttribute("data-action"); // Get the action (Proceed or Cancel)
+     
+      if (action === "proceed-enrollment") {
+        modalText.textContent = "Are you sure you want to proceed?";
+      } else if (action === "cancel-enrollment") {
+      } else if (action === "cancel-enrollment") {
+        modalText.textContent = "Are you sure you want to cancel registration?";
+      } else {
+
+      }
+
+      modal.style.display = "block"; // Show the modal
+
+      // Handle the confirmation button
+      confirmButton.onclick = function () {
+        if (action === "proceed-enrollment") {
+            console.log(action + " confirmed!");
+            // code for verification
+        } else if (action === "cancel-enrollment"){
+            console.log("boogsh")
+            // code for reject
+        }
+        modal.style.display = "none";
+      };
+
+      // Handle the cancel button 
+      cancelButton.onclick = function () {
+        modal.style.display = "none";
+      }
+  });
+
+  dropdownLinksSchoolYear.forEach((link) => {
     link.addEventListener("click", function (event) {
       event.preventDefault(); // Prevent the default link behavior
 
       let action = this.getAttribute("data-action"); // Get the action (Proceed or Cancel)
 
-      if (action === "proceed-enrollment") {
-        modalText.textContent = "Are you sure you want to proceed?";
-      } else if (action === "cancel-enrollment") {
-        modalText.textContent = "Are you sure you want to cancel registration?";
+      if (action === "make-active") {
+        modalText.textContent = "Are you sure you want to make this school year active?";
+      } else if (action === "make-inactive") {
+        modalText.textContent = "Are you sure you want to make this school year inactive?";
+      } else if (action === "archive") {
+        modalText.textContent = "Are you sure you want to archive this school year? Take note, you cannot access this schoole year once it is already in your archive"
+      }
+
+      modal.style.display = "block"; // Show the modal
+
+      // Handle the confirmation button
+      confirmButton.onclick = function () {
+        if (action === "proceed-enrollmen") {
+            console.log(action + " confirmed!");
+            // code for verification
+        } else if (action === "cancel-enrolment"){
+            console.log("boogsh")
+            // code for reject
+        }
+       
+        modal.style.display = "none"; // Close modal after action
+      };
+      // Handle the cancel button  
+      cancelButton.onclick = function () {
+        modal.style.display = "none";
+      }
+    });
+  });
+
+  verificationBtns.forEach((link)=> {
+    link.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent the default link behavior
+
+      let action = this.getAttribute("data-action"); // Get the action (Proceed or Cancel)
+
+      if (action === "verify") {
+        modalText.textContent =
+        "Are you sure you want to verify this account?";
+      } else if (action === "reject") {
+        modalText.textContent =
+        "Are you sure you want to reject this account?";
       } else {
 
       }
@@ -231,7 +298,20 @@ document.addEventListener("DOMContentLoaded", function () {
             // code for reject
         }
        
+        if (action === "verify") {
+            console.log(action + " confirmed!");
+            // code for verification
+        } else if (action === "reject"){
+            console.log("boogsh")
+            // code for reject
+        }
+       
         modal.style.display = "none"; // Close modal after action
+      };
+
+      cancelButton.onclick = function () {
+        console.log(action + " cancel!");
+        modal.style.display = "none";
       };
 
       cancelButton.onclick = function () {
@@ -240,8 +320,6 @@ document.addEventListener("DOMContentLoaded", function () {
       };
     });
   });
-
-  
 });
 
 document.addEventListener("DOMContentLoaded", function () {

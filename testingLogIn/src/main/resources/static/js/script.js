@@ -63,7 +63,7 @@ function toggleSubMenu(submenuId, event) {
       if (otherArrowIcon) {
         otherArrowIcon.src = "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png";
         //otherArrowIcon.src = "../static/images/icons/arrow-down.png";
- 
+
         //   otherArrowIcon.src = "../images/icons/arrow-down.png";
         // ("/testingLogIn/src/main/resources/static/images/icons/arrow-down.png");
       }
@@ -72,7 +72,7 @@ function toggleSubMenu(submenuId, event) {
  
   // Toggle the clicked submenu
   submenu.classList.toggle("open", !isOpen);
- 
+
   // *🔹 Save submenu state only if it is a submenu of a submenu*
   arrowIconImg.src = isOpen
     ? //   ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
@@ -81,7 +81,7 @@ function toggleSubMenu(submenuId, event) {
     : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
  
   // * Save submenu state only if it is a submenu of a submenu*
- 
+
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
     (sub) => sub.id
   );
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
  
   // this is for school year maintenance
   const dropdownLinksSchoolYear = document.querySelectorAll("#dropdown-school-year a");
- 
+  
   // this is for verifying an account 
   const verificationBtns = document.querySelectorAll(".dropdown-status-content-verify div");
  
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
  
   // Hide modal when page loads
   modal.style.display = "none";
- 
+
   //this is for listing/registration status buttonns
   dropdownLinksListing.forEach((link) => {
       event.preventDefault(); // Prevent the default link behavior
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.style.display = "none";
       }
   });
- 
+
   // this is for school year under maintenance
   dropdownLinksSchoolYear.forEach((link) => {
     link.addEventListener("click", function (event) {
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
- 
+
   // this is for verification of user accounts 
   verificationBtns.forEach((link)=> {
     link.addEventListener("click", function (event) {
@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (action === "proceed-enrollment") {
             console.log(action + " confirmed!");
             // code for verification
- 
+
         } else if (action === "cancel-enrollment"){
             console.log("boogsh")
             // code for reject

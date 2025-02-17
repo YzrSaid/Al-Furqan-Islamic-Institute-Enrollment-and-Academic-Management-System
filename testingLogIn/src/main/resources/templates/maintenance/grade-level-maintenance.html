@@ -292,8 +292,6 @@
     <script th:src="@{/js/script.js}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-    <<<<<<< Updated upstream
-=======
             // Define the API endpoint
                 const apiUrl = 'http://localhost:8081/gradelevelmaintenance/all';
 
@@ -303,7 +301,6 @@
                 mode: 'no-cors'
             }).then(response => {
                 // Check if the response is OK (status code 200)
->>>>>>> Stashed changes
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

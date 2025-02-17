@@ -114,13 +114,6 @@ body {
   pointer-events: none;
 }
 
-input:focus + label,
-input:valid + label {
-  bottom: 30px;
-  font-size: 12px;
-  color: rgb(4, 210, 9);
-}
-
 #signup-link {
   margin-top: 10px;
   font-size: 13px;
@@ -642,6 +635,24 @@ tr:nth-child(even) {
   width: 20%;
 }
 
+/* for grade management table */
+.grade-management-table th:nth-child(1),
+.grade-management-table td:nth-child(1) {
+  width: 15%;
+}
+.grade-management-table th:nth-child(2),
+.grade-management-table td:nth-child(2) {
+  width: 15%;
+}
+.grade-management-table th:nth-child(3),
+.grade-management-table td:nth-child(3) {
+  width: 30%;
+}
+.grade-management-table th:nth-child(4),
+.grade-management-table td:nth-child(4) {
+  width: 20%;
+}
+
 /* for grade level (maintenance */
 .grade-level-table th:nth-child(1),
 .grade-level-table td:nth-child(1) {
@@ -653,6 +664,20 @@ tr:nth-child(even) {
 }
 .grade-level-table th:nth-child(3),
 .grade-level-table td:nth-child(3) {
+  width: 15%;
+}
+
+/* for grade-per-class */
+.grade-per-class-table th:nth-child(1),
+.grade-per-class-table td:nth-child(1) {
+  width: 40%;
+}
+.grade-per-class-table th:nth-child(2),
+.grade-per-class-table td:nth-child(2) {
+  width: 30%;
+}
+.grade-per-class-table th:nth-child(3),
+.grade-per-class-table td:nth-child(3) {
   width: 15%;
 }
 
@@ -992,6 +1017,7 @@ table td {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
   min-height: 80vh;
+  max-height: 90vh;
   overflow-y: scroll;
   text-align: left;
   position: relative;

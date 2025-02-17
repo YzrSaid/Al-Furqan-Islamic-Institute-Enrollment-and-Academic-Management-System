@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 import org.springframework.http.HttpStatus;
 import java.io.IOException;
+import org.springframework.security.authentication.AccountStatusException;
 
 @Component
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
@@ -35,7 +36,9 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             } else {
                 errorMessage = "Username does not exist.";
             }
-        } else {
+        } else if(exception instanceof AccountStatusException){
+            errorMessage = exception.getMessage();
+        }else {
             errorMessage = "Authentication failed: " + exception.getMessage();
         }
 

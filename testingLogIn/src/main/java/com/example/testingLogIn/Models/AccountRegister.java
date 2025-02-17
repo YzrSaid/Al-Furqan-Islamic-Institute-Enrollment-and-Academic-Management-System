@@ -27,6 +27,7 @@ public class AccountRegister {
     
     private String firstname;
     private String lastname;
+    private boolean isNotDeleted;
     
     @Override
     public String toString() {

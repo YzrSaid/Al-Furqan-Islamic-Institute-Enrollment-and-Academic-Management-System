@@ -61,7 +61,6 @@ function toggleSubMenu(submenuId, event) {
       let otherArrowIcon =
         otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
       if (otherArrowIcon) {
-
            otherArrowIcon.src = "../images/icons/arrow-down.png";
 //        otherArrowIcon.src = "../static/images/icons/arrow-down.png";
 
@@ -81,11 +80,11 @@ function toggleSubMenu(submenuId, event) {
 //    : "../static/images/icons/greater-than.png"; // Change to right arrow if opening
 
   // *🔹 Save submenu state only if it is a submenu of a submenu*
-  arrowIconImg.src = isOpen
-    ? //   ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
-      //   : "../images/icons/greater-than.png"; // Change to right arrow if opening
-      "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png"
-    : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
+  arrowIconImg.src = isOpen ?
+         "../images/icons/arrow-down.png" // Change back to down arrow if closing
+         : "../images/icons/greater-than.png"; // Change to right arrow if opening
+//      "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png"
+//    : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
   
   // * Save submenu state only if it is a submenu of a submenu*
   
@@ -104,8 +103,8 @@ function clearSubmenus() {
     .forEach((submenu) => submenu.classList.remove("open"));
   document
     .querySelectorAll(".arrow-icon img")
-    // .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
-    .forEach((img) => (img.src = "./static/images/icons/arrow-down.png"));
+     .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
+    //.forEach((img) => (img.src = "./static/images/icons/arrow-down.png"));
 }
 
 document.addEventListener("DOMContentLoaded", function () {

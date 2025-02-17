@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 <!--    <link rel="stylesheet" href="../static/css/styles.css">-->
 </head>
@@ -128,7 +128,7 @@
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
-                        <a href="login.html">Log Out</a>
+                        <a href="/logout">Log Out</a>
                     </div>
                 </div>
             </div>

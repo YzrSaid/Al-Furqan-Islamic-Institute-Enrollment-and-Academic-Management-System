@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.TeacherDTO;
+import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Services.TeacherServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
@@ -21,12 +22,11 @@ public class TeacherController {
     
     private TeacherServices teacherServices;
     private CustomUserDetailsService userService;
-    private UserRepo userRepo;
+
     @Autowired
-    public TeacherController(TeacherServices teacherServices, CustomUserDetailsService userService,UserRepo userRepo) {
+    public TeacherController(TeacherServices teacherServices, CustomUserDetailsService userService) {
         this.teacherServices = teacherServices;
         this.userService = userService;
-        this.userRepo=userRepo;
     }
     
     @GetMapping("/all")
@@ -36,19 +36,22 @@ public class TeacherController {
 
     @PostMapping("/add/{staffId}")
     public ResponseEntity<String> addTeacherRecord(@RequestBody @Validated TeacherDTO teacher, @PathVariable int staffId){
-        Teacher teacherBuild = Teacher.builder()
-                          .user(userService.getuser(staffId))
-                          .address(teacher.getAddress())
-                          .birthdate(teacher.getBirthdate())
-                          .gender(teacher.getGender())
-                          .contactNum(teacher.getContactNum())
-                          .build();
-
-        return new ResponseEntity<>(teacherBuild.toString(),HttpStatus.OK);
+        if(teacherServices.addNewTeacherInfo(teacher, staffId)){
+            return new ResponseEntity<>("New Teacher Info Added Successfully",HttpStatus.OK);}
+        else
+            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
     }
 
     @GetMapping("/unregistered")
-    public ResponseEntity<List<UserModel>> getUnregistered(){
+    public ResponseEntity<List<UserDTO>> getUnregistered(){
         return new ResponseEntity<>(teacherServices.unverifiedTeacherAccounts(),HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateTeacher(@RequestBody TeacherDTO teacherDTO,int staffid){
+        if(teacherServices.updateTeacherInfo(teacherDTO, staffid))
+            return new ResponseEntity<>("Teacher Info Updated Successfully",HttpStatus.OK);
+        else
+            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
     }
 }

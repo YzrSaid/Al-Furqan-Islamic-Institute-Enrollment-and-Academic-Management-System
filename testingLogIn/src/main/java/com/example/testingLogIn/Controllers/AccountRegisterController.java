@@ -7,7 +7,9 @@ package com.example.testingLogIn.Controllers;
 import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.Repositories.AccountRegisterRepo;
+import com.example.testingLogIn.Services.AccountRegisterServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
+import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,13 +20,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/register")
 @Controller
 public class AccountRegisterController {
-    AccountRegisterRepo accountRegRepo;
+    AccountRegisterServices accountRegisterServices;
     CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    public AccountRegisterController(AccountRegisterRepo accountRegRepo,
+    public AccountRegisterController(AccountRegisterServices accountRegisterServices,
                                      CustomUserDetailsService customUserDetailsService) {
-        this.accountRegRepo = accountRegRepo;
+        this.accountRegisterServices = accountRegisterServices;
         this.customUserDetailsService = customUserDetailsService;
     }
 
@@ -34,32 +36,44 @@ public class AccountRegisterController {
             return new ResponseEntity<>("Email Already Used",HttpStatus.CONFLICT);
         else{
             accountRegister.setStatus(RegistrationStatus.PENDING);
-            accountRegRepo.save(accountRegister);
+            accountRegisterServices.registerAccount(accountRegister);
             return new ResponseEntity<>("Account Successfully Sent for Registration",HttpStatus.OK);
+        }
+    }
+    
+    @GetMapping("/{status}")
+    public ResponseEntity<List<AccountRegister>> getAccounts(@PathVariable String status){
+        try{
+            return new ResponseEntity<>(accountRegisterServices.getAccounts(status),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(List.of(),HttpStatus.CONFLICT);
         }
     }
     
     @PutMapping("/confirm/{id}")
     public ResponseEntity<String> confirmAccountRegistration(@PathVariable int id){
-        AccountRegister accountToConfirm = accountRegRepo.findById(id);
-        customUserDetailsService.registerNewUser(accountToConfirm);
-        accountToConfirm.setStatus(RegistrationStatus.APPROVED);
-        accountRegRepo.save(accountToConfirm);
-        return new ResponseEntity<>("Account Approved!",HttpStatus.OK);
+        AccountRegister accountToConfirm = accountRegisterServices.getAccount(id);
+        if(accountToConfirm == null){
+            return new ResponseEntity<>("Account Not Found",HttpStatus.CONFLICT);
+        }else{
+            customUserDetailsService.registerNewUser(accountToConfirm);
+            accountToConfirm.setStatus(RegistrationStatus.APPROVED);
+            accountRegisterServices.registerAccount(accountToConfirm);
+            return new ResponseEntity<>("Account Approved!",HttpStatus.OK);}
     }
     
     @PutMapping("/reject/{id}")
     public ResponseEntity<String> rejectAccountRegistration(@PathVariable int id){
-        AccountRegister accountToConfirm = accountRegRepo.findById(id);
+        AccountRegister accountToConfirm = accountRegisterServices.getAccount(id);
         accountToConfirm.setStatus(RegistrationStatus.REJECTED);
-        accountRegRepo.save(accountToConfirm);
+        accountRegisterServices.registerAccount(accountToConfirm);
         return new ResponseEntity<>("Account Rejected Successfully",HttpStatus.OK);
     }
     
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> removeDetails(@PathVariable int id){
         try{
-            AccountRegister todelete=accountRegRepo.findById(id);
-            accountRegRepo.delete(todelete);
+            accountRegisterServices.deleteAccountRegistration(id);
             return new ResponseEntity<>("Account Successfully Deleted",HttpStatus.OK);
         }catch(NoSuchElementException nosee){
             return new ResponseEntity<>("Account Does Not Exist",HttpStatus.NOT_FOUND);

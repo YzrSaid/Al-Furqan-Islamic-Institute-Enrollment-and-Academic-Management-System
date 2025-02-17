@@ -5,8 +5,6 @@ import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Services.TeacherServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
-import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
-import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,22 +27,47 @@ public class TeacherController {
         this.userService = userService;
     }
     
-    @GetMapping("/all")
-    public ResponseEntity<List<Teacher>> getAllTeachers(){
-        return new ResponseEntity<>(teacherServices.getTeacherList(), HttpStatus.OK);
+    @DeleteMapping("/delete/{staffId}")
+    public ResponseEntity<String> deleteTeacherRecord(@PathVariable int staffId){
+        try{
+            if(teacherServices.deleteTeacherRecord(staffId))
+                return new ResponseEntity<>("Teacher Record Deleted Successfully",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Teacher ID Not Found",HttpStatus.NOT_FOUND);
+        }catch(Exception e){
+            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+        }
+    }
+    
+    @GetMapping("/registered")
+    public ResponseEntity<List<TeacherDTO>> getUnregisteredTeachers(){
+        try{
+            return new ResponseEntity<>(teacherServices.getTeacherList(), HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PostMapping("/add/{staffId}")
     public ResponseEntity<String> addTeacherRecord(@RequestBody @Validated TeacherDTO teacher, @PathVariable int staffId){
-        if(teacherServices.addNewTeacherInfo(teacher, staffId)){
-            return new ResponseEntity<>("New Teacher Info Added Successfully",HttpStatus.OK);}
-        else
+        System.out.println("Im here");
+        try{
+            if(teacherServices.addNewTeacherInfo(teacher, staffId)){
+                return new ResponseEntity<>("New Teacher Info Added Successfully",HttpStatus.OK);}
+            else
+                return new ResponseEntity<>("User ID is Invalid",HttpStatus.BAD_REQUEST);
+        }catch(Exception e){
             return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/unregistered")
     public ResponseEntity<List<UserDTO>> getUnregistered(){
-        return new ResponseEntity<>(teacherServices.unverifiedTeacherAccounts(),HttpStatus.OK);
+        try{
+        return new ResponseEntity<>(teacherServices.notRegisteredTeacherAccounts(),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/update")

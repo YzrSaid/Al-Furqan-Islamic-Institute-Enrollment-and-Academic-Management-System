@@ -5,7 +5,6 @@ import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Repositories.TeacherRepo;
-import com.example.testingLogIn.Services.TeacherServices;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +27,36 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.teacherRepo = teacherRepo;
     }
 
+    public boolean restrictUser(int id){
+        try{
+        UserModel user = getuser(id);
+        if(user == null)
+            return false;
+        else{
+            user.setNotRestricted(false);
+            userRepo.save(user);
+            return true;
+        }
+        }catch(Exception e){
+            return false;
+        }
+    }
+    
+    public boolean unrestrictUser(int id){
+        try{
+            UserModel user = getuser(id);
+            if(user == null)
+                return false;
+            else{
+                user.setNotRestricted(true);
+                userRepo.save(user);
+                return true;
+            }
+        }catch(Exception e){
+            return false;
+        }
+    }
+    
     public UserModel getuser(int staffId){
         return userRepo.findById(staffId).orElse(null);
     }
@@ -75,6 +104,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     
     private UserModel AccountRegToUserModel(AccountRegister accountRegister){
         return UserModel.builder()
+                .isNotRestricted(true)
                 .firstname(accountRegister.getFirstname())
                 .lastname(accountRegister.getLastname())
                 .role(accountRegister.getRole())

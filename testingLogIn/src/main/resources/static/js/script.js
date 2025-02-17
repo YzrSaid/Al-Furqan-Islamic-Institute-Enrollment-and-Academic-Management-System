@@ -61,19 +61,19 @@ function toggleSubMenu(submenuId, event) {
       let otherArrowIcon =
         otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
       if (otherArrowIcon) {
-        //   otherArrowIcon.src = "../images/icons/arrow-down.png";
-        otherArrowIcon.src = "../static/images/icons/arrow-down.png";
+           otherArrowIcon.src = "../images/icons/arrow-down.png";
+//        otherArrowIcon.src = "../static/images/icons/arrow-down.png";
       }
     }
   });
 
   // Toggle the clicked submenu
   submenu.classList.toggle("open", !isOpen);
-  arrowIconImg.src = isOpen
-    ? //   ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
-      //   : "../images/icons/greater-than.png"; // Change to right arrow if opening
-      "../static/images/icons/arrow-down.png" // Change back to down arrow if closing
-    : "../static/images/icons/greater-than.png"; // Change to right arrow if opening
+  arrowIconImg.src = isOpen?
+   "../images/icons/arrow-down.png" // Change back to down arrow if closing
+   : "../images/icons/greater-than.png"; // Change to right arrow if opening
+//      "../static/images/icons/arrow-down.png" // Change back to down arrow if closing
+//    : "../static/images/icons/greater-than.png"; // Change to right arrow if opening
 
   // *🔹 Save submenu state only if it is a submenu of a submenu*
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(

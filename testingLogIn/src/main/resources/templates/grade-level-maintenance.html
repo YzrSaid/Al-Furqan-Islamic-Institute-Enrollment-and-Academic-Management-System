@@ -257,15 +257,10 @@
     <script th:src="@{/js/script.js}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-        // Define the API endpoint
-        const apiUrl = 'http://localhost:8081/gradelevelmaintenance/all';
-
-        // Make the GET request to the API
-        fetch('http://192.168.254.108:8081/gradelevelmaintenance/all',{
+        fetch('http://localhost:8081/gradelevelmaintenance/all',{
             method: 'GET',
             mode: 'no-cors'
         }).then(response => {
-                // Check if the response is OK (status code 200)
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

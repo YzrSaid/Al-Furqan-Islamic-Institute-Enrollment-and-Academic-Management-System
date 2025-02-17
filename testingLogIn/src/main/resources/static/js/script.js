@@ -67,7 +67,6 @@ function toggleSubMenu(submenuId, event) {
 
         //   otherArrowIcon.src = "../images/icons/arrow-down.png";
         ("/testingLogIn/src/main/resources/static/images/icons/arrow-down.png");
-        ("/testingLogIn/src/main/resources/static/images/icons/arrow-down.png");
       }
     }
   });

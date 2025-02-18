@@ -2,6 +2,7 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.TeacherDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
+import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Services.TeacherServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,5 +85,14 @@ public class TeacherController {
             e.printStackTrace();
             return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
         }
+    }
+    
+    @GetMapping("/{staffId}")
+    public ResponseEntity<TeacherDTO> getTeacher(@PathVariable int staffId){
+        TeacherDTO teacher = teacherServices.getTeacher(staffId);
+        if(teacher != null)
+            return new ResponseEntity<>(teacherServices.getTeacher(staffId),HttpStatus.FOUND);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

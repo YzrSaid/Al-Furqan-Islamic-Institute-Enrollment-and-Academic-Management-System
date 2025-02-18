@@ -14,6 +14,7 @@ public class GradeLevelServices {
     GradeLevelRepo gradeLevelRepo;
 
     public boolean addNewGradeLevel(GradeLevel gradeLevel){
+        gradeLevel.setNotDeleted(true);
         gradeLevelRepo.save(gradeLevel);
         return true;
     }
@@ -30,8 +31,43 @@ public class GradeLevelServices {
         }
         return false;
     }
-
-    public List<GradeLevel> getAll(){
-        return gradeLevelRepo.findAll();
+    
+    public GradeLevel getGradeLevel(int levelId){
+        return gradeLevelRepo.findAll().stream()
+                             .filter(gradelvl -> gradelvl.getLevelId() == levelId)
+                             .findFirst().orElse(null);
+    }
+    
+    public boolean updateGradeLevel(GradeLevel gradeLevel){
+        GradeLevel updated = gradeLevelRepo.findAll().stream()
+                                           .filter(gradeL -> gradeL.getLevelId() == gradeLevel.getLevelId())
+                                           .findFirst().orElse(null);
+        
+        if(updated !=null){
+            updated.setLevelName(gradeLevel.getLevelName());
+            gradeLevelRepo.save(updated);
+            return true;
+        }else
+            return false;
+    }
+    
+    public boolean deleteGradeLevel(int levelId){
+        GradeLevel todelete = gradeLevelRepo.findAll().stream()
+                                           .filter(gradeL -> gradeL.getLevelId() == levelId)
+                                           .findFirst().orElse(null);
+        
+        if(todelete !=null){
+            todelete.setNotDeleted(false);
+            gradeLevelRepo.save(todelete);
+            return true;
+        }else
+            return false;
+    }
+    
+    public GradeLevel getByName(String levelname){
+        return gradeLevelRepo.findAll().stream()
+                      .filter(gradeLevel -> gradeLevel.getLevelName().equals(levelname) && 
+                                            gradeLevel.isNotDeleted())
+                      .findFirst().orElse(null);
     }
 }

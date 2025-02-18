@@ -23,6 +23,13 @@ public class TeacherServices{
     TeacherRepo teacherRepo;
     @Autowired
     private UserRepo userRepo;
+    
+    public TeacherDTO getTeacher(int staffId){
+        return teacherRepo.findAll().stream()
+                   .filter(teacher -> teacher.isNotDeleted() && teacher.getUser().getStaffId()==staffId)
+                   .map(teacher -> TeacherToTeacherDTO(teacher))
+                   .findFirst().orElse(null);
+    }
 
     public List<TeacherDTO> getTeacherList(){
         return teacherRepo.findAll().stream()

@@ -35,8 +35,27 @@ public class GradeLevelControllers {
             return new ResponseEntity<>("New Grade Level Has Been Added Successfulyy", HttpStatus.OK);}
     }
 
-//    public ResponseEntity<String> updateGradeLevel(@PathVariable GradeLevel newGradeLevel){
-//        gradeLevelServices.(newGradeLevel);
-//        return new ResponseEntity<>("New Grade Level Has Been Updated Successfulyy", HttpStatus.OK);
-//    }
+    @PutMapping("/update")
+    public ResponseEntity<String> updateGradeLevel(@ModelAttribute GradeLevel newGradeLevel){
+        try{
+            if(gradeLevelServices.updateGradeLevel(newGradeLevel))
+                return new ResponseEntity<>("Grade Level Has Been Updated Successfulyy", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Grade Level Not Found",HttpStatus.NOT_FOUND);
+        }catch(Exception e){
+            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+        }
+    }
+    
+    @DeleteMapping("/{levelId}")
+    public ResponseEntity<String> deleteGradeLevel(@PathVariable int levelId){
+        try{
+            if(gradeLevelServices.deleteGradeLevel(levelId))
+                return new ResponseEntity<>("Grade Level Has Been Deleted Successfulyy", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Grade Level Not Found",HttpStatus.NOT_FOUND);
+        }catch(Exception e){
+            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+        }
+    }
 }

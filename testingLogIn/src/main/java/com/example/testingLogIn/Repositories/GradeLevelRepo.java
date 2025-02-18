@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GradeLevelRepo extends JpaRepository<GradeLevel,String> {
-    GradeLevel findByLevelName(String levelName);
 }

@@ -52,22 +52,29 @@ public class AccountRegisterController {
     
     @PutMapping("/confirm/{id}")
     public ResponseEntity<String> confirmAccountRegistration(@PathVariable int id){
+        try{
         AccountRegister accountToConfirm = accountRegisterServices.getAccount(id);
         if(accountToConfirm == null){
-            return new ResponseEntity<>("Account Not Found",HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Account Not Found",HttpStatus.NOT_FOUND);
         }else{
             customUserDetailsService.registerNewUser(accountToConfirm);
             accountToConfirm.setStatus(RegistrationStatus.APPROVED);
             accountRegisterServices.registerAccount(accountToConfirm);
             return new ResponseEntity<>("Account Approved!",HttpStatus.OK);}
+        }catch(Exception e){
+            return new ResponseEntity<>("Process Error",HttpStatus.CONFLICT);
+        }
     }
     
     @PutMapping("/reject/{id}")
     public ResponseEntity<String> rejectAccountRegistration(@PathVariable int id){
         AccountRegister accountToConfirm = accountRegisterServices.getAccount(id);
-        accountToConfirm.setStatus(RegistrationStatus.REJECTED);
-        accountRegisterServices.registerAccount(accountToConfirm);
-        return new ResponseEntity<>("Account Rejected Successfully",HttpStatus.OK);
+        if(accountToConfirm == null){
+            return new ResponseEntity<>("Account ID does Not Exist",HttpStatus.NOT_FOUND);
+        }else{
+            accountToConfirm.setStatus(RegistrationStatus.REJECTED);
+            accountRegisterServices.registerAccount(accountToConfirm);
+            return new ResponseEntity<>("Account Rejected Successfully",HttpStatus.OK);}
     }
     
     @DeleteMapping("/delete/{id}")

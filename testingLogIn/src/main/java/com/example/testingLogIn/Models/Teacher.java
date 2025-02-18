@@ -18,8 +18,8 @@ public class Teacher{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int count;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="teacherId")
+    @ManyToOne
+    @JoinColumn(name="staffId")
     private UserModel user;
     @Enumerated(EnumType.STRING)
     private Gender gender;

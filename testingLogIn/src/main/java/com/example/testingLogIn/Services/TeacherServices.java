@@ -1,16 +1,19 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.TeacherDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Repositories.TeacherRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
+import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,29 +22,22 @@ public class TeacherServices{
     @Autowired
     TeacherRepo teacherRepo;
     @Autowired
-    private CustomUserDetailsService userService;
+    private UserRepo userRepo;
 
-    public boolean addTeacher(Teacher teacher){
-        try{
-            teacherRepo.save(teacher);
-            return true;
-        }catch(Exception e){
-            return false;
-        }
-    }
-
-    public List<Teacher> getTeacherList(){
+    public List<TeacherDTO> getTeacherList(){
         return teacherRepo.findAll().stream()
                           .filter(Teacher::isNotDeleted)
+                          .map(teacher -> TeacherToTeacherDTO(teacher))
                           .collect(Collectors.toList());
     }
 
-    public boolean updateTeacherInfo(TeacherDTO teacherDTO, int staffid){
-        try{
-            Teacher updateTeacher = teacherRepo.findById(staffid).orElse(null);
-
-            if(updateTeacher == null)
+    public boolean updateTeacherInfo(TeacherDTO teacherDTO, int staffId){
+            if(!isActive(staffId))
                 return false;
+                
+            Teacher updateTeacher = teacherRepo.findAll().stream()
+                                     .filter(t -> t.isNotDeleted() && t.getUser().getStaffId() == staffId)
+                                     .findFirst().orElse(null);
 
             updateTeacher.setAddress(teacherDTO.getAddress());
             updateTeacher.setBirthdate(teacherDTO.getBirthdate());
@@ -50,16 +46,31 @@ public class TeacherServices{
 
             teacherRepo.save(updateTeacher);
 
-            return true;}
-        catch(Exception ex){
+            return true;
+    }
+    
+    public boolean deleteTeacherRecord(int staffId){
+        Teacher teacher = teacherRepo.findAll().stream()
+                                     .filter(t -> t.isNotDeleted() && t.getUser().getStaffId() == staffId)
+                                     .findFirst().orElse(null);
+        if(teacher == null)
             return false;
-        }
+        else{
+            teacher.setNotDeleted(false);
+            teacherRepo.save(teacher);
+            return true;}
     }
     
     public boolean addNewTeacherInfo(TeacherDTO teacherDTO, int staffid){
-        try{
+            UserModel user= userRepo.findById(staffid).orElse(null);
+            if(user == null)
+                throw new MatchException("Wala nakita", new Throwable());
+            
+            if(isActive(staffid))
+                return false;
+            else{
             Teacher newTeacher = Teacher.builder()
-                                    .user(userService.getuser(staffid))
+                                    .user(user)
                                     .address(teacherDTO.getAddress())
                                     .birthdate(teacherDTO.getBirthdate())
                                     .contactNum(teacherDTO.getContactNum())
@@ -69,25 +80,50 @@ public class TeacherServices{
             teacherRepo.save(newTeacher);
 
             return true;}
-        catch(Exception ex){
+    }
+
+    private boolean isActive(int staffid){
+        try{
+        return teacherRepo.findAll().stream()
+                          .filter(teacher -> teacher.getUser().getStaffId() == staffid && 
+                                  teacher.isNotDeleted())
+                          .findFirst().get()
+                          != null;
+        }catch(NoSuchElementException noee){
             return false;
         }
     }
-
-    public List<UserDTO> unverifiedTeacherAccounts(){
+    
+    public List<UserDTO> notRegisteredTeacherAccounts(){
         List<Integer> registeredTeacherIds = new ArrayList<>();
         teacherRepo.findAll().forEach(current ->{
             if(current.isNotDeleted())
                 registeredTeacherIds.add(current.getUser().getStaffId());
         });
 
-        return userService.getTeachersAccount()
+        return userRepo.findAll()
                .stream()
-               .filter(user -> doesNotContain(registeredTeacherIds, user.getStaffId()))
-               .collect(Collectors.toList());
+               .filter(user -> user.getRole() == Role.TEACHER && !registeredTeacherIds.contains(user.getStaffId()))
+               .map(user -> UserModelToUserDTO(user))
+                .collect(Collectors.toList());
     }
-
-    private boolean doesNotContain(List<Integer> idList, int id){
-        return !idList.contains(id);
+    
+    private TeacherDTO TeacherToTeacherDTO(Teacher teacher){
+        return TeacherDTO.builder()
+                         .staffId(teacher.getUser().getStaffId())
+                         .address(teacher.getAddress())
+                         .birthdate(teacher.getBirthdate())
+                         .gender(teacher.getGender())
+                         .contactNum(teacher.getContactNum())
+                         .build();
     }
+    
+    private UserDTO UserModelToUserDTO(UserModel user){
+        return UserDTO.builder()
+               .firstname(user.getFirstname())
+               .lastname(user.getLastname())
+               .staffId(user.getStaffId())
+               .role(user.getRole())
+               .build();
+    }  
 }

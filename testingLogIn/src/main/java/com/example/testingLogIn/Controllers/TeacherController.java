@@ -2,7 +2,6 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.TeacherDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
-import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Services.TeacherServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +54,12 @@ public class TeacherController {
             if(teacherServices.addNewTeacherInfo(teacher, staffId)){
                 return new ResponseEntity<>("New Teacher Info Added Successfully",HttpStatus.OK);}
             else
-                return new ResponseEntity<>("User ID is Invalid",HttpStatus.BAD_REQUEST);
-        }catch(Exception e){
+                return new ResponseEntity<>("Teacher Record Already Exist",HttpStatus.BAD_REQUEST);
+        }catch(MatchException me){
+            return new ResponseEntity<>("Staff ID Not Found",HttpStatus.NOT_FOUND);
+        }
+        catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
         }
     }
@@ -70,11 +73,16 @@ public class TeacherController {
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<String> updateTeacher(@RequestBody TeacherDTO teacherDTO,int staffid){
-        if(teacherServices.updateTeacherInfo(teacherDTO, staffid))
-            return new ResponseEntity<>("Teacher Info Updated Successfully",HttpStatus.OK);
-        else
+    @PutMapping("/update/{staffid}")
+    public ResponseEntity<String> updateTeacher(@RequestBody TeacherDTO teacherDTO,@PathVariable int staffid){
+        try{
+            if(teacherServices.updateTeacherInfo(teacherDTO, staffid))
+                return new ResponseEntity<>("Teacher Info Updated Successfully",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Teacher Record is Not Found",HttpStatus.NOT_FOUND);
+        }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+        }
     }
 }

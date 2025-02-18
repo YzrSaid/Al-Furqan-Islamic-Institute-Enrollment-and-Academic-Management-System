@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,12 +31,13 @@ public class TeacherServices{
                           .collect(Collectors.toList());
     }
 
-    public boolean updateTeacherInfo(TeacherDTO teacherDTO, int staffid){
-        try{
-            Teacher updateTeacher = teacherRepo.findById(staffid).orElse(null);
-
-            if(updateTeacher == null)
+    public boolean updateTeacherInfo(TeacherDTO teacherDTO, int staffId){
+            if(!isActive(staffId))
                 return false;
+                
+            Teacher updateTeacher = teacherRepo.findAll().stream()
+                                     .filter(t -> t.isNotDeleted() && t.getUser().getStaffId() == staffId)
+                                     .findFirst().orElse(null);
 
             updateTeacher.setAddress(teacherDTO.getAddress());
             updateTeacher.setBirthdate(teacherDTO.getBirthdate());
@@ -44,10 +46,7 @@ public class TeacherServices{
 
             teacherRepo.save(updateTeacher);
 
-            return true;}
-        catch(Exception ex){
-            return false;
-        }
+            return true;
     }
     
     public boolean deleteTeacherRecord(int staffId){
@@ -65,6 +64,9 @@ public class TeacherServices{
     public boolean addNewTeacherInfo(TeacherDTO teacherDTO, int staffid){
             UserModel user= userRepo.findById(staffid).orElse(null);
             if(user == null)
+                throw new MatchException("Wala nakita", new Throwable());
+            
+            if(isActive(staffid))
                 return false;
             else{
             Teacher newTeacher = Teacher.builder()
@@ -80,6 +82,18 @@ public class TeacherServices{
             return true;}
     }
 
+    private boolean isActive(int staffid){
+        try{
+        return teacherRepo.findAll().stream()
+                          .filter(teacher -> teacher.getUser().getStaffId() == staffid && 
+                                  teacher.isNotDeleted())
+                          .findFirst().get()
+                          != null;
+        }catch(NoSuchElementException noee){
+            return false;
+        }
+    }
+    
     public List<UserDTO> notRegisteredTeacherAccounts(){
         List<Integer> registeredTeacherIds = new ArrayList<>();
         teacherRepo.findAll().forEach(current ->{

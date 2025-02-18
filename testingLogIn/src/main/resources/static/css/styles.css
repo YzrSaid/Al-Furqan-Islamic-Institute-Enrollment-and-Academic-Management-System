@@ -698,7 +698,7 @@ tr:nth-child(even) {
 /* for section (maintenance) */
 .section-table th:nth-child(1),
 .section-table td:nth-child(1) {
-  width: 30%;
+  width: 20%;
 }
 .section-table th:nth-child(2),
 .section-table td:nth-child(2) {
@@ -706,7 +706,7 @@ tr:nth-child(even) {
 }
 .section-table th:nth-child(3),
 .section-table td:nth-child(3) {
-  width: 20%;
+  width: 15%;
 }
 .section-table th:nth-child(4),
 .section-table td:nth-child(4) {
@@ -714,6 +714,10 @@ tr:nth-child(even) {
 }
 .section-table th:nth-child(5),
 .section-table td:nth-child(5) {
+  width: 15%;
+}
+.section-table th:nth-child(6),
+.section-table td:nth-child(6) {
   width: 15%;
 }
 
@@ -903,6 +907,9 @@ table td {
 .dropdown-status-content {
   display: none;
   position: absolute;
+  text-align: start;
+  top: 20%;
+  transition: opacity 0.3s ease;
   background-color: white;
   min-width: 150px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
@@ -1028,7 +1035,10 @@ table td {
 .school-year-modal-content h2,
 .subject-modal-content h2,
 .teacher-modal-content h2,
-.section-modal-content h2 {
+.section-modal-content h2,
+.grade-level-edit-modal-content h2,
+.section-edit-modal-content h2,
+.subject-edit-modal-content h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -1040,7 +1050,10 @@ table td {
 .school-year-modal-content label,
 .subject-modal-content label,
 .teacher-modal-content label,
-.section-modal-content label {
+.section-modal-content label,
+.grade-level-edit-modal-content label,
+.section-edit-modal-content label,
+.subject-edit-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -1051,12 +1064,18 @@ table td {
 .subject-modal-content input,
 .teacher-modal-content input,
 .section-modal-content input,
+.grade-level-edit-modal-content input,
+.section-edit-modal-content input,
+.subject-edit-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
 .subject-modal-content select,
 .teacher-modal-content select,
-.section-modal-content select {
+.section-modal-content select,
+.grade-level-edit-modal-content select,
+.section-edit-modal-content select,
+.subject-edit-modal-content select {
   width: 100%;
   padding: 8px;
   margin: 5px 0;
@@ -1102,7 +1121,8 @@ table td {
 }
 
 /* subject modal */
-.subject-modal {
+.subject-modal,
+.subject-edit-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -1115,13 +1135,92 @@ table td {
   transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
 }
 
-.subject-modal.show {
+.subject-modal.show,
+.subject-edit-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
 }
 
-.subject-modal-content {
+.subject-modal-content,
+.subject-edit-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 700px;
+  height: 68vh;
+  overflow-y: scroll;
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+
+/* section modal */
+.section-modal,
+.section-edit-modal {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
+}
+
+.section-modal.show,
+.section-edit-modal.show {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.section-modal-content,
+.section-edit-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 600px;
+  min-height: 50vh;
+  overflow-y: scroll;
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+.section-modal-content form,
+.subject-modal-content form,
+.subject-edit-modal-content form,
+.section-edit-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* for grade level edit */
+.grade-level-edit-modal {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
+}
+
+.grade-level-edit-modal.show {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.grade-level-edit-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 10px;
@@ -1135,43 +1234,9 @@ table td {
   z-index: 1001;
 }
 
-/* section modal */
-.section-modal {
-  visibility: hidden;
-  opacity: 0;
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
-}
-
-.section-modal.show {
-  visibility: visible;
-  opacity: 1;
-  transition-delay: 0s;
-}
-
-.section-modal-content {
-  background: white !important;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 600px;
-  min-height: 50vh;
-  overflow-y: scroll;
-
-  text-align: left;
-  position: relative;
-  z-index: 1001;
-}
-
 .student-form-group,
 .subject-form-group {
-    align-items: center;
+  align-items: center;
   justify-content: space-between;
   display: flex;
   gap: 20px;

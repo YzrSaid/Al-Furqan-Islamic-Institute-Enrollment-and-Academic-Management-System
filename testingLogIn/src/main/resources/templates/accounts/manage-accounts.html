@@ -107,8 +107,8 @@
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
             <a href="#">Book Distribution Report</a>
@@ -156,12 +156,12 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>Verify Accounts</h4>
+            <h4>Manage Accounts</h4>
             <p>Main</p>
             <p>/</p>
             <p>Accounts</p>
             <p>/</p>
-            <p>Verify Accounts</p>
+            <p>Manage Accounts</p>
         </div>
 
         <div class="search-div">
@@ -206,9 +206,10 @@
                                 <div class="action" id="action-manage-accounts"><img
                                         src="../../static/images/icons/arrow-down.png" alt="arrow-down icon"></div>
 
-                                <div class="dropdown-status-content">
-                                    <a href="#" data-action="Restrict">Restrict</a>
-                                    <a href="#" data-action="Delete Account">Delete Account</a>
+                                <div class="dropdown-status-content" id="dropdown-manage-accounts">
+                                    <a href="#"  data-action="Restrict">Restrict</a>
+                                    <a href="#" id="dropdown-manage-accounts" data-action="Delete Account">Delete
+                                        Account</a>
                                 </div>
                             </div>
                         </div>
@@ -227,7 +228,7 @@
                 </div>
             </div>
         </div>
-       
+
     </div>
     <script src="../../static/js/script.js"></script>
 </body>

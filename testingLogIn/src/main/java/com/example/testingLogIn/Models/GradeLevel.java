@@ -17,6 +17,7 @@ public class GradeLevel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int levelId;
     private String levelName;
+    private boolean isNotDeleted;
 
     @Override
     public String toString() {

@@ -1,7 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Services.GradeLevelServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/gradelevelmaintenance")
+@RequestMapping("/gradelevel")
 @Controller
 public class GradeLevelControllers {
 
@@ -24,19 +23,20 @@ public class GradeLevelControllers {
         return new ResponseEntity<>(gradeLevelServices.getAllGradeLevels(),HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addGradeLevel(@ModelAttribute GradeLevel gradeLevel){
-        System.out.println(gradeLevel.toString());
-        if(gradeLevelServices.doesLevelExist(gradeLevel.getLevelName()))
-        {
-            return new ResponseEntity<>("Grade Level Already Exist",HttpStatus.CONFLICT);
-        }else{
-            gradeLevelServices.addNewGradeLevel(gradeLevel);
-            return new ResponseEntity<>("New Grade Level Has Been Added Successfulyy", HttpStatus.OK);}
+    @PostMapping("/add/{levelName}")
+    public ResponseEntity<String> addGradeLevel(@PathVariable String levelName){
+        try{
+            if(gradeLevelServices.addNewGradeLevel(levelName))
+                return new ResponseEntity<>("New Grade Level Added Successfulyy",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Grade Level Name Already Exist", HttpStatus.BAD_REQUEST);
+        }catch(Exception e){
+            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+        }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateGradeLevel(@ModelAttribute GradeLevel newGradeLevel){
+    public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel newGradeLevel){
         try{
             if(gradeLevelServices.updateGradeLevel(newGradeLevel))
                 return new ResponseEntity<>("Grade Level Has Been Updated Successfulyy", HttpStatus.OK);

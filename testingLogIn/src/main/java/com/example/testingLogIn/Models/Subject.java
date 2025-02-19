@@ -1,6 +1,5 @@
 package com.example.testingLogIn.Models;
 
-import com.example.testingLogIn.ModelDTO.SubjectDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -56,13 +57,16 @@ public class SubjectController {
                 return new ResponseEntity<>("New Subject Added Successfully",HttpStatus.OK);
             else
                 return new ResponseEntity<>("Subject Name Already Exist",HttpStatus.CONFLICT);
-        }catch(Exception e){
+        }catch(NullPointerException npe){
+            return new ResponseEntity(npe.getMessage(),HttpStatus.NOT_FOUND);
+        }
+        catch(Exception e){
             return new ResponseEntity<>("Process Failed",HttpStatus.BAD_REQUEST);
         }
     }
     
     @PutMapping("/updated")
-    public ResponseEntity<String> updateSubject(@ModelAttribute SubjectDTO subject){
+    public ResponseEntity<String> updateSubject(@RequestBody SubjectDTO subject){
         try{
         if(subjectService.updateSubjectDescription(subject))
             return new ResponseEntity<>("Subject Updated Successfully",HttpStatus.OK);

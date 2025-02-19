@@ -22,12 +22,15 @@ public class SubjectServices {
     private GradeLevelServices gradeLevelService;
     
     public SubjectDTO getSubject(int subjectNumber){
-        Subject sub = subjectRepo.findById(subjectNumber).orElse(null);
+        Subject sub = subjectRepo.findAll().stream()
+                                 .filter(subj -> subj.getSubjectNumber()==subjectNumber &&
+                                                subj.isNotDeleted())
+                                 .findFirst().orElse(null);
+        
         if(sub != null)
             return SubjectToSubjectDTO(sub);
         else
-            return null;
-                    
+            return null;      
     }
     
     public List<SubjectDTO> getAllSubjects(){
@@ -38,11 +41,14 @@ public class SubjectServices {
     }
             
     public boolean addNewSubject(int levelId,String subjectname){
+        if(gradeLevelService.getGradeLevel(levelId) == null)
+            throw new NullPointerException("Grade Level Not Found");
         
         if(!doesSubjectNameExist(subjectname)){
             Subject sub=new Subject();
             sub.setNotDeleted(true);
             sub.setGradeLevel(gradeLevelService.getGradeLevel(levelId));
+            sub.setSubjectName(subjectname);
             
             subjectRepo.save(sub);
             
@@ -90,12 +96,13 @@ public class SubjectServices {
                           .subjectNumber(subject.getSubjectNumber())
                           .gradeLevel(subject.getGradeLevel().getLevelName())
                           .subjectName(subject.getSubjectName())
+                          .isNotDeleted(subject.isNotDeleted())
                           .build();
      }
     
     private boolean doesSubjectNameExist(String subjectName){
         return subjectRepo.findAll().stream()
-                          .filter(sub -> sub.getSubjectName().equals(subjectName) &&
+                          .filter(sub -> subjectName.equals(sub.getSubjectName()) &&
                                   sub.isNotDeleted())
                           .findFirst().orElse(null) != null;
     }

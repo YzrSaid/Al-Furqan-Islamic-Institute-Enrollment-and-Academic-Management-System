@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GradeLevelServices {
@@ -13,34 +14,32 @@ public class GradeLevelServices {
     @Autowired
     GradeLevelRepo gradeLevelRepo;
 
-    public boolean addNewGradeLevel(GradeLevel gradeLevel){
-        gradeLevel.setNotDeleted(true);
-        gradeLevelRepo.save(gradeLevel);
-        return true;
+    public boolean addNewGradeLevel(String levelName){
+        if(getByName(levelName) == null){
+            GradeLevel newGrade = new GradeLevel();
+            newGrade.setNotDeleted(true);
+            newGrade.setLevelName(levelName);
+            gradeLevelRepo.save(newGrade);
+            return true;
+        }else
+            return false;
     }
 
     public List<GradeLevel> getAllGradeLevels(){
-        return gradeLevelRepo.findAll();
+        return gradeLevelRepo.findAll().stream()
+                             .filter(GradeLevel::isNotDeleted)
+                             .collect(Collectors.toList());
     }
-
-    public boolean doesLevelExist(String levelname) {
-        for(GradeLevel Current : gradeLevelRepo.findAll()){
-            if(Current.getLevelName().equals(levelname)){
-                return true;
-            }
-        }
-        return false;
-    }
-    
     public GradeLevel getGradeLevel(int levelId){
         return gradeLevelRepo.findAll().stream()
-                             .filter(gradelvl -> gradelvl.getLevelId() == levelId)
+                             .filter(gradelvl -> gradelvl.getLevelId() == levelId && gradelvl.isNotDeleted())
                              .findFirst().orElse(null);
     }
     
     public boolean updateGradeLevel(GradeLevel gradeLevel){
         GradeLevel updated = gradeLevelRepo.findAll().stream()
-                                           .filter(gradeL -> gradeL.getLevelId() == gradeLevel.getLevelId())
+                                           .filter(gradeL -> gradeL.getLevelId() == gradeLevel.getLevelId() &&
+                                                             gradeL.isNotDeleted())
                                            .findFirst().orElse(null);
         
         if(updated !=null){
@@ -53,7 +52,8 @@ public class GradeLevelServices {
     
     public boolean deleteGradeLevel(int levelId){
         GradeLevel todelete = gradeLevelRepo.findAll().stream()
-                                           .filter(gradeL -> gradeL.getLevelId() == levelId)
+                                           .filter(gradeL -> gradeL.getLevelId() == levelId &&
+                                                             gradeL.isNotDeleted())
                                            .findFirst().orElse(null);
         
         if(todelete !=null){

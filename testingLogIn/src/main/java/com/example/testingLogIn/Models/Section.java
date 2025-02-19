@@ -1,9 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.example.testingLogIn.Models;
 
+import com.example.testingLogIn.ModelDTO.SectionDTO;
+import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,12 +21,27 @@ public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int number;
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gradeLevel")
     private GradeLevel level;
     
+    @ManyToOne
+    @JoinColumn(name = "adviser")
+    private UserModel adviser;
+    
+    private String sectionName;
     private int capacity;
     private boolean isNotDeleted;
+    
+    public SectionDTO toSectionDTO(){
+        return SectionDTO.builder()
+                             .number(getNumber())
+                             .gradeLevelName(level.getLevelName())
+                             .adviserName(adviser.getFirstname()+" "+adviser.getLastname())
+                             .sectionName(getSectionName())
+                             .capacity(getCapacity())
+                             .isNotDeleted(true)
+                             .build();
+    }
     
 }

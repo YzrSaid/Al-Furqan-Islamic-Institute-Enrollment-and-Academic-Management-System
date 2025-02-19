@@ -1311,3 +1311,103 @@ table td {
   align-items: end;
   margin: 40px 50px 0px 0px;
 }
+
+.status-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: gray;
+}
+
+/* Green for Active */
+.active {
+  background-color: green;
+}
+
+/* Red for Inactive */
+.inactive {
+  background-color: red;
+}
+
+.my-account-container {
+  padding: 20px;
+  background-color: rgb(246, 246, 246);
+  display: flex;
+  width: 100%;
+  border: 1.5px solid rgba(30, 30, 30, 0.2);
+  flex-direction: column;
+  gap: 30px;
+}
+.my-account-container label {
+  font-weight: bold;
+  font-size: 14px;
+}
+.my-account-container p {
+  font-size: 14px;
+}
+.my-account-container div {
+  display: flex;
+  gap: 10px;
+}
+.half-width {
+  display: flex;
+  gap: 20px;
+}
+.first-name,
+.last-name,
+.my-account-status,
+.user-id {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+.first-name p,
+.last-name p,
+.my-account-status p,
+.user-id p,
+.email p {
+  margin: 0;
+}
+.my-account-container-out {
+    width: 50%;
+}
+
+.change-password-container {
+    display: flex;
+    width: 100%;
+    justify-content: end;
+}
+.change-password-container button {
+    padding: 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 12px;
+    background-color: transparent;
+}
+.change-password-container button:hover {
+    text-decoration: underline;
+}
+.edit-account-container {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+    justify-content: center;
+}
+.edit-account-container button {
+    padding: 10px 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    background-color: #28a745;
+    color: white;
+}
+.edit-account-container button:hover {
+    background-color: #218838;
+}
+

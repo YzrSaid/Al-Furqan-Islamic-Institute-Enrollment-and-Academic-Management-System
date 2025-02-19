@@ -694,3 +694,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+function updateStatus(isActive) {
+    let statusElement = document.getElementById("my-account-status");
+
+    if (isActive) {
+        statusElement.classList.add("active");
+        statusElement.classList.remove("inactive");
+    } else {
+        statusElement.classList.add("inactive");
+        statusElement.classList.remove("active");
+    }
+}
+
+// Example Usage: Set status to active (true) or inactive (false)
+updateStatus(true); // Green (Active)

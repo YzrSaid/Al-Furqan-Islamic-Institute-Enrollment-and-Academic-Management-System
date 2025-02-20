@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Models;
 
+import com.example.testingLogIn.ModelDTO.SubjectDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,4 +20,13 @@ public class Subject {
     private GradeLevel gradeLevel;
     private String subjectName;
     private boolean isNotDeleted;
+    
+    public SubjectDTO mapper(){
+        return SubjectDTO.builder()
+                          .subjectNumber(subjectNumber)
+                          .gradeLevel(gradeLevel.getLevelName())
+                          .subjectName(subjectName)
+                          .isNotDeleted(isNotDeleted)
+                          .build();
+    }
 }

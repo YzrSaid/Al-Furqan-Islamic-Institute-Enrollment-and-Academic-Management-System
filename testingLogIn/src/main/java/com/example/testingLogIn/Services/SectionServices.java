@@ -35,6 +35,16 @@ public class SectionServices {
         this.userRepo = userRepo;
         this.teacherRepo = teacherRepo;
     }
+    //Get by Grade Level Name
+    public List<SectionDTO> getSectionsByLevel(String gradeLevel){
+        return sectionRepo.findAll().stream()
+                          .filter(section -> section.getLevel().getLevelName().toLowerCase()
+                                                    .equals(gradeLevel.toLowerCase())
+                                            && section.isNotDeleted())
+                            .map(Section::toSectionDTO)
+                            .collect(Collectors.toList());
+    }
+    
     //FOR ADDING NEW SECTION
     public int addSection(SectionDTO sectionDTO){
         UserModel user= getUserByFullName(sectionDTO.getAdviserName());

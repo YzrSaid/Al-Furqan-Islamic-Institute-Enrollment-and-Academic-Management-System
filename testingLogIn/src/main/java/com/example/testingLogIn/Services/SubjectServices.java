@@ -21,6 +21,15 @@ public class SubjectServices {
     @Autowired
     private GradeLevelServices gradeLevelService;
     
+    public List<SubjectDTO> getSubjectByGrade(String gradeLevel){
+        return subjectRepo.findAll().stream()
+                          .filter(subject -> subject.getGradeLevel().getLevelName().toLowerCase()
+                                                    .equals(gradeLevel.toLowerCase()) &&
+                                             subject.isNotDeleted())
+                          .map(Subject::mapper)
+                          .collect(Collectors.toList());
+    }
+    
     public SubjectDTO getSubject(int subjectNumber){
         Subject sub = subjectRepo.findAll().stream()
                                  .filter(subj -> subj.getSubjectNumber()==subjectNumber &&

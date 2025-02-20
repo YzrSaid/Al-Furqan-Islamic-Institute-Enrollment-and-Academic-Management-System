@@ -27,9 +27,18 @@ public class SectionController {
     @Autowired
     private SectionServices sectionService;
     
+    @GetMapping("/gradeLevel/{gradeLevel}")
+    public ResponseEntity<List<SectionDTO>> getSectionByGradeLevel(@PathVariable String gradeLevel){
+        return new ResponseEntity<>(sectionService.getSectionsByLevel(gradeLevel),HttpStatus.OK);
+    }
+    
     @GetMapping("/adviserids")
     public ResponseEntity<List<TeacherDTO>> getAdviserIds(){
-        return new ResponseEntity<>(sectionService.getNoAdvisoryTeachers(),HttpStatus.OK);
+        try{
+            return new ResponseEntity<>(sectionService.getNoAdvisoryTeachers(),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
     
     @GetMapping("/all")

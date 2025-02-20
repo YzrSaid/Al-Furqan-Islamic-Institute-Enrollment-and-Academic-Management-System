@@ -28,6 +28,14 @@ public class SubjectController {
     @Autowired
     private SubjectServices subjectService;
     
+    @GetMapping("/gradeLevel/{gradeLevel}")
+    public ResponseEntity<List<SubjectDTO>> getSubjectByGradeLevel(@PathVariable String gradeLevel){
+        try{
+            return new ResponseEntity<>(subjectService.getSubjectByGrade(gradeLevel),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
     @GetMapping("/all")
     public ResponseEntity<List<SubjectDTO>> getAllSubjects(){
         try{

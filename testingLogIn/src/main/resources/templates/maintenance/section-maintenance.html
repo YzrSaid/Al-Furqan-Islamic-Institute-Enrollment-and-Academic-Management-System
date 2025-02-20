@@ -206,7 +206,7 @@
                     </td>
                     <td>
                         <div class="action-container">
-                            <div class="action" id="openSectionEditModal"><img
+                            <div class="action" id="openSectionEditModal"><img data-open-modal="sectionEditModal"
                                     src="../../static/images/icons/compose.png" alt=""></div>
                         </div>
                     </td>
@@ -216,15 +216,17 @@
 
         <!-- add section button -->
         <div class="add-something-btn-container">
-            <button class="add-something-btn" id="openSectionModal">Add a Section</button>
+            <button class="add-something-btn" id="openSectionModal" data-open-modal="sectionModal">Add a
+                Section</button>
         </div>
-        <!-- Modal for status -->
+
+        <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
-                    <button id="confirmBtn" class="btn-confirm">Confirm</button>
-                    <button id="cancelBtn" class="btn-cancel">Cancel</button>
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -248,20 +250,33 @@
                         <label for="sectionName">Section Name:</label>
                         <input type="text" id="sectionName" name="sectionName" required>
                     </div>
-                    <div>
+                    <div class="student-form-group">
+
                         <label for="capacity">Capacity:</label>
                         <input type="number" id="capacity" name="capacity" required>
+
+
+                        <label for="adviser">Adviser:</label>
+                        <select name="adviser" id="adviser">
+                            <option value="" disabled>Select an adviser</option>
+                        </select>
+
                     </div>
+
                     <div class="modal-buttons">
-                        <button type="submit" class="btn-confirm" id="confirmSection">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelSection">Cancel</button>
+                        <button type="button" class="btn-confirm" data-action="addSection"
+                            data-message="Are you sure you want to add this section?" id="confirmSection"
+                            data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" data-close-modal="sectionModal" class="btn-cancel">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Modal for editing a section -->
-        <div id="sectionEditModal" class="section-edit-modal">
+        <div id="sectionEditModal" class="section-edit-modal modal">
             <div class="section-edit-modal-content">
                 <h2>Section Information</h2>
                 <form method="post" id="sectionEditForm">
@@ -273,13 +288,24 @@
                         <label for="sectionName">Section Name:</label>
                         <input type="text" id="sectionName" name="sectionName" required>
                     </div>
-                    <div>
+                    <div class="student-form-group">
+
                         <label for="capacity">Capacity:</label>
                         <input type="number" id="capacity" name="capacity" required>
+
+
+                        <label for="adviser">Adviser:</label>
+                        <select name="adviser" id="adviser">
+                            <option value="" disabled>Select an adviser</option>
+                        </select>
+
                     </div>
                     <div class="modal-buttons">
-                        <button type="submit" class="btn-confirm" id="confirmEditSection">Edit</button>
-                        <button type="button" class="btn-cancel" id="cancelEditSection">Close</button>
+                        <button type="button" class="btn-confirm" data-action="editSection"
+                            data-message="Are you sure you want to update this section?" id="confirmSectionEdit">
+                            Edit
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="sectionEditModal">Close</button>
                     </div>
                 </form>
             </div>

@@ -226,25 +226,27 @@
                     </td>
                     <td>
                         <div class="action-container">
-                            <div class="action" id="openGradeLevelEditModal"><img src="../../static/images/icons/compose.png"
-                                    alt="grade-level-icon"></div>
+                            <div class="action" id="openGradeLevelEditModal"><img data-open-modal="gradeLevelEditModal"
+                                    src="../../static/images/icons/compose.png" alt="grade-level-icon"></div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <!-- add grade level button -->
+        <!-- Add Grade Level Button -->
         <div class="add-something-btn-container">
-            <button class="add-something-btn" id="openGradeLevelModal">Add Grade Level</button>
+            <button class="add-something-btn" id="openGradeLevelModal" data-open-modal="gradeLevelModal">Add Grade
+                Level</button>
         </div>
-        <!-- Modal for status -->
+
+        <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmBtn" class="btn-confirm">Confirm</button>
-                    <button id="cancelBtn" class="btn-cancel">Cancel</button>
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -259,27 +261,62 @@
                     <br><br>
 
                     <div class="modal-buttons">
-                        <button type="submit" class="btn-confirm" id="confirmGradeLevel">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelGradeLevel">Cancel</button>
+                        <button type="button" class="btn-confirm" data-action="addGradeLevel"
+                            data-message="Are you sure you want to add this grade level?" id="confirmGradeLevel"
+                            data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Modal for editing the grade level -->
-        <div id="gradeLevelEditModal" class="grade-level-edit-modal">
+        <div id="gradeLevelEditModal" class="grade-level-edit-modal modal">
             <div class="grade-level-edit-modal-content">
                 <h2>Grade Level Information</h2>
                 <form method="post" action="" id="gradeLevelEditForm">
                     <label for="levelName">Grade Level Name:</label>
-                    <input type="text" id="levelName" name="levelName" required>
+                    <input type="text" id="levelName" name="levelName" readonly required>
                     <br><br>
                     <div class="student-form-group">
                         <label for="enrollees-num">Enrollees:</label>
-                        <input type="number" id="enrollees-num" name="Enrollees" required>
+                        <input type="number" id="enrollees-num" name="Enrollees" readonly required>
 
                         <label for="grade-level-status">Status:</label>
-                        <select name="grade-level-status" id="grade-level-status">
+                        <select name="grade-level-status" id="grade-level-status" disabled>
+                            <option value="" disabled>Select a status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                   <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="editGradeLevel"
+                            data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
+                            Edit
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal for editing the grade level -->
+        <!-- <div id="gradeLevelEditModal" class="modal">
+            <div class="modal-content">
+                <h2>Grade Level Information</h2>
+                <form method="post" action="" id="gradeLevelEditForm">
+                    <label for="levelName">Grade Level Name:</label>
+                    <input type="text" id="levelName" name="levelName" readonly required>
+                    <br><br>
+                    <div class="student-form-group">
+                        <label for="enrollees-num">Enrollees:</label>
+                        <input type="number" id="enrollees-num" name="Enrollees" readonly required>
+
+                        <label for="grade-level-status">Status:</label>
+                        <select name="grade-level-status" id="grade-level-status" disabled>
                             <option value="" disabled>Select a status</option>
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
@@ -287,12 +324,16 @@
                     </div>
 
                     <div class="modal-buttons">
-                        <button type="submit" class="btn-confirm" id="confirmEditGradeLevel">Edit</button>
-                        <button type="button" class="btn-cancel" id="cancelEditGradeLevel">Close</button>
+                        <button type="button" class="btn-confirm" data-action="editGradeLevel"
+                            data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
+                            Edit
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
                     </div>
                 </form>
             </div>
-        </div>
+        </div> -->
+
     </div>
     <!-- <script th:src="@{/js/script.js}"></script> -->
     <script>

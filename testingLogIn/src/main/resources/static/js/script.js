@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ".dropdown-status-content-verify div"
   );
 
-  // this is for manage acounts dropdown
+  // this is for manage accounts dropdown
   const dropdownLinksManageAccounts = document.querySelectorAll(
     "#dropdown-manage-accounts a"
   );
@@ -131,9 +131,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const cancelButton = document.querySelector(".btn-cancel");
 
   // Hide modal when page loads
-  modal.style.display = "none";
+  //   modal.style.display = "none";
 
-  //this is for listing/registration status buttonns
+  //this is for listing/registration status buttons
   dropdownLinksListing.forEach((link) => {
     link.addEventListener("click", function (event) {
       event.preventDefault(); // Prevent the default link behavior
@@ -262,11 +262,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (action === "verify") {
           console.log(action + " confirmed!");
           // code for verification
-          
         } else if (action === "reject") {
           console.log("boogsh");
           // code for reject
-
         }
         modal.style.display = "none";
       };
@@ -280,496 +278,155 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Student Information Modal
-  const studentInfoModal = document.getElementById("studentInfoModal");
-  const openStudentModal = document.getElementById("openStudentModal");
-  const confirmStudent = document.getElementById("confirmStudent");
-  const cancelStudent = document.getElementById("cancelStudent");
+  function toggleModal(modalId, show = true, message = "") {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.style.visibility = show ? "visible" : "hidden";
+      modal.style.opacity = show ? "1" : "0";
 
-  if (studentInfoModal) {
-    studentInfoModal.classList.remove("show");
-  }
+      // If the modal is the confirmation modal, update the text
+      if (modalId === "confirmationModal" && message) {
+        document.getElementById("modalText").textContent = message;
 
-  if (openStudentModal) {
-    openStudentModal.addEventListener("click", function () {
-      studentInfoModal.classList.add("show");
-    });
-  }
+        // Reset confirm action properly to avoid previous events messing up
+        let confirmBtn = document.getElementById("confirmAction");
+        let newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
 
-  if (cancelStudent) {
-    cancelStudent.addEventListener("click", function () {
-      studentInfoModal.classList.remove("show");
-    });
-  }
+        // Set new event listener for confirm action
+        newConfirmBtn.setAttribute("data-confirm-action", action);
+        newConfirmBtn.addEventListener("click", function () {
+          handleConfirmAction(action);
+          toggleModal("confirmationModal", false);
+        });
+      }
 
-  if (confirmStudent) {
-    confirmStudent.addEventListener("click", function () {
-      alert("Student information submitted!");
-      studentInfoModal.classList.remove("show");
-    });
-  }
+      if (modalId.includes("Edit") && show) {
+        const confirmBtn = modal.querySelector(".btn-confirm");
+        const cancelBtn = modal.querySelector(".btn-cancel");
+        const inputs = modal.querySelectorAll("input, textarea, select");
 
-  window.addEventListener("click", function (event) {
-    if (event.target === studentInfoModal) {
-      studentInfoModal.classList.remove("show");
+        // Reset inputs and selects to readonly/disabled mode
+        inputs.forEach((input) => {
+          if (input.tagName === "SELECT") {
+            input.disabled = true;
+          } else {
+            input.readOnly = true;
+          }
+        });
+
+        // Set initial button states
+        confirmBtn.textContent = "Edit";
+        cancelBtn.textContent = "Close";
+        confirmBtn.setAttribute("data-mode", "edit");
+      }
     }
-  });
-
-  // Grade Level Modal
-  const gradeLevelModal = document.getElementById("gradeLevelModal");
-  const openGradeLevelModal = document.getElementById("openGradeLevelModal"); // Button to open modal
-  const confirmGradeLevel = document.getElementById("confirmGradeLevel");
-  const cancelGradeLevel = document.getElementById("cancelGradeLevel");
-
-  if (gradeLevelModal) {
-    gradeLevelModal.classList.remove("show");
   }
 
-  if (openGradeLevelModal) {
-    openGradeLevelModal.addEventListener("click", function () {
-      gradeLevelModal.classList.add("show");
-    });
-  }
-
-  if (cancelGradeLevel) {
-    cancelGradeLevel.addEventListener("click", function () {
-      gradeLevelModal.classList.remove("show");
-    });
-  }
-
-  if (confirmGradeLevel) {
-    confirmGradeLevel.addEventListener("click", function () {
-      // code for saving grade level information
-
-      alert("Grade Level information saved!");
-      gradeLevelModal.classList.remove("show");
-    });
-  }
-
-  window.addEventListener("click", function (event) {
-    if (event.target === gradeLevelModal) {
-      gradeLevelModal.classList.remove("show");
-    }
-  });
-
-  // Grade Level Edit Modal
-  const gradeLevelEditModal = document.getElementById("gradeLevelEditModal");
-  const openGradeLevelEditModal = document.getElementById(
-    "openGradeLevelEditModal"
-  ); // Button to open modal
-  const confirmEditGradeLevel = document.getElementById(
-    "confirmEditGradeLevel"
-  );
-  const cancelEditGradeLevel = document.getElementById("cancelEditGradeLevel");
-
-  if (gradeLevelEditModal) {
-    gradeLevelEditModal.classList.remove("show");
-  }
-
-  if (openGradeLevelEditModal) {
-    openGradeLevelEditModal.addEventListener("click", function () {
-      gradeLevelEditModal.classList.add("show");
-    });
-  }
-
-  if (cancelEditGradeLevel) {
-    cancelEditGradeLevel.addEventListener("click", function () {
-      cancelEditGradeLevel.textContent = "Close";
-      confirmEditGradeLevel.textContent = "Edit";
-      gradeLevelEditModal.classList.remove("show");
-    });
-  }
-
-  if (confirmEditGradeLevel) {
-    confirmEditGradeLevel.addEventListener("click", function () {
-      if (confirmEditGradeLevel.textContent === "Edit") {
-        confirmEditGradeLevel.textContent = "Update";
-        cancelEditGradeLevel.textContent = "Cancel";
-        // code for editing grade level information
-      } else if (confirmEditGradeLevel.textContent === "Update") {
-        // code for updating grade level information
+  function handleConfirmAction(action) {
+    switch (action) {
+      case "addStudent":
+        alert("Student information submitted!");
+        break;
+      case "addGradeLevel":
         alert("Grade Level information saved!");
-        gradeLevelEditModal.classList.remove("show");
-        confirmEditGradeLevel.textContent = "Edit";
-        cancelEditGradeLevel.textContent = "Close";
-      }
-    });
-  }
-
-  window.addEventListener("click", function (event) {
-    if (event.target === gradeLevelModal) {
-      gradeLevelEditModal.classList.remove("show");
-    }
-  });
-
-  // School Year Modal
-  const schoolYearModal = document.getElementById("schoolYearModal");
-  const openSchoolYearModal = document.getElementById("openSchoolYearModal"); // Button to open modal
-  const confirmSchoolYear = document.getElementById("confirmSchoolYear");
-  const cancelSchoolYear = document.getElementById("cancelSchoolYear");
-
-  if (schoolYearModal) {
-    schoolYearModal.classList.remove("show");
-  }
-
-  if (openSchoolYearModal) {
-    openSchoolYearModal.addEventListener("click", function () {
-      schoolYearModal.classList.add("show");
-    });
-  }
-
-  if (cancelSchoolYear) {
-    cancelSchoolYear.addEventListener("click", function () {
-      schoolYearModal.classList.remove("show");
-    });
-  }
-
-  if (confirmSchoolYear) {
-    confirmSchoolYear.addEventListener("click", function () {
-      // code for saving/adding school year
-
-      alert("School Year information saved!");
-      schoolYearModal.classList.remove("show");
-    });
-  }
-
-  window.addEventListener("click", function (event) {
-    if (event.target === schoolYearModal) {
-      schoolYearModal.classList.remove("show");
-    }
-  });
-
-  // School Year Edit Modal
-  const schoolYearEditModal = document.getElementById("schoolYearEditModal");
-  const openSchoolYearEditModal = document.getElementById(
-    "openSchoolYearEditModal"
-  ); // Button to open modal
-  const confirmEditSchoolYear = document.getElementById(
-    "confirmEditSchoolYear"
-  );
-  const cancelEditSchoolYear = document.getElementById("cancelEditSchoolYear");
-
-  if (schoolYearEditModal) {
-    schoolYearEditModal.classList.remove("show");
-  }
-
-  if (openSchoolYearEditModal) {
-    openSchoolYearEditModal.addEventListener("click", function () {
-      schoolYearEditModal.classList.add("show");
-    });
-  }
-
-  if (cancelEditSchoolYear) {
-    cancelEditSchoolYear.addEventListener("click", function () {
-      cancelEditSection.textContent = "Close";
-      confirmEditSection.textContent = "Edit";
-      sectionEditModal.classList.remove("show");
-    });
-  }
-
-  if (confirmEditSchoolYear) {
-    confirmEditSchoolYear.addEventListener("click", function () {
-      // code for saving/adding school year
-      if (confirmEditSchoolYear.textContent === "Edit") {
-        confirmEditSection.textContent = "Update";
-        cancelEditSection.textContent = "Cancel";
-        // code for editing school year information
-      } else if (confirmEditSection.textContent === "Update") {
-        // code for updating school year information
+        break;
+      case "editGradeLevel":
+        alert("Grade Level information updated!");
+        break;
+      case "addSchoolYear":
         alert("School Year information saved!");
-        schoolYearEditModal.classList.remove("show");
-        confirmEditSchoolYear.textContent = "Edit";
-        cancelEditSchoolYear.textContent = "Close";
-      }
-
-      alert("School Year information saved!");
-      schoolYearEditModal.classList.remove("show");
-    });
-  }
-
-  window.addEventListener("click", function (event) {
-    if (event.target === schoolYearEditModal) {
-      schoolYearEditModal.classList.remove("show");
-    }
-  });
-
-  // Subject Modal
-  const subjectModal = document.getElementById("subjectModal");
-  const openSubjectModal = document.getElementById("openSubjectModal"); // Button to open modal
-  const confirmSubject = document.getElementById("confirmSubject");
-  const cancelSubject = document.getElementById("cancelSubject");
-
-  if (subjectModal) {
-    subjectModal.classList.remove("show");
-  }
-
-  if (openSubjectModal) {
-    openSubjectModal.addEventListener("click", function () {
-      subjectModal.classList.add("show");
-    });
-  }
-
-  if (cancelSubject) {
-    cancelSubject.addEventListener("click", function () {
-      subjectModal.classList.remove("show");
-    });
-  }
-
-  if (confirmSubject) {
-    confirmSubject.addEventListener("click", function () {
-      // code for saving a subject
-
-      alert("Subject information saved!");
-      subjectModal.classList.remove("show");
-    });
-  }
-
-  window.addEventListener("click", function (event) {
-    if (event.target === subjectModal) {
-      subjectModal.classList.remove("show");
-    }
-  });
-
-  // Subject Edit Modal
-  const subjectEditModal = document.getElementById("subjectEditModal");
-  const openSubjectEditModal = document.getElementById("openSubjectEditModal"); // Button to open modal
-  const confirmEditSubject = document.getElementById("confirmEditSubject");
-  const cancelEditSubject = document.getElementById("cancelEditSubject");
-
-  if (subjectEditModal) {
-    subjectEditModal.classList.remove("show");
-  }
-
-  if (openSubjectEditModal) {
-    openSubjectEditModal.addEventListener("click", function () {
-      subjectEditModal.classList.add("show");
-    });
-  }
-
-  if (cancelEditSubject) {
-    cancelEditSubject.addEventListener("click", function () {
-      confirmEditSubject.textContent = "Edit";
-      cancelEditSubject.textContent = "Close"
-      subjectEditModal.classList.remove("show");
-    });
-  }
-
-  if (confirmEditSubject) {
-    confirmEditSubject.addEventListener("click", function () {
-      // code for saving a subject
-      if (confirmEditSubject.textContent === "Edit") {
-        confirmEditSubject.textContent = "Update";
-        cancelEditSubject.textContent = "Cancel";
-        // code for editing grade level information
-      } else if (confirmEditSubject.textContent === "Update") {
-        // code for updating grade level information
+        break;
+      case "makeSchoolYearInactive":
+        alert("This School Year is now Inactive!");
+        break;
+      case "makeSchoolYearArchive":
+        alert("This School Year is now in Archive");
+        break;
+      case "makeSchoolYearActive":
+        alert("This School Year is now Active");
+        break;
+      case "addSection":
+        alert("Added Section");
+        break;
+      case "editSection":
+        alert("Edit Section");
+        break;
+      case "addSubject":
         alert("Subject information saved!");
-        subjectEditModal.classList.remove("show");
-        confirmEditSubject.textContent = "Edit";
-        cancelEditSubject.textContent = "Close";
-      }
-    });
-  }
-
-  window.addEventListener("click", function (event) {
-    if (event.target === subjectEditModal) {
-      subjectEditModal.classList.remove("show");
-    }
-  });
-
-  // Teacher Modal
-  const teacherModal = document.getElementById("teacherModal");
-  const openTeacherModal = document.getElementById("openTeacherModal"); // Button to open modal
-  const confirmTeacher = document.getElementById("confirmTeacher");
-  const cancelTeacher = document.getElementById("cancelTeacher");
-
-  if (teacherModal) {
-    teacherModal.classList.remove("show");
-  }
-
-  if (openTeacherModal) {
-    openTeacherModal.addEventListener("click", function () {
-      teacherModal.classList.add("show");
-    });
-  }
-
-  if (cancelTeacher) {
-    cancelTeacher.addEventListener("click", function () {
-      teacherModal.classList.remove("show");
-    });
-  }
-
-  if (confirmTeacher) {
-    confirmTeacher.addEventListener("click", function () {
-      // code for adding a teacher
-
-      alert("Teacher information saved!");
-      teacherModal.classList.remove("show");
-    });
-  }
-
-  window.addEventListener("click", function (event) {
-    if (event.target === teacherModal) {
-      teacherModal.classList.remove("show");
-    }
-  });
-
-  
-  // Teacher Edit Modal
-  const teacherEditModal = document.getElementById("teacherEditModal");
-  const openTeacherEditModal = document.getElementById("openTeacherEditModal"); // Button to open modal
-  const confirmEditTeacher = document.getElementById("confirmEditTeacher");
-  const cancelEditTeacher = document.getElementById("cancelEditTeacher");
-
-  if (teacherEditModal) {
-    teacherEditModal.classList.remove("show");
-  }
-
-  if (openTeacherEditModal) {
-    openTeacherEditModal.addEventListener("click", function () {
-      teacherEditModal.classList.add("show");
-    });
-  }
-
-  if (cancelEditTeacher) {
-    cancelEditTeacher.addEventListener("click", function () {
-      confirmEditTeacher.textContent = "Edit";
-      cancelEditTeacher.textContent = "Close"
-      teacherEditModal.classList.remove("show");
-    });
-  }
-
-  if (confirmEditTeacher) {
-    confirmEditTeacher.addEventListener("click", function () {
-      // code for saving a teacher
-      if (confirmEditTeacher.textContent === "Edit") {
-        confirmEditTeacher.textContent = "Update";
-        cancelEditTeacher.textContent = "Cancel";
-        // code for editing teacher information
-
-
-      } else if (confirmEditTeacher.textContent === "Update") {
-        // code for updating teacher information
-
-
+        break;
+      case "editSubject":
+        alert("Subject information updated!");
+        break;
+      case "addTeacher":
         alert("Teacher information saved!");
-        teacherEditModal.classList.remove("show");
-        confirmEditTeacher.textContent = "Edit";
-        cancelEditTeacher.textContent = "Cancel";
-      }
-    });
-  }
-
-  window.addEventListener("click", function (event) {
-    if (event.target === teacherEditModal) {
-      teacherEditModal.classList.remove("show");
+        break;
+      case "editTeacher":
+        alert("Edit Teacher");
+        break;
+      default:
+        alert("Unknown action: " + action);
     }
-  });
-
-  //   
-
-  // Section Modal
-  const sectionModal = document.getElementById("sectionModal");
-  const openSectionModal = document.getElementById("openSectionModal"); // Button to open modal
-  const confirmSection = document.getElementById("confirmSection");
-  const cancelSection = document.getElementById("cancelSection");
-
-  if (sectionModal) {
-    sectionModal.classList.remove("show");
   }
 
-  if (openSectionModal) {
-    openSectionModal.addEventListener("click", function () {
-      sectionModal.classList.add("show");
-    });
-  }
+  document.body.addEventListener("click", function (event) {
+    const target = event.target;
 
-  if (cancelSection) {
-    cancelSection.addEventListener("click", function () {
-      sectionModal.classList.remove("show");
-    });
-  }
+    // Open modal
+    if (target.matches("[data-open-modal]")) {
+      const modalId = target.getAttribute("data-open-modal");
+      const message = target.getAttribute("data-message") || "";
+      const action = target.getAttribute("data-action") || ""; // Get action
 
-  if (confirmSection) {
-    confirmSection.addEventListener("click", function () {
-      // code for saving/adding  a section
-
-      alert("Section information saved!");
-      sectionModal.classList.remove("show");
-    });
-  }
-
-  window.addEventListener("click", function (event) {
-    if (event.target === sectionModal) {
-      sectionModal.classList.remove("show");
+      document
+        .getElementById("confirmAction")
+        .setAttribute("data-confirm-action", action); // Store action
+      toggleModal(modalId, true, message);
     }
-  });
 
-  
+    // Close modal
+    if (target.matches("[data-close-modal]")) {
+      const modalId = target.getAttribute("data-close-modal");
+      toggleModal(modalId, false);
+    }
 
-  
+    // Handle Edit/Update button inside Edit Modals
+    if (target.matches(".btn-confirm")) {
+      const modal = target.closest(".modal");
+      const inputs = modal.querySelectorAll("input, textarea, select");
+      const cancelBtn = modal.querySelector(".btn-cancel");
 
-  // Section Edit Modal
-  const sectionEditModal = document.getElementById("sectionEditModal");
-  const openSectionEditModal = document.getElementById("openSectionEditModal"); // Button to open modal
-  const confirmEditSection = document.getElementById("confirmEditSection");
-  const cancelEditSection = document.getElementById("cancelEditSection");
+      if (target.getAttribute("data-mode") === "edit") {
+        inputs.forEach((input) => {
+          if (input.tagName === "SELECT") {
+            input.disabled = false;
+          } else {
+            input.readOnly = false;
+          }
+        });
 
-  if (sectionEditModal) {
-    sectionEditModal.classList.remove("show");
-  }
+        target.textContent = "Update";
+        cancelBtn.textContent = "Cancel";
+        target.setAttribute("data-mode", "update");
+      } else if (target.getAttribute("data-mode") === "update") {
+        const message =
+          target.getAttribute("data-message") ||
+          "Are you sure you want to update this record?";
+        const action = target.getAttribute("data-action") || ""; // Get action
 
-  if (openSectionEditModal) {
-    openSectionEditModal.addEventListener("click", function () {
-      sectionEditModal.classList.add("show");
-    });
-  }
-
-  if (cancelEditSection) {
-    cancelEditSection.addEventListener("click", function () {
-      cancelEditSection.textContent = "Close";
-      confirmEditSection.textContent = "Edit";
-      sectionEditModal.classList.remove("show");
-    });
-  }
-
-  if (confirmEditSection) {
-    confirmEditSection.addEventListener("click", function () {
-      if (confirmEditSection.textContent === "Edit") {
-        confirmEditSection.textContent = "Update";
-        cancelEditSection.textContent = "Cancel";
-        // code for editing grade level information
-
-
-
-      } else if (confirmEditSection.textContent === "Update") {
-        // code for updating grade level information
-        alert("Section information saved!");
-        sectionEditModal.classList.remove("show");
-        confirmEditSection.textContent = "Edit";
-        cancelEditSection.textContent = "Close";
+        document.getElementById("modalText").textContent = message;
+        document
+          .getElementById("confirmAction")
+          .setAttribute("data-confirm-action", action); // Store action
+        toggleModal("confirmationModal", true);
       }
-    });
-  }
+    }
 
-  window.addEventListener("click", function (event) {
-    if (event.target === sectionEditModal) {
-      sectionEditModal.classList.remove("show");
+    // Handle Confirm Action in Confirmation Modal
+    if (target.id === "confirmAction") {
+      const action = target.getAttribute("data-confirm-action"); // Get correct action
+      handleConfirmAction(action); // Call the function to execute the action
+      toggleModal("confirmationModal", false);
     }
   });
 });
-
-function updateStatus(isActive) {
-    let statusElement = document.getElementById("my-account-status");
-
-    if (isActive) {
-        statusElement.classList.add("active");
-        statusElement.classList.remove("inactive");
-    } else {
-        statusElement.classList.add("inactive");
-        statusElement.classList.remove("active");
-    }
-}
-
-// Example Usage: Set status to active (true) or inactive (false)
-updateStatus(true); // Green (Active)

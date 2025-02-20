@@ -259,12 +259,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Handle the confirmation button
       confirmButton.onclick = function () {
-        if (action === "proceed-enrollment") {
+        if (action === "verify") {
           console.log(action + " confirmed!");
           // code for verification
-        } else if (action === "cancel-enrollment") {
+          
+        } else if (action === "reject") {
           console.log("boogsh");
           // code for reject
+
         }
         modal.style.display = "none";
       };
@@ -547,6 +549,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (cancelEditSubject) {
     cancelEditSubject.addEventListener("click", function () {
       confirmEditSubject.textContent = "Edit";
+      cancelEditSubject.textContent = "Close"
       subjectEditModal.classList.remove("show");
     });
   }
@@ -611,6 +614,60 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  
+  // Teacher Edit Modal
+  const teacherEditModal = document.getElementById("teacherEditModal");
+  const openTeacherEditModal = document.getElementById("openTeacherEditModal"); // Button to open modal
+  const confirmEditTeacher = document.getElementById("confirmEditTeacher");
+  const cancelEditTeacher = document.getElementById("cancelEditTeacher");
+
+  if (teacherEditModal) {
+    teacherEditModal.classList.remove("show");
+  }
+
+  if (openTeacherEditModal) {
+    openTeacherEditModal.addEventListener("click", function () {
+      teacherEditModal.classList.add("show");
+    });
+  }
+
+  if (cancelEditTeacher) {
+    cancelEditTeacher.addEventListener("click", function () {
+      confirmEditTeacher.textContent = "Edit";
+      cancelEditTeacher.textContent = "Close"
+      teacherEditModal.classList.remove("show");
+    });
+  }
+
+  if (confirmEditTeacher) {
+    confirmEditTeacher.addEventListener("click", function () {
+      // code for saving a teacher
+      if (confirmEditTeacher.textContent === "Edit") {
+        confirmEditTeacher.textContent = "Update";
+        cancelEditTeacher.textContent = "Cancel";
+        // code for editing teacher information
+
+
+      } else if (confirmEditTeacher.textContent === "Update") {
+        // code for updating teacher information
+
+
+        alert("Teacher information saved!");
+        teacherEditModal.classList.remove("show");
+        confirmEditTeacher.textContent = "Edit";
+        cancelEditTeacher.textContent = "Cancel";
+      }
+    });
+  }
+
+  window.addEventListener("click", function (event) {
+    if (event.target === teacherEditModal) {
+      teacherEditModal.classList.remove("show");
+    }
+  });
+
+  //   
+
   // Section Modal
   const sectionModal = document.getElementById("sectionModal");
   const openSectionModal = document.getElementById("openSectionModal"); // Button to open modal
@@ -648,6 +705,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  
+
+  
+
   // Section Edit Modal
   const sectionEditModal = document.getElementById("sectionEditModal");
   const openSectionEditModal = document.getElementById("openSectionEditModal"); // Button to open modal
@@ -678,6 +739,9 @@ document.addEventListener("DOMContentLoaded", function () {
         confirmEditSection.textContent = "Update";
         cancelEditSection.textContent = "Cancel";
         // code for editing grade level information
+
+
+
       } else if (confirmEditSection.textContent === "Update") {
         // code for updating grade level information
         alert("Section information saved!");

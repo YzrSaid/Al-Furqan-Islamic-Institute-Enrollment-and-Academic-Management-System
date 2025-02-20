@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../../static/css/styles.css">
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -41,7 +41,7 @@
     <div class="sidebar" id="sidebar">
         <div class="text-center">
             <div class="logo">
-                <img src="../static/images/al-furqanlogo.jpg" alt="School Logo">
+                <img src="../../static/images/al-furqanlogo.jpg" alt="School Logo">
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
             <div class="welcome-div">
@@ -50,17 +50,17 @@
         </div>
 
         <a href="dashboard.html" class="sidebar-icons" onclick="clearSubmenus()">
-            <img src="../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
+            <img src="../../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
         </a>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-            <img src="../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
             <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
                 Enrollment
-                <span class="arrow-icon second-arrow-icon"><img src="../static/images/icons/arrow-down.png"
+                <span class="arrow-icon second-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
                         alt="arrow-down"></span>
             </a>
             <div class="submenu" id="enrollment-submenu">
@@ -74,12 +74,12 @@
         </div>
 
         <a href="grade-management.html" class="sidebar-icons">
-            <img src="../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
+            <img src="../../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
         </a>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
-            <img src="../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span
-                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="class-submenu">
             <a href="#">Class List</a>
@@ -87,14 +87,14 @@
         </div>
 
         <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-            <img src="../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="school-year-maintenance.html">School Year</a>
             <a href="grade-level-maintenance.html">Grade Level</a>
             <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
-                <span class="arrow-icon third-arrow-icon"><img src="../static/images/icons/arrow-down.png"
+                <span class="arrow-icon third-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
                         alt="arrow-down"></span>
             </a>
             <div class="submenu" id="schedule-submenu">
@@ -107,16 +107,16 @@
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img src="../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
             <a href="#">Book Distribution Report</a>
             <a href="#">Payment Report</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img src="../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
-                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
+                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
             <a href="verify-accounts.html" class="second-active">Verify Accounts</a>
@@ -124,8 +124,8 @@
             <a href="#">My Account</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-            <img src="../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
             <a href="#">Create User</a>
@@ -138,14 +138,14 @@
         <div class="topbar">
             <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
-                    <img src="../static/images/icons/burger_menu_icon.png" alt="Menu">
+                    <img src="../../static/images/icons/burger_menu_icon.png" alt="Menu">
                 </span>
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
             <div class="dropdown-logout">
                 <div class="user-icon dropdown-logout-toggle">
-                    <img src="../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
+                    <img src="../../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
@@ -204,7 +204,7 @@
                                 <div class="status" id="status-teacher">Active</div>
                             </div>
                             <div class="action-container">
-                                <div class="action" id="action-teacher"><img src="../static/images/icons/compose.png"
+                                <div class="action" id="openTeacherEditModal"><img src="../../static/images/icons/compose.png"
                                         alt=""></div>
                             </div>
                         </div>
@@ -257,12 +257,12 @@
 
                         <label for="birthdate">Birthdate:</label>
                         <input type="date" id="birthdate" required>
-                    </div>
+                    </div> <br>
                     <label for="address">Address:</label>
-                    <input type="text" id="address" required> <br>
+                    <input type="text" id="address" required> <br> <br>
 
                     <label for="contactNumber">Cellphone/Contact Number:</label>
-                    <input type="tel" id="contactNumber" required>
+                    <input type="tel" id="contactNumber" required> <br>
 
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" id="confirmTeacher">Confirm</button>
@@ -271,8 +271,52 @@
                 </form>
             </div>
         </div>
+
+        <!-- Modal for editing  a teacher -->
+        <div id="teacherEditModal" class="teacher-edit-modal">
+            <div class="teacher-edit-modal-content">
+                <h2>Teacher Information</h2>
+                <form id="teacherEditForm">
+                    <div class="student-form-group inputID" id="">
+                        <label for="teacherID">Teacher ID:</label>
+                        <select name="teacherID" id="teacherID">
+                            <option value="" disabled selected>Select Teacher ID</option>
+                        </select>
+                    </div>
+                    <h6>Personal Information</h6> <br>
+                    <div class="student-form-group">
+                        <label for="teacherFirstName">First Name:</label>
+                        <input type="text" id="teacherFirstName" required>
+
+                        <label for="teacherLastName">Last Name:</label>
+                        <input type="text" id="teacherLastName" required>
+                    </div>
+                    <div class="student-form-group">
+                        <label for="gender" id="gender">Gender:</label>
+                        <select id="gender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+
+                        <label for="birthdate">Birthdate:</label>
+                        <input type="date" id="birthdate" required>
+                    </div> <br>
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" required> <br> <br>
+
+                    <label for="contactNumber">Cellphone/Contact Number:</label>
+                    <input type="tel" id="contactNumber" required> <br>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" id="confirmEditTeacher">Edit</button>
+                        <button type="button" class="btn-cancel" id="cancelEditTeacher">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <script src="../static/js/script.js"></script>
+    <script src="../../static/js/script.js"></script>
 </body>
 
 </html>

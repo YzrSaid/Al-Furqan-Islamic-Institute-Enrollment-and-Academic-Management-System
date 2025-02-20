@@ -55,7 +55,7 @@
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
             <img src="../../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <span class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
             <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
@@ -107,8 +107,8 @@
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
             <a href="#">Book Distribution Report</a>
@@ -193,8 +193,8 @@
                                 </button>
                             </div>
                             <div class="dropdown-status-content" id="dropdown-school-year">
-                                <a href="#" data-action="make-inactive">Make Inactive</a>
-                                <a href="#" data-action="archive">Archive</a>
+                                <a href="#" data-action="makeSchoolYearInactive" data-message="Are you sure you want to make this school year Inactive?" data-open-modal="confirmationModal">Make Inactive</a>
+                                <a href="#" data-action="makeSchoolYearArchive" data-message="Are you sure you want to archive this school year?" data-open-modal="confirmationModal">Archive</a>
                             </div>
                         </div>
                     </td>
@@ -202,36 +202,42 @@
             </tbody>
         </table>
 
-        <!-- add school year button -->
+        <!-- Add School Year Button -->
         <div class="add-something-btn-container">
-            <button class="add-something-btn" id="openSchoolYearModal">Add School Year</button>
+            <button class="add-something-btn" id="openSchoolYearModal" data-open-modal="schoolYearModal">Add School Year</button>
         </div>
-        <!-- Modal for status -->
+
+        <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
-                    <button id="confirmBtn" class="btn-confirm">Confirm</button>
-                    <button id="cancelBtn" class="btn-cancel">Cancel</button>
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
                 </div>
             </div>
         </div>
 
-        <!-- Modal for adding school year -->
+        <!-- Modal for Adding School Year -->
         <div id="schoolYearModal" class="school-year-modal">
             <div class="school-year-modal-content">
                 <h2>Add New School Year</h2>
-                <form id="schoolYearForm">  
+                <form method="post" id="schoolYearForm">
                     <label for="school-year-name">School Year:</label>
                     <input type="text" id="schoolYearName" required>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmSchoolYear">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelSchoolYear">Cancel</button>
+                        <button type="button" class="btn-confirm" data-action="addSchoolYear"
+                            data-message="Are you sure you want to add this school year?" id="confirmGradeLevel"
+                            data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" data-close-modal="schoolYearModal" class="btn-cancel">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
+
     </div>
     <script src="../../static/js/script.js"></script>
 </body>

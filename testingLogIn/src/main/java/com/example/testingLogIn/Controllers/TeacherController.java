@@ -48,11 +48,11 @@ public class TeacherController {
         }
     }
 
-    @PostMapping("/add/{staffId}")
-    public ResponseEntity<String> addTeacherRecord(@RequestBody @Validated TeacherDTO teacher, @PathVariable int staffId){
+    @PostMapping("/add")
+    public ResponseEntity<String> addTeacherRecord(@RequestBody @Validated TeacherDTO teacher){
         System.out.println("Im here");
         try{
-            if(teacherServices.addNewTeacherInfo(teacher, staffId)){
+            if(teacherServices.addNewTeacherInfo(teacher)){
                 return new ResponseEntity<>("New Teacher Info Added Successfully",HttpStatus.OK);}
             else
                 return new ResponseEntity<>("Teacher Record Already Exist",HttpStatus.BAD_REQUEST);
@@ -68,7 +68,7 @@ public class TeacherController {
     @GetMapping("/unregistered")
     public ResponseEntity<List<UserDTO>> getUnregistered(){
         try{
-        return new ResponseEntity<>(teacherServices.notRegisteredTeacherAccounts(),HttpStatus.OK);
+            return new ResponseEntity<>(teacherServices.notRegisteredTeacherAccounts(),HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

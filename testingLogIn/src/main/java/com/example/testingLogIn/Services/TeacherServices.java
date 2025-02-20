@@ -1,11 +1,11 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.TeacherDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Repositories.TeacherRepo;
-import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class TeacherServices{
             updateTeacher.setAddress(teacherDTO.getAddress());
             updateTeacher.setBirthdate(teacherDTO.getBirthdate());
             updateTeacher.setContactNum(teacherDTO.getContactNum());
-            updateTeacher.setGender(teacherDTO.getGender());
+            updateTeacher.setGender(getGenderByString(teacherDTO.getGender()));
 
             teacherRepo.save(updateTeacher);
 
@@ -68,12 +68,12 @@ public class TeacherServices{
             return true;}
     }
     
-    public boolean addNewTeacherInfo(TeacherDTO teacherDTO, int staffid){
-            UserModel user= userRepo.findById(staffid).orElse(null);
+    public boolean addNewTeacherInfo(TeacherDTO teacherDTO){
+            UserModel user= userRepo.findById(teacherDTO.getStaffId()).orElse(null);
             if(user == null)
                 throw new MatchException("Wala nakita", new Throwable());
             
-            if(isActive(staffid))
+            if(isActive(teacherDTO.getStaffId()))
                 return false;
             else{
             Teacher newTeacher = Teacher.builder()
@@ -81,7 +81,7 @@ public class TeacherServices{
                                     .address(teacherDTO.getAddress())
                                     .birthdate(teacherDTO.getBirthdate())
                                     .contactNum(teacherDTO.getContactNum())
-                                    .gender(teacherDTO.getGender())
+                                    .gender(getGenderByString(teacherDTO.getGender()))
                                     .isNotDeleted(true)
                                     .build();
             teacherRepo.save(newTeacher);
@@ -118,9 +118,10 @@ public class TeacherServices{
     private TeacherDTO TeacherToTeacherDTO(Teacher teacher){
         return TeacherDTO.builder()
                          .staffId(teacher.getUser().getStaffId())
+                         .fullname(teacher.getUser().getFirstname()+" "+teacher.getUser().getLastname())
                          .address(teacher.getAddress())
                          .birthdate(teacher.getBirthdate())
-                         .gender(teacher.getGender())
+                         .gender(teacher.getGender().toString())
                          .contactNum(teacher.getContactNum())
                          .build();
     }
@@ -132,5 +133,12 @@ public class TeacherServices{
                .staffId(user.getStaffId())
                .role(user.getRole())
                .build();
-    }  
+    }
+    
+    private Gender getGenderByString(String gender){
+        if(Gender.FEMALE.toString().equals(gender.toUpperCase()))
+            return Gender.FEMALE;
+        
+        return Gender.MALE;
+    }
 }

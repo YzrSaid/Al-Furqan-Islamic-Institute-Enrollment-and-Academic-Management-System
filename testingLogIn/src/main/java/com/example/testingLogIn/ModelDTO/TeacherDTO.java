@@ -15,9 +15,9 @@ import java.time.LocalDate;
 public class TeacherDTO {
 
     private int staffId;
+    private String fullname;
     private String address;
     private LocalDate birthdate;
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private String gender;
     private String contactNum;
 }

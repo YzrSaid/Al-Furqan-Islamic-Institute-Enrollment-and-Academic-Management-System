@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.SectionDTO;
+import com.example.testingLogIn.ModelDTO.TeacherDTO;
 import com.example.testingLogIn.Services.SectionServices;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ public class SectionController {
     
     @Autowired
     private SectionServices sectionService;
+    
+    @GetMapping("/adviserids")
+    public ResponseEntity<List<TeacherDTO>> getAdviserIds(){
+        return new ResponseEntity<>(sectionService.getNoAdvisoryTeachers(),HttpStatus.OK);
+    }
     
     @GetMapping("/all")
     public ResponseEntity<List<SectionDTO>> getAllSections(){
@@ -59,6 +65,10 @@ public class SectionController {
                     return new ResponseEntity<>("Teacher Information Not Found",HttpStatus.NOT_FOUND);
                 case 2:
                     return new ResponseEntity<>("Grade Level Information Not Found",HttpStatus.NOT_FOUND);
+                case 3:
+                    return new ResponseEntity<>("The Selected Teacher Already Have an Advisory Class",HttpStatus.NOT_ACCEPTABLE);
+                case 4:
+                    return new ResponseEntity<>("Section Name Already Exist",HttpStatus.NOT_ACCEPTABLE);
                 default:
                     return new ResponseEntity<>("Section Information Added Successfully",HttpStatus.OK);
             }

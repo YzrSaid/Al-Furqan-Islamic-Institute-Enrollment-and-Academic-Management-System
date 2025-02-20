@@ -44,7 +44,7 @@ public class SubjectServices {
         if(gradeLevelService.getGradeLevel(levelId) == null)
             throw new NullPointerException("Grade Level Not Found");
         
-        if(!doesSubjectNameExist(subjectname)){
+        if(!doesSubjectNameExist(levelId,subjectname)){
             Subject sub=new Subject();
             sub.setNotDeleted(true);
             sub.setGradeLevel(gradeLevelService.getGradeLevel(levelId));
@@ -100,10 +100,11 @@ public class SubjectServices {
                           .build();
      }
     
-    private boolean doesSubjectNameExist(String subjectName){
+    private boolean doesSubjectNameExist(int levelId,String subjectName){
         return subjectRepo.findAll().stream()
-                          .filter(sub -> subjectName.equals(sub.getSubjectName()) &&
-                                  sub.isNotDeleted())
+                          .filter(sub ->subjectName.equals(sub.getSubjectName()) &&
+                                        sub.getGradeLevel().getLevelId() == levelId &&
+                                        sub.isNotDeleted())
                           .findFirst().orElse(null) != null;
     }
 }

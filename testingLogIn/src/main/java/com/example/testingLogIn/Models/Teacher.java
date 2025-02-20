@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Models;
 
 import com.example.testingLogIn.Enums.Gender;
+import com.example.testingLogIn.ModelDTO.TeacherDTO;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,4 +29,15 @@ public class Teacher{
     private LocalDate birthdate;
     private String contactNum;
     private boolean isNotDeleted;
+    
+    public TeacherDTO mapper(){
+                return TeacherDTO.builder()
+                         .staffId(user.getStaffId())
+                         .fullname(user.getFirstname()+" "+user.getLastname())
+                         .address(address)
+                         .birthdate(birthdate)
+                         .gender(gender.toString())
+                         .contactNum(contactNum)
+                         .build();
+    }
 }

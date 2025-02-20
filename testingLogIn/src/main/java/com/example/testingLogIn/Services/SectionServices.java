@@ -1,13 +1,16 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.ModelDTO.SectionDTO;
+import com.example.testingLogIn.ModelDTO.TeacherDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.Section;
+import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.SectionRepo;
-import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
+import com.example.testingLogIn.Repositories.TeacherRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +23,30 @@ import org.springframework.stereotype.Service;
 @Service
 public class SectionServices {
     
-    private GradeLevelRepo gradeRepo;
-    private SectionRepo sectionRepo;
-    private UserRepo userRepo;
+    private final GradeLevelRepo gradeRepo;
+    private final SectionRepo sectionRepo;
+    private final UserRepo userRepo;
+    private final TeacherRepo teacherRepo;
 
     @Autowired
-    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo) {
+    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo,TeacherRepo teacherRepo) {
         this.gradeRepo = gradeRepo;
         this.sectionRepo = sectionRepo;
         this.userRepo = userRepo;
+        this.teacherRepo = teacherRepo;
     }
     //FOR ADDING NEW SECTION
     public int addSection(SectionDTO sectionDTO){
         UserModel user= getUserByFullName(sectionDTO.getAdviserName());
         GradeLevel gradeLevel = getGradeLevel(sectionDTO.getGradeLevelName());
-        int result = user == null ?         1:
-                     gradeLevel == null ?   2:
-                                            3;
+        int result = user == null ?            1:
+                     gradeLevel == null ?      2:
+                     doesTeacherHaveAdvisory
+                                 (user) ? 3:
+                     doesSectionNameExist
+        (sectionDTO.getSectionName()
+                .toLowerCase())              ? 4:
+                                               5;
         
         switch(result){
             case 1:
@@ -44,6 +54,12 @@ public class SectionServices {
                 return 1;
             case 2 :
                 return 2;/*Grade Level Info Does Not Exist*/
+            case 3:
+                //If the Selected Teacher already have an Advisory Class
+                return 3;
+            case 4:
+                //If the section name already exist
+                return 4;
             default:
                 Section newSection = Section.builder()
                                             .adviser(user)
@@ -53,7 +69,7 @@ public class SectionServices {
                                             .isNotDeleted(true)
                                             .build();
                 sectionRepo.save(newSection);
-                return 3;
+                return 5;
         }
     }
     
@@ -89,7 +105,6 @@ public class SectionServices {
             
             return true;
         }
-        
         return false;
     }
     
@@ -97,13 +112,39 @@ public class SectionServices {
     public boolean deleteSection(int sectionNumber){
         Section todelete = sectionRepo.findById(sectionNumber).orElse(null);
         
-        if(todelete != null){
+        if(todelete != null && todelete.isNotDeleted()){
             todelete.setNotDeleted(false);
             sectionRepo.save(todelete);
             return true;
         }
-        
         return false;
+    }
+    
+    //Return the List of Teachers that has no advisory class
+    public List<TeacherDTO> getNoAdvisoryTeachers(){
+        List<Integer> adviserStaffIds= new ArrayList<>();
+        sectionRepo.findAll().stream()
+                   .filter(Section::isNotDeleted)
+                   .forEach(section -> adviserStaffIds.add(section.getAdviser().getStaffId()));
+        
+        return teacherRepo.findAll().stream()
+                   .filter(teacher -> !adviserStaffIds.contains(teacher.getUser().getStaffId()))
+                   .map(Teacher::mapper)
+                   .collect(Collectors.toList());
+    }
+    
+    private boolean doesSectionNameExist(String sectionName){
+        return sectionRepo.findAll().stream()
+                          .filter(section ->section.isNotDeleted() &&
+                                            sectionName.equals(section.getSectionName().toLowerCase()))
+                          .findFirst().orElse(null) != null;
+    }
+    
+    private boolean doesTeacherHaveAdvisory(UserModel staff){
+        return sectionRepo.findAll().stream()
+                          .filter(advisory -> advisory.getAdviser().getStaffId() == staff.getStaffId() && 
+                                              advisory.isNotDeleted())
+                          .findFirst().orElse(null) !=null;
     }
     
     private UserModel getUserByFullName(String teacherName){

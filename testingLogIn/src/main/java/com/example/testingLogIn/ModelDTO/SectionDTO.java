@@ -4,7 +4,6 @@ package com.example.testingLogIn.ModelDTO;
  *
  * @author magno
  */
-import com.example.testingLogIn.Models.Section;
 import lombok.*;
 
 @NoArgsConstructor

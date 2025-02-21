@@ -206,10 +206,16 @@
                                 <div class="action" id="action-manage-accounts"><img
                                         src="../../static/images/icons/arrow-down.png" alt="arrow-down icon"></div>
 
-                                <div class="dropdown-status-content" id="dropdown-manage-accounts">
-                                    <a href="#"  data-action="Restrict">Restrict</a>
-                                    <a href="#" id="dropdown-manage-accounts" data-action="Delete Account">Delete
-                                        Account</a>
+                                <div class="dropdown-status-content" id="dropdown-school-year">
+                                    <a href="#" data-action="restrictAccount"
+                                        data-message="Are you sure you want to restrict this account?"
+                                        data-open-modal="confirmationModal">Restrict</a>
+                                    <a href="#" data-action="unrestrictAccount"
+                                        data-message="Are you sure you want to unrestrict this account?"
+                                        data-open-modal="confirmationModal">Unrestrict</a>
+
+                                    <!-- this is for edit account -->
+                                    <a href="#" data-open-modal="myAccountEditModal">Edit Account</a>
                                 </div>
                             </div>
                         </div>
@@ -218,13 +224,97 @@
             </tbody>
         </table>
 
-        <!-- Modal for managing account status -->
+        <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmBtn" class="btn-confirm">Confirm</button>
-                    <button id="cancelBtn" class="btn-cancel">Cancel</button>
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for edit account -->
+        <div class="my-account-container-wrapper">
+            <div id="myAccountEditModal" class="my-account-edit-modal modal">
+                <div class="my-account-edit-modal-content">
+                    <h2>My Account Information</h2>
+                    <form action="" id="myAccountEditForm">
+                        <div class="half-width">
+                            <div class="user-id">
+                                <label for="user-id" id="user-id-label">User ID:</label>
+                                <p id="user-id">0001</p>
+                            </div>
+                        </div> <br>
+                        <div class="half-width">
+                            <div class="email">
+                                <label for="email">Email:</label>
+                                <p id="email">sample@gmail.com</p>
+                            </div>
+                        </div> <br>
+                        <div class="half-width student-form-group">
+                            <div class="first-name">
+                                <label for="first-name">First Name:</label>
+                                <input type="text" id="first-name" value="Batman" readonly>
+                            </div>
+                            <div class="last-name">
+                                <label for="last-name">Last Name:</label>
+                                <input type="text" id="last-name" value="Rizal" readonly>
+                            </div>
+                        </div> <br>
+                        <div class="account-type">
+                            <label for="account-type">Account Type:</label>
+                            <select name="account-type" id="account-type">
+                                <option value="" disabled>Select account type</option>
+                                <option value="ADMIN_Enrollment">Admin - Enrollment</option>
+                                <option value="TEACHER">Teacher</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button type="button" class="btn-confirm" data-action="editMyAccount"
+                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
+                                Edit
+                            </button>
+                            <button type="button" class="btn-cancel"
+                                data-close-modal="myAccountEditModal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for changing password -->
+        <div class="my-account-container-wrapper">
+            <div id="changePasswordModal" class="change-password-modal">
+                <div class="change-password-modal-content">
+                    <h2>Change Password</h2>
+                    <form action="" id="changePasswordForm">
+                        <div class="change-pass-div">
+                            <label for="current-passowrd">Current Password</label>
+                            <input type="password" id="current-passowrd">
+                        </div>
+                        <div class="change-pass-div">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password">
+                        </div>
+                        <div class="change-pass-div">
+                            <ul>
+                                <li>Must be 8 characters</li>
+                                <li>Must contain a spacial character</li>
+                                <li>Must contain upper and lower case</li>
+                            </ul>
+                        </div>
+                        <div class="change-pass-div">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password">
+                        </div>
+                        <div class="modal-buttons change-pass-buttons">
+                            <button type="button" class="btn-confirm" id="confirmChangePassword"
+                                data-action="change-password">Confirm</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

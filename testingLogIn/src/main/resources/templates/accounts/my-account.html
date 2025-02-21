@@ -194,33 +194,29 @@
             <!-- this is for the edit and change password divs -->
             <div class="change-password-container">
                 <div class="change-password">
-                    <button id="openChangePasswordModal" class="btn-change-password">Change Password</button>
+                    <button id="openChangePasswordModal" class="btn-change-password" data-open-modal="changePasswordModal">Change Password</button>
                 </div>
             </div>
             <div class="edit-account-container">
                 <div class="edit-account">
-                    <button class="btn-edit" id="openMyAccountEditModal">Edit My Account</button>
+                    <button class="btn-edit" id="openMyAccountEditModal" data-open-modal="myAccountEditModal">Edit My Account</button>
                 </div>
             </div>
         </div>
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
-                <!-- <p id="modalText"></p> -->
-                <p id="confirmationText"></p>
+                <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <!-- <button id="confirmBtn" class="btn-confirm">Confirm</button>
-                    <button id="cancelBtn" class="btn-cancel">Cancel</button> -->
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button id="cancelAction" class="btn-cancel">Cancel</button>
-                    
+                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
 
         <!-- Modal for edit account -->
         <div class="my-account-container-wrapper">
-            <div id="myAccountEditModal" class="my-account-edit-modal">
+            <div id="myAccountEditModal" class="my-account-edit-modal modal">
                 <div class="my-account-edit-modal-content">
                     <h2>My Account Information</h2>
                     <form action="" id="myAccountEditForm">
@@ -256,8 +252,12 @@
                         </div>
 
                         <div class="modal-buttons">
-                            <button type="button" class="btn-confirm" id="confirmEditMyAccount">Edit</button>
-                            <button type="button" class="btn-cancel" id="cancelEditMyAccount">Close</button>
+                            <button type="button" class="btn-confirm" data-action="editMyAccount"
+                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
+                                Edit
+                            </button>
+                            <button type="button" class="btn-cancel"
+                                data-close-modal="myAccountEditModal">Close</button>
                         </div>
                     </form>
                 </div>
@@ -266,7 +266,7 @@
 
         <!-- Modal for changing password -->
         <div class="my-account-container-wrapper">
-            <div id="changePasswordModal" class="change-password-modal">
+            <div id="changePasswordModal" class="change-password-modal modal">
                 <div class="change-password-modal-content">
                     <h2>Change Password</h2>
                     <form action="" id="changePasswordForm">
@@ -290,7 +290,7 @@
                             <input type="password" id="confirm-password">
                         </div>
                         <div class="modal-buttons change-pass-buttons">
-                            <button type="button" class="btn-confirm" id="confirmChangePassword" data-action="change-password">Confirm</button>
+                            <button type="button" class="btn-confirm" id="confirmChangePassword" data-action="changePassword" data-open-modal="confirmationModal" data-message="Are you sure you want update the password for this account?">Confirm</button>
                         </div>
                     </form>
                 </div>

@@ -364,6 +364,24 @@ document.addEventListener("DOMContentLoaded", function () {
       case "editTeacher":
         alert("Edit Teacher");
         break;
+      case "verifyAccount":
+        alert("Account verified successfully!");
+        break;
+      case "rejectAccount":
+        alert("Account rejected successfully!");
+        break;
+      case "restrictAccount":
+        alert("Account restricted!");
+        break;
+      case "unrestrictAccount":
+        alert("Account unrestricted!");
+        break;
+      case "editMyAccount":
+        alert("Account edited successfully!");
+        break;
+      case "changePassword":
+        alert("Password for this account has been changed successfully!");
+        break;
       default:
         alert("Unknown action: " + action);
     }
@@ -426,7 +444,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (target.id === "confirmAction") {
       const action = target.getAttribute("data-confirm-action"); // Get correct action
       handleConfirmAction(action); // Call the function to execute the action
+      // Close confirmation modal
       toggleModal("confirmationModal", false);
+
+      // Find the parent modal (the Edit Modal) and close it
+      const openModal = document.querySelector(
+        ".modal[style*='visibility: visible']"
+      );
+      if (openModal) {
+        toggleModal(openModal.id, false);
+      }
     }
   });
 });

@@ -107,8 +107,8 @@
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
             <a href="#">Book Distribution Report</a>
@@ -205,21 +205,25 @@
                     </td>
                     <td>
                         <div class="action-container dropdown-status-content-verify">
-                            <div class="action" data-action="verify" id="action-verify-account"><img src="../../static/images/icons/check.png" alt="check-icon"></div>
-                            <div class="action" data-action="reject" id="action-verify-account"><img src="../../static/images/icons/cross.png" alt="cross-icon"></div>
+                            <div class="action" id="action-verify-account"><img data-action="verifyAccount" data-message="Are you sure you want to verify this account?"
+                                    data-open-modal="confirmationModal" src="../../static/images/icons/check.png"
+                                    alt="check-icon"></div>
+                            <div class="action" id="action-verify-account"><img data-action="rejectAccount" data-message="Are you sure you want to reject this account?"
+                                    data-open-modal="confirmationModal" src="../../static/images/icons/cross.png"
+                                    alt="cross-icon"></div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-
-        <!-- Modal for status -->
+        
+        <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
-                <p id="modalText"></p>
+                <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
-                    <button id="confirmBtn" class="btn-confirm">Confirm</button>
-                    <button id="cancelBtn" class="btn-cancel">Cancel</button>
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
                 </div>
             </div>
         </div>

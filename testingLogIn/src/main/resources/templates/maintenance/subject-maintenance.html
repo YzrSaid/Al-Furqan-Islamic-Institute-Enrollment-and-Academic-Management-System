@@ -206,7 +206,7 @@
                     </td>
                     <td>
                         <div class="action-container">
-                            <div class="action" id="openSubjectEditModal"><img src="../../static/images/icons/compose.png"
+                            <div class="action" id="openSubjectEditModal"><img data-open-modal="subjectEditModal" src="../../static/images/icons/compose.png"
                                     alt=""></div>
                         </div>
                     </td>
@@ -231,7 +231,7 @@
         </div>
 
         <!-- Modal for adding subject -->
-        <div id="subjectModal" class="subject-modal">
+        <div id="subjectModal" class="subject-modal modal">
             <div class="subject-modal-content">
                 <h2>Add New Subject</h2>
                 <form id="subjectForm">
@@ -264,9 +264,9 @@
         </div>
 
          <!-- Modal for editing a subject -->
-         <div id="subjectEditModal" class="subject-edit-modal">
+         <div id="subjectEditModal" class="subject-edit-modal modal">
             <div class="subject-edit-modal-content">
-                <h2>Add New Subject</h2>
+                <h2>Subject Information</h2>
                 <form id="subjectEditForm">
                     <div>
                         <label for="subject-id">Subject ID:</label>
@@ -285,8 +285,11 @@
                         </select>
                     </div>
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmEditSubject">Edit</button>
-                        <button type="button" class="btn-cancel" id="cancelEditSubject">Close</button>
+                        <button type="button" class="btn-confirm" data-action="editSubject"
+                            data-message="Are you sure you want to update this subject?" id="confirmSubjectEdit">
+                            Edit
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="subjectEditModal">Close</button>
                     </div>
                 </form>
             </div>

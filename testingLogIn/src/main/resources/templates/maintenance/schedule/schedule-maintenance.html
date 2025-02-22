@@ -93,14 +93,7 @@
         <div class="submenu" id="maintenance-submenu">
             <a href="../../maintenance/school-year-maintenance.html">School Year</a>
             <a href="../../maintenance/grade-level-maintenance.html">Grade Level</a>
-            <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
-                <span class="arrow-icon third-arrow-icon"><img src="../../../static/images/icons/arrow-down.png"
-                        alt="arrow-down"></span>
-            </a>
-            <div class="submenu" id="schedule-submenu">
-                <a href="sched-teacher-main.html" class="second-active">For Teachers</a>
-                <a href="#">For Students</a>
-            </div>
+            <a href="schedule-maintenance.html" class="second-active">Schedule</a>
             <a href="../maintenance/subject-maintenance.html">Subject</a>
             <a href="../maintenance/section-maintenance.html">Section</a>
             <a href="../maintenance/teacher-maintenance.html">Teacher</a>
@@ -156,14 +149,12 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>For Teachers</h4>
+            <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
             <p>Main</p>
             <p>/</p>
             <p>Maintenance</p>
             <p>/</p>
             <p>Schedule</p>
-            <p>/</p>
-            <p>For Teachers</p>
         </div>
 
         <div class="search-div">
@@ -188,20 +179,21 @@
         <table class="verify-accounts-table">
             <thead>
                 <tr>
-                    <th>Teacher ID</th>
-                    <th>Name</th>
+                    <th>Grade Level</th>
+                    <th>Section</th>
+                    <th>Students</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>001</td>
-                    <td>Ma'am Balan</td>
+                    <td>Grade 1</td>
+                    <td>Malunggay</td>
+                    <td>30</td>
                     <td>
                         <div class="action-container">
                             <a href="#" class="view-sched">View Schedule</a>
                         </div>
-
                     </td>
                 </tr>
             </tbody>

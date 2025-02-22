@@ -62,10 +62,10 @@ function toggleSubMenu(submenuId, event) {
         otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
       if (otherArrowIcon) {
         otherArrowIcon.src =
-          "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png";
-        //otherArrowIcon.src = "../static/images/icons/arrow-down.png";
+          //   "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png";
+          // otherArrowIcon.src = "../static/images/icons/arrow-down.png";
 
-        //   otherArrowIcon.src = "../images/icons/arrow-down.png";
+          otherArrowIcon.src = "../images/icons/arrow-down.png";
         // ("/testingLogIn/src/main/resources/static/images/icons/arrow-down.png");
       }
     }
@@ -76,10 +76,10 @@ function toggleSubMenu(submenuId, event) {
 
   // *🔹 Save submenu state only if it is a submenu of a submenu*
   arrowIconImg.src = isOpen
-    ? //   ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
-      //   : "../images/icons/greater-than.png"; // Change to right arrow if opening
-      "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png"
-    : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
+    ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
+    : "../images/icons/greater-than.png"; // Change to right arrow if opening
+  //   "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png"
+  // : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
 
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
     (sub) => sub.id
@@ -98,7 +98,7 @@ function clearSubmenus() {
     .forEach(
       (img) =>
         (img.src =
-          "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png")
+          "../images/icons/arrow-down.png")
     );
 }
 
@@ -277,6 +277,16 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// this is for the maintenance schedule (teacher)
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("a.view-sched").forEach((link) => {
+    link.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent default navigation
+      window.location.href = "sched-board.html"; // Navigate to the sched board page
+    });
+  });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   function toggleModal(modalId, show = true, message = "") {
     const modal = document.getElementById(modalId);
@@ -382,15 +392,25 @@ document.addEventListener("DOMContentLoaded", function () {
       case "changePassword":
         alert("Password for this account has been changed successfully!");
         break;
+      case "saveSched":
+        // code
+        alert("Schedule Saved Successfully!");
+        break;
+      case "clearSched":
+        window.clearSched();
+        alert("Schedule cleared successfully!");
+        break;
       default:
         alert("Unknown action: " + action);
+        break;
     }
   }
 
   document.body.addEventListener("click", function (event) {
     const target = event.target;
+    let saveBtn = document.getElementById("saveBtn");
 
-    // Open modal
+    // Open modal only if saveBtn's text is "Save"
     if (target.matches("[data-open-modal]")) {
       const modalId = target.getAttribute("data-open-modal");
       const message = target.getAttribute("data-message") || "";
@@ -399,7 +419,30 @@ document.addEventListener("DOMContentLoaded", function () {
       document
         .getElementById("confirmAction")
         .setAttribute("data-confirm-action", action); // Store action
-      toggleModal(modalId, true, message);
+
+      // Check if the clicked button is the saveBtn
+      if (target === saveBtn) {
+        if (saveBtn.textContent.trim() === "Add") {
+          console.log("🔄 Changing text to Save...");
+          saveBtn.textContent = "Save"; // Change text to Save
+          return; // Stop execution so modal does NOT open
+        }
+      }
+
+      // Open modal only if saveBtn is already "Save"
+      if (target.matches("[data-open-modal]")) {
+        if (saveBtn.textContent.trim() === "Save") {
+          console.log("✅ Showing Modal");
+          const modalId = target.getAttribute("data-open-modal");
+          const message = target.getAttribute("data-message") || "";
+          toggleModal(modalId, true, message);
+        } else {
+          console.log(
+            "❌ Modal won't open because text is:",
+            saveBtn.textContent.trim()
+          );
+        }
+      }
     }
 
     // Close modal
@@ -444,6 +487,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (target.id === "confirmAction") {
       const action = target.getAttribute("data-confirm-action"); // Get correct action
       handleConfirmAction(action); // Call the function to execute the action
+
       // Close confirmation modal
       toggleModal("confirmationModal", false);
 
@@ -456,4 +500,181 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const tableBody = document.getElementById("scheduleBody");
+  const addRowBtn = document.getElementById("addRowBtn");
+  const saveBtn = document.getElementById("saveBtn");
+  const clearBtn = document.getElementById("clearBtn");
+
+  let firstClick = true; // Track first click on "Add"
+  let draggedRow = null; // For drag-and-drop functionality
+  let hasInitialRows = tableBody.children.length > 0; // Check if rows existed on page load
+
+  // Hide buttons initially
+  addRowBtn.style.display = "none";
+  clearBtn.style.display = "none";
+  saveBtn.textContent = hasInitialRows ? "Edit" : "Add"; // Set button based on initial rows
+
+  function updateButtonState() {
+    const visibleRows = Array.from(tableBody.children).filter(
+      (row) => !row.classList.contains("hidden-row")
+    );
+    const hasVisibleRows = visibleRows.length > 0;
+
+    if (!hasVisibleRows) {
+      saveBtn.textContent = "Add";
+      firstClick = true;
+      addRowBtn.style.display = "none";
+      clearBtn.style.display = "none";
+    } else if (hasInitialRows) {
+      // Set "Edit" only if rows existed when the page loaded
+      saveBtn.textContent = "Edit";
+      addRowBtn.style.display = "none";
+      clearBtn.style.display = "none";
+    }
+  }
+
+  function createRow() {
+    const newRow = document.createElement("tr");
+    newRow.classList.add("sched-row");
+    newRow.setAttribute("draggable", "false"); // Default: Not draggable
+    newRow.innerHTML = `
+            <td>
+                <select name="subject">
+                    <option value="" disabled selected>Choose a subject</option>
+                </select>
+            </td>
+            <td>
+                <select name="teacher">
+                    <option value="" disabled selected>Choose a teacher</option>
+                </select>
+            </td>
+            <td>
+                <select name="days">
+                    <option value="" disabled selected>Choose a day</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+            </td>
+            <td>
+                <input type="time">
+            </td>
+            <td>
+                <img class="delete-row" src="../../../static/images/icons/cross.png" alt="Delete" style="display: inline-block; cursor: pointer;">
+            </td>
+        `;
+    attachDeleteEvent(newRow);
+    attachDoubleClickDrag(newRow);
+    return newRow;
+  }
+
+  function attachDeleteEvent(row) {
+    row.querySelector(".delete-row").addEventListener("click", () => {
+      row.remove();
+      updateButtonState();
+    });
+  }
+
+  function attachDoubleClickDrag(row) {
+    row.addEventListener("dblclick", () => {
+      row.setAttribute("draggable", "true"); // Enable dragging on double-click
+      row.classList.add("dragging-enabled");
+    });
+
+    row.addEventListener("dragstart", (e) => {
+      if (row.getAttribute("draggable") !== "true") {
+        e.preventDefault();
+        return;
+      }
+      draggedRow = row;
+      row.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+    });
+
+    row.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      const afterElement = getDragAfterElement(tableBody, e.clientY);
+      if (afterElement == null) {
+        tableBody.appendChild(draggedRow);
+      } else {
+        tableBody.insertBefore(draggedRow, afterElement);
+      }
+    });
+
+    row.addEventListener("dragend", () => {
+      draggedRow.classList.remove("dragging");
+      draggedRow.setAttribute("draggable", "false"); // Disable dragging after release
+      draggedRow.classList.remove("dragging-enabled");
+      draggedRow = null;
+    });
+  }
+
+  function getDragAfterElement(container, y) {
+    const draggableElements = [
+      ...container.querySelectorAll(".sched-row:not(.dragging)"),
+    ];
+
+    return draggableElements.reduce(
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        return offset < 0 && offset > closest.offset
+          ? { offset, element: child }
+          : closest;
+      },
+      { offset: Number.NEGATIVE_INFINITY }
+    ).element;
+  }
+
+  saveBtn.addEventListener("click", () => {
+    const visibleRows = Array.from(tableBody.children).filter(
+      (row) => !row.classList.contains("hidden-row")
+    );
+    const hasVisibleRows = visibleRows.length > 0;
+
+    if (firstClick) {
+      // First time clicking "Add"
+      tableBody.appendChild(createRow());
+      addRowBtn.style.display = "block";
+      clearBtn.style.display = "block";
+      firstClick = false;
+    } else {
+      addRowBtn.style.display = "block";
+      clearBtn.style.display = "block";
+    }
+
+    document
+      .querySelectorAll(".delete-row")
+      .forEach((btn) => (btn.style.display = "inline-block"));
+  });
+
+  addRowBtn.addEventListener("click", () => {
+    tableBody.appendChild(createRow());
+    updateButtonState();
+    // Ensure button remains "Save" when adding more rows
+    saveBtn.textContent = "Save"; // Force it to remain "Save"
+  });
+
+  //   clearBtn.addEventListener("click", () => {
+  //     tableBody.innerHTML = ""; // Clears everything
+  //     saveBtn.textContent = "Add";
+  //     firstClick = true;
+  //     addRowBtn.style.display = "none";
+  //     clearBtn.style.display = "none";
+  //   });
+
+  window.clearSched = function () {
+    tableBody.innerHTML = ""; // Clears everything
+    saveBtn.textContent = "Add";
+    firstClick = true;
+    addRowBtn.style.display = "none";
+    clearBtn.style.display = "none";
+  };
+  //   window.updateAfterSched = function () {
+  //     addRowBtn.style.display = "none";
+  //     clearBtn.style.display = "none";
+  //   };
+  updateButtonState();
 });

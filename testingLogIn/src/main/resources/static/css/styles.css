@@ -397,7 +397,7 @@ body {
 .second-arrow-icon {
   position: absolute;
   right: 25px;
-  top: 52%;
+  top: 47%;
   transform: translateY(-50%);
 }
 .third-arrow-icon {
@@ -791,6 +791,76 @@ tr:nth-child(even) {
   width: 20%;
 }
 
+/* for sched table */
+#addRowBtn {
+  background-color: transparent;
+  color: white;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 30px;
+  margin-bottom: 10px;
+}
+.add-row-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0px 18px;
+}
+.delete-row {
+  width: 25px;
+}
+
+.delete-row {
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.sched-row {
+  cursor: default;
+}
+
+.sched-row.dragging-enabled {
+  cursor: grab;
+}
+
+.sched-row.dragging {
+  opacity: 0.5;
+  background-color: #f4f4f4;
+  cursor: grabbing;
+}
+
+.sched-table th,
+.sched-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  position: relative;
+}
+.sched-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.sched-table th:nth-child(1),
+.sched-table td:nth-child(1) {
+  width: 20%;
+}
+.sched-table th:nth-child(2),
+.sched-table td:nth-child(2) {
+  width: 30%;
+}
+.sched-table th:nth-child(3),
+.sched-table td:nth-child(3) {
+  width: 20%;
+}
+.sched-table th:nth-child(4),
+.sched-table td:nth-child(4) {
+  width: 15%;
+}
+.sched-table th:nth-child(5),
+.sched-table td:nth-child(5) {
+  width: 20%;
+}
+
 table td {
   text-align: center;
 }
@@ -810,6 +880,11 @@ table td {
 .verify-accounts-table {
   width: 91.5%;
   margin: 0px 50px;
+}
+.sched-table {
+  width: 96.8%;
+  margin: 0px 20px;
+  margin-bottom: 30px;
 }
 
 .status {
@@ -1426,6 +1501,35 @@ table td {
   margin: 40px 50px 0px 0px;
 }
 
+.btn-container button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 0px;
+  width: 100px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+.btn-container button:hover {
+  background-color: #218838;
+}
+.btn-container {
+  display: flex;
+  width: 20%;
+  justify-self: end;
+  justify-content: flex-end;
+  gap: 10px;
+  align-items: end;
+  margin: 40px 50px 0px 0px;
+}
+.btn-container #saveBtn {
+}
+.btn-container #clearBtn {
+  background-color: #dc3545;
+}
+
 .status-indicator {
   display: inline-block;
   width: 12px;
@@ -1533,4 +1637,39 @@ table td {
 }
 .edit-account-container button:hover {
   background-color: #218838;
+}
+.view-sched {
+  background-color: #28a745;
+  text-decoration: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-style: bold;
+  font-size: 13px;
+}
+.view-sched:hover {
+  cursor: pointer;
+  background-color: #218838;
+}
+.sched-board {
+  margin: auto;
+  border: 1.5px solid rgba(30, 30, 30, 0.2);
+}
+.grade-lev-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 20px;
+}
+.grade-lev-container h4 {
+  font-size: 18px;
+  margin: 20px 0px;
+}
+.hidden-row {
+  display: none;
+}
+.sched-row select,
+.sched-row input {
+  font-size: 14px;
+  padding: 5px;
+  border: 1px solid rgb(30, 30, 30, 0.2);
 }

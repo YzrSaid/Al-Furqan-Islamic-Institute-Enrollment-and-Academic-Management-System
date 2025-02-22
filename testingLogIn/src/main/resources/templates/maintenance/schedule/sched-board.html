@@ -93,14 +93,7 @@
         <div class="submenu" id="maintenance-submenu">
             <a href="../../maintenance/school-year-maintenance.html">School Year</a>
             <a href="../../maintenance/grade-level-maintenance.html">Grade Level</a>
-            <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
-                <span class="arrow-icon third-arrow-icon"><img src="../../../static/images/icons/arrow-down.png"
-                        alt="arrow-down"></span>
-            </a>
-            <div class="submenu" id="schedule-submenu">
-                <a href="sched-teacher-main.html" class="second-active">For Teachers</a>
-                <a href="#">For Students</a>
-            </div>
+            <a href="schedule-maintenance.html" class="second-active">Schedule</a>
             <a href="../maintenance/subject-maintenance.html">Subject</a>
             <a href="../maintenance/section-maintenance.html">Section</a>
             <a href="../maintenance/teacher-maintenance.html">Teacher</a>
@@ -156,56 +149,70 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>For Teachers</h4>
+            <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
             <p>Main</p>
             <p>/</p>
             <p>Maintenance</p>
             <p>/</p>
             <p>Schedule</p>
-            <p>/</p>
-            <p>For Teachers</p>
         </div>
-
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
-                </div>
-                <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
-                    </select>
-                </div>
+        <div class="sched-board">
+            <div class="grade-lev-container">
+                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+                <h4 id="adviser">Sir Jisun</h4>
             </div>
+            
+            <table class="sched-table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Teacher</th>
+                        <th>Days</th>
+                        <th>Time</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody">
+                    <tr class="sched-row hidden-row">
+                        <td>
+                            <select name="subject">
+                                <option value="" disabled selected>Choose a subject</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="teacher">
+                                <option value="" disabled selected>Choose a teacher</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="days">
+                                <option value="" disabled selected>Choose a day</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="time">
+                        </td>
+                        <td>
+                            <img class="delete-row" src="../../../static/images/icons/cross.png" alt="">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="add-row-container">
+                <img id="addRowBtn" src="../../../static/images/icons/add-button.png" alt="">
+            </div>
+        </div>    
+
+        <!-- buttons -->
+        <div class="btn-container">
+            <button class="save-button" data-action="saveSched" data-message="Are you sure you want to save this schedule" id="saveBtn" data-open-modal="confirmationModal">Add</button>
+            <button class="clear-button" data-action="clearSched" data-message="Are you sure you want to clear all the schedule" id="clearBtn" data-open-modal="confirmationModal">
+                Clear</button>
         </div>
-
-        <!-- Table -->
-        <table class="verify-accounts-table">
-            <thead>
-                <tr>
-                    <th>Teacher ID</th>
-                    <th>Name</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>001</td>
-                    <td>Ma'am Balan</td>
-                    <td>
-                        <div class="action-container">
-                            <a href="#" class="view-sched">View Schedule</a>
-                        </div>
-
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
@@ -303,6 +310,7 @@
         </div>
 
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="../../../static/js/script.js"></script>
 </body>
 

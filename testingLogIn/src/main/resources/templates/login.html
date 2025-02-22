@@ -54,7 +54,7 @@
         .then(response => {
             if (response.ok) {
                 alert('Go to Dashboard');
-                window.location.href = '/home';
+                window.location.href = '/schedules';
             } else {
                 return response.json(); // Parse the error response
             }

@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -100,7 +103,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     public boolean isUsernameValid(String username) {
         return userRepo.findByUsername(username) != null;
     }
-
+    
+    public String getLoggedInUsername(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            return currentUserName;
+            }
+        return null;
+    }
     
     private UserModel AccountRegToUserModel(AccountRegister accountRegister){
         return UserModel.builder()

@@ -53,9 +53,9 @@ public class SectionServices {
                      gradeLevel == null ?      2:
                      doesTeacherHaveAdvisory
                                  (user) ? 3:
-                     doesSectionNameExist
+                     getSectionByName
         (sectionDTO.getSectionName()
-                .toLowerCase())              ? 4:
+                .toLowerCase()) != null        ? 4:
                                                5;
         
         switch(result){
@@ -143,11 +143,15 @@ public class SectionServices {
                    .collect(Collectors.toList());
     }
     
-    private boolean doesSectionNameExist(String sectionName){
-        return sectionRepo.findAll().stream()
+    public Section getSectionByName(String sectionName){
+        System.out.println(sectionName);
+        Section sec = sectionRepo.findAll().stream()
                           .filter(section ->section.isNotDeleted() &&
                                             sectionName.equals(section.getSectionName().toLowerCase()))
-                          .findFirst().orElse(null) != null;
+                          .findFirst().orElse(null);
+        System.out.println(sec);
+        
+        return sec;
     }
     
     private boolean doesTeacherHaveAdvisory(UserModel staff){

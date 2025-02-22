@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.SubjectDTO;
+import com.example.testingLogIn.Models.Subject;
 import com.example.testingLogIn.Services.SubjectServices;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class SubjectController {
     @GetMapping("/all")
     public ResponseEntity<List<SubjectDTO>> getAllSubjects(){
         try{
-            return new ResponseEntity<>(subjectService.getSubjects(),HttpStatus.OK);
+            return new ResponseEntity<>(subjectService.getAllSubjects(),HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -56,6 +57,11 @@ public class SubjectController {
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+    }
+    
+    @GetMapping("/name/{subjectName}")
+    public ResponseEntity<Subject> getByName(@PathVariable String subjectName){
+        return new ResponseEntity<>(subjectService.getByName(subjectName),HttpStatus.OK);
     }
     
     @PostMapping("/add/{levelId}/{subjectName}")

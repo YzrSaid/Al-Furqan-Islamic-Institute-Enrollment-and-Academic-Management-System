@@ -2,19 +2,14 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.ModelDTO.TeacherDTO;
+import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Services.SectionServices;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 /**
  *
@@ -62,6 +57,11 @@ public class SectionController {
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+    }
+    
+    @GetMapping("/name/{sectionName}")
+    public ResponseEntity<Section> getSectionByName(@PathVariable String sectionName){
+        return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()),HttpStatus.OK);
     }
     
     @PostMapping("/add")

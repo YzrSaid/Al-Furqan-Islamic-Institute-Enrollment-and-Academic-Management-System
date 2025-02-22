@@ -66,12 +66,13 @@ public class SubjectServices {
             return false;
     }
     
-    public List<SubjectDTO> getSubjects(){
-         return subjectRepo.findAll().stream()
-                           .filter(Subject::isNotDeleted)
-                           .map(subject -> SubjectToSubjectDTO(subject))
-                           .collect(Collectors.toList());
-     }
+    public Subject getByName(String subjectName){
+        return subjectRepo.findAll().stream()
+                          .filter(subject -> subject.isNotDeleted() &&
+                                             subjectName.toLowerCase().equals(subject.getSubjectName().toLowerCase()))
+                          //.map(Subject::mapper)
+                            .findFirst().orElse(null);
+    }
     
     public boolean updateSubjectDescription(SubjectDTO subject){
         

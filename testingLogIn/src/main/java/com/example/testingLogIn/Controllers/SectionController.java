@@ -61,6 +61,7 @@ public class SectionController {
     
     @GetMapping("/name/{sectionName}")
     public ResponseEntity<Section> getSectionByName(@PathVariable String sectionName){
+        System.out.println(sectionName);
         return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()),HttpStatus.OK);
     }
     

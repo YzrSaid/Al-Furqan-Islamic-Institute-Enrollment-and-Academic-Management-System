@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="../../static/css/styles.css">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -29,7 +29,7 @@
                 // Update arrow icon
                 let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
                 if (arrowIconImg) {
-                    arrowIconImg.src = "/testingLogIn/src/main/resources/static/images/icons/greater-than.png";
+                    arrowIconImg.thsrc = "@{/images/icons/greater-than.png}";
                 }
             }
         });
@@ -41,7 +41,7 @@
     <div class="sidebar" id="sidebar">
         <div class="text-center">
             <div class="logo">
-                <img src="../../static/images/al-furqanlogo.jpg" alt="School Logo">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
             <div class="welcome-div">
@@ -49,22 +49,22 @@
             </div>
         </div>
 
-        <a href="../dashboard.html" class="sidebar-icons" onclick="clearSubmenus()">
-            <img src="../../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
+        <a href="/home" class="sidebar-icons" onclick="clearSubmenus()">
+            <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-            <img src="../../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
             <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
                 Enrollment
-                <span class="arrow-icon second-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
+                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
                         alt="arrow-down"></span>
             </a>
             <div class="submenu" id="enrollment-submenu">
-                <a href="../transaction/listing.html">Listing/Register</a>
+                <a href="/listing">Listing/Register</a>
                 <a href="#">Assessment</a>
                 <a href="#">Payment</a>
                 <a href="#">Enrolled</a>
@@ -73,13 +73,13 @@
             <a href="#">Book Distribution</a>
         </div>
 
-        <a href="../grade-management/grade-management.html" class="sidebar-icons">
-            <img src="../../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
+        <a href="/grade-management" class="sidebar-icons">
+            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
-            <img src="../../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span
+                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="class-submenu">
             <a href="#">Class List</a>
@@ -87,28 +87,28 @@
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-            <img src="../../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="school-year-maintenance.html">School Year</a>
-            <a href="grade-level-maintenance.html">Grade Level</a>
+            <a href="/grade-level-maintenance">Grade Level</a>
             <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
-                <span class="arrow-icon third-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
+                <span class="arrow-icon third-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
                         alt="arrow-down"></span>
             </a>
             <div class="submenu" id="schedule-submenu">
                 <a href="#">For Teachers</a>
                 <a href="#">For Students</a>
             </div>
-            <a href="../maintenance/subject-maintenance.html">Subject</a>
+            <a href="/subject-maintenance">Subject</a>
             <a href="#">Section</a>
-            <a href="../maintenance/teacher-maintenance.html">Teacher</a>
+            <a href="/teacher-maintenance">Teacher</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span
+                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
             <a href="#">Book Distribution Report</a>
@@ -116,17 +116,17 @@
         </div>
 
         <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img src="../../static/images/icons/account.png" alt="Account Icon"> Accounts <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Accounts <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
-            <a href="verify-accounts.html" class="second-active">Verify Accounts</a>
-            <a href="manage-accounts.html">Manage Accounts</a>
+            <a href="/verify-accounts" class="second-active">Verify Accounts</a>
+            <a href="/manage-accounts">Manage Accounts</a>
             <a href="#">My Account</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-            <img src="../../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
             <a href="#">Create User</a>
@@ -139,14 +139,14 @@
         <div class="topbar">
             <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
-                    <img src="../../static/images/icons/burger_menu_icon.png" alt="Menu">
+                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
                 </span>
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
             <div class="dropdown-logout">
                 <div class="user-icon dropdown-logout-toggle">
-                    <img src="../../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
+                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
@@ -206,10 +206,10 @@
                     <td>
                         <div class="action-container dropdown-status-content-verify">
                             <div class="action" id="action-verify-account"><img data-action="verifyAccount" data-message="Are you sure you want to verify this account?"
-                                    data-open-modal="confirmationModal" src="../../static/images/icons/check.png"
+                                    data-open-modal="confirmationModal" th:src="@{/images/icons/check.png}"
                                     alt="check-icon"></div>
                             <div class="action" id="action-verify-account"><img data-action="rejectAccount" data-message="Are you sure you want to reject this account?"
-                                    data-open-modal="confirmationModal" src="../../static/images/icons/cross.png"
+                                    data-open-modal="confirmationModal" th:src="@{/images/icons/cross.png}"
                                     alt="cross-icon"></div>
                         </div>
                     </td>
@@ -228,7 +228,7 @@
             </div>
         </div>
     </div>
-    <script src="../../static/js/script.js"></script>
+    <script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

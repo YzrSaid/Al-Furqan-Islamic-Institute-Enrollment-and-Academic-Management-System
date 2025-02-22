@@ -8,10 +8,8 @@
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
     <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
-    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
-    <!-- <link rel="stylesheet" th:href="@{/css/styles.css}"> -->
-    <!--    <link rel="stylesheet" href="../static/css/styles.css">-->
-    <link rel="stylesheet" href="../../static/css/styles.css">
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -31,7 +29,7 @@
                 // Update arrow icon
                 let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
                 if (arrowIconImg) {
-                    arrowIconImg.src = "/testingLogIn/src/main/resources/static/images/icons/greater-than.png";
+                    arrowIconImg.src = "/images/icons/greater-than.png";
                     // arrowIconImg.thsrc = "@{/images/icons/greater-than.png}";
                 }
             }
@@ -40,301 +38,301 @@
 </script>
 
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="text-center">
-            <div class="logo">
-                <!-- <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo"> -->
-                <img src="../../static/images/al-furqanlogo.jpg" alt="School Logo">
-            </div>
-            <p class="mt-2">S.Y. 2024-2025</p>
-            <div class="welcome-div">
-                <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
-            </div>
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="text-center">
+        <div class="logo">
+            <!-- <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo"> -->
+            <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
         </div>
-
-        <a href="dashboard.html" class="sidebar-icons" onclick="clearSubmenus()">
-            <!-- <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard -->
-            <img src="../../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
-        </a>
-
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-            <!-- <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
-            <img src="../../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="transaction-submenu">
-            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">Enrollment
-                <span class="arrow-icon second-arrow-icon"><img src="../../static/images/icons/arrow-down.png">
-                    <!-- <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
-                        alt="arrow-down"></span> -->
-            </a>
-            <div class="submenu" id="enrollment-submenu">
-                <a href="listing.html">Listing/Register</a>
-                <a href="#">Assessment</a>
-                <a href="#">Payment</a>
-                <a href="#">Enrolled</a>
-            </div>
-            <a href="#">Tuition</a>
-            <a href="#">Book Distribution</a>
-        </div>
-
-        <a href="grade-management.html" class="sidebar-icons">
-            <!-- <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management -->
-            <img src="../../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
-        </a>
-
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
-            <!-- <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
-            <img src="../../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
-
-            <!-- <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
-            <!--            <img src="../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span-->
-            <!--                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
-        </a>
-        <div class="submenu" id="class-submenu">
-            <a href="#">Class List</a>
-            <a href="#">Schedule</a>
-        </div>
-
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-            <!-- <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
-            <img src="../../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="maintenance-submenu">
-            <a href="#">School Year</a>
-            <a href="grade-level-maintenance.html" class="second-active">Grade Level</a>
-            <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
-                <span class="arrow-icon third-arrow-icon"><img src="../../static/images/icons/arrow-down.png"></span>
-
-
-                <!-- <span class="arrow-icon third-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
-                        alt="arrow-down"></span> -->
-            </a>
-            <div class="submenu" id="schedule-submenu">
-                <a href="#">For Teachers</a>
-                <a href="#">For Students</a>
-            </div>
-            <a href="#">Subject</a>
-            <a href="#">Section</a>
-            <a href="#">Teacher</a>
-        </div>
-
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <!-- <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
-
-            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="reports-submenu">
-            <a href="#">Book Distribution Report</a>
-            <a href="#">Payment Report</a>
-        </div>
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img src="../../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="account-submenu">
-            <a href="verify-accounts.html">Verify Accounts</a>
-            <a href="#">Manage Accounts</a>
-            <a href="#">My Account</a>
-        </div>
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-            <!-- <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
-            <img src="../../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="settings-submenu">
-            <a href="#">Create User</a>
-            <a href="#">Archive</a>
+        <p class="mt-2">S.Y. 2024-2025</p>
+        <div class="welcome-div">
+            <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
         </div>
     </div>
 
-    <!-- Topbar with Hamburger & User Icon -->
-    <div class="dashboard-container" id="content">
-        <div class="topbar">
-            <div class="main-topbar">
+    <a href="/home" class="sidebar-icons" onclick="clearSubmenus()">
+        <!-- <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard -->
+        <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
+    </a>
+
+    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+        <!-- <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+        <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+    </a>
+    <div class="submenu" id="transaction-submenu">
+        <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">Enrollment
+            <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}">
+                <!-- <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
+                    alt="arrow-down"></span> -->
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/listing">Listing/Register</a>
+            <a href="#">Assessment</a>
+            <a href="#">Payment</a>
+            <a href="#">Enrolled</a>
+        </div>
+        <a href="#">Tuition</a>
+        <a href="#">Book Distribution</a>
+    </div>
+
+    <a href="/grade-management" class="sidebar-icons">
+        <!-- <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management -->
+        <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
+    </a>
+
+    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
+        <!-- <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
+                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+        <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span
+            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+
+        <!-- <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
+                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+        <!--            <img src="../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span-->
+        <!--                class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span>-->
+    </a>
+    <div class="submenu" id="class-submenu">
+        <a href="#">Class List</a>
+        <a href="#">Schedule</a>
+    </div>
+
+    <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
+        <!-- <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+        <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+    </a>
+    <div class="submenu" id="maintenance-submenu">
+        <a href="#">School Year</a>
+        <a href="/grade-level-maintenance" class="second-active">Grade Level</a>
+        <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
+            <span class="arrow-icon third-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"></span>
+
+
+            <!-- <span class="arrow-icon third-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
+                    alt="arrow-down"></span> -->
+        </a>
+        <div class="submenu" id="schedule-submenu">
+            <a href="#">For Teachers</a>
+            <a href="#">For Students</a>
+        </div>
+        <a href="#">Subject</a>
+        <a href="#">Section</a>
+        <a href="#">Teacher</a>
+    </div>
+
+    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
+        <!-- <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+
+        <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span
+            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+    </a>
+    <div class="submenu" id="reports-submenu">
+        <a href="#">Book Distribution Report</a>
+        <a href="#">Payment Report</a>
+    </div>
+    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
+        <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+            th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+    </a>
+    <div class="submenu" id="account-submenu">
+        <a href="/verify-accounts">Verify Accounts</a>
+        <a href="#">Manage Accounts</a>
+        <a href="#">My Account</a>
+    </div>
+    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
+        <!-- <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+        <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+            th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+    </a>
+    <div class="submenu" id="settings-submenu">
+        <a href="#">Create User</a>
+        <a href="#">Archive</a>
+    </div>
+</div>
+
+<!-- Topbar with Hamburger & User Icon -->
+<div class="dashboard-container" id="content">
+    <div class="topbar">
+        <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
                     <!-- <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu"> -->
-                    <img src="../../static/images/icons/burger_menu_icon.png" alt="Menu">
+                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
                 </span>
 
-                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
-            </div>
-            <div class="dropdown-logout">
-                <div class="user-icon dropdown-logout-toggle">
-                    <img src="../../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
-                        alt="User Icon">
-                    <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Super Admin</span></h6>
-                        <a href="login.html">Log Out</a>
-                    </div>
+            <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+        </div>
+        <div class="dropdown-logout">
+            <div class="user-icon dropdown-logout-toggle">
+                <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
+                     alt="User Icon">
+                <div id="dropdownUserIcon" class="dropdown-logout-content">
+                    <h6><span>Super Admin</span></h6>
+                    <a href="/logout">Log Out</a>
                 </div>
             </div>
         </div>
-        <div class="text-link">
-            <h4>Maintenance</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Maintenance</p>
-            <p>/</p>
-            <p>Grade Level</p>
-        </div>
+    </div>
+    <div class="text-link">
+        <h4>Maintenance</h4>
+        <p>Main</p>
+        <p>/</p>
+        <p>Maintenance</p>
+        <p>/</p>
+        <p>Grade Level</p>
+    </div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
-                </div>
-                <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
-                    </select>
-                </div>
+    <div class="search-div">
+        <!-- Searchbox and sort btn -->
+        <div class="search">
+            <div class="search-container">
+                <input type="text" placeholder="Search..." class="search-input" />
+                <button class="search-btn">Search</button>
+            </div>
+            <div class="sort-container">
+                <select name="sort" id="sort-select" class="sort-select">
+                    <option value="" disabled selected>Sort</option>
+                    <option value="patient-number">Patient Number</option>
+                    <option value="patient-name">Patient Name</option>
+                    <option value="patient-sex">Sex</option>
+                </select>
             </div>
         </div>
+    </div>
 
-        <!-- Table -->
-        <table id="lamesa" class="grade-level-table">
-            <thead>
-                <tr>
-                    <th>Grade Level</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Grade 1</td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="status-grade-level">Active</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="action-container">
-                            <div class="action" id="openGradeLevelEditModal"><img data-open-modal="gradeLevelEditModal"
-                                    src="../../static/images/icons/compose.png" alt="grade-level-icon"></div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- Table -->
+    <table id="lamesa" class="grade-level-table">
+        <thead>
+        <tr>
+            <th>Grade Level</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Grade 1</td>
+            <td>
+                <div class="status-container">
+                    <div class="status" id="status-grade-level">Active</div>
+                </div>
+            </td>
+            <td>
+                <div class="action-container">
+                    <div class="action" id="openGradeLevelEditModal"><img data-open-modal="gradeLevelEditModal"
+                                                                          th:src="@{/images/icons/compose.png}" alt="grade-level-icon"></div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-        <!-- Add Grade Level Button -->
-        <div class="add-something-btn-container">
-            <button class="add-something-btn" id="openGradeLevelModal" data-open-modal="gradeLevelModal">Add Grade
-                Level</button>
+    <!-- Add Grade Level Button -->
+    <div class="add-something-btn-container">
+        <button class="add-something-btn" id="openGradeLevelModal" data-open-modal="gradeLevelModal">Add Grade
+            Level</button>
+    </div>
+
+    <!-- Modal for confirmation -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <p id="modalText"></p>
+            <div class="modal-buttons">
+                <button id="confirmAction" class="btn-confirm">Confirm</button>
+                <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+            </div>
         </div>
+    </div>
 
-        <!-- Modal for confirmation -->
-        <div id="confirmationModal" class="modal">
-            <div class="modal-content">
-                <p id="modalText"></p>
+    <!-- Modal for adding grade level -->
+    <div id="gradeLevelModal" class="grade-level-modal modal">
+        <div class="grade-level-modal-content">
+            <h2>Add New Grade Level</h2>
+            <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
+                <label for="levelName">Grade Level Name:</label>
+                <input type="text" id="levelName" name="levelName" required>
+                <br><br>
+
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal for adding grade level -->
-        <div id="gradeLevelModal" class="grade-level-modal modal">
-            <div class="grade-level-modal-content">
-                <h2>Add New Grade Level</h2>
-                <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
-                    <label for="levelName">Grade Level Name:</label>
-                    <input type="text" id="levelName" name="levelName" required>
-                    <br><br>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addGradeLevel"
+                    <button type="button" class="btn-confirm" data-action="addGradeLevel"
                             data-message="Are you sure you want to add this grade level?" id="confirmGradeLevel"
                             data-open-modal="confirmationModal">
-                            Confirm
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
-                    </div>
-                </form>
-            </div>
+                        Confirm
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
+                </div>
+            </form>
         </div>
-
-        <!-- Modal for editing the grade level -->
-        <div id="gradeLevelEditModal" class="grade-level-edit-modal modal">
-            <div class="grade-level-edit-modal-content">
-                <h2>Grade Level Information</h2>
-                <form method="post" action="" id="gradeLevelEditForm">
-                    <label for="levelName">Grade Level Name:</label>
-                    <input type="text" id="levelName" name="levelName" readonly required>
-                    <br><br>
-                    <div class="student-form-group">
-                        <label for="enrollees-num">Enrollees:</label>
-                        <input type="number" id="enrollees-num" name="Enrollees" readonly required>
-
-                        <label for="grade-level-status">Status:</label>
-                        <select name="grade-level-status" id="grade-level-status" disabled>
-                            <option value="" disabled>Select a status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-
-                   <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="editGradeLevel"
-                            data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
-                            Edit
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal for editing the grade level -->
-        <div id="gradeLevelEditModal" class="modal">
-            <div class="modal-content">
-                <h2>Grade Level Information</h2>
-                <form method="post" action="" id="gradeLevelEditForm">
-                    <label for="levelName">Grade Level Name:</label>
-                    <input type="text" id="levelName" name="levelName" readonly required>
-                    <br><br>
-                    <div class="student-form-group">
-                        <label for="enrollees-num">Enrollees:</label>
-                        <input type="number" id="enrollees-num" name="Enrollees" readonly required>
-
-                        <label for="grade-level-status">Status:</label>
-                        <select name="grade-level-status" id="grade-level-status" disabled>
-                            <option value="" disabled>Select a status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="editGradeLevel"
-                            data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
-                            Edit
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div> 
-
     </div>
+
+    <!-- Modal for editing the grade level -->
+    <div id="gradeLevelEditModal" class="grade-level-edit-modal modal">
+        <div class="grade-level-edit-modal-content">
+            <h2>Grade Level Information</h2>
+            <form method="post" action="" id="gradeLevelEditForm">
+                <label for="levelName">Grade Level Name:</label>
+                <input type="text" id="levelName" name="levelName" readonly required>
+                <br><br>
+                <div class="student-form-group">
+                    <label for="enrollees-num">Enrollees:</label>
+                    <input type="number" id="enrollees-num" name="Enrollees" readonly required>
+
+                    <label for="grade-level-status">Status:</label>
+                    <select name="grade-level-status" id="grade-level-status" disabled>
+                        <option value="" disabled>Select a status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" data-action="editGradeLevel"
+                            data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
+                        Edit
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for editing the grade level -->
+    <div id="gradeLevelEditModal" class="modal">
+        <div class="modal-content">
+            <h2>Grade Level Information</h2>
+            <form method="post" action="" id="gradeLevelEditForm">
+                <label for="levelName">Grade Level Name:</label>
+                <input type="text" id="levelName" name="levelName" readonly required>
+                <br><br>
+                <div class="student-form-group">
+                    <label for="enrollees-num">Enrollees:</label>
+                    <input type="number" id="enrollees-num" name="Enrollees" readonly required>
+
+                    <label for="grade-level-status">Status:</label>
+                    <select name="grade-level-status" id="grade-level-status" disabled>
+                        <option value="" disabled>Select a status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" data-action="editGradeLevel"
+                            data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
+                        Edit
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
     <!-- <script th:src="@{/js/script.js}"></script> -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -383,7 +381,7 @@
                     if (response.ok) {
                         return response.text().then(text => {
                             alert(text);
-                            window.location.href = '/gradelevelmaintenance';
+                            window.location.href = '/grade-level-maintenance';
                         });
                     } else {
                         return response.text().then(text => {
@@ -396,7 +394,7 @@
                 });
         });
     </script>
-    <script src="../../static/js/script.js"></script>
+    <script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

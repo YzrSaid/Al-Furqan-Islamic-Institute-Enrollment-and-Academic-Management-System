@@ -144,14 +144,11 @@ public class SectionServices {
     }
     
     public Section getSectionByName(String sectionName){
-        System.out.println(sectionName);
-        Section sec = sectionRepo.findAll().stream()
-                          .filter(section ->section.isNotDeleted() &&
+        System.out.println("I am at the service now");
+        return sectionRepo.findAll().stream()
+                          .filter(section -> section.isNotDeleted() &&
                                             sectionName.equals(section.getSectionName().toLowerCase()))
                           .findFirst().orElse(null);
-        System.out.println(sec);
-        
-        return sec;
     }
     
     private boolean doesTeacherHaveAdvisory(UserModel staff){

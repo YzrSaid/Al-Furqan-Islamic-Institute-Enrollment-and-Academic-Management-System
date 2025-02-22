@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("a.view-sched").forEach((link) => {
     link.addEventListener("click", function (event) {
       event.preventDefault(); // Prevent default navigation
-      window.location.href = "sched-board.html"; // Navigate to the sched board page
+      window.location.href = "/sched-board"; // Navigate to the sched board page
     });
   });
 });

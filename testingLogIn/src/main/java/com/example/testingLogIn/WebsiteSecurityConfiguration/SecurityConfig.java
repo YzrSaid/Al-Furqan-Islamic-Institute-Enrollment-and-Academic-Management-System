@@ -34,7 +34,7 @@ public class SecurityConfig {
                     req.anyRequest().authenticated();
                 })// Require authentication for all requests
                 .formLogin(form -> form.loginPage("/login").permitAll()
-                        .defaultSuccessUrl("/schedules", true)
+                        .defaultSuccessUrl("/home", true)
                         .failureHandler(customAuthenticationFailureHandler))  // Custom login page
                 .httpBasic(Customizer.withDefaults())  // Enable basic authentication (for Postman)
                 .logout(c -> c.invalidateHttpSession(true))

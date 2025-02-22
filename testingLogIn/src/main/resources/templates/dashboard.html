@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <a href="dashboard.html" class="active sidebar-icons menu" onclick="clearSubmenus()">
+        <a href="/home" class="active sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
             <!-- <img src="../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard -->
         </a>
@@ -46,7 +46,7 @@
                         alt="arrow-down"></span> -->
             </a>
             <div class="submenu" id="enrollment-submenu">
-                <a href="transaction/listing.html">Listing/Register</a>
+                <a href="/listing">Listing/Register</a>
                 <a href="#">Assessment</a>
                 <a href="#">Payment</a>
                 <a href="#">Enrolled</a>
@@ -56,7 +56,7 @@
         </div>
 
 
-        <a href="grade-management/grade-management.html" class="sidebar-icons">
+        <a href="/grade-management" class="sidebar-icons">
             <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
             <!-- <img src="../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management -->
         </a>
@@ -80,13 +80,12 @@
                 class="arrow-icon"><img src="../static/images/icons/arrow-down.png" alt="arrow-down"></span> -->
         </a>
         <div class="submenu" id="maintenance-submenu">
-            <a href="#">School Year</a>
-            <a href="/gradelevelmaintenance">Grade Level</a>
-            <!-- <a href="grade-level-maintenance.html">Grade Level</a> -->
-            <a href="schedule-maintenance.html">Schedule</a>
-            <a href="#">Subject</a>
-            <a href="#">Section</a>
-            <a href="#">Teacher</a>
+            <a href="/school-year-maintenance">School Year</a>
+            <a href="/grade-level-maintenance">Grade Level</a>
+            <a href="/schedule-maintenance">Schedule</a>
+            <a href="/subject-maintenance">Subject</a>
+            <a href="/section-maintenance">Section</a>
+            <a href="/teacher-maintenance">Teacher</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
@@ -104,15 +103,13 @@
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
-            <a href="verify-accounts.html">Verify Accounts</a>
-            <a href="#">Manage Accounts</a>
-            <a href="#">My Account</a>
+            <a href="/verify-accounts">Verify Accounts</a>
+            <a href="/manage-accounts">Manage Accounts</a>
+            <a href="/my-account">My Account</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
             <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-            <!-- <img src="../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    src="../static/images/icons/arrow-down.png" alt="arrow-down"></span> -->
         </a>
         <div class="submenu" id="settings-submenu">
             <a href="#">Create User</a>
@@ -127,7 +124,6 @@
             <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
                     <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
-                    <!-- <img src="../static/images/icons/burger_menu_icon.png" alt="Menu"> -->
                 </span>
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>

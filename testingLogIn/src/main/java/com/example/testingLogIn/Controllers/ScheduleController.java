@@ -58,6 +58,7 @@ public class ScheduleController {
             else
                 return new ResponseEntity<>(schedsRejected,HttpStatus.CONFLICT);
         }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

@@ -38,7 +38,8 @@ public class ScheduleServices {
         newSchedules.forEach(SchedDTO ->{
             boolean isValid=true;
             UserModel teacher = getTeacherByName(SchedDTO.getTeacherName().toLowerCase()).getUser();
-            Section section = sectionService.getSectionByName(SchedDTO.getSectionName());
+            Section section = sectionService.getSectionByName(SchedDTO.getSectionName().toLowerCase());
+            System.out.println("The section is "+section);
             if(isTeacherSchedConflict(teacher,SchedDTO)){
                 isValid = false;
                 rejectedSchedules.put(SchedDTO, "Conflict with the Teacher's other existing schedule");
@@ -81,23 +82,22 @@ public class ScheduleServices {
     }
     
     private boolean isTeacherSchedConflict(UserModel teacher, ScheduleDTO sDTO){
-        System.out.println("The staff id is "+teacher.getStaffId());
         Schedule scheds = scheduleRepo.findAll().stream()
                            .filter(sched -> sched.isNotDeleted() && 
-                                            getTeacherByName(sDTO.getTeacherName().toLowerCase())
-                                                    .getUser().getStaffId() == teacher.getStaffId() &&
+                                            sched.getTeacher().getStaffId() == teacher.getStaffId() &&
                                             (isConflict2(sched,sDTO)))
                             .findFirst().orElse(null);
-        System.out.println("The sched is "+scheds);
-        return scheds != null;
+        return scheds == null;
     }
     
     private boolean isSectionSchedConflict(Section section, ScheduleDTO sDTO){
         return scheduleRepo.findAll().stream()
                            .filter(sched -> sched.isNotDeleted() &&
-                                            sched.getSection().getNumber() == section.getNumber() &&
+                                   
+                                            sched.getSection().getNumber() == 
+                                                    section.getNumber() &&
                                             (isConflict2(sched,sDTO)))
-                           .findFirst().orElse(null) != null;
+                           .findFirst().orElse(null) == null;
     }
     
     public boolean isConflict(LocalTime timeStart,LocalTime timeEnd, LocalTime time){

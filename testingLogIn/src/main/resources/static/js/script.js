@@ -690,6 +690,15 @@ function fetchGradeLevels() {
     });
 }
 
+function openEditModal(levelId, levelName) {
+  const levelNameInput = document.getElementById("levelName");
+  levelNameInput.value = levelName; // Set the value of the levelName input
+
+  // You can also pass the `levelId` if needed later, e.g., for making API requests
+  const modal = document.getElementById("gradeLevelEditModal");
+  modal.style.display = "block"; // Open the modal
+}
+
 document.addEventListener("click", function (event) {
   const target = event.target;
   console.log("Clicked Element:", target); // ✅ Debug element

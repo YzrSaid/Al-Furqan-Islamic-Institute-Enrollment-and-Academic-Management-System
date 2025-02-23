@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -60,6 +61,22 @@ public class ScheduleController {
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @PutMapping("/update")
+    public ResponseEntity<String> updateSchedule(@RequestBody ScheduleDTO schedDTO){
+        int result = scheduleService.updateSchedule(schedDTO);
+        
+        switch(result){
+            case 1:
+                return new ResponseEntity<>("Conflict with the Teacher's other existing schedule",HttpStatus.CONFLICT);
+            case 2:
+                return new ResponseEntity<>("Conflict with the Section's other existing schedule",HttpStatus.CONFLICT);
+            case 3:
+                return new ResponseEntity<>("Schedule Updated Successfully",HttpStatus.OK);
+            default:
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

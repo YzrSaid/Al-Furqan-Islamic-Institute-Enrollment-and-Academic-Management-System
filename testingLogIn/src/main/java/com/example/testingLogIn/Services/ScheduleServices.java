@@ -9,7 +9,6 @@ import com.example.testingLogIn.Repositories.ScheduleRepo;
 import com.example.testingLogIn.Repositories.SubjectRepo;
 import com.example.testingLogIn.Repositories.TeacherRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -39,18 +38,17 @@ public class ScheduleServices {
             boolean isValid=true;
             UserModel teacher = getTeacherByName(SchedDTO.getTeacherName().toLowerCase()).getUser();
             Section section = sectionService.getSectionByName(SchedDTO.getSectionName().toLowerCase());
-            System.out.println("The section is "+section);
-            if(isTeacherSchedConflict(teacher,SchedDTO)){
+            if(isTeacherSchedConflict(teacher,SchedDTO,true)){
                 isValid = false;
                 rejectedSchedules.put(SchedDTO, "Conflict with the Teacher's other existing schedule");
-            }else if(isSectionSchedConflict(section, SchedDTO)){
+            }else if(isSectionSchedConflict(section, SchedDTO,true)){
                 isValid = false;
                 rejectedSchedules.put(SchedDTO, "Conflict with the Section's other existing schedule");
             }
             
-            if(isValid){
+            if(isValid)
                 scheduleRepo.save(ScheduleDTOtoSchedule(SchedDTO));
-            }
+            
         });
         
         return rejectedSchedules;
@@ -69,7 +67,7 @@ public class ScheduleServices {
     }
     
     public List<ScheduleDTO> getSchedulesBySection(String sectionName){
-        Section section = sectionService.getSectionByName(sectionName);
+        Section section = sectionService.getSectionByName(sectionName.toLowerCase());
         if(section == null)
             throw new NullPointerException();
         
@@ -81,37 +79,80 @@ public class ScheduleServices {
                             .toList();
     }
     
-    private boolean isTeacherSchedConflict(UserModel teacher, ScheduleDTO sDTO){
-        Schedule scheds = scheduleRepo.findAll().stream()
-                           .filter(sched -> sched.isNotDeleted() && 
-                                            sched.getTeacher().getStaffId() == teacher.getStaffId() &&
-                                            (isConflict2(sched,sDTO)))
-                            .findFirst().orElse(null);
-        return scheds == null;
+    public int updateSchedule(ScheduleDTO schedDTO){
+        Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElse(null);
+        
+        if(toUpdate != null){
+            Schedule updated = ScheduleDTOtoSchedule(schedDTO);
+            UserModel teacher = updated.getTeacher();
+            Section section = updated.getSection();
+            if(isTeacherSchedConflict(teacher,schedDTO,false)){
+                return 1;
+            }else if(isSectionSchedConflict(section, schedDTO,false)){
+                return 2;
+            }
+            
+            toUpdate.setTeacher(updated.getTeacher());
+            toUpdate.setSubject(updated.getSubject());
+            toUpdate.setSection(updated.getSection());
+            toUpdate.setDay(updated.getDay());
+            toUpdate.setTimeStart(updated.getTimeStart());
+            toUpdate.setTimeEnd(updated.getTimeEnd());
+            
+            scheduleRepo.save(toUpdate);
+            return 3;
+            
+        }
+        return 4;
     }
     
-    private boolean isSectionSchedConflict(Section section, ScheduleDTO sDTO){
+    private boolean isTeacherSchedConflict(UserModel teacher, ScheduleDTO sDTO,boolean isForAdd){
+        if(isForAdd)
+            return scheduleRepo.findAll().stream()
+                               .filter(sched -> sched.isNotDeleted() && 
+                                                sched.getTeacher().getStaffId() == teacher.getStaffId() 
+                                       &&(isConflict2(sched,sDTO))
+                               )
+                                .findFirst().orElse(null) != null;
+        else
+            return scheduleRepo.findAll().stream()
+                               .filter(sched -> sched.isNotDeleted() &&
+                                                sched.getScheduleNumber() != sDTO.getScheduleNumber() &&
+                                                sched.getTeacher().getStaffId() == teacher.getStaffId() 
+                                       &&(isConflict2(sched,sDTO))
+                               )
+                                .findFirst().orElse(null) != null;
+    }
+    
+    private boolean isSectionSchedConflict(Section section, ScheduleDTO sDTO,boolean isForAdd){
+        if(isForAdd)
         return scheduleRepo.findAll().stream()
                            .filter(sched -> sched.isNotDeleted() &&
-                                   
                                             sched.getSection().getNumber() == 
+                                                    section.getNumber() 
+                                   &&(isConflict2(sched,sDTO))
+                           )
+                           .findFirst().orElse(null) != null;
+        else
+            return scheduleRepo.findAll().stream()
+                               .filter(sched -> sched.isNotDeleted() &&
+                                                sched.getScheduleNumber() != sDTO.getScheduleNumber() &&
+                                                sched.getSection().getNumber() == 
                                                     section.getNumber() &&
-                                            (isConflict2(sched,sDTO)))
-                           .findFirst().orElse(null) == null;
-    }
-    
-    public boolean isConflict(LocalTime timeStart,LocalTime timeEnd, LocalTime time){
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("hh:mm a");
-        return (time.isAfter(timeStart) && time.isBefore(timeEnd)) ||
-                (time.equals(timeStart) || time.equals(timeEnd));
+                                                (isConflict2(sched,sDTO))
+                               )
+                                .findFirst().orElse(null) != null;
     }
     
     public boolean isConflict2(Schedule sched,ScheduleDTO schedDTO){
         DateTimeFormatter format = DateTimeFormatter.ofPattern("hh:mm a");
         return (schedDTO.getTimeStart().isAfter(sched.getTimeStart()) && schedDTO.getTimeStart().isBefore(sched.getTimeEnd())) ||
                 (schedDTO.getTimeEnd().isAfter(sched.getTimeStart()) && schedDTO.getTimeEnd().isBefore(sched.getTimeEnd())) ||
-                (schedDTO.getTimeStart().equals(sched.getTimeStart()) || schedDTO.getTimeStart().equals(sched.getTimeEnd())) ||
-                (schedDTO.getTimeEnd().equals(sched.getTimeStart()) || schedDTO.getTimeEnd().equals(sched.getTimeEnd()));
+                
+                (sched.getTimeStart().isAfter(schedDTO.getTimeStart()) && sched.getTimeStart().isBefore(schedDTO.getTimeEnd())) ||
+                (sched.getTimeEnd().isAfter(schedDTO.getTimeStart()) && sched.getTimeEnd().isBefore(schedDTO.getTimeEnd())) ||
+                sched.getTimeStart().equals(schedDTO.getTimeStart())
+                ;
     }
     
     private Schedule ScheduleDTOtoSchedule(ScheduleDTO schedDTO){
@@ -134,5 +175,4 @@ public class ScheduleServices {
                           .findFirst().orElse(null);
         return teacher;
     }
-    
 }

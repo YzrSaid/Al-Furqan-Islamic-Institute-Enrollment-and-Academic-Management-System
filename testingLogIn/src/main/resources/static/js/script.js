@@ -431,25 +431,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Perform the AJAX request
     fetch(actionUrl, {
-      method: method,
-      body: formData,
+    method: method,
+    body: formData,
     })
-      .then((response) => {
+    .then((response) => {
         if (!response.ok) {
-          throw new Error("Server response error");
+            // If the response is not OK, throw an error with the status text
+            throw new Error(`Server response error: ${response.statusText}`);
         }
-        return response.json();
-      })
-      .then((data) => {
-        alert(data.message || "Action completed successfully!");
-        toggleModal("confirmationModal", false);
+        return response.text(); // Parse the response as plain text
+    })
+    .then((message) => {
+        // Display the message from the server in an alert
+        alert(message);
 
-        // Optional: Refresh page or update UI
+        // Optional: Refresh the page or update the UI
         location.reload();
-      })
-      .catch((error) => {
+    })
+    .catch((error) => {
+        // Display any errors in an alert
         alert("Error: " + error.message);
-      });
+    });
   }
 
   document.body.addEventListener("click", function (event) {
@@ -602,25 +604,25 @@ function fetchGradeLevels() {
 
         const row = document.createElement("tr");
         row.innerHTML = `
-                      <td>${grade.levelName}</td>
-                      <td>
-                          <div class="status-container">
-                              <div class="status" style="background-color: ${statusColor}; font-weight: bold;">
-                                  ${statusText}
-                              </div>
-                          </div>
-                      </td>
-                      <td>
-                          <div class="action-container">
-                              <div class="action">
-                                  <img data-open-modal="gradeLevelEditModal" 
-                                      src="/images/icons/compose.png" 
-                                      alt="grade-level-icon" 
-                                      onclick="openEditModal(${grade.levelId}, '${grade.levelName}')">
-                              </div>
-                          </div>
-                      </td>
-                  `;
+    <td>${grade.levelName}</td>
+    <td>
+        <div class="status-container">
+            <div class="status" style="background-color: ${statusColor}; font-weight: bold;">
+                ${statusText}
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="action-container">
+            <div class="action">
+                <img data-open-modal="gradeLevelEditModal" 
+                    src="/images/icons/compose.png" 
+                    alt="grade-level-icon" 
+                    onclick="openEditModal(${grade.levelId}, '${grade.levelName}')">
+            </div>
+        </div>
+    </td>
+`;
         tableBody.appendChild(row);
       });
     })
@@ -628,6 +630,18 @@ function fetchGradeLevels() {
       console.error("Error:", error);
     });
 }
+
+//function openEditModal(levelId, levelName) {
+//    alert('The id is '+levelId);
+//    alert('The name is '+levelName)
+//  // Populate the modal input field with the grade level name
+//  const levelNameInput = document.getElementById("levelName");
+//  levelNameInput.value = levelName; // Set the value of the levelName input
+//
+//  // You can also pass the `levelId` if needed later, e.g., for making API requests
+//  const modal = document.getElementById("gradeLevelEditModal");
+//  modal.style.display = "block"; // Open the modal
+//}
 
 document.addEventListener("click", function (event) {
   const target = event.target;

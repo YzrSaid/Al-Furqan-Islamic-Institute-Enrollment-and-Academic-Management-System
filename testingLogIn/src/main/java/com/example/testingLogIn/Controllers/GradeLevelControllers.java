@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/gradelevel")
 @Controller
@@ -19,43 +21,62 @@ public class GradeLevelControllers {
 
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/all")
-    public ResponseEntity<List<GradeLevel>> getAllGradeLevels(){
-        return new ResponseEntity<>(gradeLevelServices.getAllGradeLevels(),HttpStatus.OK);
+    public ResponseEntity<List<GradeLevel>> getAllGradeLevels() {
+        return new ResponseEntity<>(gradeLevelServices.getAllGradeLevels(), HttpStatus.OK);
     }
 
-    @PostMapping("/add/{levelName}")
-    public ResponseEntity<String> addGradeLevel(@PathVariable String levelName){
-        try{
-            if(gradeLevelServices.addNewGradeLevel(levelName))
-                return new ResponseEntity<>("New Grade Level Added Successfulyy",HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Grade Level Name Already Exist", HttpStatus.BAD_REQUEST);
-        }catch(Exception e){
-            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+    @PostMapping("/add")
+    public ResponseEntity<Map<String, String>> addGradeLevel(@RequestParam String levelName) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            if (gradeLevelServices.addNewGradeLevel(levelName)) {
+                response.put("message", "New Grade Level Added Successfully");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("message", "Grade Level Name Already Exists");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            response.put("message", "Process Failed");
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel newGradeLevel){
-        try{
-            if(gradeLevelServices.updateGradeLevel(newGradeLevel))
-                return new ResponseEntity<>("Grade Level Has Been Updated Successfulyy", HttpStatus.OK);
+    // @PutMapping("/update")
+    // public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel
+    // newGradeLevel) {
+    // try {
+    // if (gradeLevelServices.updateGradeLevel(newGradeLevel))
+    // return new ResponseEntity<>("Grade Level Has Been Updated Successfully",
+    // HttpStatus.OK);
+    // else
+    // return new ResponseEntity<>("Grade Level Not Found", HttpStatus.NOT_FOUND);
+    // } catch (Exception e) {
+    // return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
+    // }
+    // }
+
+    @PutMapping("/update-grade-level")
+    public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel newGradeLevel) {
+        try {
+            if (gradeLevelServices.updateGradeLevel(newGradeLevel))
+                return new ResponseEntity<>("Grade Level Has Been Updated Successfully", HttpStatus.OK);
             else
-                return new ResponseEntity<>("Grade Level Not Found",HttpStatus.NOT_FOUND);
-        }catch(Exception e){
-            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+                return new ResponseEntity<>("Grade Level Not Found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
         }
     }
-    
+
     @DeleteMapping("/{levelId}")
-    public ResponseEntity<String> deleteGradeLevel(@PathVariable int levelId){
-        try{
-            if(gradeLevelServices.deleteGradeLevel(levelId))
+    public ResponseEntity<String> deleteGradeLevel(@PathVariable int levelId) {
+        try {
+            if (gradeLevelServices.deleteGradeLevel(levelId))
                 return new ResponseEntity<>("Grade Level Has Been Deleted Successfulyy", HttpStatus.OK);
             else
-                return new ResponseEntity<>("Grade Level Not Found",HttpStatus.NOT_FOUND);
-        }catch(Exception e){
-            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+                return new ResponseEntity<>("Grade Level Not Found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
         }
     }
 }

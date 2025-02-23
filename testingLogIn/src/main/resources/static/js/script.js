@@ -95,11 +95,7 @@ function clearSubmenus() {
   document
     .querySelectorAll(".arrow-icon img")
     // .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
-    .forEach(
-      (img) =>
-        (img.src =
-          "../images/icons/arrow-down.png")
-    );
+    .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -334,27 +330,59 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function handleConfirmAction(action) {
+    let actionUrl;
+    let method = "POST"; // Default method
+
+    // Prepare form data
+    let formData = new FormData();
+
     switch (action) {
-      case "addStudent":
-        alert("Student information submitted!");
-        break;
       case "addGradeLevel":
-        alert("Grade Level information saved!");
+        actionUrl = "/gradelevel/add";
+        method = "POST";
+        formData.append(
+          "levelName",
+          document.getElementById("levelName").value
+        );
         break;
       case "editGradeLevel":
-        alert("Grade Level information updated!");
-        break;
-      case "addSchoolYear":
-        alert("School Year information saved!");
+        editGradeLevel();
         break;
       case "makeSchoolYearInactive":
-        alert("This School Year is now Inactive!");
+        actionUrl = "/school-year/inactivate";
+        method = "PUT";
+        formData.append(
+          "schoolYearId",
+          document.getElementById("schoolYearId").value
+        );
         break;
       case "makeSchoolYearArchive":
-        alert("This School Year is now in Archive");
+        actionUrl = "/school-year/archive";
+        method = "PUT";
+        formData.append(
+          "schoolYearId",
+          document.getElementById("schoolYearId").value
+        );
+        break;
+      case "clearSched":
+        window.clearSched();
+        alert("Schedule cleared successfully!");
         break;
       case "makeSchoolYearActive":
-        alert("This School Year is now Active");
+        actionUrl = "/school-year/activate";
+        method = "PUT";
+        formData.append(
+          "schoolYearId",
+          document.getElementById("schoolYearId").value
+        );
+        break;
+      case "addStudent":
+        actionUrl = "/student/add";
+        method = "POST";
+        formData.append(
+          "studentName",
+          document.getElementById("studentName").value
+        );
         break;
       case "addSection":
         alert("Added Section");
@@ -396,14 +424,32 @@ document.addEventListener("DOMContentLoaded", function () {
         // code
         alert("Schedule Saved Successfully!");
         break;
-      case "clearSched":
-        window.clearSched();
-        alert("Schedule cleared successfully!");
-        break;
       default:
         alert("Unknown action: " + action);
-        break;
+        return;
     }
+
+    // Perform the AJAX request
+    fetch(actionUrl, {
+      method: method,
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Server response error");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        alert(data.message || "Action completed successfully!");
+        toggleModal("confirmationModal", false);
+
+        // Optional: Refresh page or update UI
+        location.reload();
+      })
+      .catch((error) => {
+        alert("Error: " + error.message);
+      });
   }
 
   document.body.addEventListener("click", function (event) {
@@ -431,17 +477,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Open modal only if saveBtn is already "Save"
       if (target.matches("[data-open-modal]")) {
-        if (saveBtn.textContent.trim() === "Save") {
-          console.log("✅ Showing Modal");
-          const modalId = target.getAttribute("data-open-modal");
-          const message = target.getAttribute("data-message") || "";
-          toggleModal(modalId, true, message);
-        } else {
-          console.log(
-            "❌ Modal won't open because text is:",
-            saveBtn.textContent.trim()
-          );
-        }
+        // if (saveBtn.textContent.trim() === "Save") {
+        //   console.log("✅ Showing Modal");
+        //   const modalId = target.getAttribute("data-open-modal");
+        //   const message = target.getAttribute("data-message") || "";
+        //   toggleModal(modalId, true, message);
+        // } else {
+        //     toggleModal(modalId, true, message);
+        // //   console.log(
+        // //     "❌ Modal won't open because text is:",
+        // //     saveBtn.textContent.trim()
+        // //   );
+        // }
+        const modalId = target.getAttribute("data-open-modal");
+        const message = target.getAttribute("data-message") || "";
+        toggleModal(modalId, true, message);
       }
     }
 
@@ -500,6 +550,105 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+});
+
+function editGradeLevel() {
+  const gradeLevelId = document.getElementById("gradeLevelEditForm").dataset.id;
+
+  const gradeLevelData = {
+    id: gradeLevelId, // Ensure the ID is sent
+    levelName: document.getElementById("levelName").value,
+    enrollees: parseInt(document.getElementById("enrollees-num").value),
+    status: document.getElementById("grade-level-status").value,
+  };
+
+  fetch("/update-grade-level", {
+    // Adjust endpoint if needed
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(gradeLevelData),
+  })
+    .then((response) => response.text()) // Expecting a text response
+    .then((data) => {
+      alert(data); // Show the response message
+      if (data.includes("Successfully")) {
+        location.reload(); // Refresh to reflect the changes
+      }
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetchGradeLevels(); // Call function when page loads
+});
+
+function fetchGradeLevels() {
+  fetch("/gradelevel/all")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch grade levels");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const tableBody = document.querySelector("#lamesa tbody");
+      tableBody.innerHTML = ""; // Clear existing rows
+
+      data.forEach((grade) => {
+        const statusText = grade.status ? "Active" : "Inactive";
+        const statusColor = grade.status ? "green" : "gray";
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+                      <td>${grade.levelName}</td>
+                      <td>
+                          <div class="status-container">
+                              <div class="status" style="background-color: ${statusColor}; font-weight: bold;">
+                                  ${statusText}
+                              </div>
+                          </div>
+                      </td>
+                      <td>
+                          <div class="action-container">
+                              <div class="action">
+                                  <img data-open-modal="gradeLevelEditModal" 
+                                      src="/images/icons/compose.png" 
+                                      alt="grade-level-icon" 
+                                      onclick="openEditModal(${grade.levelId}, '${grade.levelName}')">
+                              </div>
+                          </div>
+                      </td>
+                  `;
+        tableBody.appendChild(row);
+      });
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+document.addEventListener("click", function (event) {
+  const target = event.target;
+
+  if (target.dataset.openModal === "gradeLevelEditModal") {
+    const gradeLevelId = target.dataset.id;
+    alert(gradeLevelId);
+    // Fetch grade level data
+    fetch(`/grade-level/${gradeLevelId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // Populate the modal fields with fetched data
+        document.getElementById("gradeLevelEditForm").dataset.id = data.id;
+        document.getElementById("levelName").value = data.levelName;
+        document.getElementById("grade-level-status").value = data.status;
+
+        // Open the modal
+        document.getElementById("gradeLevelEditModal").style.display = "block";
+      })
+      .catch((error) => console.error("Error fetching grade level:", error));
+  }
 });
 
 document.addEventListener("DOMContentLoaded", () => {

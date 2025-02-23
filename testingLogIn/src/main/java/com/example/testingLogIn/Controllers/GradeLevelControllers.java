@@ -57,6 +57,9 @@ public class GradeLevelControllers {
 
     @PutMapping("/update-grade-level")
     public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel newGradeLevel) {
+        System.out.println(newGradeLevel.getLevelId());
+        System.out.println(newGradeLevel.getLevelName());
+        System.out.println("yawa");
         try {
             if (gradeLevelServices.updateGradeLevel(newGradeLevel))
                 return new ResponseEntity<>("Grade Level Has Been Updated Successfully", HttpStatus.OK);

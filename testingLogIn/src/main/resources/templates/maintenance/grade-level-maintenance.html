@@ -228,12 +228,22 @@
                                     th:src="@{/images/icons/compose.png}" alt="grade-level-icon"></div>
                         </div> -->
 
-                        <div class="action-container">
+                        <!-- <div class="action-container">
                             <div class="action" id="openGradeLevelEditModal">
                                 <img data-open-modal="gradeLevelEditModal" th:data-id="${levelId}"
                                     th:src="@{/images/icons/compose.png}" alt="grade-level-icon">
                             </div>
-                        </div>
+                        </div> -->
+
+                        <div class="action-container">
+                            <div class="action">
+                                <img data-open-modal="gradeLevelEditModal" 
+                                     data-id="${grade.levelId}" 
+                                     data-name="${grade.levelName}"
+                                     src="/images/icons/compose.png" 
+                                     alt="grade-level-icon">
+                            </div>
+                        </div>                        
 
                     </td>
                 </tr>
@@ -279,56 +289,13 @@
         </div>
 
         <!-- Modal for editing the grade level -->
-<div id="gradeLevelEditModal" class="grade-level-edit-modal modal">
-    <div class="grade-level-edit-modal-content">
-        <h2>Grade Level Information</h2>
-        <form method="post" action="" id="gradeLevelEditForm">
-            <label for="levelName">Grade Level Name:</label>
-            <input type="text" id="levelName" name="levelName" readonly required>
-            <br><br>
-            <div class="student-form-group">
-                <label for="enrollees-num">Enrollees:</label>
-                <input type="number" id="enrollees-num" name="Enrollees" readonly required>
-
-                <label for="grade-level-status">Status:</label>
-                <select name="grade-level-status" id="grade-level-status" disabled>
-                    <option value="" disabled>Select a status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
-
-            <div class="modal-buttons">
-                <button type="button" class="btn-confirm" data-action="editGradeLevel"
-                    data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
-                    Edit
-                </button>
-                <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-         <!--Modal for editing the grade level--> 
-        <div id="gradeLevelEditModal" class="modal">
-            <div class="modal-content">
+        <div id="gradeLevelEditModal" class="grade-level-edit-modal modal">
+            <div class="grade-level-edit-modal-content">
                 <h2>Grade Level Information</h2>
-                <form method="post" action="" id="gradeLevelEditForm">
+                <form method="" action="" id="gradeLevelEditForm">
                     <label for="levelName">Grade Level Name:</label>
-                    <input type="text" id="levelName" name="levelName" readonly required>
+                    <input type="text" id="levelNameEdit" name="levelName" readonly required>
                     <br><br>
-                    <div class="student-form-group">
-                        <label for="enrollees-num">Enrollees:</label>
-                        <input type="number" id="enrollees-num" name="Enrollees" readonly required>
-
-                        <label for="grade-level-status">Status:</label>
-                        <select name="grade-level-status" id="grade-level-status" disabled>
-                            <option value="" disabled>Select a status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="editGradeLevel"
                             data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
@@ -341,8 +308,8 @@
         </div>
 
     </div>
-     <!--<script th:src="@{/js/script.js}"></script>--> 
-    <script>
+    <!--<script th:src="@{/js/script.js}"></script>-->
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Define the API endpoint
             const apiUrl = 'http://localhost:8081/gradelevelmaintenance/all';
@@ -401,7 +368,7 @@
                     console.error('Error:', error);
                 });
         });
-    </script>
+    </script> -->
     <script th:src="@{/js/script.js}"></script>
 </body>
 

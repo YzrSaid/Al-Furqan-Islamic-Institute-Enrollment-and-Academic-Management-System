@@ -430,28 +430,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Perform the AJAX request
-    fetch(actionUrl, {
-    method: method,
-    body: formData,
-    })
-    .then((response) => {
-        if (!response.ok) {
-            // If the response is not OK, throw an error with the status text
-            throw new Error(`Server response error: ${response.statusText}`);
-        }
-        return response.text(); // Parse the response as plain text
-    })
-    .then((message) => {
-        // Display the message from the server in an alert
-        alert(message);
+    // fetch(actionUrl, {
+    //   method: method,
+    //   body: formData,
+    // })
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error("Server response error");
+    //     }
+    //     return response.json();
+    //   })
+    //   .then((data) => {
+    //     alert(data.message || "Action completed successfully!");
+    //     toggleModal("confirmationModal", false);
 
-        // Optional: Refresh the page or update the UI
-        location.reload();
-    })
-    .catch((error) => {
-        // Display any errors in an alert
-        alert("Error: " + error.message);
-    });
+    //     // Optional: Refresh page or update UI
+    //     location.reload();
+    //   })
+    //   .catch((error) => {
+    //     alert("Error: " + error.message);
+    //   });
   }
 
   document.body.addEventListener("click", function (event) {
@@ -554,33 +552,94 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+let selectedGradeLevelId = null; // Global variable
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Handle clicking the compose icon
+    document.body.addEventListener("click", function (event) {
+        const target = event.target.closest("[data-open-modal='gradeLevelEditModal']"); // Get closest button
+
+        if (target) {
+            selectedGradeLevelId = target.getAttribute("data-id"); // Get the ID
+            const gradeName = target.getAttribute("data-name"); // Get grade name
+
+            console.log("Selected Grade Level ID:", selectedGradeLevelId); // Debugging
+
+            document.getElementById("levelNameEdit").value = gradeName; // Set name
+            document.getElementById("gradeLevelEditForm").dataset.id = selectedGradeLevelId; // Store ID
+
+            document.getElementById("gradeLevelEditModal").style.display = "block"; // Open modal
+        }
+    });
+
+    // Handle clicking the Edit button inside the modal
+    document.getElementById("confirmGradeLevelEdit").addEventListener("click", editGradeLevel);
+});
+
+// Function to update grade level
 function editGradeLevel() {
-  const gradeLevelId = document.getElementById("gradeLevelEditForm").dataset.id;
+    // Retrieve ID from global variable and form dataset
+    selectedGradeLevelId = selectedGradeLevelId || document.getElementById("gradeLevelEditForm").dataset.id;
 
-  const gradeLevelData = {
-    id: gradeLevelId, // Ensure the ID is sent
-    levelName: document.getElementById("levelName").value,
-    enrollees: parseInt(document.getElementById("enrollees-num").value),
-    status: document.getElementById("grade-level-status").value,
-  };
+    // if (!selectedGradeLevelId || selectedGradeLevelId === "0") {
+    //     alert("Error: No grade level selected!");
+    //     return;
+    // }
 
-  fetch("/update-grade-level", {
-    // Adjust endpoint if needed
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(gradeLevelData),
-  })
-    .then((response) => response.text()) // Expecting a text response
-    .then((data) => {
-      alert(data); // Show the response message
-      if (data.includes("Successfully")) {
-        location.reload(); // Refresh to reflect the changes
-      }
+    const actionUrl = "/gradelevel/update-grade-level";
+    const method = "PUT";
+
+    const gradeLevelData = {
+        levelId: selectedGradeLevelId, // Ensure ID is correct
+        levelName: document.getElementById("levelNameEdit").value,
+    };
+
+    console.log("Sending data:", gradeLevelData); // Debugging
+
+    fetch(actionUrl, {
+        method: method,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(gradeLevelData),
     })
-    .catch((error) => console.error("Error:", error));
+    .then(response => response.text())
+    .then(data => {
+        alert(data);
+        if (data.includes("Successfully")) {
+            location.reload();
+        }
+    })
+    .catch(error => console.error("Error:", error));
 }
+
+
+
+
+// Function to handle clicking the edit button
+function setSelectedGradeLevelId(gradeLevelId, levelName) {
+  selectedGradeLevelId = gradeLevelId; // Store ID globally
+  document.getElementById("levelNameEdit").value = levelName; // Populate input field
+}
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".edit-grade-level-btn").forEach((button) => {
+    button.addEventListener("click", function () {
+      const gradeLevelId = this.dataset.id; // Get ID from button
+      const levelName = this.dataset.name; // Get level name from button
+      setSelectedGradeLevelId(gradeLevelId, levelName); // Store globally
+
+      // Show the edit modal
+      document.getElementById("gradeLevelEditModal").style.display = "block";
+    });
+  });
+
+  // Attach event listener to edit confirmation button
+  document
+    .getElementById("confirmGradeLevelEdit")
+    .addEventListener("click", function () {
+      editGradeLevel(); // Call update function
+    });
+});
 
 document.addEventListener("DOMContentLoaded", function () {
   fetchGradeLevels(); // Call function when page loads
@@ -604,25 +663,25 @@ function fetchGradeLevels() {
 
         const row = document.createElement("tr");
         row.innerHTML = `
-    <td>${grade.levelName}</td>
-    <td>
-        <div class="status-container">
-            <div class="status" style="background-color: ${statusColor}; font-weight: bold;">
-                ${statusText}
-            </div>
-        </div>
-    </td>
-    <td>
-        <div class="action-container">
-            <div class="action">
-                <img data-open-modal="gradeLevelEditModal" 
-                    src="/images/icons/compose.png" 
-                    alt="grade-level-icon" 
-                    onclick="openEditModal(${grade.levelId}, '${grade.levelName}')">
-            </div>
-        </div>
-    </td>
-`;
+                      <td>${grade.levelName}</td>
+                      <td>
+                          <div class="status-container">
+                              <div class="status" style="background-color: ${statusColor}; font-weight: bold;">
+                                  ${statusText}
+                              </div>
+                          </div>
+                      </td>
+                      <td>
+                          <div class="action-container">
+                              <div class="action">
+                                  <img data-open-modal="gradeLevelEditModal" 
+                                      src="/images/icons/compose.png" 
+                                      alt="grade-level-icon" 
+                                      data-id="${grade.levelId}">
+                              </div>
+                          </div>
+                      </td>
+                  `;
         tableBody.appendChild(row);
       });
     })
@@ -631,35 +690,29 @@ function fetchGradeLevels() {
     });
 }
 
-//function openEditModal(levelId, levelName) {
-//    alert('The id is '+levelId);
-//    alert('The name is '+levelName)
-//  // Populate the modal input field with the grade level name
-//  const levelNameInput = document.getElementById("levelName");
-//  levelNameInput.value = levelName; // Set the value of the levelName input
-//
-//  // You can also pass the `levelId` if needed later, e.g., for making API requests
-//  const modal = document.getElementById("gradeLevelEditModal");
-//  modal.style.display = "block"; // Open the modal
-//}
-
 document.addEventListener("click", function (event) {
   const target = event.target;
+  console.log("Clicked Element:", target); // ✅ Debug element
+  console.log("Element Dataset:", target.dataset); // ✅ Check all dataset attributes
 
   if (target.dataset.openModal === "gradeLevelEditModal") {
+    console.log("Target has openModal attribute!"); // ✅ Debug confirmation
     const gradeLevelId = target.dataset.id;
-    alert(gradeLevelId);
-    // Fetch grade level data
-    fetch(`/grade-level/${gradeLevelId}`)
+    console.log("Grade Level ID:", gradeLevelId); // ✅ Check if ID is present
+
+    if (!gradeLevelId) {
+      console.error(
+        "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
+      );
+      return;
+    }
+
+    fetch(`/gradelevel/${gradeLevelId}`)
       .then((response) => response.json())
       .then((data) => {
-        // Populate the modal fields with fetched data
-        document.getElementById("gradeLevelEditForm").dataset.id = data.id;
-        document.getElementById("levelName").value = data.levelName;
-        document.getElementById("grade-level-status").value = data.status;
-
-        // Open the modal
-        document.getElementById("gradeLevelEditModal").style.display = "block";
+        console.log("Fetched Data:", data); // ✅ Check backend response
+        document.getElementById("gradeLevelEditModal").dataset.id = data.id;
+        document.getElementById("levelNameEdit").value = data.levelName; // ✅ Debugging test
       })
       .catch((error) => console.error("Error fetching grade level:", error));
   }

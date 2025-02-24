@@ -27,8 +27,6 @@ public class ScheduleServices {
     @Autowired
     private SectionServices sectionService;
     @Autowired
-    private SubjectRepo subjectRepo;
-    @Autowired
     private SubjectServices subjectService;
     
     public Map<ScheduleDTO,String> addNewSchedules(List<ScheduleDTO> newSchedules){
@@ -82,7 +80,7 @@ public class ScheduleServices {
     public int updateSchedule(ScheduleDTO schedDTO){
         Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElse(null);
         
-        if(toUpdate != null){
+        if(toUpdate != null && toUpdate.isNotDeleted()){
             Schedule updated = ScheduleDTOtoSchedule(schedDTO);
             UserModel teacher = updated.getTeacher();
             Section section = updated.getSection();
@@ -104,6 +102,16 @@ public class ScheduleServices {
             
         }
         return 4;
+    }
+    
+    public boolean deleteSchedule(int schedNum){
+        Schedule sched = scheduleRepo.findById(schedNum).orElse(null);
+        if(sched != null && sched.isNotDeleted()){
+            sched.setNotDeleted(false);
+            scheduleRepo.save(sched);
+            return true;
+        }
+        return false;
     }
     
     private boolean isTeacherSchedConflict(UserModel teacher, ScheduleDTO sDTO,boolean isForAdd){
@@ -144,8 +152,7 @@ public class ScheduleServices {
                                 .findFirst().orElse(null) != null;
     }
     
-    public boolean isConflict2(Schedule sched,ScheduleDTO schedDTO){
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("hh:mm a");
+    private boolean isConflict2(Schedule sched,ScheduleDTO schedDTO){
         return (schedDTO.getTimeStart().isAfter(sched.getTimeStart()) && schedDTO.getTimeStart().isBefore(sched.getTimeEnd())) ||
                 (schedDTO.getTimeEnd().isAfter(sched.getTimeStart()) && schedDTO.getTimeEnd().isBefore(sched.getTimeEnd())) ||
                 

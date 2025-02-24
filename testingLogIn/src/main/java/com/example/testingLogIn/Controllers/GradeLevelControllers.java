@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/gradelevel")
 @Controller
@@ -57,9 +55,6 @@ public class GradeLevelControllers {
 
     @PutMapping("/update-grade-level")
     public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel newGradeLevel) {
-        System.out.println(newGradeLevel.getLevelId());
-        System.out.println(newGradeLevel.getLevelName());
-        System.out.println("yawa");
         try {
             if (gradeLevelServices.updateGradeLevel(newGradeLevel))
                 return new ResponseEntity<>("Grade Level Has Been Updated Successfully", HttpStatus.OK);

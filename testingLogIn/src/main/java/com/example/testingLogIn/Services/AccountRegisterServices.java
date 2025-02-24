@@ -35,7 +35,7 @@ public class AccountRegisterServices {
     
     public List<AccountRegister> getAccounts(String status){
         return accountRegisterRepo.findAll().stream()
-                                  .filter(account -> account.getStatus().toString().equals(status))
+                                  .filter(account -> account.getStatus().toString().toLowerCase().equals(status.toLowerCase()))
                                   .collect(Collectors.toList());
     }
 }

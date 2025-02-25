@@ -11,6 +11,31 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="../../static/css/styles.css">
 </head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "/images/icons/greater-than.png";
+                    // arrowIconImg.thsrc = "@{/images/icons/greater-than.png}";
+                }
+            }
+        });
+    });
+</script>
 
 <body>
     <!-- Sidebar -->
@@ -49,7 +74,7 @@
             <a href="#">Book Distribution</a>
         </div>
 
-        <a href="#" class="active sidebar-icons">
+        <a href="#" class="sidebar-icons">
             <img src="../../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
         </a>
 
@@ -82,12 +107,14 @@
             <a href="#">Teacher</a>
         </div>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
             <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
                 class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
-            <a href="#">Book Distribution Report</a>
+            <a href="#" class="second-active">Student Report</a>
+            <a href="#">Teacher Report</a>
+            <a href="#">Academic Resources Report</a>
             <a href="#">Payment Report</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
@@ -131,14 +158,12 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>Science</h4>
+            <h4>Student Reports</h4>
             <p>Main</p>
             <p>/</p>
-            <p>Grade Management</p>
+            <p>Reports</p>
             <p>/</p>
-            <p id="grade-and-section">Grade 1 - Rose</p>
-            <p>/</p>
-            <p>Science</p>
+            <p>Student Reports</p>
         </div>
 
         <div class="search-div">
@@ -160,45 +185,41 @@
         </div>
 
         <!-- Table -->
-        <table class="grade-per-subject-table">
+        <table class="student-report-table">
             <thead>
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
-                    <th>Grade</th>
+                    <th>Grade & Section</th>
+                    <th>Gender</th>
+                    <th>Academic Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Science</td>
-                    <td>Raven Timpanco</td>
-                    <td><input type="text" name="student-grade" id="student-grade" readonly></td>
+                    <td>0001</td>
+                    <td>Batman</td>
+                    <td>Grade 1 - Malunggay</td>
+                    <td>Male</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status" id="academic-status">New Student</div>
+                        </div>
+                    </td>
                     <td>
                         <div class="dropdown">
                             <div class="action-container action">
-                                <a href=""><img src="../../static/images/icons/add-button.png" alt="add-icon"></a>
-                            </div>
-
-                            <div class="action-container action">
-                                <a href=""><img src="../../static/images/icons/compose.png" alt="edit-icon"></a>
-                            </div>
-
-                            <div class="action-container action">
-                                <a href=""><img src="../../static/images/icons/bin.png" alt="delete-icon"></a>
-                            </div>
-                            <div class="action-container action">
-                                <a href=""><img src="../../static/images/icons/check.png" alt="save-icon"></a>
+                                <a href="#" class="view-student" data-action="viewStudentReportModal"><img src="../../static/images/icons/eye.png"
+                                        alt="edit-icon"></a>
                             </div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <!-- Save Button -->
-        <!-- <div class="add-something-btn-container">
-            <button class="add-something-btn" id="save-grade-btn" data-open-modal="confirmationModal">Save Grade</button>
-        </div> -->
+
+        <!-- viewStudentReportModal -->
 
     </div>
     <script src="../../static/js/script.js"></script>

@@ -1,3 +1,35 @@
+// this is for the log in label effect
+document.addEventListener("DOMContentLoaded", function () {
+  function updateLabels() {
+    document.querySelectorAll(".input-group-input").forEach((input) => {
+      if (input.value.trim() !== "") {
+        input.classList.add("filled");
+      } else {
+        input.classList.remove("filled");
+      }
+    });
+  }
+
+  // Initial check
+  updateLabels();
+
+  // Check on user input
+  document.querySelectorAll(".input-group-input").forEach((input) => {
+    input.addEventListener("input", updateLabels);
+    input.addEventListener("change", updateLabels);
+  });
+
+  // Autofill detection using focus
+  document.querySelectorAll(".input-group-input").forEach((input) => {
+    input.addEventListener("focus", updateLabels);
+    input.addEventListener("blur", updateLabels);
+  });
+
+  // Ensure autofill is detected
+  setTimeout(updateLabels, 500);
+  setTimeout(updateLabels, 1000);
+});
+
 function toggleSidebar() {
   let sidebar = document.getElementById("sidebar");
   let content = document.getElementById("content");
@@ -273,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// this is for the maintenance schedule (teacher)
+// this is for redirect for the maintenance schedule (teacher-maintenance)
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("a.view-sched").forEach((link) => {
     link.addEventListener("click", function (event) {
@@ -282,6 +314,26 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+// this is for redirect in grade management (main) to grade-per-class
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("a.view-per-class").forEach((link) => {
+    link.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent default navigation
+      window.location.href = "/grade-per-class"; // Navigate to the sched board page
+    });
+  });
+});
+
+// this is for redirect in grade-per-class to grade-per-subject
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("a.view-per-subject").forEach((link) => {
+      link.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default navigation
+        window.location.href = "/grade-per-class"; // Navigate to the sched board page
+      });
+    });
+  });
 
 document.addEventListener("DOMContentLoaded", function () {
   function toggleModal(modalId, show = true, message = "") {
@@ -330,24 +382,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function handleConfirmAction(action) {
-    let actionUrl;
-    let method = "POST"; // Default method
-
-    // Prepare form data
-    let formData = new FormData();
-
     switch (action) {
       case "addGradeLevel":
-        actionUrl = "/gradelevel/add";
-        method = "POST";
-        formData.append(
-          "levelName",
-          document.getElementById("levelName").value
-        );
+        addGradeLevel();
         break;
       case "editGradeLevel":
         editGradeLevel();
         break;
+      case "deleteGradeLevel":
+        deleteGradeLevel(selectedGradeLevelId);
       case "makeSchoolYearInactive":
         actionUrl = "/school-year/inactivate";
         method = "PUT";
@@ -397,7 +440,7 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Subject information updated!");
         break;
       case "addTeacher":
-        alert("Teacher information saved!");
+        addTeacher();
         break;
       case "editTeacher":
         alert("Edit Teacher");
@@ -428,28 +471,6 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Unknown action: " + action);
         return;
     }
-
-    // Perform the AJAX request
-    // fetch(actionUrl, {
-    //   method: method,
-    //   body: formData,
-    // })
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error("Server response error");
-    //     }
-    //     return response.json();
-    //   })
-    //   .then((data) => {
-    //     alert(data.message || "Action completed successfully!");
-    //     toggleModal("confirmationModal", false);
-
-    //     // Optional: Refresh page or update UI
-    //     location.reload();
-    //   })
-    //   .catch((error) => {
-    //     alert("Error: " + error.message);
-    //   });
   }
 
   document.body.addEventListener("click", function (event) {
@@ -552,180 +573,118 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-let selectedGradeLevelId = null; // Global variable
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Handle clicking the compose icon
-    document.body.addEventListener("click", function (event) {
-        const target = event.target.closest("[data-open-modal='gradeLevelEditModal']"); // Get closest button
-
-        if (target) {
-            selectedGradeLevelId = target.getAttribute("data-id"); // Get the ID
-            const gradeName = target.getAttribute("data-name"); // Get grade name
-
-            console.log("Selected Grade Level ID:", selectedGradeLevelId); // Debugging
-
-            document.getElementById("levelNameEdit").value = gradeName; // Set name
-            document.getElementById("gradeLevelEditForm").dataset.id = selectedGradeLevelId; // Store ID
-
-            document.getElementById("gradeLevelEditModal").style.display = "block"; // Open modal
-        }
-    });
-
-    // Handle clicking the Edit button inside the modal
-    document.getElementById("confirmGradeLevelEdit").addEventListener("click", editGradeLevel);
-});
-
 // Function to update grade level
-function editGradeLevel() {
-    // Retrieve ID from global variable and form dataset
-    selectedGradeLevelId = selectedGradeLevelId || document.getElementById("gradeLevelEditForm").dataset.id;
 
-    // if (!selectedGradeLevelId || selectedGradeLevelId === "0") {
-    //     alert("Error: No grade level selected!");
-    //     return;
-    // }
+// document.addEventListener("DOMContentLoaded", function () {
+//   fetchGradeLevels(); // Call function when page loads
+// });
 
-    const actionUrl = "/gradelevel/update-grade-level";
-    const method = "PUT";
+// function fetchGradeLevels() {
+//   fetch("/gradelevel/all")
+//     .then((response) => {
+//       if (!response.ok) {
+//         throw new Error("Failed to fetch grade levels");
+//       }
+//       return response.json();
+//     })
+//     .then((data) => {
+//       const tableBody = document.querySelector("#lamesa tbody");
+//       tableBody.innerHTML = ""; // Clear existing rows
 
-    const gradeLevelData = {
-        levelId: selectedGradeLevelId, // Ensure ID is correct
-        levelName: document.getElementById("levelNameEdit").value,
-    };
+//       data.forEach((grade) => {
+//         const row = document.createElement("tr");
+//         row.innerHTML = `
+//                       <td>${grade.levelName}</td>
+//                       <td>
+//                           <div class="action-container">
+//                               <div class="action">
+//                                   <img data-open-modal="gradeLevelEditModal"
+//                                       src="/images/icons/compose.png"
+//                                       alt="grade-level-icon"
+//                                       data-id="${grade.levelId}">
+//                               </div>
+//                           </div>
+//                       </td>
+//                   `;
+//         tableBody.appendChild(row);
+//       });
+//     })
+//     .catch((error) => {
+//       console.error("Error:", error);
+//     });
+// }
 
-    console.log("Sending data:", gradeLevelData); // Debugging
+// document.addEventListener("click", function (event) {
+//   const target = event.target;
+//   console.log("Clicked Element:", target); // ✅ Debug element
+//   console.log("Element Dataset:", target.dataset); // ✅ Check all dataset attributes
 
-    fetch(actionUrl, {
-        method: method,
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(gradeLevelData),
-    })
-    .then(response => response.text())
-    .then(data => {
-        alert(data);
-        if (data.includes("Successfully")) {
-            location.reload();
-        }
-    })
-    .catch(error => console.error("Error:", error));
-}
+//   if (target.dataset.openModal === "gradeLevelEditModal") {
+//     console.log("Target has openModal attribute!"); // ✅ Debug confirmation
+//     const gradeLevelId = target.dataset.id;
+//     console.log("Grade Level ID:", gradeLevelId); // ✅ Check if ID is present
 
+//     if (!gradeLevelId) {
+//       console.error(
+//         "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
+//       );
+//       return;
+//     }
 
+//     fetch(`/gradelevel/${gradeLevelId}`)
+//       .then((response) => response.json())
+//       .then((data) => {
+//         console.log("Fetched Data:", data); // ✅ Check backend response
+//         document.getElementById("gradeLevelEditModal").dataset.id = data.id;
+//         document.getElementById("levelNameEdit").value = data.levelName; // ✅ Debugging test
+//       })
+//       .catch((error) => console.error("Error fetching grade level:", error));
+//   }
+// });
+// function editGradeLevel() {
+//   const form = document.getElementById("gradeLevelEditForm");
+//   const gradeId = form.dataset.id; // Get stored ID
 
+//   const gradeLevelData = {
+//     levelId: gradeId,
+//     levelName: document.getElementById("levelNameEdit").value,
+//   };
 
-// Function to handle clicking the edit button
-function setSelectedGradeLevelId(gradeLevelId, levelName) {
-  selectedGradeLevelId = gradeLevelId; // Store ID globally
-  document.getElementById("levelNameEdit").value = levelName; // Populate input field
-}
-document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll(".edit-grade-level-btn").forEach((button) => {
-    button.addEventListener("click", function () {
-      const gradeLevelId = this.dataset.id; // Get ID from button
-      const levelName = this.dataset.name; // Get level name from button
-      setSelectedGradeLevelId(gradeLevelId, levelName); // Store globally
+//   fetch("/gradelevel/update-grade-level", {
+//     method: "PUT",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(gradeLevelData),
+//   })
+//     .then((response) => response.text())
+//     .then((data) => {
+//       alert(data);
+//       if (data.includes("Successfully")) {
+//         location.reload();
+//       }
+//     })
+//     .catch((error) => console.error("Error:", error));
+// }
+// document.addEventListener("DOMContentLoaded", function () {
+//   // Handle clicking the compose icon
+//   document.body.addEventListener("click", function (event) {
+//     const target = event.target.closest(
+//       "[data-open-modal='gradeLevelEditModal']"
+//     ); // Get closest button
 
-      // Show the edit modal
-      document.getElementById("gradeLevelEditModal").style.display = "block";
-    });
-  });
+//     if (target) {
+//       selectedGradeLevelId = target.getAttribute("data-id"); // Get the ID
+//       const gradeName = target.getAttribute("data-name"); // Get grade name
 
-  // Attach event listener to edit confirmation button
-  document
-    .getElementById("confirmGradeLevelEdit")
-    .addEventListener("click", function () {
-      editGradeLevel(); // Call update function
-    });
-});
+//       console.log("Selected Grade Level ID:", selectedGradeLevelId); // Debugging
 
-document.addEventListener("DOMContentLoaded", function () {
-  fetchGradeLevels(); // Call function when page loads
-});
-
-function fetchGradeLevels() {
-  fetch("/gradelevel/all")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to fetch grade levels");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      const tableBody = document.querySelector("#lamesa tbody");
-      tableBody.innerHTML = ""; // Clear existing rows
-
-      data.forEach((grade) => {
-        const statusText = grade.status ? "Active" : "Inactive";
-        const statusColor = grade.status ? "green" : "gray";
-
-        const row = document.createElement("tr");
-        row.innerHTML = `
-                      <td>${grade.levelName}</td>
-                      <td>
-                          <div class="status-container">
-                              <div class="status" style="background-color: ${statusColor}; font-weight: bold;">
-                                  ${statusText}
-                              </div>
-                          </div>
-                      </td>
-                      <td>
-                          <div class="action-container">
-                              <div class="action">
-                                  <img data-open-modal="gradeLevelEditModal" 
-                                      src="/images/icons/compose.png" 
-                                      alt="grade-level-icon" 
-                                      data-id="${grade.levelId}">
-                              </div>
-                          </div>
-                      </td>
-                  `;
-        tableBody.appendChild(row);
-      });
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
-
-function openEditModal(levelId, levelName) {
-  const levelNameInput = document.getElementById("levelName");
-  levelNameInput.value = levelName; // Set the value of the levelName input
-
-  // You can also pass the `levelId` if needed later, e.g., for making API requests
-  const modal = document.getElementById("gradeLevelEditModal");
-  modal.style.display = "block"; // Open the modal
-}
-
-document.addEventListener("click", function (event) {
-  const target = event.target;
-  console.log("Clicked Element:", target); // ✅ Debug element
-  console.log("Element Dataset:", target.dataset); // ✅ Check all dataset attributes
-
-  if (target.dataset.openModal === "gradeLevelEditModal") {
-    console.log("Target has openModal attribute!"); // ✅ Debug confirmation
-    const gradeLevelId = target.dataset.id;
-    console.log("Grade Level ID:", gradeLevelId); // ✅ Check if ID is present
-
-    if (!gradeLevelId) {
-      console.error(
-        "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
-      );
-      return;
-    }
-
-    fetch(`/gradelevel/${gradeLevelId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fetched Data:", data); // ✅ Check backend response
-        document.getElementById("gradeLevelEditModal").dataset.id = data.id;
-        document.getElementById("levelNameEdit").value = data.levelName; // ✅ Debugging test
-      })
-      .catch((error) => console.error("Error fetching grade level:", error));
-  }
-});
+//       document.getElementById("levelNameEdit").value = gradeName; // Set name
+//       document.getElementById("gradeLevelEditForm").dataset.id =
+//         selectedGradeLevelId; // Store ID
+//     }
+//   });
+// });
 
 document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.getElementById("scheduleBody");

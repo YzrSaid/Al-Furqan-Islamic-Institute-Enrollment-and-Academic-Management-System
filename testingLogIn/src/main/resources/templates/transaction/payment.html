@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
+    <!-- <link rel="stylesheet" th:href="@{/css/styles.css}"> -->
+    <link rel="stylesheet" href="../../static/css/styles.css">
+</head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    // arrowIconImg.th:src = "@{/images/icons/greater-than.png}";
+                    arrowIconImg.src = "/testingLogIn/src/main/resources/static/images/icons/greater-than.png";
+                }
+            }
+        });
+    });
+</script>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="text-center">
+            <div class="logo">
+                <!-- <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo"> -->
+                <img src="../../static/images/al-furqanlogo.jpg" alt="School Logo">
+            </div>
+            <p class="mt-2">S.Y. 2024-2025</p>
+            <div class="welcome-div">
+                <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+            </div>
+        </div>
+
+        <a href="../dashboard.html" class="sidebar-icons" onclick="clearSubmenus()">
+            <!-- <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard -->
+            <img src="../../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
+        </a>
+
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+            <!-- <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction -->
+            <img src="../../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <!-- <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+        </a>
+        <div class="submenu" id="transaction-submenu">
+            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
+                Enrollment
+                <span class="arrow-icon second-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
+                        alt="arrow-down"></span>
+                <!-- <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
+                        alt="arrow-down"></span> -->
+            </a>
+            <div class="submenu" id="enrollment-submenu">
+                <!-- <a href="/listing" class="second-active">Listing/Register</a> -->
+                <a href="listing.html">Listing/Register</a>
+                <a href="#">Assessment</a>
+                <a href="#" class="second-active">Payment</a>
+                <a href="#">Enrolled</a>
+            </div>
+            <a href="#">Tuition</a>
+            <a href="#">Book Distribution</a>
+        </div>
+
+        <a href="../grade-management/grade-management.html" class="sidebar-icons">
+            <!-- <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management -->
+            <img src="../../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
+        </a>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
+            <img src="../../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <!-- <img src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
+                    src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+        </a>
+        <div class="submenu" id="class-submenu">
+            <a href="#">Class List</a>
+            <a href="#">Schedule</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
+            <!-- <img src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+            <img src="../../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="maintenance-submenu">
+            <a href="#">School Year</a>
+            <a href="grade-level-maintenance.html">Grade Level</a>
+            <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
+                <!-- <span class="arrow-icon third-arrow-icon"><img src="@{/images/icons/arrow-down.png}"
+                        alt="arrow-down"></span> -->
+                <span class="arrow-icon third-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
+                        alt="arrow-down"></span>
+            </a>
+            <div class="submenu" id="schedule-submenu">
+                <a href="#">For Teachers</a>
+                <a href="#">For Students</a>
+            </div>
+            <a href="#">Subject</a>
+            <a href="#">Teacher</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
+            <!-- <img src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                    src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="reports-submenu">
+            <a href="#">Book Distribution Report</a>
+            <a href="#">Payment Report</a>
+        </div>
+        <!-- <a href="#" class="sidebar-icons"><img src="@{/images/icons/account.png}" alt="Account Icon"> Account</a> -->
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
+            <img src="../../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
+                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="account-submenu">
+            <a href="verify-accounts.html" class="second-active">Verify Accounts</a>
+            <a href="#">Manage Accounts</a>
+            <a href="#">My Account</a>
+        </div>
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
+            <!-- <img src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+            <img src="../../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="settings-submenu">
+            <a href="#">Create User</a>
+            <a href="#">Archive</a>
+        </div>
+    </div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="topbar">
+            <div class="main-topbar">
+                <span class="hamburger" onclick="toggleSidebar()">
+                    <!-- <img src="@{/images/icons/burger_menu_icon.png}" alt="Menu"> -->
+                    <img src="../../static/images/icons/burger_menu_icon.png" alt="Menu">
+                </span>
+
+                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+            </div>
+            <div class="dropdown-logout">
+                <div class="user-icon dropdown-logout-toggle">
+                    <img src="../../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
+                        alt="User Icon">
+                    <div id="dropdownUserIcon" class="dropdown-logout-content">
+                        <h6><span>Super Admin</span></h6>
+                        <a href="login.html">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-link">
+            <h4>Payment</h4>
+            <p>Main</p>
+            <p>/</p>
+            <p>Transaction</p>
+            <p>/</p>
+            <p>Enrollment</p>
+            <p>/</p>
+            <p>Payment</p>
+        </div>
+
+        <div class="search-div">
+            <!-- Searchbox and sort btn -->
+            <div class="search">
+                <div class="search-container">
+                    <input type="text" placeholder="Search..." class="search-input" />
+                    <button class="search-btn">Search</button>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table class="listing-table">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Current Grade Level & Section</th>
+                    <th>Promoted To</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Martin Francisco</td>
+                    <td>Grade 1 - Baliwasan</td>
+                    <td>Grade 2 - Rizal</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status" id="student-type">New</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <div class="status-container">
+                                <div class="status" id="status-payment">Complete</div>
+                                <button class="dropdown-status-btn">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="dropdown-status-content" id="dropdown-listing">
+                                <a href="#" class="action" data-open-modal="listOfPaymentsModal">View List of
+                                    Payments</a>
+                                <a href="#" data-open-modal="confirmationModal" data-action="proceedAssessment"
+                                    data-message="Are you sure you want to Proceed to Payments?">Proceed</a>
+                                <a href="#" data-action="cancel-enrollment">Direct Back to Assessment</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p id="modalText">Are you sure?</p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for listOfPaymentsModal -->
+        <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
+            <div class="list-of-payments-modal-content">
+                <h2>List of Payments</h2>
+
+                <div class="half-width" id="view-grade-studId">
+                    <label for="student-id">Student ID:</label>
+                    <h6 id="student-id">0001</h6>
+                </div>
+                <div class="half-width" id="view-grade-studName">
+                    <label for="student-name">Student Name:</label>
+                    <h6 id="student-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- List of Payments Table -->
+                <table class="view-list-of-payments-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <td>Tuition</td>
+                        <td>2,000.00</td>
+                        <td>
+                            <div class="status-container">
+                                <div class="status" id="status-payments">Unpaid</div>
+                            </div>
+                            <div class="dropdown-status-content" id="dropdown-listing">
+                                <a href="#" class="action" data-open-modal="addPaymentModal">Add Payment</a>
+                            </div>
+                        </td>
+                    </tbody>
+                </table>
+
+                <!-- <div class="half-width" id="view-grade-average">
+                    <label for="grade-average">Final Average:</label>
+                    <input type="text" id="average-input" readonly value="90">
+                </div>
+                
+                <div class="half-width" id="view-grade-remarks">
+                    <label for="grade-average">Remarks:</label>
+                    <div class="status-container">
+                        <div class="status" id="grade-remarks">Pass</div>
+                    </div>  
+                </div> -->
+
+                <!-- Close button -->
+                <div class="close-button" id="view-grades-close-btn">
+                    <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
+                        id="close-button">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for addPaymentModal-->
+        <div id="addPaymentModal" class="add-payment-modal modal">
+            <div class="add-payment-modal-content">
+                <div class="header-container">
+                    <div class="back-btn-container">
+                        <button type="button" id="back-btn" data-close-modal="addPaymentModal">Back</button>
+                    </div>
+                    <h2>Payment Form</h2>
+                    <div class="logo">
+                        <!-- <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo"> -->
+                        <img src="../../static/images/al-furqanlogo.jpg" alt="School Logo">
+                    </div>
+                </div>
+                <div class="date-sem-container">
+                    <div class="separator">
+                        <div class="half-width">
+                            <label for="date">Date:</label>
+                            <input type="date" id="date">
+                        </div>
+                        <div>
+                            <div class="half-width">
+                                <label for="semester">Semester:</label>
+                                <input type="text" id="semester" readonly>
+                            </div>
+                            <div class="school-yr">
+                                <label for="school-year">School Year:</label>
+                                <input type="text" id="school-year" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-container">
+                        <h6 id="content-text">Received payment from <span><input type="text" id="payee-name" readonly
+                                    value="Batman Templado">
+                                <h6>Student ID </h6> <input type="number" readonly value="0001">
+                                <h6>sum of P </h6> <input type="number" id="payment-amount">
+                                <h6> as payment for </h6> <select name="payment-list" id="payment-list">
+                                    <option value="" disabled>Choose</option>
+                                </select>
+                            </span></h6>
+                    </div>
+                    <div class="collector-info-container">
+                        <h5>Received/Collected By:</h5>
+                        <div class="collector-name-container">
+                            <input type="text" readonly value="Mohammad Aldrin Said" id="collector-name">
+                            <p id="position">Enrollment Staff</p>
+                        </div>
+                    </div>
+
+                    <div class="save-payment-btn-container">
+                        <button id="save-payment-btn" type="button" data-open-modal="confirmationModal"
+                            data-action="savePayment" data-message="Are you sure you want to save this payment?">Save
+                            Payment
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="half-width" id="view-grade-studId">
+                    <label for="student-id">Student ID:</label>
+                    <h6 id="student-id">0001</h6>
+                </div>
+                <div class="half-width" id="view-grade-studName">
+                    <label for="student-name">Student Name:</label>
+                    <h6 id="student-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- List of Payments Table -->
+                <table class="view-list-of-payments-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <td>Tuition</td>
+                        <td>2,000.00</td>
+                        <td>
+                            <div class="status-container">
+                                <div class="status" id="status-payments">Unpaid</div>
+                            </div>
+                            <div class="dropdown-status-content" id="dropdown-listing">
+                                <a href="#" class="action" data-open-modal="addPaymentModal">Add Payment</a>
+                            </div>
+                        </td>
+                    </tbody>
+                </table>
+
+                <!-- <div class="half-width" id="view-grade-average">
+                    <label for="grade-average">Final Average:</label>
+                    <input type="text" id="average-input" readonly value="90">
+                </div>
+                
+                <div class="half-width" id="view-grade-remarks">
+                    <label for="grade-average">Remarks:</label>
+                    <div class="status-container">
+                        <div class="status" id="grade-remarks">Pass</div>
+                    </div>  
+                </div> -->
+
+                <!-- Close button -->
+                <div class="close-button" id="view-grades-close-btn">
+                    <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
+                        id="close-button">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <script th:src="@{/js/script.js}"></script> -->
+    <script src="../../static/js/script.js"></script>
+</body>
+
+</html>

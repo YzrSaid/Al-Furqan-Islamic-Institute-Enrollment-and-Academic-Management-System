@@ -25,17 +25,19 @@
 
         <form action="/login" method="post" id="login-form">
             <div class="input-group">
-                <input class="input-group-input" type="email" name="username" id="username" required>
+                <input class="input-group-input" type="email" name="username" id="username" required placeholder=" ">
                 <label class="input-group-label" for="username">Email</label>
             </div>
-
+        
             <div class="input-group">
-                <input class="input-group-input" type="password" name="password" id="password" required>
+                <input class="input-group-input" type="password" name="password" id="password" required placeholder=" ">
                 <label class="input-group-label" for="password">Password</label>
             </div>
+            
             <a href="" id="forgot-pass">Forgot Password?</a> <br> <br>
             <button type="submit" id="login-btn">Log In</button>
         </form>
+        
         <h4 id="signup-link">Don't have an account? <a onclick="proceed('signing')">Sign up here.</a></h4>
     </div>
 </div>
@@ -70,6 +72,7 @@
         });
     });
 </script>
+<script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

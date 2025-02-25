@@ -83,8 +83,8 @@
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
+                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
             <a href="#">Book Distribution Report</a>
@@ -129,9 +129,9 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
         <div class="text-link">
-            <h4>Grade Management</h4>
+            <h4>Grade 1 - Rose</h4>
             <p>Main</p>
             <p>/</p>
             <p>Grade Management</p>
@@ -168,128 +168,22 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Grade 1</td>
-                    <td>Rose</td>
-                    <td>999</td>
-                    <td>WMSU</td>
+                    <td>Science</td>
+                    <td>Ma'am Ceed</td>
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
                                 <div class="status" id="status-grade-management">20/20</div>
                             </div>
                             <div class="action-container action">
-                               <a href=""><img src="../../static/images/icons/compose.png" alt="edit-icon"></a>
+                                <a href="#" class="view-per-subject"><img src="../../static/images/icons/compose.png"
+                                    alt="edit-icon"></a>
                             </div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <!-- Modal for status -->
-        <div id="confirmationModal" class="modal">
-            <div class="modal-content">
-                <p id="modalText">Are you sure?</p>
-                <div class="modal-buttons">
-                    <button id="confirmBtn" class="btn-confirm">Confirm</button>
-                    <button id="cancelBtn" class="btn-cancel">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- modal when edit is clicked -->
-        <div id="editModal" class="modal">
-            <div class="modal-content">
-                <h2>Edit Grade Level</h2>
-                <form id="editForm">
-                    <label for="gradeLevel">Grade Level:</label>
-                    <input type="text" id="gradeLevel" required>
-
-                    <label for="section">Section:</label>
-                    <input type="text" id="section" required>
-
-                    <label for="totalStudents">Total Students:</label>
-                    <input type="number" id="totalStudents" required>
-
-                    <label for="adviser">Adviser:</label>
-                    <input type="text" id="adviser" required>
-
-                    <label for="status">Status:</label>
-                    <input type="text" id="status" required>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmEdit">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelEdit">Cancel</button>
-                    </div>
-                </form>
-            </div>
-
-        <!-- Modal for new student enrollment -->
-        <div id="studentInfoModal" class="student-modal">
-            <div class="student-modal-content">
-                <h2>Student Information</h2>
-                <form id="studentForm">
-                    <h6>Personal Information</h6>
-                    <div class="student-form-group">
-                        <label for="studentFirstName">First Name:</label>
-                        <input type="text" id="studentFirstName" required>
-
-                        <label for="studentLastName">Last Name:</label>
-                        <input type="text" id="studentLastName" required>
-                    </div>
-
-                    <label for="contactNumber">Cellphone/Contact Number:</label>
-                    <input type="tel" id="contactNumber" required>
-
-                    <label for="address">Address:</label>
-                    <input type="text" id="address" required>
-
-                    <div class="student-form-group">
-                        <label for="gender">Gender:</label>
-                        <select id="gender" required>
-                            <option value="" disabled selected>Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-
-                        <label for="birthdate">Birthdate:</label>
-                        <input type="date" id="birthdate" required>
-                    </div>
-
-                    <div class="student-form-group">
-                        <label for="gradeLevelOld">Prev. Grade Level:</label>
-                        <input type="text" id="gradeLevelOld" required>
-
-                        <label for="gradeLevelNew">Enrolling Grade Level:</label>
-                        <input type="text" id="gradeLevelNew" required>
-                    </div>
-
-                    <br> <br>
-
-                    <h6>Emergency Contact</h6>
-
-                    <div class="student-form-group">
-                        <label for="contactPersonFirstName">First Name:</label>
-                        <input type="text" id="contactPersonFirstName" required>
-
-                        <label for="contactPersonLastName">Last Name:</label>
-                        <input type="text" id="contactPersonLastName" required>
-                    </div>
-
-
-                    <label for="contactAddress">Address</label>
-                    <input type="text" id="contactPersonAddress" required>
-
-                    <label for="contactPersonLastName">Contact Number:</label>
-                    <input type="tel" id="contactPersonContactNum" required>
-
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmStudent">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelStudent">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
     <script src="../../static/js/script.js"></script>
 </body>

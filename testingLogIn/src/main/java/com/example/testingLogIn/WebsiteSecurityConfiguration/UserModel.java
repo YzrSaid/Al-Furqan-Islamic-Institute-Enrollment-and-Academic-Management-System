@@ -6,7 +6,6 @@ import com.example.testingLogIn.ModelDTO.UserDTO;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,8 +30,8 @@ public class UserModel implements UserDetails {
     private int staffId;
     private String username;
     private String password;
-    boolean isNotRestricted;
-    boolean isNotDeleted;
+    private boolean isNotRestricted;
+    private boolean isNotDeleted;
     
     @Enumerated(EnumType.STRING)
     Role role;

@@ -9,8 +9,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <!-- <link rel="stylesheet" th:href="@{/css/styles.css}"> -->
-    <link rel="stylesheet" href="../../static/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -30,8 +30,7 @@
                 // Update arrow icon
                 let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
                 if (arrowIconImg) {
-                    // arrowIconImg.th:src = "@{/images/icons/greater-than.png}";
-                    arrowIconImg.src = "/testingLogIn/src/main/resources/static/images/icons/greater-than.png";
+                    arrowIconImg.src = "/images/icons/greater-than.png";
                 }
             }
         });
@@ -42,9 +41,8 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="text-center">
-            <div class="logo">
-                <!-- <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo"> -->
-                <img src="../../static/images/al-furqanlogo.jpg" alt="School Logo">
+            <div class="school-logo">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
             <div class="welcome-div">
@@ -52,104 +50,75 @@
             </div>
         </div>
 
-        <a href="../dashboard.html" class="sidebar-icons" onclick="clearSubmenus()">
-            <!-- <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard -->
-            <img src="../../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
+        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
+            <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
         <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-            <!-- <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction -->
-            <img src="../../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
-            <!-- <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
             <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
                 Enrollment
-                <span class="arrow-icon second-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
-                        alt="arrow-down"></span>
-                <!-- <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
-                        alt="arrow-down"></span> -->
+                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"> </span>
             </a>
             <div class="submenu" id="enrollment-submenu">
-                <!-- <a href="/listing" class="second-active">Listing/Register</a> -->
-                <a href="listing.html" class="second-active">Listing/Register</a>
-                <a href="#">Assessment</a>
-                <a href="#">Payment</a>
-                <a href="#">Enrolled</a>
+                <a href="/transaction/enrollment/listing" class="second-active">Listing/Register</a>
+                <a href="/transaction/enrollment/assessment">Assessment</a>
+                <a href="/transaction/enrollment/payment">Payment</a>
+                <a href="/transaction/enrollment/enrolled">Enrolled</a>
             </div>
-            <a href="#">Tuition</a>
-            <a href="#">Book Distribution</a>
+            <a href="/transaction/tuition">Tuition</a>
+            <a href="/transaction/academic-resources">Academic Resources</a>
         </div>
 
-        <a href="../grade-management/grade-management.html" class="sidebar-icons">
-            <!-- <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management -->
-            <img src="../../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
+
+        <a href="/grade-management" class="sidebar-icons">
+            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
-            <img src="../../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
-            <!-- <img src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span class="arrow-icon"><img
-                    src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
+        <a href="/schedule" class="sidebar-icons">
+            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
         </a>
-        <div class="submenu" id="class-submenu">
-            <a href="#">Class List</a>
-            <a href="#">Schedule</a>
-        </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-            <!-- <img src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
-            <img src="../../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="maintenance-submenu">
-            <a href="#">School Year</a>
-            <a href="grade-level-maintenance.html">Grade Level</a>
-            <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
-                <!-- <span class="arrow-icon third-arrow-icon"><img src="@{/images/icons/arrow-down.png}"
-                        alt="arrow-down"></span> -->
-                <span class="arrow-icon third-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
-                        alt="arrow-down"></span>
-            </a>
-            <div class="submenu" id="schedule-submenu">
-                <a href="#">For Teachers</a>
-                <a href="#">For Students</a>
-            </div>
-            <a href="#">Subject</a>
-            <a href="#">Teacher</a>
+            <a href="/maintenance/school-year">School Year</a>
+            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/subject">Subject</a>
+            <a href="/maintenance/section">Section</a>
+            <a href="/maintenance/teacher">Teacher</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <!-- <img src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
-            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
-            <a href="#">Book Distribution Report</a>
-            <a href="#">Payment Report</a>
+            <a href="/reports/student">Student Reports</a>
+            <a href="/reports/payment">Payment Reports</a>
+            <a href="/reports/teacher">Teacher Report</a>
+            <a href="/reports/academic-resources">Academic Resources Reports</a>
         </div>
-        <!-- <a href="#" class="sidebar-icons"><img src="@{/images/icons/account.png}" alt="Account Icon"> Account</a> -->
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img src="../../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
-            <a href="verify-accounts.html" class="second-active">Verify Accounts</a>
-            <a href="#">Manage Accounts</a>
-            <a href="#">My Account</a>
+            <a href="/accounts/verify-accounts">Verify Accounts</a>
+            <a href="/accounts/manage-accounts">Manage Accounts</a>
+            <a href="/accounts/my-account">My Account</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-            <!-- <img src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span> -->
-            <img src="../../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="#">Create User</a>
-            <a href="#">Archive</a>
+            <a href="settings/create-user">Create User</a>
         </div>
     </div>
 
@@ -158,15 +127,14 @@
         <div class="topbar">
             <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
-                    <!-- <img src="@{/images/icons/burger_menu_icon.png}" alt="Menu"> -->
-                    <img src="../../static/images/icons/burger_menu_icon.png" alt="Menu">
+                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
                 </span>
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
             <div class="dropdown-logout">
                 <div class="user-icon dropdown-logout-toggle">
-                    <img src="../../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
+                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
@@ -188,9 +156,9 @@
 
         <!-- Enrollment Buttons -->
         <div class="enrollment-buttons">
-            <button class="new-student" id="openStudentModal">NEW STUDENT</button>
-            <button id="old-student">OLD STUDENT</button>
-            <button id="transferee">TRANSFEREE</button>
+            <button class="new-student" data-open-modal="studentInfoModal">NEW STUDENT</button>
+            <button id="old-student" data-open-modal="oldStudentModal">OLD STUDENT</button>
+            <button id="transferee" data-open-modal="studentInfoModal">TRANSFEREE</button>
         </div>
 
         <div class="search-div">
@@ -237,31 +205,38 @@
                                 </button>
                             </div>
                             <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" data-action="proceed-enrollment">Proceed</a>
-                                <a href="#" data-action="cancel-enrollment">Cancel Registration</a>
+                                <a href="#" data-action="proceedListing" data-open-modal="confirmationModal" data-message="Are you sure you want to proceed this registration to assessment?">Proceed</a>
+                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
                             </div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <!-- Modal for status -->
+        <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmBtn" class="btn-confirm">Confirm</button>
-                    <button id="cancelBtn" class="btn-cancel">Cancel</button>
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
 
-        <!-- Modal for new student enrollment -->
-        <div id="studentInfoModal" class="student-modal">
+        <!-- Modal for new and transferee student enrollment -->
+        <div id="studentInfoModal" class="student-modal modal">
             <div class="student-modal-content">
                 <h2>Student Information</h2>
                 <form id="studentForm">
-                    <h6>Personal Information</h6> <br>
+                    <div class="header">
+                        <h6>Personal Information</h6>
+                        <div class="checkbox">
+                            <label for="transferee">Transferee:</label>
+                            <input type="checkbox" id="transferee" value="Transferee">
+                        </div>
+                    </div>
+                    <br>
                     <div class="student-form-group">
                         <label for="studentFirstName">First Name:</label>
                         <input type="text" id="studentFirstName" required>
@@ -283,7 +258,7 @@
                     </div> <br>
 
                     <label for="address">Address:</label>
-                    <input type="text" id="address" required> <br> <br> 
+                    <input type="text" id="address" required> <br> <br>
 
                     <label for="contactNumber">Cellphone/Contact Number:</label>
                     <input type="tel" id="contactNumber" required> <br> <br>
@@ -298,7 +273,7 @@
 
                     <br> <br>
 
-                    <h6>Emergency Contact</h6> <br> 
+                    <h6>Emergency Contact</h6> <br>
 
                     <div class="student-form-group">
                         <label for="contactPersonFirstName">First Name:</label>
@@ -317,15 +292,74 @@
 
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmStudent">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelStudent">Cancel</button>
+                        <button type="button" class="btn-confirm" id="confirmStudent"
+                            data-open-modal="confirmationModal" data-action="addNewStudent"
+                            data-message="Are you sure you want to add and list this new student?">Confirm</button>
+                        <button type="button" class="btn-cancel" id="cancelStudent"
+                            data-close-modal="studentInfoModal">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
+
+
+        <!-- Modal for old student enrollment -->
+        <div id="oldStudentModal" class="old-student-modal modal">
+            <div class="old-student-modal-content">
+                <div>
+                    <h2>Old Student List</h2>
+                    <div class="search-div">
+                        <!-- Searchbox btn -->
+                        <div class="search">
+                            <div class="search-container">
+                                <input type="text" placeholder="Search..." class="search-input" />
+                                <button class="search-btn">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table>
+                                <!-- Table -->
+                                <table class="old-student-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student ID</th>
+                                            <th>Student Name</th>
+                                            <th>Grade Level</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>001</td>
+                                            <td>Batman</td>
+                                            <td>Grade 1 - Lamok</td>
+                                            <td>
+                                                <div class="action-container">
+                                                    <div class="action">
+                                                        <img data-open-modal="confirmationModal"
+                                                            data-id="${student.student_Id}"
+                                                            data-message="Are you sure you want to register this old student?"
+                                                            src="/images/icons/add-button.png" alt="add-button-icon">
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" id="cancelStudent"
+                        data-close-modal="oldStudentModal">Close</button>
+                </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <!-- <script th:src="@{/js/script.js}"></script> -->
-    <script src="../../static/js/script.js"></script>
+    <script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

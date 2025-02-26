@@ -25,8 +25,8 @@ public class UserModel implements UserDetails {
     private int staffId;
     private String username;
     private String password;
-    boolean isNotRestricted;
-    
+    private boolean isNotRestricted;
+
     @Enumerated(EnumType.STRING)
     Role role;
 

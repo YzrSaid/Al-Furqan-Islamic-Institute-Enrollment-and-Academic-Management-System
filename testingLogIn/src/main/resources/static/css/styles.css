@@ -321,7 +321,7 @@ body {
   text-align: center;
   color: rgb(30, 30, 30);
 }
-.logo img {
+.school-logo img {
   width: 100px;
   display: block;
   margin: 0 auto;
@@ -683,6 +683,25 @@ tr:nth-child(even) {
 .grade-level-table td:nth-child(2) {
   width: 10%;
 }
+
+/* for old-student table */
+.old-student-table th:nth-child(1),
+.old-student-table td:nth-child(1) {
+  width: 15%;
+}
+.old-student-table th:nth-child(2),
+.old-student-table td:nth-child(2) {
+  width: 25%;
+}
+.old-student-table th:nth-child(3),
+.old-student-table td:nth-child(3) {
+  width: 20%;
+}
+.old-student-table th:nth-child(4),
+.old-student-table td:nth-child(4) {
+  width: 15%;
+}
+
 /* for grade-per-class */
 .grade-per-class-table th:nth-child(1),
 .grade-per-class-table td:nth-child(1) {
@@ -939,7 +958,7 @@ table td {
 }
 
 .status {
-  background-color: #28a745;
+  /* background-color: #28a745; */
   color: white;
   padding: 5px 0px;
   border-radius: 5px;
@@ -952,6 +971,10 @@ table td {
   align-items: center;
   justify-content: center;
 }
+#status-manage-accounts {
+    padding: 5px 70px;
+}
+
 #save-grade-btn {
   padding: 10px 40px;
 }
@@ -1121,9 +1144,22 @@ table td {
   margin-top: 35px;
   display: flex;
   justify-content: space-around;
+  align-items: center;
+}
+.payment-modal-buttons {
+  height: 50px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .modal-buttons button {
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.payment-modal-buttons button {
   padding: 8px 15px;
   border: none;
   cursor: pointer;
@@ -1186,7 +1222,8 @@ table td {
   z-index: 1001;
 }
 
-.my-account-edit-modal {
+.my-account-edit-modal,
+.list-of-payments-modal {
   visibility: hidden;
   opacity: 0;
   display: flex;
@@ -1199,18 +1236,131 @@ table td {
   justify-content: center;
   transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
 }
-.my-account-edit-modal.show {
+.my-account-edit-modal.show,
+.list-of-payments-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
 }
-.my-account-edit-modal-content {
+.my-account-edit-modal-content,
+.list-of-payments-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
   min-height: 55vh;
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+
+.add-payment-modal {
+  visibility: hidden;
+  opacity: 0;
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
+}
+.add-payment-modal.show {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+.add-payment-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 850px;
+  min-height: 55vh;
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+
+.old-student-modal {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
+}
+
+.old-student-modal.show {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+.old-student-modal-content {
+  overflow-y: scroll;
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 800px;
+  min-height: 80vh;
+  max-height: 90vh;
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+.table-container {
+  width: 100%;
+}
+
+#transferee input {
+  width: 25px;
+  height: 25px;
+  border: 2px solid #218838;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+input[type="checkbox"] {
+  accent-color: #218838;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.checkbox input {
+  display: flex;
+  width: 20px;
+  height: 20px;
+}
+.checkbox {
+  gap: 10px;
+  justify-self: end;
+  align-items: center;
+  display: flex;
+}
+
+.student-modal-content,
+.teacher-modal-content,
+.teacher-edit-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 700px;
+  min-height: 80vh;
+  max-height: 90vh;
   text-align: left;
   position: relative;
   z-index: 1001;
@@ -1289,7 +1439,11 @@ table td {
 .teacher-edit-modal-content h2,
 .my-account-edit-modal-content h2,
 .change-password-modal-content h2,
-.view-grades-modal-content h2 {
+.view-grades-modal-content h2,
+.old-student-modal-content h2,
+.add-grade-level-assessment-modal h2,
+.list-of-payments-modal h2,
+.add-payment-modal h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -1308,7 +1462,10 @@ table td {
 .teacher-edit-modal-content label,
 .my-account-edit-modal-content label,
 .change-password-modal-content label,
-.view-grades-modal-content label {
+.view-grades-modal-content label,
+.add-grade-level-assessment-modal-content label,
+.list-of-payments-modal-content label,
+.add-payment-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -1326,6 +1483,8 @@ table td {
 .my-account-edit-modal-content input,
 .change-password-modal-content input,
 .view-grades-modal-content input,
+.add-grade-level-assessment-modal-content input,
+.list-of-payments-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
@@ -1336,8 +1495,17 @@ table td {
 .section-edit-modal-content select,
 .subject-edit-modal-content select,
 .teacher-edit-modal-content select,
-.my-account-edit-modal-content select {
+.my-account-edit-modal-content select,
+.add-grade-level-assessment-modal-content select {
   width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.add-payment-modal-content input,
+.add-payment-modal-content select {
   padding: 8px;
   margin: 5px 0;
   border: 1px solid #ccc;
@@ -1346,6 +1514,7 @@ table td {
 }
 /* grade level modal and school year modal*/
 .grade-level-modal,
+.add-grade-level-assessment-modal,
 .school-year-modal {
   visibility: hidden;
   opacity: 0;
@@ -1360,20 +1529,22 @@ table td {
 }
 
 .grade-level-modal.show,
-.school-year-modal.show {
+.school-year-modal.show,
+.add-grade-level-assessment-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
 }
 
 .grade-level-modal-content,
-.school-year-modal-content {
+.school-year-modal-content,
+.add-grade-level-assessment-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
-  height: 40vh;
+  min-height: 40vh;
 
   text-align: left;
   position: relative;
@@ -1804,10 +1975,11 @@ table td {
   align-items: center;
   gap: 10px;
 }
-#view-grade-studId h6, #view-grade-studName h6 {
- margin: 0;
- font-size: 14px;
- font-weight: bold;
+#view-grade-studId h6,
+#view-grade-studName h6 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: bold;
 }
 #view-grade-remarks {
   display: flex;
@@ -1826,4 +1998,142 @@ table td {
   border-radius: 6px;
   font-weight: bold;
   padding: 8px 30px;
+}
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 100px;
+}
+.header-container h2 {
+  font-weight: bold;
+  font-size: 35px;
+}
+#sem-sy {
+  display: flex;
+  gap: 10px;
+}
+#sem-sy #semester,
+#sem-sy #school-year {
+  width: 80px;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.logo img {
+  display: flex;
+  width: 100px;
+}
+.logo {
+  margin-right: -150px;
+}
+
+.date-sem-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.separator {
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.half-width {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.content-container {
+  display: flex;
+  width: 90%;
+  margin: 20px auto;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.content-container h6,
+.content-container input,
+.content-container select {
+  margin: 0;
+  vertical-align: middle;
+}
+
+.collector-info-container {
+  text-align: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: 0;
+  width: 50%;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.save-payment-btn-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.save-payment-btn-container button {
+  background-color: #218838;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+.collector-info-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.collector-info-container h5 {
+  margin-bottom: 5px;
+}
+
+.collector-name-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#collector-name {
+  text-align: center;
+  width: 70%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+#position {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Hide elements when printing */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  #printableArea,
+  #printableArea * {
+    visibility: visible;
+  }
+
+  #printableArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
 }

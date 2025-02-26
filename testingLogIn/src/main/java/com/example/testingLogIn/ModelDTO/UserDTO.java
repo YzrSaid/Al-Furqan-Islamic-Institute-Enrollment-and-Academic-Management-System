@@ -9,7 +9,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 
-
 @Builder
 @Data
 @AllArgsConstructor
@@ -17,6 +16,7 @@ import lombok.*;
 public class UserDTO {
     private int staffId;
     private String username;
+    private boolean isNotRestricted;
 
     @Enumerated(EnumType.STRING)
     Role role;

@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/gradelevel")
 @Controller
@@ -23,20 +25,39 @@ public class GradeLevelControllers {
         return new ResponseEntity<>(gradeLevelServices.getAllGradeLevels(), HttpStatus.OK);
     }
 
+    // @PostMapping("/add")
+    // public ResponseEntity<String> addGradeLevel(@RequestParam String levelName) {
+    //     try {
+    //         if (gradeLevelServices.addNewGradeLevel(levelName))
+    //             return new ResponseEntity<>("New Grade Level Added Successfully", HttpStatus.OK);
+    //         else
+    //             return new ResponseEntity<>("Grade Level Name Already Exist", HttpStatus.BAD_REQUEST);
+    //     } catch (Exception e) {
+    //         return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
+    //     }
+    // }
+
     @PostMapping("/add")
-    public ResponseEntity<String> addGradeLevel(@RequestParam String levelName) {
-        try{
-            if(gradeLevelServices.addNewGradeLevel(levelName))
-                return new ResponseEntity<>("New Grade Level Added Successfulyy",HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Grade Level Name Already Exist", HttpStatus.BAD_REQUEST);
-        }catch(Exception e){
-            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);}
+    public ResponseEntity<Map<String, String>> addGradeLevel(@RequestParam String levelName) {
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            if (gradeLevelServices.addNewGradeLevel(levelName)) {
+                response.put("message", "New Grade Level Added Successfully");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("message", "Grade Level Name Already Exists");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            response.put("message", "Process Failed");
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }
     }
-    
+
     @GetMapping("/{levelId}")
-    public ResponseEntity<GradeLevel> getGradeLevelById(@PathVariable int levelId){
-        return new ResponseEntity<>(gradeLevelServices.getGradeLevel(levelId),HttpStatus.OK);
+    public ResponseEntity<GradeLevel> getGradeLevelById(@PathVariable int levelId) {
+        return new ResponseEntity<>(gradeLevelServices.getGradeLevel(levelId), HttpStatus.OK);
     }
 
     // @PutMapping("/update")
@@ -69,7 +90,7 @@ public class GradeLevelControllers {
     public ResponseEntity<String> deleteGradeLevel(@PathVariable int levelId) {
         try {
             if (gradeLevelServices.deleteGradeLevel(levelId))
-                return new ResponseEntity<>("Grade Level Has Been Deleted Successfulyy", HttpStatus.OK);
+                return new ResponseEntity<>("Grade Level Has Been Deleted Successfully", HttpStatus.OK);
             else
                 return new ResponseEntity<>("Grade Level Not Found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {

@@ -16,8 +16,8 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="text-center">
-            <div class="logo">
-                <img src="../../static/images/al-furqanlogo.jpg" alt="School Logo">
+            <div class="school-logo">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
             <div class="welcome-div">
@@ -25,87 +25,75 @@
             </div>
         </div>
 
-        <a href="../dashboard.html" class="sidebar-icons" onclick="clearSubmenus()">
-            <img src="../../static/images/icons/dashboard_icon.png" alt="Dashboard Icon"> Dashboard
+        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
+            <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-            <img src="../../static/images/icons/transaction_icon.png" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
             <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
                 Enrollment
-                <span class="arrow-icon second-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
-                        alt="arrow-down"></span>
+                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"> </span>
             </a>
             <div class="submenu" id="enrollment-submenu">
-                <a href="../transaction/listing.html">Listing/Register</a>
-                <a href="#">Assessment</a>
-                <a href="#">Payment</a>
-                <a href="#">Enrolled</a>
+                <a href="/transaction/enrollment/listing">Listing/Register</a>
+                <a href="/transaction/enrollment/assessment">Assessment</a>
+                <a href="/transaction/enrollment/payment">Payment</a>
+                <a href="/transaction/enrollment/enrolled">Enrolled</a>
             </div>
-            <a href="#">Tuition</a>
-            <a href="#">Book Distribution</a>
+            <a href="/transaction/tuition">Tuition</a>
+            <a href="/transaction/academic-resources">Academic Resources</a>
         </div>
 
-        <a href="#" class="active sidebar-icons">
-            <img src="../../static/images/icons/data-entry_icon.png" alt="Grade Icon"> Grade Management
+
+        <a href="/grade-management" class="active sidebar-icons">
+            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
-            <img src="../../static/images/icons/persons-in-a-class.png" alt="Class Icon"> Class <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+        <a href="/schedule" class="sidebar-icons">
+            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
         </a>
-        <div class="submenu" id="class-submenu">
-            <a href="#">Class List</a>
-            <a href="#">Schedule</a>
-        </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-            <img src="../../static/images/icons/maintenance_icon.png" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="maintenance-submenu">
-            <a href="#">School Year</a>
-            <a href="../grade-level-maintenance.html">Grade Level</a>
-            <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
-                <span class="arrow-icon third-arrow-icon"><img src="../../static/images/icons/arrow-down.png"
-                        alt="arrow-down"></span>
-            </a>
-            <div class="submenu" id="schedule-submenu">
-                <a href="#">For Teachers</a>
-                <a href="#">For Students</a>
-            </div>
-            <a href="#">Subject</a>
-            <a href="#">Section</a>
-            <a href="#">Teacher</a>
+            <a href="/maintenance/school-year">School Year</a>
+            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/subject">Subject</a>
+            <a href="/maintenance/section">Section</a>
+            <a href="/maintenance/teacher">Teacher</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img src="../../static/images/icons/reports_icon.png" alt="Reports Icon"> Reports <span
-                class="arrow-icon"><img src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
-            <a href="#">Book Distribution Report</a>
-            <a href="#">Payment Report</a>
+            <a href="/reports/student">Student Reports</a>
+            <a href="/reports/payment">Payment Reports</a>
+            <a href="/reports/teacher">Teacher Report</a>
+            <a href="/reports/academic-resources">Academic Resources Reports</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img src="../../static/images/icons/account.png" alt="Account Icon"> Account <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
-            <a href="verify-accounts.html" class="second-active">Verify Accounts</a>
-            <a href="#">Manage Accounts</a>
-            <a href="#">My Account</a>
+            <a href="/accounts/verify-accounts">Verify Accounts</a>
+            <a href="/accounts/manage-accounts">Manage Accounts</a>
+            <a href="/accounts/my-account">My Account</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-            <img src="../../static/images/icons/settings.png" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    src="../../static/images/icons/arrow-down.png" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="#">Create User</a>
-            <a href="#">Archive</a>
+            <a href="settings/create-user">Create User</a>
         </div>
     </div>
 

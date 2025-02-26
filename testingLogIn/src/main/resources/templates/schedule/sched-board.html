@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
-    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
-    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <script>
@@ -37,10 +37,10 @@
 </script>
 
 <body>
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
     <div class="text-center">
-        <div class="logo">
+        <div class="school-logo">
             <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
         </div>
         <p class="mt-2">S.Y. 2024-2025</p>
@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <a href="/home" class="sidebar-icons" onclick="clearSubmenus()">
+    <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
         <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
     </a>
 
@@ -60,70 +60,64 @@
     <div class="submenu" id="transaction-submenu">
         <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
             Enrollment
-            <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
-                                                            alt="arrow-down"></span>
+            <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"> </span>
         </a>
         <div class="submenu" id="enrollment-submenu">
-            <a href="/listing">Listing/Register</a>
-            <a href="#">Assessment</a>
-            <a href="#">Payment</a>
-            <a href="#">Enrolled</a>
+            <a href="/transaction/enrollment/listing">Listing/Register</a>
+            <a href="/transaction/enrollment/assessment">Assessment</a>
+            <a href="/transaction/enrollment/payment">Payment</a>
+            <a href="/transaction/enrollment/enrolled">Enrolled</a>
         </div>
-        <a href="#">Tuition</a>
-        <a href="#">Book Distribution</a>
+        <a href="/transaction/tuition">Tuition</a>
+        <a href="/transaction/academic-resources">Academic Resources</a>
     </div>
+
 
     <a href="/grade-management" class="sidebar-icons">
         <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
     </a>
 
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
-        <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span
-            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+    <a href="/schedule" class="active sidebar-icons">
+        <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
     </a>
-    <div class="submenu" id="class-submenu">
-        <a href="#">Class List</a>
-        <a href="#">Schedule</a>
-    </div>
 
-    <a href="#" class="sidebar-icons active" onclick="toggleSubMenu('maintenance-submenu', event)">
+    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
         <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
             class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
     </a>
     <div class="submenu" id="maintenance-submenu">
-        <a href="../../maintenance/school-year-maintenance.html">School Year</a>
-        <a href="/grade-level-maintenance">Grade Level</a>
-        <a href="/schedule-maintenance" class="second-active">Schedule</a>
-        <a href="/subject-maintenance">Subject</a>
-        <a href="/section-maintenance">Section</a>
-        <a href="/teacher-maintenance">Teacher</a>
+        <a href="/maintenance/school-year">School Year</a>
+        <a href="maintenance/grade-level">Grade Level</a>
+        <a href="/maintenance/subject">Subject</a>
+        <a href="/maintenance/section">Section</a>
+        <a href="/maintenance/teacher">Teacher</a>
     </div>
 
     <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-        <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span
-            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
     </a>
     <div class="submenu" id="reports-submenu">
-        <a href="#">Book Distribution Report</a>
-        <a href="#">Payment Report</a>
+        <a href="/reports/student">Student Reports</a>
+        <a href="/reports/payment">Payment Reports</a>
+        <a href="/reports/teacher">Teacher Report</a>
+        <a href="/reports/academic-resources">Academic Resources Reports</a>
     </div>
-
     <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-        <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Accounts <span
-            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        <img th:src="@{images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
     </a>
     <div class="submenu" id="account-submenu">
-        <a href="/verify-accounts">Verify Accounts</a>
-        <a href="/manage-accounts">Manage Accounts</a>
-        <a href="#">My Account</a>
+        <a href="/accounts/verify-accounts">Verify Accounts</a>
+        <a href="/accounts/manage-accounts">Manage Accounts</a>
+        <a href="/accounts/my-account">My Account</a>
     </div>
     <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-        <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span
-            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
     </a>
     <div class="submenu" id="settings-submenu">
-        <a href="#">Create User</a>
-        <a href="#">Archive</a>
+        <a href="settings/create-user">Create User</a>
     </div>
 </div>
 
@@ -143,7 +137,7 @@
                      alt="User Icon">
                 <div id="dropdownUserIcon" class="dropdown-logout-content">
                     <h6><span>Super Admin</span></h6>
-                    <a href="/logout">Log Out</a>
+                    <a href="login.html">Log Out</a>
                 </div>
             </div>
         </div>
@@ -156,48 +150,63 @@
         <p>/</p>
         <p>Schedule</p>
     </div>
+    <div class="sched-board">
+        <div class="grade-lev-container">
+            <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+            <h4 id="adviser">Sir Jisun</h4>
+        </div>
 
-    <div class="search-div">
-        <!-- Searchbox and sort btn -->
-        <div class="search">
-            <div class="search-container">
-                <input type="text" placeholder="Search..." class="search-input" />
-                <button class="search-btn">Search</button>
-            </div>
-            <div class="sort-container">
-                <select name="sort" id="sort-select" class="sort-select">
-                    <option value="" disabled selected>Sort</option>
-                    <option value="patient-number">Patient Number</option>
-                    <option value="patient-name">Patient Name</option>
-                    <option value="patient-sex">Sex</option>
-                </select>
-            </div>
+        <table class="sched-table">
+            <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Teacher</th>
+                <th>Days</th>
+                <th>Time</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="scheduleBody">
+            <tr class="sched-row hidden-row">
+                <td>
+                    <select name="subject">
+                        <option value="" disabled selected>Choose a subject</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="teacher">
+                        <option value="" disabled selected>Choose a teacher</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="days">
+                        <option value="" disabled selected>Choose a day</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="time">
+                </td>
+                <td>
+                    <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="add-row-container">
+            <img id="addRowBtn" th:src="@{/images/icons/add-button.png}" alt="">
         </div>
     </div>
 
-    <!-- Table -->
-    <table class="verify-accounts-table">
-        <thead>
-        <tr>
-            <th>Grade Level</th>
-            <th>Section</th>
-            <th>Students</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Grade 1</td>
-            <td>Malunggay</td>
-            <td>30</td>
-            <td>
-                <div class="action-container">
-                    <a href="#" class="view-sched">View Schedule</a>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- buttons -->
+    <div class="btn-container">
+        <button class="save-button" data-action="saveSched" data-message="Are you sure you want to save this schedule" id="saveBtn" data-open-modal="confirmationModal">Add</button>
+        <button class="clear-button" data-action="clearSched" data-message="Are you sure you want to clear all the schedule" id="clearBtn" data-open-modal="confirmationModal">
+            Clear</button>
+    </div>
+
 
     <!-- Modal for confirmation -->
     <div id="confirmationModal" class="modal">
@@ -277,7 +286,7 @@
                     <div class="change-pass-div">
                         <ul>
                             <li>Must be 8 characters</li>
-                            <li>Must contain a special character</li>
+                            <li>Must contain a spacial character</li>
                             <li>Must contain upper and lower case</li>
                         </ul>
                     </div>
@@ -295,6 +304,7 @@
     </div>
 
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script th:src="@{/js/script.js}"></script>
 </body>
 

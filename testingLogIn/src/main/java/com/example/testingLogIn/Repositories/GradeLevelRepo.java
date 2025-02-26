@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GradeLevelRepo extends JpaRepository<GradeLevel,String> {
+public interface GradeLevelRepo extends JpaRepository<GradeLevel,Integer> {
 }

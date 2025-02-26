@@ -29,18 +29,19 @@
                 // Update arrow icon
                 let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
                 if (arrowIconImg) {
-                    arrowIconImg.thsrc = "@{/images/icons/greater-than.png}";
+                    arrowIconImg.src = "/images/icons/greater-than.png";
                 }
             }
         });
     });
 </script>
+<script th:src="@{/js/script.js}"></script>
 
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="text-center">
-            <div class="logo">
+            <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
@@ -49,7 +50,7 @@
             </div>
         </div>
 
-        <a href="/home" class="sidebar-icons" onclick="clearSubmenus()">
+        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
@@ -60,77 +61,64 @@
         <div class="submenu" id="transaction-submenu">
             <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
                 Enrollment
-                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
-                        alt="arrow-down"></span>
+                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"> </span>
             </a>
             <div class="submenu" id="enrollment-submenu">
-                <a href="/listing">Listing/Register</a>
-                <a href="#">Assessment</a>
-                <a href="#">Payment</a>
-                <a href="#">Enrolled</a>
+                <a href="/transaction/enrollment/listing">Listing/Register</a>
+                <a href="/transaction/enrollment/assessment">Assessment</a>
+                <a href="/transaction/enrollment/payment">Payment</a>
+                <a href="/transaction/enrollment/enrolled">Enrolled</a>
             </div>
-            <a href="#">Tuition</a>
-            <a href="#">Book Distribution</a>
+            <a href="/transaction/tuition">Tuition</a>
+            <a href="/transaction/academic-resources">Academic Resources</a>
         </div>
+
 
         <a href="/grade-management" class="sidebar-icons">
             <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('class-submenu', event)">
-            <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class Icon"> Class <span
-                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        <a href="/schedule" class="sidebar-icons">
+            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
         </a>
-        <div class="submenu" id="class-submenu">
-            <a href="#">Class List</a>
-            <a href="#">Schedule</a>
-        </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
             <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
                 class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="maintenance-submenu">
-            <a href="school-year-maintenance.html">School Year</a>
-            <a href="/grade-level-maintenance">Grade Level</a>
-            <a href="#" onclick="toggleSubMenu('schedule-submenu', event)">Schedule
-                <span class="arrow-icon third-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"
-                        alt="arrow-down"></span>
-            </a>
-            <div class="submenu" id="schedule-submenu">
-                <a href="#">For Teachers</a>
-                <a href="#">For Students</a>
-            </div>
-            <a href="/subject-maintenance">Subject</a>
-            <a href="#">Section</a>
-            <a href="/teacher-maintenance">Teacher</a>
+            <a href="/maintenance/school-year">School Year</a>
+            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/subject">Subject</a>
+            <a href="/maintenance/section">Section</a>
+            <a href="/maintenance/teacher">Teacher</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span
-                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="reports-submenu">
-            <a href="#">Book Distribution Report</a>
-            <a href="#">Payment Report</a>
+            <a href="/reports/student">Student Reports</a>
+            <a href="/reports/payment">Payment Reports</a>
+            <a href="/reports/teacher">Teacher Report</a>
+            <a href="/reports/academic-resources">Academic Resources Reports</a>
         </div>
-
         <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Accounts <span class="arrow-icon"><img
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
-            <a href="/verify-accounts" class="second-active">Verify Accounts</a>
-            <a href="/manage-accounts">Manage Accounts</a>
-            <a href="#">My Account</a>
+            <a href="/accounts/verify-accounts" class="second-active">Verify Accounts</a>
+            <a href="/accounts/manage-accounts">Manage Accounts</a>
+            <a href="/accounts/my-account">My Account</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
             <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="#">Create User</a>
-            <a href="#">Archive</a>
+            <a href="settings/create-user">Create User</a>
         </div>
     </div>
 
@@ -193,22 +181,24 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="accounts-table-body">
                 <tr>
-                    <td>134</td>
-                    <td>Ma'am Balan</td>
-                    <td>TEACHER</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td>
                         <div class="status-container">
-                            <div class="pending" id="status-verify-account">Pending</div>
+                            <div class="pending" id="status-verify-account"></div>
                         </div>
                     </td>
                     <td>
                         <div class="action-container dropdown-status-content-verify">
-                            <div class="action" id="action-verify-account"><img data-action="verifyAccount" data-message="Are you sure you want to verify this account?"
+                            <div class="action" id="action-verify-account"><img data-action="verifyAccount"
+                                    data-message="Are you sure you want to verify this account?"
                                     data-open-modal="confirmationModal" th:src="@{/images/icons/check.png}"
                                     alt="check-icon"></div>
-                            <div class="action" id="action-verify-account"><img data-action="rejectAccount" data-message="Are you sure you want to reject this account?"
+                            <div class="action" id="action-verify-account"><img data-action="rejectAccount"
+                                    data-message="Are you sure you want to reject this account?"
                                     data-open-modal="confirmationModal" th:src="@{/images/icons/cross.png}"
                                     alt="cross-icon"></div>
                         </div>
@@ -216,7 +206,7 @@
                 </tr>
             </tbody>
         </table>
-        
+
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
@@ -228,7 +218,154 @@
             </div>
         </div>
     </div>
-    <script th:src="@{/js/script.js}"></script>
+
+    <script>
+        let selectedVerificationId = null; // Initialize globally
+        document.addEventListener("DOMContentLoaded", function () {
+            const tableBody = document.getElementById("accounts-table-body");
+
+            tableBody.addEventListener("click", function (event) {
+                if (event.target.tagName === "IMG" && event.target.closest(".action")) {
+                    selectedVerificationId = event.target.closest("tr").querySelector("td:first-child").textContent.trim();
+                    console.log("Selected Verification ID:", selectedVerificationId);
+                }
+            });
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetchAccounts();
+        });
+
+        function fetchAccounts() {
+            fetch('/register/PENDING') // Fetch pending accounts
+                .then(response => response.json())
+                .then(data => populateTable(data))
+                .catch(error => console.error('Error fetching accounts:', error));
+        }
+
+        function fetchAccounts() {
+            Promise.all([
+                fetch('/register/APPROVED').then(response => response.json()),  // Fetch approved accounts
+                fetch('/register/REJECTED').then(response => response.json()),
+                fetch('/register/PENDING').then(response => response.json())  // Fetch rejected accounts
+            ])
+                .then(([approvedAccounts, rejectedAccounts, pendingAccounts]) => {
+                    const allAccounts = [...approvedAccounts, ...rejectedAccounts, ...pendingAccounts]; // Merge both
+                    populateTable(allAccounts);
+                })
+                .catch(error => console.error('Error fetching accounts:', error));
+        }
+        function populateTable(accounts) {
+            const tableBody = document.getElementById("accounts-table-body");
+            tableBody.innerHTML = ""; // Clear previous data
+
+            accounts.forEach(account => {
+                const row = document.createElement("tr");
+
+                // Ensure status class is formatted correctly
+                const statusClass = account.status.toLowerCase().replace(/\s+/g, '-');
+
+                row.innerHTML = `
+            <td>${account.id}</td>
+            <td>${account.username}</td>
+            <td>${account.role}</td>
+            <td>
+                <div class="status-container">
+                    <div class="status ${statusClass}">${account.status}</div>
+                </div>
+            </td>
+            <td>
+                <div class="action-container dropdown-status-content-verify">
+                    <div class="action">
+                        <img data-action="verifyAccount" data-message="Are you sure you want to verify this account?" data-open-modal="confirmationModal" src="/images/icons/check.png" alt="Verify">
+                    </div>
+                    <div class="action">
+                        <img data-action="rejectAccount" data-message="Are you sure you want to reject this account?" data-open-modal="confirmationModal" src="/images/icons/cross.png" alt="Reject">
+                    </div>
+                </div>
+            </td>
+        `;
+
+                tableBody.appendChild(row);
+            });
+
+            updateStatusColors(); // Call function after table updates
+            updateActionVisibility();
+        }
+
+
+        function updateStatusColors() {
+            document.querySelectorAll(".status").forEach(statusElement => {
+                const statusText = statusElement.textContent.trim().toUpperCase(); // Normalize case and trim spaces
+
+                switch (statusText) {
+                    case "APPROVED":
+                        statusElement.style.backgroundColor = "#28a745";
+                        statusElement.style.color = "white";
+                        break;
+                    case "REJECTED":
+                        statusElement.style.backgroundColor = "#E74424";
+                        statusElement.style.color = "white";
+                        break;
+                    case "PENDING":
+                        statusElement.style.backgroundColor = "#CEDD2D";
+                        statusElement.style.color = "white";
+                        break;
+                    default:
+                        statusElement.style.backgroundColor = "#6C757D"; // Default gray for unknown statuses
+                        statusElement.style.color = "white";
+                        break;
+                }
+            });
+        }
+
+
+        // Function to hide action buttons for non-pending accounts
+        function updateActionVisibility() {
+            const rows = document.querySelectorAll(".verify-accounts-table tbody tr");
+
+            console.log(`Rows found: ${rows.length}`); // Debugging
+
+            rows.forEach(row => {
+                let statusElement = row.querySelector(".status-container div");
+                let actionContainer = row.querySelector(".action-container");
+
+                if (statusElement && actionContainer) {
+                    let status = statusElement.textContent.trim().toLowerCase();
+                    console.log(`Status found: ${status}`); // Debugging
+
+                    if (status === "pending") {
+                        actionContainer.style.display = "flex";
+                    } else {
+                        actionContainer.style.display = "none";
+                    }
+                }
+            });
+        }
+
+        function verifyAccount(selectedVerificationId) {
+            alert(selectedVerificationId)
+            fetch(`/register/confirm/${selectedVerificationId}`, { method: 'PUT' })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    fetchAccounts(); // Refresh table
+                })
+                .catch(error => console.error('Error verifying account:', error));
+        }
+
+        function rejectAccount(selectedVerificationId) {
+            alert(selectedVerificationId)
+            fetch(`/register/reject/${selectedVerificationId}`, { method: 'PUT' })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    fetchAccounts(); // Refresh table
+                })
+                .catch(error => console.error('Error rejecting account:', error));
+        }
+    </script>
 </body>
 
 </html>

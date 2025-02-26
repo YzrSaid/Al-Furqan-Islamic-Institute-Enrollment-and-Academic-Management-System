@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TestingLogInApplication<Al_Furqan_SOFTWARE_ENGINEERING>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.testingLogIn.TestingLogInApplication",
+            "projectName": "Al_Furqan_SOFTWARE_ENGINEERING",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

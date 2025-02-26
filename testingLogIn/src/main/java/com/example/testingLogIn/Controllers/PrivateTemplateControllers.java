@@ -13,63 +13,146 @@ public class PrivateTemplateControllers {
         return "dashboard";
     }
 
-    @GetMapping("/listing")
-    public String getListing(){
-        return "/transaction/listing";
+    @GetMapping("settings/create-user")
+    public String getCreateUser(){
+        return "settings/create-user";
     }
 
-    @GetMapping("/grade-level-maintenance")
+    // these are for transaction pages
+
+    @GetMapping("/transaction/enrollment/listing")
+    public String getListing(){
+        return "/transaction/enrollment/listing";
+    }
+
+    @GetMapping("/transaction/enrollment/assessment")
+    public String getAssessment(){
+        return "/transaction/enrollment/assessment";
+    }
+
+    
+    @GetMapping("/transaction/enrollment/payment")
+    public String getPayment(){
+        return "/transaction/enrollment/payment";
+    }
+
+    
+    @GetMapping("/transaction/enrollment/enrolled")
+    public String getEnrolled(){
+        return "/transaction/enrollment/enrolled";
+    }
+
+    @GetMapping("/transaction/tuition")
+    public String getTuition(){
+        return "/transaction/tuition";
+    }
+
+    @GetMapping("/transaction/academic-resources")
+    public String getAcademicResources(){
+        return "/transaction/academic-resources";
+    }
+
+    // these are for maintenance page
+
+    @GetMapping("/maintenance/grade-level")
     public String getGradeLevelMaintenance(){
         return "/maintenance/grade-level-maintenance";
     }
 
-    @GetMapping("/verify-accounts")
-    public String getAccountVericationPage(){
+    
+    @GetMapping("/maintenance/teacher")
+    public String getTeacherMaintenance() {
+        return "/maintenance/teacher-maintenance";
+    }
+
+    @GetMapping("/maintenance/school-year")
+    public String getSchoolYearMaintenance(){
+        return "/maintenance/school-year-maintenance";
+    }
+
+    @GetMapping("/maintenance/section")
+    public String getSectionMaintenance(){
+        return "/maintenance/section-maintenance";
+    }
+
+    @GetMapping("/maintenance/subject")
+    public String getSubjectMaintenance(){
+        return "/maintenance/subject-maintenance";
+    }
+
+    // these are for reports pages
+
+    @GetMapping("/reports/academic-resources")
+    public String getAcadResourcesReports(){
+        return "/reports/acad-resources-reports";
+    }
+
+    @GetMapping("/reports/academic-resources-type")
+    public String getAcadResourcesReportsType(){
+        return "/reports/acad-resources-type";
+    }
+    
+    @GetMapping("/reports/payment")
+    public String getPaymentReports(){
+        return "/reports/payment-reports";
+    }
+    
+    @GetMapping("/reports/student")
+    public String getStudentReports(){
+        return "/reports/student-reports";
+    }
+
+    @GetMapping("/reports/teacher")
+    public String getTeacherReports(){
+        return "/reports/teacher-reports";
+    }
+
+    // these are for accounts pages
+
+    @GetMapping("/accounts/verify-accounts")
+    public String getAccountVerificationPage(){
         return "/accounts/verify-accounts";
     }
 
-    @GetMapping("/my-account")
+    @GetMapping("/accounts/my-account")
     public String getMyAccount(){
         return "/accounts/my-account";
     }
 
-    @GetMapping("/manage-accounts")
+    @GetMapping("/accounts/manage-accounts")
     public String getManageAccounts(){
         return "/accounts/manage-accounts";
     }
+
+    // these are for grade management pages
 
     @GetMapping("/grade-management")
     public String getGradeManagement(){
         return "/grade-management/grade-management";
     }
 
-    @GetMapping("/subject-maintenance")
-    public String getSubjectMaintenance(){
-        return "/maintenance/subject-maintenance";
+    @GetMapping("/grade-management/subject")
+    public String getGradeManagementPerSubject(){
+        return "/grade-management/grade-per-subject";
+    }
+    
+    @GetMapping("/grade-management/class")
+    public String getGradeManagementPerClass(){
+        return "/grade-management/grade-per-class";
     }
 
-    @GetMapping("/teacher-maintenance")
-    public String getTeacherMaintenance() {
-        return "/maintenance/teacher-maintenance";
-    }
+    // these are for schedule pages
 
-    @GetMapping("/schedule-maintenance")
-    public String getScheduleMaintenance(){
-        return "/maintenance/schedule/schedule-maintenance";
+    @GetMapping("/schedule")
+    public String getSchedule(){
+        return "/schedule/schedule";
     }
-
-    @GetMapping("/school-year-maintenance")
-    public String getSchoolYearMaintenance(){
-        return "/maintenance/school-year-maintenance";
-    }
-
-    @GetMapping("/section-maintenance")
-    public String getSectionMaintenance(){
-        return "/maintenance/section-maintenance";
-    }
-
-    @GetMapping("/sched-board")
+    
+    @GetMapping("/schedule/schedule-board")
     public String getSchedBoard(){
-        return "/maintenance/schedule/sched-board";
+        return "/schedule/sched-board";
     }
+
+
+ 
 }

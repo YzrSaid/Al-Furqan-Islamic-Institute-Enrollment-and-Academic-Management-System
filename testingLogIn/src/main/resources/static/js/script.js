@@ -97,8 +97,7 @@ function toggleSubMenu(submenuId, event) {
           //   "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png";
           // otherArrowIcon.src = "../static/images/icons/arrow-down.png";
 
-          otherArrowIcon.src = "../images/icons/arrow-down.png";
-        // ("/testingLogIn/src/main/resources/static/images/icons/arrow-down.png");
+          otherArrowIcon.src = "/images/icons/arrow-down.png";
       }
     }
   });
@@ -108,8 +107,8 @@ function toggleSubMenu(submenuId, event) {
 
   // *🔹 Save submenu state only if it is a submenu of a submenu*
   arrowIconImg.src = isOpen
-    ? "../images/icons/arrow-down.png" // Change back to down arrow if closing
-    : "../images/icons/greater-than.png"; // Change to right arrow if opening
+    ? "/images/icons/arrow-down.png" // Change back to down arrow if closing
+    : "/images/icons/greater-than.png"; // Change to right arrow if opening
   //   "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png"
   // : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
 
@@ -127,7 +126,7 @@ function clearSubmenus() {
   document
     .querySelectorAll(".arrow-icon img")
     // .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
-    .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
+    .forEach((img) => (img.src = "/images/icons/arrow-down.png"));
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -327,13 +326,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // this is for redirect in grade-per-class to grade-per-subject
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll("a.view-per-subject").forEach((link) => {
-      link.addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent default navigation
-        window.location.href = "/grade-per-class"; // Navigate to the sched board page
-      });
+  document.querySelectorAll("a.view-per-subject").forEach((link) => {
+    link.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent default navigation
+      window.location.href = "/grade-per-class"; // Navigate to the sched board page
     });
   });
+});
 
 document.addEventListener("DOMContentLoaded", function () {
   function toggleModal(modalId, show = true, message = "") {
@@ -351,12 +350,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let newConfirmBtn = confirmBtn.cloneNode(true);
         confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
 
-        // Set new event listener for confirm action
-        newConfirmBtn.setAttribute("data-confirm-action", action);
-        newConfirmBtn.addEventListener("click", function () {
-          handleConfirmAction(action);
-          toggleModal("confirmationModal", false);
-        });
+        // // Set new event listener for confirm action
+        // newConfirmBtn.setAttribute("data-confirm-action", action);
+        // newConfirmBtn.addEventListener("click", function () {
+        //   handleConfirmAction(action);
+        //   toggleModal("confirmationModal", false);
+        // });
       }
 
       if (modalId.includes("Edit") && show) {
@@ -383,6 +382,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function handleConfirmAction(action) {
     switch (action) {
+      case "savePayment":
+        alert("save payment");
+        window.confirmSave();
+        break;
+      case "addNewStudent":
+        alert("Add new student!");
+        break;
       case "addGradeLevel":
         addGradeLevel();
         break;
@@ -446,10 +452,10 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Edit Teacher");
         break;
       case "verifyAccount":
-        alert("Account verified successfully!");
+        verifyAccount(selectedVerificationId);
         break;
       case "rejectAccount":
-        alert("Account rejected successfully!");
+        rejectAccount(selectedVerificationId);
         break;
       case "restrictAccount":
         alert("Account restricted!");
@@ -862,3 +868,25 @@ document.addEventListener("DOMContentLoaded", () => {
   //   };
   updateButtonState();
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const printButton = document.querySelector(".no-print[onclick='printReport()']");
+    const saveButton = document.getElementById("save-payment-btn");
+    const confirmActionButton = document.getElementById("confirmAction");
+
+    // Hide the print button initially
+    printButton.style.display = "none";
+
+    // Function to handle confirmed save action
+    window.confirmSave = function () {
+        saveButton.style.display = "none"; // Hide Save button
+        printButton.style.display = "inline-block"; // Show Print button
+    }
+});
+
+// Function to handle printing
+function printReport() {
+    window.print();
+}
+
+

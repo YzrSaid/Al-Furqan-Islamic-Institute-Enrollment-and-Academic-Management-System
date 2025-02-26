@@ -4,6 +4,7 @@
  */
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,24 @@ public class UserAccountController {
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        return new ResponseEntity<>(customUserDetailsService.getAllUsers(), HttpStatus.OK);
+        return new ResponseEntity<>(customUserDetailsService.getAllUsers(), HttpStatus.OK);}
+    
+    @PostMapping("/register")
+    public ResponseEntity<String> registerAccount(@RequestBody AccountRegister toRegister){
+        if(customUserDetailsService.usernameExist(toRegister.getUsername()))
+            return new ResponseEntity<>("Email Already Taken",HttpStatus.CONFLICT);
+        else{
+            customUserDetailsService.registerNewUser(toRegister);
+            return new ResponseEntity<>("Account Registered Successfully",HttpStatus.OK);
+        }
     }
-
+    
     @PutMapping("/restrict/{id}")
-    public ResponseEntity<String> restrictUserAccount(@PathVariable int id) {
-        if (customUserDetailsService.restrictUser(id))
-            return new ResponseEntity<>("Account Restricted Successfully", HttpStatus.OK);
+    public ResponseEntity<String> restrictUserAccount(@PathVariable int id){
+        if(customUserDetailsService.restrictUser(id))
+            return new ResponseEntity<>("Account Restricted Successfully",HttpStatus.OK);
         else
-            return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
     }
 
     @PutMapping("/unrestrict/{id}")

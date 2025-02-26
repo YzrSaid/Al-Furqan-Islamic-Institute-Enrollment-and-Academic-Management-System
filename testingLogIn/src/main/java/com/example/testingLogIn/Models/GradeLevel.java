@@ -18,12 +18,4 @@ public class GradeLevel {
     private int levelId;
     private String levelName;
     private boolean isNotDeleted;
-
-    @Override
-    public String toString() {
-        return "GradeLevel{" +
-                "levelId=" + levelId +
-                ", levelName='" + levelName + '\'' +
-                '}';
-    }
 }

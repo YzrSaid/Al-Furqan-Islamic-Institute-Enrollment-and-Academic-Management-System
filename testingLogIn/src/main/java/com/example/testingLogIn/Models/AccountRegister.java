@@ -1,8 +1,10 @@
 package com.example.testingLogIn.Models;
 
+import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Enums.Role;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,17 +29,10 @@ public class AccountRegister {
     
     private String firstname;
     private String lastname;
+    private String address;
+    private String contactNumber;
+    private LocalDate birthdate;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     private boolean isNotDeleted;
-    
-    @Override
-    public String toString() {
-        return "AccountRegister{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                '}';
-    }
 }

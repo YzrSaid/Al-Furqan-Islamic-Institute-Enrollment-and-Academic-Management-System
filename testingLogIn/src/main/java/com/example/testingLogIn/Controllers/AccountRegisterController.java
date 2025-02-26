@@ -6,7 +6,6 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Models.AccountRegister;
-import com.example.testingLogIn.Repositories.AccountRegisterRepo;
 import com.example.testingLogIn.Services.AccountRegisterServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import java.util.List;
@@ -56,11 +55,13 @@ public class AccountRegisterController {
         AccountRegister accountToConfirm = accountRegisterServices.getAccount(id);
         if(accountToConfirm == null){
             return new ResponseEntity<>("Account Not Found",HttpStatus.NOT_FOUND);
-        }else{
+        }else if(customUserDetailsService.usernameExist(accountToConfirm.getUsername()))
+            return new ResponseEntity<>("Email Already Taken",HttpStatus.NOT_ACCEPTABLE);
+        else{
             customUserDetailsService.registerNewUser(accountToConfirm);
             accountToConfirm.setStatus(RegistrationStatus.APPROVED);
             accountRegisterServices.registerAccount(accountToConfirm);
-            return new ResponseEntity<>("Account Approved!",HttpStatus.OK);}
+            return new ResponseEntity<>("Account Successfully Added",HttpStatus.OK);}
         }catch(Exception e){
             return new ResponseEntity<>("Process Error",HttpStatus.CONFLICT);
         }

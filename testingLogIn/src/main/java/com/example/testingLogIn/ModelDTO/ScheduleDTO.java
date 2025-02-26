@@ -20,18 +20,4 @@ public class ScheduleDTO {
     private LocalTime timeStart;
     private LocalTime timeEnd;
     private boolean isNotDeleted;
-
-    @Override
-    public String toString() {
-        return "ScheduleDTO{" +
-                "scheduleNumber=" + scheduleNumber +
-                ", teacherName='" + teacherName + '\'' +
-                ", subject='" + subject + '\'' +
-                ", sectionName='" + sectionName + '\'' +
-                ", day=" + day +
-                ", timeStart=" + timeStart +
-                ", timeEnd=" + timeEnd +
-                ", isNotDeleted=" + isNotDeleted +
-                '}';
-    }
 }

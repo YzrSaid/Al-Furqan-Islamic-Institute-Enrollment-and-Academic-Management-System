@@ -4,9 +4,11 @@
  */
 package com.example.testingLogIn.ModelDTO;
 
+import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.Enums.Role;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import java.time.LocalDate;
 import lombok.*;
 
 @Builder
@@ -20,7 +22,12 @@ public class UserDTO {
 
     @Enumerated(EnumType.STRING)
     Role role;
-
+    private String address;
+    private String contactNumber;
+    private LocalDate birthdate;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     private String firstname;
     private String lastname;
+    private boolean isNotDeleted;
 }

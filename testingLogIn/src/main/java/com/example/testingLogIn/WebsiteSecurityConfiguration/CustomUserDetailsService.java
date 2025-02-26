@@ -3,9 +3,6 @@ package com.example.testingLogIn.WebsiteSecurityConfiguration;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.AccountRegister;
-import com.example.testingLogIn.Models.Teacher;
-import com.example.testingLogIn.Repositories.TeacherRepo;
-import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,14 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private UserRepo userRepo;
-    private TeacherRepo teacherRepo;
-
     @Autowired
-    public CustomUserDetailsService(UserRepo userRepo, TeacherRepo teacherRepo) {
-        this.userRepo = userRepo;
-        this.teacherRepo = teacherRepo;
-    }
+    private UserRepo userRepo;
 
     public boolean restrictUser(int id) {
         try {
@@ -62,7 +52,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public List<UserDTO> getAllUsers() {
         return userRepo.findAll().stream()
-                .map(user -> UserModelToUserDTO(user))
+                .map(UserModel::mapperDTO)
                 .toList();
     }
 
@@ -70,20 +60,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepo.findById(staffId).orElse(null);
     }
 
-    public List<UserDTO> getTeachersAccount() {
-        List<Teacher> teachersList = teacherRepo.findAll().stream()
-                .filter(Teacher::isNotDeleted)
-                .collect(Collectors.toList());
-
-        ArrayList<Integer> registeredTeacherIDs = new ArrayList<>();
-        teachersList.forEach(current -> registeredTeacherIDs.add(current.getUser().getStaffId()));
-
-        return userRepo.findAll()
-                .stream()
-                .filter(userModel -> userModel.role == Role.TEACHER &&
-                        !registeredTeacherIDs.contains(userModel.getStaffId()))
-                .map(user -> UserModelToUserDTO(user))
-                .collect(Collectors.toList());
+    public List<UserDTO> getTeachersAccount(){
+        return userRepo.findAll().stream()
+                          .filter(user -> user.isNotDeleted() && user.getRole().equals(Role.TEACHER))
+                          .map(UserModel::mapperDTO)
+                          .toList();
     }
 
     public boolean registerNewUser(AccountRegister accountRegister) {
@@ -123,22 +104,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserModel AccountRegToUserModel(AccountRegister accountRegister) {
         return UserModel.builder()
                 .isNotRestricted(true)
+                .isNotDeleted(true)
                 .firstname(accountRegister.getFirstname())
                 .lastname(accountRegister.getLastname())
                 .role(accountRegister.getRole())
+                .address(accountRegister.getAddress())
+                .birthdate(accountRegister.getBirthdate())
+                .gender(accountRegister.getGender())
                 .username(accountRegister.getUsername())
                 .password(accountRegister.getPassword())
                 .build();
-    }
-
-    private UserDTO UserModelToUserDTO(UserModel user) {
-        return UserDTO.builder()
-                .username(user.getUsername())
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
-                .staffId(user.getStaffId())
-                .role(user.getRole())
-                .isNotRestricted(user.isNotRestricted())
-                .build();
-    }
+    } 
 }

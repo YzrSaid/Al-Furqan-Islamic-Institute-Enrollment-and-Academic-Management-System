@@ -1,7 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.SectionDTO;
-import com.example.testingLogIn.ModelDTO.TeacherDTO;
+import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Services.SectionServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class SectionController {
     }
     
     @GetMapping("/adviserids")
-    public ResponseEntity<List<TeacherDTO>> getAdviserIds(){
+    public ResponseEntity<List<UserDTO>> getAdviserIds(){
         try{
             return new ResponseEntity<>(sectionService.getNoAdvisoryTeachers(),HttpStatus.OK);
         }catch(Exception e){

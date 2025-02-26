@@ -1,16 +1,12 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.Models.Schedule;
 import com.example.testingLogIn.Models.Section;
-import com.example.testingLogIn.Models.Subject;
-import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Repositories.ScheduleRepo;
-import com.example.testingLogIn.Repositories.SubjectRepo;
-import com.example.testingLogIn.Repositories.TeacherRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +21,7 @@ public class ScheduleServices {
     @Autowired
     private ScheduleRepo scheduleRepo;
     @Autowired
-    private TeacherRepo teacherRepo;
+    private UserRepo userRepo;
     @Autowired
     private SectionServices sectionService;
     @Autowired
@@ -37,7 +33,7 @@ public class ScheduleServices {
         List<ScheduleDTO> sectionConflict = new ArrayList<>();
         newSchedules.forEach(SchedDTO ->{
             boolean isValid=true;
-            UserModel teacher = getTeacherByName(SchedDTO.getTeacherName().toLowerCase()).getUser();
+            UserModel teacher = getTeacherByName(SchedDTO.getTeacherName().toLowerCase());
             Section section = sectionService.getSectionByName(SchedDTO.getSectionName().toLowerCase());
             if(isTeacherSchedConflict(teacher,SchedDTO,true)){
                 isValid = false;
@@ -60,13 +56,13 @@ public class ScheduleServices {
     }
     
     public List<ScheduleDTO> getSchedulesByTeacher(String teacherName){
-        Teacher teacher = getTeacherByName(teacherName.toLowerCase());
+        UserModel teacher = getTeacherByName(teacherName.toLowerCase());
         if(teacher == null){
             throw new NullPointerException();
         }
         return  scheduleRepo.findAll().stream()
                             .filter(sched -> sched.isNotDeleted() &&
-                                            sched.getTeacher().getStaffId() == teacher.getUser().getStaffId())
+                                            sched.getTeacher().getStaffId() == teacher.getStaffId())
                             .map(Schedule::mapper)
                             .collect(Collectors.toList());
     }
@@ -152,7 +148,7 @@ public class ScheduleServices {
     }
     private Schedule ScheduleDTOtoSchedule(ScheduleDTO schedDTO){
         return Schedule.builder()
-                       .teacher(getTeacherByName(schedDTO.getTeacherName().toLowerCase()).getUser())
+                       .teacher(getTeacherByName(schedDTO.getTeacherName().toLowerCase()))
                        .subject(subjectService.getByName(schedDTO.getSubject().toLowerCase()))
                        .section(sectionService.getSectionByName(schedDTO.getSectionName().toLowerCase()))
                        .day(schedDTO.getDay())
@@ -162,12 +158,12 @@ public class ScheduleServices {
                        .build();
     }
     
-    private Teacher getTeacherByName(String teacherName){
-        Teacher teacher = teacherRepo.findAll().stream()
-                          .filter(t -> t.isNotDeleted() &&
-                                       teacherName.toLowerCase().contains(t.getUser().getFirstname().toLowerCase()) &&
-                                       teacherName.toLowerCase().contains(t.getUser().getLastname().toLowerCase()))
-                          .findFirst().orElse(null);
-        return teacher;
+    private UserModel getTeacherByName(String teacherName){
+        return userRepo.findAll().stream()
+                            .filter(t -> t.isNotDeleted() &&
+                                        t.getRole().equals(Role.TEACHER) &&
+                                       teacherName.toLowerCase().contains(t.getFirstname().toLowerCase()) &&
+                                       teacherName.toLowerCase().contains(t.getLastname().toLowerCase()))
+                            .findFirst().orElse(null);
     }
 }

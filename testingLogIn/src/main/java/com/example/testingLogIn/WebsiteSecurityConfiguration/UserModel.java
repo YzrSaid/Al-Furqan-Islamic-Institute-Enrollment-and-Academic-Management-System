@@ -1,7 +1,10 @@
 package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
+import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.Enums.Role;
+import com.example.testingLogIn.ModelDTO.UserDTO;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,13 +28,19 @@ public class UserModel implements UserDetails {
     private int staffId;
     private String username;
     private String password;
-    private boolean isNotRestricted;
-
+    boolean isNotRestricted;
+    boolean isNotDeleted;
+    
     @Enumerated(EnumType.STRING)
     Role role;
 
     private String firstname;
     private String lastname;
+    private String address;
+    private String contactNumber;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+    private LocalDate birthdate;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -67,4 +76,19 @@ public class UserModel implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    
+    public UserDTO mapperDTO(){
+        return UserDTO.builder()
+                .username(username)
+                .firstname(firstname)
+                .lastname(lastname)
+                .address(address)
+                .birthdate(birthdate)
+                .gender(gender)
+                .staffId(staffId)
+                .role(role)
+                .isNotDeleted(isNotDeleted)
+                .isNotRestricted(isNotRestricted)
+                .build();
+    }  
 }

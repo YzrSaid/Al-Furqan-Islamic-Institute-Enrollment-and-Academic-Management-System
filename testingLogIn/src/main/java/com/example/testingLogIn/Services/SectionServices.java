@@ -1,13 +1,12 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
-import com.example.testingLogIn.ModelDTO.TeacherDTO;
+import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.Section;
-import com.example.testingLogIn.Models.Teacher;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.SectionRepo;
-import com.example.testingLogIn.Repositories.TeacherRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 import java.util.ArrayList;
@@ -26,14 +25,12 @@ public class SectionServices {
     private final GradeLevelRepo gradeRepo;
     private final SectionRepo sectionRepo;
     private final UserRepo userRepo;
-    private final TeacherRepo teacherRepo;
 
     @Autowired
-    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo,TeacherRepo teacherRepo) {
+    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo) {
         this.gradeRepo = gradeRepo;
         this.sectionRepo = sectionRepo;
         this.userRepo = userRepo;
-        this.teacherRepo = teacherRepo;
     }
     //Get by Grade Level Name
     public List<SectionDTO> getSectionsByLevel(String gradeLevel){
@@ -131,15 +128,15 @@ public class SectionServices {
     }
     
     //Return the List of Teachers that has no advisory class
-    public List<TeacherDTO> getNoAdvisoryTeachers(){
+    public List<UserDTO > getNoAdvisoryTeachers(){
         List<Integer> adviserStaffIds= new ArrayList<>();
         sectionRepo.findAll().stream()
                    .filter(Section::isNotDeleted)
                    .forEach(section -> adviserStaffIds.add(section.getAdviser().getStaffId()));
         
-        return teacherRepo.findAll().stream()
-                   .filter(teacher -> !adviserStaffIds.contains(teacher.getUser().getStaffId()))
-                   .map(Teacher::mapper)
+        return userRepo.findAll().stream()
+                   .filter(teacher -> teacher.getRole().equals(Role.TEACHER) && !adviserStaffIds.contains(teacher.getStaffId()))
+                   .map(UserModel::mapperDTO)
                    .collect(Collectors.toList());
     }
     

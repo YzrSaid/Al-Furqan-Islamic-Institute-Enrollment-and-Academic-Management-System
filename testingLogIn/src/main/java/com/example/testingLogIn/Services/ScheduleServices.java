@@ -9,7 +9,9 @@ import com.example.testingLogIn.Repositories.ScheduleRepo;
 import com.example.testingLogIn.Repositories.SubjectRepo;
 import com.example.testingLogIn.Repositories.TeacherRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,19 +31,24 @@ public class ScheduleServices {
     @Autowired
     private SubjectServices subjectService;
     
-    public Map<ScheduleDTO,String> addNewSchedules(List<ScheduleDTO> newSchedules){
-        Map<ScheduleDTO,String> rejectedSchedules = new HashMap();
-        
+    public Map<String,List<ScheduleDTO>> addNewSchedules(List<ScheduleDTO> newSchedules){
+        Map<String,List<ScheduleDTO>> rejectedSchedules = new HashMap();
+        List<ScheduleDTO> teacherConflict = new ArrayList<>();
+        List<ScheduleDTO> sectionConflict = new ArrayList<>();
         newSchedules.forEach(SchedDTO ->{
             boolean isValid=true;
             UserModel teacher = getTeacherByName(SchedDTO.getTeacherName().toLowerCase()).getUser();
             Section section = sectionService.getSectionByName(SchedDTO.getSectionName().toLowerCase());
             if(isTeacherSchedConflict(teacher,SchedDTO,true)){
                 isValid = false;
-                rejectedSchedules.put(SchedDTO, "Conflict with the Teacher's other existing schedule");
+                if(!rejectedSchedules.containsKey("Teacher Conflict Schedule"))
+                    rejectedSchedules.put("Teacher Conflict Schedule", teacherConflict);
+                rejectedSchedules.get("Teacher Conflict Schedule").add(SchedDTO);
             }else if(isSectionSchedConflict(section, SchedDTO,true)){
                 isValid = false;
-                rejectedSchedules.put(SchedDTO, "Conflict with the Section's other existing schedule");
+                if(!rejectedSchedules.containsKey("Section Conflict Schedule"))
+                    rejectedSchedules.put("Section Conflict Schedule", sectionConflict);
+                rejectedSchedules.get("Section Conflict Schedule").add(SchedDTO);
             }
             
             if(isValid)
@@ -116,52 +123,33 @@ public class ScheduleServices {
     
     private boolean isTeacherSchedConflict(UserModel teacher, ScheduleDTO sDTO,boolean isForAdd){
         if(isForAdd)
-            return scheduleRepo.findAll().stream()
-                               .filter(sched -> sched.isNotDeleted() && 
-                                                sched.getTeacher().getStaffId() == teacher.getStaffId() 
-                                       &&(isConflict2(sched,sDTO))
-                               )
-                                .findFirst().orElse(null) != null;
+            return scheduleRepo.isTeacherConflict(
+                                            null, 
+                                                teacher.getStaffId(), 
+                                                sDTO.getTimeStart(), 
+                                                sDTO.getTimeEnd());
         else
-            return scheduleRepo.findAll().stream()
-                               .filter(sched -> sched.isNotDeleted() &&
-                                                sched.getScheduleNumber() != sDTO.getScheduleNumber() &&
-                                                sched.getTeacher().getStaffId() == teacher.getStaffId() 
-                                       &&(isConflict2(sched,sDTO))
-                               )
-                                .findFirst().orElse(null) != null;
+            return scheduleRepo.isTeacherConflict(
+                                            sDTO.getScheduleNumber(), 
+                                                teacher.getStaffId(), 
+                                                sDTO.getTimeStart(), 
+                                                sDTO.getTimeEnd());
     }
     
     private boolean isSectionSchedConflict(Section section, ScheduleDTO sDTO,boolean isForAdd){
         if(isForAdd)
-        return scheduleRepo.findAll().stream()
-                           .filter(sched -> sched.isNotDeleted() &&
-                                            sched.getSection().getNumber() == 
-                                                    section.getNumber() 
-                                   &&(isConflict2(sched,sDTO))
-                           )
-                           .findFirst().orElse(null) != null;
+        return scheduleRepo.isSectionConflict(
+                                            null, 
+                                                section.getNumber(), 
+                                                sDTO.getTimeStart(), 
+                                                sDTO.getTimeEnd());
         else
-            return scheduleRepo.findAll().stream()
-                               .filter(sched -> sched.isNotDeleted() &&
-                                                sched.getScheduleNumber() != sDTO.getScheduleNumber() &&
-                                                sched.getSection().getNumber() == 
-                                                    section.getNumber() &&
-                                                (isConflict2(sched,sDTO))
-                               )
-                                .findFirst().orElse(null) != null;
+            return scheduleRepo.isSectionConflict(
+                                            sDTO.getScheduleNumber(), 
+                                                section.getNumber(), 
+                                                sDTO.getTimeStart(), 
+                                                sDTO.getTimeEnd());
     }
-    
-    private boolean isConflict2(Schedule sched,ScheduleDTO schedDTO){
-        return (schedDTO.getTimeStart().isAfter(sched.getTimeStart()) && schedDTO.getTimeStart().isBefore(sched.getTimeEnd())) ||
-                (schedDTO.getTimeEnd().isAfter(sched.getTimeStart()) && schedDTO.getTimeEnd().isBefore(sched.getTimeEnd())) ||
-                
-                (sched.getTimeStart().isAfter(schedDTO.getTimeStart()) && sched.getTimeStart().isBefore(schedDTO.getTimeEnd())) ||
-                (sched.getTimeEnd().isAfter(schedDTO.getTimeStart()) && sched.getTimeEnd().isBefore(schedDTO.getTimeEnd())) ||
-                sched.getTimeStart().equals(schedDTO.getTimeStart())
-                ;
-    }
-    
     private Schedule ScheduleDTOtoSchedule(ScheduleDTO schedDTO){
         return Schedule.builder()
                        .teacher(getTeacherByName(schedDTO.getTeacherName().toLowerCase()).getUser())

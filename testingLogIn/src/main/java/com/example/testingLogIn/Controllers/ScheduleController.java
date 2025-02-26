@@ -52,15 +52,14 @@ public class ScheduleController {
     }
     
     @PostMapping("/add")
-    public ResponseEntity<Map<ScheduleDTO,String>> addSchedules(@RequestBody List<ScheduleDTO> schedules){
+    public ResponseEntity<Map<String,List<ScheduleDTO>>> addSchedules(@RequestBody List<ScheduleDTO> schedules){
         try{
-            Map<ScheduleDTO,String> schedsRejected = scheduleService.addNewSchedules(schedules);
+            Map<String,List<ScheduleDTO>> schedsRejected = scheduleService.addNewSchedules(schedules);
             if(schedsRejected.isEmpty())
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(schedsRejected,HttpStatus.CONFLICT);
         }catch(Exception e){
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

@@ -39,7 +39,6 @@ public class UserAccountController {
             return new ResponseEntity<>("Account Registered Successfully",HttpStatus.OK);
         }
     }
-
     @PutMapping("/restrict/{id}")
     public ResponseEntity<String> restrictUserAccount(@PathVariable int id){
         if(customUserDetailsService.restrictUser(id))

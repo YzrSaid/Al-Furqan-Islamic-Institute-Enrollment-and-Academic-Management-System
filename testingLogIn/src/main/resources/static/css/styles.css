@@ -94,6 +94,10 @@ body {
   margin-bottom: 20px;
 }
 
+#signup-link a:hover {
+    cursor: pointer;
+}
+
 .input-group-input {
   width: 100%;
   border: none;
@@ -112,9 +116,8 @@ body {
   position: absolute;
   left: 0;
   bottom: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: #666;
   transition: all 0.3s ease;
   pointer-events: none;
 }
@@ -154,6 +157,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+#signup-header #school-logo {
+    width: 120px;
+    height: 120px;
+}
+#signup-header h3 {
+    font-size: 25px;
 }
 .input-group-half {
   display: flex;

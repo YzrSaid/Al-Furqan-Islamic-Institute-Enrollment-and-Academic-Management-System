@@ -14,11 +14,18 @@ public class GradeLevelServices {
     @Autowired
     GradeLevelRepo gradeLevelRepo;
 
-    public boolean addNewGradeLevel(String levelName){
+    public boolean addNewGradeLevel(String levelName, String preRequisite){
+        GradeLevel pre = null;
+        if(preRequisite != null){
+            pre = getByName(preRequisite);
+            if(pre == null)
+                throw new NullPointerException();}
+        
         if(getByName(levelName) == null){
             GradeLevel newGrade = new GradeLevel();
             newGrade.setNotDeleted(true);
             newGrade.setLevelName(levelName);
+            newGrade.setPreRequisite(pre);
             gradeLevelRepo.save(newGrade);
             return true;
         }else
@@ -66,8 +73,8 @@ public class GradeLevelServices {
     
     public GradeLevel getByName(String levelname){
         return gradeLevelRepo.findAll().stream()
-                      .filter(gradeLevel -> gradeLevel.getLevelName().equals(levelname) && 
-                                            gradeLevel.isNotDeleted())
+                      .filter(gradeLevel -> gradeLevel.isNotDeleted() &&
+                                            gradeLevel.getLevelName().equalsIgnoreCase(levelname))
                       .findFirst().orElse(null);
     }
 }

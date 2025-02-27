@@ -324,6 +324,7 @@
 
                 data.forEach(subject => {
                     const row = document.createElement("tr");
+                    console.log(subject);
                     row.innerHTML = `
                     <td>${subject.subjectName}</td>
                     <td>${subject.gradeLevel}</td>
@@ -447,9 +448,10 @@
 
     // Edit subject
     function editSubject() {
+        const gradeLevelSelect = document.getElementById("assigned-grade-level-edit");
         const subjectData = {
             subjectNumber: selectedSubjectId,
-            gradeLevel: document.getElementById("assigned-grade-level-edit").value,
+            gradeLevel: gradeLevelSelect.options[gradeLevelSelect.selectedIndex].text,
             subjectName: document.getElementById("subject-name-edit").value
         };
 

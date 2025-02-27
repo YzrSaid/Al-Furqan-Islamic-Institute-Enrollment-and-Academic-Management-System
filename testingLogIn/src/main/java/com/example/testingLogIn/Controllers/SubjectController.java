@@ -42,6 +42,7 @@ public class SubjectController {
         try{
             return new ResponseEntity<>(subjectService.getAllSubjects(),HttpStatus.OK);
         }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
@@ -81,7 +82,6 @@ public class SubjectController {
     
     @PutMapping("/updated")
     public ResponseEntity<String> updateSubject(@RequestBody SubjectDTO subject){
-        System.err.println(subject);
         try{
         if(subjectService.updateSubjectDescription(subject))
             return new ResponseEntity<>("Subject Updated Successfully",HttpStatus.OK);

@@ -38,17 +38,20 @@ public class GradeLevelControllers {
     // }
 
     @PostMapping("/add")
-    public ResponseEntity<Map<String, String>> addGradeLevel(@RequestParam String levelName) {
+    public ResponseEntity<Map<String, String>> addGradeLevel(@RequestParam String levelName,@RequestParam String preRequisete) {
         Map<String, String> response = new HashMap<>();
 
         try {
-            if (gradeLevelServices.addNewGradeLevel(levelName)) {
+            if (gradeLevelServices.addNewGradeLevel(levelName,preRequisete)) {
                 response.put("message", "New Grade Level Added Successfully");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
                 response.put("message", "Grade Level Name Already Exists");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
+        }catch(NullPointerException npe){
+                response.put("message", "Prerequisite Grade Level Not Found");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             response.put("message", "Process Failed");
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);

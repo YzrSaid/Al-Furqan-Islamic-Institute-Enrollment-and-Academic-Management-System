@@ -21,14 +21,7 @@ public class PublicController {
     public String getPage(){
         return "LogIn";
     }
-
-
-//    @GetMapping("/newpage")
-//    public String newPage(HttpServletRequest request){
-//        Users model = userRepo.findByUsername(request.getUserPrincipal().getName());
-//        return "newpage";
-//    }
-
+    
     @GetMapping("/signing")
     public String signPage(){
         return "signin";

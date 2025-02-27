@@ -434,11 +434,14 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         break;
       case "addSection":
-        alert("Added Section");
+        addSection();
         break;
       case "editSection":
-        alert("Edit Section");
+        editSection();
         break;
+      case "deleteSection":
+        deleteSection(selectedSectionId)
+        break;  
       case "addSubject":
         alert("Subject information saved!");
         break;
@@ -458,13 +461,13 @@ document.addEventListener("DOMContentLoaded", function () {
         rejectAccount(selectedVerificationId);
         break;
       case "restrictAccount":
-        alert("Account restricted!");
+       restrictUser(selectedManageAccountId);
         break;
       case "unrestrictAccount":
-        alert("Account unrestricted!");
+        unrestrictUser(selectedManageAccountId);
         break;
       case "editMyAccount":
-        alert("Account edited successfully!");
+        editMyAccount(selectedManageAccountId);
         break;
       case "changePassword":
         alert("Password for this account has been changed successfully!");

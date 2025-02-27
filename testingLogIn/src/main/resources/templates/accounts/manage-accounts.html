@@ -312,34 +312,6 @@
 </body>
 
 <script>
-    let selectedVerificationId = null; // Initialize globally
-    document.addEventListener("DOMContentLoaded", function () {
-        const tableBody = document.getElementById("accounts-table-body");
-
-        tableBody.addEventListener("click", function (event) {
-            if (event.target.tagName === "IMG" && event.target.closest(".action")) {
-                selectedVerificationId = event.target.closest("tr").querySelector("td:first-child").textContent.trim();
-                console.log("Selected Verification ID:", selectedVerificationId);
-            }
-        });
-    });
-
-    function handleAccountAction(event, userId, actionType) {
-        event.preventDefault();
-
-        const url = actionType === "restrictAccount" ? `/user/restrict/${userId}` : `/user/unrestrict/${userId}`;
-
-        fetch(url, { method: 'PUT' })
-            .then(response => response.text())
-            .then(message => {
-                alert(message); // Display success message
-                fetchUserAccounts(); // Refresh the table
-            })
-            .catch(error => console.error('Error processing account action:', error));
-    }
-
-
-
     document.addEventListener("DOMContentLoaded", function () {
         fetchUserAccounts();
     });
@@ -354,9 +326,6 @@
             })
             .catch(error => console.error('Error fetching user accounts:', error));
     }
-
-
-
 
     function populateTable(accounts) {
         const tableBody = document.getElementById("accounts-table-body");
@@ -393,8 +362,7 @@
                         <div class="dropdown-status-content">
                             <a href="#" data-action="${oppositeAction}"
                                 data-message="${confirmationMessage}"
-                                data-open-modal="confirmationModal"
-                                onclick="handleAccountAction(event, ${account.staffId}, '${oppositeAction}')">
+                                data-open-modal="confirmationModal">
                                 ${oppositeActionText}
                             </a>
                             <a href="#" data-open-modal="myAccountEditModal">Edit Account</a>
@@ -410,7 +378,49 @@
         updateStatusColors();
     }
 
+    let selectedManageAccountId = null; // Initialize globally
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const tableBody = document.getElementById("accounts-table-body");
+
+        tableBody.addEventListener("click", function (event) {
+            // Check if the clicked element is inside an action container and is an <a> tag
+            if (event.target.tagName === "A" && event.target.closest(".dropdown-status-content")) {
+                // Find the closest row and get the staffId from the first column (adjust selector if needed)
+                const row = event.target.closest("tr");
+                if (row) {
+                    selectedManageAccountId = row.querySelector("td:first-child").textContent.trim();
+                    console.log("Selected Manage Account ID:", selectedManageAccountId);
+                }
+            }
+        });
+    });
+
+    function editMyAccount(selectedManageAccountId) {
+        const form = document.getElementById("gradeLevelEditForm");
+        const gradeId = form.dataset.id; 
+
+        const gradeLevelData = {
+            levelId: gradeId,
+            levelName: document.getElementById("levelNameEdit").value,
+        };
+
+        fetch("/gradelevel/update-grade-level", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(gradeLevelData),
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                if (data.includes("Successfully")) {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    }
 
     function updateStatusColors() {
         document.querySelectorAll(".status").forEach(statusElement => {
@@ -428,6 +438,20 @@
 
     // Run when the page loads
     document.addEventListener("DOMContentLoaded", updateStatusColors);
+
+    function handleAccountAction(event, userId, actionType) {
+        event.preventDefault();
+
+        const url = actionType === "restrictAccount" ? restrictUser(userId) : unrestrictUser(userId);
+
+        // fetch(url, { method: 'PUT' })
+        //     .then(response => response.text())
+        //     .then(message => {
+        //         alert(message); // Display success message
+        //         fetchUserAccounts(); // Refresh the table
+        //     })
+        //     .catch(error => console.error('Error processing account action:', error));
+    }
 
     function unrestrictUser(userId) {
         fetch(`/user/unrestrict/${userId}`, { method: 'PUT' })

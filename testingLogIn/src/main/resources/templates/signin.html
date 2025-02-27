@@ -10,81 +10,109 @@
 </head>
 
 <body>
-<div class="wrapper">
-    <div id="left-login-block">
-        <img src="/images/al-furqan-bg.jpg" alt="bg">
-    </div>
-    <div id="right-login-block">
-        <div id="signup-header">
-            <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo" id="school-logo"> <br> <br>
-            <h3>Al-Furqan Islamic Institute Inc.</h3>
+    <div class="wrapper">
+        <div id="left-login-block">
+            <img src="/images/al-furqan-bg.jpg" alt="bg">
         </div>
-        <form action="/register" method="post" id="login-form">
-            <div class="input-group-half">
-                <div class="input-group">
-                    <input class="input-group-input" type="text" name="firstname" id="firstname" placeholder="" required>
-                    <label class="input-group-label" for="firstname">First Name</label>
+        <div id="right-login-block">
+            <div id="signup-header">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo" id="school-logo"> <br> <br>
+                <h3>Al-Furqan Islamic Institute Inc.</h3>
+            </div>
+            <form action="/register" method="post" id="login-form">
+                <div class="input-group-half">
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="firstname" id="firstname" placeholder=""
+                            required>
+                        <label class="input-group-label" for="firstname">First Name</label>
+                    </div>
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="lastname" id="lastname" placeholder="">
+                        <label class="input-group-label" for="lastname">Last Name</label>
+                    </div>
                 </div>
                 <div class="input-group">
-                    <input class="input-group-input" type="text" name="lastname" id="lastname" placeholder="">
-                    <label class="input-group-label" for="lastname">Last Name</label>
+                    <input class="input-group-input" type="email" name="username" id="email" placeholder="" required>
+                    <label class="input-group-label" for="email">Email</label>
                 </div>
-            </div>
-            <div class="input-group">
-                <input class="input-group-input" type="email" name="username" id="email" placeholder="" required>
-                <label class="input-group-label" for="email">Email</label>
-            </div>
-            <div class="input-group">
-                <div id="account-type-div">
-                    <label class="normal-label" for="account-type">Account Type</label>
-                    <select name="role"  id="account-type">
-                        <option value="" disabled selected>Choose</option>
-                        <option value="SUPER_ADMIN">Super Admin</option>
-                        <option value="ADMIN_ENROLLMENT">Admin - Enrollment</option>
-                        <option value="TEACHER">Teacher</option>
-                    </select>
+                <div class="input-group-half">
+                    <div class="input-group">
+                        <div id="account-type-div">
+                            <label class="normal-label" for="gender">Gender</label>
+                            <select name="gender" id="gender">
+                                <option value="">Choose a gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div id="account-type-div">
+                            <label class="normal-label" for="account-type">Account Type</label>
+                            <select name="role" id="account-type">
+                                <option value="" disabled selected>Choose</option>
+                                <option value="SUPER_ADMIN">Super Admin</option>
+                                <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
+                                <option value="TEACHER">Teacher</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="input-group">
-                <input class="input-group-input" type="password" name="password" id="password" placeholder="">
-                <label class="input-group-label" id="label" for="password">Password</label>
-            </div>
-            <div class="input-group">
-                <input class="input-group-input" type="password" name="password_confirm" id="confirm-pass" placeholder="" required>
-                <label class="input-group-label" id="label" for="confirm-pass">Confirm Password</label>
-            </div> <br>
-            <button type="submit" id="login-btn">Sign Up</button>
-        </form>
-        <h4 id="signup-link">Already have an account? <a onclick="proceed('login')">Log in here.</a></h4>
+                <div class="input-group">
+                    <input class="input-group-input" type="text" name="address" id="address" placeholder="" required>
+                    <label class="input-group-label" for="address">Address</label>
+                </div>
+
+                <div class="input-group">
+                    <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber" placeholder=""
+                        required>
+                    <label class="input-group-label" for="contactNumber">Contact Number</label>
+                </div>
+
+                
+                <div class="input-group">
+                    <input class="input-group-input" type="password" name="password" id="password" placeholder="">
+                    <label class="input-group-label" id="label" for="password">Password</label>
+                </div>
+                <div class="input-group">
+                    <input class="input-group-input" type="password" name="password_confirm" id="confirm-pass"
+                        placeholder="" required>
+                    <label class="input-group-label" id="label" for="confirm-pass">Confirm Password</label>
+                </div> <br>
+                <button type="submit" id="login-btn">Sign Up</button>
+            </form>
+            <h4 id="signup-link">Already have an account? <a onclick="proceed('login')">Log in here.</a></h4>
+        </div>
     </div>
-</div>
 </body>
 <script>
     document.getElementById('login-form').addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent default form submission
+        event.preventDefault(); // Prevent default form submission
 
-    const form = event.target;
-    const formData = new FormData(form);
+        const form = event.target;
+        const formData = new FormData(form);
 
-    fetch(form.action, {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.text().then(text => {
-                alert(text);
-                window.location.href = '/login';
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text().then(text => {
+                        alert(text);
+                        window.location.href = '/login';
+                    });
+                } else {
+                    return response.text().then(text => {
+                        alert(text); // Display error message
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-        } else {
-            return response.text().then(text => {
-                alert(text); // Display error message
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
     });
-});
 </script>
+
 </html>

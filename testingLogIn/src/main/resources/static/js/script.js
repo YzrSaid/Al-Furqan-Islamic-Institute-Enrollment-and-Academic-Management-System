@@ -440,13 +440,16 @@ document.addEventListener("DOMContentLoaded", function () {
         editSection();
         break;
       case "deleteSection":
-        deleteSection(selectedSectionId)
-        break;  
+        deleteSection(selectedSectionId);
+        break;
       case "addSubject":
         addSubject();
         break;
       case "editSubject":
         editSubject();
+        break;
+      case "deleteSubject":
+        deleteSubject(selectedSubjectId);
         break;
       case "addTeacher":
         addTeacher();
@@ -461,7 +464,7 @@ document.addEventListener("DOMContentLoaded", function () {
         rejectAccount(selectedVerificationId);
         break;
       case "restrictAccount":
-       restrictUser(selectedManageAccountId);
+        restrictUser(selectedManageAccountId);
         break;
       case "unrestrictAccount":
         unrestrictUser(selectedManageAccountId);
@@ -873,23 +876,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    const printButton = document.querySelector(".no-print[onclick='printReport()']");
-    const saveButton = document.getElementById("save-payment-btn");
-    const confirmActionButton = document.getElementById("confirmAction");
+  const printButton = document.querySelector(
+    ".no-print[onclick='printReport()']"
+  );
+  const saveButton = document.getElementById("save-payment-btn");
+  const confirmActionButton = document.getElementById("confirmAction");
 
-    // Hide the print button initially
-    printButton.style.display = "none";
+  // Hide the print button initially
+  printButton.style.display = "none";
 
-    // Function to handle confirmed save action
-    window.confirmSave = function () {
-        saveButton.style.display = "none"; // Hide Save button
-        printButton.style.display = "inline-block"; // Show Print button
-    }
+  // Function to handle confirmed save action
+  window.confirmSave = function () {
+    saveButton.style.display = "none"; // Hide Save button
+    printButton.style.display = "inline-block"; // Show Print button
+  };
 });
 
 // Function to handle printing
 function printReport() {
-    window.print();
+  window.print();
 }
-
-

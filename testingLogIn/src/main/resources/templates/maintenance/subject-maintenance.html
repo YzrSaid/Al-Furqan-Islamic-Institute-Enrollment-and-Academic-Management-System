@@ -295,7 +295,7 @@
             .catch(error => console.error("Error fetching grade levels:", error));
     }
     function fetchGradeLevelsEdit() {
-        return fetch("/gradelevel/all") // ✅ Return the fetch promise
+        return fetch("/gradelevel/all") // Return the fetch promise
             .then(response => response.json())
             .then(data => {
                 const gradeLevelEditSelect = document.getElementById("assigned-grade-level-edit");
@@ -308,7 +308,7 @@
                     gradeLevelEditSelect.appendChild(option);
                 });
 
-                console.log("📌 Grade levels loaded.");
+                console.log("Grade levels loaded.");
             })
             .catch(error => console.error("Error fetching grade levels:", error));
     }
@@ -372,13 +372,13 @@
                     selectedSubjectId = data.subjectNumber;
                     console.log("Selected Grade Level:", data.gradeLevel.levelName, "ID:", data.gradeLevel.levelId);
 
-                    // ✅ Ensure grade levels are fully loaded before setting value
+                    // Ensure grade levels are fully loaded before setting value
                     fetchGradeLevelsEdit().then(() => {
                         const gradeLevelSelect = document.getElementById("assigned-grade-level-edit");
 
                         // Double-check if options are populated
                         if (gradeLevelSelect.options.length === 0) {
-                            console.error("⚠️ Grade level options are empty!");
+                            console.error("Grade level options are empty!");
                             return;
                         }
 
@@ -392,7 +392,7 @@
                             }
                         });
 
-                        console.log("✅ Grade level successfully set to:", gradeLevelSelect.value);
+                        console.log("Grade level successfully set to:", gradeLevelSelect.value);
                     });
                 })
                 .catch(error => console.error("Error fetching subject data:", error));
@@ -400,6 +400,7 @@
 
         // Delete subject
         if (target.dataset.action === "deleteSubject") {
+            const subjectName = target.dataset.id;
             fetch(`/subject/name/${subjectName}`)
                 .then(response => response.json())
                 .then(data => {
@@ -437,7 +438,7 @@
                     alert(data);
                     location.reload();  // Refresh page to show the new subject
                 } else {
-                    alert("⚠ " + data); // Show error message from backend
+                    alert(data); // Show error message from backend
                 }
             })
             .catch(error => {
@@ -454,10 +455,6 @@
             gradeLevel: gradeLevelSelect.options[gradeLevelSelect.selectedIndex].text,
             subjectName: document.getElementById("subject-name-edit").value
         };
-
-        console.log(document.getElementById("assigned-grade-level-edit").value)
-
-
         console.log("📌 Sending Data:", JSON.stringify(subjectData));
 
         fetch("/subject/updated", {
@@ -478,12 +475,7 @@
     }
 
     // Delete subject
-    function deleteSubject() {
-        if (!selectedSubjectId) {
-            alert("No subject selected for deletion.");
-            return;
-        }
-
+    function deleteSubject(selectedSubjectId) {
         fetch(`/subject/delete/${selectedSubjectId}`, {
             method: "DELETE",
             headers: {

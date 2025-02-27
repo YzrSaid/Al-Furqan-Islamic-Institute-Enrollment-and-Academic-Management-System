@@ -83,7 +83,7 @@ public class SectionServices {
     //GET ALL NOT DELETED SECTION
     public List<SectionDTO> getAllSections(){
         return sectionRepo.findAll().stream()
-                          .filter(Section::isNotDeleted)
+                          .filter(section -> section.isNotDeleted() && section.getLevel().isNotDeleted())
                           .map(Section::toSectionDTO)
                           .collect(Collectors.toList());
     }

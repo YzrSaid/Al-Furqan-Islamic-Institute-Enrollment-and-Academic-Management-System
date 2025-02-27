@@ -19,10 +19,13 @@ public class SchoolYearServices {
     public boolean addNewSchoolYear(SchoolYear sy){
         if(doesSchoolYearExist(sy.getSchoolYear()))
             return false;
-        else
+        else{
             sy.setNotDeleted(true);
             schoolYearRepo.save(sy);
-        return true;
+            
+            new Thread(() -> {semService.addSemesters(sy.getSchoolYear());}).start();
+            
+            return true;}
     }
     
     public SchoolYear getSchoolYear(int syNumber){
@@ -38,30 +41,22 @@ public class SchoolYearServices {
     
     public boolean updateSchoolYear(SchoolYear sy){
         SchoolYear syUpdated = schoolYearRepo.findById(sy.getSchoolYearNum()).orElse(null);
-        if(syUpdated != null){
-            syUpdated.setActive(sy.isActive());
-            syUpdated.setSchoolYear(sy.getSchoolYear());
-            schoolYearRepo.save(syUpdated);
-            
-            return true;
-        }
-        return false;
-    }
-    
-    //activate school year
-    public int activateSY(int syNumber){
-        SchoolYear sy = schoolYearRepo.findById(syNumber).orElse(null);
-        
-        if(sy == null)
+        if(syUpdated == null)
             throw new NullPointerException();
-        else if(!semService.hasFirstSem(sy)){
-            semService.addNewSemester(sy, 1);
-            return 1;
-        }else{
-            semService.addNewSemester(sy, 2);
-            return 2;
-        }
         
+        boolean doesSchoolYearExist = schoolYearRepo.findAll().stream()
+                                                    .filter(schoolY ->  schoolY.isNotDeleted() &&
+                                                                        schoolY.getSchoolYearNum() != sy.getSchoolYearNum() &&
+                                                                        schoolY.getSchoolYear().equalsIgnoreCase(sy.getSchoolYear()))
+                                                    .findFirst().orElse(null) != null;
+        if(doesSchoolYearExist)
+            return false;
+        
+        syUpdated.setActive(sy.isActive());
+        syUpdated.setSchoolYear(sy.getSchoolYear());
+        schoolYearRepo.save(syUpdated);
+
+        return true;
     }
     
     public boolean deleteSchoolYear(int syNumber){

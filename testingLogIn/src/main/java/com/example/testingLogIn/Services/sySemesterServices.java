@@ -17,40 +17,30 @@ public class sySemesterServices {
     @Autowired
     private sySemesterRepo semesterRepo;
     @Autowired
-    private SchoolYearRepo SYRepo;
+    private SchoolYearRepo syRepo;
     
-    public boolean addNewSemester(SchoolYear sy,int sem){
-        SchoolYear schoolYear = SYRepo.findById(sy.getSchoolYearNum()).orElse(null);
-        
-        if(schoolYear == null)
-            return false;
-        
-        SchoolYearSemester semester = new SchoolYearSemester();
-        semester.setSchoolYear(schoolYear);
-        if(sem == 1)
-            semester.setSem(Semester.First);
-        else
-            semester.setSem(Semester.Second);
-        semester.setActive(true);
-        semester.setNotDeleted(true);
-        
-        disableAllActive();
-        semesterRepo.save(semester);
-        return true;
+    public void addSemesters(String schoolYearName){
+        SchoolYear sy = syRepo.getByName(schoolYearName);
+        if(sy != null){
+            int count = 0;
+            while(count<2){
+                Semester sem = count++ == 1? Semester.First : Semester.Second;
+                
+                SchoolYearSemester sySem = new SchoolYearSemester();
+                sySem.setNotDeleted(true);
+                sySem.setActive(false);
+                sySem.setSchoolYear(sy);
+                sySem.setSem(sem);
+                
+                semesterRepo.save(sySem);
+            }
+        }
     }
     
     public List<SchoolYearSemester> getAllSemesters(){
         return semesterRepo.findAll().stream()
                            .filter(SchoolYearSemester::isNotDeleted)
                            .toList();
-    }
-    
-    public boolean hasFirstSem(SchoolYear sy){
-        return semesterRepo.findAll().stream()
-                      .filter(sem ->sem.getSchoolYear().getSchoolYearNum() == sy.getSchoolYearNum() &&
-                                    sem.isNotDeleted() &&
-                                    sem.getSem() == Semester.First)
-                        .findFirst().orElse(null) != null;
     }
     
     private void disableAllActive(){

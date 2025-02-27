@@ -101,7 +101,7 @@ public class SectionServices {
     //UPDATE SECTION RECORD
     public boolean updateSection(SectionDTO sectionDTO){
         Section toUpdate = sectionRepo.findById(sectionDTO.getNumber()).orElse(null);
-        
+        System.out.println("the number is "+sectionDTO.getNumber());
         if(toUpdate != null){
             toUpdate.setLevel(getGradeLevel(sectionDTO.getGradeLevelName()));
             toUpdate.setAdviser(getUserByFullName(sectionDTO.getAdviserName()));

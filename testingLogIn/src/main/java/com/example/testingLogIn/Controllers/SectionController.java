@@ -61,12 +61,16 @@ public class SectionController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-
     @GetMapping("/name/{sectionName}")
-    public ResponseEntity<Section> getSectionByName(@PathVariable String sectionName) {
-        System.out.println(sectionName);
-        return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()), HttpStatus.OK);
+    public ResponseEntity<SectionDTO> getSectionByNameDTO(@PathVariable String sectionName) {
+        return new ResponseEntity<>(sectionService.getSectionByNameDTO(sectionName.toLowerCase()), HttpStatus.OK);
     }
+
+//    @GetMapping("/name/{sectionName}")
+//    public ResponseEntity<Section> getSectionByName(@PathVariable String sectionName) {
+//        System.out.println(sectionName);
+//        return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()), HttpStatus.OK);
+//    }
 
     @PostMapping("/add")
     public ResponseEntity<Map<String, String>> addNewSection(@RequestBody SectionDTO sectionDTO) {
@@ -117,9 +121,6 @@ public class SectionController {
 
     @PutMapping("/update")
     public ResponseEntity<String> updateSectionRecord(@RequestBody SectionDTO sectionDTO){
-        System.out.println(sectionDTO.getSectionName());
-        System.out.println(sectionDTO.getGradeLevelName());
-        System.out.println(sectionDTO.getAdviserName());
         System.out.println(sectionDTO.getNumber());
         try{
             if(sectionService.updateSection(sectionDTO))

@@ -259,6 +259,7 @@
                 <h2>Section Information</h2>
                 <form method="post" id="sectionEditForm">
                     <div>
+                        <p id="schedId" style="height: 0; overflow: hidden;">dsa</p>
                         <label for="gradeLevel">Grade Level:</label>
                         <select name="gradeLevel" id="gradeLevelEdit" required>
                             <option value="" disabled selected>Select Grade Level</option>
@@ -365,12 +366,14 @@
                 let currentAdviserExists = false;
 
                 advisers.forEach(adviser => {
+                    console.log(adviser);
+                    console.log('This is the adviser');
                     let option = document.createElement("option");
-                    option.value = adviser.firstname+" "+adviser.lastname;
-                    option.textContent = `${adviser.firstname} ${adviser.lastname}`;
-                    console.log('The adviser is '+ `${adviser.firstname} ${adviser.lastname}`);
+                    option.value = adviser.adviserName;
+                    option.textContent = adviser.adviserName;
+                    console.log('The adviser is '+ adviser.adviserName);
 
-                    if (adviser.staffId === currentAdviser.staffId) {
+                    if (adviser.adviserName === currentAdviser) {
                         option.selected = true;
                         currentAdviserExists = true;
                     }
@@ -382,8 +385,8 @@
                 if (!currentAdviserExists && currentAdviser) {
                     console.log(currentAdviser);
                     let option = document.createElement("option");
-                    option.value = currentAdviser.firstname+" "+currentAdviser.lastname;
-                    option.textContent = `${currentAdviser.firstname} ${currentAdviser.lastname}`;
+                    option.value = currentAdviser;
+                    option.textContent = currentAdviser;
                     option.selected = true;
 
                     adviserSelect.appendChild(option);
@@ -456,16 +459,18 @@
                     document.getElementById("sectionNameEdit").value = data.sectionName;
                     document.getElementById("capacityEdit").value = data.capacity;
 
-                    const gradeLevelName = data.level.levelName;
-                    const adviser = data.adviser;
+                    const gradeLevelName = data.gradeLevelName;
+                    const adviser = data.adviserName;
+                    const schedNum = data.number;
 
                     console.log("📌 Grade Level from API:", gradeLevelName);
-                    console.log("📌 Adviser from API:", adviser.firstname + " " + adviser.lastname);
-
+                    console.log("📌 Adviser from API:", adviser);
+                    document.getElementById("schedId").innerText = schedNum;
                     // ✅ Wait for both dropdowns to load before setting the value
                     Promise.all([fetchGradeLevelsEdit(), fetchAdvisersEdit(adviser)]).then(() => {
                         document.getElementById("gradeLevelEdit").value = gradeLevelName;
-                        document.getElementById("adviserEdit").value = adviser.staffId;
+                        document.getElementById("adviserEdit").value = adviser;
+                        
                     });
                 });
         }
@@ -517,6 +522,7 @@
         const form = document.getElementById("sectionEditForm");
 
         const sectionData = {
+            number : document.getElementById("schedId").innerText,
             sectionName: document.getElementById("sectionNameEdit").value,
             gradeLevelName: document.getElementById("gradeLevelEdit").value,
             capacity: document.getElementById("capacityEdit").value,

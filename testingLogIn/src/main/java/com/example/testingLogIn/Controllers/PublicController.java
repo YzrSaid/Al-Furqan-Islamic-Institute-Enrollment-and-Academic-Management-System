@@ -1,7 +1,5 @@
 package com.example.testingLogIn.Controllers;
 
-import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,10 +11,6 @@ import java.util.Enumeration;
 @RequestMapping
 @Controller
 public class PublicController {
-
-    @Autowired
-    UserRepo userRepo;
-
     @GetMapping("/login")
     public String getPage(){
         return "LogIn";

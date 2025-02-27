@@ -27,12 +27,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable())  // Disable CSRF protection
+        return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/css/**","/images/*","/js/*","/signing",
                                                     "/register","/ipaddress").permitAll();
                     req.anyRequest().authenticated();
-                })// Require authentication for all requests
+                })
                 .formLogin(form -> form.loginPage("/login").permitAll()
                         .defaultSuccessUrl("/home", true)
                         .failureHandler(customAuthenticationFailureHandler))  // Custom login page

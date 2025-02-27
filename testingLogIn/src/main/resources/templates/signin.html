@@ -12,7 +12,7 @@
 <body>
     <div class="wrapper">
         <div id="left-login-block">
-            <img src="/images/al-furqan-bg.jpg" alt="bg">
+            <img th:src="@{/images/al-furqan-bg.jpg}" alt="bg">
         </div>
         <div id="right-login-block">
             <div id="signup-header">
@@ -41,8 +41,8 @@
                             <label class="normal-label" for="gender">Gender</label>
                             <select name="gender" id="gender">
                                 <option value="">Choose a gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
                             </select>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                             <label class="normal-label" for="account-type">Account Type</label>
                             <select name="role" id="account-type">
                                 <option value="" disabled selected>Choose</option>
-                                <option value="SUPER_ADMIN">Super Admin</option>
+                                <option value="ADMIN">Admin</option>
                                 <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
                                 <option value="TEACHER">Teacher</option>
                             </select>

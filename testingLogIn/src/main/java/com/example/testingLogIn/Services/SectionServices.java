@@ -140,6 +140,10 @@ public class SectionServices {
                    .collect(Collectors.toList());
     }
     
+    public SectionDTO getSectionByNameDTO(String sectionName){
+    return getSectionByName(sectionName).toSectionDTO();
+    }
+    
     public Section getSectionByName(String sectionName){
         return sectionRepo.findAll().stream()
                           .filter(section -> section.isNotDeleted() &&

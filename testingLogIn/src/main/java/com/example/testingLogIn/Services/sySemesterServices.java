@@ -31,11 +31,10 @@ public class sySemesterServices {
             semester.setSem(Semester.First);
         else
             semester.setSem(Semester.Second);
-        
         semester.setActive(true);
         semester.setNotDeleted(true);
         
-        semesterRepo.disableAllActive();
+        disableAllActive();
         semesterRepo.save(semester);
         return true;
     }
@@ -52,6 +51,12 @@ public class sySemesterServices {
                                     sem.isNotDeleted() &&
                                     sem.getSem() == Semester.First)
                         .findFirst().orElse(null) != null;
+    }
+    
+    private void disableAllActive(){
+        semesterRepo.findAll().forEach(sem -> {
+            sem.setActive(false);
+            semesterRepo.save(sem);});
     }
     
 }

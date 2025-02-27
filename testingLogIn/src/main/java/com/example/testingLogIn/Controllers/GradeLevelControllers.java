@@ -59,21 +59,7 @@ public class GradeLevelControllers {
     public ResponseEntity<GradeLevel> getGradeLevelById(@PathVariable int levelId) {
         return new ResponseEntity<>(gradeLevelServices.getGradeLevel(levelId), HttpStatus.OK);
     }
-
-    // @PutMapping("/update")
-    // public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel
-    // newGradeLevel) {
-    // try {
-    // if (gradeLevelServices.updateGradeLevel(newGradeLevel))
-    // return new ResponseEntity<>("Grade Level Has Been Updated Successfully",
-    // HttpStatus.OK);
-    // else
-    // return new ResponseEntity<>("Grade Level Not Found", HttpStatus.NOT_FOUND);
-    // } catch (Exception e) {
-    // return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
-    // }
-    // }
-
+    
     @PutMapping("/update-grade-level")
     public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel newGradeLevel) {
         try {

@@ -1,11 +1,9 @@
 package com.example.testingLogIn.Models;
 
-import com.example.testingLogIn.Enums.Semester;
+import com.example.testingLogIn.Enums.ProcessStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,23 +13,28 @@ import lombok.*;
  *
  * @author magno
  */
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
-public class SchoolYearSemester {
+public class StudentListing {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int sySemNumber;
+    private int listNum;
     
     @ManyToOne
-    @JoinColumn(name = "schoolYear")
-    private SchoolYear schoolYear;
+    @JoinColumn(name = "student")
+    private Student student;
+    
+    @ManyToOne
+    @JoinColumn(name = "syAndSem")
+    private SchoolYearSemester sySem;
     
     @Enumerated(EnumType.STRING)
-    private Semester sem;
+    private ProcessStatus status;
     
-    private boolean isActive;
-    private boolean isNotDeleted;
+    @ManyToOne
+    @JoinColumn(name = "gradeSectionToEnroll")
+    private Section gradeSectionToEnroll;
 }

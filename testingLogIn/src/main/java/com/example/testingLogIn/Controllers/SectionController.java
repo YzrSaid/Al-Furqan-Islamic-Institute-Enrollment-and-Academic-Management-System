@@ -60,9 +60,9 @@ public class SectionController {
     }
     
     @GetMapping("/name/{sectionName}")
-    public ResponseEntity<Section> getSectionByName(@PathVariable String sectionName){
+    public ResponseEntity<Section> getSectionByName(@PathVariable String sectionName) {
         System.out.println(sectionName);
-        return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()),HttpStatus.OK);
+        return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()), HttpStatus.OK);
     }
     
     @PostMapping("/add")
@@ -88,7 +88,7 @@ public class SectionController {
     }
     
     @PutMapping("/update")
-    public ResponseEntity<String> updateSectionRecord(@PathVariable SectionDTO sectionDTO){
+    public ResponseEntity<String> updateSectionRecord(@ModelAttribute SectionDTO sectionDTO){
         try{
             if(sectionService.updateSection(sectionDTO))
                 return new ResponseEntity<>("Section Record Updated Successfully",HttpStatus.OK);

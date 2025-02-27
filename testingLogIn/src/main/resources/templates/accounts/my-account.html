@@ -38,8 +38,8 @@
 </script>
 
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
+     <!-- Sidebar -->
+     <div class="sidebar" id="sidebar">
         <div class="text-center">
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
@@ -49,11 +49,11 @@
                 <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
             </div>
         </div>
-
+    
         <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
-
+    
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
             <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
@@ -72,16 +72,16 @@
             <a href="/transaction/tuition">Tuition</a>
             <a href="/transaction/academic-resources">Academic Resources</a>
         </div>
-
-
+    
+    
         <a href="/grade-management" class="sidebar-icons">
             <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
-
+    
         <a href="/schedule" class="sidebar-icons">
             <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
         </a>
-
+    
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
             <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
                 class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
@@ -91,9 +91,9 @@
             <a href="maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
-            <a href="/maintenance/teacher">Teacher</a>
+            <!-- <a href="/maintenance/teacher">Teacher</a> -->
         </div>
-
+    
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
             <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
@@ -105,7 +105,7 @@
             <a href="/reports/academic-resources">Academic Resources Reports</a>
         </div>
         <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img th:src="@{images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
@@ -138,7 +138,7 @@
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
-                        <a href="login.html">Log Out</a>
+                        <a href="/logout">Log Out</a>
                     </div>
                 </div>
             </div>

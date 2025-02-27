@@ -11,7 +11,6 @@ import lombok.*;
 @Builder
 @Data
 public class SectionDTO {
-    
     private int number;
     private String gradeLevelName;
     private String  adviserName;

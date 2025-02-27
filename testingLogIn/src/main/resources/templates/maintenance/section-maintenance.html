@@ -91,7 +91,7 @@
             <a href="maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section" class="second-active">Section</a>
-            <a href="/maintenance/teacher">Teacher</a>
+            <!-- <a href="/maintenance/teacher">Teacher</a> -->
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
@@ -105,7 +105,7 @@
             <a href="/reports/academic-resources">Academic Resources Reports</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img th:src="@{images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
@@ -138,7 +138,7 @@
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
-                        <a href="login.html">Log Out</a>
+                        <a href="/logout">Log Out</a>
                     </div>
                 </div>
             </div>
@@ -176,6 +176,7 @@
                 <tr>
                     <th>Section</th>
                     <th>Grade Level</th>
+                    <th>Adviser</th>
                     <th>Capacity</th>
                     <th>Action</th>
                 </tr>
@@ -259,20 +260,22 @@
                 <form method="post" id="sectionEditForm">
                     <div>
                         <label for="gradeLevel">Grade Level:</label>
-                        <input type="text" id="gradelevelName" name="gradeLevelName" required>
+                        <select name="gradeLevel" id="gradeLevelEdit" required>
+                            <option value="" disabled selected>Select Grade Level</option>
+                        </select>
                     </div>
                     <div>
                         <label for="sectionName">Section Name:</label>
-                        <input type="text" id="sectionName" name="sectionName" required>
+                        <input type="text" id="sectionNameEdit" name="sectionName" required>
                     </div>
                     <div class="student-form-group">
 
                         <label for="capacity">Capacity:</label>
-                        <input type="number" id="capacity" name="capacity" required>
+                        <input type="number" id="capacityEdit" name="capacity" required>
 
 
                         <label for="adviser">Adviser:</label>
-                        <select name="adviser" id="adviser">
+                        <select name="adviser" id="adviserEdit">
                             <option value="" disabled>Select an adviser</option>
                         </select>
 
@@ -291,7 +294,7 @@
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        fetchSections(); // Fetch sections when the page loads
+        fetchSections();
         fetchGradeLevels();
         fetchAdvisers();
     });
@@ -305,7 +308,7 @@
 
                 data.forEach(grade => {
                     let option = document.createElement("option");
-                    option.value = grade.id;
+                    option.value = grade.levelName;
                     option.textContent = grade.levelName;
                     gradeLevelSelect.appendChild(option);
                 });
@@ -313,8 +316,28 @@
             .catch(error => console.error("Error fetching grade levels:", error));
     }
 
+    function fetchGradeLevelsEdit() {
+        return fetch("/gradelevel/all") // ✅ Return the fetch promise
+            .then(response => response.json())
+            .then(data => {
+                const gradeLevelEditSelect = document.getElementById("gradeLevelEdit");
+                gradeLevelEditSelect.innerHTML = `<option value="" disabled selected>Select Grade Level</option>`;
+
+                data.forEach(grade => {
+                    let option = document.createElement("option");
+                    option.value = grade.levelName;
+                    option.textContent = grade.levelName;
+                    gradeLevelEditSelect.appendChild(option);
+                });
+
+                console.log("📌 Grade levels loaded.");
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
+
     function fetchAdvisers() {
-        fetch("/adviserids") // Ensure correct backend URL
+        fetch("/section/adviserids") // Ensure correct backend URL
             .then(response => response.json())
             .then(data => {
                 const adviserSelect = document.getElementById("adviser");
@@ -322,14 +345,51 @@
 
                 data.forEach(teacher => {
                     let option = document.createElement("option");
-                    option.value = teacher.id;  // Assuming `id` is the unique identifier
-                    option.textContent = teacher.name; // Assuming `name` contains the teacher's full name
+                    option.value = `${teacher.firstname} ${teacher.lastname}`
+                    option.textContent = `${teacher.firstname} ${teacher.lastname}`; // Concatenate first and last name
                     adviserSelect.appendChild(option);
+                    console.log(teacher);
                 });
+
             })
             .catch(error => console.error("Error fetching advisers:", error));
     }
 
+    function fetchAdvisersEdit(currentAdviser) {
+        return fetch('/section/adviserids') // Fetch teachers without advisory
+            .then(response => response.json())
+            .then(advisers => {
+                const adviserSelect = document.getElementById("adviserEdit");
+                adviserSelect.innerHTML = `<option value="">Select an Adviser</option>`; // Placeholder
+
+                let currentAdviserExists = false;
+
+                advisers.forEach(adviser => {
+                    let option = document.createElement("option");
+                    option.value = adviser.staffId;
+                    option.textContent = `${adviser.firstname} ${adviser.lastname}`;
+
+                    if (adviser.staffId === currentAdviser.staffId) {
+                        option.selected = true;
+                        currentAdviserExists = true;
+                    }
+
+                    adviserSelect.appendChild(option);
+                });
+
+                // If current adviser is not in the fetched list, add them manually
+                if (!currentAdviserExists && currentAdviser) {
+                    let option = document.createElement("option");
+                    option.value = currentAdviser.staffId;
+                    option.textContent = `${currentAdviser.firstname} ${currentAdviser.lastname}`;
+                    option.selected = true;
+
+                    adviserSelect.appendChild(option);
+                }
+
+                console.log("📌 Advisers loaded.");
+            });
+    }
 
     function fetchSections() {
         fetch("/section/all")
@@ -347,7 +407,8 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${section.sectionName}</td>
-                    <td>${section.gradeLevel}</td>
+                    <td>${section.gradeLevelName}</td>
+                    <td>${section.adviserName}</td>
                     <td>${section.capacity}</td>
                     <td>
                         <div class="action-container">
@@ -355,12 +416,12 @@
                                <img data-open-modal="sectionEditModal" 
                                   src="/images/icons/compose.png" 
                                   alt="section-edit-icon" 
-                                  data-id="${section.sectionNumber}">
+                                  data-id="${section.sectionName}">
                                 
                                <img data-open-modal="confirmationModal" 
                                   data-action="deleteSection" 
                                   data-message="Are you sure you want to delete this section?" 
-                                  data-id="${section.sectionNumber}" 
+                                  data-id="${section.sectionName}" 
                                   src="/images/icons/bin.png" 
                                   alt="section-delete-icon">
                             </div>
@@ -376,59 +437,74 @@
     }
 
     let selectedSectionId = null; // Global variable
-
     document.addEventListener("click", function (event) {
         const target = event.target;
-
         if (target.dataset.openModal === "sectionEditModal") {
-            const sectionId = target.dataset.id;
-            console.log(sectionId);
-
-            if (!sectionId) {
-                console.error("Error: sectionId is undefined! Make sure data-id is set in HTML.");
+            const sectionName = target.dataset.id;
+            if (!sectionName) {
+                console.error("Error: sectionId is undefined!");
                 return;
             }
 
-            fetch(`/section/${sectionId}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    document.getElementById("sectionEditModal").dataset.id = data.sectionNumber;
+            fetch(`/section/name/${sectionName}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched data:", data);
+
                     document.getElementById("sectionNameEdit").value = data.sectionName;
-                    document.getElementById("gradeLevelEdit").value = data.gradeLevel;
                     document.getElementById("capacityEdit").value = data.capacity;
-                    document.getElementById("statusEdit").value = data.status;
-                })
-                .catch((error) => console.error("Error fetching section:", error));
+
+                    const gradeLevelName = data.level.levelName;
+                    const adviser = data.adviser;
+
+                    console.log("📌 Grade Level from API:", gradeLevelName);
+                    console.log("📌 Adviser from API:", adviser.firstname + " " + adviser.lastname);
+
+                    // ✅ Wait for both dropdowns to load before setting the value
+                    Promise.all([fetchGradeLevelsEdit(), fetchAdvisersEdit(adviser)]).then(() => {
+                        document.getElementById("gradeLevelEdit").value = gradeLevelName;
+                        document.getElementById("adviserEdit").value = adviser.staffId;
+                    });
+                });
         }
+
+
 
         if (target.dataset.action === "deleteSection") {
             selectedSectionId = target.dataset.id;
         }
     });
 
+
     function addSection() {
         const actionUrl = "/section/add";
         const method = "POST";
-        const formData = new FormData();
 
-        formData.append("sectionName", document.getElementById("sectionName").value);
-        formData.append("gradeLevel", document.getElementById("gradeLevel").value);
-        formData.append("capacity", document.getElementById("capacity").value);
-        formData.append("status", document.getElementById("status").value);
+        const formData = {
+            gradeLevelName: document.getElementById("gradeLevel").value,
+            sectionName: document.getElementById("sectionName").value,
+            capacity: document.getElementById("capacity").value,
+            adviserName: document.getElementById("adviser").value
+        };
+
+        console.log("Sending data:", JSON.stringify(formData));
+
 
         fetch(actionUrl, {
             method: method,
-            body: formData,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Server response error");
-                }
-                return response.text();
-            })
+            .then(response => response.json())  // Now we correctly parse JSON
             .then(data => {
-                alert(data);
-                location.reload();
+                if (data.error) {
+                    alert("Error: " + data.error);
+                } else {
+                    alert(data.message);
+                    location.reload();
+                }
             })
             .catch(error => {
                 alert("Error: " + error.message);
@@ -437,15 +513,18 @@
 
     function editSection() {
         const form = document.getElementById("sectionEditForm");
-        const sectionId = form.dataset.id;
 
         const sectionData = {
-            sectionNumber: sectionId,
             sectionName: document.getElementById("sectionNameEdit").value,
-            gradeLevel: document.getElementById("gradeLevelEdit").value,
+            gradeLevelName: document.getElementById("gradeLevelEdit").value,
             capacity: document.getElementById("capacityEdit").value,
-            status: document.getElementById("statusEdit").value
+            adviserName: document.getElementById("adviserEdit").value
         };
+
+        console.log(form.dataset.id);
+
+
+        console.log("📌 Sending Data:", sectionData); // Debugging
 
         fetch("/section/update", {
             method: "PUT",

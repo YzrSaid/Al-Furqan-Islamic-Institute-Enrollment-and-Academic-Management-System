@@ -9,7 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -18,97 +21,125 @@ import java.util.List;
 @RequestMapping("/section")
 @Controller
 public class SectionController {
-    
+
     @Autowired
     private SectionServices sectionService;
-    
+
     @GetMapping("/gradeLevel/{gradeLevel}")
-    public ResponseEntity<List<SectionDTO>> getSectionByGradeLevel(@PathVariable String gradeLevel){
-        return new ResponseEntity<>(sectionService.getSectionsByLevel(gradeLevel),HttpStatus.OK);
+    public ResponseEntity<List<SectionDTO>> getSectionByGradeLevel(@PathVariable String gradeLevel) {
+        return new ResponseEntity<>(sectionService.getSectionsByLevel(gradeLevel), HttpStatus.OK);
     }
-    
+
     @GetMapping("/adviserids")
-    public ResponseEntity<List<UserDTO>> getAdviserIds(){
-        try{
-            return new ResponseEntity<>(sectionService.getNoAdvisoryTeachers(),HttpStatus.OK);
-        }catch(Exception e){
+    public ResponseEntity<List<UserDTO>> getAdviserIds() {
+        try {
+            return new ResponseEntity<>(sectionService.getNoAdvisoryTeachers(), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-    
+
     @GetMapping("/all")
-    public ResponseEntity<List<SectionDTO>> getAllSections(){
-        try{
-            return new ResponseEntity<>(sectionService.getAllSections(),HttpStatus.OK);
-        }catch(Exception e){
+    public ResponseEntity<List<SectionDTO>> getAllSections() {
+        try {
+            return new ResponseEntity<>(sectionService.getAllSections(), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-    
+
     @GetMapping("/{sectionNumber}")
-    public ResponseEntity<SectionDTO> getSection(@PathVariable int sectionNumber){
-        try{
+    public ResponseEntity<SectionDTO> getSection(@PathVariable int sectionNumber) {
+        try {
             SectionDTO section = sectionService.getSection(sectionNumber);
 
-            if(section != null)
-                return new ResponseEntity<>(section,HttpStatus.FOUND);
+            if (section != null)
+                return new ResponseEntity<>(section, HttpStatus.FOUND);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-    
+
     @GetMapping("/name/{sectionName}")
-    public ResponseEntity<Section> getSectionByName(@PathVariable String sectionName){
+    public ResponseEntity<Section> getSectionByName(@PathVariable String sectionName) {
         System.out.println(sectionName);
-        return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()),HttpStatus.OK);
+        return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()), HttpStatus.OK);
     }
-    
+
     @PostMapping("/add")
-    public ResponseEntity<String> addNewSection(@RequestBody SectionDTO sectionDTO){
-        try{
+    public ResponseEntity<Map<String, String>> addNewSection(@RequestBody SectionDTO sectionDTO) {
+        Map<String, String> response = new HashMap<>();
+
+        try {
             int result = sectionService.addSection(sectionDTO);
 
             switch (result) {
                 case 1:
-                    return new ResponseEntity<>("Teacher Information Not Found",HttpStatus.NOT_FOUND);
+                    response.put("error", "Teacher Information Not Found");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                 case 2:
-                    return new ResponseEntity<>("Grade Level Information Not Found",HttpStatus.NOT_FOUND);
+                    response.put("error", "Grade Level Information Not Found");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                 case 3:
-                    return new ResponseEntity<>("The Selected Teacher Already Have an Advisory Class",HttpStatus.NOT_ACCEPTABLE);
+                    response.put("error", "The Selected Teacher Already Has an Advisory Class");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
                 case 4:
-                    return new ResponseEntity<>("Section Name Already Exist",HttpStatus.NOT_ACCEPTABLE);
+                    response.put("error", "Section Name Already Exists");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
                 default:
-                    return new ResponseEntity<>("Section Information Added Successfully",HttpStatus.OK);
+                    response.put("message", "Section Information Added Successfully");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
             }
-        }catch(Exception e){
-            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            e.printStackTrace(); // ✅ This will print the error in your backend console
+            response.put("error", "Process Failed: " + e.getMessage()); // ✅ Include the error message
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
+
     }
-    
+
+    // @PutMapping("/update")
+    // public ResponseEntity<String> updateSectionRecord(@PathVariable SectionDTO
+    // sectionDTO) {
+    // try {
+    // if (sectionService.updateSection(sectionDTO))
+    // return new ResponseEntity<>("Section Record Updated Successfully",
+    // HttpStatus.OK);
+    // else
+    // return new ResponseEntity<>("Section Record Not Found",
+    // HttpStatus.NOT_FOUND);
+    // } catch (Exception e) {
+    // return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
+    // }
+    // }
+
     @PutMapping("/update")
-    public ResponseEntity<String> updateSectionRecord(@PathVariable SectionDTO sectionDTO){
-        try{
-            if(sectionService.updateSection(sectionDTO))
-                return new ResponseEntity<>("Section Record Updated Successfully",HttpStatus.OK);
+    public ResponseEntity<String> updateSectionRecord(@RequestBody SectionDTO sectionDTO) {
+        System.out.println("Received SectionDTO: " + sectionDTO); // Debugging log
+
+        try {
+            if (sectionService.updateSection(sectionDTO))
+                return new ResponseEntity<>("Section Record Updated Successfully", HttpStatus.OK);
             else
-                return new ResponseEntity<>("Section Record Not Found",HttpStatus.NOT_FOUND);
-        }catch(Exception e){
-            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+                return new ResponseEntity<>("Section Record Not Found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            e.printStackTrace(); // Print the error in logs
+            return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
         }
     }
-    
+
     @DeleteMapping("/delete/{sectionNumber}")
-    public ResponseEntity<String> deleteSectionRecord(@PathVariable int sectionNumber){
-        try{
-            if(sectionService.deleteSection(sectionNumber))
-                return new ResponseEntity<>("Section Record Deleted Successfully",HttpStatus.OK);
+    public ResponseEntity<String> deleteSectionRecord(@PathVariable int sectionNumber) {
+        try {
+            if (sectionService.deleteSection(sectionNumber))
+                return new ResponseEntity<>("Section Record Deleted Successfully", HttpStatus.OK);
             else
-                return new ResponseEntity<>("Section Record Not Found",HttpStatus.NOT_FOUND);
-        }catch(Exception e){
-            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+                return new ResponseEntity<>("Section Record Not Found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
         }
     }
-        
+
 }

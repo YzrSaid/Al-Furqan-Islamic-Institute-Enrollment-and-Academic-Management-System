@@ -4,6 +4,7 @@
  */
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.testingLogIn.ModelDTO.UserDTO;
+import com.example.testingLogIn.Services.AccountRegisterServices;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -25,6 +27,8 @@ public class UserAccountController {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private AccountRegisterServices accountRegisterService;
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -36,6 +40,8 @@ public class UserAccountController {
             return new ResponseEntity<>("Email Already Taken",HttpStatus.CONFLICT);
         else{
             customUserDetailsService.registerNewUser(toRegister);
+            toRegister.setStatus(RegistrationStatus.APPROVED);
+            accountRegisterService.registerAccount(toRegister);
             return new ResponseEntity<>("Account Registered Successfully",HttpStatus.OK);
         }
     }

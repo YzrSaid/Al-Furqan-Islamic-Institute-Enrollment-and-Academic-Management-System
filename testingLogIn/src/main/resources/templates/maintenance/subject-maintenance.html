@@ -35,6 +35,7 @@
         });
     });
 </script>
+<script th:src="@{/js/script.js}"></script>
 
 <body>
     <!-- Sidebar -->
@@ -87,7 +88,7 @@
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year">School Year</a>
-            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject" class="second-active">Subject</a>
             <a href="/maintenance/section">Section</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
@@ -104,7 +105,7 @@
             <a href="/reports/academic-resources">Academic Resources Reports</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img th:src="@{images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
@@ -173,29 +174,25 @@
         <table class="subject-table">
             <thead>
                 <tr>
-                    <th>Subject Code</th>
                     <th>Subject Name</th>
-                    <th>Enrolled</th>
-                    <th>Teacher</th>
-                    <th>Status</th>
+                    <th>Grade Level</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>IT 134</td>
                     <td>Software Engineering</td>
                     <td>30</td>
-                    <td>Ma'am Balan</td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="status-school-year">Active</div>
-                        </div>
-                    </td>
                     <td>
                         <div class="action-container">
-                            <div class="action" id="openSubjectEditModal"><img data-open-modal="subjectEditModal"
-                                    th:src="@{/images/icons/compose.png}" alt=""></div>
+                            <div class="action">
+                                <img data-open-modal="subjectEditModal" src="/images/icons/compose.png"
+                                    alt="section-edit-icon" data-id="">
+
+                                <img data-open-modal="confirmationModal" data-action="deleteSection"
+                                    data-message="Are you sure you want to delete this subject?" data-id=""
+                                    src="/images/icons/bin.png" alt="section-delete-icon">
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -224,19 +221,14 @@
                 <h2>Add New Subject</h2>
                 <form id="subjectForm">
                     <div>
-                        <label for="subject-id">Subject ID:</label>
-                        <input type="text" id="subject-id" required>
-                    </div>
-
-                    <div>
                         <label for="subject-name">Subject Name:</label>
                         <input type="text" id="subject-name" required>
 
                     </div>
                     <div>
                         <label for="assigned-grade-level">Grade Level:</label>
-                        <select name="assigned-grade-level" id="assigned-grade-level required">
-                            <option value="" disabled selected>Select Teacher</option>
+                        <select name="assigned-grade-level" id="assigned-grade-level">
+                            <option value="" disabled selected>Select grade level</option>
                         </select>
                     </div>
                     <div class="modal-buttons">
@@ -257,19 +249,14 @@
                 <h2>Subject Information</h2>
                 <form id="subjectEditForm">
                     <div>
-                        <label for="subject-id">Subject ID:</label>
-                        <input type="text" id="subject-id" required>
-                    </div>
-
-                    <div>
                         <label for="subject-name">Subject Name:</label>
-                        <input type="text" id="subject-name" required>
+                        <input type="text" id="subject-name-edit" required>
 
                     </div>
                     <div>
                         <label for="assigned-grade-level">Grade Level:</label>
-                        <select name="assigned-grade-level" id="assigned-grade-level required">
-                            <option value="" disabled selected>Select Teacher</option>
+                        <select name="assigned-grade-level" id="assigned-grade-level-edit">
+                            <option value="" disabled selected>Select grade level</option>
                         </select>
                     </div>
                     <div class="modal-buttons">
@@ -283,7 +270,234 @@
             </div>
         </div>
     </div>
-    <script th:src="@{/js/script.js}"></script>
 </body>
+<script>
+    let selectedSubjectId = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchSubjects();
+        fetchGradeLevels();
+    });
+    function fetchGradeLevels() {
+        fetch("/gradelevel/all")
+            .then(response => response.json())
+            .then(data => {
+                const gradeLevelSelect = document.getElementById("assigned-grade-level");
+                gradeLevelSelect.innerHTML = `<option value="" disabled selected>Select Grade Level</option>`;
+
+                data.forEach(grade => {
+                    let option = document.createElement("option");
+                    option.value = grade.levelId;
+                    option.textContent = grade.levelName;
+                    gradeLevelSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+    function fetchGradeLevelsEdit() {
+        return fetch("/gradelevel/all") // ✅ Return the fetch promise
+            .then(response => response.json())
+            .then(data => {
+                const gradeLevelEditSelect = document.getElementById("assigned-grade-level-edit");
+                gradeLevelEditSelect.innerHTML = `<option value="" disabled selected>Select Grade Level</option>`;
+
+                data.forEach(grade => {
+                    let option = document.createElement("option");
+                    option.value = grade.levelId;
+                    option.textContent = grade.levelName;
+                    gradeLevelEditSelect.appendChild(option);
+                });
+
+                console.log("📌 Grade levels loaded.");
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
+
+    // Fetch and display all subjects
+    function fetchSubjects() {
+        fetch("/subject/all")
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector(".subject-table tbody");
+                tableBody.innerHTML = "";
+
+                data.forEach(subject => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                    <td>${subject.subjectName}</td>
+                    <td>${subject.gradeLevel}</td>
+                    <td>
+                        <div class="action-container">
+                            <div class="action">
+                                <img data-open-modal="subjectEditModal"
+                                     src="/images/icons/compose.png"
+                                     alt="subject-edit-icon"
+                                     data-id="${subject.subjectName}">
+
+                                <img data-open-modal="confirmationModal"
+                                     data-action="deleteSubject"
+                                     data-message="Are you sure you want to delete this subject?"
+                                     data-id="${subject.subjectName}"
+                                     src="/images/icons/bin.png"
+                                     alt="subject-delete-icon">
+                            </div>
+                        </div>
+                    </td>
+                `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error fetching subjects:", error));
+    }
+
+    // Handle clicks for edit and delete
+    document.addEventListener("click", function (event) {
+        const target = event.target;
+
+        // Edit subject
+        if (target.dataset.openModal === "subjectEditModal") {
+            const subjectName = target.dataset.id;
+            if (!subjectName) {
+                console.error("Error: subjectName is undefined!");
+                return;
+            }
+
+            fetch(`/subject/name/${subjectName}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched data:", data);
+                    document.getElementById("subject-name-edit").value = data.subjectName;
+                    selectedSubjectId = data.subjectNumber;
+                    console.log("Selected Grade Level:", data.gradeLevel.levelName, "ID:", data.gradeLevel.levelId);
+
+                    // ✅ Ensure grade levels are fully loaded before setting value
+                    fetchGradeLevelsEdit().then(() => {
+                        const gradeLevelSelect = document.getElementById("assigned-grade-level-edit");
+
+                        // Double-check if options are populated
+                        if (gradeLevelSelect.options.length === 0) {
+                            console.error("⚠️ Grade level options are empty!");
+                            return;
+                        }
+
+                        // ✅ Try setting the value directly
+                        gradeLevelSelect.value = data.gradeLevel.levelId;
+
+                        // ✅ If direct setting fails, manually select the matching option
+                        Array.from(gradeLevelSelect.options).forEach(option => {
+                            if (option.value == data.gradeLevel.levelId) {
+                                option.selected = true;
+                            }
+                        });
+
+                        console.log("✅ Grade level successfully set to:", gradeLevelSelect.value);
+                    });
+                })
+                .catch(error => console.error("Error fetching subject data:", error));
+        }
+
+        // Delete subject
+        if (target.dataset.action === "deleteSubject") {
+            fetch(`/subject/name/${subjectName}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched data:", data);
+                    document.getElementById("subject-name-edit").value = data.subjectName;
+                    selectedSubjectId = data.subjectNumber;
+                })
+                .catch(error => console.error("Error fetching subject data:", error));
+        }
+    });
+
+    // Add subject
+    function addSubject() {
+        const gradeLevelSelect = document.getElementById("assigned-grade-level");
+        const subjectNameInput = document.getElementById("subject-name");
+
+        const levelId = gradeLevelSelect.value;  // Get selected grade level ID
+        const subjectName = subjectNameInput.value;
+
+        if (!levelId || !subjectName) {
+            alert("Please select a grade level and enter a subject name.");
+            return;
+        }
+
+        const actionUrl = `/subject/add/${levelId}/${encodeURIComponent(subjectName)}`;
+
+        console.log("📌 Sending Request to:", actionUrl);
+
+        fetch(actionUrl, {
+            method: "POST"
+        })
+            .then(response => response.text())
+            .then(data => {
+                if (data.includes("New Subject Added Successfully")) {
+                    alert(data);
+                    location.reload();  // Refresh page to show the new subject
+                } else {
+                    alert("⚠ " + data); // Show error message from backend
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while adding the subject.");
+            });
+    }
+
+    // Edit subject
+    function editSubject() {
+        const subjectData = {
+            subjectNumber: selectedSubjectId,
+            gradeLevel: document.getElementById("assigned-grade-level-edit").value,
+            subjectName: document.getElementById("subject-name-edit").value
+        };
+
+        console.log(document.getElementById("assigned-grade-level-edit").value)
+
+
+        console.log("📌 Sending Data:", JSON.stringify(subjectData));
+
+        fetch("/subject/updated", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(subjectData),
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                if (data.includes("Successfully")) {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    }
+
+    // Delete subject
+    function deleteSubject() {
+        if (!selectedSubjectId) {
+            alert("No subject selected for deletion.");
+            return;
+        }
+
+        fetch(`/subject/delete/${selectedSubjectId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                if (data.includes("Successfully")) {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    }
+
+</script>
 
 </html>

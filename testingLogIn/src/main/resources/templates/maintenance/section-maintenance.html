@@ -88,7 +88,7 @@
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year">School Year</a>
-            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section" class="second-active">Section</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
@@ -294,6 +294,8 @@
     </div>
 </body>
 <script>
+    let selectedSectionId = null
+
     document.addEventListener("DOMContentLoaded", function () {
         fetchSections();
         fetchGradeLevels();
@@ -371,7 +373,7 @@
                     let option = document.createElement("option");
                     option.value = adviser.adviserName;
                     option.textContent = adviser.adviserName;
-                    console.log('The adviser is '+ adviser.adviserName);
+                    console.log('The adviser is ' + adviser.adviserName);
 
                     if (adviser.adviserName === currentAdviser) {
                         option.selected = true;
@@ -406,7 +408,7 @@
             })
             .then((data) => {
                 const tableBody = document.querySelector(".section-table tbody");
-                tableBody.innerHTML = ""; // Clear existing rows
+                tableBody.innerHTML = "";
 
                 data.forEach((section) => {
                     const row = document.createElement("tr");
@@ -441,7 +443,6 @@
             });
     }
 
-    let selectedSectionId = null; // Global variable
     document.addEventListener("click", function (event) {
         const target = event.target;
         if (target.dataset.openModal === "sectionEditModal") {
@@ -466,19 +467,26 @@
                     console.log("📌 Grade Level from API:", gradeLevelName);
                     console.log("📌 Adviser from API:", adviser);
                     document.getElementById("schedId").innerText = schedNum;
-                    // ✅ Wait for both dropdowns to load before setting the value
                     Promise.all([fetchGradeLevelsEdit(), fetchAdvisersEdit(adviser)]).then(() => {
                         document.getElementById("gradeLevelEdit").value = gradeLevelName;
                         document.getElementById("adviserEdit").value = adviser;
-                        
+
                     });
                 });
         }
 
-
-
         if (target.dataset.action === "deleteSection") {
-            selectedSectionId = target.dataset.id;
+            const sectionName = target.dataset.id;
+            fetch(`/section/name/${sectionName}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched data:", data);
+                    const schedNum = data.number;
+
+                    selectedSectionId = schedNum;
+
+                    console.log(selectedSectionId);
+                });
         }
     });
 
@@ -522,15 +530,12 @@
         const form = document.getElementById("sectionEditForm");
 
         const sectionData = {
-            number : document.getElementById("schedId").innerText,
+            number: document.getElementById("schedId").innerText,
             sectionName: document.getElementById("sectionNameEdit").value,
             gradeLevelName: document.getElementById("gradeLevelEdit").value,
             capacity: document.getElementById("capacityEdit").value,
             adviserName: document.getElementById("adviserEdit").value
         };
-
-        console.log(form.dataset.id);
-
 
         console.log("📌 Sending Data:", JSON.stringify(sectionData)); // Debugging
 
@@ -554,6 +559,9 @@
     function deleteSection(selectedSectionId) {
         fetch(`/section/delete/${selectedSectionId}`, {
             method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            }
         })
             .then(response => response.text())
             .then(data => {
@@ -562,7 +570,7 @@
                     location.reload();
                 }
             })
-            .catch(error => console.error("Error deleting section:", error));
+            .catch(error => console.error("Error:", error));
     }
 </script>
 

@@ -794,28 +794,17 @@ tr:nth-child(even) {
 /* for subject table (maintenance) */
 .subject-table th:nth-child(1),
 .subject-table td:nth-child(1) {
-  width: 13%;
+  width: 30%;
 }
 .subject-table th:nth-child(2),
 .subject-table td:nth-child(2) {
-  width: 18%;
+  width: 15%;
 }
 .subject-table th:nth-child(3),
 .subject-table td:nth-child(3) {
   width: 12%;
 }
-.subject-table th:nth-child(4),
-.subject-table td:nth-child(4) {
-  width: 20%;
-}
-.subject-table th:nth-child(5),
-.subject-table td:nth-child(5) {
-  width: 12%;
-}
-.subject-table th:nth-child(6),
-.subject-table td:nth-child(6) {
-  width: 10%;
-}
+
 
 /* for teacher table (maintenance) */
 .teacher-table th:nth-child(1),

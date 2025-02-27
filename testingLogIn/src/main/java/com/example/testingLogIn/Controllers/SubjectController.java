@@ -81,6 +81,7 @@ public class SubjectController {
     
     @PutMapping("/updated")
     public ResponseEntity<String> updateSubject(@RequestBody SubjectDTO subject){
+        System.err.println(subject);
         try{
         if(subjectService.updateSubjectDescription(subject))
             return new ResponseEntity<>("Subject Updated Successfully",HttpStatus.OK);

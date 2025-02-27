@@ -443,10 +443,10 @@ document.addEventListener("DOMContentLoaded", function () {
         deleteSection(selectedSectionId)
         break;  
       case "addSubject":
-        alert("Subject information saved!");
+        addSubject();
         break;
       case "editSubject":
-        alert("Subject information updated!");
+        editSubject();
         break;
       case "addTeacher":
         addTeacher();

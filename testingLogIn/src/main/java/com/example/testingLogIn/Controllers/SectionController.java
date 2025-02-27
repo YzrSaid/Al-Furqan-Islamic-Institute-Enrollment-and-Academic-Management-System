@@ -116,7 +116,11 @@ public class SectionController {
     // }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateSectionRecord(@ModelAttribute SectionDTO sectionDTO){
+    public ResponseEntity<String> updateSectionRecord(@RequestBody SectionDTO sectionDTO){
+        System.out.println(sectionDTO.getSectionName());
+        System.out.println(sectionDTO.getGradeLevelName());
+        System.out.println(sectionDTO.getAdviserName());
+        System.out.println(sectionDTO.getNumber());
         try{
             if(sectionService.updateSection(sectionDTO))
                 return new ResponseEntity<>("Section Record Updated Successfully",HttpStatus.OK);

@@ -366,8 +366,9 @@
 
                 advisers.forEach(adviser => {
                     let option = document.createElement("option");
-                    option.value = adviser.staffId;
+                    option.value = adviser.firstname+" "+adviser.lastname;
                     option.textContent = `${adviser.firstname} ${adviser.lastname}`;
+                    console.log('The adviser is '+ `${adviser.firstname} ${adviser.lastname}`);
 
                     if (adviser.staffId === currentAdviser.staffId) {
                         option.selected = true;
@@ -379,8 +380,9 @@
 
                 // If current adviser is not in the fetched list, add them manually
                 if (!currentAdviserExists && currentAdviser) {
+                    console.log(currentAdviser);
                     let option = document.createElement("option");
-                    option.value = currentAdviser.staffId;
+                    option.value = currentAdviser.firstname+" "+currentAdviser.lastname;
                     option.textContent = `${currentAdviser.firstname} ${currentAdviser.lastname}`;
                     option.selected = true;
 
@@ -524,7 +526,7 @@
         console.log(form.dataset.id);
 
 
-        console.log("📌 Sending Data:", sectionData); // Debugging
+        console.log("📌 Sending Data:", JSON.stringify(sectionData)); // Debugging
 
         fetch("/section/update", {
             method: "PUT",

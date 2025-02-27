@@ -780,7 +780,7 @@ tr:nth-child(even) {
 }
 .section-table th:nth-child(3),
 .section-table td:nth-child(3) {
-  width: 15%;
+  width: 25%;
 }
 .section-table th:nth-child(4),
 .section-table td:nth-child(4) {
@@ -788,10 +788,6 @@ tr:nth-child(even) {
 }
 .section-table th:nth-child(5),
 .section-table td:nth-child(5) {
-  width: 15%;
-}
-.section-table th:nth-child(6),
-.section-table td:nth-child(6) {
   width: 15%;
 }
 
@@ -958,7 +954,7 @@ table td {
 .teacher-report-table,
 .payment-report-table,
 .acad-resources-table {
-  width: 91.5%;
+  width: 92.5%;
   margin: 0px 50px;
 }
 .sched-table {

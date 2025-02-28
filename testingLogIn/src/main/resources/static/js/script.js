@@ -472,6 +472,11 @@ document.addEventListener("DOMContentLoaded", function () {
       case "editMyAccount":
         editMyAccount(selectedManageAccountId);
         break;
+      case "addSchoolYear":
+        if (validateSchoolYear()) {
+            addSchoolYear();
+        }
+        break;
       case "changePassword":
         alert("Password for this account has been changed successfully!");
         break;

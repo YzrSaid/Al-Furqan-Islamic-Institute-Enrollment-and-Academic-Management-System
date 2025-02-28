@@ -217,11 +217,13 @@
                 <h2>Add New School Year</h2>
                 <form method="post" id="schoolYearForm">
                     <label for="school-year-name">School Year:</label>
-                    <input type="text" id="schoolYearName" required>
+                    <input type="text" id="schoolYearName" required placeholder="YYYY-YYYY" pattern="\d{4}-\d{4}"
+                        title="Format: YYYY-YYYY">
+
 
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="addSchoolYear"
-                            data-message="Are you sure you want to add this school year?" id="confirmGradeLevel"
+                            data-message="Are you sure you want to add this school year?" id="confirmSchoolYear"
                             data-open-modal="confirmationModal">
                             Confirm
                         </button>
@@ -234,5 +236,35 @@
     </div>
     <script th:src="@{/js/script.js}"></script>
 </body>
+<script>
+    function validateSchoolYear() {
+        const schoolYearInput = document.getElementById("schoolYearName").value.trim();
+        const regex = /^(\d{4})-(\d{4})$/;
+        const match = schoolYearInput.match(regex);
+
+        if (!match) {
+            alert("Invalid format! Please enter the school year in YYYY-YYYY format.");
+            return false;
+        }
+
+        const startYear = parseInt(match[1], 10);
+        const endYear = parseInt(match[2], 10);
+
+        if (endYear !== startYear + 1) {
+            alert("Invalid school year range! The second year must be exactly one year after the first.");
+            return false;
+        }
+
+        return true; // Validation passed
+    }
+
+    function addSchoolYear() {
+        alert("School Year is valid! Proceeding with submission...");
+        // Add logic to send data to backend
+    }
+   
+
+
+</script>
 
 </html>

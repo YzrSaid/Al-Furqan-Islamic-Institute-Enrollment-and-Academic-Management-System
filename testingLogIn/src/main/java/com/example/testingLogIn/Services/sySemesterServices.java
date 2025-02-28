@@ -5,6 +5,7 @@ import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Repositories.SchoolYearRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class sySemesterServices {
             return false;
         
         disableAll();
+        sem.setEnrollmentDeadline(LocalDate.now().plusDays(30));
         sem.setActive(true);
         semesterRepo.save(sem);
         

@@ -5,6 +5,7 @@ import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Repositories.SchoolYearRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,8 @@ public class sySemesterServices {
     public List<SchoolYearSemester> getAllSemesters(){
         return semesterRepo.findAll().stream()
                            .filter(sem -> sem.getSchoolYear().isNotDeleted())
-                           .sorted((sem1,sem2) -> (sem2.getSchoolYear().getSchoolYear().compareTo(sem1.getSchoolYear().getSchoolYear())))
+                           .sorted(Comparator.comparing((SchoolYearSemester sem) -> sem.getSchoolYear().getSchoolYear(), Comparator.reverseOrder())
+                                                    .thenComparing(sem -> sem.getSem()))
                            .toList();
     }
 }

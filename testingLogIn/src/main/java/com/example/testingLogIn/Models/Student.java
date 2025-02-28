@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Models;
 
 import com.example.testingLogIn.Enums.Gender;
+import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,6 +17,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 public class Student {
     
@@ -25,18 +27,19 @@ public class Student {
     
     private String firstName;
     private String lastName;
-    private String middleName;
-    private String contactNum;
-    private String motherName;
-    private String fatherName;
-    
-    @OneToOne
-    @JoinColumn(name = "gradeAndSection", nullable = true)
-    private Section gradeAndSection;
-    
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private LocalDate birthdate;
+    private String address;
+    private String cellphoneNum;
+    @OneToOne
+    @JoinColumn(name = "gradeAndSection", nullable = true)
+    private Section currentGradeSection;
+    
+    private String contactPerson;
+    private String contactPersonNumber;
+    private String contactPersonAddress;
+    
     @JsonProperty("isNew")
     private boolean isNew;
     @JsonProperty("isTransferee")
@@ -45,4 +48,22 @@ public class Student {
     private boolean isScholar;
     @JsonProperty("isNotDeleted")
     private boolean isNotDeleted;
+    
+    public StudentDTO DTOmapper(){
+        return StudentDTO.builder()
+                        .firstName(firstName)
+                        .lastName(lastName)
+                        .gender(gender)
+                        .birthdate(birthdate)
+                        .address(address)
+                        .currentSection(currentGradeSection.getLevel().getLevelName()+" - "+currentGradeSection.getSectionName())
+                        .contactPersonName(contactPerson)
+                        .contactPersonAddress(contactPersonAddress)
+                        .contactPersonCellphone(contactPersonNumber)
+                        .isNew(isNew)
+                        .isTransferee(isTransferee)
+                        .isNotDeleted(isNotDeleted)
+                        .isScholar(isScholar)
+                        .build();
+    }
 }

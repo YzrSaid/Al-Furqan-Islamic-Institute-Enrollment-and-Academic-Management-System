@@ -16,7 +16,7 @@ public class GradeLevelServices {
 
     public boolean addNewGradeLevel(String levelName, String preRequisite){
         GradeLevel pre = null;
-        if(preRequisite != null){
+        if(!preRequisite.equalsIgnoreCase("none")){
             pre = getByName(preRequisite);
             if(pre == null)
                 throw new NullPointerException();}

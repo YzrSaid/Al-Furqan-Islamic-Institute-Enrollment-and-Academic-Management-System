@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Services.StudentServices;
 import java.util.List;
@@ -25,21 +26,21 @@ public class StudentController {
     private StudentServices studentService;
     
     @GetMapping("/all")
-    public ResponseEntity<List<Student>> getAllStudents(){
+    public ResponseEntity<List<StudentDTO>> getAllStudents(){
         return new ResponseEntity<>(studentService.getAllStudent(),HttpStatus.OK);
     }
  
     @PostMapping("/add")
-    public ResponseEntity<Map<String,List<Student>>> addStudents(@RequestBody List<Student> students){
+    public ResponseEntity<String> addStudents(@RequestBody StudentDTO students){
         try{
-            Map<String,List<Student>> rejectedForms = studentService.addStudent(students);
-        if(rejectedForms.isEmpty())
-            return new ResponseEntity<>(HttpStatus.OK);
-        else
-            return new ResponseEntity<>(rejectedForms,HttpStatus.CONFLICT);
+            if(studentService.addStudent(students))
+                return new ResponseEntity<>("New Student Added Successfully",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Student Name Already Exist",HttpStatus.NOT_ACCEPTABLE);
+        }catch(NullPointerException npe){
+            return new ResponseEntity<>("Selected Grade and Section Not Found",HttpStatus.NOT_FOUND);
         }catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Transaction Failed",HttpStatus.CONFLICT);
         }
     }
     

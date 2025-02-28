@@ -22,6 +22,5 @@ public class SchoolYear {
     private int schoolYearNum;
     
     private String schoolYear;
-    private boolean isActive;
     private boolean isNotDeleted;
 }

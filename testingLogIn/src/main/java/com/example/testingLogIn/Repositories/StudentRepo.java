@@ -15,13 +15,11 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
        "WHERE s.isNotDeleted = true "+
        "AND (:studentId IS NULL OR s.studentId != :studentId) " +
        "AND Lower(s.firstName) = Lower(:firstName) " +
-       "AND Lower(s.lastName) = Lower(:lastName) " +
-       "AND Lower(s.middleName) = Lower(:middleName)")
+       "AND Lower(s.lastName) = Lower(:lastName)")
 boolean existsByNameIgnoreCaseAndNotDeleted(
     @Param("studentId") Integer studentId,
     @Param("firstName") String firstName,
-    @Param("lastName") String lastName,
-    @Param("middleName") String middleName
+    @Param("lastName") String lastName
 );
     
     @Query("select s from Student s "

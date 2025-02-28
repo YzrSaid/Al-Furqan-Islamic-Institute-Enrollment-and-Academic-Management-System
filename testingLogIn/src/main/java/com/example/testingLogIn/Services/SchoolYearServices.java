@@ -52,7 +52,6 @@ public class SchoolYearServices {
         if(doesSchoolYearExist)
             return false;
         
-        syUpdated.setActive(sy.isActive());
         syUpdated.setSchoolYear(sy.getSchoolYear());
         schoolYearRepo.save(syUpdated);
 

@@ -38,11 +38,12 @@ public class GradeLevelControllers {
     // }
 
     @PostMapping("/add")
-    public ResponseEntity<Map<String, String>> addGradeLevel(@RequestParam String levelName,@RequestParam String preRequisete) {
+    public ResponseEntity<Map<String, String>> addGradeLevel(@RequestParam String levelName,@RequestParam String preRequisite) {
         Map<String, String> response = new HashMap<>();
+        System.out.println(preRequisite);
 
         try {
-            if (gradeLevelServices.addNewGradeLevel(levelName,preRequisete)) {
+            if (gradeLevelServices.addNewGradeLevel(levelName,preRequisite)) {
                 response.put("message", "New Grade Level Added Successfully");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {

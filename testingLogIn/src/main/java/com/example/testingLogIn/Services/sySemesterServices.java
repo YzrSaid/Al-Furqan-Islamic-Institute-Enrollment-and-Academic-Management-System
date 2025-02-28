@@ -29,6 +29,8 @@ public class sySemesterServices {
                 SchoolYearSemester sySem = new SchoolYearSemester();
                 sySem.setNotDeleted(true);
                 sySem.setActive(false);
+                sySem.setFinished(false);
+                sySem.setEnrollmentDeadline(null);
                 sySem.setSchoolYear(sy);
                 sySem.setSem(sem);
                 
@@ -42,11 +44,4 @@ public class sySemesterServices {
                            .filter(SchoolYearSemester::isNotDeleted)
                            .toList();
     }
-    
-    private void disableAllActive(){
-        semesterRepo.findAll().forEach(sem -> {
-            sem.setActive(false);
-            semesterRepo.save(sem);});
-    }
-    
 }

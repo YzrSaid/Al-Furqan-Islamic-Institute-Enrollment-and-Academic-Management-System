@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import lombok.*;
 
 /**
@@ -25,6 +26,8 @@ public class SchoolYearSemester {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int sySemNumber;
     
+    private LocalDate enrollmentDeadline;
+    
     @ManyToOne
     @JoinColumn(name = "schoolYear")
     private SchoolYear schoolYear;
@@ -32,6 +35,7 @@ public class SchoolYearSemester {
     @Enumerated(EnumType.STRING)
     private Semester sem;
     
+    private boolean isFinished;
     private boolean isActive;
     private boolean isNotDeleted;
 }

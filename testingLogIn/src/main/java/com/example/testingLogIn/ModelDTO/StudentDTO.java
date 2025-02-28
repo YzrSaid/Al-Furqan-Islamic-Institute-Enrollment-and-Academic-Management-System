@@ -11,24 +11,24 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class StudentDTO {
     private int studentId;
 
     private String firstName;
     private String lastName;
-    private String middleName;
     private String contactNum;
-    private String motherName;
-    private String fatherName;
-
-    private String gender;
+    private Gender gender;
     private LocalDate birthdate;
-    private boolean isNew;
+    private String address;
+    private String currentSection;
     
-    @JsonProperty()
+    private String contactPersonName;
+    private String contactPersonAddress;
+    private String contactPersonCellphone;
+    
+    private boolean isNew;
     private boolean isTransferee;
-
     private boolean isScholar;
-
     private boolean isNotDeleted;
 }

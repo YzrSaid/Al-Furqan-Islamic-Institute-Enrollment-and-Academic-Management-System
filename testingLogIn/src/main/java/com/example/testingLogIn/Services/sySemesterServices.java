@@ -47,4 +47,53 @@ public class sySemesterServices {
                                                     .thenComparing(sem -> sem.getSem()))
                            .toList();
     }
+    
+    public boolean activateSemester(int semNumber){
+        SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
+        if(sem == null)
+            return false;
+        
+        disableAll();
+        sem.setActive(true);
+        semesterRepo.save(sem);
+        
+        return true;
+    }
+    
+    public boolean deactivateSemester(int semNumber){
+        SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
+        if(sem == null)
+            return false;
+        
+        sem.setActive(false);
+        semesterRepo.save(sem);
+        
+        return true;
+    }
+    
+    public boolean finishSemester(int semNumber){
+        SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
+        if(sem == null)
+            return false;
+        
+        sem.setActive(false);
+        sem.setFinished(true);
+        semesterRepo.save(sem);
+        
+        return true;
+    }
+    
+    private boolean disableAll(){
+                try{
+            semesterRepo
+                .findAll()
+                .stream().forEach(sem -> {
+                    sem.setActive(false);
+                    semesterRepo.save(sem);
+                });
+            return true;
+        }catch(Exception e){
+            return false;
+        }
+    }
 }

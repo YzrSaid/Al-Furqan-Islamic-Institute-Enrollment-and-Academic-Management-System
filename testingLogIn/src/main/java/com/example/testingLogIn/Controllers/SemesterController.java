@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -33,5 +35,28 @@ public class SemesterController {
     @GetMapping("/all")
     public ResponseEntity<List<SchoolYearSemester>> getAllSemester(){
         return new ResponseEntity<>(semService.getAllSemesters(),HttpStatus.OK);
+    }
+    
+    @PutMapping("/activate/{semNumber}")
+    public ResponseEntity<String> activateSemester(@PathVariable int semNumber){
+        if(semService.activateSemester(semNumber))
+            return new ResponseEntity<>("Semester Activated Successfully",HttpStatus.OK);
+        else
+            return new ResponseEntity<>("Semester Not Found",HttpStatus.NOT_FOUND);
+    }
+    
+    @PutMapping("/deactivate/{semNumber}")
+    public ResponseEntity<String> deactivateSemester(@PathVariable int semNumber){
+        if(semService.deactivateSemester(semNumber))
+            return new ResponseEntity<>("Semester Deactivated Successfully",HttpStatus.OK);
+        else
+            return new ResponseEntity<>("Semester Not Found",HttpStatus.NOT_FOUND);
+    }
+    @PutMapping("/finish/{semNumber}")
+    public ResponseEntity<String> finishSemester(@PathVariable int semNumber){
+        if(semService.finishSemester(semNumber))
+            return new ResponseEntity<>("Semester Activated Successfully",HttpStatus.OK);
+        else
+            return new ResponseEntity<>("Semester Not Found",HttpStatus.NOT_FOUND);
     }
 }

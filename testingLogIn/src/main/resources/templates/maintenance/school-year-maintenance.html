@@ -87,7 +87,7 @@
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year" class="second-active">School Year</a>
-            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
@@ -166,12 +166,16 @@
             <thead>
                 <tr>
                     <th>School Year</th>
+                    <th>1st Sem</th>
+                    <th>2nd Sem</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>2023-2024</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
@@ -258,12 +262,116 @@
         return true; // Validation passed
     }
 
-    function addSchoolYear() {
-        alert("School Year is valid! Proceeding with submission...");
-        // Add logic to send data to backend
-    }
-   
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchSchoolYears(); // Fetch school years when the page loads
+    });
 
+    // Function to add a new school year
+    function addSchoolYear() {
+        const actionUrl = "/schoolyear/add";
+        const method = "POST";
+        const schoolYearValue = document.getElementById("schoolYearName").value.trim();
+  
+        fetch(actionUrl, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ schoolYear: schoolYearValue }),
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                if (data.includes("Successfully")) {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error("Error adding school year:", error));
+    }
+
+    // Function to fetch all school years and display them
+    function fetchSchoolYears() {
+        fetch("/schoolyear/all")
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to fetch school years");
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector(".school-year-table tbody");
+                tableBody.innerHTML = ""; // Clear existing rows
+
+                data.forEach((sy) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                    <td>${sy.schoolYear}</td>
+                    <td>
+                        <div class="dropdown">
+                            <div class="status-container">
+                                <div class="status">${sy.status || "Active"}</div>
+                                <button class="dropdown-status-btn">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="dropdown-status-content">
+                                <a href="#" data-action="makeInactive" data-id="${sy.syNum}">Make Inactive</a>
+                                <a href="#" data-action="archive" data-id="${sy.syNum}">Archive</a>
+                                <a href="#" data-action="delete" data-id="${sy.syNum}">Delete</a>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error fetching school years:", error));
+    }
+
+    // Function to update school year status (Make Inactive or Archive)
+    function updateSchoolYearStatus(syNum, action) {
+        fetch(`/schoolyear/update`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ syNum: syNum, status: action }),
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                if (data.includes("Successfully")) {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error("Error updating school year:", error));
+    }
+
+    // Function to delete a school year
+    function deleteSchoolYear(syNum) {
+        fetch(`/schoolyear/delete/${syNum}`, {
+            method: "DELETE",
+        })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                if (data.includes("Deleted")) {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error("Error deleting school year:", error));
+    }
+
+    // Handle actions for school year status updates and deletion
+    document.addEventListener("click", function (event) {
+        const target = event.target;
+        const action = target.dataset.action;
+        const syNum = target.dataset.id;
+
+        if (action === "makeInactive") {
+            updateSchoolYearStatus(syNum, "Inactive");
+        } else if (action === "archive") {
+            updateSchoolYearStatus(syNum, "Archived");
+        } else if (action === "delete") {
+            if (confirm("Are you sure you want to delete this school year?")) {
+                deleteSchoolYear(syNum);
+            }
+        }
+    });
 
 </script>
 

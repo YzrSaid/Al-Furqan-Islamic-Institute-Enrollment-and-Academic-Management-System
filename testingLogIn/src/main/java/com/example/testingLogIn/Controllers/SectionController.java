@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -71,7 +72,7 @@ public class SectionController {
 //        System.out.println(sectionName);
 //        return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()), HttpStatus.OK);
 //    }
-
+   
     @PostMapping("/add")
     public ResponseEntity<Map<String, String>> addNewSection(@RequestBody SectionDTO sectionDTO) {
         Map<String, String> response = new HashMap<>();

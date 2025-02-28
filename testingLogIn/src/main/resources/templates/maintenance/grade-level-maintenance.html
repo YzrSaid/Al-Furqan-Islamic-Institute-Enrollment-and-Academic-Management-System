@@ -105,7 +105,7 @@
             <a href="/reports/academic-resources">Academic Resources Reports</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img th:src="@{images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
@@ -174,18 +174,19 @@
             <thead>
                 <tr>
                     <th>Grade Level</th>
-                    <!-- <th>Status</th> -->
+                    <th>Pre-Requisite</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td></td>
-                    <!-- <td>
-                        <div class="status-container">
-                            <div class="status" id="status-grade-level">Active</div>
-                        </div>
-                    </td> -->
+                    <td>
+                        <!-- Grade Level -->as
+                    </td>
+                    <td>
+                        <!-- Pre requisite grade level -->asd
+                    </td>
+
                     <td>
                         <div class="action-container">
                             <div class="action">
@@ -230,6 +231,12 @@
                     <input type="text" id="levelName" name="levelName" required>
                     <br><br>
 
+                    <label for="pre-req">Pre-Requisite Grade Level</label>
+                    <select name="pre-req" id="pre-req-grade-level">
+                        <option value="" disabled>Choose a pre-requisite</option>
+                        <option value="NONE">None</option>
+                    </select>
+
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="addGradeLevel"
                             data-message="Are you sure you want to add this grade level?" id="confirmGradeLevel"
@@ -250,6 +257,13 @@
                     <label for="levelName">Grade Level Name:</label>
                     <input type="text" id="levelNameEdit" name="levelName" readonly required>
                     <br><br>
+
+                    <label for="pre-req">Pre-Requisite Grade Level</label>
+                    <select name="pre-req" id="pre-req-grade-level-edit">
+                        <option value="" disabled>Choose a pre-requisite</option>
+                        <option value="NONE">None</option>
+                    </select>
+
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="editGradeLevel"
                             data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
@@ -266,20 +280,24 @@
         function addGradeLevel() {
             const actionUrl = "/gradelevel/add";
             const method = "POST";
-            const formData = new FormData();
 
-            formData.append("levelName", document.getElementById("levelName").value);
+            // Collect input values
+            const levelName = document.getElementById("levelName").value;
+            const preRequisite = document.getElementById("pre-req-grade-level").value;
+
+            // Create URL-encoded form data
+            const formData = new URLSearchParams();
+            formData.append("levelName", levelName);
+            formData.append("preRequisite", preRequisite);
 
             fetch(actionUrl, {
                 method: method,
-                body: formData,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: formData.toString(),  // Convert FormData to a string
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Server response error");
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     alert(data.message || "Action completed successfully!");
                     location.reload();
@@ -288,45 +306,110 @@
                     alert("Error: " + error.message);
                 });
         }
+
         document.addEventListener("DOMContentLoaded", function () {
             fetchGradeLevels(); // Fetch grade levels when the page loads
+            populatePreRequisiteDropdown();
         });
+
+        // Populate the pre-requisite dropdown
+        function populatePreRequisiteDropdown() {
+            fetch("/gradelevel/all")
+                .then(response => response.json())
+                .then(data => {
+                    const dropdown = document.getElementById("pre-req-grade-level");
+                    dropdown.innerHTML = '<option value="" disabled selected>Choose a pre-requisite</option>';
+
+                    data.forEach(grade => {
+                        const option = document.createElement("option");
+                        option.value = grade.levelName;
+                        option.textContent = grade.levelName;
+                        dropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error:", error));
+        }
+        function populateEditDropdown(currentGradeLevelId, selectedPreReqId) {
+            const dropdown = document.getElementById("pre-req-grade-level-edit");
+            dropdown.innerHTML = ""; // Clear previous options
+
+            fetch("/gradelevel/all")
+                .then(response => response.json())
+                .then(data => {
+                    // Add "Choose a pre-requisite" option as a disabled placeholder
+                    const defaultOption = document.createElement("option");
+                    defaultOption.value = "";
+                    defaultOption.textContent = "Choose a pre-requisite";
+                    defaultOption.disabled = true;
+                    dropdown.appendChild(defaultOption);
+
+                    // Add "None" option for cases where there's no pre-requisite
+                    const noneOption = document.createElement("option");
+                    noneOption.value = "NONE";
+                    noneOption.textContent = "None";
+                    dropdown.appendChild(noneOption);
+
+                    // Filter out the current grade level being edited
+                    const filteredGrades = data.filter(grade => grade.levelId !== currentGradeLevelId);
+
+                    // Populate dropdown with the remaining grades
+                    filteredGrades.forEach(grade => {
+                        const option = document.createElement("option");
+                        option.value = grade.levelId;
+                        option.textContent = grade.levelName;
+
+                        // 🔹 Pre-select the existing prerequisite if it matches
+                        if (selectedPreReqId && grade.levelId === selectedPreReqId) {
+                            option.selected = true;
+                        }
+
+                        dropdown.appendChild(option);
+                    });
+
+                    // 🔹 If no pre-requisite (NULL in backend), select "None"
+                    if (!selectedPreReqId) {
+                        noneOption.selected = true;
+                    }
+                })
+                .catch(error => console.error("Error fetching grade levels:", error));
+        }
+
 
         function fetchGradeLevels() {
             fetch("/gradelevel/all")
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch grade levels");
-                    }
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to fetch grade levels");
                     return response.json();
                 })
-                .then((data) => {
+                .then(data => {
                     const tableBody = document.querySelector("#lamesa tbody");
-                    tableBody.innerHTML = ""; // Clear existing rows
+                    tableBody.innerHTML = "";
 
-                    data.forEach((grade) => {
+                    data.forEach(grade => {
                         const row = document.createElement("tr");
                         row.innerHTML = `
-                            <td>${grade.levelName}</td>
-                            <td>
-                                <div class="action-container">
-                                    <div class="action">
-                                       <img data-open-modal="gradeLevelEditModal" 
-                                      src="/images/icons/compose.png" 
-                                       alt="grade-level-edit-icon" 
-                                       data-id="${grade.levelId}">
+                    <td>${grade.levelName}</td>
+                    <td>${grade.preRequisite ? grade.preRequisite.levelName : "None"}</td>
+                    <td>
+                        <div class="action-container">
+                            <div class="action">
+                               <img data-open-modal="gradeLevelEditModal" 
+                                    src="/images/icons/compose.png" 
+                                    alt="grade-level-edit-icon" 
+                                    data-id="${grade.levelId}">
 
-                                    <img data-open-modal="confirmationModal" data-action="deleteGradeLevel" data-message="Are you sure you want to delete this grade level?" data-id="${grade.levelId}" src="/images/icons/bin.png" alt="grade-level-delete-icon">
-                                    </div>
-                                </div>
-                            </td>
-                        `;
+                                <img data-open-modal="confirmationModal" data-action="deleteGradeLevel" 
+                                     data-message="Are you sure you want to delete this grade level?" 
+                                     data-id="${grade.levelId}" 
+                                     src="/images/icons/bin.png" alt="grade-level-delete-icon">
+                            </div>
+                        </div>
+                    </td>
+                `;
                         tableBody.appendChild(row);
                     });
                 })
-                .catch((error) => {
-                    console.error("Error:", error);
-                });
+                .catch(error => console.error("Error:", error));
         }
 
         let selectedGradeLevelId = null; // Global variable
@@ -352,11 +435,18 @@
                     .then((response) => response.json())
                     .then((data) => {
                         console.log("Fetched Data:", data); // ✅ Check backend response
-                        document.getElementById("gradeLevelEditModal").dataset.id = data.id;
+
+                        // 🔹 FIX: Use `data.levelId` instead of `data.id`
+                        document.getElementById("gradeLevelEditModal").dataset.id = data.levelId;
+
                         document.getElementById("levelNameEdit").value = data.levelName; // ✅ Debugging test
+
+                        // 🔹 If preRequisite is NULL, it will be handled as "None"
+                        populateEditDropdown(data.levelId, data.preRequisite?.levelId || null);
                     })
                     .catch((error) => console.error("Error fetching grade level:", error));
             }
+
 
             // DELETE FUNCTIONALITY
             if (target.dataset.action === "deleteGradeLevel") {

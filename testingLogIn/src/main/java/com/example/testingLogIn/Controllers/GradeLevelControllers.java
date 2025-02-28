@@ -25,34 +25,23 @@ public class GradeLevelControllers {
         return new ResponseEntity<>(gradeLevelServices.getAllGradeLevels(), HttpStatus.OK);
     }
 
-    // @PostMapping("/add")
-    // public ResponseEntity<String> addGradeLevel(@RequestParam String levelName) {
-    //     try {
-    //         if (gradeLevelServices.addNewGradeLevel(levelName))
-    //             return new ResponseEntity<>("New Grade Level Added Successfully", HttpStatus.OK);
-    //         else
-    //             return new ResponseEntity<>("Grade Level Name Already Exist", HttpStatus.BAD_REQUEST);
-    //     } catch (Exception e) {
-    //         return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
-    //     }
-    // }
-
     @PostMapping("/add")
-    public ResponseEntity<Map<String, String>> addGradeLevel(@RequestParam String levelName,@RequestParam String preRequisite) {
+    public ResponseEntity<Map<String, String>> addGradeLevel(@RequestParam String levelName,
+            @RequestParam String preRequisite) { 
         Map<String, String> response = new HashMap<>();
         System.out.println(preRequisite);
 
         try {
-            if (gradeLevelServices.addNewGradeLevel(levelName,preRequisite)) {
+            if (gradeLevelServices.addNewGradeLevel(levelName, preRequisite)) {
                 response.put("message", "New Grade Level Added Successfully");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
                 response.put("message", "Grade Level Name Already Exists");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
-        }catch(NullPointerException npe){
-                response.put("message", "Prerequisite Grade Level Not Found");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (NullPointerException npe) {
+            response.put("message", "Prerequisite Grade Level Not Found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             response.put("message", "Process Failed");
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
@@ -63,7 +52,7 @@ public class GradeLevelControllers {
     public ResponseEntity<GradeLevel> getGradeLevelById(@PathVariable int levelId) {
         return new ResponseEntity<>(gradeLevelServices.getGradeLevel(levelId), HttpStatus.OK);
     }
-    
+
     @PutMapping("/update-grade-level")
     public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel newGradeLevel) {
         try {

@@ -44,7 +44,8 @@ public class SchoolYearController {
         }catch(NumberFormatException e){
             return new ResponseEntity<>("School Year Contains Letter/s",HttpStatus.NOT_ACCEPTABLE);
         }catch(Exception e){
-            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+            e.printStackTrace(); // Debugging line to check the real error
+            return new ResponseEntity<>("Process Failed: " + e.getMessage(), HttpStatus.CONFLICT);
         }
     }
     

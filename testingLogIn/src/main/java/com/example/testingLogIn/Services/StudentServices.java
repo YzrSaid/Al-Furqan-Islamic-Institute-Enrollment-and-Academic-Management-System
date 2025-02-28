@@ -21,13 +21,11 @@ import org.springframework.stereotype.Service;
 public class StudentServices {
     
     private final StudentRepo studentRepo;
-    private final GradeLevelServices gradeLevelService;
     private final SectionServices sectionServices;
 
     @Autowired
-    public StudentServices(StudentRepo studentRepo, GradeLevelServices gradeLevelService,SectionServices sectionServices) {
+    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices) {
         this.studentRepo = studentRepo;
-        this.gradeLevelService = gradeLevelService;
         this.sectionServices = sectionServices;
     }
     
@@ -63,7 +61,7 @@ public class StudentServices {
     }
     
     public List<StudentDTO> getAllStudent(){
-        return studentRepo.findNewStudents().stream()
+        return studentRepo.findRegisteredStudents().stream()
                             .map(Student::DTOmapper)
                             .toList();
     }
@@ -75,7 +73,13 @@ public class StudentServices {
     }
     
     public List<StudentDTO> getOldStudents(){
-        return studentRepo.findNewStudents().stream()
+        return studentRepo.findOldStudents().stream()
+                            .map(Student::DTOmapper)
+                            .toList();
+    }
+    
+    public List<StudentDTO> getTransfereeStudents(){
+        return studentRepo.findTransfereeStudents().stream()
                             .map(Student::DTOmapper)
                             .toList();
     }
@@ -84,13 +88,14 @@ public class StudentServices {
         return studentRepo.findById(studentId).orElse(null);
     }
     
-    public int updateStudent(StudentDTO stud){
-        Section section = sectionServices.getSectionByName(stud.getCurrentSection());
+    public boolean updateStudent(StudentDTO stud){
+        String sectionName = stud.getCurrentSection().substring(stud.getCurrentSection().indexOf("-")+1);
+        Section section = sectionServices.getSectionByName(sectionName);
         Student toUpdate = getStudent(stud.getStudentId());
         if(toUpdate == null)
-            return 1;                       //checks if a student with not the same ID has the same name
+            throw new NullPointerException();                    //checks if a student with not the same ID has the same name
         else if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(stud.getStudentId(),stud.getFirstName(),stud.getLastName()))
-            return 2;
+            return false;
         else{
             toUpdate.setFirstName(stud.getFirstName());
             toUpdate.setLastName(stud.getLastName());
@@ -107,7 +112,7 @@ public class StudentServices {
             toUpdate.setTransferee(stud.isTransferee());
             
             studentRepo.save(toUpdate);
-            return 0;
+            return true;
         }
     }
             

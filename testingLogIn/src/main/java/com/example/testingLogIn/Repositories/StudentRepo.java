@@ -36,4 +36,9 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
            "AND isNew = false")
     List<Student> findOldStudents();
     
+    @Query("SELECT s from Student s "+
+           "WHERE s.isNotDeleted = true "+
+           "AND s.isTransferee = true")
+    List<Student> findTransfereeStudents();
+    
 }

@@ -41,7 +41,8 @@ public class sySemesterServices {
     
     public List<SchoolYearSemester> getAllSemesters(){
         return semesterRepo.findAll().stream()
-                           .filter(SchoolYearSemester::isNotDeleted)
+                           .filter(sem -> sem.getSchoolYear().isNotDeleted())
+                           .sorted((sem1,sem2) -> (sem2.getSchoolYear().getSchoolYear().compareTo(sem1.getSchoolYear().getSchoolYear())))
                            .toList();
     }
 }

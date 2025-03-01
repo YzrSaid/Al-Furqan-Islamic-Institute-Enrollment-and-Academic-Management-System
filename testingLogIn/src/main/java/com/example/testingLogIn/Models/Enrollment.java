@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int enrollmentNum;
+    private int enrollmentId;
     
     @ManyToOne
     @JoinColumn(name = "student")
@@ -39,27 +39,29 @@ public class Enrollment {
     
     @ManyToOne
     @JoinColumn(name = "gradeToEnroll")
-    private GradeLevel gradeLevel;
+    private GradeLevel gradeLevelToEnroll;
     
     @ManyToOne
     @JoinColumn(name = "sectionToEnroll")
-    private Section section;
+    private Section sectionToEnroll;
     
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus enrollmentStatus;
     
+    private boolean isQualified;
     private boolean isNotDeleted;
     
     public EnrollmentDTO DTOmapper(){
         return EnrollmentDTO.builder()
-                            .enrollmentId(enrollmentNum)
+                            .enrollmentId(enrollmentId)
                             .studentFirstName(student.getFirstName())
                             .studentLastName(student.getLastName())
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
-                            .gradeLevel(gradeLevel != null ? gradeLevel.getLevelName() : null)
-                            .sectionName(section != null ? section.getSectionName() : null)
+                            .gradeLevel(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)
+                            .sectionName(sectionToEnroll != null ? sectionToEnroll.getSectionName() : null)
                             .enrollmentStatus(enrollmentStatus)
+                            .isQualified(isQualified)
                             .isNotDeleted(isNotDeleted)
                             .build();
     }

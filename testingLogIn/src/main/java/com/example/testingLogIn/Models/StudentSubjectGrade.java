@@ -5,6 +5,8 @@
 package com.example.testingLogIn.Models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -24,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class StudentSubjectGrade {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int numberId;
     
     @ManyToOne
@@ -41,6 +44,5 @@ public class StudentSubjectGrade {
     @ManyToOne
     @JoinColumn(name = "semester")
     private SchoolYearSemester semester;
-    
-    private Integer grade;
+    private Integer subjectGrade;
 }

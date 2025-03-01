@@ -25,5 +25,6 @@ public class EnrollmentDTO {
     private String gradeLevel;
     private String sectionName;
     private EnrollmentStatus enrollmentStatus;
+    private boolean isQualified;
     private boolean isNotDeleted;
 }

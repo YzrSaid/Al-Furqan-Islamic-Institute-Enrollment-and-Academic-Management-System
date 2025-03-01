@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.Enums.EnrollmentStatus;
+import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.Section;
@@ -8,6 +9,7 @@ import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +49,26 @@ public class EnrollmentServices {
         enrollmentRepo.save(enroll);
         
         return true;
+    }
+    
+    public List<EnrollmentDTO> getAllEnrollment(String status){
+        EnrollmentStatus enrollmentStatus = getEnrollmentStatus(status);
+        return enrollmentRepo.findRecordsByStatusAndSemester(
+                                                        enrollmentStatus, 
+                                                        sySemRepo.findCurrentActive().getSySemNumber())
+                            .stream()
+                            .map(Enrollment::DTOmapper)
+                            .toList();
+    }
+    
+    private EnrollmentStatus getEnrollmentStatus(String status){
+        if(status.equalsIgnoreCase("LISTING"))
+            return EnrollmentStatus.LISTING;
+        else if(status.equalsIgnoreCase("ASSESSMENT"))
+            return EnrollmentStatus.ASSESSMENT;
+        else if(status.equalsIgnoreCase("PAYMENT"))
+            return EnrollmentStatus.PAYMENT;
+        else
+            return EnrollmentStatus.ENROLLED;
     }
 }

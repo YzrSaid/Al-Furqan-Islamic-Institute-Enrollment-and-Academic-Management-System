@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Models;
 
 import com.example.testingLogIn.Enums.EnrollmentStatus;
+import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -48,5 +49,19 @@ public class Enrollment {
     private EnrollmentStatus enrollmentStatus;
     
     private boolean isNotDeleted;
+    
+    public EnrollmentDTO DTOmapper(){
+        return EnrollmentDTO.builder()
+                            .enrollmentId(enrollmentNum)
+                            .studentFirstName(student.getFirstName())
+                            .studentLastName(student.getLastName())
+                            .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
+                            .semester(SYSemester.getSem())
+                            .gradeLevel(gradeLevel != null ? gradeLevel.getLevelName() : null)
+                            .sectionName(section != null ? section.getSectionName() : null)
+                            .enrollmentStatus(enrollmentStatus)
+                            .isNotDeleted(isNotDeleted)
+                            .build();
+    }
     
 }

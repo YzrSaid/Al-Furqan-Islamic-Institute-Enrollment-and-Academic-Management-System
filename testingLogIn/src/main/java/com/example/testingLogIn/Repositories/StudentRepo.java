@@ -46,7 +46,7 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
             "AND Lower(s.firstName) = Lower(:firstName) " +
             "AND Lower(s.lastName) = Lower(:lastName)")
     Student findByName(
-            @Param("firstname") String firstname,
-            @Param("lastname") String lastname);
+            @Param("firstName") String firstname,
+            @Param("lastName") String lastname);
     
 }

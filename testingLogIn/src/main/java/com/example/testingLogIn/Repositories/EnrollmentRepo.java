@@ -1,12 +1,26 @@
 package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.Models.Enrollment;
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author magno
  */
+@Repository
 public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
     
+@Query("SELECT COUNT(e) > 0 FROM Enrollment e " +
+       "WHERE e.isNotDeleted = true " +
+       "AND e.student.firstName = :firstName "+
+       "AND e.student.lastName = :lastName "+
+       "AND e.SYSemester.sySemNumber = :activeSemNumber")
+boolean studentCurrentlyEnrolled(
+    @Param("firstName") String firstName,
+    @Param("lastName") String lastName,
+    @Param("activeSemNumber") int activeSemNumber);
 }

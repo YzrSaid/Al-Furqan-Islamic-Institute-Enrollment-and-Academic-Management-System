@@ -2,6 +2,8 @@ package com.example.testingLogIn.Models;
 
 import com.example.testingLogIn.Enums.EnrollmentStatus;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,10 +36,17 @@ public class Enrollment {
     @JoinColumn(name = "semester")
     private SchoolYearSemester SYSemester;
     
-    private EnrollmentStatus enrollmentStatus;
-    
     @ManyToOne
     @JoinColumn(name = "gradeToEnroll")
+    private GradeLevel gradeLevel;
+    
+    @ManyToOne
+    @JoinColumn(name = "sectionToEnroll")
     private Section section;
+    
+    @Enumerated(EnumType.STRING)
+    private EnrollmentStatus enrollmentStatus;
+    
+    private boolean isNotDeleted;
     
 }

@@ -99,17 +99,12 @@ public class sySemesterServices {
         return true;
     }
     
-    private boolean disableAll(){
-                try{
+    private void disableAll(){
             semesterRepo
                 .findAll()
                 .stream().forEach(sem -> {
                     sem.setActive(false);
                     semesterRepo.save(sem);
                 });
-            return true;
-        }catch(Exception e){
-            return false;
-        }
     }
 }

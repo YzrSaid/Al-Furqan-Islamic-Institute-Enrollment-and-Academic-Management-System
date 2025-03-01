@@ -31,18 +31,20 @@ public class EnrollmentServices {
     }
     
     public boolean addStudentToListing(StudentDTO stud){
-        String sectionName = stud.getCurrentSection().substring(stud.getCurrentSection().indexOf("-")+1);
-        Section section = sectionService.getSectionByName(sectionName);
         Student student = studentRepo.findByName(stud.getFirstName(), stud.getLastName());
         if(student == null)
+            throw new NullPointerException();
+        else if(enrollmentRepo.studentCurrentlyEnrolled(stud.getFirstName(),
+                                                            stud.getLastName(), 
+                                                            sySemRepo.findCurrentActive().getSySemNumber()))
             return false;
         
         Enrollment enroll = new Enrollment();
         enroll.setEnrollmentStatus(EnrollmentStatus.LISTING);
         enroll.setStudent(student);
-        enroll.setSection(section);
         enroll.setSYSemester(sySemRepo.findCurrentActive());
-        
+        enroll.setNotDeleted(true);
+        enrollmentRepo.save(enroll);
         
         return true;
     }

@@ -41,4 +41,12 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
            "AND s.isTransferee = true")
     List<Student> findTransfereeStudents();
     
+    @Query( "SELECT s from Student s "+
+            "WHERE s.isNotDeleted = true "+
+            "AND Lower(s.firstName) = Lower(:firstName) " +
+            "AND Lower(s.lastName) = Lower(:lastName)")
+    Student findByName(
+            @Param("firstname") String firstname,
+            @Param("lastname") String lastname);
+    
 }

@@ -3,6 +3,8 @@ package com.example.testingLogIn.Services;
 import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Repositories.SchoolYearRepo;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 /**
@@ -23,7 +25,13 @@ public class SchoolYearServices {
             sy.setNotDeleted(true);
             schoolYearRepo.save(sy);
             
-            new Thread(() -> {semService.addSemesters(sy.getSchoolYear());}).start();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(499);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SchoolYearServices.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                semService.addSemesters(sy.getSchoolYear());}).start();
             
             return true;}
     }

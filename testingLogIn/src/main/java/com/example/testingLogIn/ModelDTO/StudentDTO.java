@@ -21,7 +21,9 @@ public class StudentDTO {
     private Gender gender;
     private LocalDate birthdate;
     private String address;
+    
     private String currentSection;
+    private String gradeSectionToEnroll;
     
     private String contactPersonName;
     private String contactPersonAddress;

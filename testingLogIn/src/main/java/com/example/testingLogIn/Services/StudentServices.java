@@ -4,12 +4,8 @@ import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
-import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +18,13 @@ public class StudentServices {
     
     private final StudentRepo studentRepo;
     private final SectionServices sectionServices;
+    private final EnrollmentServices enrollmentService;
 
     @Autowired
-    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices) {
+    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices,EnrollmentServices enrollmentService) {
         this.studentRepo = studentRepo;
         this.sectionServices = sectionServices;
+        this.enrollmentService = enrollmentService;
     }
     
     
@@ -56,6 +54,8 @@ public class StudentServices {
                                     .isTransferee(student.isTransferee())
                                     .build();
             studentRepo.save(newStudent);
+            
+            enrollmentService.addStudentToListing(student);
             return true;
         }
     }

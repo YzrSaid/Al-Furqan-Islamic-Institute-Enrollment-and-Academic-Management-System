@@ -7,6 +7,7 @@ package com.example.testingLogIn.Controllers;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Services.sySemesterServices;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,12 @@ public class SemesterController {
     
     
     @GetMapping("/all")
-    public ResponseEntity<List<SchoolYearSemester>> getAllSemester(){
-        return new ResponseEntity<>(semService.getAllSemesters(),HttpStatus.OK);
+    public ResponseEntity<Map<String,List<SchoolYearSemester>>> getAllSemester(){
+        Map<String,List<SchoolYearSemester>> semesters = semService.getAllSemesters();
+        if(semesters.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else
+            return new ResponseEntity<>(semesters,HttpStatus.OK);
     }
     
     @PutMapping("/activate/{semNumber}")

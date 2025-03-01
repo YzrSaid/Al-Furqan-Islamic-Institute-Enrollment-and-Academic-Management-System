@@ -25,6 +25,7 @@ public class SubjectServices {
         return subjectRepo.findAll().stream()
                           .filter(subject -> subject.getGradeLevel().getLevelName().toLowerCase()
                                                     .equals(gradeLevel.toLowerCase()) &&
+                                                    subject.getGradeLevel().isNotDeleted() &&
                                              subject.isNotDeleted())
                           .map(Subject::mapper)
                           .collect(Collectors.toList());
@@ -33,6 +34,7 @@ public class SubjectServices {
     public SubjectDTO getSubject(int subjectNumber){
         Subject sub = subjectRepo.findAll().stream()
                                  .filter(subj -> subj.getSubjectNumber()==subjectNumber &&
+                                                subj.getGradeLevel().isNotDeleted() &&
                                                 subj.isNotDeleted())
                                  .findFirst().orElse(null);
         
@@ -44,7 +46,8 @@ public class SubjectServices {
     
     public List<SubjectDTO> getAllSubjects(){
         return subjectRepo.findAll().stream()
-                          .filter(Subject::isNotDeleted)
+                          .filter(subj -> subj.isNotDeleted() &&
+                                            subj.getGradeLevel().isNotDeleted())
                           .map(subject -> SubjectToSubjectDTO(subject))
                           .collect(Collectors.toList());
     }

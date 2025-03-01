@@ -484,6 +484,15 @@ document.addEventListener("DOMContentLoaded", function () {
         // code
         alert("Schedule Saved Successfully!");
         break;
+      case "activateSemester":
+        activateSemester();
+        break;
+      case "deactivateSemester":   
+        deactivateSemester();
+        break; 
+      case "finishSemester":
+        finishSemester();
+        break;  
       default:
         alert("Unknown action: " + action);
         return;

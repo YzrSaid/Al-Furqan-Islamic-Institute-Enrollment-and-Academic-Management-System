@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.ModelDTO.GradeLevelDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Services.GradeLevelServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,20 @@ public class GradeLevelControllers {
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/all")
     public ResponseEntity<List<GradeLevel>> getAllGradeLevels() {
-        return new ResponseEntity<>(gradeLevelServices.getAllGradeLevels(), HttpStatus.OK);
+        try{
+            return new ResponseEntity<>(gradeLevelServices.getAllGradeLevels(), HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
+    @GetMapping("/no-successor-grade-level")
+    public ResponseEntity<List<GradeLevel>> getNoSuccessorGradeLevel(){
+        try{
+            return new ResponseEntity<>(gradeLevelServices.getNoSuccessorsGradeLevels(),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PostMapping("/add")
@@ -54,7 +68,7 @@ public class GradeLevelControllers {
     }
 
     @PutMapping("/update-grade-level")
-    public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevel newGradeLevel) {
+    public ResponseEntity<String> updateGradeLevel(@RequestBody GradeLevelDTO newGradeLevel) {
         try {
             if (gradeLevelServices.updateGradeLevel(newGradeLevel))
                 return new ResponseEntity<>("Grade Level Has Been Updated Successfully", HttpStatus.OK);

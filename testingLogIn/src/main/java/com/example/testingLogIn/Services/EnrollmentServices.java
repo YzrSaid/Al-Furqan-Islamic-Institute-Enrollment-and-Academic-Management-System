@@ -73,7 +73,7 @@ public class EnrollmentServices {
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.ASSESSMENT);
             enrollmentRecord.setGradeLevelToEnroll(gradeLevelToEnroll);
             
-            if(!student.isNew()){
+            if(!student.isNew() && !student.isTransferee() && gradeLevelToEnroll.getPreRequisite() != null){
                 boolean isQualified = ssgService.didStudentPassed(student.getStudentId(),
                         gradeLevelToEnroll.getPreRequisite().getLevelId());
                 enrollmentRecord.setQualified(isQualified);

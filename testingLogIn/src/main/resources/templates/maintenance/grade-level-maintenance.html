@@ -314,7 +314,7 @@
 
         // Populate the pre-requisite dropdown
         function populatePreRequisiteDropdown() {
-            fetch("/gradelevel/all")
+            fetch("/gradelevel/no-successor-grade-level")
                 .then(response => response.json())
                 .then(data => {
                     const dropdown = document.getElementById("pre-req-grade-level");
@@ -333,7 +333,7 @@
             const dropdown = document.getElementById("pre-req-grade-level-edit");
             dropdown.innerHTML = ""; // Clear previous options
 
-            fetch("/gradelevel/all")
+            fetch("/gradelevel/no-successor-grade-level")
                 .then(response => response.json())
                 .then(data => {
                     // Add "Choose a pre-requisite" option as a disabled placeholder
@@ -348,6 +348,16 @@
                     noneOption.value = "NONE";
                     noneOption.textContent = "None";
                     dropdown.appendChild(noneOption);
+                    console.log(selectedPreReqId , ' is the pre requisite id');
+                    console.log(selectedPreReqId !== null);
+                    if(selectedPreReqId !== null){
+                        const selectedPreReq = document.createElement("option");
+                        selectedPreReq.value = selectedPreReqId.levelId;
+                        selectedPreReq.textContent = selectedPreReqId.levelName;
+                        selectedPreReq.selected = true;
+                        dropdown.appendChild(selectedPreReq);
+                    }
+                        
 
                     // Filter out the current grade level being edited
                     const filteredGrades = data.filter(grade => grade.levelId !== currentGradeLevelId);
@@ -358,10 +368,10 @@
                         option.value = grade.levelId;
                         option.textContent = grade.levelName;
 
-                        // 🔹 Pre-select the existing prerequisite if it matches
-                        if (selectedPreReqId && grade.levelId === selectedPreReqId) {
-                            option.selected = true;
-                        }
+//                        // 🔹 Pre-select the existing prerequisite if it matches
+//                        if (selectedPreReqId && grade.levelId === selectedPreReqId) {
+//                            option.selected = true;
+//                        }
 
                         dropdown.appendChild(option);
                     });
@@ -442,7 +452,7 @@
                         document.getElementById("levelNameEdit").value = data.levelName; // ✅ Debugging test
 
                         // 🔹 If preRequisite is NULL, it will be handled as "None"
-                        populateEditDropdown(data.levelId, data.preRequisite?.levelId || null);
+                        populateEditDropdown(data.levelId, data.preRequisite);
                     })
                     .catch((error) => console.error("Error fetching grade level:", error));
             }
@@ -476,11 +486,13 @@
         });
         function editGradeLevel() {
             const form = document.getElementById("gradeLevelEditForm");
-            const gradeId = form.dataset.id; // Get stored ID
-
+            const gradeId = form.dataset.id; // Get stored ID\
+            const prereq = document.getElementById("pre-req-grade-level-edit").value;
+            
             const gradeLevelData = {
                 levelId: gradeId,
                 levelName: document.getElementById("levelNameEdit").value,
+                preRequisite: prereq
             };
 
             fetch("/gradelevel/update-grade-level", {

@@ -1,11 +1,15 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.ModelDTO.GradeLevelDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
+import java.util.ArrayList;
+import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,20 +41,34 @@ public class GradeLevelServices {
                              .filter(GradeLevel::isNotDeleted)
                              .collect(Collectors.toList());
     }
+    
+    public List<GradeLevel> getNoSuccessorsGradeLevels(){
+        Set<Integer> levelIdSuccessors = new HashSet<>();
+        getAllGradeLevels().forEach(gradeLevel -> {
+                                        if(gradeLevel.getPreRequisite() != null)
+                                            levelIdSuccessors.add(gradeLevel.getPreRequisite().getLevelId());
+        });
+        
+        return getAllGradeLevels().stream()
+                                .filter(gradeLevel -> !levelIdSuccessors.contains(gradeLevel.getLevelId()))
+                                .toList();
+    }
+    
     public GradeLevel getGradeLevel(int levelId){
         return gradeLevelRepo.findAll().stream()
                              .filter(gradelvl -> gradelvl.getLevelId() == levelId && gradelvl.isNotDeleted())
                              .findFirst().orElse(null);
     }
     
-    public boolean updateGradeLevel(GradeLevel gradeLevel){
-        GradeLevel updated = gradeLevelRepo.findAll().stream()
-                                           .filter(gradeL -> gradeL.getLevelId() == gradeLevel.getLevelId() &&
-                                                             gradeL.isNotDeleted())
-                                           .findFirst().orElse(null);
+    public boolean updateGradeLevel(GradeLevelDTO gradeLevel){
+        String preReqWord = gradeLevel.getPreRequisite();
+        GradeLevel newPreRequisite = preReqWord.equalsIgnoreCase("NONE")? null : 
+                                    gradeLevelRepo.findById(Integer.valueOf(preReqWord)).orElse(null);
         
+        GradeLevel updated = gradeLevelRepo.findById(gradeLevel.getLevelId()).orElse(null);
         if(updated !=null){
             updated.setLevelName(gradeLevel.getLevelName());
+            updated.setPreRequisite(newPreRequisite);
             gradeLevelRepo.save(updated);
             return true;
         }else

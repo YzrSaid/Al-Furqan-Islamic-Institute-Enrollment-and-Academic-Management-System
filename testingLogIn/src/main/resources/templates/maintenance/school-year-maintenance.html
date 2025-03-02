@@ -365,19 +365,10 @@
                             row.classList.add("disabled-row");
                         }
 
-                        // ✅ Apply color class based on semester (but not to school year column)
-                        let semesterClass = "";
-                        if (sem.sem.toLowerCase() === "first") {
-                            semesterClass = "first-sem";
-                        } else if (sem.sem.toLowerCase() === "second") {
-                            semesterClass = "second-sem";
-                        } else {
-                            console.warn("Unexpected semester:", sem.sem);
-                        }
-
+                        let semesterClass = sem.sem.toLowerCase() === "first" ? "first-sem" : "second-sem";
                         console.log(`Semester: ${sem.sem}, Assigned Class:`, semesterClass);
 
-                        // Add School Year column only in the first row (rowspan)
+                        // ✅ Add School Year column only in the first row (rowspan)
                         if (index === 0) {
                             row.innerHTML = `<td rowspan="${rowSpanCount}">${sy.schoolYear}</td>`;
                         }
@@ -402,6 +393,31 @@
                    data-open-modal="confirmationModal"
                    data-semid="${sem.sySemNumber}">Delete</a>`;
 
+                        // ✅ Activation Logic with Checklist
+                        let activateOption = "";
+                        if (!sem.active) {
+                            if (sem.sem.toLowerCase() === "first") {
+                                // ✅ Allow activating 1st sem anytime
+                                activateOption = `<a href="#" data-action="activateSemester"
+                           data-message="Are you sure you want to activate this semester?"
+                           data-open-modal="confirmationModal"
+                           data-semid="${sem.sySemNumber}">
+                           Activate
+                        </a>`;
+                            } else if (sem.sem.toLowerCase() === "second") {
+                                // ✅ Only allow activating 2nd sem if 1st sem is finished
+                                let firstSem = relatedSemesters.find(s => s.sem.toLowerCase() === "first");
+                                if (firstSem && firstSem.finished) {
+                                    activateOption = `<a href="#" data-action="activateSemester"
+                               data-message="Are you sure you want to activate this semester? (1st sem will be automatically finished)"
+                               data-open-modal="confirmationModal"
+                               data-semid="${sem.sySemNumber}">
+                               Activate
+                            </a>`;
+                                }
+                            }
+                        }
+
                         // ✅ Add semester class to each <td> except the school year column
                         row.innerHTML += `
                     <td class="${semesterClass}">${sem.sem}</td>
@@ -425,15 +441,9 @@
                                 </button>
                             </div>
                             <div class="dropdown-status-content">
-                                ${!sem.active ? `
-                                <a href="#" data-action="activateSemester"
-                                   data-message="Are you sure you want to activate this semester?"
-                                   data-open-modal="confirmationModal"
-                                   data-semid="${sem.sySemNumber}">
-                                   Activate
-                                </a>` : ""}
+                                ${activateOption} <!-- ✅ New Activation Logic -->
                                 ${finishSemesterOption}
-                                ${deleteSemesterOption} <!-- ✅ Delete option added -->
+                                ${deleteSemesterOption}
                             </div>
                         </div>
                     </td>
@@ -455,10 +465,9 @@
 
                 // ✅ Ensure "ACTIVE" status remains green and not faded
                 document.querySelectorAll(".status-container .status").forEach(status => {
-                    const text = status.textContent.trim().toUpperCase();
-                    if (text === "ACTIVE") {
-                        status.classList.add("active-status"); // ✅ Make it green
-                        status.style.opacity = "1"; // Fully visible
+                    if (status.textContent.trim().toUpperCase() === "ACTIVE") {
+                        status.classList.add("active-status");
+                        status.style.opacity = "1";
                     }
                 });
 
@@ -466,6 +475,54 @@
             })
             .catch(error => console.error("Error fetching school years or semesters:", error));
     }
+
+    // document.addEventListener("click", function (event) {
+    //     if (event.target.matches("[data-action='activateSemester']")) {
+    //         event.preventDefault();
+
+    //         let semId = event.target.getAttribute("data-semid");
+
+    //         if (!semId) return;
+
+    //         fetch("/semester/all")
+    //             .then(response => response.json())
+    //             .then(semesters => {
+    //                 let semesterArray = Object.values(semesters).flat();
+
+    //                 // ✅ Find the semester to activate
+    //                 let activatingSem = semesterArray.find(s => s.sySemNumber == semId);
+    //                 if (!activatingSem) return;
+
+    //                 // ✅ Check if it's a 1st Sem
+    //                 if (activatingSem.sem.toLowerCase() === "first") {
+    //                     // ✅ Check if ANY other SY has an active 1st semester
+    //                     let activeFirstSemExists = semesterArray.some(s =>
+    //                         s.sem.toLowerCase() === "first" &&
+    //                         s.active &&
+    //                         s.schoolYear.schoolYear !== activatingSem.schoolYear.schoolYear
+    //                     );
+
+    //                     if (activeFirstSemExists) {
+    //                         alert("You cannot activate this semester because an existing school year's 1st semester is still active. Finish both semesters first!");
+    //                         return;
+    //                     }
+    //                 }
+
+    //                 // ✅ If validation passes, activate the semester
+    //                 fetch(`/semester/activate/${semId}`, { method: "POST" })
+    //                     .then(response => response.json())
+    //                     .then(data => {
+    //                         console.log("Semester Activated:", data);
+    //                         alert("Semester activated successfully!");
+    //                         fetchSchoolYears(); // Refresh table
+    //                     })
+    //                     .catch(error => console.error("Error activating semester:", error));
+    //             })
+    //             .catch(error => console.error("Error fetching semesters:", error));
+    //     }
+    // });
+
+
 
 
     function updateFinishedSemesters() {
@@ -493,9 +550,48 @@
         });
     }
 
-
-
     let semNumber = null
+    // function canActivateSemester(semNumber) {
+    //     return new Promise((resolve, reject) => {
+    //         fetch("/semester/all")
+    //             .then(response => response.json())
+    //             .then(semesters => {
+    //                 let semesterArray = Object.values(semesters).flat();
+    //                 let activatingSem = semesterArray.find(s => s.sySemNumber == semNumber);
+
+    //                 if (!activatingSem) {
+    //                     resolve(false); // Semester not found, block activation
+    //                     return;
+    //                 }
+
+    //                 if (activatingSem.sem.toLowerCase() === "first") {
+    //                     // ✅ Check if there is an active first semester from a previous SY
+    //                     let activeFirstSem = semesterArray.find(s =>
+    //                         s.sem.toLowerCase() === "first" &&
+    //                         s.active &&
+    //                         s.schoolYear.schoolYear !== activatingSem.schoolYear.schoolYear
+    //                     );
+
+    //                     // 🚀 **Block activation** if another 1st sem is still active
+    //                     if (activeFirstSem) {
+    //                         if (!activeFirstSem.finished) {
+    //                             alert("You cannot activate this semester because another school year's 1st semester is still active. Finish both semesters first!");
+    //                             resolve(false); // Block activation
+    //                             return;
+    //                         }
+    //                     }
+    //                 }
+
+    //                 resolve(true); // ✅ Allow activation if no conflicts
+    //             })
+    //             .catch(error => {
+    //                 console.error("Error fetching semesters:", error);
+    //                 resolve(false); // Default to blocking activation on error
+    //             });
+    //     });
+    // }
+
+
 
     document.addEventListener("click", function (event) {
         if (event.target.matches("[data-open-modal='confirmationModal']")) {
@@ -511,6 +607,60 @@
             }
         }
     });
+
+    function canActivateSemester(semId) {
+    return new Promise((resolve, reject) => {
+        fetch("/semester/all")
+            .then(response => response.json())
+            .then(semesters => {
+                let semesterArray = Object.values(semesters).flat();
+                let activatingSem = semesterArray.find(s => s.sySemNumber == semId);
+
+                if (!activatingSem) {
+                    resolve(false); // 🚫 Semester not found, block activation
+                    return;
+                }
+
+                // ✅ **Allow activating if the semester is already finished (View-Only Mode)**
+                if (activatingSem.finished) {
+                    resolve(true);
+                    return;
+                }
+
+                // ✅ Find the latest active school year
+                let activeSemesters = semesterArray.filter(s => s.active || s.finished);
+                let latestActiveSY = activeSemesters.reduce((latest, sem) => {
+                    return sem.schoolYear.schoolYear > latest ? sem.schoolYear.schoolYear : latest;
+                }, "");
+
+                if (latestActiveSY && latestActiveSY !== activatingSem.schoolYear.schoolYear) {
+                    // ✅ Get all semesters in the latest active school year
+                    let latestSemesters = semesterArray.filter(s => s.schoolYear.schoolYear === latestActiveSY);
+
+                    // 🚀 **Check if both semesters are finished**
+                    let firstSem = latestSemesters.find(s => s.sem.toLowerCase() === "first");
+                    let secondSem = latestSemesters.find(s => s.sem.toLowerCase() === "second");
+
+                    let firstSemFinished = firstSem ? firstSem.finished : true;
+                    let secondSemFinished = secondSem ? secondSem.finished : true;
+
+                    // 🚫 **Block activation if any semester is unfinished**
+                    if (!firstSemFinished || !secondSemFinished) {
+                        alert(`You cannot activate this semester because ${latestActiveSY} still has an unfinished semester. Finish both semesters first!`);
+                        resolve(false);
+                        return;
+                    }
+                }
+
+                resolve(true); // ✅ Allow activation
+            })
+            .catch(error => {
+                console.error("Error fetching semesters:", error);
+                resolve(false); // Default to blocking activation on error
+            });
+    });
+}
+
 
 
 

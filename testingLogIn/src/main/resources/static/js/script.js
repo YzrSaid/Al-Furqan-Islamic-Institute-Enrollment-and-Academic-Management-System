@@ -380,7 +380,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function handleConfirmAction(action) {
+  async function handleConfirmAction(action) {
     switch (action) {
       case "savePayment":
         alert("save payment");
@@ -474,7 +474,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "addSchoolYear":
         if (validateSchoolYear()) {
-            addSchoolYear();
+          addSchoolYear();
         }
         break;
       case "changePassword":
@@ -485,14 +485,28 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Schedule Saved Successfully!");
         break;
       case "activateSemester":
+        // if (!canActivateSemester(semNumber)) {
+        //   console.log("Activation blocked.");
+        //   return; // 🚀 Stop the function from running
+        // } else {
+        //     // activateSemester();
+        // }
+        let isAllowed = await canActivateSemester(semNumber); // ⏳ Wait for validation result
+
+        if (!isAllowed) {
+            console.log("Activation blocked.");
+            return; // 🚀 Stop the function from running
+        }
+
         activateSemester();
+       
         break;
-      case "deactivateSemester":   
+      case "deactivateSemester":
         deactivateSemester();
-        break; 
+        break;
       case "finishSemester":
         finishSemester();
-        break;  
+        break;
       default:
         alert("Unknown action: " + action);
         return;

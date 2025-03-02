@@ -15,7 +15,6 @@ import com.example.testingLogIn.Repositories.sySemesterRepo;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 /**
  *
  * @author magno
@@ -72,13 +71,20 @@ public class EnrollmentServices {
         else{
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.ASSESSMENT);
             enrollmentRecord.setGradeLevelToEnroll(gradeLevelToEnroll);
-            
-            if(!student.isNew() && !student.isTransferee() && gradeLevelToEnroll.getPreRequisite() != null){
-                boolean isQualified = ssgService.didStudentPassed(student.getStudentId(),
-                        gradeLevelToEnroll.getPreRequisite().getLevelId());
-                enrollmentRecord.setQualified(isQualified);
+            enrollmentRecord.setRemarks(null);
+            boolean isQualified = true;
+            if(!student.isNew() && gradeLevelToEnroll.getPreRequisite() != null){
+                int nextLevelPreReqId = gradeLevelToEnroll.getPreRequisite().getLevelId();
+                isQualified = ssgService.didStudentPassed(student.getStudentId(),
+                        nextLevelPreReqId);
+                if((!isQualified) && student.getCurrentGradeSection().getLevel().getLevelId() == nextLevelPreReqId){
+                    enrollmentRecord.setRemarks("Congratulation! You Are Qualified To Your Current Grade");
+                }else if(!isQualified)
+                    enrollmentRecord.setRemarks("The Chosen Grade Level is Not The Successor of the Student's Current Grade Level. Choose another!");
+                else
+                    enrollmentRecord.setRemarks("Pagbayad na para maenroll naka");
             }
-            
+            enrollmentRecord.setQualified(isQualified);
             enrollmentRepo.save(enrollmentRecord);
             
             return 3;

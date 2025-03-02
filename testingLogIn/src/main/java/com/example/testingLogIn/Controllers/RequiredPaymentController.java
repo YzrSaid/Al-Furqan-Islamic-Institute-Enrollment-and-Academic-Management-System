@@ -1,0 +1,97 @@
+package com.example.testingLogIn.Controllers;
+
+import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
+import com.example.testingLogIn.Services.RequiredPaymentsServices;
+import java.util.List;
+import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ *
+ * @author magno
+ */
+@RequestMapping("/payments")
+@Controller
+public class RequiredPaymentController {
+    private final RequiredPaymentsServices reqPaymentService;
+
+    public RequiredPaymentController(RequiredPaymentsServices reqPaymentService) {
+        this.reqPaymentService = reqPaymentService;
+    }
+    
+    @PostMapping("/add")
+    public ResponseEntity<String> addRequiredPayments(@RequestBody RequiredPaymentsDTO reqPayments){
+        try{
+            if(reqPaymentService.addNewPayments(reqPayments))
+                return new ResponseEntity<>("New payment added successfully",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("The payment name \""+reqPayments.getName()+"\" already exists.",HttpStatus.CONFLICT);
+        }catch(Exception e){
+            return new ResponseEntity<>("Process failed",HttpStatus.CONFLICT);
+        }
+   }
+    
+    @GetMapping("/all")
+    public ResponseEntity<Map<String,RequiredPaymentsDTO>> getAllReqPayments(){
+        try{
+            return new ResponseEntity<>(reqPaymentService.getAllPayments(),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
+    @GetMapping("/grade/{gradeLevelId}")
+    public ResponseEntity<List<RequiredPaymentsDTO>> getAllReqPaymentsByGradeLevel(@PathVariable int gradeLevelId){
+        try{
+            List<RequiredPaymentsDTO> toreturn = reqPaymentService.getPaymentsByGradeLevel(gradeLevelId);
+            if(!toreturn.isEmpty())
+                return new ResponseEntity<>(toreturn,HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
+    @GetMapping("/total/{gradeLevelId}")
+    public ResponseEntity<Double> getTotalToPayByGradeLevel(@PathVariable int gradeLevelId){
+        try{
+            return new ResponseEntity<>(reqPaymentService.getToPayTotal(gradeLevelId),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
+    @PutMapping("/update/{recentPaymentName}")
+    public ResponseEntity<String> updatedSelectedPayment(@PathVariable String recentPaymentName, 
+                                                        @RequestBody RequiredPaymentsDTO updated){
+        try{
+            if(reqPaymentService.updatePayment(recentPaymentName, updated))
+                return new ResponseEntity<>("Required payment updated successfully",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Updating payment record failed as payment name not found",HttpStatus.NOT_IMPLEMENTED);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+        }
+    }
+    
+    @DeleteMapping("/delete/{paymentName}")
+    public ResponseEntity<String> deleteRequiredPayment(@PathVariable String paymentName){
+        try{
+            reqPaymentService.deleteRequiredPayment(paymentName);
+            return new ResponseEntity<>("Payment \""+paymentName+"\" deleted successfully",HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);
+        }
+    }
+}

@@ -22,8 +22,9 @@ public class EnrollmentDTO {
     private String studentLastName;
     private String schoolYear;
     private Semester semester;
-    private String gradeLevel;
+    private String gradeLevelToEnroll;
     private String sectionName;
+    private String remarks;
     private EnrollmentStatus enrollmentStatus;
     private boolean isQualified;
     private boolean isNotDeleted;

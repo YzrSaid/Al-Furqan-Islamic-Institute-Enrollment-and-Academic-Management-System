@@ -33,6 +33,8 @@ public class Enrollment {
     @JoinColumn(name = "student")
     private Student student;
     
+    private String remarks;
+    
     @ManyToOne
     @JoinColumn(name = "semester")
     private SchoolYearSemester SYSemester;
@@ -58,9 +60,10 @@ public class Enrollment {
                             .studentLastName(student.getLastName())
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
-                            .gradeLevel(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)
+                            .gradeLevelToEnroll(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)
                             .sectionName(sectionToEnroll != null ? sectionToEnroll.getSectionName() : null)
                             .enrollmentStatus(enrollmentStatus)
+                            .remarks(remarks)
                             .isQualified(isQualified)
                             .isNotDeleted(isNotDeleted)
                             .build();

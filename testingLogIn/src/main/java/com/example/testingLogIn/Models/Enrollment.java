@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 /**
  *
  * @author magno
@@ -47,6 +46,10 @@ public class Enrollment {
     @JoinColumn(name = "sectionToEnroll")
     private Section sectionToEnroll;
     
+    @ManyToOne
+    @JoinColumn(name = "completePaymentCheck")
+    private PaymentCompleteCheck pcc;
+    
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus enrollmentStatus;
     
@@ -69,6 +72,7 @@ public class Enrollment {
                             .gradeLevelToEnroll(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)
                             .sectionToEnroll(sectionToEnroll != null ? gradeLevel+" - "+sectionToEnroll.getSectionName() : null)
                             .enrollmentStatus(enrollmentStatus)
+                            .studentMiddleName(student.getMiddleName())
                             .remarks(remarks)
                             .isQualified(isQualified)
                             .isNotDeleted(isNotDeleted)

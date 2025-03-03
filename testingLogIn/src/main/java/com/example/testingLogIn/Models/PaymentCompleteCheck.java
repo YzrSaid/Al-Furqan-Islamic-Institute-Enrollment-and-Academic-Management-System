@@ -6,9 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDate;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 /**
  *
  * @author magno
@@ -17,24 +17,19 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class PaymentRecords {
+public class PaymentCompleteCheck {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int recordId;
+    private int id;
     
     @ManyToOne
     @JoinColumn(name = "student")
     private Student student;
     
     @ManyToOne
-    @JoinColumn(name = "requiredPayment")
-    private RequiredPayments requiredPayment;
+    @JoinColumn(name = "sem")
+    private SchoolYearSemester sem;
     
-    @ManyToOne
-    @JoinColumn(name = "semester")
-    private SchoolYearSemester SYSem;
-    
-    private double amount;
-    private final LocalDate datePaid = LocalDate.now();
+    private boolean isComplete;
 }

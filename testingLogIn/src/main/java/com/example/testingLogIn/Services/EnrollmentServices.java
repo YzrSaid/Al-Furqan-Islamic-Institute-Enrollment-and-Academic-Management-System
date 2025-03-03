@@ -27,17 +27,18 @@ public class EnrollmentServices {
     private final sySemesterRepo sySemRepo;
     private final GradeLevelRepo gradeLevelRepo;
     private final StudentSubjectGradeServices ssgService;
-
+    private final PaymentCheckerService pcs;
     @Autowired
-    public EnrollmentServices(StudentRepo studentRepo, SectionRepo sectionRepo, 
-                                sySemesterRepo sySemRepo,EnrollmentRepo enrollmentRepo,
-                                GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService) {
+    public EnrollmentServices(StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo,
+                                EnrollmentRepo enrollmentRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, 
+                                PaymentCheckerService pcs) {
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
         this.sySemRepo = sySemRepo;
         this.enrollmentRepo = enrollmentRepo;
         this.gradeLevelRepo = gradeLevelRepo;
         this.ssgService = ssgService;
+        this.pcs=pcs;
     }
     
     public boolean addStudentToListing(StudentDTO stud){
@@ -101,6 +102,8 @@ public class EnrollmentServices {
         else if(section == null)
             return 2;
         else{
+            enrollmentRecord.setPcc(pcs.addIfNotExistElseUpdate(enrollmentRecord.getStudent().getStudentId(), 
+                                                                    section.getLevel().getLevelId()));
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.PAYMENT);
             enrollmentRecord.setSectionToEnroll(section);
             enrollmentRepo.save(enrollmentRecord);

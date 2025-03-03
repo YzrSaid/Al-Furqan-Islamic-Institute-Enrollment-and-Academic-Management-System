@@ -157,9 +157,9 @@
 
         <!-- Enrollment Buttons -->
         <div class="enrollment-buttons">
-            <button class="new-student" data-open-modal="studentInfoModal">NEW STUDENT</button>
+            <button class="new-student" data-open-modal="newStudentModal">NEW STUDENT</button>
             <button id="old-student" data-open-modal="oldStudentModal">OLD STUDENT</button>
-            <button id="transferee" data-open-modal="studentInfoModal">TRANSFEREE</button>
+            <button id="transferee" data-open-modal="transfereeStudentModal">TRANSFEREE</button>
         </div>
 
         <div class="search-div">
@@ -239,9 +239,8 @@
                     </select>
                     <br><br>
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addListing"
-                            data-message="Are you sure you want to add this grade level?" id="confirmGradeLevel"
-                            data-open-modal="confirmationModal">
+                        <button type="button" class="btn-confirm" data-action="proceedAssessment"
+                            data-message="Are you sure you want to proceed this registration from Listing to Assessment?" id="confirmGradeLevel" data-open-modal="confirmationModal">
                             Confirm
                         </button>
                         <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
@@ -250,28 +249,31 @@
             </div>
         </div>
 
-        <!-- Modal for new and transferee student enrollment -->
-        <div id="studentInfoModal" class="student-modal modal">
+        <!-- Modal for new student enrollment -->
+        <div id="newStudentModal" class="student-modal modal">
             <div class="student-modal-content">
                 <h2>Student Information</h2>
                 <form id="studentForm">
                     <div class="header">
-                        <h6>Personal Information</h6>
+                        <h5>Personal Information</h5>
                         <div class="checkbox">
-                            <label for="isTransfereeCheckbox">Transferee:</label>
-                            <input type="checkbox" id="isTransfereeCheckbox" value="Transferee">
+                            <label for="scholar">Scholar:</label>
+                            <input type="checkbox" id="scholar">
                         </div>
                     </div>
-                    <br>
+
                     <div class="student-form-group">
                         <label for="studentFirstName">First Name:</label>
                         <input type="text" id="studentFirstName" required>
 
                         <label for="studentLastName">Last Name:</label>
                         <input type="text" id="studentLastName" required>
-                    </div>
 
-                    <div class="student-form-group">
+                        <label for="studentMiddleName">Middle Name:</label>
+                        <input type="text" id="studentMiddleName" placeholder="Optional">
+                    </div> <br>
+
+                    <div class="student-form-group half">
                         <label for="gender">Gender:</label>
                         <select id="gender" required>
                             <option value="" disabled selected>Select Gender</option>
@@ -283,46 +285,180 @@
                         <input type="date" id="birthdate" required>
                     </div> <br>
 
-                    <label for="address">Address:</label>
-                    <input type="text" id="address" required> <br> <br>
+                    <div class="student-form-group">
+                        <label for="place-of-birth">Place of Birth:</label>
+                        <input type="text" id="place-of-birth">
+                    </div> <br>
 
-                    <label for="contactNumber">Cellphone/Contact Number:</label>
-                    <input type="tel" id="contactNumber" required> <br> <br>
+                    <div>
+                        <label for="address">Address:</label>
+                        <div class="student-form-group">
+                            <input type="text" id="street" required placeholder="Street">
+                            <input type="text" id="barangay" required placeholder="Barangay">
+                            <input type="text" id="city" required placeholder="City">
+                        </div>
+                    </div> <br> <br>
 
-                    <!-- <div class="student-form-group">
-                        <label for="gradeLevelOld">Prev. Grade Level:</label>
-                        <input type="text" id="gradeLevelOld" required>
+                    <h5>Parent's/Guardian's Information</h5>
 
-                        <label for="gradeLevelNew">Enrolling Grade Level:</label>
-                        <input type="text" id="gradeLevelNew" required>
-                    </div> -->
+                    <h6>Father's Information</h6>
+                    <div class="student-form-group">
+                        <label for="fatherName">Name:</label>
+                        <input type="text" id="fatherName" required>
 
-                    <br>
+                        <label for="fatherOccupation">Occupation:</label>
+                        <input type="text" id="fatherOccupation">
+                    </div> <br>
 
-                    <h6>Emergency Contact</h6> <br>
+                    <h6>Mother's Information</h6>
+                    <div class="student-form-group">
+                        <label for="motherName">Name:</label>
+                        <input type="text" id="motherName" required>
+
+                        <label for="motherOccupation">Occupation:</label>
+                        <input type="text" id="motherOccupation">
+                    </div> <br>
+
+                    <h6>Guardian's Information</h6>
+                    <div class="student-form-group">
+                        <label for="guardianName">Name:</label>
+                        <input type="text" id="guardianName">
+
+                        <label for="guardianOccupation">Occupation:</label>
+                        <input type="text" id="guardianOccupation">
+                    </div> <br>
 
                     <div class="student-form-group">
-                        <label for="contactPersonFirstName">First Name:</label>
-                        <input type="text" id="contactPersonFirstName" required>
+                        <label for="guardianContactNumber">Contact Number:</label>
+                        <input type="text" id="guardianContactNumber">
 
-                        <label for="contactPersonLastName">Last Name:</label>
-                        <input type="text" id="contactPersonLastName" required>
+                        <label for="guardianAddress">Address:</label>
+                        <input type="text" id="guardianAddress">
+                    </div> <br>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" id="confirmStudent" data-action="addListing"
+                            data-open-modal="confirmationModal"
+                            data-message="Are you sure you want to add this new student?">Confirm</button>
+                        <button type="button" class="btn-cancel" id="cancelStudent"
+                            data-close-modal="newStudentModal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Modal for transferee enrollment -->
+        <div id="transfereeStudentModal" class="student-modal modal">
+            <div class="student-modal-content">
+                <h2>Student Information</h2>
+                <form id="studentForm">
+                    <div class="header">
+                        <h5>Personal Information</h5>
+                    </div>
+
+                    <div class="student-form-group">
+                        <label for="studentFirstName">First Name:</label>
+                        <input type="text" id="studentFirstName" required>
+
+                        <label for="studentLastName">Last Name:</label>
+                        <input type="text" id="studentLastName" required>
+
+                        <label for="studentMiddleName">Middle Name:</label>
+                        <input type="text" id="studentMiddleName" placeholder="Optional">
+                    </div> <br>
+
+                    <div class="student-form-group half">
+                        <label for="gender">Gender:</label>
+                        <select id="gender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                        </select>
+
+                        <label for="birthdate">Birthdate:</label>
+                        <input type="date" id="birthdate" required>
+                    </div> <br>
+
+                    <div class="student-form-group">
+                        <label for="place-of-birth">Place of Birth:</label>
+                        <input type="text" id="place-of-birth">
+                    </div> <br>
+
+                    <div>
+                        <label for="address">Address:</label>
+                        <div class="student-form-group">
+                            <input type="text" id="street" required placeholder="Street">
+                            <input type="text" id="barangay" required placeholder="Barangay">
+                            <input type="text" id="city" required placeholder="City">
+                        </div>
+                    </div> <br> <br>
+
+                    <h5>Parent's/Guardian's Information</h5>
+
+                    <h6>Father's Information</h6>
+                    <div class="student-form-group">
+                        <label for="fatherName">Name:</label>
+                        <input type="text" id="fatherName" required>
+
+                        <label for="fatherOccupation">Occupation:</label>
+                        <input type="text" id="fatherOccupation">
+                    </div> <br>
+
+                    <h6>Mother's Information</h6>
+                    <div class="student-form-group">
+                        <label for="motherName">Name:</label>
+                        <input type="text" id="motherName" required>
+
+                        <label for="motherOccupation">Occupation:</label>
+                        <input type="text" id="motherOccupation">
+                    </div> <br>
+
+                    <h6>Guardian's Information</h6>
+                    <div class="student-form-group">
+                        <label for="guardianName">Name:</label>
+                        <input type="text" id="guardianName">
+
+                        <label for="guardianOccupation">Occupation:</label>
+                        <input type="text" id="guardianOccupation">
+                    </div> <br>
+
+                    <div class="student-form-group">
+                        <label for="guardianContactNumber">Contact Number:</label>
+                        <input type="text" id="guardianContactNumber">
+
+                        <label for="guardianAddress">Address:</label>
+                        <input type="text" id="guardianAddress">
+                    </div> <br>
+
+                    <h5>For Transferees Only</h5>
+
+                    <div class="student-form-group">
+                        <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
+                        <input type="text" id="lastGradeLevelCompleted">
+
+                        <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
+                        <input type="text" id="lastMadrasaYearCompleted">
+                    </div> <br>
+
+                    <div class="student-form-group">
+                        <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                        <input type="text" id="madrasaNameLastAttended">
+                    </div> <br>
+
+                    <div class="student-form-group">
+                        <label for="madrasaAddress">Madrasa Address:</label>
+                        <input type="text" id="madrasaAddress">
                     </div> <br>
 
 
-                    <label for="contactAddress">Address</label>
-                    <input type="text" id="contactPersonAddress" required> <br> <br>
-
-                    <label for="contactPersonLastName">Contact Number:</label>
-                    <input type="tel" id="contactPersonContactNum" required>
-
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmStudent"
-                            data-open-modal="confirmationModal" data-action="addListing"
-                            data-message="Are you sure you want to add and list this new student?">Confirm</button>
+                        <button type="button" class="btn-confirm" id="confirmStudent" data-action="addListing"
+                            data-open-modal="confirmationModal"
+                            data-message="Are you sure you want to add this new student?">Confirm</button>
                         <button type="button" class="btn-cancel" id="cancelStudent"
-                            data-close-modal="studentInfoModal">Cancel</button>
+                            data-close-modal="transfereeStudentModal">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -389,97 +525,170 @@
 </body>
 
 <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            goList();
-        });
-        function goList(){
-            fetch("/enrollment/all/listing")
-                .then(res => {
-                    if(!res.ok) throw new Error("Failed to fetch grade levels");
-                    return res.json();
-                })
-                    .then(data => {
-                        const tableBody = document.querySelector("#lamesa tbody");
-                        tableBody.innerHTML = "";
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchAllGradeLevels();
+    });
 
-                        data.forEach(enr => {
-                            console.log(enr);
-                            const row = document.createElement("tr");
-                            row.innerHTML = `
+    async function fetchAllGradeLevels() {
+        try {
+            const response = await fetch('/gradelevel/all'); // Adjust if API runs on a different port
+            if (!response.ok) throw new Error("Failed to fetch grade levels");
+
+            const data = await response.json();
+            populateGradeLevelDropdown(data);
+        } catch (error) {
+            console.error("Error fetching grade levels:", error);
+        }
+    }
+
+    function populateGradeLevelDropdown(gradeLevels) {
+        const selectElement = document.getElementById("levelName");
+        selectElement.innerHTML = '<option value="" disabled selected>Choose a Grade Level</option>'; // Reset options
+
+        gradeLevels.forEach(level => {
+            let option = document.createElement("option");
+            option.value = level.levelId; // Adjust if API returns different property names
+            option.textContent = level.levelName;
+            selectElement.appendChild(option);
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        goList();
+    });
+
+    let enrollmentIdLet = null;
+
+    async function proceedToAssessment(enrollmentId) {
+        const gradeLevelId = document.getElementById("levelName").value;
+
+        if (!gradeLevelId) {
+            alert("Please select a grade level.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/enrollment/add/assessment/${enrollmentId}/${gradeLevelId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const result = await response.text();
+
+            if (response.ok) {
+                alert("Enrollment successfully moved to assessment!");
+                location.reload(); // Reload to update the table
+            } else {
+                alert(result); // Show error message
+            }
+        } catch (error) {
+            console.error("Error proceeding to assessment:", error);
+            alert("Transaction failed. Try again.");
+        }
+    }
+
+    function goList() {
+        fetch("/enrollment/all/listing")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch grade levels");
+                return res.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#lamesa tbody");
+                tableBody.innerHTML = "";
+
+                data.forEach(enr => {
+                    console.log(enr);
+                    enrollmentIdLet = enr.enrollmentId;
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
                                 <td>${enr.studentId}</td>
-                                <td>${enr.studentFirstName} ${enr.studentLastName}</td>
+                                <td>${enr.studentFirstName} ${enr.studentMiddleName} ${enr.studentLastName}</td>
                                 <td>${enr.currentGradeLevel}</td>
-                                <td>Ko sya&lt;3</td> <!-- Escape the '<' character -->
+                                <td>${enr.new ? 'New Student' : 'Old Student'}</td>
                                 <td>
                                     <div class="dropdown">
                                         <div class="status-container">
-                                            <div class="status" id="status-registration">Incomplete</div>
+                                            <div class="status" id="status-registration">REGISTERED</div>
                                             <button class="dropdown-status-btn">
                                                 <i class="fas fa-chevron-down"></i> <!-- Icon is the button -->
                                             </button>
                                         </div>
                                         <div class="dropdown-status-content" id="dropdown-listing">
-                                            <a href="#" data-action="listingAddGradeLevel" data-open-modal="gradeLevelModal">Proceed</a>
+                                            <a href="#" id="proceedButton" data-open-modal="gradeLevelModal">Proceed</a>
+
+
                                             <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
                                         </div>
                                     </div>
                                 </td>
                                 `;
 
-                            tableBody.appendChild(row);
-                        });
-                })
-                .catch(error => console.error("Error:", error));
-    }
-    
-    function addListing() {
-            const actionUrl = "/students/add"; // Update with your actual API endpoint
-            const method = "POST";
-
-            // Collect input values
-            const studentData = {
-                transferee: document.getElementById("isTransfereeCheckbox").checked, // Boolean value
-                firstName: document.getElementById("studentFirstName").value,
-                lastName: document.getElementById("studentLastName").value,
-                gender: document.getElementById("gender").value || null, // Ensure null if not selected
-                birthdate: document.getElementById("birthdate").value,
-                address: document.getElementById("address").value,
-                contactNum: document.getElementById("contactNumber").value || null, // Avoid empty strings
-
-                // Emergency Contact
-                contactPersonName: document.getElementById("contactPersonFirstName").value + " " +
-                    document.getElementById("contactPersonLastName").value,
-                contactPersonAddress: document.getElementById("contactPersonAddress").value || null,
-                contactPersonCellphone: document.getElementById("contactPersonContactNum").value || null
-            };
-            
-            console.log('The student is transferee? :'+studentData.isTransferee);
-
-            fetch(actionUrl, {
-                method: method,
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(studentData)
+                    tableBody.appendChild(row);
+                });
             })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(text); });
-                    }
-                    return response.text();
-                })
-                .then(text => {
-                // Handle the plain text response
+            .catch(error => console.error("Error:", error));
+    }
+    document.getElementById("scholar").addEventListener("change", function () {
+        this.checked;
+    });
+
+
+    function addListing() {
+        const actionUrl = "/students/add"; // Update with your actual API endpoint
+        const method = "POST";
+
+        // Collect input values
+        const studentData = {
+            scholar: document.getElementById("scholar").checked,
+            firstName: document.getElementById("studentFirstName").value.trim(),
+            lastName: document.getElementById("studentLastName").value.trim(),
+            middleName: document.getElementById("studentMiddleName").value.trim() || null,
+            gender: document.getElementById("gender").value || null, // Ensure null if not selected
+            birthdate: document.getElementById("birthdate").value,
+            birthPlace: document.getElementById("place-of-birth").value.trim() || null,
+
+            // Address
+            address: `${document.getElementById("street").value.trim()}, ${document.getElementById("barangay").value.trim()}, ${document.getElementById("city").value.trim()}`,
+
+            // Parent's Information
+            fatherName: document.getElementById("fatherName").value.trim(),
+            fatherOccupation: document.getElementById("fatherOccupation").value.trim() || null,
+            motherName: document.getElementById("motherName").value.trim(),
+            motherOccupation: document.getElementById("motherOccupation").value.trim() || null,
+
+            // Guardian's Information
+            guardianName: document.getElementById("guardianName").value.trim() || null,
+            guardianOccupation: document.getElementById("guardianOccupation").value.trim() || null,
+            guardianContactNumber: document.getElementById("guardianContactNumber").value.trim() || null,
+            guardianAddress: document.getElementById("guardianAddress").value.trim() || null
+        };
+
+        console.log("Student Data:", studentData);
+
+        fetch(actionUrl, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(studentData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
+                }
+                return response.text();
+            })
+            .then(text => {
                 alert(text || "Student added successfully!");
                 location.reload();
-                })
-                .catch(error => {
-                    // Handle errors
-                    alert("Error: " + error.message);
-                });
-    
-
+            })
+            .catch(error => {
+                alert("Error: " + error.message);
+            });
     }
+
 </script>
 
 </html>

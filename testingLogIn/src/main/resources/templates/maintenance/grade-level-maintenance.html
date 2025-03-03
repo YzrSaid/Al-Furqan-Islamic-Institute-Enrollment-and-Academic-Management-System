@@ -90,7 +90,7 @@
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year">School Year</a>
             <a href="maintenance/grade-level" class="second-active">Grade Level</a>
-            <a href="/maintenance/subject" >Subject</a>
+            <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
         </div>
@@ -319,7 +319,11 @@
                 .then(response => response.json())
                 .then(data => {
                     const dropdown = document.getElementById("pre-req-grade-level");
-                    dropdown.innerHTML = '<option value="" disabled selected>Choose a pre-requisite</option>';
+                    // Clear existing options and add default option
+                    dropdown.innerHTML = `
+                <option value="" disabled selected>Choose a pre-requisite</option>
+                <option value="NONE">None</option> 
+            `;
 
                     data.forEach(grade => {
                         const option = document.createElement("option");

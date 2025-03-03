@@ -494,21 +494,24 @@ document.addEventListener("DOMContentLoaded", function () {
         let isAllowed = await canActivateSemester(semNumber); // ⏳ Wait for validation result
 
         if (!isAllowed) {
-            console.log("Activation blocked.");
-            return; // 🚀 Stop the function from running
+          console.log("Activation blocked.");
+          return; // 🚀 Stop the function from running
         }
 
         activateSemester();
-       
+
         break;
       case "deactivateSemester":
         deactivateSemester();
         break;
       case "addListing":
         addListing();
-        break  
+        break;
       case "finishSemester":
         finishSemester();
+        break;
+      case "proceedAssessment":
+        proceedToAssessment(enrollmentIdLet);
         break;
       default:
         alert("Unknown action: " + action);

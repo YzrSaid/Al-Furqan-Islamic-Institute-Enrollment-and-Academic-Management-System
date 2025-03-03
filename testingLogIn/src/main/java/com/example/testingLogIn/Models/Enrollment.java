@@ -74,6 +74,7 @@ public class Enrollment {
                             .enrollmentStatus(enrollmentStatus)
                             .studentMiddleName(student.getMiddleName())
                             .remarks(remarks)
+                            .studentMiddleName(student.getMiddleName())
                             .isQualified(isQualified)
                             .isNotDeleted(isNotDeleted)
                             .build();

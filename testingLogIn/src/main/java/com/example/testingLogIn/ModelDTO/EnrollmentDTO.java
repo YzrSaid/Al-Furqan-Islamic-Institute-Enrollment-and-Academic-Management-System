@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EnrollmentDTO {
     private int enrollmentId;
+    private boolean isNew;
     private int studentId;
     private String studentFirstName;
     private String studentLastName;
     private String studentMiddleName;
     private String currentGradeLevel;
     private String schoolYear;
-    private boolean isNew;
     private Semester semester;
     private String gradeLevelToEnroll;
     private String sectionToEnroll;
@@ -32,4 +32,5 @@ public class EnrollmentDTO {
     private boolean isQualified;
     private boolean isComplete;
     private boolean isNotDeleted;
+    private String studentMiddleName;
 }

@@ -45,6 +45,7 @@ public class StudentController {
  
     @PostMapping("/add")
     public ResponseEntity<String> addStudents(@RequestBody StudentDTO students){
+        System.out.println(students);
         try{
             if(studentService.addStudent(students))
                 return new ResponseEntity<>("New Student Added Successfully",HttpStatus.OK);

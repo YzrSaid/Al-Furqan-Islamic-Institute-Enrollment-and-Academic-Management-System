@@ -89,7 +89,7 @@
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year">School Year</a>
-            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
@@ -186,7 +186,7 @@
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
-                    <th>Grade Level</th>
+                    <th>Current Grade Level</th>
                     <th>Type</th>
                     <th>Status</th>
                 </tr>
@@ -196,18 +196,21 @@
                     <td>1</td>
                     <td>Batman</td>
                     <td>25</td>
-                    <td>WMSU</td>
+                    <td>New Student</td>
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
-                                <div class="status" id="status-registration">Registered</div>
+                                <div class="status" id="status-registration">Incomplete</div>
                                 <button class="dropdown-status-btn">
                                     <i class="fas fa-chevron-down"></i> <!-- Icon is the button -->
                                 </button>
                             </div>
                             <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" data-action="proceedListing" data-open-modal="confirmationModal" data-message="Are you sure you want to proceed this registration to assessment?">Proceed</a>
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
+                                <a href="#" data-action="listingAddGradeLevel"
+                                    data-open-modal="gradeLevelModal">Proceed</a>
+                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
+                                    data-message="Are you sure you want to cancel this registration?">Cancel
+                                    Registration</a>
                             </div>
                         </div>
                     </td>
@@ -222,6 +225,28 @@
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
                     <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Modal for listing add grade level -->
+        <div id="gradeLevelModal" class="grade-level-modal modal">
+            <div class="grade-level-modal-content">
+                <h2>Enroll To</h2>
+                <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
+                    <label for="levelName">Grade Level Name:</label>
+                    <select name="levelName" id="levelName">
+                        <option value="" disabled>Choose a Grade Level</option>
+                    </select>
+                    <br><br>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="addListing"
+                            data-message="Are you sure you want to add this grade level?" id="confirmGradeLevel"
+                            data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -247,11 +272,11 @@
                     </div>
 
                     <div class="student-form-group">
-                        <label for="gender" id="gender">Gender:</label>
+                        <label for="gender">Gender:</label>
                         <select id="gender" required>
                             <option value="" disabled selected>Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
                         </select>
 
                         <label for="birthdate">Birthdate:</label>
@@ -272,7 +297,7 @@
                         <input type="text" id="gradeLevelNew" required>
                     </div> -->
 
-                    <br> 
+                    <br>
 
                     <h6>Emergency Contact</h6> <br>
 
@@ -294,7 +319,7 @@
 
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" id="confirmStudent"
-                            data-open-modal="confirmationModal" data-action="addNewStudent"
+                            data-open-modal="confirmationModal" data-action="addListing"
                             data-message="Are you sure you want to add and list this new student?">Confirm</button>
                         <button type="button" class="btn-cancel" id="cancelStudent"
                             data-close-modal="studentInfoModal">Cancel</button>
@@ -362,5 +387,53 @@
     </div>
     <script th:src="@{/js/script.js}"></script>
 </body>
+
+<script>
+    function addListing() {
+            const actionUrl = "/students/add"; // Update with your actual API endpoint
+            const method = "POST";
+
+            // Collect input values
+            const studentData = {
+                transferee: document.getElementById("transferee").checked, // Boolean value
+                firstName: document.getElementById("studentFirstName").value,
+                lastName: document.getElementById("studentLastName").value,
+                gender: document.getElementById("gender").value || null, // Ensure null if not selected
+                birthdate: document.getElementById("birthdate").value,
+                address: document.getElementById("address").value,
+                contactNumber: document.getElementById("contactNumber").value || null, // Avoid empty strings
+
+                // Emergency Contact
+                contactPersonName: document.getElementById("contactPersonFirstName").value + " " +
+                    document.getElementById("contactPersonLastName").value,
+                contactPersonAddress: document.getElementById("contactPersonAddress").value || null,
+                contactPersonCellphone: document.getElementById("contactPersonContactNum").value || null
+            };
+
+            fetch(actionUrl, {
+                method: method,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(studentData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.message || "Student added successfully!");
+                    location.reload();
+                })
+                .catch(error => {
+                    alert("Error: " + error.message);
+                });
+    
+
+    }
+
+</script>
 
 </html>

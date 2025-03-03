@@ -16,7 +16,6 @@
   box-sizing: border-box;
 }
 
-
 body {
   background-color: #f5f5f5;
   font-family: "Montserrat", sans-serif;
@@ -96,7 +95,7 @@ body {
 }
 
 #signup-link a:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .input-group-input {
@@ -160,11 +159,11 @@ body {
   align-items: center;
 }
 #signup-header #school-logo {
-    width: 120px;
-    height: 120px;
+  width: 120px;
+  height: 120px;
 }
 #signup-header h3 {
-    font-size: 25px;
+  font-size: 25px;
 }
 .input-group-half {
   display: flex;
@@ -444,7 +443,7 @@ body {
   position: absolute;
   top: 130%;
   transform: translateX(-80%);
-   background: white;
+  background: white;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   /* z-index: 99999; */
   width: 160px;
@@ -817,7 +816,6 @@ th {
   width: 12%;
 }
 
-
 /* for teacher table (maintenance) */
 .teacher-table th:nth-child(1),
 .teacher-table td:nth-child(1) {
@@ -978,8 +976,11 @@ table td {
   align-items: center;
   justify-content: center;
 }
+#status-registration {
+  background-color: #28a745;
+}
 #status-manage-accounts {
-    padding: 5px 70px;
+  padding: 5px 70px;
 }
 
 #save-grade-btn {
@@ -1214,19 +1215,74 @@ table td {
   overflow-y: scroll;
 }
 
-.student-modal-content,
 .teacher-modal-content,
 .teacher-edit-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 700px;
+  min-width: 800px;
   min-height: 80vh;
-  max-height: 90vh;
   text-align: left;
   position: relative;
   z-index: 1001;
+}
+
+.student-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  min-width: 1050px;
+  min-height: 80vh;
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+.half {
+  width: 65%;
+}
+
+#motherOccupation,
+#fatherOccupation,
+#guardianOccupation {
+  width: 520px;
+}
+
+.eighty {
+  width: 84.5%;
+}
+
+#fatherAddress,
+#motherAddress,
+#guardianAddress {
+  width: 335px;
+}
+
+#madrasaNameLastAttended,
+#madrasaAddress {
+  width: 717px;
+}
+
+#fatherContactNumber,
+#motherContactNumber,
+#guardianContactNumber {
+  width: 360px;
+}
+
+#place-of-birth {
+  width: 850px;
+}
+#motherName,
+#fatherName,
+#guardianName {
+  width: 700px;
+}
+
+.student-form-group #street,
+.student-form-group #barangay,
+.student-form-group #city {
+  width: 300px;
 }
 
 .my-account-edit-modal,
@@ -1434,7 +1490,7 @@ input[type="checkbox"] {
   gap: 20px;
   justify-content: center;
 }
-.student-modal-content h2,
+
 .grade-level-modal-content h2,
 .school-year-modal-content h2,
 .subject-modal-content h2,
@@ -1457,6 +1513,22 @@ input[type="checkbox"] {
   margin-bottom: 30px;
   margin-top: 10px;
 }
+
+.student-modal-content h2 {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
+.student-modal-content h5 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
 .student-modal-content label,
 .grade-level-modal-content label,
 .school-year-modal-content label,
@@ -2145,48 +2217,39 @@ input[type="checkbox"] {
   }
 }
 .first-sem {
-    background-color: #fbfbfb;
+  background-color: #fbfbfb;
 }
 
 .second-sem {
-    background-color: #fbfbfb; 
+  background-color: #fbfbfb;
 }
 
-
 .disabled-row td {
-    background-color: #ececec !important; 
-    color: #6c757d !important; 
-    /* opacity: 0.8; */
+  background-color: #ececec !important;
+  color: #6c757d !important;
+  /* opacity: 0.8; */
 }
 
 td[rowspan] {
-    background-color: white !important;
-    color: black !important; 
-    font-weight: bold;
-    opacity: 1;
+  background-color: white !important;
+  color: black !important;
+  font-weight: bold;
+  opacity: 1;
 }
-
 
 .gray-status {
-    background-color: #f3f3f3 !important; 
-    color: #888 !important; 
+  background-color: #f3f3f3 !important;
+  color: #888 !important;
 }
-
 
 .disabled-row .status {
-    background-color: rgb(255, 255, 255) !important; 
-    color: rgb(78, 77, 77) !important; 
-    opacity: 0.8;
+  background-color: rgb(255, 255, 255) !important;
+  color: rgb(78, 77, 77) !important;
+  opacity: 0.8;
 }
-
 
 .disabled-row .status-container .status.active-status {
-    background-color: rgb(0, 128, 0) !important; 
-    color: white !important;
-    opacity: 1; 
+  background-color: rgb(0, 128, 0) !important;
+  color: white !important;
+  opacity: 1;
 }
-
-
-
-
-

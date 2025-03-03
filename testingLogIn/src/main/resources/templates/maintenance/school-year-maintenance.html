@@ -53,21 +53,22 @@
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing">Listing/Register</a>
+            <a href="/enrollment/assessment">Assessment</a>
+            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled">Enrolled</a>
+        </div>
+
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
             <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
-            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
-                Enrollment
-                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"> </span>
-            </a>
-            <div class="submenu" id="enrollment-submenu">
-                <a href="/transaction/enrollment/listing">Listing/Register</a>
-                <a href="/transaction/enrollment/assessment">Assessment</a>
-                <a href="/transaction/enrollment/payment">Payment</a>
-                <a href="/transaction/enrollment/enrolled">Enrolled</a>
-            </div>
             <a href="/transaction/tuition">Tuition</a>
             <a href="/transaction/academic-resources">Academic Resources</a>
         </div>
@@ -87,8 +88,8 @@
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year" class="second-active">School Year</a>
-            <a href="/maintenance/grade-level">Grade Level</a>
-            <a href="/maintenance/subject">Subject</a>
+            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/subject" >Subject</a>
             <a href="/maintenance/section">Section</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
         </div>
@@ -117,7 +118,7 @@
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="settings/create-user">Create User</a>
+            <a href="/settings/create-user">Create User</a>
         </div>
     </div>
 
@@ -608,57 +609,57 @@
     });
 
     function canActivateSemester(semId) {
-    return new Promise((resolve, reject) => {
-        fetch("/semester/all")
-            .then(response => response.json())
-            .then(semesters => {
-                let semesterArray = Object.values(semesters).flat();
-                let activatingSem = semesterArray.find(s => s.sySemNumber == semId);
+        return new Promise((resolve, reject) => {
+            fetch("/semester/all")
+                .then(response => response.json())
+                .then(semesters => {
+                    let semesterArray = Object.values(semesters).flat();
+                    let activatingSem = semesterArray.find(s => s.sySemNumber == semId);
 
-                if (!activatingSem) {
-                    resolve(false); // 🚫 Semester not found, block activation
-                    return;
-                }
-
-                // ✅ **Allow activating if the semester is already finished (View-Only Mode)**
-                if (activatingSem.finished) {
-                    resolve(true);
-                    return;
-                }
-
-                // ✅ Find the latest active school year
-                let activeSemesters = semesterArray.filter(s => s.active || s.finished);
-                let latestActiveSY = activeSemesters.reduce((latest, sem) => {
-                    return sem.schoolYear.schoolYear > latest ? sem.schoolYear.schoolYear : latest;
-                }, "");
-
-                if (latestActiveSY && latestActiveSY !== activatingSem.schoolYear.schoolYear) {
-                    // ✅ Get all semesters in the latest active school year
-                    let latestSemesters = semesterArray.filter(s => s.schoolYear.schoolYear === latestActiveSY);
-
-                    // 🚀 **Check if both semesters are finished**
-                    let firstSem = latestSemesters.find(s => s.sem.toLowerCase() === "first");
-                    let secondSem = latestSemesters.find(s => s.sem.toLowerCase() === "second");
-
-                    let firstSemFinished = firstSem ? firstSem.finished : true;
-                    let secondSemFinished = secondSem ? secondSem.finished : true;
-
-                    // 🚫 **Block activation if any semester is unfinished**
-                    if (!firstSemFinished || !secondSemFinished) {
-                        alert(`You cannot activate this semester because ${latestActiveSY} still has an unfinished semester. Finish both semesters first!`);
-                        resolve(false);
+                    if (!activatingSem) {
+                        resolve(false); // 🚫 Semester not found, block activation
                         return;
                     }
-                }
 
-                resolve(true); // ✅ Allow activation
-            })
-            .catch(error => {
-                console.error("Error fetching semesters:", error);
-                resolve(false); // Default to blocking activation on error
-            });
-    });
-}
+                    // ✅ **Allow activating if the semester is already finished (View-Only Mode)**
+                    if (activatingSem.finished) {
+                        resolve(true);
+                        return;
+                    }
+
+                    // ✅ Find the latest active school year
+                    let activeSemesters = semesterArray.filter(s => s.active || s.finished);
+                    let latestActiveSY = activeSemesters.reduce((latest, sem) => {
+                        return sem.schoolYear.schoolYear > latest ? sem.schoolYear.schoolYear : latest;
+                    }, "");
+
+                    if (latestActiveSY && latestActiveSY !== activatingSem.schoolYear.schoolYear) {
+                        // ✅ Get all semesters in the latest active school year
+                        let latestSemesters = semesterArray.filter(s => s.schoolYear.schoolYear === latestActiveSY);
+
+                        // 🚀 **Check if both semesters are finished**
+                        let firstSem = latestSemesters.find(s => s.sem.toLowerCase() === "first");
+                        let secondSem = latestSemesters.find(s => s.sem.toLowerCase() === "second");
+
+                        let firstSemFinished = firstSem ? firstSem.finished : true;
+                        let secondSemFinished = secondSem ? secondSem.finished : true;
+
+                        // 🚫 **Block activation if any semester is unfinished**
+                        if (!firstSemFinished || !secondSemFinished) {
+                            alert(`You cannot activate this semester because ${latestActiveSY} still has an unfinished semester. Finish both semesters first!`);
+                            resolve(false);
+                            return;
+                        }
+                    }
+
+                    resolve(true); // ✅ Allow activation
+                })
+                .catch(error => {
+                    console.error("Error fetching semesters:", error);
+                    resolve(false); // Default to blocking activation on error
+                });
+        });
+    }
 
 
 

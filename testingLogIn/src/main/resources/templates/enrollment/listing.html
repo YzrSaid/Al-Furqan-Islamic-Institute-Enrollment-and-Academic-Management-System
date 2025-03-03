@@ -54,21 +54,22 @@
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing" class="second-active">Listing/Register</a>
+            <a href="/enrollment/assessment">Assessment</a>
+            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled">Enrolled</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
             <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
-            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
-                Enrollment
-                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"> </span>
-            </a>
-            <div class="submenu" id="enrollment-submenu">
-                <a href="/transaction/enrollment/listing" class="second-active">Listing/Register</a>
-                <a href="/transaction/enrollment/assessment">Assessment</a>
-                <a href="/transaction/enrollment/payment">Payment</a>
-                <a href="/transaction/enrollment/enrolled">Enrolled</a>
-            </div>
             <a href="/transaction/tuition">Tuition</a>
             <a href="/transaction/academic-resources">Academic Resources</a>
         </div>
@@ -263,15 +264,15 @@
                     <label for="contactNumber">Cellphone/Contact Number:</label>
                     <input type="tel" id="contactNumber" required> <br> <br>
 
-                    <div class="student-form-group">
+                    <!-- <div class="student-form-group">
                         <label for="gradeLevelOld">Prev. Grade Level:</label>
                         <input type="text" id="gradeLevelOld" required>
 
                         <label for="gradeLevelNew">Enrolling Grade Level:</label>
                         <input type="text" id="gradeLevelNew" required>
-                    </div>
+                    </div> -->
 
-                    <br> <br>
+                    <br> 
 
                     <h6>Emergency Contact</h6> <br>
 

@@ -30,12 +30,8 @@ public class StudentServices {
     
     
     public boolean addStudent(StudentDTO student){
-        String sectionName = student.getCurrentSection().substring(student.getCurrentSection().indexOf("-")+1);
-        Section section = sectionServices.getSectionByName(sectionName);
         if(doesStudentNameExist(student))
             return false;
-        else if(!student.getCurrentSection().equalsIgnoreCase("none") && section == null)
-            throw new NullPointerException();
         else{
             Student newStudent = Student.builder()
                                     .firstName(student.getFirstName())
@@ -44,7 +40,7 @@ public class StudentServices {
                                     .birthdate(student.getBirthdate())
                                     .cellphoneNum(student.getContactNum())
                                     .address(student.getAddress())
-                                    .currentGradeSection(section)
+                                    .currentGradeSection(null)
                                     .contactPerson(student.getContactPersonName())
                                     .contactPersonAddress(student.getContactPersonName())
                                     .contactPersonNumber(student.getContactPersonCellphone())

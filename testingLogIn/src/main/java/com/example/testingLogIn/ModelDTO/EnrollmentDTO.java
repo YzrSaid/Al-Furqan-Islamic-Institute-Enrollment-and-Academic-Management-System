@@ -21,7 +21,6 @@ public class EnrollmentDTO {
     private int studentId;
     private String studentFirstName;
     private String studentLastName;
-    private String studentMiddleName;
     private String currentGradeLevel;
     private String schoolYear;
     private Semester semester;

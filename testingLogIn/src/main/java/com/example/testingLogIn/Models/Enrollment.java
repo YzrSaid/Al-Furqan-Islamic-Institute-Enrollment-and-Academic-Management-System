@@ -76,6 +76,7 @@ public class Enrollment {
                             .remarks(remarks)
                             .studentMiddleName(student.getMiddleName())
                             .isQualified(isQualified)
+                            .isComplete(student.isScholar() || pcc != null ? pcc.isComplete() : false)
                             .isNotDeleted(isNotDeleted)
                             .build();
     }

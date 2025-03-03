@@ -53,6 +53,7 @@ public class ScheduleController {
     
     @PostMapping("/add")
     public ResponseEntity<Map<String,List<ScheduleDTO>>> addSchedules(@RequestBody List<ScheduleDTO> schedules){
+        System.out.println("I'm going to add");
         try{
             Map<String,List<ScheduleDTO>> schedsRejected = scheduleService.addNewSchedules(schedules);
             if(schedsRejected.isEmpty())
@@ -60,6 +61,7 @@ public class ScheduleController {
             else
                 return new ResponseEntity<>(schedsRejected,HttpStatus.CONFLICT);
         }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

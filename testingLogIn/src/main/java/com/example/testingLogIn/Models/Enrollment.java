@@ -70,6 +70,7 @@ public class Enrollment {
                             .sectionToEnroll(sectionToEnroll != null ? gradeLevel+" - "+sectionToEnroll.getSectionName() : null)
                             .enrollmentStatus(enrollmentStatus)
                             .remarks(remarks)
+                            .studentMiddleName(student.getMiddleName())
                             .isQualified(isQualified)
                             .isNotDeleted(isNotDeleted)
                             .build();

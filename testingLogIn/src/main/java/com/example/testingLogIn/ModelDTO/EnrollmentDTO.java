@@ -31,4 +31,5 @@ public class EnrollmentDTO {
     private boolean isQualified;
     private boolean isComplete;
     private boolean isNotDeleted;
+    private String studentMiddleName;
 }

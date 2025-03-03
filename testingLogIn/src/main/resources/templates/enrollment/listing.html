@@ -239,9 +239,8 @@
                     </select>
                     <br><br>
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addListing"
-                            data-message="Are you sure you want to add this grade level?" id="confirmGradeLevel"
-                            data-open-modal="confirmationModal">
+                        <button type="button" class="btn-confirm" data-action="proceedAssessment"
+                            data-message="Are you sure you want to proceed this registration from Listing to Assessment?" id="confirmGradeLevel" data-open-modal="confirmationModal">
                             Confirm
                         </button>
                         <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
@@ -527,8 +526,68 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        fetchAllGradeLevels();
+    });
+
+    async function fetchAllGradeLevels() {
+        try {
+            const response = await fetch('/gradelevel/all'); // Adjust if API runs on a different port
+            if (!response.ok) throw new Error("Failed to fetch grade levels");
+
+            const data = await response.json();
+            populateGradeLevelDropdown(data);
+        } catch (error) {
+            console.error("Error fetching grade levels:", error);
+        }
+    }
+
+    function populateGradeLevelDropdown(gradeLevels) {
+        const selectElement = document.getElementById("levelName");
+        selectElement.innerHTML = '<option value="" disabled selected>Choose a Grade Level</option>'; // Reset options
+
+        gradeLevels.forEach(level => {
+            let option = document.createElement("option");
+            option.value = level.levelId; // Adjust if API returns different property names
+            option.textContent = level.levelName;
+            selectElement.appendChild(option);
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
         goList();
     });
+
+    let enrollmentIdLet = null;
+
+    async function proceedToAssessment(enrollmentId) {
+        const gradeLevelId = document.getElementById("levelName").value;
+
+        if (!gradeLevelId) {
+            alert("Please select a grade level.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/enrollment/add/assessment/${enrollmentId}/${gradeLevelId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const result = await response.text();
+
+            if (response.ok) {
+                alert("Enrollment successfully moved to assessment!");
+                location.reload(); // Reload to update the table
+            } else {
+                alert(result); // Show error message
+            }
+        } catch (error) {
+            console.error("Error proceeding to assessment:", error);
+            alert("Transaction failed. Try again.");
+        }
+    }
+
     function goList() {
         fetch("/enrollment/all/listing")
             .then(res => {
@@ -541,6 +600,7 @@
 
                 data.forEach(enr => {
                     console.log(enr);
+                    enrollmentIdLet = enr.enrollmentId;
                     const row = document.createElement("tr");
                     row.innerHTML = `
                                 <td>${enr.studentId}</td>
@@ -556,7 +616,9 @@
                                             </button>
                                         </div>
                                         <div class="dropdown-status-content" id="dropdown-listing">
-                                            <a href="#" data-action="listingAddGradeLevel" data-open-modal="gradeLevelModal">Proceed</a>
+                                            <a href="#" id="proceedButton" data-open-modal="gradeLevelModal">Proceed</a>
+
+
                                             <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
                                         </div>
                                     </div>

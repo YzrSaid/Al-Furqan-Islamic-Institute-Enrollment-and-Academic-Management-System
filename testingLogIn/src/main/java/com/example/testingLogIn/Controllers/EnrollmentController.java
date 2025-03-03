@@ -52,6 +52,8 @@ public class EnrollmentController {
     
     @PutMapping("/add/assessment/{enrollmentId}/{gradeLevelId}")
     public ResponseEntity<String> proceedToAssessment(@PathVariable int enrollmentId, @PathVariable int gradeLevelId){
+        System.out.println(enrollmentId);
+        System.out.println(gradeLevelId);
         try{
             int result = enrollmentService.addToAssessment(enrollmentId, gradeLevelId);
 

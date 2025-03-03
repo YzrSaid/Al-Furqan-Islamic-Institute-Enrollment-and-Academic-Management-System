@@ -59,6 +59,7 @@ public class Student {
     
     public StudentDTO DTOmapper(){
         return StudentDTO.builder()
+                        .studentId(studentId)
                         .firstName(firstName)
                         .lastName(lastName)
                         .middleName(middleName)

@@ -84,6 +84,7 @@ public class EnrollmentServices {
                 else
                     enrollmentRecord.setRemarks("Pagbayad na para maenroll naka");
             }
+            enrollmentRecord.setComplete(false);
             enrollmentRecord.setQualified(isQualified);
             enrollmentRepo.save(enrollmentRecord);
             

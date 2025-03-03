@@ -1,7 +1,6 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.ModelDTO.StudentDTO;
-import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.StudentRepo;
@@ -53,9 +52,12 @@ public class StudentServices {
                                     .isNotDeleted(true)
                                     .isScholar(student.isScholar())
                                     .isTransferee(student.isTransferee())
+                                    .madrasaName(student.getMadrasaName())
+                                    .lastGradeLevelCompleted(student.getLastGradeLevelCompleted())
+                                    .lastMadrasaYearCompleted(student.getLastMadrasaYearCompleted())
+                                    .madrasaAddress(student.getMadrasaAddress())
                                     .build();
             studentRepo.save(newStudent);
-            System.out.println("Added successfully");
             enrollmentService.addStudentToListing(student);
             return true;
         }
@@ -100,17 +102,26 @@ public class StudentServices {
         else{
             toUpdate.setFirstName(stud.getFirstName());
             toUpdate.setLastName(stud.getLastName());
+            toUpdate.setMiddleName(stud.getMiddleName());
             toUpdate.setCellphoneNum(stud.getCellphoneNum());
             toUpdate.setGender(stud.getGender());
             toUpdate.setBirthdate(stud.getBirthdate());
             toUpdate.setCurrentGradeSection(section);
             
+            toUpdate.setMotherName(stud.getMotherName());
+            toUpdate.setMotherOccupation(stud.getMotherOccupation());
+            toUpdate.setFatherName(stud.getFatherName());
+            toUpdate.setMotherOccupation(stud.getMotherOccupation());
             toUpdate.setGuardianName(stud.getGuardianName());
             toUpdate.setGuardianAddress(stud.getGuardianAddress());
             toUpdate.setGuardianContactNum(stud.getGuardianContactNum());
             
             toUpdate.setScholar(stud.isScholar());
             toUpdate.setTransferee(stud.isTransferee());
+            toUpdate.setMadrasaName(stud.getMadrasaName());
+            toUpdate.setMadrasaAddress(stud.getMadrasaAddress());
+            toUpdate.setLastGradeLevelCompleted(stud.getLastGradeLevelCompleted());
+            toUpdate.setLastMadrasaYearCompleted(stud.getLastGradeLevelCompleted());
             
             studentRepo.save(toUpdate);
             return true;

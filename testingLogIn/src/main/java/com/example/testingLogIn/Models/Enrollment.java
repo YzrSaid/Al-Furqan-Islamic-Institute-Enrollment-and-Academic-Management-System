@@ -51,6 +51,7 @@ public class Enrollment {
     private EnrollmentStatus enrollmentStatus;
     
     private boolean isQualified;
+    private boolean isComplete;
     private boolean isNotDeleted;
     
     public EnrollmentDTO DTOmapper(){
@@ -61,6 +62,7 @@ public class Enrollment {
                             .studentId(student.getStudentId())
                             .studentFirstName(student.getFirstName())
                             .studentLastName(student.getLastName())
+                            .isNew(student.isNew())
                             .currentGradeLevel(gradeLevel)
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())

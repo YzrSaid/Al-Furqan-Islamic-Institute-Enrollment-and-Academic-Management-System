@@ -45,7 +45,6 @@ public class StudentController {
  
     @PostMapping("/add")
     public ResponseEntity<String> addStudents(@RequestBody StudentDTO students){
-        System.out.println(students.isTransferee());
         try{
             if(studentService.addStudent(students)){
                 System.out.println("Will return success");

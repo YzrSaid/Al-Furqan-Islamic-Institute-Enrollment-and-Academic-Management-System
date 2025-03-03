@@ -27,6 +27,10 @@ public class PaymentRecords {
     @JoinColumn(name = "requiredPayment")
     private RequiredPayments requiredPayment;
     
+    @ManyToOne
+    @JoinColumn(name = "semester")
+    private SchoolYearSemester SYSem;
+    
     private double amount;
     private final LocalDate datePaid = LocalDate.now();
 }

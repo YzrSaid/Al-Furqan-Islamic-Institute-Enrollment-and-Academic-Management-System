@@ -35,7 +35,12 @@ public class StudentDTO {
     private String guardianContactNum;
     
     private boolean isNew;
-    private boolean isTransferee;
     private boolean isScholar;
     private boolean isNotDeleted;
+    
+    private boolean isTransferee;
+    private String madrasaName;
+    private String lastGradeLevelCompleted;
+    private String lastMadrasaYearCompleted;
+    private String madrasaAddress;
 }

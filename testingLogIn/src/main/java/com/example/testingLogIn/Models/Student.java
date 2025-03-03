@@ -48,9 +48,14 @@ public class Student {
     private String guardianContactNum;
     
     private boolean isNew;
-    private boolean isTransferee;
     private boolean isScholar;
     private boolean isNotDeleted;
+    
+    private boolean isTransferee;
+    private String madrasaName;
+    private String lastGradeLevelCompleted;
+    private String lastMadrasaYearCompleted;
+    private String madrasaAddress;
     
     public StudentDTO DTOmapper(){
         return StudentDTO.builder()
@@ -71,9 +76,14 @@ public class Student {
                         .guardianAddress(guardianAddress)
                         .guardianContactNum(guardianContactNum)
                         .isNew(isNew)
-                        .isTransferee(isTransferee)
                         .isNotDeleted(isNotDeleted)
                         .isScholar(isScholar)
+                
+                        .isTransferee(isTransferee)
+                        .madrasaName(madrasaName)
+                        .lastGradeLevelCompleted(lastGradeLevelCompleted)
+                        .lastMadrasaYearCompleted(lastMadrasaYearCompleted)
+                        .madrasaAddress(madrasaAddress)
                         .build();
     }
 }

@@ -27,39 +27,49 @@ public class Student {
     
     private String firstName;
     private String lastName;
+    private String middleName;
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private LocalDate birthdate;
     private String address;
     private String cellphoneNum;
+    private String birthPlace;
+    
     @OneToOne
     @JoinColumn(name = "gradeAndSection", nullable = true)
     private Section currentGradeSection;
     
-    private String contactPerson;
-    private String contactPersonNumber;
-    private String contactPersonAddress;
+    private String motherName;
+    private String motherOccupation;
+    private String fatherName;
+    private String fatherOccupation;
+    private String guardianName;
+    private String guardianAddress;
+    private String guardianContactNum;
     
-    @JsonProperty("isNew")
     private boolean isNew;
-    @JsonProperty("isTransferee")
     private boolean isTransferee;
-    @JsonProperty("isScholar")
     private boolean isScholar;
-    @JsonProperty("isNotDeleted")
     private boolean isNotDeleted;
     
     public StudentDTO DTOmapper(){
         return StudentDTO.builder()
                         .firstName(firstName)
                         .lastName(lastName)
+                        .middleName(middleName)
                         .gender(gender)
                         .birthdate(birthdate)
                         .address(address)
-                        .currentSection(currentGradeSection.getLevel().getLevelName()+" - "+currentGradeSection.getSectionName())
-                        .contactPersonName(contactPerson)
-                        .contactPersonAddress(contactPersonAddress)
-                        .contactPersonCellphone(contactPersonNumber)
+                        .currentGradeSection(currentGradeSection.getLevel().getLevelName()
+                                            +" - "+currentGradeSection.getSectionName())
+                
+                        .motherName(motherName)
+                        .motherOccupation(motherOccupation)
+                        .fatherName(fatherName)
+                        .fatherOccupation(fatherOccupation)
+                        .guardianName(guardianName)
+                        .guardianAddress(guardianAddress)
+                        .guardianContactNum(guardianContactNum)
                         .isNew(isNew)
                         .isTransferee(isTransferee)
                         .isNotDeleted(isNotDeleted)

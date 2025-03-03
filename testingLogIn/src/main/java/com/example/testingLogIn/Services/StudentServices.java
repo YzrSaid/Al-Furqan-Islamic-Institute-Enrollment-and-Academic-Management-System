@@ -36,14 +36,19 @@ public class StudentServices {
             Student newStudent = Student.builder()
                                     .firstName(student.getFirstName())
                                     .lastName(student.getLastName())
+                                    .middleName(student.getMiddleName())
                                     .gender(student.getGender())
                                     .birthdate(student.getBirthdate())
-                                    .cellphoneNum(student.getContactNum())
+                                    .cellphoneNum(student.getCellphoneNum())
                                     .address(student.getAddress())
                                     .currentGradeSection(null)
-                                    .contactPerson(student.getContactPersonName())
-                                    .contactPersonAddress(student.getContactPersonName())
-                                    .contactPersonNumber(student.getContactPersonCellphone())
+                                    .motherName(student.getMotherName())
+                                    .motherOccupation(student.getMotherOccupation())
+                                    .fatherName(student.getFatherName())
+                                    .fatherOccupation(student.getFatherOccupation())
+                                    .guardianName(student.getGuardianName())
+                                    .guardianAddress(student.getGuardianAddress())
+                                    .guardianContactNum(student.getGuardianContactNum())
                                     .isNew(true)
                                     .isNotDeleted(true)
                                     .isScholar(student.isScholar())
@@ -85,7 +90,7 @@ public class StudentServices {
     }
     
     public boolean updateStudent(StudentDTO stud){
-        String sectionName = stud.getCurrentSection().substring(stud.getCurrentSection().indexOf("-")+1);
+        String sectionName = stud.getCurrentGradeSection().substring(stud.getCurrentGradeSection().indexOf("-")+1);
         Section section = sectionServices.getSectionByName(sectionName);
         Student toUpdate = getStudent(stud.getStudentId());
         if(toUpdate == null)
@@ -95,14 +100,14 @@ public class StudentServices {
         else{
             toUpdate.setFirstName(stud.getFirstName());
             toUpdate.setLastName(stud.getLastName());
-            toUpdate.setCellphoneNum(stud.getContactNum());
+            toUpdate.setCellphoneNum(stud.getCellphoneNum());
             toUpdate.setGender(stud.getGender());
             toUpdate.setBirthdate(stud.getBirthdate());
             toUpdate.setCurrentGradeSection(section);
             
-            toUpdate.setContactPerson(stud.getContactPersonName());
-            toUpdate.setContactPersonAddress(stud.getContactPersonAddress());
-            toUpdate.setContactPersonNumber(stud.getContactPersonCellphone());
+            toUpdate.setGuardianName(stud.getGuardianName());
+            toUpdate.setGuardianAddress(stud.getGuardianAddress());
+            toUpdate.setGuardianContactNum(stud.getGuardianContactNum());
             
             toUpdate.setScholar(stud.isScholar());
             toUpdate.setTransferee(stud.isTransferee());

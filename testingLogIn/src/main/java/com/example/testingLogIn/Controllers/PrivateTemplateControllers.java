@@ -18,30 +18,33 @@ public class PrivateTemplateControllers {
         return "settings/create-user";
     }
 
-    // these are for transaction pages
+    // these are for enrollment pages
 
-    @GetMapping("/transaction/enrollment/listing")
+    @GetMapping("enrollment/listing")
     public String getListing(){
-        return "/transaction/enrollment/listing";
+        return "/enrollment/listing";
     }
 
-    @GetMapping("/transaction/enrollment/assessment")
+    @GetMapping("/enrollment/assessment")
     public String getAssessment(){
-        return "/transaction/enrollment/assessment";
+        return "/enrollment/assessment";
     }
 
     
-    @GetMapping("/transaction/enrollment/payment")
+    @GetMapping("/enrollment/payment")
     public String getPayment(){
-        return "/transaction/enrollment/payment";
+        return "/enrollment/payment";
     }
 
     
-    @GetMapping("/transaction/enrollment/enrolled")
+    @GetMapping("/enrollment/enrolled")
     public String getEnrolled(){
-        return "/transaction/enrollment/enrolled";
+        return "/enrollment/enrolled";
     }
 
+
+    // these are for transaction pages
+   
     @GetMapping("/transaction/tuition")
     public String getTuition(){
         return "/transaction/tuition";

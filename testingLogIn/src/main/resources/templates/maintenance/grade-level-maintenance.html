@@ -54,21 +54,22 @@
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing">Listing/Register</a>
+            <a href="/enrollment/assessment">Assessment</a>
+            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled">Enrolled</a>
+        </div>
+
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
             <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
-            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
-                Enrollment
-                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"> </span>
-            </a>
-            <div class="submenu" id="enrollment-submenu">
-                <a href="/transaction/enrollment/listing">Listing/Register</a>
-                <a href="/transaction/enrollment/assessment">Assessment</a>
-                <a href="/transaction/enrollment/payment">Payment</a>
-                <a href="/transaction/enrollment/enrolled">Enrolled</a>
-            </div>
             <a href="/transaction/tuition">Tuition</a>
             <a href="/transaction/academic-resources">Academic Resources</a>
         </div>
@@ -89,9 +90,9 @@
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year">School Year</a>
             <a href="maintenance/grade-level" class="second-active">Grade Level</a>
-            <a href="/maintenance/subject">Subject</a>
+            <a href="/maintenance/subject" >Subject</a>
             <a href="/maintenance/section">Section</a>
-            <a href="/maintenance/teacher">Teacher</a>
+            <!-- <a href="/maintenance/teacher">Teacher</a> -->
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
@@ -118,7 +119,7 @@
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="settings/create-user">Create User</a>
+            <a href="/settings/create-user">Create User</a>
         </div>
     </div>
     <!-- Topbar with Hamburger & User Icon -->
@@ -348,16 +349,16 @@
                     noneOption.value = "NONE";
                     noneOption.textContent = "None";
                     dropdown.appendChild(noneOption);
-                    console.log(selectedPreReqId , ' is the pre requisite id');
+                    console.log(selectedPreReqId, ' is the pre requisite id');
                     console.log(selectedPreReqId !== null);
-                    if(selectedPreReqId !== null){
+                    if (selectedPreReqId !== null) {
                         const selectedPreReq = document.createElement("option");
                         selectedPreReq.value = selectedPreReqId.levelId;
                         selectedPreReq.textContent = selectedPreReqId.levelName;
                         selectedPreReq.selected = true;
                         dropdown.appendChild(selectedPreReq);
                     }
-                        
+
 
                     // Filter out the current grade level being edited
                     const filteredGrades = data.filter(grade => grade.levelId !== currentGradeLevelId);
@@ -368,10 +369,10 @@
                         option.value = grade.levelId;
                         option.textContent = grade.levelName;
 
-//                        // 🔹 Pre-select the existing prerequisite if it matches
-//                        if (selectedPreReqId && grade.levelId === selectedPreReqId) {
-//                            option.selected = true;
-//                        }
+                        //                        // 🔹 Pre-select the existing prerequisite if it matches
+                        //                        if (selectedPreReqId && grade.levelId === selectedPreReqId) {
+                        //                            option.selected = true;
+                        //                        }
 
                         dropdown.appendChild(option);
                     });
@@ -488,7 +489,7 @@
             const form = document.getElementById("gradeLevelEditForm");
             const gradeId = form.dataset.id; // Get stored ID\
             const prereq = document.getElementById("pre-req-grade-level-edit").value;
-            
+
             const gradeLevelData = {
                 levelId: gradeId,
                 levelName: document.getElementById("levelNameEdit").value,

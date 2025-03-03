@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -54,21 +53,22 @@
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+            <img th:src="@{/images/icons/enrollemnt.png}" alt="Enrollment Icon"> Enrollment
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing">Listing/Register</a>
+            <a href="/enrollment/assessment" class="second-active">Assessment</a>
+            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled">Enrolled</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
             <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
-            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
-                Enrollment
-                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"> </span>
-            </a>
-            <div class="submenu" id="enrollment-submenu">
-                <a href="/transaction/enrollment/listing" class="second-active">Listing/Register</a>
-                <a href="/transaction/enrollment/assessment">Assessment</a>
-                <a href="/transaction/enrollment/payment">Payment</a>
-                <a href="/transaction/enrollment/enrolled">Enrolled</a>
-            </div>
             <a href="/transaction/tuition">Tuition</a>
             <a href="/transaction/academic-resources">Academic Resources</a>
         </div>
@@ -105,7 +105,7 @@
             <a href="/reports/academic-resources">Academic Resources Reports</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+            <img th:src="@{images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
@@ -144,21 +144,14 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>Listing/Register</h4>
+            <h4>Assessment</h4>
             <p>Main</p>
             <p>/</p>
             <p>Transaction</p>
             <p>/</p>
             <p>Enrollment</p>
             <p>/</p>
-            <p>Listing/Register</p>
-        </div>
-
-        <!-- Enrollment Buttons -->
-        <div class="enrollment-buttons">
-            <button class="new-student" data-open-modal="studentInfoModal">NEW STUDENT</button>
-            <button id="old-student" data-open-modal="oldStudentModal">OLD STUDENT</button>
-            <button id="transferee" data-open-modal="studentInfoModal">TRANSFEREE</button>
+            <p>Assessment</p>
         </div>
 
         <div class="search-div">
@@ -185,27 +178,34 @@
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
-                    <th>Grade Level</th>
+                    <th>Current Grade Level & Section</th>
                     <th>Type</th>
+                    <th>Eligibility</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>1</td>
-                    <td>Batman</td>
-                    <td>25</td>
-                    <td>WMSU</td>
+                    <td>Martin Francisco</td>
+                    <td>Grade 1 - Baliwasan</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status" id="student-type">New</div>
+                        </div>
+                    </td>
+                    <td id="eligibility">Qualified</td>
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
-                                <div class="status" id="status-registration">Registered</div>
+                                <div class="status" id="status-assessment">Complete</div>
                                 <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i> <!-- Icon is the button -->
+                                    <i class="fas fa-chevron-down"></i>
                                 </button>
                             </div>
                             <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" data-action="proceedListing" data-open-modal="confirmationModal" data-message="Are you sure you want to proceed this registration to assessment?">Proceed</a>
+                                <a href="#" class="action" data-open-modal="viewGradesModal">View Grades</a>
+                                <a href="#" data-open-modal="addGradeLevelAssessmentModal">Proceed</a>
                                 <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
                             </div>
                         </div>
@@ -213,149 +213,108 @@
                 </tr>
             </tbody>
         </table>
-        <!-- Modal for confirmation -->
+        <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
-                <p id="modalText"></p>
+                <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
                 </div>
             </div>
         </div>
 
-        <!-- Modal for new and transferee student enrollment -->
-        <div id="studentInfoModal" class="student-modal modal">
-            <div class="student-modal-content">
-                <h2>Student Information</h2>
-                <form id="studentForm">
-                    <div class="header">
-                        <h6>Personal Information</h6>
-                        <div class="checkbox">
-                            <label for="transferee">Transferee:</label>
-                            <input type="checkbox" id="transferee" value="Transferee">
-                        </div>
-                    </div>
-                    <br>
-                    <div class="student-form-group">
-                        <label for="studentFirstName">First Name:</label>
-                        <input type="text" id="studentFirstName" required>
 
-                        <label for="studentLastName">Last Name:</label>
-                        <input type="text" id="studentLastName" required>
-                    </div>
+        <!-- Modal for adding a grade level (assessment) -->
+        <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
+            <div class="add-grade-level-assessment-modal-content">
+                <h2>Promote To</h2>
 
-                    <div class="student-form-group">
-                        <label for="gender" id="gender">Gender:</label>
-                        <select id="gender" required>
-                            <option value="" disabled selected>Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
+                <label for="grade-level">Grade Level:</label>
+                <input type="text" id="grade-level">
 
-                        <label for="birthdate">Birthdate:</label>
-                        <input type="date" id="birthdate" required>
-                    </div> <br>
+                <label for="section">Section:</label>
+                <select name="section" id="section">
+                    <option value="" disabled>Choose</option>
+                </select>
 
-                    <label for="address">Address:</label>
-                    <input type="text" id="address" required> <br> <br>
-
-                    <label for="contactNumber">Cellphone/Contact Number:</label>
-                    <input type="tel" id="contactNumber" required> <br> <br>
-
-                    <div class="student-form-group">
-                        <label for="gradeLevelOld">Prev. Grade Level:</label>
-                        <input type="text" id="gradeLevelOld" required>
-
-                        <label for="gradeLevelNew">Enrolling Grade Level:</label>
-                        <input type="text" id="gradeLevelNew" required>
-                    </div>
-
-                    <br> <br>
-
-                    <h6>Emergency Contact</h6> <br>
-
-                    <div class="student-form-group">
-                        <label for="contactPersonFirstName">First Name:</label>
-                        <input type="text" id="contactPersonFirstName" required>
-
-                        <label for="contactPersonLastName">Last Name:</label>
-                        <input type="text" id="contactPersonLastName" required>
-                    </div> <br>
-
-
-                    <label for="contactAddress">Address</label>
-                    <input type="text" id="contactPersonAddress" required> <br> <br>
-
-                    <label for="contactPersonLastName">Contact Number:</label>
-                    <input type="tel" id="contactPersonContactNum" required>
-
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmStudent"
-                            data-open-modal="confirmationModal" data-action="addNewStudent"
-                            data-message="Are you sure you want to add and list this new student?">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelStudent"
-                            data-close-modal="studentInfoModal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-
-        <!-- Modal for old student enrollment -->
-        <div id="oldStudentModal" class="old-student-modal modal">
-            <div class="old-student-modal-content">
-                <div>
-                    <h2>Old Student List</h2>
-                    <div class="search-div">
-                        <!-- Searchbox btn -->
-                        <div class="search">
-                            <div class="search-container">
-                                <input type="text" placeholder="Search..." class="search-input" />
-                                <button class="search-btn">Search</button>
-                            </div>
-                        </div>
-
-                        <div class="table-container">
-                            <table>
-                                <!-- Table -->
-                                <table class="old-student-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Student ID</th>
-                                            <th>Student Name</th>
-                                            <th>Grade Level</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>001</td>
-                                            <td>Batman</td>
-                                            <td>Grade 1 - Lamok</td>
-                                            <td>
-                                                <div class="action-container">
-                                                    <div class="action">
-                                                        <img data-open-modal="confirmationModal"
-                                                            data-id="${student.student_Id}"
-                                                            data-message="Are you sure you want to register this old student?"
-                                                            src="/images/icons/add-button.png" alt="add-button-icon">
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </table>
-                        </div>
-                    </div>
-                </div>
                 <div class="modal-buttons">
-                    <button type="button" class="btn-cancel" id="cancelStudent"
-                        data-close-modal="oldStudentModal">Close</button>
+                    <button type="button" class="btn-confirm" data-action="addGradeLevelAssessmentModal"
+                        data-message="Are you sure you want to proceed with payment?" id=""
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="addGradeLevelAssessmentModal">Cancel</button>
                 </div>
-                </form>
+            </div>
+        </div>
+
+        <!-- Modal for viewing grades -->
+        <div id="viewGradesModal" class="view-grades-modal modal">
+            <div class="view-grades-modal-content">
+                <h2>Student Grades</h2>
+
+                <div class="half-width" id="view-grade-studId">
+                    <label for="student-id">Student ID:</label>
+                    <h6 id="student-id">0001</h6>
+                </div>
+                <div class="half-width" id="view-grade-studName">
+                    <label for="student-name">Student Name:</label>
+                    <h6 id="student-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- Grades Table -->
+                <table class="view-grades-table">
+                    <thead>
+                        <tr>
+                            <th>Subject ID</th>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>001</td>
+                            <td>English</td>
+                            <td>78</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status" id="grade-remarks">Pass</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr id="average-row">
+                            <td colspan="2">Average</td>
+                            <td>90</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status" id="average-remarks">Pass</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- <div class="half-width" id="view-grade-average">
+                    <label for="grade-average">Final Average:</label>
+                    <input type="text" id="average-input" readonly value="90">
+                </div>
+                
+                <div class="half-width" id="view-grade-remarks">
+                    <label for="grade-average">Remarks:</label>
+                    <div class="status-container">
+                        <div class="status" id="grade-remarks">Pass</div>
+                    </div>  
+                </div> -->
+
+                <!-- Close button -->
+                <div class="close-button" id="view-grades-close-btn">
+                    <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
+                        id="close-button">Close</button>
+                </div>
             </div>
         </div>
     </div>

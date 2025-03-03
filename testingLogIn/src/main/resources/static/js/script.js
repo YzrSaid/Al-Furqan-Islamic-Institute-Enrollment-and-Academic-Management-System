@@ -504,6 +504,9 @@ document.addEventListener("DOMContentLoaded", function () {
       case "deactivateSemester":
         deactivateSemester();
         break;
+      case "addListing":
+        addListing();
+        break  
       case "finishSemester":
         finishSemester();
         break;

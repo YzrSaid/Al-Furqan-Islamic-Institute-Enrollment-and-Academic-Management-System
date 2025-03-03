@@ -33,7 +33,34 @@
                 }
             }
         });
+        getAssessments();
     });
+    
+    function getAssessments(){
+                    fetch("/enrollment/all/assessment")
+                .then(res => {
+                    if(!res.ok) throw new Error("Failed to fetch grade levels");
+                    return res.json();
+                })
+                    .then(data => {
+                        const tableBody = document.querySelector("#lamesa tbody");
+                        tableBody.innerHTML = "";
+
+                        data.forEach(enr => {
+                            console.log(enr);
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${enr.studentId}</td>
+                                <td>${enr.studentFirstName} ${enr.studentLastName}</td>
+                                <td>${enr.currentGradeLevel}</td>
+                                <td>${enr.gradeLevelToEnroll}</td>
+                                <td>${enr.qualified? 'Qualified' : 'Not Qualified'}</td> <!-- Escape the '<' character -->`;
+
+                            tableBody.appendChild(row);
+                        });
+                })
+                .catch(error => console.error("Error:", error));
+    }
 </script>
 
 <body>
@@ -173,15 +200,15 @@
         </div>
 
         <!-- Table -->
-        <table class="listing-table">
+        <table id="lamesa" class="listing-table">
             <thead>
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
-                    <th>Current Grade Level & Section</th>
-                    <th>Type</th>
-                    <th>Eligibility</th>
+                    <th>Current Grade Level</th>
+                    <th>Enrolling To</th>
                     <th>Status</th>
+                    <th>Eligibility</th>
                 </tr>
             </thead>
             <tbody>

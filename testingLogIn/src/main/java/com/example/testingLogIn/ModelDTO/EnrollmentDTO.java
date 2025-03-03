@@ -18,12 +18,14 @@ import lombok.NoArgsConstructor;
 public class EnrollmentDTO {
     
     private int enrollmentId;
+    private int studentId;
     private String studentFirstName;
     private String studentLastName;
+    private String currentGradeLevel;
     private String schoolYear;
     private Semester semester;
     private String gradeLevelToEnroll;
-    private String sectionName;
+    private String sectionToEnroll;
     private String remarks;
     private EnrollmentStatus enrollmentStatus;
     private boolean isQualified;

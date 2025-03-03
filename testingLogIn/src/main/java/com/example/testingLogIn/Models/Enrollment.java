@@ -54,14 +54,18 @@ public class Enrollment {
     private boolean isNotDeleted;
     
     public EnrollmentDTO DTOmapper(){
+        String gradeLevel = student.getCurrentGradeSection()== null ? "None" : 
+                                    student.getCurrentGradeSection().getLevel().getLevelName();
         return EnrollmentDTO.builder()
                             .enrollmentId(enrollmentId)
+                            .studentId(student.getStudentId())
                             .studentFirstName(student.getFirstName())
                             .studentLastName(student.getLastName())
+                            .currentGradeLevel(gradeLevel)
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
                             .gradeLevelToEnroll(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)
-                            .sectionName(sectionToEnroll != null ? sectionToEnroll.getSectionName() : null)
+                            .sectionToEnroll(sectionToEnroll != null ? gradeLevel+" - "+sectionToEnroll.getSectionName() : null)
                             .enrollmentStatus(enrollmentStatus)
                             .remarks(remarks)
                             .isQualified(isQualified)

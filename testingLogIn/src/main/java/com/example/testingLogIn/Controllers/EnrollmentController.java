@@ -45,6 +45,7 @@ public class EnrollmentController {
         try{
             return new ResponseEntity<>(enrollmentService.getAllEnrollment(status),HttpStatus.OK);
         }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

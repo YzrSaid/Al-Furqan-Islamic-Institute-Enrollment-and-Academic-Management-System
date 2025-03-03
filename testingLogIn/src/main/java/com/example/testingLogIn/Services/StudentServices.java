@@ -50,7 +50,7 @@ public class StudentServices {
                                     .isTransferee(student.isTransferee())
                                     .build();
             studentRepo.save(newStudent);
-            
+            System.out.println("Added successfully");
             enrollmentService.addStudentToListing(student);
             return true;
         }

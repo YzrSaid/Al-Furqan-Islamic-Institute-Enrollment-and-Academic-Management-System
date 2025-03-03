@@ -45,10 +45,11 @@ public class StudentController {
  
     @PostMapping("/add")
     public ResponseEntity<String> addStudents(@RequestBody StudentDTO students){
-        System.out.println(students);
+        System.out.println(students.isTransferee());
         try{
-            if(studentService.addStudent(students))
-                return new ResponseEntity<>("New Student Added Successfully",HttpStatus.OK);
+            if(studentService.addStudent(students)){
+                System.out.println("Will return success");
+                return new ResponseEntity<>("New Student Added Successfully",HttpStatus.OK);}
             else
                 return new ResponseEntity<>("Student Name Already Exist",HttpStatus.NOT_ACCEPTABLE);
         }catch(NullPointerException npe){

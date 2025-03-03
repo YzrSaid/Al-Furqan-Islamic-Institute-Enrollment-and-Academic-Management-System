@@ -1,6 +1,7 @@
 package com.example.testingLogIn.ModelDTO;
 
 import com.example.testingLogIn.Enums.Gender;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
 import lombok.*;

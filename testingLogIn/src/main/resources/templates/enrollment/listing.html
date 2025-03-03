@@ -258,8 +258,8 @@
                     <div class="header">
                         <h6>Personal Information</h6>
                         <div class="checkbox">
-                            <label for="transferee">Transferee:</label>
-                            <input type="checkbox" id="transferee" value="Transferee">
+                            <label for="isTransfereeCheckbox">Transferee:</label>
+                            <input type="checkbox" id="isTransfereeCheckbox" value="Transferee">
                         </div>
                     </div>
                     <br>
@@ -395,13 +395,13 @@
 
             // Collect input values
             const studentData = {
-                transferee: document.getElementById("transferee").checked, // Boolean value
+                transferee: document.getElementById("isTransfereeCheckbox").checked, // Boolean value
                 firstName: document.getElementById("studentFirstName").value,
                 lastName: document.getElementById("studentLastName").value,
                 gender: document.getElementById("gender").value || null, // Ensure null if not selected
                 birthdate: document.getElementById("birthdate").value,
                 address: document.getElementById("address").value,
-                contactNumber: document.getElementById("contactNumber").value || null, // Avoid empty strings
+                contactNum: document.getElementById("contactNumber").value || null, // Avoid empty strings
 
                 // Emergency Contact
                 contactPersonName: document.getElementById("contactPersonFirstName").value + " " +
@@ -409,6 +409,8 @@
                 contactPersonAddress: document.getElementById("contactPersonAddress").value || null,
                 contactPersonCellphone: document.getElementById("contactPersonContactNum").value || null
             };
+            
+            console.log('The student is transferee? :'+studentData.isTransferee);
 
             fetch(actionUrl, {
                 method: method,
@@ -421,19 +423,20 @@
                     if (!response.ok) {
                         return response.text().then(text => { throw new Error(text); });
                     }
-                    return response.json();
+                    return response.text();
                 })
-                .then(data => {
-                    alert(data.message || "Student added successfully!");
-                    location.reload();
+                .then(text => {
+                // Handle the plain text response
+                alert(text || "Student added successfully!");
+                location.reload();
                 })
                 .catch(error => {
+                    // Handle errors
                     alert("Error: " + error.message);
                 });
     
 
     }
-
 </script>
 
 </html>

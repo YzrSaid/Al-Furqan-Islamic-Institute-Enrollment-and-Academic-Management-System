@@ -682,6 +682,31 @@ th {
   width: 20%;
 }
 
+.assessment-table th:nth-child(1),
+.assessment-table td:nth-child(1) {
+  width: 10%;
+}
+.assessment-table th:nth-child(2),
+.assessment-table td:nth-child(2) {
+  width: 30%;
+}
+.assessment-table th:nth-child(3),
+.assessment-table td:nth-child(3) {
+  width: 15%;
+}
+.assessment-table th:nth-child(4),
+.assessment-table td:nth-child(4) {
+  width: 15%;
+}
+.assessment-table th:nth-child(5),
+.assessment-table td:nth-child(5) {
+  width: 15%;
+}
+.assessment-table th:nth-child(6),
+.assessment-table td:nth-child(6) {
+  width: 20%;
+}
+
 /* for grade management table */
 .grade-management-table th:nth-child(1),
 .grade-management-table td:nth-child(1) {
@@ -969,7 +994,8 @@ table td {
 .student-report-table,
 .teacher-report-table,
 .payment-report-table,
-.acad-resources-table {
+.acad-resources-table,
+.assessment-table {
   width: 92.5%;
   margin: 0px 50px;
 }
@@ -993,7 +1019,7 @@ table td {
   align-items: center;
   justify-content: center;
 }
-#status-registration {
+#status-registration, #status-assessment {
   background-color: #28a745;
 }
 #status-manage-accounts {

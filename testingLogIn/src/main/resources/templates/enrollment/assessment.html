@@ -11,7 +11,7 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
- <script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/script.js}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
@@ -36,6 +36,7 @@
         });
     });
 </script>
+
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -173,15 +174,15 @@
         </div>
 
         <!-- Table -->
-        <table id="lamesa" class="listing-table">
+        <table id="lamesa" class="assessment-table">
             <thead>
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
                     <th>Current Grade Level</th>
                     <th>Enrolling To</th>
-                    <th>Status</th>
                     <th>Eligibility</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -206,7 +207,9 @@
                             <div class="dropdown-status-content" id="dropdown-listing">
                                 <a href="#" class="action" data-open-modal="viewGradesModal">View Grades</a>
                                 <a href="#" data-open-modal="addGradeLevelAssessmentModal">Proceed</a>
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
+                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
+                                    data-message="Are you sure you want to cancel this registration?">Cancel
+                                    Registration</a>
                             </div>
                         </div>
                     </td>
@@ -244,7 +247,8 @@
                         data-open-modal="confirmationModal">
                         Confirm
                     </button>
-                    <button type="button" class="btn-cancel" data-close-modal="addGradeLevelAssessmentModal">Cancel</button>
+                    <button type="button" class="btn-cancel"
+                        data-close-modal="addGradeLevelAssessmentModal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -318,37 +322,102 @@
             </div>
         </div>
     </div>
-   
+
 </body>
 <script>
-     document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         getAssessments();
     });
-    function getAssessments(){
-                    fetch("/enrollment/all/assessment")
-                .then(res => {
-                    if(!res.ok) throw new Error("Failed to fetch grade levels");
-                    return res.json();
-                })
-                    .then(data => {
-                        const tableBody = document.querySelector("#lamesa tbody");
-                        tableBody.innerHTML = "";
+    function getAssessments() {
+        fetch("/enrollment/all/assessment")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch enrollment records");
+                return res.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#lamesa tbody");
 
-                        data.forEach(enr => {
-                            console.log(enr);
-                            const row = document.createElement("tr");
-                            row.innerHTML = `
-                                <td>${enr.studentId}</td>
-                                <td>${enr.studentFirstName} ${enr.studentLastName}</td>
-                                <td>${enr.currentGradeLevel}</td>
-                                <td>${enr.gradeLevelToEnroll} </td>
-                                <td>${enr.qualified? 'Qualified' : 'Not Qualified'}</td> <!-- Escape the '<' character -->`;
+                if (!tableBody) {
+                    console.error("Table body not found");
+                    return;
+                }
 
-                            tableBody.appendChild(row);
-                        });
-                })
-                .catch(error => console.error("Error:", error));
+                tableBody.innerHTML = ""; // Clear previous data
+
+                data.forEach(enr => {
+                    console.log(enr);
+
+                    // Ensure middle name is handled properly (if null/undefined, set it as empty)
+                    const middleName = enr.studentMiddleName ? ` ${enr.studentMiddleName} ` : " ";
+
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                    <td>${enr.studentId || "N/A"}</td>
+                    <td>${enr.studentFirstName || "N/A"}${middleName}${enr.studentLastName || ""}</td>
+                    <td>${enr.currentGradeLevel || "N/A"}</td>
+                    <td>${enr.gradeLevelToEnroll || "N/A"}</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status statusQualified">
+                                ${enr.qualified ? "Qualified" : "Not Qualified"}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <div class="status-container">
+                                <div class="status" id="status-assessment">ASSESSMENT</div>
+                                <button class="dropdown-status-btn">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="dropdown-status-content" id="dropdown-listing">
+                                <a href="#" class="action" data-open-modal="viewGradesModal">View Grades</a>
+                                <a href="#" data-open-modal="addGradeLevelAssessmentModal">Proceed</a>
+                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
+                            </div>
+                        </div>
+                    </td>
+                `;
+
+                    tableBody.appendChild(row);
+                });
+
+                // ✅ Call this after adding all rows
+                updateStatusColors();
+            })
+            .catch(error => console.error("Error fetching assessments:", error));
     }
+
+    // function updateStatusColors() {
+    //     document.querySelectorAll(".status").forEach(statusElement => {
+    //         const statusText = statusElement.textContent.trim().toUpperCase(); // Normalize case and trim spaces
+
+    //         if (statusText === "QUALIFIED") {
+    //             statusElement.style.backgroundColor = "#E74424";
+    //             statusElement.style.color = "white";
+    //         } else if (statusText === "UNQUALIFIED") {
+    //             statusElement.style.backgroundColor = "#28a745";
+    //             statusElement.style.color = "white";
+    //         }
+    //     });
+    // }
+
+    function updateStatusColors() {
+        document.querySelectorAll(".statusQualified").forEach(statusElement => {
+            const statusText = statusElement.textContent.trim().toUpperCase(); // Normalize case and trim spaces
+
+            if (statusText === "QUALIFIED") {
+                statusElement.style.backgroundColor = "#28a745"; // Green
+                statusElement.style.color = "white";
+            } else if (statusText === "UNQUALIFIED") { // Fix this condition
+                statusElement.style.backgroundColor = "#E74424"; // Red
+                statusElement.style.color = "white";
+            }
+        });
+    }
+
+
 </script>
 
 </html>

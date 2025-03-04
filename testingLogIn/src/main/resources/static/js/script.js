@@ -943,11 +943,11 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleIcon.addEventListener("click", function () {
         if (passwordField.type === "password") {
             passwordField.type = "text"; // Show password
-            toggleIcon.src = "/images/icons/account.png"; // Open eye icon
+            toggleIcon.src = "/images/icons/eye.png"; // Open eye icon
             toggleIcon.alt = "Hide Password"; // Update alt text
         } else {
             passwordField.type = "password"; // Hide password
-            toggleIcon.src = "/images/icons/account.png"; // Closed eye icon
+            toggleIcon.src = "/images/icons/hidden-pass.png"; // Closed eye icon
             toggleIcon.alt = "Show Password"; // Update alt text
         }
     });

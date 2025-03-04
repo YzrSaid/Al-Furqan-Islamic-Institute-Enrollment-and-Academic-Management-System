@@ -12,6 +12,10 @@ public class PrivateTemplateControllers {
     public String getDashboard(){
         return "dashboard";
     }
+    @GetMapping("")
+    public String getDashboardzz(){
+        return "dashboard";
+    }
 
     @GetMapping("settings/create-user")
     public String getCreateUser(){

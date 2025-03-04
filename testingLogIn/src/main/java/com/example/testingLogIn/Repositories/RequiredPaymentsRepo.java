@@ -1,6 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
-import com.example.testingLogIn.Models.RequiredPayments;
+import com.example.testingLogIn.Models.RequiredFees;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  * @author magno
  */
 @Repository
-public interface RequiredPaymentsRepo extends JpaRepository<RequiredPayments, Integer>{
+public interface RequiredPaymentsRepo extends JpaRepository<RequiredFees, Integer>{
     @Modifying
     @Transactional
     @Query("UPDATE RequiredPayments rp " +

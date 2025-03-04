@@ -4,16 +4,19 @@
  */
 package com.example.testingLogIn.Services;
 
-import com.example.testingLogIn.Enums.EnrollmentStatus;
+import com.example.testingLogIn.ModelDTO.GradeLevelToRequiredPaymentDTO;
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
 import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Models.RequiredPayments;
+import com.example.testingLogIn.Models.GradeLevelToRequiredPayment;
+import com.example.testingLogIn.Models.RequiredFees;
+import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.RequiredPaymentsRepo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,10 +27,16 @@ import org.springframework.stereotype.Service;
 public class RequiredPaymentsServices {
     private final RequiredPaymentsRepo reqPaymentsRepo;
     private final GradeLevelServices gradeLevelService;
+    private final GradeLevelRequiredFeeRepo reqFeeGradelvlRepo;
 
-    public RequiredPaymentsServices(RequiredPaymentsRepo reqPaymentsRepo, GradeLevelServices gradeLevelService) {
+    public RequiredPaymentsServices(RequiredPaymentsRepo reqPaymentsRepo, GradeLevelServices gradeLevelService,GradeLevelRequiredFeeRepo reqFeeGradelvlRepo) {
         this.reqPaymentsRepo = reqPaymentsRepo;
         this.gradeLevelService = gradeLevelService;
+        this.reqFeeGradelvlRepo = reqFeeGradelvlRepo;
+    }
+    
+    public RequiredFees getRequiredPaymebtById(int reqPaymentId){
+        return reqPaymentsRepo.findById(reqPaymentId).orElse(null);
     }
     
     public boolean addNewPayments(RequiredPaymentsDTO paymentsDTO){
@@ -38,18 +47,34 @@ public class RequiredPaymentsServices {
         if(!doesNameExist)
             return false;
         else{
+            RequiredFees reqFee = RequiredFees.builder()
+                                            .name(paymentsDTO.getName())
+                                            .requiredAmount(paymentsDTO.getRequiredAmount())
+                                            .build();
+            reqPaymentsRepo.save(reqFee);
+            
+            try {
+                Thread.sleep(499);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(RequiredPaymentsServices.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            RequiredFees newFee = reqPaymentsRepo.findAll().stream()
+                                                .filter(reqPayment -> reqPayment.isNotDeleted() && 
+                                                                        reqPayment.getName().equalsIgnoreCase(paymentsDTO.getName()))
+                                                .findFirst().orElse(null);
+            
             List<GradeLevel> gradeLevels = gradeLevelService.getAllGradeLevels().stream()
-                                                        .filter(gradelvl -> paymentsDTO.getGradeLevels().contains(gradelvl.getLevelId()))
+                                                        .filter(gradelvl -> paymentsDTO.getGradeLevelNames().contains(gradelvl.getLevelName()))
                                                         .toList();
             gradeLevels
                     .forEach(gradelvl ->{
-                        RequiredPayments newPayment = RequiredPayments.builder()
-                                                    .name(paymentsDTO.getName())
+                        GradeLevelToRequiredPayment newPayment = GradeLevelToRequiredPayment.builder()
+                                                    .requiredFee(newFee)
                                                     .isNotDeleted(true)
                                                     .gradeLevel(gradelvl)
-                                                    .requiredAmount(paymentsDTO.getRequiredAmount())
                                                     .build();
-                        reqPaymentsRepo.save(newPayment);
+                        reqFeeGradelvlRepo.save(newPayment);
                     });
         }
         
@@ -57,12 +82,12 @@ public class RequiredPaymentsServices {
     }
     
     public Map<String,RequiredPaymentsDTO> getAllPayments(){
-        List<RequiredPayments> paymentsList = reqPaymentsRepo.findAll().stream()
+        List<RequiredFees> paymentsList = reqPaymentsRepo.findAll().stream()
                                 .filter(payment -> payment.isNotDeleted())
-                                .sorted((p1,p2) -> p1.getGradeLevel().getLevelName().compareTo(p2.getGradeLevel().getLevelName()))
                                 .toList();
         Map<String,RequiredPaymentsDTO> uniquePayments = new HashMap<>();
-        for(RequiredPayments payment : paymentsList){
+        
+        for(RequiredFees payment : paymentsList){
             String paymentName = payment.getName();
             if(!uniquePayments.containsKey(paymentName)){
                 RequiredPaymentsDTO paymentDTO = RequiredPaymentsDTO.builder()
@@ -70,63 +95,61 @@ public class RequiredPaymentsServices {
                                                         .requiredAmount(payment.getRequiredAmount())
                                                         .gradeLevelNames(new ArrayList<String>())
                                                         .build();
+                reqFeeGradelvlRepo.findByRequiredFee(payment.getId()).stream()
+                        .filter(gradelvlrec -> gradelvlrec.isNotDeleted())
+                        .forEach(gradelvl -> {
+                            paymentDTO.getGradeLevelNames().add(gradelvl.getGradeLevel().getLevelName());
+                        });
                 uniquePayments.put(paymentName,paymentDTO);
             }
-            uniquePayments.get(paymentName).getGradeLevelNames().add(payment.getGradeLevel().getLevelName());
         }
         
         return uniquePayments;
     }
     
-    public List<RequiredPaymentsDTO> getPaymentsByGradeLevel(int gradeLevelId){
-        return reqPaymentsRepo.findAll().stream()
-                                .filter(payment -> payment.isNotDeleted() && 
-                                        payment.getGradeLevel().getLevelId() == gradeLevelId)
-                                .map(reqPayment -> partialMapper(reqPayment))
-                                .toList();
+    public List<GradeLevelToRequiredPaymentDTO> getPaymentsByGradeLevel(int gradeLevelId){
+        return reqFeeGradelvlRepo.findByRequiredFee(gradeLevelId).stream()
+                        .filter(gradelvlrec -> gradelvlrec.isNotDeleted())
+                        .map(GradeLevelToRequiredPayment::DTOmapper)
+                        .toList();
     }
     
     public double getToPayTotal(int gradeLevelId){
         double total = 0;
-        List<RequiredPayments> paymentList = reqPaymentsRepo.findAll().stream()
-                                    .filter(payment -> payment.isNotDeleted() && 
-                                            payment.getGradeLevel().getLevelId() == gradeLevelId)
-                                    .toList();
-        for(RequiredPayments payment : paymentList)
-            total+=payment.getRequiredAmount();
+        List<GradeLevelToRequiredPayment> paymentList = reqFeeGradelvlRepo.findByRequiredFee(gradeLevelId).stream()
+                                                            .filter(gradelvlrec -> gradelvlrec.isNotDeleted())
+                                                            .toList();
+        for(GradeLevelToRequiredPayment payment : paymentList)
+            total+=payment.getRequiredFee().getRequiredAmount();
         
         return total;
     }
     
-    public boolean updatePayment(String recentPaymentName, RequiredPaymentsDTO updated){
-        List<RequiredPayments> toUpdate = reqPaymentsRepo.findAll().stream()
-                                    .filter(payment -> payment.isNotDeleted() && 
-                                            payment.getName().equalsIgnoreCase(recentPaymentName))
-                                    .toList();
+    public boolean updatePayment(int feeId, RequiredPaymentsDTO updated){
+        RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
         
-        if(toUpdate.isEmpty())
+        if(toUpdate == null)
             return false;
         
-        for(RequiredPayments payment : toUpdate){
+        List<GradeLevelToRequiredPayment> affectedRows = reqFeeGradelvlRepo.findByRequiredFee(feeId);
+        
+        for(GradeLevelToRequiredPayment payment : affectedRows){
             String toRemoveGrade = payment.getGradeLevel().getLevelName();
-            payment.setName(updated.getName());
-            payment.setRequiredAmount(updated.getRequiredAmount());
-            if(!updated.getGradeLevelNames().contains(payment.getGradeLevel().getLevelName()))
+            if(!updated.getGradeLevelNames().contains(toRemoveGrade))
                 payment.setNotDeleted(false);
-            reqPaymentsRepo.save(payment);
+            reqFeeGradelvlRepo.save(payment);
             updated.getGradeLevelNames().remove(toRemoveGrade);
         }
         
         if(!updated.getGradeLevelNames().isEmpty()){
             for(String gradeLevelName : updated.getGradeLevelNames()){
                 GradeLevel gradeLevel = gradeLevelService.getByName(gradeLevelName);
-                RequiredPayments newReqPayment = RequiredPayments.builder()
-                                                                .name(updated.getName())
-                                                                .requiredAmount(updated.getRequiredAmount())
+                GradeLevelToRequiredPayment newReqPayment = GradeLevelToRequiredPayment.builder()
+                                                                .requiredFee(toUpdate)
                                                                 .gradeLevel(gradeLevel)
                                                                 .isNotDeleted(true)
                                                                 .build();
-                reqPaymentsRepo.save(newReqPayment);
+                reqFeeGradelvlRepo.save(newReqPayment);
             }
         }
         
@@ -139,7 +162,7 @@ public class RequiredPaymentsServices {
         return true;
     }
     
-    private RequiredPaymentsDTO partialMapper(RequiredPayments requiredPayment){
+    private RequiredPaymentsDTO partialMapper(RequiredFees requiredPayment){
         return RequiredPaymentsDTO.builder()
                                 .id(requiredPayment.getId())
                                 .name(requiredPayment.getName())

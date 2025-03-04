@@ -38,6 +38,7 @@ public class UserModel implements UserDetails {
 
     private String firstname;
     private String lastname;
+    private String middlename;
     private String address;
     private String contactNumber;
     @Enumerated(EnumType.STRING)

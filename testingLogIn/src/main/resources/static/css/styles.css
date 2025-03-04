@@ -61,6 +61,12 @@ body {
   flex-direction: column;
   width: 50%;
 }
+#signup-form {
+  margin-top: 5%;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
 #forgot-pass {
   width: 100%;
   display: flex;
@@ -167,7 +173,7 @@ body {
 }
 .input-group-half {
   display: flex;
-  gap: 50px;
+  gap: 20px;
 }
 
 .normal-label {
@@ -185,14 +191,25 @@ body {
   gap: 10px;
   margin-top: 10px;
 }
-#account-type-div select {
+.account-type-div select {
   width: 100%;
   padding: 10px 10px;
   border-radius: 4px;
   border: 1px solid #333;
   outline: none;
   font-size: 13px;
+  width: 160px;
   background: transparent;
+}
+.account-type-div input {
+    width: 100%;
+    padding: 10px 10px;
+    border-radius: 4px;
+    border: 1px solid #333;
+    outline: none;
+    font-size: 13px;
+    width: 342px;
+    background: transparent;
 }
 
 /* This is for the dashboard */
@@ -2255,8 +2272,11 @@ td[rowspan] {
 }
 
 .toggle-password {
-    position: absolute;
-    right: 10px;
-    cursor: pointer;
-    font-size: 18px;
+  position: absolute;
+  right: 10px; /* Adjust spacing from the right */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px; /* Adjust icon size */
+  height: 20px;
+  cursor: pointer;
 }

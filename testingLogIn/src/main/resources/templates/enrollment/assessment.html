@@ -11,6 +11,7 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+ <script th:src="@{/js/script.js}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
@@ -33,36 +34,8 @@
                 }
             }
         });
-        getAssessments();
     });
-    
-    function getAssessments(){
-                    fetch("/enrollment/all/assessment")
-                .then(res => {
-                    if(!res.ok) throw new Error("Failed to fetch grade levels");
-                    return res.json();
-                })
-                    .then(data => {
-                        const tableBody = document.querySelector("#lamesa tbody");
-                        tableBody.innerHTML = "";
-
-                        data.forEach(enr => {
-                            console.log(enr);
-                            const row = document.createElement("tr");
-                            row.innerHTML = `
-                                <td>${enr.studentId}</td>
-                                <td>${enr.studentFirstName} ${enr.studentLastName}</td>
-                                <td>${enr.currentGradeLevel}</td>
-                                <td>${enr.gradeLevelToEnroll}</td>
-                                <td>${enr.qualified? 'Qualified' : 'Not Qualified'}</td> <!-- Escape the '<' character -->`;
-
-                            tableBody.appendChild(row);
-                        });
-                })
-                .catch(error => console.error("Error:", error));
-    }
 </script>
-
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -81,7 +54,7 @@
         </a>
 
         <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
-            <img th:src="@{/images/icons/enrollemnt.png}" alt="Enrollment Icon"> Enrollment
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="enrollment-submenu">
@@ -115,7 +88,7 @@
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year">School Year</a>
-            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
@@ -132,7 +105,7 @@
             <a href="/reports/academic-resources">Academic Resources Reports</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img th:src="@{images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
@@ -345,7 +318,37 @@
             </div>
         </div>
     </div>
-    <script th:src="@{/js/script.js}"></script>
+   
 </body>
+<script>
+     document.addEventListener("DOMContentLoaded", function () {
+        getAssessments();
+    });
+    function getAssessments(){
+                    fetch("/enrollment/all/assessment")
+                .then(res => {
+                    if(!res.ok) throw new Error("Failed to fetch grade levels");
+                    return res.json();
+                })
+                    .then(data => {
+                        const tableBody = document.querySelector("#lamesa tbody");
+                        tableBody.innerHTML = "";
+
+                        data.forEach(enr => {
+                            console.log(enr);
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${enr.studentId}</td>
+                                <td>${enr.studentFirstName} ${enr.studentLastName}</td>
+                                <td>${enr.currentGradeLevel}</td>
+                                <td>${enr.gradeLevelToEnroll} </td>
+                                <td>${enr.qualified? 'Qualified' : 'Not Qualified'}</td> <!-- Escape the '<' character -->`;
+
+                            tableBody.appendChild(row);
+                        });
+                })
+                .catch(error => console.error("Error:", error));
+    }
+</script>
 
 </html>

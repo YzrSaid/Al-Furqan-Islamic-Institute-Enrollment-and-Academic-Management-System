@@ -19,7 +19,7 @@
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo" id="school-logo"> <br> <br>
                 <h3>Al-Furqan Islamic Institute Inc.</h3>
             </div>
-            <form action="/register" method="post" id="login-form">
+            <form action="/register" method="post" id="signup-form">
                 <div class="input-group-half">
                     <div class="input-group">
                         <input class="input-group-input" type="text" name="firstname" id="firstname" placeholder=""
@@ -37,7 +37,7 @@
                 </div>
                 <div class="input-group-half">
                     <div class="input-group">
-                        <div id="account-type-div">
+                        <div class="account-type-div">
                             <label class="normal-label" for="gender">Gender</label>
                             <select name="gender" id="gender">
                                 <option value="">Choose a gender</option>
@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="input-group">
-                        <div id="account-type-div">
+                        <div class="account-type-div">
                             <label class="normal-label" for="account-type">Account Type</label>
                             <select name="role" id="account-type">
                                 <option value="" disabled selected>Choose</option>
@@ -60,32 +60,39 @@
                     </div>
                 </div>
                 <div class="input-group">
+                    <div class="account-type-div">
+                        <label class="normal-label" for="address">Birthdate</label>
+                        <input type="date" id="birthdate" required>
+                    </div>
+                </div>
+                <div class="input-group">
                     <input class="input-group-input" type="text" name="address" id="address" placeholder="" required>
                     <label class="input-group-label" for="address">Address</label>
                 </div>
 
                 <div class="input-group">
-                    <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber" placeholder=""
-                        required>
-                    <label class="input-group-label" for="contactNumber">Contact Number</label>
+                    <div class="input-group">
+                        <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber"
+                            placeholder="" required>
+                        <label class="input-group-label" for="contactNumber">Contact Number</label>
+                    </div>
                 </div>
 
-                
                 <div class="input-group">
-                    <input class="input-group-input" type="password" name="password" id="password" placeholder="">
-                    <label class="input-group-label" id="label" for="password">Password</label>
+                    <input class="input-group-input" type="password" name="password" id="password" required
+                        placeholder=" ">
+                    <label class="input-group-label" for="password">Password</label>
+                    <img th:src="@{/images/icons/hidden-pass.png}" alt="Show Password" class="toggle-password"
+                        id="togglePassword">
                 </div>
-                <div class="input-group">
-                    <input class="input-group-input" type="password" name="password_confirm" id="confirm-pass"
-                        placeholder="" required>
-                    <label class="input-group-label" id="label" for="confirm-pass">Confirm Password</label>
-                </div> <br>
                 <button type="submit" id="login-btn">Sign Up</button>
             </form>
             <h4 id="signup-link">Already have an account? <a onclick="proceed('login')">Log in here.</a></h4>
         </div>
     </div>
 </body>
+<script th:src="@{/js/publicip.js}" defer></script>
+<script th:src="@{/js/script.js}" defer></script>
 <script>
     document.getElementById('login-form').addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent default form submission

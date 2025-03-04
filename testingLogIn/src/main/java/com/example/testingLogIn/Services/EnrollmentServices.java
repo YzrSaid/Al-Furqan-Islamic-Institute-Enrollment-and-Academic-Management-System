@@ -64,7 +64,6 @@ public class EnrollmentServices {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         GradeLevel gradeLevelToEnroll = gradeLevelRepo.findById(gradeLevelId).orElse(null);
         Student student = enrollmentRecord.getStudent();
-        
         if(!enrollmentRecord.isNotDeleted())
             return 1;
         else if(gradeLevelToEnroll == null)
@@ -110,6 +109,12 @@ public class EnrollmentServices {
             
             return 3;
         }
+    }
+    
+    public void updatepcs(int studentId){
+        Enrollment toUpdate = enrollmentRepo.getRecordByStudent(studentId, sySemRepo.findCurrentActive().getSySemNumber());
+        if(toUpdate != null && toUpdate.getSectionToEnroll() != null)
+            pcs.addIfNotExistElseUpdate(studentId,toUpdate.getSectionToEnroll().getLevel().getLevelId());
     }
     
     public int addToEnrolled(int enrollmentId){

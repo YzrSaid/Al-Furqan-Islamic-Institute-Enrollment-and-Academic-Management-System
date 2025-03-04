@@ -37,6 +37,7 @@ public class RequiredPaymentController {
             else
                 return new ResponseEntity<>("The payment name \""+reqPayments.getName()+"\" already exists.",HttpStatus.CONFLICT);
         }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>("Process failed",HttpStatus.CONFLICT);
         }
    }

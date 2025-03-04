@@ -2,6 +2,7 @@ package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.Models.PaymentRecords;
 import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,7 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
            "WHERE pr.student.studentId = :studentId " +
            "AND pr.SYSem.sySemNumber = :semId " +
            "GROUP BY pr.requiredPayment")
-    List<PaymentRecords> getCurrentPaidRequiredPayment(
+    List<PaymentRecords> getCurrentPaidRequiredPaymentOfStudent(
             @Param("studentId") int studentId,
             @Param("semId") int semId);
     
@@ -28,4 +29,17 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
             @Param("studentId") int studentId,
             @Param("reqPaymentId") int reqPaymentId,
             @Param("semId") int semId);
+    
+    @Query("SELECT pr FROM PaymentRecords pr "+
+           "WHERE pr.SYSem.sySemNumber = :semId "+
+           "ORDER BY pr.datePaid DESC")
+    List<PaymentRecords> getRecordsBySem(@Param("semId") int semId);
+    
+    @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid")
+    List<PaymentRecords> getAllRecordsSortByDate(Sort sort);
+    
+    @Query("SELECT pr FROM PaymentRecords pr "+
+           "WHERE pr.student.studentId = :studentId "+
+           "ORDER BY pr.datePaid DESC")
+    List<PaymentRecords> getAllStudentPaymentRecord(@Param("studentId") int studentId);
 }

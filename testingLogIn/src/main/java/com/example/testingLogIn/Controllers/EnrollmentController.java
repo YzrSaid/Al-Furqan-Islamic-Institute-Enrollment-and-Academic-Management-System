@@ -79,6 +79,7 @@ public class EnrollmentController {
                 default -> new ResponseEntity<>("Enrollment Record Successfully Moved To Payment",HttpStatus.OK);
             };
         }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>("Transaction Failed. Try Again.",HttpStatus.CONFLICT);
         }
     }

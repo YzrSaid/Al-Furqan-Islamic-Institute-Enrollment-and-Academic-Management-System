@@ -45,9 +45,9 @@ public class PaymentCheckerService {
         SchoolYearSemester sysem = semRepo.findCurrentActive();
         PaymentCompleteCheck current = checkerRepo.getCurrent(studentId, sysem.getSySemNumber());
         
-        if(!student.isScholar() || current != null){
+        if(!student.isScholar() && current != null){
             boolean isComplete = true;
-            List<PaymentRecords> records = paymentRecordRepo.getCurrentPaidRequiredPayment(studentId, sysem.getSySemNumber());
+            List<PaymentRecords> records = paymentRecordRepo.getCurrentPaidRequiredPaymentOfStudent(studentId, sysem.getSySemNumber());
             List<GradeLevelToRequiredPayment> toPayList = reqFeeGradelvlRepo.findByGradeLevel(gradeLevelId);
             Set<Integer> paidRecorded = new HashSet<>();
             for(PaymentRecords pr : records){

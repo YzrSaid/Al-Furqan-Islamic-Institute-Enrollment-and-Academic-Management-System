@@ -33,4 +33,12 @@ boolean studentCurrentlyEnrolled(
 List<Enrollment> findRecordsByStatusAndSemester(
     @Param("status") EnrollmentStatus status,
     @Param("activeSemNumber") int activeSemNumber);
+
+@Query("SELECT e FROM Enrollment e " +
+       "WHERE e.isNotDeleted = true " +
+       "AND e.student.studentId = :studentId "+
+       "AND e.SYSemester.sySemNumber = :activeSemNumber")
+Enrollment getRecordByStudent(
+    @Param("studentId") int studentId,
+    @Param("activeSemNumber") int activeSemNumber);
 }

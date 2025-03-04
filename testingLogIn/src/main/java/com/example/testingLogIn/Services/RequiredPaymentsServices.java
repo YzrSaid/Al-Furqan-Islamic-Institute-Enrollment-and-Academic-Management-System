@@ -49,20 +49,15 @@ public class RequiredPaymentsServices {
         else{
             RequiredFees reqFee = RequiredFees.builder()
                                             .name(paymentsDTO.getName())
+                                            .isNotDeleted(true)
                                             .requiredAmount(paymentsDTO.getRequiredAmount())
                                             .build();
             reqPaymentsRepo.save(reqFee);
-            
-            try {
-                Thread.sleep(499);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(RequiredPaymentsServices.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
             RequiredFees newFee = reqPaymentsRepo.findAll().stream()
                                                 .filter(reqPayment -> reqPayment.isNotDeleted() && 
                                                                         reqPayment.getName().equalsIgnoreCase(paymentsDTO.getName()))
                                                 .findFirst().orElse(null);
+            System.out.println(newFee.getName());
             
             List<GradeLevel> gradeLevels = gradeLevelService.getAllGradeLevels().stream()
                                                         .filter(gradelvl -> paymentsDTO.getGradeLevelNames().contains(gradelvl.getLevelName()))
@@ -91,6 +86,7 @@ public class RequiredPaymentsServices {
             String paymentName = payment.getName();
             if(!uniquePayments.containsKey(paymentName)){
                 RequiredPaymentsDTO paymentDTO = RequiredPaymentsDTO.builder()
+                                                        .id(payment.getId())
                                                         .name(paymentName)
                                                         .requiredAmount(payment.getRequiredAmount())
                                                         .gradeLevelNames(new ArrayList<String>())

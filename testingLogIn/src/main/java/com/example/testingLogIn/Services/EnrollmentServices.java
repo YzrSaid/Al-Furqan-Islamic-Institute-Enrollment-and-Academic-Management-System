@@ -5,6 +5,7 @@ import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.GradeLevel;
+import com.example.testingLogIn.Models.PaymentCompleteCheck;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.EnrollmentRepo;
@@ -101,8 +102,12 @@ public class EnrollmentServices {
         else if(section == null)
             return 2;
         else{
-            enrollmentRecord.setPcc(pcs.addIfNotExistElseUpdate(enrollmentRecord.getStudent().getStudentId(), 
-                                                                    section.getLevel().getLevelId()));
+            PaymentCompleteCheck checker = pcs.addIfNotExistElseUpdate(enrollmentRecord.getStudent().getStudentId(), 
+                                                                    section.getLevel().getLevelId());
+            System.out.println(checker.getId());
+            System.out.println(checker.getStudent().getFirstName());
+            
+            enrollmentRecord.setPcc(checker);
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.PAYMENT);
             enrollmentRecord.setSectionToEnroll(section);
             enrollmentRepo.save(enrollmentRecord);

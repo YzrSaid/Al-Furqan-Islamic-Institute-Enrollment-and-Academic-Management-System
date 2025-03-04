@@ -72,6 +72,6 @@ public class PaymentCheckerService {
             checkerRepo.save(checker);
         }
         
-        return checkerRepo.getCurrent(studentId, studentId);
+        return checkerRepo.getCurrent(studentId, sysem.getSySemNumber());
     }
 }

@@ -240,7 +240,8 @@
                     <br><br>
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="proceedAssessment"
-                            data-message="Are you sure you want to proceed this registration from Listing to Assessment?" id="confirmGradeLevel" data-open-modal="confirmationModal">
+                            data-message="Are you sure you want to proceed this registration from Listing to Assessment?"
+                            id="confirmGradeLevel" data-open-modal="confirmationModal">
                             Confirm
                         </button>
                         <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
@@ -547,7 +548,7 @@
 
         gradeLevels.forEach(level => {
             let option = document.createElement("option");
-            option.value = level.levelId; // Adjust if API returns different property names
+            option.value = level.levelId;
             option.textContent = level.levelName;
             selectElement.appendChild(option);
         });
@@ -560,7 +561,19 @@
 
     let enrollmentIdLet = null;
 
-    async function proceedToAssessment(enrollmentId) {
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.body.addEventListener("click", function (event) {
+            if (event.target.closest(".proceedButton")) { 
+                event.preventDefault(); // Prevent default link behavior
+
+                enrollmentIdLet = event.target.closest(".proceedButton").getAttribute("data-enrollment-id");
+                console.log("Enrollment ID:", enrollmentIdLet); // Check if it's logging
+            }
+        });
+    });
+
+    async function proceedToAssessment(enrollmentIdLet) {
         const gradeLevelId = document.getElementById("levelName").value;
 
         if (!gradeLevelId) {
@@ -569,7 +582,7 @@
         }
 
         try {
-            const response = await fetch(`/enrollment/add/assessment/${enrollmentId}/${gradeLevelId}`, {
+            const response = await fetch(`/enrollment/add/assessment/${enrollmentIdLet}/${gradeLevelId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" }
             });
@@ -616,7 +629,8 @@
                                             </button>
                                         </div>
                                         <div class="dropdown-status-content" id="dropdown-listing">
-                                            <a href="#" id="proceedButton" data-open-modal="gradeLevelModal">Proceed</a>
+                                           <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" data-open-modal="gradeLevelModal"> Proceed </a>
+
 
 
                                             <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>

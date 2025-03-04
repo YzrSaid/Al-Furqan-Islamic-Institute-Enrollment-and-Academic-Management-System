@@ -511,7 +511,11 @@ document.addEventListener("DOMContentLoaded", function () {
         finishSemester();
         break;
       case "proceedAssessment":
+        console.log(enrollmentIdLet);
         proceedToAssessment(enrollmentIdLet);
+        break;
+      case "proceedToPayment":
+        proceedToPayment(enrollmentIdLet, sectionNumberLet);  
         break;
       default:
         alert("Unknown action: " + action);

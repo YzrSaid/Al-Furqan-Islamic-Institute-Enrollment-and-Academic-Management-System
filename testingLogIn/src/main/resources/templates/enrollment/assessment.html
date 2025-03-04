@@ -228,21 +228,22 @@
         </div>
 
 
-        <!-- Modal for adding a grade level (assessment) -->
+        <!-- Modal for adding a a section to what grade level it will be enrolled to (assessment) -->
         <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
             <div class="add-grade-level-assessment-modal-content">
                 <h2>Promote To</h2>
 
                 <label for="grade-level">Grade Level:</label>
-                <input type="text" id="grade-level">
+                <input type="text" id="grade-level" readonly>
 
                 <label for="section">Section:</label>
                 <select name="section" id="section">
-                    <option value="" disabled>Choose</option>
+                    <option value="" disabled selected>Choose</option>
                 </select>
 
+
                 <div class="modal-buttons">
-                    <button type="button" class="btn-confirm" data-action="addGradeLevelAssessmentModal"
+                    <button type="button" class="btn-confirm" data-action="proceedToPayment"
                         data-message="Are you sure you want to proceed with payment?" id=""
                         data-open-modal="confirmationModal">
                         Confirm
@@ -328,34 +329,158 @@
     document.addEventListener("DOMContentLoaded", function () {
         getAssessments();
     });
-    function getAssessments() {
-        fetch("/enrollment/all/assessment")
+
+    // Fetch sections based on selected grade level
+    function fetchSections(gradeLevel) {
+        fetch(`/section/gradeLevel/${gradeLevel}`)
+            .then(res => res.json())
+            .then(sections => {
+                const selectTag = document.querySelector("#section"); // Modal select tag
+                if (!selectTag) return console.error("Dropdown for sections not found");
+
+                selectTag.innerHTML = `<option value="">Select Section</option>`; // Default option
+
+                sections.forEach(section => {
+                    const option = document.createElement("option");
+                    option.value = section.number;
+                    option.textContent = section.sectionName;
+                    selectTag.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching sections:", error));
+    }
+
+    function fetchGradeLevels(selectedGrade, selectTag) {
+        console.log(`Fetching grade levels... (Selected Grade: ${selectedGrade})`);
+
+        fetch("/gradelevel/all")
             .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch enrollment records");
+                console.log("Response received:", res);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
                 return res.json();
             })
-            .then(data => {
-                const tableBody = document.querySelector("#lamesa tbody");
+            .then(gradeLevels => {
+                console.log("Grade Levels Data:", gradeLevels);
 
-                if (!tableBody) {
-                    console.error("Table body not found");
+                if (!Array.isArray(gradeLevels) || gradeLevels.length === 0) {
+                    console.warn("No grade levels received or data is not an array.");
                     return;
                 }
+
+                selectTag.innerHTML = ""; // Clear existing options
+                console.log("Cleared existing options");
+
+                let foundMatch = false;
+
+                gradeLevels.forEach((grade, index) => {
+                    if (!grade.levelId || !grade.levelName) {
+                        console.warn(`Invalid grade level at index ${index}:`, grade);
+                        return;
+                    }
+
+                    console.log(`Adding grade level: ID=${grade.levelId}, Name=${grade.levelName}`);
+
+                    const option = document.createElement("option");
+                    option.value = grade.levelId;
+                    option.textContent = grade.levelName;
+
+                    // ✅ Corrected comparison (Name to Name)
+                    console.log(
+                        `Comparing selectedGrade (${selectedGrade}) with grade.levelName (${grade.levelName})`
+                    );
+
+                    if (String(selectedGrade).trim().toLowerCase() === String(grade.levelName).trim().toLowerCase()) {
+                        option.selected = true;
+                        foundMatch = true;
+                        console.log(`✅ Match found! Preselected: ${grade.levelName}`);
+                    }
+
+                    selectTag.appendChild(option);
+                });
+
+                if (!foundMatch) {
+                    console.warn(`⚠️ No matching grade level found for selectedGrade: ${selectedGrade}`);
+                }
+
+                console.log("Grade levels loaded successfully. Total count:", gradeLevels.length);
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
+    let enrollmentIdLet = null;
+    let sectionNumberLet = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.body.addEventListener("click", function (event) {
+            if (event.target.closest(".proceedButton")) {
+                event.preventDefault(); // Prevent default link behavior
+
+                // Get Enrollment ID from the button
+                enrollmentIdLet = event.target.closest(".proceedButton").getAttribute("data-enrollment-id");
+
+                // Get the selected section number value
+                sectionNumberLet = document.querySelector("#section").value;
+
+                console.log("Enrollment ID:", enrollmentIdLet);
+                console.log("Selected Section:", sectionNumberLet);
+            }
+        });
+    });
+
+    function proceedToPayment(enrollmentIdLet, sectionNumberLet) {
+        // Re-fetch the sectionNumber to ensure we have the latest value
+        sectionNumberLet = document.querySelector("#section").value;
+        console.log(sectionNumberLet);
+        console.log(enrollmentIdLet);
+
+        if (!enrollmentIdLet || !sectionNumberLet) {
+            console.error("Missing enrollmentId or sectionNumber:", { enrollmentIdLet, sectionNumberLet });
+            alert("Error: Enrollment ID or Section Number is missing.");
+            return;
+        }
+
+        const apiUrl = `/enrollment/add/payment/${enrollmentIdLet}/${sectionNumberLet}`;
+        console.log(`🔄 Sending request to: ${apiUrl}`);
+
+        fetch(apiUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+        })
+            .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
+            .then(({ text, status }) => {
+                console.log(`🔹 API Response (${status}): ${text}`);
+            })
+            .catch(error => {
+                console.error("🚨 Error calling proceedToPayment API:", error);
+                alert("Error: Unable to proceed with payment.");
+            });
+    }
+
+
+    // Populate table with assessments
+    function getAssessments() {
+        fetch("/enrollment/all/assessment")
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                const tableBody = document.querySelector("#lamesa tbody");
+                if (!tableBody) return console.error("Table body not found");
 
                 tableBody.innerHTML = ""; // Clear previous data
 
                 data.forEach(enr => {
-                    console.log(enr);
-
-                    // Ensure middle name is handled properly (if null/undefined, set it as empty)
-                    const middleName = enr.studentMiddleName ? ` ${enr.studentMiddleName} ` : " ";
-
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${enr.studentId || "N/A"}</td>
-                    <td>${enr.studentFirstName || "N/A"}${middleName}${enr.studentLastName || ""}</td>
+                    <td>${enr.studentFirstName} ${enr.studentMiddleName || ""} ${enr.studentLastName}</td>
                     <td>${enr.currentGradeLevel || "N/A"}</td>
-                    <td>${enr.gradeLevelToEnroll || "N/A"}</td>
+                    <td>
+                        <select class="grade-level-dropdown" data-enrollment-id="${enr.studentId}">
+                            <option>Loading...</option> <!-- Placeholder -->
+                        </select>
+                    </td>
                     <td>
                         <div class="status-container">
                             <div class="status statusQualified">
@@ -367,14 +492,16 @@
                         <div class="dropdown">
                             <div class="status-container">
                                 <div class="status" id="status-assessment">ASSESSMENT</div>
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
+                                <button class="dropdown-status-btn"><i class="fas fa-chevron-down"></i></button>
                             </div>
-                            <div class="dropdown-status-content" id="dropdown-listing">
+                            <div class="dropdown-status-content">
                                 <a href="#" class="action" data-open-modal="viewGradesModal">View Grades</a>
-                                <a href="#" data-open-modal="addGradeLevelAssessmentModal">Proceed</a>
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
+                                <a href="#" class="proceedButton"  data-action="proceedToPayment" data-open-modal="addGradeLevelAssessmentModal"
+                                   data-enrollment-id="${enr.enrollmentId}" data-grade-level-id="${enr.gradeLevelToEnroll}" 
+                                   style="display: ${enr.qualified ? 'block' : 'none'};">Proceed</a>
+
+                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
+                                   data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
                             </div>
                         </div>
                     </td>
@@ -383,25 +510,40 @@
                     tableBody.appendChild(row);
                 });
 
-                // ✅ Call this after adding all rows
-                updateStatusColors();
+                // Populate grade level dropdowns
+                document.querySelectorAll(".grade-level-dropdown").forEach(selectTag => {
+                    const enrollmentId = selectTag.getAttribute("data-enrollment-id");
+                    const selectedGrade = data.find(e => e.studentId == enrollmentId)?.gradeLevelToEnroll;
+                    fetchGradeLevels(selectedGrade, selectTag);
+                });
+
+                updateStatusColors(); // Ensure status colors are updated
             })
             .catch(error => console.error("Error fetching assessments:", error));
     }
 
-    // function updateStatusColors() {
-    //     document.querySelectorAll(".status").forEach(statusElement => {
-    //         const statusText = statusElement.textContent.trim().toUpperCase(); // Normalize case and trim spaces
+    // Handle Proceed Button Click (Attach to Modal)
+    document.addEventListener("click", function (event) {
+        const proceedButton = event.target.closest('[data-open-modal="addGradeLevelAssessmentModal"]');
 
-    //         if (statusText === "QUALIFIED") {
-    //             statusElement.style.backgroundColor = "#E74424";
-    //             statusElement.style.color = "white";
-    //         } else if (statusText === "UNQUALIFIED") {
-    //             statusElement.style.backgroundColor = "#28a745";
-    //             statusElement.style.color = "white";
-    //         }
-    //     });
-    // }
+        if (proceedButton) {
+            const gradeLevel = proceedButton.getAttribute("data-grade-level-id");
+            if (!gradeLevel) return console.error("Grade level not found for section selection");
+
+            console.log("Grade Level Selected:", gradeLevel);
+
+            // Set grade level in modal input field
+            const gradeLevelInput = document.querySelector("#grade-level");
+            if (gradeLevelInput) {
+                gradeLevelInput.value = gradeLevel;
+            }
+
+            // Populate sections dropdown
+            fetchSections(gradeLevel);
+        }
+    });
+
+
 
     function updateStatusColors() {
         document.querySelectorAll(".statusQualified").forEach(statusElement => {

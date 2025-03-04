@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public interface RequiredPaymentsRepo extends JpaRepository<RequiredFees, Integer>{
     @Modifying
     @Transactional
-    @Query("UPDATE RequiredPayments rp " +
+    @Query("UPDATE RequiredFees rp " +
            "SET rp.isNotDeleted = false " +
            "WHERE LOWER(rp.name) = LOWER(:paymentName)")
     void deleteRequiredPaymentByName(@Param("paymentName") String paymentName);

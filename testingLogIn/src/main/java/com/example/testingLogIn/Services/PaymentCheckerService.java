@@ -1,10 +1,12 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
+import com.example.testingLogIn.Models.GradeLevelToRequiredPayment;
 import com.example.testingLogIn.Models.PaymentCompleteCheck;
 import com.example.testingLogIn.Models.PaymentRecords;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.PaymentCheckerRepo;
 import com.example.testingLogIn.Repositories.PaymentsRecordRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
@@ -25,14 +27,17 @@ public class PaymentCheckerService {
     private final StudentRepo studRepo;
     private final PaymentsRecordRepo paymentRecordRepo;
     private final RequiredPaymentsServices reqPaymentService;
+    private final GradeLevelRequiredFeeRepo reqFeeGradelvlRepo;
 
     @Autowired
-    public PaymentCheckerService(sySemesterRepo semRepo, PaymentCheckerRepo checkerRepo, StudentRepo studRepo, PaymentsRecordRepo paymentRecordRepo, RequiredPaymentsServices reqPaymentService) {
+    public PaymentCheckerService(sySemesterRepo semRepo, PaymentCheckerRepo checkerRepo, StudentRepo studRepo, PaymentsRecordRepo paymentRecordRepo, 
+                                RequiredPaymentsServices reqPaymentService, GradeLevelRequiredFeeRepo reqFeeGradelvlRepo) {
         this.semRepo = semRepo;
         this.checkerRepo = checkerRepo;
         this.studRepo = studRepo;
         this.paymentRecordRepo = paymentRecordRepo;
         this.reqPaymentService = reqPaymentService;
+        this.reqFeeGradelvlRepo = reqFeeGradelvlRepo;
     }
     
     public PaymentCompleteCheck addIfNotExistElseUpdate(int studentId,int gradeLevelId){
@@ -40,22 +45,21 @@ public class PaymentCheckerService {
         SchoolYearSemester sysem = semRepo.findCurrentActive();
         PaymentCompleteCheck current = checkerRepo.getCurrent(studentId, sysem.getSySemNumber());
         
-        if(current != null){
+        if(!student.isScholar() || current != null){
             boolean isComplete = true;
             List<PaymentRecords> records = paymentRecordRepo.getCurrentPaidRequiredPayment(studentId, sysem.getSySemNumber());
-            List<RequiredPaymentsDTO> toPayList = reqPaymentService.getPaymentsByGradeLevel(gradeLevelId);
-            Set<Integer> paidRequired = new HashSet<>();
+            List<GradeLevelToRequiredPayment> toPayList = reqFeeGradelvlRepo.findByGradeLevel(gradeLevelId);
+            Set<Integer> paidRecorded = new HashSet<>();
             for(PaymentRecords pr : records){
-                paidRequired.add(pr.getRequiredPayment().getId());
+                paidRecorded.add(pr.getRequiredPayment().getId());
             }
-            for(RequiredPaymentsDTO topay: toPayList){
-                if(!paidRequired.contains(topay.getId())){
+            for(GradeLevelToRequiredPayment topay: toPayList){
+                if(!paidRecorded.contains(topay.getRequiredFee().getId())){
                     isComplete = false;
                     break;}
             }
             current.setComplete(isComplete);
-            if(student.isScholar())
-                current.setComplete(true);
+            
             checkerRepo.save(current);
         }else{
             PaymentCompleteCheck checker = new PaymentCompleteCheck();

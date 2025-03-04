@@ -29,7 +29,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers("/css/**","/images/*","/js/*","/signing",
+                    req.requestMatchers("/css/**","/images/**","/js/*","/signing",
                                                     "/register","/ipaddress").permitAll();
                     req.anyRequest().authenticated();
                 })

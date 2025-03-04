@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.ModelDTO.GradeLevelToRequiredPaymentDTO;
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
 import com.example.testingLogIn.Services.RequiredPaymentsServices;
 import java.util.List;
@@ -50,9 +51,9 @@ public class RequiredPaymentController {
     }
     
     @GetMapping("/grade/{gradeLevelId}")
-    public ResponseEntity<List<RequiredPaymentsDTO>> getAllReqPaymentsByGradeLevel(@PathVariable int gradeLevelId){
+    public ResponseEntity<List<GradeLevelToRequiredPaymentDTO>> getAllReqPaymentsByGradeLevel(@PathVariable int gradeLevelId){
         try{
-            List<RequiredPaymentsDTO> toreturn = reqPaymentService.getPaymentsByGradeLevel(gradeLevelId);
+            List<GradeLevelToRequiredPaymentDTO> toreturn = reqPaymentService.getPaymentsByGradeLevel(gradeLevelId);
             if(!toreturn.isEmpty())
                 return new ResponseEntity<>(toreturn,HttpStatus.OK);
             else
@@ -71,11 +72,11 @@ public class RequiredPaymentController {
         }
     }
     
-    @PutMapping("/update/{recentPaymentName}")
-    public ResponseEntity<String> updatedSelectedPayment(@PathVariable String recentPaymentName, 
+    @PutMapping("/update/{feeId}")
+    public ResponseEntity<String> updatedSelectedPayment(@PathVariable int feeId, 
                                                         @RequestBody RequiredPaymentsDTO updated){
         try{
-            if(reqPaymentService.updatePayment(recentPaymentName, updated))
+            if(reqPaymentService.updatePayment(feeId, updated))
                 return new ResponseEntity<>("Required payment updated successfully",HttpStatus.OK);
             else
                 return new ResponseEntity<>("Updating payment record failed as payment name not found",HttpStatus.NOT_IMPLEMENTED);

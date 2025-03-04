@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequiredPayments {
+public class RequiredFees {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +28,4 @@ public class RequiredPayments {
     private String name;
     private double requiredAmount;
     private boolean isNotDeleted;
-    
-    @ManyToOne
-    @JoinColumn(name = "gradeLevel")
-    private GradeLevel gradeLevel;
 }

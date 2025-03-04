@@ -64,15 +64,6 @@ public class RequiredPaymentController {
         }
     }
     
-    @GetMapping("/total/{gradeLevelId}")
-    public ResponseEntity<Double> getTotalToPayByGradeLevel(@PathVariable int gradeLevelId){
-        try{
-            return new ResponseEntity<>(reqPaymentService.getToPayTotal(gradeLevelId),HttpStatus.OK);
-        }catch(Exception e){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-    }
-    
     @PutMapping("/update/{feeId}")
     public ResponseEntity<String> updatedSelectedPayment(@PathVariable int feeId, 
                                                         @RequestBody RequiredPaymentsDTO updated){

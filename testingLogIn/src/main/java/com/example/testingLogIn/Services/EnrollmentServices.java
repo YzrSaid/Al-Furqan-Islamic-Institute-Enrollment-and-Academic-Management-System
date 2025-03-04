@@ -10,6 +10,7 @@ import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
+import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.SectionRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
@@ -29,10 +30,11 @@ public class EnrollmentServices {
     private final GradeLevelRepo gradeLevelRepo;
     private final StudentSubjectGradeServices ssgService;
     private final PaymentCheckerService pcs;
+    private final GradeLevelRequiredFeeRepo gradeLevelRequiredFeeRepo;
     @Autowired
     public EnrollmentServices(StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo,
                                 EnrollmentRepo enrollmentRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, 
-                                PaymentCheckerService pcs) {
+                                PaymentCheckerService pcs, GradeLevelRequiredFeeRepo gradeLevelRequiredFeeRepo) {
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
         this.sySemRepo = sySemRepo;
@@ -40,6 +42,7 @@ public class EnrollmentServices {
         this.gradeLevelRepo = gradeLevelRepo;
         this.ssgService = ssgService;
         this.pcs=pcs;
+        this.gradeLevelRequiredFeeRepo = gradeLevelRequiredFeeRepo;
     }
     
     public boolean addStudentToListing(StudentDTO stud){
@@ -131,6 +134,7 @@ public class EnrollmentServices {
             
             Student student = enrollmentRecord.getStudent();
             student.setNew(false);
+            student.setStudentBalance(student.getStudentBalance()+gradeLevelRequiredFeeRepo.findTotalAmountByGradeLevel(enrollmentRecord.getGradeLevelToEnroll().getLevelId()));
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
             studentRepo.save(student);
             

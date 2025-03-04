@@ -22,6 +22,7 @@ public class StudentDTO {
     private String address;
     private String cellphoneNum;
     private String birthPlace;
+    private double balanceAmount;
     
     private String currentGradeSection;
     

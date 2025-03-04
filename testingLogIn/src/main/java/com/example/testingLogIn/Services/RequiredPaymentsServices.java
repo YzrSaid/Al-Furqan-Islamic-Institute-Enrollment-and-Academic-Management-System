@@ -110,17 +110,6 @@ public class RequiredPaymentsServices {
                         .toList();
     }
     
-    public double getToPayTotal(int gradeLevelId){
-        double total = 0;
-        List<GradeLevelToRequiredPayment> paymentList = reqFeeGradelvlRepo.findByRequiredFee(gradeLevelId).stream()
-                                                            .filter(gradelvlrec -> gradelvlrec.isNotDeleted())
-                                                            .toList();
-        for(GradeLevelToRequiredPayment payment : paymentList)
-            total+=payment.getRequiredFee().getRequiredAmount();
-        
-        return total;
-    }
-    
     public boolean updatePayment(int feeId, RequiredPaymentsDTO updated){
         RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
         

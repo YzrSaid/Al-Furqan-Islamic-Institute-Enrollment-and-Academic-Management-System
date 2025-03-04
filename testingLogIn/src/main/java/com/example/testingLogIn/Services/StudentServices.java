@@ -40,7 +40,7 @@ public class StudentServices {
                                     .birthdate(student.getBirthdate())
                                     .cellphoneNum(student.getCellphoneNum())
                                     .address(student.getAddress())
-                                    .currentGradeSection(null)
+                                    .studentBalance(0)
                                     .motherName(student.getMotherName())
                                     .motherOccupation(student.getMotherOccupation())
                                     .fatherName(student.getFatherName())

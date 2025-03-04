@@ -34,6 +34,7 @@ public class Student {
     private String address;
     private String cellphoneNum;
     private String birthPlace;
+    private double studentBalance;
     
     @OneToOne
     @JoinColumn(name = "gradeAndSection", nullable = true)
@@ -66,8 +67,9 @@ public class Student {
                         .gender(gender)
                         .birthdate(birthdate)
                         .address(address)
-                        .currentGradeSection(currentGradeSection.getLevel().getLevelName()
-                                            +" - "+currentGradeSection.getSectionName())
+                        .balanceAmount(studentBalance)
+                        .currentGradeSection(currentGradeSection != null? currentGradeSection.getLevel().getLevelName()
+                                            +" - "+currentGradeSection.getSectionName() : "NONE")
                 
                         .motherName(motherName)
                         .motherOccupation(motherOccupation)

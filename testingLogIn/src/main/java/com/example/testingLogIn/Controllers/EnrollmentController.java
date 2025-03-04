@@ -94,6 +94,7 @@ public class EnrollmentController {
                 default -> new ResponseEntity<>("Student Successfully Enrolled",HttpStatus.OK);
             };
         }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>("Transaction Failed. Try Again.",HttpStatus.CONFLICT);
         }
     }

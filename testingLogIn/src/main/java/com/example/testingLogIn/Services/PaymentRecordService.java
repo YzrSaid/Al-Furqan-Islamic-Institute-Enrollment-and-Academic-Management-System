@@ -51,6 +51,8 @@ public class PaymentRecordService {
                                                     .build();
         paymentRepo.save(newPaymentRecord);
         enrollmentCheck.updatepcs(student.getStudentId());
+        student.setStudentBalance(student.getStudentBalance()-paymentRec.getAmount());
+        studentRepo.save(student);
         return true;
     }
     

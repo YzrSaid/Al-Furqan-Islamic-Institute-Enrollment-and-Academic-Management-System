@@ -104,8 +104,6 @@ public class EnrollmentServices {
         else{
             PaymentCompleteCheck checker = pcs.addIfNotExistElseUpdate(enrollmentRecord.getStudent().getStudentId(), 
                                                                     section.getLevel().getLevelId());
-            System.out.println(checker.getId());
-            System.out.println(checker.getStudent().getFirstName());
             
             enrollmentRecord.setPcc(checker);
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.PAYMENT);

@@ -1,6 +1,5 @@
 package com.example.testingLogIn.Services;
 
-import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
 import com.example.testingLogIn.Models.GradeLevelToRequiredPayment;
 import com.example.testingLogIn.Models.PaymentCompleteCheck;
 import com.example.testingLogIn.Models.PaymentRecords;
@@ -26,17 +25,15 @@ public class PaymentCheckerService {
     private final PaymentCheckerRepo checkerRepo;
     private final StudentRepo studRepo;
     private final PaymentsRecordRepo paymentRecordRepo;
-    private final RequiredPaymentsServices reqPaymentService;
     private final GradeLevelRequiredFeeRepo reqFeeGradelvlRepo;
 
     @Autowired
     public PaymentCheckerService(sySemesterRepo semRepo, PaymentCheckerRepo checkerRepo, StudentRepo studRepo, PaymentsRecordRepo paymentRecordRepo, 
-                                RequiredPaymentsServices reqPaymentService, GradeLevelRequiredFeeRepo reqFeeGradelvlRepo) {
+                                    GradeLevelRequiredFeeRepo reqFeeGradelvlRepo) {
         this.semRepo = semRepo;
         this.checkerRepo = checkerRepo;
         this.studRepo = studRepo;
         this.paymentRecordRepo = paymentRecordRepo;
-        this.reqPaymentService = reqPaymentService;
         this.reqFeeGradelvlRepo = reqFeeGradelvlRepo;
     }
     
@@ -45,24 +42,8 @@ public class PaymentCheckerService {
         SchoolYearSemester sysem = semRepo.findCurrentActive();
         PaymentCompleteCheck current = checkerRepo.getCurrent(studentId, sysem.getSySemNumber());
         
-        if(!student.isScholar() && current != null){
-            boolean isComplete = true;
-            List<PaymentRecords> records = paymentRecordRepo.getCurrentPaidRequiredPaymentOfStudent(studentId, sysem.getSySemNumber());
-            List<GradeLevelToRequiredPayment> toPayList = reqFeeGradelvlRepo.findByGradeLevel(gradeLevelId);
-            Set<Integer> paidRecorded = new HashSet<>();
-            for(PaymentRecords pr : records){
-                paidRecorded.add(pr.getRequiredPayment().getId());
-            }
-            for(GradeLevelToRequiredPayment topay: toPayList){
-                if(!paidRecorded.contains(topay.getRequiredFee().getId())){
-                    isComplete = false;
-                    break;}
-            }
-            current.setComplete(isComplete);
-            
-            checkerRepo.save(current);
-        }else{
-            PaymentCompleteCheck checker = new PaymentCompleteCheck();
+        if(current == null){
+                        PaymentCompleteCheck checker = new PaymentCompleteCheck();
             checker.setSem(sysem);
             checker.setStudent(student);
             checker.setComplete(false);
@@ -70,8 +51,27 @@ public class PaymentCheckerService {
                 checker.setComplete(true);
             
             checkerRepo.save(checker);
+            current = checkerRepo.getCurrent(studentId, sysem.getSySemNumber());
         }
         
+        if(!student.isScholar()){
+            boolean isComplete = true;
+            List<PaymentRecords> records = paymentRecordRepo.getCurrentPaidRequiredPaymentOfStudent(studentId, sysem.getSySemNumber());
+            List<GradeLevelToRequiredPayment> toPayList = reqFeeGradelvlRepo.findByGradeLevel(gradeLevelId);
+            Set<Integer> paidRecorded = new HashSet<>();
+            for(PaymentRecords pr : records){
+                System.out.println(pr.getRequiredPayment().getId());
+                paidRecorded.add(pr.getRequiredPayment().getId());
+            }
+            for(GradeLevelToRequiredPayment topay: toPayList){
+                System.out.println(topay.getRequiredFee().getId());
+                if(!paidRecorded.contains(topay.getRequiredFee().getId())){
+                    isComplete = false;
+                    break;}
+            }
+            current.setComplete(isComplete);
+            checkerRepo.save(current);
+        }
         return checkerRepo.getCurrent(studentId, sysem.getSySemNumber());
     }
 }

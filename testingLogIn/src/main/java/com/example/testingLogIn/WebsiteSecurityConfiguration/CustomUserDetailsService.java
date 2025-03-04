@@ -100,6 +100,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         return null;
     }
+    
+    public UserModel getCurrentlyLoggedInUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+                return (UserModel)authentication.getPrincipal();
+        }
+        return null;
+    }
 
     private UserModel AccountRegToUserModel(AccountRegister accountRegister) {
         return UserModel.builder()

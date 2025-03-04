@@ -7,6 +7,7 @@ import com.example.testingLogIn.Repositories.PaymentsRecordRepo;
 import com.example.testingLogIn.Repositories.RequiredPaymentsRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
+import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,16 +19,22 @@ import org.springframework.data.domain.Sort;
  */
 @Service
 public class PaymentRecordService {
+    private final PaymentsRecordRepo paymentRepo;
+    private final StudentRepo studentRepo;
+    private final RequiredPaymentsRepo reqPaymentsRepo;
+    private final sySemesterRepo SYSemRepo;
+    private final EnrollmentServices enrollmentCheck;
+    private final CustomUserDetailsService userService;
+
     @Autowired
-    private PaymentsRecordRepo paymentRepo;
-    @Autowired
-    private StudentRepo studentRepo;
-    @Autowired
-    private RequiredPaymentsRepo reqPaymentsRepo;
-    @Autowired
-    private sySemesterRepo SYSemRepo;
-    @Autowired
-    private EnrollmentServices enrollmentCheck;
+    public PaymentRecordService(PaymentsRecordRepo paymentRepo, StudentRepo studentRepo, RequiredPaymentsRepo reqPaymentsRepo, sySemesterRepo SYSemRepo, EnrollmentServices enrollmentCheck, CustomUserDetailsService userService) {
+        this.paymentRepo = paymentRepo;
+        this.studentRepo = studentRepo;
+        this.reqPaymentsRepo = reqPaymentsRepo;
+        this.SYSemRepo = SYSemRepo;
+        this.enrollmentCheck = enrollmentCheck;
+        this.userService = userService;
+    }
     
     public boolean addNewRecord(PaymentRecordDTO paymentRec){
         Student student = studentRepo.findById(paymentRec.getStudentId()).orElse(null);
@@ -37,6 +44,7 @@ public class PaymentRecordService {
         
         PaymentRecords newPaymentRecord = PaymentRecords.builder()
                                                     .student(student)
+                                                    .receiver(userService.getCurrentlyLoggedInUser())
                                                     .requiredPayment(reqPaymentsRepo.findById(paymentRec.getRequiredPaymentId()).orElse(null))
                                                     .SYSem(SYSemRepo.findCurrentActive())
                                                     .amount(paymentRec.getAmount())
@@ -48,29 +56,24 @@ public class PaymentRecordService {
     
     public boolean editRecord(int recordId, int feeId){
         PaymentRecords record = paymentRepo.findById(recordId).orElse(null);
-        
         if(record == null)
             return false;
-        
         record.setRequiredPayment(reqPaymentsRepo.findById(feeId).orElse(null));
         paymentRepo.save(record);
         enrollmentCheck.updatepcs(record.getStudent().getStudentId());
         return true;
     }
-    
     public List<PaymentRecordDTO> getAllPaymentRecordsBySem(int semId){
         return paymentRepo.getRecordsBySem(semId).stream()
                         .map(PaymentRecords::DTOmapper)
                         .toList();
     }
-    
     public List<PaymentRecordDTO> getAllTimeRecordsByDate(String condition){
         Sort sort = condition.equalsIgnoreCase("DESC") ? Sort.by(Sort.Order.desc("datePaid")) : Sort.by(Sort.Order.asc("datePaid"));
         return paymentRepo.getAllRecordsSortByDate(sort).stream()
                             .map(PaymentRecords::DTOmapper)
                             .toList();
     }
-    
     public List<PaymentRecordDTO> getAllStudentPaymentRecords(int studentId){
         return paymentRepo.getAllStudentPaymentRecord(studentId).stream()
                             .map(PaymentRecords::DTOmapper)

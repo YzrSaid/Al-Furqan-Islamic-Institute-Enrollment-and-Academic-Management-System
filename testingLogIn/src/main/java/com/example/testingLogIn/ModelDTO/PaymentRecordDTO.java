@@ -22,6 +22,8 @@ public class PaymentRecordDTO {
     private String requiredPaymentName;
     private String schoolYearAndSemester;
     
+    private String staffReceiverName;
+    
     private double amount;
     private LocalDate datePaid;
 }

@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Models;
 
 import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
+import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,6 +38,10 @@ public class PaymentRecords {
     @JoinColumn(name = "semester")
     private SchoolYearSemester SYSem;
     
+    @ManyToOne
+    @JoinColumn(name = "receivedBy")
+    private UserModel receiver;
+    
     private double amount;
     private final LocalDate datePaid = LocalDate.now();
     
@@ -48,10 +53,14 @@ public class PaymentRecords {
                             .studentFirstName(student.getFirstName())
                             .studentLastName(student.getLastName())
                             .studentMiddleName(student.getMiddleName())
-                
+                            .amount(amount)
+                            .datePaid(datePaid)
+                            
                             .requiredPaymentId(requiredPayment.getId())
                             .requiredPaymentName(requiredPayment.getName())
                             
+                            .staffReceiverName(receiver.getFirstname()+" "+receiver.getLastname())
+                
                             .schoolYearAndSemester(SYSem.getSchoolYear().getSchoolYear()+" : "+SYSem.getSem())
                             .build();
     }

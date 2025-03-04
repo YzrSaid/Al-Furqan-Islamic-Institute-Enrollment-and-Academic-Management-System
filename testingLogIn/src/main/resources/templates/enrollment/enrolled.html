@@ -35,20 +35,20 @@
         });
         getCurrentlyEnrolled();
     });
-    function getCurrentlyEnrolled(){
-                    fetch("/enrollment/all/enrolled")
-                .then(res => {
-                    if(!res.ok) throw new Error("Failed to fetch grade levels");
-                    return res.json();
-                })
-                    .then(data => {
-                        const tableBody = document.querySelector("#realginnas tbody");
-                        tableBody.innerHTML = "";
+    function getCurrentlyEnrolled() {
+        fetch("/enrollment/all/enrolled")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch grade levels");
+                return res.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#realginnas tbody");
+                tableBody.innerHTML = "";
 
-                        data.forEach(rec => {
-                            console.log(rec);
-                            const row = document.createElement("tr");
-                            row.innerHTML = `
+                data.forEach(rec => {
+                    console.log(rec);
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
                                     <tr>
                                     <td>1</td>
                                         <td>${rec.studentId}</td>
@@ -69,10 +69,10 @@
 //                                        </td>
                                     </tr>`;
 
-                            tableBody.appendChild(row);
-                        });
-                })
-                .catch(error => console.error("Error:", error));
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error:", error));
     }
 </script>
 
@@ -93,21 +93,22 @@
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing" >Listing/Register</a>
+            <a href="/enrollment/assessment">Assessment</a>
+            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled" class="second-active">Enrolled</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
             <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="transaction-submenu">
-            <a href="#" onclick="toggleSubMenu('enrollment-submenu', event)">
-                Enrollment
-                <span class="arrow-icon second-arrow-icon"><img th:src="@{/images/icons/arrow-down.png}"> </span>
-            </a>
-            <div class="submenu" id="enrollment-submenu">
-                <a href="/transaction/enrollment/listing">Listing/Register</a>
-                <a href="/transaction/enrollment/assessment">Assessment</a>
-                <a href="/transaction/enrollment/payment">Payment</a>
-                <a href="/transaction/enrollment/enrolled" class="second-active">Enrolled</a>
-            </div>
             <a href="/transaction/tuition">Tuition</a>
             <a href="/transaction/academic-resources">Academic Resources</a>
         </div>
@@ -127,7 +128,7 @@
         </a>
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year">School Year</a>
-            <a href="maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
@@ -157,10 +158,9 @@
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="settings/create-user">Create User</a>
+            <a href="/settings/create-user">Create User</a>
         </div>
     </div>
-
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
         <div class="topbar">

@@ -4,11 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlimFordy</title>
+    <title>Al-Furqan Islamic Institute Incorporated</title>
     <link th:href="@{/css/styles.css}" rel="stylesheet">
-    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
 </head>
-
 <body>
 <div class="wrapper">
     <div id="left-login-block">
@@ -32,8 +30,10 @@
             <div class="input-group">
                 <input class="input-group-input" type="password" name="password" id="password" required placeholder=" ">
                 <label class="input-group-label" for="password">Password</label>
+                <img th:src="@{/images/icons/hidden-pass.png}" alt="Show Password" class="toggle-password" id="togglePassword">
             </div>
             
+        
             <a href="" id="forgot-pass">Forgot Password?</a> <br> <br>
             <button type="submit" id="login-btn">Log In</button>
         </form>
@@ -42,6 +42,9 @@
     </div>
 </div>
 </body>
+<script th:src="@{/js/publicip.js}" defer></script>
+<script th:src="@{/js/script.js}" defer></script>
+
 <script>
     document.getElementById('login-form').addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent default form submission
@@ -72,7 +75,7 @@
         });
     });
 </script>
-<script th:src="@{/js/script.js}"></script>
+
 </body>
 
 </html>

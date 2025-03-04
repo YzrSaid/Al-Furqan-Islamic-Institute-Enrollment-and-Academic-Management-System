@@ -2253,3 +2253,10 @@ td[rowspan] {
   color: white !important;
   opacity: 1;
 }
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+}

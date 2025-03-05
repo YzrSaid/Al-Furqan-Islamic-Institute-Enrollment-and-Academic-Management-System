@@ -55,11 +55,7 @@
                                         <td>${rec.studentFirstName} ${rec.studentLastName}</td>
                                         <td>${rec.currentGradeLevel}</td>
                                         <td>${rec.sectionToEnroll}</td>
-                                        <td>
-                                            <div class="status-container">
-                                                <div class="status" id="student-type">New</div>
-                                            </div>
-                                        </td>
+                                        <td>${rec.new ? 'New Student' : 'Old Student'}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <div class="status-container">
@@ -140,6 +136,7 @@
             <a href="/maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
+            <a href="/maintenance/fees-management">Fees Management</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
         </div>
 

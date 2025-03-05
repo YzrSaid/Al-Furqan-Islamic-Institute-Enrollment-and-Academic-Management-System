@@ -92,6 +92,7 @@
             <a href="/maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
+            <a href="/maintenance/fees-management">Fees Management</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
         </div>
 
@@ -432,12 +433,10 @@
     function proceedToPayment(enrollmentIdLet, sectionNumberLet) {
         // Re-fetch the sectionNumber to ensure we have the latest value
         sectionNumberLet = document.querySelector("#section").value;
-        console.log(sectionNumberLet);
-        console.log(enrollmentIdLet);
 
-        if (!enrollmentIdLet || !sectionNumberLet) {
-            console.error("Missing enrollmentId or sectionNumber:", { enrollmentIdLet, sectionNumberLet });
-            alert("Error: Enrollment ID or Section Number is missing.");
+        // Check if section is selected
+        if (!sectionNumberLet || sectionNumberLet === "") {
+            alert("⚠️ Please select a section before proceeding.");
             return;
         }
 
@@ -451,12 +450,20 @@
             .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
             .then(({ text, status }) => {
                 console.log(`🔹 API Response (${status}): ${text}`);
+
+                if (status === 200) {
+                    alert("✅ Enrollment successfully moved to payment.");
+                    location.reload(); // Reloads the page
+                } else {
+                    alert(`⚠️ ${text}`); // Shows backend response in an alert
+                }
             })
             .catch(error => {
                 console.error("🚨 Error calling proceedToPayment API:", error);
-                alert("Error: Unable to proceed with payment.");
+                alert("❌ Error: Unable to proceed with payment.");
             });
     }
+
 
 
     // Populate table with assessments

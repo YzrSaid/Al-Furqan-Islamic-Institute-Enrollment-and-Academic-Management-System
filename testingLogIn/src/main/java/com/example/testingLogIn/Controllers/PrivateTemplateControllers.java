@@ -87,6 +87,12 @@ public class PrivateTemplateControllers {
         return "/maintenance/subject-maintenance";
     }
 
+    @GetMapping("/maintenance/fees-management")
+    public String getFeesManagement(){
+        return "/maintenance/fees-management";
+    }
+
+
     // these are for reports pages
 
     @GetMapping("/reports/academic-resources")

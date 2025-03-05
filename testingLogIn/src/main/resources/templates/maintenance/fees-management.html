@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+<script th:src="@{/js/script.js}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
@@ -33,47 +34,7 @@
                 }
             }
         });
-        getCurrentlyEnrolled();
     });
-    function getCurrentlyEnrolled() {
-        fetch("/enrollment/all/enrolled")
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch grade levels");
-                return res.json();
-            })
-            .then(data => {
-                const tableBody = document.querySelector("#realginnas tbody");
-                tableBody.innerHTML = "";
-
-                data.forEach(rec => {
-                    console.log(rec);
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                                    <tr>
-                                    <td>1</td>
-                                        <td>${rec.studentId}</td>
-                                        <td>${rec.studentFirstName} ${rec.studentLastName}</td>
-                                        <td>${rec.sectionToEnroll}</td>
-                                        <td>
-                                            <div class="status-container">
-                                                <div class="status" id="student-type">New</div>
-                                            </div>
-                                        </td>
-//                                        <td id="eligibility">Qualified</td>
-//                                        <td>
-//
-//                                            <div class="status-container">
-//                                                <div class="status" id="status-enrolled">Enrolled</div>
-//
-//                                            </div>
-//                                        </td>
-                                    </tr>`;
-
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error("Error:", error));
-    }
 </script>
 
 <body>
@@ -93,15 +54,15 @@
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
             <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="enrollment-submenu">
-            <a href="/enrollment/listing" >Listing/Register</a>
+            <a href="/enrollment/listing">Listing/Register</a>
             <a href="/enrollment/assessment">Assessment</a>
             <a href="/enrollment/payment">Payment</a>
-            <a href="/enrollment/enrolled" class="second-active">Enrolled</a>
+            <a href="/enrollment/enrolled">Enrolled</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
@@ -122,7 +83,7 @@
             <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
         </a>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
             <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
                 class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
@@ -131,7 +92,7 @@
             <a href="/maintenance/grade-level">Grade Level</a>
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
-            <a href="/maintenance/fees-management">Fees Management</a>
+            <a href="/maintenance/fees-management" class="second-active">Fees Management</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
         </div>
 
@@ -184,14 +145,12 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>Enrolled</h4>
+            <h4>Fees Management</h4>
             <p>Main</p>
             <p>/</p>
-            <p>Transaction</p>
+            <p>Maintenance</p>
             <p>/</p>
-            <p>Enrollment</p>
-            <p>/</p>
-            <p>Enrolled</p>
+            <p>Fees Management</p>
         </div>
 
         <div class="search-div">
@@ -213,120 +172,113 @@
         </div>
 
         <!-- Table -->
-        <table class="listing-table">
+        <table id="lamesa" class="fees-table">
             <thead>
                 <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Enrolled Grade Level & Section</th>
-                    <th>Type</th>
-                    <th>??</th>
-                    <th>??</th>
-                    <th>??</th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Grade Level</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
-                    <td>Martin Francisco</td>
-                    <td>Grade 1 - Baliwasan</td>
-                    <td>Grade 2 - Rizal</td>
                     <td>
-                        <div class="status-container">
-                            <div class="status" id="student-type">New</div>
-                        </div>
+                        <!-- Name --> Book
                     </td>
-                    <td id="eligibility">Qualified</td>
                     <td>
-
-                        <div class="status-container">
-                            <div class="status" id="status-enrolled">Enrolled</div>
-
+                        <span>₱</span>2, 000
+                    </td>
+                    <td>Grade 1, Grade 2, Grade 3</td>
+                    <td>
+                        <div class="action-container">
+                            <div class="action">
+                                <img data-open-modal="feesManagementEditModal" src="/images/icons/compose.png"
+                                    alt="fees-management-icon">
+                            </div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <!-- Confirmation Modal -->
+
+        <!-- Add Fees Management Button -->
+        <div class="add-something-btn-container">
+            <button class="add-something-btn" data-open-modal="feesManagementModal">Add Grade
+                Level</button>
+        </div>
+
+        <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
-                <p id="modalText">Are you sure?</p>
+                <p id="modalText"></p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
+                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
 
-        <!-- Modal for viewing grades -->
-        <div id="viewGradesModal" class="view-grades-modal modal">
-            <div class="view-grades-modal-content">
-                <h2>Student Grades</h2>
+        <!-- Modal for adding fees -->
+        <div id="feesManagementModal" class="fees-management-modal modal">
+            <div class="fees-management-modal-content">
+                <h2>Add New Fee</h2>
+                <form method="post" action="" id="feesManagementForm">
+                    <label for="paymentName">Payment Name:</label>
+                    <input type="text" id="paymentName">
+                    <br><br>
 
-                <div class="half-width" id="view-grade-studId">
-                    <label for="student-id">Student ID:</label>
-                    <h6 id="student-id">0001</h6>
-                </div>
-                <div class="half-width" id="view-grade-studName">
-                    <label for="student-name">Student Name:</label>
-                    <h6 id="student-name">Martin Francisco</h6>
-                </div> <br>
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount">
 
-                <!-- Grades Table -->
-                <table class="view-grades-table">
-                    <thead>
-                        <tr>
-                            <th>Subject ID</th>
-                            <th>Subject</th>
-                            <th>Grade</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>001</td>
-                            <td>English</td>
-                            <td>78</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status" id="grade-remarks">Pass</div>
-                                </div>
-                            </td>
-                        </tr>
+                    <h6>Grade Levels Required by this Payment:</h6>
 
-                        <tr id="average-row">
-                            <td colspan="2">Average</td>
-                            <td>90</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status" id="average-remarks">Pass</div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <div class="payment-container">
+                        <div class="payment">
+                            <input type="checkbox" id="" name="payment" value="payment">
+                            <label for="payment"></label>
+                        </div>
+                    </div>
 
-                <!-- <div class="half-width" id="view-grade-average">
-                    <label for="grade-average">Final Average:</label>
-                    <input type="text" id="average-input" readonly value="90">
-                </div>
-                
-                <div class="half-width" id="view-grade-remarks">
-                    <label for="grade-average">Remarks:</label>
-                    <div class="status-container">
-                        <div class="status" id="grade-remarks">Pass</div>
-                    </div>  
-                </div> -->
-
-                <!-- Close button -->
-                <div class="close-button" id="view-grades-close-btn">
-                    <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
-                        id="close-button">Close</button>
-                </div>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="addFee"
+                            data-message="Are you sure you want to save this Fee?" id="confirmFee"
+                            data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="feesManagementModal">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
+
+        <!-- Modal for editing the grade level -->
+        <div id="feesManagementEditModal" class="fees-management-edit-modal modal">
+            <div class="fees-management-edit-modal-content">
+                <h2>Fee Information</h2>
+                <form method="" action="" id="gradeLevelEditForm">
+                    <label for="levelName">Grade Level Name:</label>
+                    <input type="text" id="levelNameEdit" name="levelName" readonly required>
+                    <br><br>
+
+                    <label for="pre-req">Pre-Requisite Grade Level</label>
+                    <select name="pre-req" id="pre-req-grade-level-edit">
+                        <option value="" disabled>Choose a pre-requisite</option>
+                        <option value="NONE">None</option>
+                    </select>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="editGradeLevel"
+                            data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
+                            Edit
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
-    <script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

@@ -2,19 +2,26 @@ package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
+import com.example.testingLogIn.ModelDTO.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.GradeLevel;
+import com.example.testingLogIn.Models.GradeLevelToRequiredPayment;
 import com.example.testingLogIn.Models.PaymentCompleteCheck;
+import com.example.testingLogIn.Models.RequiredFees;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
+import com.example.testingLogIn.Repositories.PaymentsRecordRepo;
+import com.example.testingLogIn.Repositories.RequiredPaymentsRepo;
 import com.example.testingLogIn.Repositories.SectionRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 /**
@@ -31,10 +38,13 @@ public class EnrollmentServices {
     private final StudentSubjectGradeServices ssgService;
     private final PaymentCheckerService pcs;
     private final GradeLevelRequiredFeeRepo gradeLevelRequiredFeeRepo;
+    private final GradeLevelRequiredFeeRepo gradelvlReqFeesRepo;
+    private final PaymentsRecordRepo payRecRepo;
     @Autowired
     public EnrollmentServices(StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo,
                                 EnrollmentRepo enrollmentRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, 
-                                PaymentCheckerService pcs, GradeLevelRequiredFeeRepo gradeLevelRequiredFeeRepo) {
+                                PaymentCheckerService pcs, GradeLevelRequiredFeeRepo gradeLevelRequiredFeeRepo, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo,
+                                PaymentsRecordRepo payRecRepo) {
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
         this.sySemRepo = sySemRepo;
@@ -43,6 +53,8 @@ public class EnrollmentServices {
         this.ssgService = ssgService;
         this.pcs=pcs;
         this.gradeLevelRequiredFeeRepo = gradeLevelRequiredFeeRepo;
+        this.gradelvlReqFeesRepo = gradelvlReqFeesRepo;
+        this.payRecRepo = payRecRepo;
     }
     
     public boolean addStudentToListing(StudentDTO stud){
@@ -161,5 +173,39 @@ public class EnrollmentServices {
             return EnrollmentStatus.PAYMENT;
         else
             return EnrollmentStatus.ENROLLED;
+    }
+    
+    public EnrollmentDTO getEnrollment(int enrollmentId){
+        return enrollmentRepo.findById(enrollmentId).orElse(null).DTOmapper();
+    }
+    
+    public EnrollmentPaymentView getStudentPaymentStatus(int enrollmentId){
+        Enrollment er = enrollmentRepo.findById(enrollmentId).orElse(null);
+        EnrollmentPaymentView epv = EnrollmentPaymentView.builder()
+                                        .studentId(er.getStudent().getStudentId())
+                                        .studentFirstName(er.getStudent().getFirstName())
+                                        .studentLastName(er.getStudent().getLastName())
+                                        .studentMiddleName(er.getStudent().getMiddleName())
+                                        .feeStatus(new HashMap<>())
+                                        .build();
+        
+        List<GradeLevelToRequiredPayment> gradeFeeList = gradelvlReqFeesRepo.
+                                        findByGradeLevel(er.getGradeLevelToEnroll().getLevelId());
+        int actvSemId = sySemRepo.findCurrentActive().getSySemNumber();
+        gradeFeeList
+                .forEach(reqFee -> {
+                    RequiredFees toPay = reqFee.getRequiredFee();
+                    double totalCurrentlyPaid = 0;
+                    try{
+                        totalCurrentlyPaid = payRecRepo.getTotalPaidByStudentForFeeInSemester
+                                                (er.getStudent().getStudentId(), toPay.getId(), actvSemId);
+                    }catch(NullPointerException npe){}
+                    String status = totalCurrentlyPaid == 0 ? "Unpaid" : 
+                                    totalCurrentlyPaid > 0 && totalCurrentlyPaid < toPay.getRequiredAmount() ? "Partially Paid":
+                                    "Fully Paid";
+                    epv.getFeeStatus().put(toPay, status);
+                });
+        
+        return epv;
     }
 }

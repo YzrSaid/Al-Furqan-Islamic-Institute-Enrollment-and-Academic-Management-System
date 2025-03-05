@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
+import com.example.testingLogIn.ModelDTO.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Services.EnrollmentServices;
 import java.util.List;
@@ -44,6 +45,26 @@ public class EnrollmentController {
     public ResponseEntity<List<EnrollmentDTO>> getEnrollmentRecordsByStatus(@PathVariable String status){
         try{
             return new ResponseEntity<>(enrollmentService.getAllEnrollment(status),HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
+    @GetMapping("/{enrollmentId}")
+    public ResponseEntity<EnrollmentDTO> getEnrollmentRecord(@PathVariable int enrollmentId){
+        try{
+            return new ResponseEntity<>(enrollmentService.getEnrollment(enrollmentId),HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
+    @GetMapping("/paymentView/{enrollmentId}")
+    public ResponseEntity<EnrollmentPaymentView> getEnrollmentPaymentView(@PathVariable int enrollmentId){
+        try{
+            return new ResponseEntity<>(enrollmentService.getStudentPaymentStatus(enrollmentId),HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);

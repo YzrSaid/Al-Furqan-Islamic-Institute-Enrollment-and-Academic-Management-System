@@ -70,7 +70,7 @@ public class Enrollment {
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
                             .gradeLevelToEnroll(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)
-                            .sectionToEnroll(sectionToEnroll != null ? gradeLevel+" - "+sectionToEnroll.getSectionName() : null)
+                            .sectionToEnroll(sectionToEnroll != null ? gradeLevelToEnroll.getLevelName()+" - "+sectionToEnroll.getSectionName() : null)
                             .enrollmentStatus(enrollmentStatus)
                             .studentMiddleName(student.getMiddleName())
                             .remarks(remarks)

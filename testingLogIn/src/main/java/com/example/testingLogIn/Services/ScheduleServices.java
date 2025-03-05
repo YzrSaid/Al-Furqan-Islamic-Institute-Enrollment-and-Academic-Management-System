@@ -8,6 +8,7 @@ import com.example.testingLogIn.Repositories.ScheduleRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,22 +61,25 @@ public class ScheduleServices {
         if(teacher == null){
             throw new NullPointerException();
         }
-        return  scheduleRepo.findAll().stream()
-                            .filter(sched -> sched.isNotDeleted() &&
-                                            sched.getTeacher().getStaffId() == teacher.getStaffId())
+        return  scheduleRepo.findTeacherchedules(teacher.getStaffId()).stream()
+                            .sorted(Comparator
+                                    .comparing(Schedule::getDay)
+                                    .thenComparing(Schedule::getTimeStart))
                             .map(Schedule::mapper)
                             .collect(Collectors.toList());
     }
     
     public List<ScheduleDTO> getSchedulesBySection(String sectionName){
-        Section section = sectionService.getSectionByName(sectionName.toLowerCase());
+        System.out.println(sectionName);
+        Section section = sectionService.getSectionByName(sectionName);
+        System.out.println(section.getSectionName());
         if(section == null)
             throw new NullPointerException();
         
-        return scheduleRepo.findAll().stream()
-                           .filter(sched -> sched.isNotDeleted() &&
-                                            sched.getSection().getSectionName().toLowerCase()
-                                                    .equals(section.getSectionName().toLowerCase()))
+        return scheduleRepo.findSectionSchedules(section.getNumber()).stream()
+                            .sorted(Comparator
+                                .comparing(Schedule::getDay)
+                                .thenComparing(Schedule::getTimeStart))
                             .map(Schedule::mapper)
                             .toList();
     }
@@ -120,14 +124,16 @@ public class ScheduleServices {
     private boolean isTeacherSchedConflict(UserModel teacher, ScheduleDTO sDTO,boolean isForAdd){
         if(isForAdd)
             return scheduleRepo.isTeacherConflict(
-                                            null, 
+                                                null, 
                                                 teacher.getStaffId(), 
+                                                sDTO.getDay(),
                                                 sDTO.getTimeStart(), 
                                                 sDTO.getTimeEnd());
         else
             return scheduleRepo.isTeacherConflict(
                                             sDTO.getScheduleNumber(), 
-                                                teacher.getStaffId(), 
+                                                teacher.getStaffId(),
+                                                sDTO.getDay(),
                                                 sDTO.getTimeStart(), 
                                                 sDTO.getTimeEnd());
     }
@@ -135,14 +141,16 @@ public class ScheduleServices {
     private boolean isSectionSchedConflict(Section section, ScheduleDTO sDTO,boolean isForAdd){
         if(isForAdd)
         return scheduleRepo.isSectionConflict(
-                                            null, 
-                                                section.getNumber(), 
+                                                null, 
+                                                section.getNumber(),
+                                                sDTO.getDay(),
                                                 sDTO.getTimeStart(), 
                                                 sDTO.getTimeEnd());
         else
             return scheduleRepo.isSectionConflict(
-                                            sDTO.getScheduleNumber(), 
-                                                section.getNumber(), 
+                                                sDTO.getScheduleNumber(), 
+                                                section.getNumber(),
+                                                sDTO.getDay(),
                                                 sDTO.getTimeStart(), 
                                                 sDTO.getTimeEnd());
     }

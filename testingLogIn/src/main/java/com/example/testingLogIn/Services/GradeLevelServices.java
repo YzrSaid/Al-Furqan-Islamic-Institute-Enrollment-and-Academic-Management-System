@@ -77,8 +77,8 @@ public class GradeLevelServices {
     
     public boolean deleteGradeLevel(int levelId){
         GradeLevel todelete = gradeLevelRepo.findAll().stream()
-                                           .filter(gradeL -> gradeL.getLevelId() == levelId &&
-                                                             gradeL.isNotDeleted())
+                                           .filter(gradeL -> gradeL.isNotDeleted() && 
+                                                   gradeL.getLevelId() == levelId)
                                            .findFirst().orElse(null);
         
         if(todelete !=null){

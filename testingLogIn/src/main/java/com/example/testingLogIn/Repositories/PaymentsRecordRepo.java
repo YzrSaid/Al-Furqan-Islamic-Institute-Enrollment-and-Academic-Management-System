@@ -42,4 +42,13 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
            "WHERE pr.student.studentId = :studentId "+
            "ORDER BY pr.datePaid DESC")
     List<PaymentRecords> getAllStudentPaymentRecord(@Param("studentId") int studentId);
+    
+    @Query("SELECT SUM(pr.amount) from PaymentRecords pr "+
+            "WHERE pr.student.studentId = :studentId "+
+            "AND pr.SYSem.sySemNumber = :semId "+
+            "AND pr.requiredPayment.id = :reqPaymentId")
+    Double getTotalPaidByStudentForFeeInSemester(
+            @Param("studentId") int studentId,
+            @Param("reqPaymentId") int reqPaymentId,
+            @Param("semId") int semId);
 }

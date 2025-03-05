@@ -145,9 +145,10 @@ public class SectionServices {
     }
     
     public Section getSectionByName(String sectionName){
+        System.out.println("Getting section named "+sectionName);
         return sectionRepo.findAll().stream()
                           .filter(section -> section.isNotDeleted() &&
-                                            sectionName.equals(section.getSectionName().toLowerCase()))
+                                            section.getSectionName().toLowerCase().equalsIgnoreCase(sectionName))
                           .findFirst().orElse(null);
     }
     

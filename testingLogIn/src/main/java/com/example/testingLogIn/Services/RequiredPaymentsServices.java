@@ -57,7 +57,6 @@ public class RequiredPaymentsServices {
                                                 .filter(reqPayment -> reqPayment.isNotDeleted() && 
                                                                         reqPayment.getName().equalsIgnoreCase(paymentsDTO.getName()))
                                                 .findFirst().orElse(null);
-            System.out.println(newFee.getName());
             
             List<GradeLevel> gradeLevels = gradeLevelService.getAllGradeLevels().stream()
                                                         .filter(gradelvl -> paymentsDTO.getGradeLevelNames().contains(gradelvl.getLevelName()))

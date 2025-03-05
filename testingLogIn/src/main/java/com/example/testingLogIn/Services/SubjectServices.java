@@ -23,9 +23,9 @@ public class SubjectServices {
     
     public List<SubjectDTO> getSubjectByGrade(String gradeLevel){
         return subjectRepo.findAll().stream()
-                          .filter(subject -> subject.getGradeLevel().getLevelName().toLowerCase()
-                                                    .equals(gradeLevel.toLowerCase()) &&
-                                                    subject.getGradeLevel().isNotDeleted() &&
+                          .filter(subject ->subject.getGradeLevel().isNotDeleted() && 
+                                            subject.getGradeLevel().getLevelName().toLowerCase()
+                                                   .equals(gradeLevel.toLowerCase()) &&
                                              subject.isNotDeleted())
                           .map(Subject::mapper)
                           .collect(Collectors.toList());
@@ -33,8 +33,8 @@ public class SubjectServices {
     
     public SubjectDTO getSubject(int subjectNumber){
         Subject sub = subjectRepo.findAll().stream()
-                                 .filter(subj -> subj.getSubjectNumber()==subjectNumber &&
-                                                subj.getGradeLevel().isNotDeleted() &&
+                                 .filter(subj -> subj.getGradeLevel().isNotDeleted() &&
+                                                subj.getSubjectNumber()==subjectNumber &&
                                                 subj.isNotDeleted())
                                  .findFirst().orElse(null);
         
@@ -115,9 +115,9 @@ public class SubjectServices {
     
     private boolean doesSubjectNameExist(int levelId,String subjectName){
         return subjectRepo.findAll().stream()
-                          .filter(sub ->subjectName.equals(sub.getSubjectName()) &&
-                                        sub.getGradeLevel().getLevelId() == levelId &&
-                                        sub.isNotDeleted())
+                          .filter(sub ->sub.isNotDeleted() && 
+                                        subjectName.equals(sub.getSubjectName()) &&
+                                        sub.getGradeLevel().getLevelId() == levelId)
                           .findFirst().orElse(null) != null;
     }
 }

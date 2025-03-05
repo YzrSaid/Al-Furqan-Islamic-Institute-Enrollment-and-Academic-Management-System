@@ -859,6 +859,24 @@ th {
   width: 12%;
 }
 
+/* for fees table (maintenance) */
+.fees-table th:nth-child(1),
+.fees-table td:nth-child(1) {
+  width: 20%;
+}
+.fees-table th:nth-child(2),
+.fees-table td:nth-child(2) {
+  width: 15%;
+}
+.fees-table th:nth-child(3),
+.fees-table td:nth-child(3) {
+  width: 30%;
+}
+.fees-table th:nth-child(4),
+.fees-table td:nth-child(4) {
+  width: 12%;
+}
+
 /* for teacher table (maintenance) */
 .teacher-table th:nth-child(1),
 .teacher-table td:nth-child(1) {
@@ -996,7 +1014,8 @@ table td {
 .teacher-report-table,
 .payment-report-table,
 .acad-resources-table,
-.assessment-table {
+.assessment-table,
+.fees-table {
   width: 92.5%;
   margin: 0px 50px;
 }
@@ -1551,6 +1570,8 @@ input[type="checkbox"] {
 .old-student-modal-content h2,
 .add-grade-level-assessment-modal h2,
 .list-of-payments-modal h2,
+.fees-management-modal-content h2,
+.fees-management-edit-modal-content h2,
 .add-payment-modal h2 {
   font-size: 25px;
   font-weight: bold;
@@ -1589,7 +1610,9 @@ input[type="checkbox"] {
 .view-grades-modal-content label,
 .add-grade-level-assessment-modal-content label,
 .list-of-payments-modal-content label,
-.add-payment-modal-content label {
+.add-payment-modal-content label,
+.fees-management-modal-content label,
+.fees-management-edit-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -1607,14 +1630,17 @@ input[type="checkbox"] {
 .my-account-edit-modal-content input,
 .change-password-modal-content input,
 .view-grades-modal-content input,
+.fees-management-modal-content input,
 .add-grade-level-assessment-modal-content input,
 .list-of-payments-modal-content input,
+.fees-management-edit-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
 .subject-modal-content select,
 .teacher-modal-content select,
 .section-modal-content select,
+.fees-management-modal-content select,
 .grade-level-edit-modal-content select,
 .section-edit-modal-content select,
 .subject-edit-modal-content select,
@@ -1639,7 +1665,9 @@ input[type="checkbox"] {
 /* grade level modal and school year modal*/
 .grade-level-modal,
 .add-grade-level-assessment-modal,
-.school-year-modal {
+.school-year-modal,
+.fees-management-modal,
+.fees-management-edit-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -1654,10 +1682,27 @@ input[type="checkbox"] {
 
 .grade-level-modal.show,
 .school-year-modal.show,
+.fees-management-modal.show,
+.fees-management-edit-modal.show,
 .add-grade-level-assessment-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
+}
+
+.fees-management-modal-content,
+.fees-management-edit-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 500px;
+  min-height: 40vh;
+  /* max-height: 70vh; */
+
+  text-align: left;
+  position: relative;
+  z-index: 1001;
 }
 
 .grade-level-modal-content,
@@ -2306,5 +2351,33 @@ td[rowspan] {
   transform: translateY(-50%);
   width: 20px; /* Adjust icon size */
   height: 20px;
+  cursor: pointer;
+}
+
+.payment-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  gap: 10px; /* Spacing between items */
+}
+
+.payment {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.payment input[type="checkbox"] {
+  transform: scale(1);
+  cursor: pointer;
+}
+
+.payment label {
+  font-size: 14px;
+  font-weight: bold;
+  flex-grow: 1;
+  text-align: left;
   cursor: pointer;
 }

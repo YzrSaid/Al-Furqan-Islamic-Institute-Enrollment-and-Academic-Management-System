@@ -515,8 +515,13 @@ document.addEventListener("DOMContentLoaded", function () {
         proceedToAssessment(enrollmentIdLet);
         break;
       case "proceedToPayment":
-        proceedToPayment(enrollmentIdLet, sectionNumberLet);  
+        proceedToPayment(enrollmentIdLet, sectionNumberLet);
         break;
+      case "addFee":
+        addFee();
+        break;
+      case "editFee":
+        editFee();  
       default:
         alert("Unknown action: " + action);
         return;
@@ -936,23 +941,23 @@ function printReport() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const passwordField = document.getElementById("password");
-    const toggleIcon = document.getElementById("togglePassword");
+  const passwordField = document.getElementById("password");
+  const toggleIcon = document.getElementById("togglePassword");
 
-    if (!passwordField || !toggleIcon) {
-        console.error("Password field or toggle icon not found!");
-        return;
+  if (!passwordField || !toggleIcon) {
+    console.error("Password field or toggle icon not found!");
+    return;
+  }
+
+  toggleIcon.addEventListener("click", function () {
+    if (passwordField.type === "password") {
+      passwordField.type = "text"; // Show password
+      toggleIcon.src = "/images/icons/eye.png"; // Open eye icon
+      toggleIcon.alt = "Hide Password"; // Update alt text
+    } else {
+      passwordField.type = "password"; // Hide password
+      toggleIcon.src = "/images/icons/hidden-pass.png"; // Closed eye icon
+      toggleIcon.alt = "Show Password"; // Update alt text
     }
-
-    toggleIcon.addEventListener("click", function () {
-        if (passwordField.type === "password") {
-            passwordField.type = "text"; // Show password
-            toggleIcon.src = "/images/icons/eye.png"; // Open eye icon
-            toggleIcon.alt = "Hide Password"; // Update alt text
-        } else {
-            passwordField.type = "password"; // Hide password
-            toggleIcon.src = "/images/icons/hidden-pass.png"; // Closed eye icon
-            toggleIcon.alt = "Show Password"; // Update alt text
-        }
-    });
+  });
 });

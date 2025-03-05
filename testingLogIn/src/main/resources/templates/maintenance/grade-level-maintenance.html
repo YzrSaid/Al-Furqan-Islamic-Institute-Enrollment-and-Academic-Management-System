@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -432,13 +433,13 @@
 
         document.addEventListener("click", function (event) {
             const target = event.target;
-            console.log("Clicked Element:", target); // ✅ Debug element
-            console.log("Element Dataset:", target.dataset); // ✅ Check all dataset attributes
+            console.log("Clicked Element:", target); 
+            console.log("Element Dataset:", target.dataset); 
 
             if (target.dataset.openModal === "gradeLevelEditModal") {
-                console.log("Target has openModal attribute!"); // ✅ Debug confirmation
+                console.log("Target has openModal attribute!");
                 const gradeLevelId = target.dataset.id;
-                console.log("Grade Level ID:", gradeLevelId); // ✅ Check if ID is present
+                console.log("Grade Level ID:", gradeLevelId); 
 
                 if (!gradeLevelId) {
                     console.error(

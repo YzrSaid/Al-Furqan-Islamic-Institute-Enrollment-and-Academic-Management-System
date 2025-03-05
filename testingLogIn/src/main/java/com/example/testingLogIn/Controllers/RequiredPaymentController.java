@@ -30,6 +30,8 @@ public class RequiredPaymentController {
     
     @PostMapping("/add")
     public ResponseEntity<String> addRequiredPayments(@RequestBody RequiredPaymentsDTO reqPayments){
+        System.out.println(reqPayments);
+
         try{
             if(reqPaymentService.addNewPayments(reqPayments))
                 return new ResponseEntity<>("New payment added successfully",HttpStatus.OK);

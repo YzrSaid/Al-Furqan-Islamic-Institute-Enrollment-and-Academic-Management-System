@@ -111,7 +111,9 @@ public class RequiredPaymentsServices {
     
     public boolean updatePayment(int feeId, RequiredPaymentsDTO updated){
         RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
-        
+        toUpdate.setName(updated.getName());
+        toUpdate.setRequiredAmount(updated.getRequiredAmount());
+        reqPaymentsRepo.save(toUpdate);
         if(toUpdate == null)
             return false;
         

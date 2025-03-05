@@ -13,7 +13,7 @@ import java.util.Enumeration;
 public class PublicController {
     @GetMapping("/login")
     public String getPage(){
-        return "LogIn";
+        return "login";
     }
     
     @GetMapping("/signing")

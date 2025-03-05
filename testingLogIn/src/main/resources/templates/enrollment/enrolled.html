@@ -50,23 +50,9 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                                     <tr>
-                                    <td>1</td>
                                         <td>${rec.studentId}</td>
                                         <td>${rec.studentFirstName} ${rec.studentLastName}</td>
                                         <td>${rec.sectionToEnroll}</td>
-                                        <td>
-                                            <div class="status-container">
-                                                <div class="status" id="student-type">New</div>
-                                            </div>
-                                        </td>
-//                                        <td id="eligibility">Qualified</td>
-//                                        <td>
-//
-//                                            <div class="status-container">
-//                                                <div class="status" id="status-enrolled">Enrolled</div>
-//
-//                                            </div>
-//                                        </td>
                                     </tr>`;
 
                     tableBody.appendChild(row);
@@ -213,16 +199,12 @@
         </div>
 
         <!-- Table -->
-        <table class="listing-table">
+        <table id="realginnas" class="listing-table">
             <thead>
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
                     <th>Enrolled Grade Level & Section</th>
-                    <th>Type</th>
-                    <th>??</th>
-                    <th>??</th>
-                    <th>??</th>
                 </tr>
             </thead>
             <tbody>

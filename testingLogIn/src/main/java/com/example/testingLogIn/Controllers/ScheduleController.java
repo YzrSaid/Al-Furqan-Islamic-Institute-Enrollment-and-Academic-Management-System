@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  * @author magno
  */
-@RequestMapping("/schedules")
+@RequestMapping("/schedules/")
 @Controller
 public class ScheduleController {
     
     @Autowired
     private ScheduleServices scheduleService;
     
-    @GetMapping("/teacher/{teacherName}")
+    @GetMapping("teacher/{teacherName}")
     public ResponseEntity<List<ScheduleDTO>> getSchedulesByTeacher(@PathVariable String teacherName){
         try{
             return new ResponseEntity<>(scheduleService.getSchedulesByTeacher(teacherName),HttpStatus.OK);
@@ -38,7 +38,7 @@ public class ScheduleController {
         }
     }
     
-        @GetMapping("/section/{sectionName}")
+        @GetMapping("section/{sectionName}")
     public ResponseEntity<List<ScheduleDTO>> getSchedulesBySection(@PathVariable String sectionName){
         try{
             return new ResponseEntity<>(scheduleService.getSchedulesBySection(sectionName),HttpStatus.OK);
@@ -53,7 +53,7 @@ public class ScheduleController {
             return new ResponseEntity<>(authentication.getName(),HttpStatus.OK);
     }
     
-    @PostMapping("/add")
+    @PostMapping("add")
     public ResponseEntity<Map<String,List<ScheduleDTO>>> addSchedules(@RequestBody List<ScheduleDTO> schedules){
         System.out.println("I'm going to add");
         try{

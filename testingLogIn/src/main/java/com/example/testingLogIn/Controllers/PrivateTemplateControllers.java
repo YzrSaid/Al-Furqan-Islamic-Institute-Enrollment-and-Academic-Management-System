@@ -161,11 +161,8 @@ public class PrivateTemplateControllers {
         return "/schedule/schedule";
     }
     
-    @GetMapping("/schedule/schedule-board")
+    @GetMapping("/schedules/sched-board")
     public String getSchedBoard(){
         return "/schedule/sched-board";
     }
-
-
- 
 }

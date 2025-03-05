@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="../../static/css/styles.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
+    <!-- Bootstrap JS -->
+    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.4.2/css/all.min.css}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
@@ -30,7 +34,6 @@
                 let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
                 if (arrowIconImg) {
                     arrowIconImg.src = "/images/icons/greater-than.png";
-                    // arrowIconImg.thsrc = "@{/images/icons/greater-than.png}";
                 }
             }
         });
@@ -38,105 +41,104 @@
 </script>
 
 <body>
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="text-center">
-        <div class="school-logo">
-            <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="text-center">
+            <div class="school-logo">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+            </div>
+            <p class="mt-2">S.Y. 2024-2025</p>
+            <div class="welcome-div">
+                <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+            </div>
         </div>
-        <p class="mt-2">S.Y. 2024-2025</p>
-        <div class="welcome-div">
-            <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+
+        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
+            <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
+        </a>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing">Listing/Register</a>
+            <a href="/enrollment/assessment">Assessment</a>
+            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled">Enrolled</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="transaction-submenu">
+            <a href="/transaction/tuition">Tuition</a>
+            <a href="/transaction/academic-resources">Academic Resources</a>
+        </div>
+
+        <a href="/grade-management" class="sidebar-icons">
+            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
+        </a>
+
+        <a href="/schedule" class="sidebar-icons">
+            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
+        </a>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
+            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="maintenance-submenu">
+            <a href="/maintenance/school-year">School Year</a>
+            <a href="/maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/subject">Subject</a>
+            <a href="/maintenance/section">Section</a>
+            <a href="/maintenance/fees-management">Fees Management</a>
+        </div>
+
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
+            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="reports-submenu">
+            <a href="/reports/student" class="second-active">Student Reports</a>
+            <a href="/reports/payment">Payment Reports</a>
+            <a href="/reports/teacher">Teacher Report</a>
+            <a href="/reports/academic-resources">Academic Resources Reports</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="account-submenu">
+            <a href="/accounts/verify-accounts">Verify Accounts</a>
+            <a href="/accounts/manage-accounts">Manage Accounts</a>
+            <a href="/accounts/my-account">My Account</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
+            <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="settings-submenu">
+            <a href="/settings/create-user">Create User</a>
         </div>
     </div>
-
-    <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
-        <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
-    </a>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
-        <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
-        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="enrollment-submenu">
-        <a href="/enrollment/listing">Listing/Register</a>
-        <a href="/enrollment/assessment">Assessment</a>
-        <a href="/enrollment/payment">Payment</a>
-        <a href="/enrollment/enrolled">Enrolled</a>
-    </div>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-        <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
-        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="transaction-submenu">
-        <a href="/transaction/tuition">Tuition</a>
-        <a href="/transaction/academic-resources">Academic Resources</a>
-    </div>
-
-
-    <a href="/grade-management" class="sidebar-icons">
-        <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
-    </a>
-
-    <a href="/schedule" class="sidebar-icons">
-        <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
-    </a>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-        <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
-            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="maintenance-submenu">
-        <a href="/maintenance/school-year">School Year</a>
-        <a href="/maintenance/grade-level">Grade Level</a>
-        <a href="/maintenance/subject">Subject</a>
-        <a href="/maintenance/section">Section</a>
-        <a href="/maintenance/fees-management">Fees Management</a>
-        <!-- <a href="/maintenance/teacher">Teacher</a> -->
-    </div>
-
-    <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-        <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="reports-submenu">
-        <a href="/reports/student" class="second-active">Student Reports</a>
-        <a href="/reports/payment">Payment Reports</a>
-        <a href="/reports/teacher">Teacher Report</a>
-        <a href="/reports/academic-resources">Academic Resources Reports</a>
-    </div>
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-        <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
-                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="account-submenu">
-        <a href="/accounts/verify-accounts">Verify Accounts</a>
-        <a href="/accounts/manage-accounts">Manage Accounts</a>
-        <a href="/accounts/my-account">My Account</a>
-    </div>
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-        <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="settings-submenu">
-        <a href="/settings/create-user">Create User</a>
-    </div>
-</div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
         <div class="topbar">
             <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
-                    <img src="../../static/images/icons/burger_menu_icon.png" alt="Menu">
+                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
                 </span>
-
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
             <div class="dropdown-logout">
                 <div class="user-icon dropdown-logout-toggle">
-                    <img src="../../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
+                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
@@ -145,6 +147,7 @@
                 </div>
             </div>
         </div>
+
         <div class="text-link">
             <h4>Student Reports</h4>
             <p>Main</p>
@@ -198,19 +201,19 @@
                     <td>
                         <div class="dropdown">
                             <div class="action-container action">
-                                <a href="#" class="view-student" data-action="viewStudentReportModal"><img src="../../static/images/icons/eye.png"
-                                        alt="edit-icon"></a>
+                                <a href="#" class="view-student" data-action="viewStudentReportModal">
+                                    <img th:src="@{/images/icons/eye.png}" alt="edit-icon">
+                                </a>
                             </div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-
-        <!-- viewStudentReportModal -->
-
     </div>
-    <script src="../../static/js/script.js"></script>
+
+    <!-- Custom JS -->
+    <script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

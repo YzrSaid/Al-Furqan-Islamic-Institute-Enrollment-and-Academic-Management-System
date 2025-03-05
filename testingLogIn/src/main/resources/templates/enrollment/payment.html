@@ -65,7 +65,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="dropdown-status-content" id="dropdown-listing">
-                                                    <a href="#" class="action" data-open-modal="listOfPaymentsModal">View List of Payments</a>
+                                                    <a href="#" class="action" data-open-modal="listOfPaymentsModal" data-enrollment-id="${rec.enrollmentId}">View List of Payments</a>
                                                     <a href="#" data-open-modal="confirmationModal" data-action="proceedPayment"
                                                         data-message="Are you sure you want to proceed and finish enrollment?">Proceed</a>
                                                         <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
@@ -79,11 +79,76 @@
             })
             .catch(error => console.error("Error:", error));
     }
+    
+        document.addEventListener("click", function (event) {
+        const proceedButton = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
+        
+        if (proceedButton) {
+            const enrollmentId = proceedButton.getAttribute("data-enrollment-id");
+            if (!enrollmentId) return console.error("Enrollment Id Not FOund");
+
+            console.log("Grade Level Selected:", enrollmentId);
+
+            // Populate sections dropdown
+            fetchPayments(enrollmentId);
+        }
+    });
+    
+    function fetchPayments(enrollmentId){
+                fetch(`/enrollment/paymentView/${enrollmentId}`)
+            .then(res => res.json())
+            .then(epv => {
+                console.log('The object is',epv);
+                const studentname = document.querySelector("#student-name"); // Modal select tag
+                const studentId = document.querySelector("#student-id");
+                if (!studentname || !studentId) return console.error("Dropdown for sections not found");
+
+                studentname.textContent = epv.studentFirstName+' '+epv.studentLastName; // Default option
+                studentId.textContent = epv.studentId;
+                
+                const tableBody = document.querySelector("#table-ni-kharl tbody");
+                tableBody.innerHTML = "";
+                const feeStatusArray = Object.entries(epv.feeStatus);
+                    // Iterate over the array
+                    feeStatusArray.forEach(([key, value]) => {
+                        const match = key.match(/name=([^,]+), requiredAmount=([\d.]+)/);
+                        if (match) {
+                            const name = match[1]; // "Tuition"
+                            const requiredAmount = match[2]; // "500.0"
+
+                            // Create a new table row
+                            const row = document.createElement("tr");
+
+                            // Populate the row with data
+                            row.innerHTML = `
+                                <td>${name}</td>
+                                <td>${requiredAmount}</td>
+                                <td>
+                                    <div class="status-container">
+                                        <div class="status" id="status-payments">${value}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-container">
+                                        <div class="action">
+                                            <img data-open-modal="addPaymentModal" src="/images/icons/add-button.png"
+                                                alt="add-payment-icon">
+                                        </div>
+                                    </div>
+                                </td>`;
+
+                            // Append the row to the table body
+                            tableBody.appendChild(row);
+                        }
+                });
+            })
+            .catch(error => console.error("Error fetching sections:", error));
+    }
 </script>
 
 <body>
     <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
+       <div class="sidebar" id="sidebar">
         <div class="text-center">
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
@@ -94,18 +159,18 @@
             </div>
         </div>
 
-        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
+        <a href="/home" class="active sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
             <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="enrollment-submenu">
-            <a href="/enrollment/listing" >Listing/Register</a>
+            <a href="/enrollment/listing">Listing/Register</a>
             <a href="/enrollment/assessment">Assessment</a>
-            <a href="/enrollment/payment" class="second-active">Payment</a>
+            <a href="/enrollment/payment">Payment</a>
             <a href="/enrollment/enrolled">Enrolled</a>
         </div>
 
@@ -164,7 +229,7 @@
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="/settings/create-user">Create User</a>
+            <a href="settings/create-user">Create User</a>
         </div>
     </div>
 
@@ -289,7 +354,7 @@
                 </div> <br>
 
                 <!-- List of Payments Table -->
-                <table class="view-list-of-payments-table">
+                <table id="table-ni-kharl" class="view-list-of-payments-table">
                     <thead>
                         <tr>
                             <th>Type</th>

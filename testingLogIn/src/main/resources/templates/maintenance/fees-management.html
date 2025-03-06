@@ -411,7 +411,7 @@
         const tableBody = document.querySelector("#lamesa tbody");
         tableBody.innerHTML = ""; // Clear existing rows
 
-        Object.values(payments).forEach(payment => {
+        payments.forEach(payment => {
             const row = document.createElement("tr");
 
             console.log(payment);

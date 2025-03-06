@@ -43,15 +43,6 @@ public class RequiredPaymentController {
         }
    }
     
-    @GetMapping("/all-table")
-    public ResponseEntity<Map<String,RequiredPaymentsDTO>> getAllReqPaymentsForTable(){
-        try{
-            return new ResponseEntity<>(reqPaymentService.getAllPaymentsForTable(),HttpStatus.OK);
-        }catch(Exception e){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-    }
-    
     @GetMapping("/all")
     public ResponseEntity<List<RequiredPaymentsDTO>> getAllReqPayments(){
         try{
@@ -60,7 +51,6 @@ public class RequiredPaymentController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-    
     @GetMapping("/grade/{gradeLevelId}")
     public ResponseEntity<List<GradeLevelToRequiredPaymentDTO>> getAllReqPaymentsByGradeLevel(@PathVariable int gradeLevelId){
         try{

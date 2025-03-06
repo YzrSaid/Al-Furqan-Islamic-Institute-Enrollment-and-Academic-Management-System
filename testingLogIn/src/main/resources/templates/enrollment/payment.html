@@ -524,7 +524,7 @@
                                     <tr>
                                         <td>${rec.student.studentId}</td>
                                         <td>${rec.student.firstName} ${rec.student.lastName}</td>
-                                        <td>${rec.student.currentGradeSection || 'None'}</td>
+                                        <td>${rec.student.currentGradeSection === null ? "NONE" : rec.student.currentGradeSection?.level?.levelName || "N/A"}</td>
                                         <td>${rec.sectionToEnroll}</td>
                                         <td>${rec.student.new ? 'New Student' : 'Old Student'}</td>
                                         <td>

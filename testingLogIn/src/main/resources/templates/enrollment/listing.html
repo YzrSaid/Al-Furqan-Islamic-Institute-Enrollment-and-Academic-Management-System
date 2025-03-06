@@ -618,9 +618,9 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                                 <td>${enr.student.studentId}</td>
-                                <td>${enr.studentFirstName} ${enr.studentMiddleName} ${enr.studentLastName}</td>
-                                <td>${enr.currentGradeLevel}</td>
-                                <td>${enr.new ? 'New Student' : 'Old Student'}</td>
+                                <td>${enr.student.firstName} ${enr.student.middleName} ${enr.student.lastName}</td>
+                                <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
+                                <td>${enr.student.new ? 'New Student' : 'Old Student'}</td>
                                 <td>
                                     <div class="dropdown">
                                         <div class="status-container">

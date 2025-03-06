@@ -46,12 +46,11 @@
                 tableBody.innerHTML = "";
 
                 data.forEach(rec => {
-                    console.log(rec);
                     const row = document.createElement("tr");
                     row.innerHTML = `
                                     <tr>
-                                        <td>${rec.studentId}</td>
-                                        <td>${rec.studentFirstName} ${rec.studentLastName}</td>
+                                        <td>${rec.student.studentId}</td>
+                                        <td>${rec.student.firstName} ${rec.student.lastName}</td>
                                         <td>${rec.sectionToEnroll}</td>
                                     </tr>`;
 

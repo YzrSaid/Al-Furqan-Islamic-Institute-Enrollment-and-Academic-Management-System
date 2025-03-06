@@ -76,24 +76,15 @@ public class RequiredPaymentsServices {
     }
     
     public List<RequiredPaymentsDTO> getAllPayments(){
-        return reqPaymentsRepo.findAll().stream()
-                                        .filter(RequiredFees::isNotDeleted)
-                                        .map(fee -> partialMapper(fee))
-                                        .toList();
-    }
-    
-    public Map<String,RequiredPaymentsDTO> getAllPaymentsForTable(){
         List<RequiredFees> paymentsList = reqPaymentsRepo.findAll().stream()
                                 .filter(payment -> payment.isNotDeleted())
                                 .toList();
-        Map<String,RequiredPaymentsDTO> uniquePayments = new HashMap<>();
+        List<RequiredPaymentsDTO> uniquePayments = new ArrayList<>();
         
         for(RequiredFees payment : paymentsList){
-            String paymentName = payment.getName();
-            if(!uniquePayments.containsKey(paymentName)){
                 RequiredPaymentsDTO paymentDTO = RequiredPaymentsDTO.builder()
                                                         .id(payment.getId())
-                                                        .name(paymentName)
+                                                        .name(payment.getName())
                                                         .requiredAmount(payment.getRequiredAmount())
                                                         .gradeLevelNames(new ArrayList<String>())
                                                         .build();
@@ -102,8 +93,7 @@ public class RequiredPaymentsServices {
                         .forEach(gradelvl -> {
                             paymentDTO.getGradeLevelNames().add(gradelvl.getGradeLevel().getLevelName());
                         });
-                uniquePayments.put(paymentName,paymentDTO);
-            }
+                uniquePayments.add(paymentDTO);
         }
         
         return uniquePayments;

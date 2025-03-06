@@ -1046,7 +1046,8 @@ table td {
   background-color: #28a745;
 }
 
-.paid-status, #status-books {
+.paid-status,
+#status-books {
   background-color: #218838;
   color: white;
   padding: 5px;
@@ -1054,8 +1055,26 @@ table td {
   text-align: center;
 }
 
-.unpaid-status, #status-balance {
+.unpaid-status,
+#status-balance {
+  background-color: #dc3545;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  text-align: center;
+}
+.partially-paid-status,
+#status-balance {
   background-color: #CEDD2D;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.paid-status,
+#status-balance {
+  background-color: #218838;
   color: white;
   padding: 5px;
   border-radius: 4px;
@@ -2402,7 +2421,7 @@ td[rowspan] {
 }
 
 #collector-name {
-    outline: none;
-    border: none;
-    padding: none;
+  outline: none;
+  border: none;
+  padding: none;
 }

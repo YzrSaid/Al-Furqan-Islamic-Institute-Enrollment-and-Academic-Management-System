@@ -183,7 +183,7 @@
                             <div class="dropdown-status-content" id="dropdown-listing">
                                 <a href="#" class="action" data-open-modal="listOfPaymentsModal">View List of
                                     Payments</a>
-                                <a href="#" data-open-modal="confirmationModal" data-action="proceedPayment"
+                                <a href="#" data-open-modal="confirmationModal" data-action="proceedEnrolled"
                                     data-message="Are you sure you want to proceed and finish enrollment?">Proceed</a>
                                 <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
                                     data-message="Are you sure you want to cancel this registration?">Cancel
@@ -434,7 +434,7 @@
             const studentId = studentIdElement.textContent.trim();
             const paymentAmount = paymentAmountElement.value.trim();
             const requiredPaymentId = paymentListElement.value.trim();
-          
+
             console.log("Extracted Student ID:", studentId);
             console.log("Selected Payment ID:", requiredPaymentId);
             console.log("Entered Payment Amount:", paymentAmount);
@@ -537,8 +537,9 @@
                                                 </div>
                                                 <div class="dropdown-status-content" id="dropdown-listing">
                                                     <a href="#" class="action" data-open-modal="listOfPaymentsModal" data-enrollment-id="${rec.enrollmentId}">View List of Payments</a>
-                                                    <a href="#" data-open-modal="confirmationModal" data-action="proceedPayment"
-                                                        data-message="Are you sure you want to proceed and finish enrollment?">Proceed</a>
+                                                    <a href="#" data-open-modal="confirmationModal" data-action="proceedToEnrolled" id="proceed-btn"
+                                                        data-message="Are you sure you want to proceed and finish enrollment?" data-enrollment-id="${rec.enrollmentId}">Proceed</a>
+
                                                         <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
                                                 </div>
                                             </div>
@@ -552,18 +553,36 @@
         }
 
         document.addEventListener("click", function (event) {
+            // Check if the clicked element is for opening the "List of Payments" modal
             const proceedButton = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
-
             if (proceedButton) {
                 const enrollmentId = proceedButton.getAttribute("data-enrollment-id");
-                if (!enrollmentId) return console.error("Enrollment Id Not FOund");
+                if (!enrollmentId) return console.error("Enrollment Id Not Found");
 
-                console.log("Grade Level Selected:", enrollmentId);
-
-                // Populate sections dropdown
                 fetchPayments(enrollmentId);
             }
         });
+
+        let enrollmentIdLet = null;
+        // Ensure the event listener is added only once when the page loads
+        document.addEventListener("click", function (event) {
+            const proceedToEnrolledButton = event.target.closest("#proceed-btn"); // Check if the clicked element is the button
+
+            if (proceedToEnrolledButton) {
+                console.log("📌 Proceed button clicked!");
+
+                // Retrieve enrollment ID from the button's data attribute
+                const enrollmentIdElement = proceedToEnrolledButton.getAttribute("data-enrollment-id");
+
+                if (enrollmentIdElement) {
+                    enrollmentIdLet = enrollmentIdElement.trim(); // No need for textContent
+                    console.log("📌 Captured Enrollment ID:", enrollmentIdLet);
+                } else {
+                    alert("⚠️ Enrollment ID not found.");
+                }
+            }
+        });
+
 
         function getPaymentStatusClass(status) {
             status = status.toLowerCase();
@@ -571,6 +590,8 @@
                 return "paid-status";
             } else if (status === "unpaid") {
                 return "unpaid-status";
+            } else if (status === "partially paid") {
+                return "partially-paid-status"
             }
             return "";
         }
@@ -626,9 +647,30 @@
                 .catch(error => console.error("Error fetching sections:", error));
         }
 
+        function proceedToEnrolled(enrollmentIdLet) {
+            const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;
+            console.log(`🔄 Sending request to: ${apiUrl}`);
 
+            fetch(apiUrl, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" }
+            })
+                .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
+                .then(({ text, status }) => {
+                    console.log(`🔹 API Response (${status}): ${text}`);
 
-
+                    if (status === 200) {
+                        alert("✅ Student successfully enrolled!");
+                        location.reload(); // Reloads the page after successful enrollment
+                    } else {
+                        alert(`⚠️ ${text}`); // Shows backend response message
+                    }
+                })
+                .catch(error => {
+                    console.error("🚨 Error calling proceedToEnrolled API:", error);
+                    alert("❌ Error: Unable to proceed with enrollment.");
+                });
+        }
 
     </script>
 </body>

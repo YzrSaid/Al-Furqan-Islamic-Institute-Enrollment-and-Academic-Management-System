@@ -510,6 +510,8 @@ document.addEventListener("DOMContentLoaded", function () {
       case "proceedToPayment":
         proceedToPayment(enrollmentIdLet, sectionNumberLet);
         break;
+      case "proceedToEnrolled":
+        proceedToEnrolled(enrollmentIdLet)  
       case "addFee":
         addFee();
         break;

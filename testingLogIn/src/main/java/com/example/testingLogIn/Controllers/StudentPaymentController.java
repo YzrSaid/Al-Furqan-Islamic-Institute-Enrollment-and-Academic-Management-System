@@ -27,6 +27,7 @@ public class StudentPaymentController{
     @PostMapping("/add")
     public ResponseEntity<String> addNewPaymentRecord(@RequestBody PaymentRecordDTO newRecord){
         try{
+            System.out.println(newRecord);
             if(paymentService.addNewRecord(newRecord))
                 return new ResponseEntity<>("Payment Transaction Completed",HttpStatus.OK);
             else

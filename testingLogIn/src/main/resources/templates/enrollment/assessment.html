@@ -478,11 +478,12 @@
                 tableBody.innerHTML = ""; // Clear previous data
 
                 data.forEach(enr => {
+                    console.log(enr.student);
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                    <td>${enr.studentId || "N/A"}</td>
-                    <td>${enr.studentFirstName} ${enr.studentMiddleName || ""} ${enr.studentLastName}</td>
-                    <td>${enr.currentGradeLevel || "N/A"}</td>
+                    <td>${enr.student.studentId || "N/A"}</td>
+                    <td>${enr.student.firstName} ${enr.student.middleName || ""} ${enr.student.lastName}</td>
+                    <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
                     <td>
                         <select class="grade-level-dropdown" data-enrollment-id="${enr.studentId}">
                             <option>Loading...</option> <!-- Placeholder -->

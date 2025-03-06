@@ -108,6 +108,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         return null;
     }
+    
+        public UserDTO getCurrentlyLoggedInUserDTO(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+                return ((UserModel)authentication.getPrincipal()).mapperDTO();
+        }
+        return null;
+    }
 
     private UserModel AccountRegToUserModel(AccountRegister accountRegister) {
         return UserModel.builder()

@@ -34,6 +34,11 @@ public class UserAccountController {
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return new ResponseEntity<>(customUserDetailsService.getAllUsers(), HttpStatus.OK);}
     
+    @GetMapping("/current-logged-in")
+    public ResponseEntity<UserDTO> getCurrentUserDTO(){
+        return new ResponseEntity<>(customUserDetailsService.getCurrentlyLoggedInUserDTO(),HttpStatus.OK);
+    }
+    
     @PostMapping("/register")
     public ResponseEntity<String> registerAccount(@RequestBody AccountRegister toRegister){
         if(customUserDetailsService.usernameExist(toRegister.getUsername()))

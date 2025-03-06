@@ -75,7 +75,14 @@ public class RequiredPaymentsServices {
         return true;
     }
     
-    public Map<String,RequiredPaymentsDTO> getAllPayments(){
+    public List<RequiredPaymentsDTO> getAllPayments(){
+        return reqPaymentsRepo.findAll().stream()
+                                        .filter(RequiredFees::isNotDeleted)
+                                        .map(fee -> partialMapper(fee))
+                                        .toList();
+    }
+    
+    public Map<String,RequiredPaymentsDTO> getAllPaymentsForTable(){
         List<RequiredFees> paymentsList = reqPaymentsRepo.findAll().stream()
                                 .filter(payment -> payment.isNotDeleted())
                                 .toList();

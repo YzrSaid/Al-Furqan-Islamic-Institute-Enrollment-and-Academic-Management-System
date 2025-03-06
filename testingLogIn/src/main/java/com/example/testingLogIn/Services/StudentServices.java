@@ -4,6 +4,7 @@ import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.StudentRepo;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,10 +30,16 @@ public class StudentServices {
     
     
     public boolean addStudent(StudentDTO student){
+        String year = LocalDate.now().getYear()+"";
+        String count = studentRepo.findStudentNextId(year)+1+"";
+        for(int i=count.length() ; i<4 ; i++){
+            count = "0"+count;
+        }
         if(doesStudentNameExist(student))
             return false;
         else{
             Student newStudent = Student.builder()
+                                    .studentDisplayId(year+"-"+count)
                                     .firstName(student.getFirstName())
                                     .lastName(student.getLastName())
                                     .middleName(student.getMiddleName())

@@ -57,9 +57,7 @@ public class Enrollment {
     private boolean isComplete;
     private boolean isNotDeleted;
     
-    public EnrollmentDTO DTOmapper(){
-        String gradeLevel = student.getCurrentGradeSection()== null ? "None" : 
-                                    student.getCurrentGradeSection().getLevel().getLevelName();
+    public EnrollmentDTO DTOmapper(boolean isComplete){
         return EnrollmentDTO.builder()
                             .enrollmentId(enrollmentId)
                             .student(student)
@@ -72,7 +70,7 @@ public class Enrollment {
                             .remarks(remarks)
                             .studentMiddleName(student.getMiddleName())
                             .isQualified(isQualified)
-                            .isComplete(student.isScholar() || (pcc != null && pcc.isComplete()))
+                            .isComplete(isComplete)
                             .isNotDeleted(isNotDeleted)
                             .build();
     }

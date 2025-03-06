@@ -51,4 +51,13 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
             @Param("studentId") int studentId,
             @Param("reqPaymentId") int reqPaymentId,
             @Param("semId") int semId);
+    
+    @Query("SELECT COUNT(*) from PaymentRecords pr "+
+            "WHERE pr.student.studentId = :studentId "+
+            "AND pr.SYSem.sySemNumber = :semId "+
+            "AND pr.requiredPayment.id = :reqPaymentId")
+    Integer getTotalRecordCount(
+            @Param("studentId") int studentId,
+            @Param("reqPaymentId") int reqPaymentId,
+            @Param("semId") int semId);
 }

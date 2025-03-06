@@ -25,6 +25,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int studentId;
     
+    private String studentDisplayId;
     private String firstName;
     private String lastName;
     private String middleName;
@@ -61,6 +62,8 @@ public class Student {
     public StudentDTO DTOmapper(){
         return StudentDTO.builder()
                         .studentId(studentId)
+                
+                        .studentDisplayId(studentDisplayId)
                         .firstName(firstName)
                         .lastName(lastName)
                         .middleName(middleName)

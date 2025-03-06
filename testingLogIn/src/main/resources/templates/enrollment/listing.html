@@ -617,7 +617,7 @@
                     enrollmentIdLet = enr.enrollmentId;
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                                <td>${enr.student.studentId}</td>
+                                <td>${enr.student.studentDisplayId}</td>
                                 <td>${enr.student.firstName} ${enr.student.middleName} ${enr.student.lastName}</td>
                                 <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
                                 <td>${enr.student.new ? 'New Student' : 'Old Student'}</td>

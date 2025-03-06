@@ -13,6 +13,8 @@ import lombok.*;
 @Builder
 public class StudentDTO {
     private int studentId;
+    
+    private String studentDisplayId;
     private String firstName;
     private String lastName;
     private String middleName;

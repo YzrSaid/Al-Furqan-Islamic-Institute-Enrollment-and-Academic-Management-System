@@ -49,4 +49,9 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
             @Param("firstName") String firstname,
             @Param("lastName") String lastname);
     
+    @Query("SELECT COUNT(s) from Student s "+
+           "WHERE s.studentDisplayId LIKE %:year%")
+    Integer findStudentNextId(@Param("year") String year);
+    
+    
 }

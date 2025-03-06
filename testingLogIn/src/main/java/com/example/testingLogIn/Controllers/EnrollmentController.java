@@ -44,7 +44,6 @@ public class EnrollmentController {
     @GetMapping("/all/{status}")
     public ResponseEntity<List<EnrollmentDTO>> getEnrollmentRecordsByStatus(@PathVariable String status){
         try{
-            System.out.println("Getting all the "+status);
             return new ResponseEntity<>(enrollmentService.getAllEnrollment(status),HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();
@@ -74,8 +73,6 @@ public class EnrollmentController {
     
     @PutMapping("/add/assessment/{enrollmentId}/{gradeLevelId}")
     public ResponseEntity<String> proceedToAssessment(@PathVariable int enrollmentId, @PathVariable int gradeLevelId){
-        System.out.println(enrollmentId);
-        System.out.println(gradeLevelId);
         try{
             int result = enrollmentService.addToAssessment(enrollmentId, gradeLevelId);
 

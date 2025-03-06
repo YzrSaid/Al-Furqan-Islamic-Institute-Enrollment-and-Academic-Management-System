@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="../../static/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body>
@@ -46,7 +46,7 @@
         </a>
         <div class="submenu" id="transaction-submenu">
             <a href="/transaction/tuition">Tuition</a>
-            <a href="/transaction/academic-resources">Academic Resources</a>
+            <a href="/transaction/academic-resources">Book Distribution</a>
         </div>
 
 
@@ -79,7 +79,7 @@
             <a href="/reports/student">Student Reports</a>
             <a href="/reports/payment">Payment Reports</a>
             <a href="/reports/teacher">Teacher Report</a>
-            <a href="/reports/academic-resources">Academic Resources Reports</a>
+            <a href="/reports/academic-resources">Book Distribution Reports</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
             <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
@@ -104,14 +104,14 @@
         <div class="topbar">
             <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
-                    <img src="../../static/images/icons/burger_menu_icon.png" alt="Menu">
+                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
                 </span>
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
             <div class="dropdown-logout">
                 <div class="user-icon dropdown-logout-toggle">
-                    <img src="../../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
+                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
                         <h6><span>Super Admin</span></h6>
@@ -167,18 +167,18 @@
                     <td>
                         <div class="dropdown">
                             <div class="action-container action">
-                                <a href=""><img src="../../static/images/icons/add-button.png" alt="add-icon"></a>
+                                <a href=""><img src="/images/icons/add-button.png" alt="add-icon"></a>
                             </div>
 
                             <div class="action-container action">
-                                <a href=""><img src="../../static/images/icons/compose.png" alt="edit-icon"></a>
+                                <a href=""><img src="/images/icons/compose.png" alt="edit-icon"></a>
                             </div>
 
                             <div class="action-container action">
-                                <a href=""><img src="../../static/images/icons/bin.png" alt="delete-icon"></a>
+                                <a href=""><img src="/images/icons/bin.png" alt="delete-icon"></a>
                             </div>
                             <div class="action-container action">
-                                <a href=""><img src="../../static/images/icons/check.png" alt="save-icon"></a>
+                                <a href=""><img src="/images/icons/check.png" alt="save-icon"></a>
                             </div>
                         </div>
                     </td>

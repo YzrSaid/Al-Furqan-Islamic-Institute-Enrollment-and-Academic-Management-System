@@ -62,11 +62,7 @@ public class Enrollment {
                                     student.getCurrentGradeSection().getLevel().getLevelName();
         return EnrollmentDTO.builder()
                             .enrollmentId(enrollmentId)
-                            .studentId(student.getStudentId())
-                            .studentFirstName(student.getFirstName())
-                            .studentLastName(student.getLastName())
-                            .isNew(student.isNew())
-                            .currentGradeLevel(gradeLevel)
+                            .student(student)
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
                             .gradeLevelToEnroll(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)

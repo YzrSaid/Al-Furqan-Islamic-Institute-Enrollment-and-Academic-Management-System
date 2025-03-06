@@ -43,6 +43,11 @@ public class sySemesterServices {
             }
         }
     }
+    
+    public SchoolYearSemester getCurrentActive(){
+        return semesterRepo.findCurrentActive();
+    }
+    
     public Map<String,List<SchoolYearSemester>> getAllSemesters(){
         Map<String,List<SchoolYearSemester>> toReturn = new HashMap();
         List<SchoolYearSemester> allSem = semesterRepo.findAll().stream()

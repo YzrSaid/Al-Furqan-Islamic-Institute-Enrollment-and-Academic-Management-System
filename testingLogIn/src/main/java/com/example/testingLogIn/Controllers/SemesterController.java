@@ -42,6 +42,11 @@ public class SemesterController {
             return new ResponseEntity<>(semesters,HttpStatus.OK);
     }
     
+    @GetMapping("/currentactive")
+    public ResponseEntity<SchoolYearSemester> getCurrentSem(){
+        return new ResponseEntity<>(semService.getCurrentActive(),HttpStatus.OK);
+    }
+    
     @PutMapping("/activate/{semNumber}")
     public ResponseEntity<String> activateSemester(@PathVariable int semNumber){
         if(semService.activateSemester(semNumber))

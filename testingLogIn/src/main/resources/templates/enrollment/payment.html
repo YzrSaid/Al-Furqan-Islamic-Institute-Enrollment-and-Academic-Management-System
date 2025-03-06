@@ -11,144 +11,10 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-
-        savedSubmenus.forEach(submenuId => {
-            let submenu = document.getElementById(submenuId);
-            if (submenu) {
-                submenu.classList.add("open");
-
-                // Make sure parent menus are also opened
-                let parentMenu = submenu.closest(".submenu");
-                if (parentMenu) {
-                    parentMenu.classList.add("open");
-                }
-
-                // Update arrow icon
-                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-                if (arrowIconImg) {
-                    arrowIconImg.src = "/images/icons/greater-than.png";
-                }
-            }
-        });
-        getOnPayments();
-    });
-
-    function getOnPayments() {
-        fetch("/enrollment/all/payment")
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch grade levels");
-                return res.json();
-            })
-            .then(data => {
-                const tableBody = document.querySelector("#realginnas tbody");
-                tableBody.innerHTML = "";
-
-                data.forEach(rec => {
-                    console.log(rec);
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                                    <tr>
-                                        <td>${rec.studentId}</td>
-                                        <td>${rec.studentFirstName} ${rec.studentLastName}</td>
-                                        <td>${rec.currentGradeLevel}</td>
-                                        <td>${rec.sectionToEnroll}</td>
-                                        <td>${rec.new ? 'New Student' : 'Old Student'}</td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <div class="status-container">
-                                                    <div class="status" id="status-payment">Complete</div>
-                                                    <button class="dropdown-status-btn">
-                                                        <i class="fas fa-chevron-down"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="dropdown-status-content" id="dropdown-listing">
-                                                    <a href="#" class="action" data-open-modal="listOfPaymentsModal" data-enrollment-id="${rec.enrollmentId}">View List of Payments</a>
-                                                    <a href="#" data-open-modal="confirmationModal" data-action="proceedPayment"
-                                                        data-message="Are you sure you want to proceed and finish enrollment?">Proceed</a>
-                                                        <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>`;
-
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error("Error:", error));
-    }
-    
-        document.addEventListener("click", function (event) {
-        const proceedButton = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
-        
-        if (proceedButton) {
-            const enrollmentId = proceedButton.getAttribute("data-enrollment-id");
-            if (!enrollmentId) return console.error("Enrollment Id Not FOund");
-
-            console.log("Grade Level Selected:", enrollmentId);
-
-            // Populate sections dropdown
-            fetchPayments(enrollmentId);
-        }
-    });
-    
-    function fetchPayments(enrollmentId){
-                fetch(`/enrollment/paymentView/${enrollmentId}`)
-            .then(res => res.json())
-            .then(epv => {
-                console.log('The object is',epv);
-                const studentname = document.querySelector("#student-name"); // Modal select tag
-                const studentId = document.querySelector("#student-id");
-                if (!studentname || !studentId) return console.error("Dropdown for sections not found");
-
-                studentname.textContent = epv.studentFirstName+' '+epv.studentLastName; // Default option
-                studentId.textContent = epv.studentId;
-                
-                const tableBody = document.querySelector("#table-ni-kharl tbody");
-                tableBody.innerHTML = "";
-                const feeStatusArray = Object.entries(epv.feeStatus);
-                    // Iterate over the array
-                    feeStatusArray.forEach(([key, value]) => {
-                        const match = key.match(/name=([^,]+), requiredAmount=([\d.]+)/);
-                        if (match) {
-                            const name = match[1]; // "Tuition"
-                            const requiredAmount = match[2]; // "500.0"
-
-                            // Create a new table row
-                            const row = document.createElement("tr");
-
-                            // Populate the row with data
-                            row.innerHTML = `
-                                <td>${name}</td>
-                                <td>${requiredAmount}</td>
-                                <td>
-                                    <div class="status-container">
-                                        <div class="status" id="status-payments">${value}</div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="action-container">
-                                        <div class="action">
-                                            <img data-open-modal="addPaymentModal" src="/images/icons/add-button.png"
-                                                alt="add-payment-icon">
-                                        </div>
-                                    </div>
-                                </td>`;
-
-                            // Append the row to the table body
-                            tableBody.appendChild(row);
-                        }
-                });
-            })
-            .catch(error => console.error("Error fetching sections:", error));
-    }
-</script>
 
 <body>
     <!-- Sidebar -->
-       <div class="sidebar" id="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="text-center">
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
@@ -159,18 +25,18 @@
             </div>
         </div>
 
-        <a href="/home" class="active sidebar-icons menu" onclick="clearSubmenus()">
+        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
             <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="enrollment-submenu">
             <a href="/enrollment/listing">Listing/Register</a>
             <a href="/enrollment/assessment">Assessment</a>
-            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/payment" class="second-active">Payment</a>
             <a href="/enrollment/enrolled">Enrolled</a>
         </div>
 
@@ -180,7 +46,7 @@
         </a>
         <div class="submenu" id="transaction-submenu">
             <a href="/transaction/tuition">Tuition</a>
-            <a href="/transaction/academic-resources">Academic Resources</a>
+            <a href="/transaction/academic-resources">Book Distribution</a>
         </div>
 
 
@@ -213,7 +79,7 @@
             <a href="/reports/student">Student Reports</a>
             <a href="/reports/payment">Payment Reports</a>
             <a href="/reports/teacher">Teacher Report</a>
-            <a href="/reports/academic-resources">Academic Resources Reports</a>
+            <a href="/reports/academic-resources">Book Distribution Reports</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
             <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
@@ -374,9 +240,12 @@
                         <td>
                             <div class="action-container">
                                 <div class="action">
-                                    <img data-open-modal="addPaymentModal" th:src="@{/images/icons/add-button.png}"
-                                        alt="add-payment-icon">
+                                    <button id="open-add-payment-modal" data-open-modal="addPaymentModal">
+                                        <img id="add-button" th:src="@{/images/icons/add-button.png}"
+                                            alt="add-payment-icon">
+                                    </button>
                                 </div>
+
                             </div>
 
                         </td>
@@ -420,7 +289,7 @@
                         </div>
                         <div class="content-container">
                             <h6>Received payment from</h6>
-                            <input type="text" id="payee-name" readonly value="Batman Templado">
+                            <input type="text" id="payee-name" readonly>
                             <h6>Student ID</h6>
                             <input type="number" readonly value="0001">
                             <h6>sum of ₱</h6>
@@ -429,7 +298,7 @@
                             <select name="payment-list" id="payment-list">
                                 <option value="" disabled>Choose</option>
                             </select>
-                        </div>
+                        </div> <br> <br>
 
                         <div class="collector-info-container">
                             <h6>Received/Collected By:</h6>
@@ -459,9 +328,260 @@
     </div>
     <script th:src="@{/js/script.js}"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("#open-add-payment-modal").forEach(button => {
+                button.addEventListener("click", function (event) {
+                    event.preventDefault();
+
+                    // Hanapin ang row na kinlick
+                    let row = this.closest("tr");
+                    if (!row) {
+                        console.error("Row not found.");
+                        return;
+                    }
+
+                    // Kunin ang Student ID at Name mula sa modal
+                    let studentIdElement = document.getElementById("student-id");
+                    let studentNameElement = document.getElementById("student-name");
+
+                    if (!studentIdElement || !studentNameElement) {
+                        console.error("Student ID or Name not found in the previous modal.");
+                        return;
+                    }
+
+                    let studentId = studentIdElement.textContent.trim();
+                    let studentName = studentNameElement.textContent.trim();
+
+                    console.log("Student Name:", studentName);
+                    console.log("Student ID:", studentId);
+
+                    // Populate the "Add Payment" modal
+                    let payeeNameInput = document.getElementById("payee-name");
+                    let paymentAmountInput = document.getElementById("payment-amount");
+                    let modal = document.getElementById("addPaymentModal");
+
+                    if (!payeeNameInput || !paymentAmountInput || !modal) {
+                        console.error("One or more modal elements are missing.");
+                        return;
+                    }
+
+                    payeeNameInput.value = studentName;
+                    paymentAmountInput.value = "";
+
+                    // Show the "Add Payment" modal
+                    modal.style.display = "block";
+                });
+            });
+        });
+
+
+        function savePayment() {
+            const studentId = document.getElementById("student-id").value;
+            const studentName = document.getElementById("payee-name").value;
+            const paymentAmount = document.getElementById("payment-amount").value;
+            const paymentType = document.getElementById("payment-list").value;
+            const date = document.getElementById("date").value;
+            const semester = document.getElementById("semester").value;
+            const schoolYear = document.getElementById("school-year").value;
+
+            if (!paymentAmount || !paymentType) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+
+            const paymentData = {
+                studentId: studentId,
+                name: studentName,
+                amount: paymentAmount,
+                type: paymentType,
+                date: date,
+                semester: semester,
+                schoolYear: schoolYear
+            };
+
+            fetch("/payments/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(paymentData)
+            })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    document.getElementById("addPaymentModal").style.display = "none";
+                })
+                .catch(error => {
+                    console.error("Error adding payment:", error);
+                    alert("Failed to add payment. Please try again.");
+                });
+        }
+
         function printReport() {
             window.print();
         }
+        document.addEventListener("DOMContentLoaded", function () {
+            let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+            savedSubmenus.forEach(submenuId => {
+                let submenu = document.getElementById(submenuId);
+                if (submenu) {
+                    submenu.classList.add("open");
+
+                    // Make sure parent menus are also opened
+                    let parentMenu = submenu.closest(".submenu");
+                    if (parentMenu) {
+                        parentMenu.classList.add("open");
+                    }
+
+                    // Update arrow icon
+                    let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                    if (arrowIconImg) {
+                        arrowIconImg.src = "/images/icons/greater-than.png";
+                    }
+                }
+            });
+            getOnPayments();
+        });
+
+        function getOnPayments() {
+            fetch("/enrollment/all/payment")
+                .then(res => {
+                    if (!res.ok) throw new Error("Failed to fetch grade levels");
+                    return res.json();
+                })
+                .then(data => {
+                    const tableBody = document.querySelector("#realginnas tbody");
+                    tableBody.innerHTML = "";
+
+                    data.forEach(rec => {
+                        console.log(rec);
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                                    <tr>
+                                        <td>${rec.studentId}</td>
+                                        <td>${rec.studentFirstName} ${rec.studentMiddleName} ${rec.studentLastName}</td>
+                                        <td>${rec.currentGradeLevel}</td>
+                                        <td>${rec.sectionToEnroll}</td>
+                                        <td>${rec.new ? 'New Student' : 'Old Student'}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <div class="status-container">
+                                                    <div class="status" id="status-payment">PAYMENT</div>
+                                                    <button class="dropdown-status-btn">
+                                                        <i class="fas fa-chevron-down"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="dropdown-status-content" id="dropdown-listing">
+                                                    <a href="#" class="action" data-open-modal="listOfPaymentsModal" data-enrollment-id="${rec.enrollmentId}">View List of Payments</a>
+                                                    <a href="#" data-open-modal="confirmationModal" data-action="proceedPayment"
+                                                        data-message="Are you sure you want to proceed and finish enrollment?">Proceed</a>
+                                                        <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>`;
+
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        document.addEventListener("click", function (event) {
+            const proceedButton = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
+
+            if (proceedButton) {
+                const enrollmentId = proceedButton.getAttribute("data-enrollment-id");
+                if (!enrollmentId) return console.error("Enrollment Id Not FOund");
+
+                console.log("Grade Level Selected:", enrollmentId);
+
+                // Populate sections dropdown
+                fetchPayments(enrollmentId);
+            }
+        });
+
+        function getPaymentStatusClass(status) {
+            status = status.toLowerCase();
+            if (status === "paid") {
+                return "paid-status";
+            } else if (status === "unpaid") {
+                return "unpaid-status";
+            }
+            return "";
+        }
+
+        function fetchPayments(enrollmentId) {
+            fetch(`/enrollment/paymentView/${enrollmentId}`)
+                .then(res => res.json())
+                .then(epv => {
+                    console.log('The object is', epv);
+                    const studentname = document.querySelector("#student-name");
+                    const studentId = document.querySelector("#student-id");
+                    if (!studentname || !studentId) return console.error("Dropdown for sections not found");
+
+                    studentname.textContent = epv.studentFirstName + ' ' + epv.studentLastName;
+                    studentId.textContent = epv.studentId;
+
+                    const tableBody = document.querySelector("#table-ni-kharl tbody");
+                    tableBody.innerHTML = "";
+                    const feeStatusArray = Object.entries(epv.feeStatus);
+
+                    feeStatusArray.forEach(([key, value]) => {
+                        const match = key.match(/name=([^,]+), requiredAmount=([\d.]+)/);
+                        if (match) {
+                            const name = match[1];
+                            const requiredAmount = match[2];
+
+                            const row = document.createElement("tr");
+
+                            // Get class for status
+                            const statusClass = getPaymentStatusClass(value);
+
+                            row.innerHTML = `
+                        <td>${name}</td>
+                        <td>${requiredAmount}</td>
+                        <td>
+                            <div class="status-container">
+                                <div class="status ${statusClass}">${value}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-container">
+                                <div class="action">
+                                    <img data-open-modal="addPaymentModal" src="/images/icons/add-button.png"
+                                        alt="add-payment-icon" class="add-payment-btn">
+                                </div>
+                            </div>
+                        </td>`;
+
+                            tableBody.appendChild(row);
+                        }
+                    });
+                })
+                .catch(error => console.error("Error fetching sections:", error));
+        }
+
+        // Event listener to open "Add Payment" modal and populate fields
+        document.addEventListener("click", function (event) {
+            const addButton = event.target.closest('.add-payment-btn');
+
+            if (addButton) {
+                // Retrieve student information
+                const studentName = document.querySelector("#student-name").textContent;
+                const studentId = document.querySelector("#student-id").textContent;
+
+                if (!studentName || !studentId) return console.error("Student information not found");
+
+                // Populate modal fields
+                document.querySelector("#payee-name").value = studentName;
+                document.querySelector("#addPaymentModal input[type='number'][readonly]").value = studentId;
+
+                // Show the modal
+                openModal("addPaymentModal");
+            }
+        });
+
+
     </script>
 </body>
 

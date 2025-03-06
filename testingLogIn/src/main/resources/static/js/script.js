@@ -105,12 +105,9 @@ function toggleSubMenu(submenuId, event) {
   // Toggle the clicked submenu
   submenu.classList.toggle("open", !isOpen);
 
-  // *🔹 Save submenu state only if it is a submenu of a submenu*
   arrowIconImg.src = isOpen
     ? "/images/icons/arrow-down.png" // Change back to down arrow if closing
     : "/images/icons/greater-than.png"; // Change to right arrow if opening
-  //   "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png"
-  // : "/testingLogIn/src/main/resources/static/images/icons/greater-than.png"; // Change to right arrow if opening
 
   let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
     (sub) => sub.id
@@ -308,8 +305,8 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("a.view-sched").forEach((link) => {
     link.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevent default navigation
-      window.location.href = "/schedule/sched-board"; // Navigate to the sched board page
+      event.preventDefault();
+      window.location.href = "/schedule/sched-board";
     });
   });
 });
@@ -319,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("a.view-per-class").forEach((link) => {
     link.addEventListener("click", function (event) {
       event.preventDefault(); // Prevent default navigation
-      window.location.href = "/grade-per-class"; // Navigate to the sched board page
+      window.location.href = "/grade-management/grade-per-class"; // Navigate to the sched board page
     });
   });
 });
@@ -329,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("a.view-per-subject").forEach((link) => {
     link.addEventListener("click", function (event) {
       event.preventDefault(); // Prevent default navigation
-      window.location.href = "/grade-per-class"; // Navigate to the sched board page
+      window.location.href = "/grade-per-class"; 
     });
   });
 });
@@ -521,7 +518,10 @@ document.addEventListener("DOMContentLoaded", function () {
         addFee();
         break;
       case "editFee":
-        editFee();  
+        editFee();
+      case "savePayment":
+        savePayment();
+        break;
       default:
         alert("Unknown action: " + action);
         return;
@@ -767,11 +767,10 @@ document.addEventListener("DOMContentLoaded", () => {
       firstClick = true;
       addRowBtn.style.display = "none";
       clearBtn.style.display = "none";
-    } else if (hasInitialRows) {
-      // Set "Edit" only if rows existed when the page loaded
-      saveBtn.textContent = "Edit";
-      addRowBtn.style.display = "none";
-      clearBtn.style.display = "none";
+    } else {
+      saveBtn.textContent = "Save"; // Keep it "Save" when rows exist
+      addRowBtn.style.display = "block"; // Keep the Add Row button visible
+      clearBtn.style.display = "block"; // Keep the Clear button visible
     }
   }
 
@@ -801,7 +800,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <input type="time">
             </td>
             <td>
-                <img class="delete-row" src="../../../static/images/icons/cross.png" alt="Delete" style="display: inline-block; cursor: pointer;">
+                <img class="delete-row" src="/images/icons/cross.png" alt="Delete" style="display: inline-block; cursor: pointer;">
             </td>
         `;
     attachDeleteEvent(newRow);
@@ -888,12 +887,20 @@ document.addEventListener("DOMContentLoaded", () => {
       .querySelectorAll(".delete-row")
       .forEach((btn) => (btn.style.display = "inline-block"));
   });
+  //old
+  //   addRowBtn.addEventListener("click", () => {
+  //     tableBody.appendChild(createRow());
+  //     updateButtonState();
+  //     // Ensure button remains "Save" when adding more rows
+  //     saveBtn.textContent = "Save"; // Force it to remain "Save"
+  //   });
 
+  //new
   addRowBtn.addEventListener("click", () => {
     tableBody.appendChild(createRow());
-    updateButtonState();
-    // Ensure button remains "Save" when adding more rows
-    saveBtn.textContent = "Save"; // Force it to remain "Save"
+    saveBtn.textContent = "Save";
+    addRowBtn.style.display = "block"; // Ensure it stays visible
+    clearBtn.style.display = "block"; // Ensure clear button stays visible
   });
 
   //   clearBtn.addEventListener("click", () => {

@@ -672,11 +672,11 @@ th {
 }
 .listing-table th:nth-child(3),
 .listing-table td:nth-child(3) {
-  width: 20%;
+  width: 15%;
 }
 .listing-table th:nth-child(4),
 .listing-table td:nth-child(4) {
-  width: 15%;
+  width: 20%;
 }
 .listing-table th:nth-child(5),
 .listing-table td:nth-child(5) {
@@ -1040,9 +1040,28 @@ table td {
   justify-content: center;
 }
 #status-registration,
-#status-assessment {
+#status-assessment,
+#status-payment,
+#status-grade-management {
   background-color: #28a745;
 }
+
+.paid-status, #status-books {
+  background-color: #218838;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.unpaid-status, #status-balance {
+  background-color: #CEDD2D;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  text-align: center;
+}
+
 #status-manage-accounts {
   padding: 5px 70px;
 }
@@ -2380,4 +2399,10 @@ td[rowspan] {
   flex-grow: 1;
   text-align: left;
   cursor: pointer;
+}
+
+#collector-name {
+    outline: none;
+    border: none;
+    padding: none;
 }

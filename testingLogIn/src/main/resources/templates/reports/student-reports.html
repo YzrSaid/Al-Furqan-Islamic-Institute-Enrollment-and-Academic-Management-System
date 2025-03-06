@@ -74,7 +74,7 @@
         </a>
         <div class="submenu" id="transaction-submenu">
             <a href="/transaction/tuition">Tuition</a>
-            <a href="/transaction/academic-resources">Academic Resources</a>
+            <a href="/transaction/academic-resources">Book Distribution</a>
         </div>
 
         <a href="/grade-management" class="sidebar-icons">
@@ -105,7 +105,7 @@
             <a href="/reports/student" class="second-active">Student Reports</a>
             <a href="/reports/payment">Payment Reports</a>
             <a href="/reports/teacher">Teacher Report</a>
-            <a href="/reports/academic-resources">Academic Resources Reports</a>
+            <a href="/reports/academic-resources">Book Distribution Reports</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
@@ -139,7 +139,6 @@
             </div>
             <div class="dropdown-logout">
                 <div class="user-icon dropdown-logout-toggle">
-                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
@@ -205,7 +204,7 @@
                         <div class="dropdown">
                             <div class="action-container action">
                                 <a href="#" class="view-student" data-action="viewStudentReportModal">
-                                    <img th:src="@{/images/icons/eye.png}" alt="edit-icon">
+                                    <img th:src="@{/images/icons/compose.png}" alt="edit-icon">
                                 </a>
                             </div>
                         </div>

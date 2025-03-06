@@ -291,7 +291,7 @@
                             <h6>Received payment from</h6>
                             <input type="text" id="payee-name" readonly>
                             <h6>Student ID</h6>
-                            <input type="number" readonly value="0001">
+                            <input type="number" id="student-id" readonly value="0001">
                             <h6>sum of ₱</h6>
                             <input type="number" id="payment-amount">
                             <h6>as payment for</h6>
@@ -328,78 +328,142 @@
     </div>
     <script th:src="@{/js/script.js}"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll("#open-add-payment-modal").forEach(button => {
-                button.addEventListener("click", function (event) {
-                    event.preventDefault();
+        document.addEventListener("click", async function (event) {
+            const addButton = event.target.closest('.add-payment-btn');
 
-                    // Hanapin ang row na kinlick
-                    let row = this.closest("tr");
-                    if (!row) {
-                        console.error("Row not found.");
+            if (addButton) {
+                // Retrieve student information
+                const studentName = document.querySelector("#student-name")?.textContent?.trim();
+                const studentId = document.querySelector("#student-id")?.textContent?.trim();
+
+                if (!studentName || !studentId) {
+                    console.error("Student information not found");
+                    return;
+                }
+
+                // Populate modal fields
+                document.querySelector("#payee-name").value = studentName;
+                document.querySelector("#addPaymentModal input[type='number'][readonly]").value = studentId;
+
+                // Fetch and populate the current active school year
+                try {
+                    let response = await fetch("/semester/currentactive");
+                    if (!response.ok) throw new Error("Failed to fetch active school year");
+
+                    let data = await response.json();
+
+                    // Get input elements
+                    let semesterInput = document.getElementById("semester");
+                    let schoolYearInput = document.getElementById("school-year");
+
+                    if (semesterInput) {
+                        semesterInput.value = data.sem;
+                    } else {
+                        console.error("Semester input field not found in the modal");
+                    }
+
+                    if (schoolYearInput) {
+                        schoolYearInput.value = data.schoolYear.schoolYear;
+                        console.log("Fetched School Year:", data.schoolYear.schoolYear);
+                        console.log("Fetched Semester:", data.sem);
+                    } else {
+                        console.error("School year input field not found in the modal");
+                    }
+                } catch (error) {
+                    console.error("Error fetching current active school year:", error);
+                }
+
+                try {
+                    let response = await fetch("/payments/all");
+                    if (!response.ok) throw new Error("Failed to fetch required payments");
+
+                    let data = await response.json();
+
+                    let paymentList = document.getElementById("payment-list");
+                    if (!paymentList) {
+                        console.error("Payment list dropdown not found");
                         return;
                     }
 
-                    // Kunin ang Student ID at Name mula sa modal
-                    let studentIdElement = document.getElementById("student-id");
-                    let studentNameElement = document.getElementById("student-name");
+                    // Clear existing options (except the placeholder)
+                    paymentList.innerHTML = '<option value="" disabled selected>Choose</option>';
 
-                    if (!studentIdElement || !studentNameElement) {
-                        console.error("Student ID or Name not found in the previous modal.");
-                        return;
-                    }
+                    Object.values(data).forEach(payment => {
+                        let option = document.createElement("option");
+                        option.value = payment.id;
+                        option.textContent = payment.name;
+                        paymentList.appendChild(option);
+                    });
 
-                    let studentId = studentIdElement.textContent.trim();
-                    let studentName = studentNameElement.textContent.trim();
-
-                    console.log("Student Name:", studentName);
-                    console.log("Student ID:", studentId);
-
-                    // Populate the "Add Payment" modal
-                    let payeeNameInput = document.getElementById("payee-name");
-                    let paymentAmountInput = document.getElementById("payment-amount");
-                    let modal = document.getElementById("addPaymentModal");
-
-                    if (!payeeNameInput || !paymentAmountInput || !modal) {
-                        console.error("One or more modal elements are missing.");
-                        return;
-                    }
-
-                    payeeNameInput.value = studentName;
-                    paymentAmountInput.value = "";
-
-                    // Show the "Add Payment" modal
-                    modal.style.display = "block";
-                });
-            });
+                    console.log("Fetched Payment List:", data);
+                } catch (error) {
+                    console.error("Error fetching payment list:", error);
+                }
+            }
         });
 
 
         function savePayment() {
-            const studentId = document.getElementById("student-id").value;
-            const studentName = document.getElementById("payee-name").value;
-            const paymentAmount = document.getElementById("payment-amount").value;
-            const paymentType = document.getElementById("payment-list").value;
-            const date = document.getElementById("date").value;
-            const semester = document.getElementById("semester").value;
-            const schoolYear = document.getElementById("school-year").value;
+            // Retrieve elements
+            const studentIdElement = document.getElementById("student-id");
+            const paymentAmountElement = document.getElementById("payment-amount");
+            const paymentListElement = document.getElementById("payment-list");
 
-            if (!paymentAmount || !paymentType) {
-                alert("Please fill in all required fields.");
+            // Debugging logs
+            console.log("Student ID Element:", studentIdElement);
+            console.log("Payment List Element:", paymentListElement);
+
+            // Ensure elements exist
+            if (!studentIdElement) {
+                alert("Student ID not found.");
+                console.error("Student ID element is missing from the DOM.");
+                return;
+            }
+            if (!paymentListElement) {
+                alert("Payment list dropdown not found.");
+                console.error("Payment list dropdown is missing.");
+                return;
+            }
+            if (!paymentAmountElement) {
+                alert("Payment amount field not found.");
+                console.error("Payment amount input is missing.");
                 return;
             }
 
+            // Retrieve values
+            const studentId = studentIdElement.textContent.trim();
+            const paymentAmount = paymentAmountElement.value.trim();
+            const requiredPaymentId = paymentListElement.value.trim();
+          
+            console.log("Extracted Student ID:", studentId);
+            console.log("Selected Payment ID:", requiredPaymentId);
+            console.log("Entered Payment Amount:", paymentAmount);
+
+            // Validate required fields
+            if (!studentId) {
+                alert("Student ID is missing.");
+                return;
+            }
+            if (!requiredPaymentId) {
+                alert("Please select a payment type.");
+                return;
+            }
+            if (!paymentAmount) {
+                alert("Please enter a payment amount.");
+                return;
+            }
+
+            // Prepare data for API
             const paymentData = {
                 studentId: studentId,
-                name: studentName,
                 amount: paymentAmount,
-                type: paymentType,
-                date: date,
-                semester: semester,
-                schoolYear: schoolYear
+                requiredPaymentId: requiredPaymentId,
             };
 
-            fetch("/payments/add", {
+            console.log("Sending Payment Data:", paymentData);
+
+            // Send request
+            fetch("/paymentrecord/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(paymentData)
@@ -414,6 +478,7 @@
                     alert("Failed to add payment. Please try again.");
                 });
         }
+
 
         function printReport() {
             window.print();
@@ -458,10 +523,10 @@
                         row.innerHTML = `
                                     <tr>
                                         <td>${rec.student.studentId}</td>
-                                        <td>${rec.student.firstName} ${rec.student.middleName} ${rec.student.lastName}</td>
-                                        <td>${rec.currentGradeLevel}</td>
+                                        <td>${rec.student.firstName} ${rec.student.lastName}</td>
+                                        <td>${rec.student.currentGradeSection || 'None'}</td>
                                         <td>${rec.sectionToEnroll}</td>
-                                        <td>${rec.new ? 'New Student' : 'Old Student'}</td>
+                                        <td>${rec.student.new ? 'New Student' : 'Old Student'}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <div class="status-container">
@@ -561,25 +626,8 @@
                 .catch(error => console.error("Error fetching sections:", error));
         }
 
-        // Event listener to open "Add Payment" modal and populate fields
-        document.addEventListener("click", function (event) {
-            const addButton = event.target.closest('.add-payment-btn');
 
-            if (addButton) {
-                // Retrieve student information
-                const studentName = document.querySelector("#student-name").textContent;
-                const studentId = document.querySelector("#student-id").textContent;
 
-                if (!studentName || !studentId) return console.error("Student information not found");
-
-                // Populate modal fields
-                document.querySelector("#payee-name").value = studentName;
-                document.querySelector("#addPaymentModal input[type='number'][readonly]").value = studentId;
-
-                // Show the modal
-                openModal("addPaymentModal");
-            }
-        });
 
 
     </script>

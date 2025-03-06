@@ -32,6 +32,7 @@ public class StudentPaymentController{
             else
                 return new ResponseEntity<>("Transaction Failed. Student record not found",HttpStatus.NOT_FOUND);
         }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>("Transaction Failed",HttpStatus.CONFLICT);
         }
     }

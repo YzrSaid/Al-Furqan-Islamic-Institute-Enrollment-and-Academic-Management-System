@@ -379,10 +379,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function handleConfirmAction(action) {
     switch (action) {
-      case "savePayment":
-        alert("save payment");
-        window.confirmSave();
-        break;
       case "addNewStudent":
         alert("Add new student!");
         break;

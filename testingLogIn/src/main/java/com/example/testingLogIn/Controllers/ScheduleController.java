@@ -28,7 +28,7 @@ public class ScheduleController {
     @Autowired
     private ScheduleServices scheduleService;
     
-    @GetMapping("teacher/{teacherName}")
+    @GetMapping("/teacher/{teacherName}")
     public ResponseEntity<List<ScheduleDTO>> getSchedulesByTeacher(@PathVariable String teacherName){
         try{
             return new ResponseEntity<>(scheduleService.getSchedulesByTeacher(teacherName),HttpStatus.OK);
@@ -38,7 +38,7 @@ public class ScheduleController {
         }
     }
     
-        @GetMapping("section/{sectionName}")
+        @GetMapping("/section/{sectionName}")
     public ResponseEntity<List<ScheduleDTO>> getSchedulesBySection(@PathVariable String sectionName){
         try{
             return new ResponseEntity<>(scheduleService.getSchedulesBySection(sectionName),HttpStatus.OK);
@@ -46,11 +46,6 @@ public class ScheduleController {
             System.out.println(npe.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-    
-    @GetMapping()
-    public ResponseEntity<String> getCurrentUsername(Authentication authentication) {
-            return new ResponseEntity<>(authentication.getName(),HttpStatus.OK);
     }
     
     @PostMapping("add")

@@ -39,7 +39,11 @@ public class PrivateTemplateControllers {
     public String getPayment(){
         return "/enrollment/payment";
     }
-
+    
+    @GetMapping("/enrollment/payment/{enrollmentId}")
+    public String getPaymentwithId(){
+        return "/enrollment/payment";
+    }
     
     @GetMapping("/enrollment/enrolled")
     public String getEnrolled(){

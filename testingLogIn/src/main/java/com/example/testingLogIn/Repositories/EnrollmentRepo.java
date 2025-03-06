@@ -28,7 +28,7 @@ boolean studentCurrentlyEnrolled(
 
 @Query("SELECT e FROM Enrollment e " +
        "WHERE e.isNotDeleted = true " +
-       "AND e.enrollmentStatus = :status "+
+       "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
        "AND e.SYSemester.sySemNumber = :activeSemNumber")
 List<Enrollment> findRecordsByStatusAndSemester(
     @Param("status") EnrollmentStatus status,

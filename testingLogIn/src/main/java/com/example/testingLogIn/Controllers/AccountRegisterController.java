@@ -25,7 +25,7 @@ public class AccountRegisterController {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<String> registerAccount(@ModelAttribute AccountRegister accountRegister){
         if(customUserDetailsService.usernameExist(accountRegister.getUsername()))
             return new ResponseEntity<>("Email Already Used",HttpStatus.CONFLICT);

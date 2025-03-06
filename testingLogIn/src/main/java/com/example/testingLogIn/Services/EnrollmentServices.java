@@ -166,7 +166,7 @@ public class EnrollmentServices {
     
     private EnrollmentStatus getEnrollmentStatus(String status){
         if(status.equalsIgnoreCase("LISTING"))
-            return EnrollmentStatus.LISTING;
+            return null;
         else if(status.equalsIgnoreCase("ASSESSMENT"))
             return EnrollmentStatus.ASSESSMENT;
         else if(status.equalsIgnoreCase("PAYMENT"))

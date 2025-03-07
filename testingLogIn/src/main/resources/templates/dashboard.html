@@ -11,10 +11,34 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
 </head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "/images/icons/greater-than.png";
+                }
+            }
+        });
+    });
+</script>
 
 <body>
-       <!-- Sidebar -->
-       <div class="sidebar" id="sidebar">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
         <div class="text-center">
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
@@ -126,46 +150,59 @@
             <p>Main</p>
             <p>/</p>
             <p>Dashboard</p>
-        </div>
+        </div> <br>
 
         <div class="row card-div">
             <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <h3 class="card-title" id="num-total-students">100</h3>
-                    <p class="card-label">Total Students</p>
-                </div>
+                <a href="/reports/student" class="card-link">
+                    <div class="card p-3 shadow-sm">
+                        <h3 class="card-title" id="num-total-students">100</h3>
+                        <p class="card-label">Total Students</p>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <h3 class="card-title" id="num-enrolled">95</h3>
-                    <p class="card-label">Enrolled</p>
-                </div>
+                <a href="/enrollment/enrolled" class="card-link">
+                    <div class="card p-3 shadow-sm">
+                        <h3 class="card-title" id="num-enrolled">95</h3>
+                        <p class="card-label">Enrolled</p>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <h3 class="card-title" id="num-pre-enrolled">24</h3>
-                    <p class="card-label">Pre-Enrolled</p>
-                </div>
+                <a href="/enrollment/listing" class="card-link">
+                    <div class="card p-3 shadow-sm">
+                        <h3 class="card-title" id="num-pre-enrolled">24</h3>
+                        <p class="card-label">Pre-Enrolled</p>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <h3 class="card-title" id="num-teachers">21</h3>
-                    <p class="card-label">Teachers</p>
-                </div>
+                <a href="/reports/teacher" class="card-link">
+                    <div class="card p-3 shadow-sm">
+                        <h3 class="card-title" id="num-teachers">21</h3>
+                        <p class="card-label">Teachers</p>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <h3 class="card-title" id="num-sections">5</h3>
-                    <p class="card-label">Sections</p>
-                </div>
+                <a href="/maintenance/section" class="card-link">
+                    <div class="card p-3 shadow-sm">
+                        <h3 class="card-title" id="num-sections">5</h3>
+                        <p class="card-label">Sections</p>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3">
-                <div class="card p-3 shadow-sm">
-                    <h3 class="card-title" id="num-users">6</h3>
-                    <p class="card-label">Users</p>
-                </div>
+                <a href="/accounts/manage-accounts" class="card-link">
+                    <div class="card p-3 shadow-sm">
+                        <h3 class="card-title" id="num-users">6</h3>
+                        <p class="card-label">Users</p>
+                    </div>
+                </a>
             </div>
         </div>
+
     </div>
     <script th:src="@{/js/script.js}"></script>
 </body>

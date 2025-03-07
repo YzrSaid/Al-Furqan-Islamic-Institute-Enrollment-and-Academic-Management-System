@@ -74,8 +74,10 @@ public class EnrollmentController {
     @PutMapping("/add/assessment/{enrollmentId}/{gradeLevelId}")
     public ResponseEntity<String> proceedToAssessment(@PathVariable int enrollmentId, @PathVariable int gradeLevelId){
         try{
+            System.out.println(enrollmentId);
+            System.out.println(gradeLevelId);
             int result = enrollmentService.addToAssessment(enrollmentId, gradeLevelId);
-
+            System.out.println(result);
             return switch (result) {
                 case 1 -> new ResponseEntity<>("Enrollment Record Not Found",HttpStatus.NOT_FOUND);
                 case 2 -> new ResponseEntity<>("Grade Level Record Not Found",HttpStatus.NOT_FOUND);

@@ -89,8 +89,11 @@ public class EnrollmentServices {
             boolean isQualified = true;
             if(!student.isNew() && gradeLevelToEnroll.getPreRequisite() != null){
                 int nextLevelPreReqId = gradeLevelToEnroll.getPreRequisite().getLevelId();
+                System.out.println("Enrolling to "+gradeLevelToEnroll.getLevelName());
+                System.out.println("Which is a successor of "+student.getCurrentGradeSection().getLevel().getLevelName());
                 isQualified = ssgService.didStudentPassed(student.getStudentId(),
                         nextLevelPreReqId);
+                System.out.println("Am I qualified? : " + isQualified);
                 if((!isQualified) && student.getCurrentGradeSection().getLevel().getLevelId() == nextLevelPreReqId){
                     enrollmentRecord.setRemarks("Congratulation! You Are Qualified To Your Current Grade");
                 }else if(!isQualified)

@@ -30,15 +30,15 @@
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
-            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('secollment-submenu', event)">
+            <img th:src="@{/images/icons/secollment.png}" alt="Enrollment Icon"> Enrollment
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
-        <div class="submenu" id="enrollment-submenu">
-            <a href="/enrollment/listing">Listing/Register</a>
-            <a href="/enrollment/assessment">Assessment</a>
-            <a href="/enrollment/payment">Payment</a>
-            <a href="/enrollment/enrolled">Enrolled</a>
+        <div class="submenu" id="secollment-submenu">
+            <a href="/secollment/listing">Listing/Register</a>
+            <a href="/secollment/assessment">Assessment</a>
+            <a href="/secollment/payment">Payment</a>
+            <a href="/secollment/secolled">Enrolled</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
@@ -148,7 +148,7 @@
         </div>
 
         <!-- Table -->
-        <table class="grade-management-table">
+        <table id="lamesa" class="grade-management-table">
             <thead>
                 <tr>
                     <th>Grade Level</th>
@@ -195,5 +195,52 @@
         <!-- <script th:src="@{/js/script.js}"></script> -->
         <script src="../../static/js/script.js"></script>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        getSections();
+    });
+    
+    function getSections(){
+        fetch("/section/all")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch grade levels");
+                return res.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#lamesa tbody");
+                tableBody.innerHTML = "";
+                
+                data.forEach(sec => {
+                    console.log(sec);
+                    secollmentIdLet = sec.secollmentId;
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                                <tr>
+                                    <td>${sec.gradeLevelName}</td>
+                                    <td>${sec.sectionName}</td>
+                                    <td>${sec.adviserName}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <div class="status-container">
+                                                <div class="status" id="status-grade-management">20/20</div>
+                                            </div>
+                                            <!-- <div class="action-container action">
+                                                <a href="grade-per-class.html"><img th:src="@{/images/icons/compose.png}"
+                                                        alt="edit-icon"></a>
+                                            </div> -->
+                                            <div class="action-container action">
+                                                <a href="/grade-management/class/${sec.number}" class="view-per-class"><img src="/images/icons/compose.png"
+                                                        alt="edit-icon"></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                `;
 
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error:", error));
+    }
+</script>
 </html>

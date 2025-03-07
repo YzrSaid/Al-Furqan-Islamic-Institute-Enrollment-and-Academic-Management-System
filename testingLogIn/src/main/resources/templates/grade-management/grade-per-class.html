@@ -149,7 +149,7 @@
         </div>
 
         <!-- Table -->
-        <table class="grade-per-class-table">
+        <table id="fine-dining-restaurant-table" class="grade-per-class-table">
             <thead>
                 <tr>
                     <th>Subjects</th>
@@ -178,5 +178,55 @@
     </div>
     <script src="../../static/js/script.js"></script>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the current URL path
+        const path = window.location.pathname;
+
+        // Split the path by '/' and extract the last part
+        const pathParts = path.split('/');
+        const sectionId = pathParts[pathParts.length - 1];
+
+        console.log("Extracted enrollmentId:", sectionId);
+        getSubjectAndTeacher(sectionId);
+    });
+    function getSubjectAndTeacher(sectionId){
+        fetch(`/schedules/section-subjects/${sectionId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#fine-dining-restaurant-table tbody");
+                tableBody.innerHTML = "";
+                
+                Object.entries(data).forEach(([key, value]) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${value.subject}</td>
+                            <td>${value.subject}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <div class="status-container">
+                                        <div class="status" id="status-grade-management">20/20</div>
+                                    </div>
+                                    <div class="action-container action">
+                                        <a href="/grade-management/subject" class="view-per-subject"><img src="/images/icons/compose.png"
+                                                alt="edit-icon"></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        `;
+                    tableBody.appendChild(row);
+            });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    }
+</script>
 
 </html>

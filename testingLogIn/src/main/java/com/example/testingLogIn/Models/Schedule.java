@@ -46,6 +46,7 @@ public class Schedule {
         return ScheduleDTO.builder()
                           .scheduleNumber(scheduleNumber)
                           .teacherName(teacher.getFirstname()+" "+teacher.getLastname())
+                          .subjectId(subject.getSubjectNumber())
                           .subject(subject.getSubjectName())
                           .sectionName(section.getSectionName())
                           .day(day)

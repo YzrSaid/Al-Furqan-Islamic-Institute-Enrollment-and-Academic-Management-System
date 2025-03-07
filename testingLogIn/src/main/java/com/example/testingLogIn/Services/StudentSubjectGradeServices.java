@@ -1,9 +1,15 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.StudentSubjectGrade;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Repositories.SubjectRepo;
+import com.example.testingLogIn.Repositories.sySemesterRepo;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.aop.AopInvocationException;
 import org.springframework.stereotype.Service;
 /**
@@ -14,10 +20,12 @@ import org.springframework.stereotype.Service;
 public class StudentSubjectGradeServices {
     private final StudentSubjectGradeRepo ssgRepo;
     private final SubjectRepo subjectRepo;
+    private final sySemesterRepo semRepo;
 
-    public StudentSubjectGradeServices(StudentSubjectGradeRepo ssgRepo, SubjectRepo subjectRepo) {
+    public StudentSubjectGradeServices(StudentSubjectGradeRepo ssgRepo, SubjectRepo subjectRepo, sySemesterRepo semRepo) {
         this.ssgRepo = ssgRepo;
         this.subjectRepo = subjectRepo;
+        this.semRepo = semRepo;
     }
     
     public boolean didStudentPassed(int studentId, int gradeLevelId){
@@ -44,5 +52,38 @@ public class StudentSubjectGradeServices {
                                                             .build();
                         ssgRepo.save(studSubGrade);
                     });
+    }
+    
+    public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesBySection(int sectionId){
+        List<StudentSubjectGrade> gradesList = ssgRepo.getSectionGradesByCurrentSem(sectionId, semRepo.findCurrentActive().getSySemNumber());
+        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap();
+        
+        gradesList
+                .forEach(studGrade -> {
+                    String subjectName = studGrade.getSubject().getSubjectName();
+                    if(!subjectStudGrades.containsKey(subjectName))
+                        subjectStudGrades.put(subjectName, new ArrayList<StudentSubjectGradeDTO>());
+                    subjectStudGrades.get(subjectName).add(studGrade.DTOmapper());
+                });
+        
+        return subjectStudGrades;
+    }
+    
+    public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesBySemester(int studentId){
+        List<StudentSubjectGrade> gradesList = ssgRepo.getGradesByStudent(studentId);
+        //Section and Grade Level as Key
+        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap();
+        
+        gradesList
+                .forEach(studGrade -> {
+                    String gradeLevelAndSectionSem = studGrade.getSection().getLevel().getLevelName()+" - "+
+                            studGrade.getSection().getSectionName()+" : "+
+                            studGrade.getSemester().getSchoolYear().getSchoolYear()+"-"+studGrade.getSemester().getSem()+ " sem";
+                    if(!subjectStudGrades.containsKey(gradeLevelAndSectionSem))
+                        subjectStudGrades.put(gradeLevelAndSectionSem, new ArrayList<StudentSubjectGradeDTO>());
+                    subjectStudGrades.get(gradeLevelAndSectionSem).add(studGrade.DTOmapper());
+                });
+        
+        return subjectStudGrades;
     }
 }

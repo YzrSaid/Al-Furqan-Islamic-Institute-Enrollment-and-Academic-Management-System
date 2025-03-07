@@ -153,7 +153,7 @@ public class PrivateTemplateControllers {
         return "/grade-management/grade-per-subject";
     }
     
-    @GetMapping("/grade-management/class")
+    @GetMapping("/grade-management/class/{sectionId}")
     public String getGradeManagementPerClass(){
         return "/grade-management/grade-per-class";
     }

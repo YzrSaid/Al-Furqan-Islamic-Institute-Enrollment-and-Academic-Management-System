@@ -15,6 +15,7 @@ public class ScheduleDTO {
     private int scheduleNumber;
     private String teacherName;
     private String subject;
+    private int subjectId;
     private String sectionName;
     private DayOfWeek day;
     private LocalTime timeStart;

@@ -2,6 +2,7 @@ package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.ScheduleDTO;
+import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.Models.Schedule;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Repositories.ScheduleRepo;
@@ -70,9 +71,7 @@ public class ScheduleServices {
     }
     
     public List<ScheduleDTO> getSchedulesBySection(String sectionName){
-        System.out.println(sectionName);
         Section section = sectionService.getSectionByName(sectionName);
-        System.out.println(section.getSectionName());
         if(section == null)
             throw new NullPointerException();
         
@@ -82,6 +81,26 @@ public class ScheduleServices {
                                 .thenComparing(Schedule::getTimeStart))
                             .map(Schedule::mapper)
                             .toList();
+    }
+    
+        public Map<Integer,ScheduleDTO> getSubjectsUniqeTeacher(int sectionId){
+        SectionDTO section = sectionService.getSection(sectionId);
+        if(section == null)
+            throw new NullPointerException();
+        
+        Map<Integer,ScheduleDTO> subjectTeachers = new HashMap<>();
+        List<Schedule> sectionScheds = scheduleRepo.findSectionSchedules(section.getNumber()).stream()
+                            .sorted(Comparator
+                                .comparing(Schedule::getDay)
+                                .thenComparing(Schedule::getTimeStart))
+                            .toList();
+        
+        sectionScheds.forEach(sched -> {
+            if(!subjectTeachers.containsKey(sched.getSubject().getSubjectNumber()))
+                subjectTeachers.put(sched.getSubject().getSubjectNumber(), sched.mapper());
+        });
+        
+        return subjectTeachers;
     }
     
     public int updateSchedule(ScheduleDTO schedDTO){

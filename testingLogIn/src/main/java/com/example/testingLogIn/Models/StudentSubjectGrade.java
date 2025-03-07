@@ -4,6 +4,7 @@
  */
 package com.example.testingLogIn.Models;
 
+import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,4 +46,15 @@ public class StudentSubjectGrade {
     @JoinColumn(name = "semester")
     private SchoolYearSemester semester;
     private Integer subjectGrade;
+    
+    public StudentSubjectGradeDTO DTOmapper(){
+        return StudentSubjectGradeDTO.builder()
+                                    .studGradeId(numberId)
+                                    .studentId(student.getStudentDisplayId())
+                                    .studentFirstName(student.getFirstName())
+                                    .studentLastName(student.getLastName())
+                                    .studentMiddleName(student.getLastName())
+                                    .subjectGrade(subjectGrade)
+                                    .build();
+    }
 }

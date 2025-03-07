@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.Models.StudentSubjectGrade;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +24,15 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
 boolean didStudentPassed(
     @Param("studentId") int studentId,
     @Param("gradeLevelId") int gradeLevelId);
+
+@Query("SELECT sg FROM StudentSubjectGrade sg "+
+       "WHERE sg.section.number = :sectionId "+
+       "AND sg.semester.sySemNumber = :semId")
+List<StudentSubjectGrade> getSectionGradesByCurrentSem(
+        @Param("sectionId") int sectionId,
+        @Param("semId") int semId);
+
+@Query("SELECT sg FROM StudentSubjectGrade sg "+
+       "WHERE sg.student.studentId = :studentId")
+List<StudentSubjectGrade> getGradesByStudent(@Param("studentId") int studentId);
 }

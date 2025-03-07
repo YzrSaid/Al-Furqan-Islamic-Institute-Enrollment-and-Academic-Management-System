@@ -54,6 +54,14 @@ public class StudentSubjectGradeServices {
                     });
     }
     
+    public List<StudentSubjectGradeDTO> getStudentsGradeBySectionSubject(int sectionId,int subjectId){
+        return ssgRepo.getGradesBySectionSubjectSem(sectionId,
+                                                    subjectId,
+                                                    semRepo.findCurrentActive().getSySemNumber())
+                        .stream().map(StudentSubjectGrade::DTOmapper)
+                        .toList();
+    }
+    
     public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesBySection(int sectionId){
         List<StudentSubjectGrade> gradesList = ssgRepo.getSectionGradesByCurrentSem(sectionId, semRepo.findCurrentActive().getSySemNumber());
         Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap();

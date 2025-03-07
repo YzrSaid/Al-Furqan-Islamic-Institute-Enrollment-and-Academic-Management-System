@@ -5,6 +5,7 @@ import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import jakarta.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -50,8 +51,8 @@ public class Schedule {
                           .subject(subject.getSubjectName())
                           .sectionName(section.getSectionName())
                           .day(day)
-                          .timeStart(timeStart)
-                          .timeEnd(timeEnd)
+                          .timeStartString(timeStart.format(DateTimeFormatter.ofPattern("hh:mm a")))
+                          .timeEndString(timeEnd.format(DateTimeFormatter.ofPattern("hh:mm a")))
                           .isNotDeleted(isNotDeleted)
                           .build();
     }

@@ -19,6 +19,8 @@ public class ScheduleDTO {
     private String sectionName;
     private DayOfWeek day;
     private LocalTime timeStart;
+    private String timeStartString;
     private LocalTime timeEnd;
+    private String timeEndString;
     private boolean isNotDeleted;
 }

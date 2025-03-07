@@ -70,8 +70,8 @@ public class ScheduleServices {
                             .collect(Collectors.toList());
     }
     
-    public List<ScheduleDTO> getSchedulesBySection(String sectionName){
-        Section section = sectionService.getSectionByName(sectionName);
+    public List<ScheduleDTO> getSchedulesBySection(int sectionNum){
+        SectionDTO section = sectionService.getSection(sectionNum);
         if(section == null)
             throw new NullPointerException();
         

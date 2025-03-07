@@ -148,7 +148,7 @@ public class PrivateTemplateControllers {
         return "/grade-management/grade-management";
     }
 
-    @GetMapping("/grade-management/subject")
+    @GetMapping("/grade-management/subject/{sectionId}/{subjectId}")
     public String getGradeManagementPerSubject(){
         return "/grade-management/grade-per-subject";
     }
@@ -165,7 +165,7 @@ public class PrivateTemplateControllers {
         return "/schedule/schedule";
     }
     
-    @GetMapping("/schedule/sched-board")
+    @GetMapping("/schedule/sched-board/{secNumber}")
     public String getSchedBoard(){
         return "/schedule/sched-board";
     }

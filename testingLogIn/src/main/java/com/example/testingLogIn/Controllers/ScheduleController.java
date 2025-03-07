@@ -38,10 +38,10 @@ public class ScheduleController {
         }
     }
     
-    @GetMapping("/section/{sectionName}")
-    public ResponseEntity<List<ScheduleDTO>> getSchedulesBySection(@PathVariable String sectionName){
+    @GetMapping("/section/{sectionId}")
+    public ResponseEntity<List<ScheduleDTO>> getSchedulesBySection(@PathVariable int sectionId){
         try{
-            return new ResponseEntity<>(scheduleService.getSchedulesBySection(sectionName),HttpStatus.OK);
+            return new ResponseEntity<>(scheduleService.getSchedulesBySection(sectionId),HttpStatus.OK);
         }catch(NullPointerException npe){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

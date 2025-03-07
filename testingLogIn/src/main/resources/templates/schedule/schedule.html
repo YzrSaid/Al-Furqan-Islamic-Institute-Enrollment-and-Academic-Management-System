@@ -33,6 +33,7 @@
                 }
             }
         });
+        getAllSections();
     });
 </script>
 
@@ -172,7 +173,7 @@
         </div>
 
         <!-- Table -->
-        <table class="verify-accounts-table">
+        <table id="table-ba-to" class="verify-accounts-table">
             <thead>
                 <tr>
                     <th>Grade Level</th>
@@ -293,5 +294,42 @@
     </div>
     <script th:src="@{/js/script.js}"></script>
 </body>
+<script>
+    function getAllSections(){
+        console.log('getting the sections');
+        fetch(`/section/all`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#table-ba-to tbody");
+                tableBody.innerHTML = "";
+                
+                data.forEach(rec => {
+                    console.log(rec);
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <tr>
+                            <td>${rec.gradeLevelName}</td>
+                            <td>${rec.sectionName}</td>
+                            <td>0 muna hahah</td>
+                            <td>
+                                <div class="action-container">
+                                    <a href="/schedule/sched-board/${rec.number}" class="view-sched">View Schedule</a>
+                                </div>
+                            </td>
+                        </tr>
+                        `;
+                    tableBody.appendChild(row);
+            });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    }
+</script>
 
 </html>

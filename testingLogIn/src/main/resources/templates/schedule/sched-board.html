@@ -35,6 +35,7 @@
                 }
             }
         });
+        setUpTables();
     });
 </script>
 
@@ -160,7 +161,7 @@
             <h4 id="adviser">Sir Jisun</h4>
         </div>
 
-        <table class="sched-table">
+        <table id="paragas-eatery-table" class="sched-table">
             <thead>
             <tr>
                 <th>Subject</th>
@@ -310,5 +311,44 @@
 </div>
 
 </body>
+<script>
+    function setUpTables(){
+        const path = window.location.pathname;
+
+        const pathParts = path.split('/');
+        const sectionId = pathParts[pathParts.length - 1];
+        
+        fetch(`/schedules/section/${sectionId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#paragas-eatery-table tbody");
+                tableBody.innerHTML = "";
+                
+                data.forEach(rec => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <tr class="sched-row hidden-row">
+                            <td>${rec.subject}</td>
+                            <td>${rec.teacherName}</td>
+                            <td>${rec.day}</td>
+                            <td>${rec.timeStartString} - ${rec.timeEndString}</td>
+                            <td>
+                                <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                            </td>
+                        </tr>
+                        `;
+                    tableBody.appendChild(row);
+            });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    }
+</script>
 
 </html>

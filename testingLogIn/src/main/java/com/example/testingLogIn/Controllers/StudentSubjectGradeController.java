@@ -32,6 +32,15 @@ public class StudentSubjectGradeController {
         }
     }
     
+    @GetMapping("/section-records/{sectionId}/{subjectId}")
+    public ResponseEntity<List<StudentSubjectGradeDTO>> getGradesBySectionSubject(@PathVariable int sectionId, @PathVariable int subjectId){
+        try{
+            return new ResponseEntity<>(ssgService.getStudentsGradeBySectionSubject(sectionId,subjectId),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
     @GetMapping("/student/{studentId}")
     public ResponseEntity<Map<String,List<StudentSubjectGradeDTO>>> getStudentGrades(@PathVariable int studentId){
         try{

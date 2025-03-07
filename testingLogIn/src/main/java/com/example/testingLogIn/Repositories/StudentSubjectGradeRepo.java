@@ -14,25 +14,36 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGrade, Integer> {
     
-@Query("SELECT CASE WHEN EXISTS ( " +
-       "SELECT 1 FROM StudentSubjectGrade sg " +
-       "WHERE sg.student.studentId = :studentId " +
-       "AND sg.section.level.levelId = :gradeLevelId " +
-       "GROUP BY sg.semester " +
-       "HAVING AVG(sg.subjectGrade) > 74" +
-       ") THEN true ELSE false END")
-boolean didStudentPassed(
-    @Param("studentId") int studentId,
-    @Param("gradeLevelId") int gradeLevelId);
+    @Query("SELECT CASE WHEN EXISTS ( " +
+           "SELECT 1 FROM StudentSubjectGrade sg " +
+           "WHERE sg.student.studentId = :studentId " +
+           "AND sg.section.level.levelId = :gradeLevelId " +
+           "GROUP BY sg.semester " +
+           "HAVING AVG(sg.subjectGrade) > 74" +
+           ") THEN true ELSE false END")
+    boolean didStudentPassed(
+        @Param("studentId") int studentId,
+        @Param("gradeLevelId") int gradeLevelId);
 
-@Query("SELECT sg FROM StudentSubjectGrade sg "+
-       "WHERE sg.section.number = :sectionId "+
-       "AND sg.semester.sySemNumber = :semId")
-List<StudentSubjectGrade> getSectionGradesByCurrentSem(
-        @Param("sectionId") int sectionId,
-        @Param("semId") int semId);
+    @Query("SELECT sg FROM StudentSubjectGrade sg "+
+           "WHERE sg.section.number = :sectionId "+
+           "AND sg.semester.sySemNumber = :semId")
+    List<StudentSubjectGrade> getSectionGradesByCurrentSem(
+            @Param("sectionId") int sectionId,
+            @Param("semId") int semId);
 
-@Query("SELECT sg FROM StudentSubjectGrade sg "+
-       "WHERE sg.student.studentId = :studentId")
-List<StudentSubjectGrade> getGradesByStudent(@Param("studentId") int studentId);
+    @Query("SELECT sg FROM StudentSubjectGrade sg "+
+           "WHERE sg.student.studentId = :studentId")
+    List<StudentSubjectGrade> getGradesByStudent(@Param("studentId") int studentId);
+    
+    @Query("SELECT sg FROM StudentSubjectGrade sg "+
+            "WHERE sg.section.number = :sectionId "+
+            "AND sg.subject.subjectNumber = :subjectId "+
+            "AND sg.semester.sySemNumber = :semId")
+    List<StudentSubjectGrade> getGradesBySectionSubjectSem(
+            @Param("sectionId") int sectionId,
+            @Param("subjectId") int subjectId,
+            @Param("semId") int semId);
+
+
 }

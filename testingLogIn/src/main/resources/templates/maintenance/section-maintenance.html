@@ -90,7 +90,7 @@
         <div class="submenu" id="maintenance-submenu">
             <a href="/maintenance/school-year">School Year</a>
             <a href="/maintenance/grade-level">Grade Level</a>
-            <a href="/maintenance/subject" >Subject</a>
+            <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section" class="second-active">Section</a>
             <a href="/maintenance/fees-management">Fees Management</a>
             <!-- <a href="/maintenance/teacher">Teacher</a> -->
@@ -210,9 +210,26 @@
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
+                    <button data-close-modal="confirmationModal" class="btn-close-confirm">Cancel</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success modal -->
+        <div id="successModal"
+            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+            <p id="successModalMessage"></p>
         </div>
 
         <!-- Modal for adding a section -->
@@ -342,7 +359,7 @@
 
 
     function fetchAdvisers() {
-        fetch("/section/adviserids") // Ensure correct backend URL
+        fetch("/section/adviserids") 
             .then(response => response.json())
             .then(data => {
                 const adviserSelect = document.getElementById("adviser");
@@ -514,17 +531,17 @@
             },
             body: JSON.stringify(formData)
         })
-            .then(response => response.json())  // Now we correctly parse JSON
-            .then(data => {
-                if (data.error) {
-                    alert("Error: " + data.error);
-                } else {
-                    alert(data.message);
-                    location.reload();
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
                 }
+                return response.text();
+            })
+            .then(text => {
+                showSuccessModal("✅ Success: New section has been added successfully!");
             })
             .catch(error => {
-                alert("Error: " + error.message);
+                showErrorModal("❌ Error: " + error.message);
             });
     }
 
@@ -548,14 +565,18 @@
             },
             body: JSON.stringify(sectionData),
         })
-            .then(response => response.text())
-            .then(data => {
-                alert(data);
-                if (data.includes("Successfully")) {
-                    location.reload();
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
                 }
+                return response.text();
             })
-            .catch(error => console.error("Error:", error));
+            .then(text => {
+                showSuccessModal("✅ Success: This record has been edited successfully!");
+            })
+            .catch(error => {
+                showErrorModal("❌ Error: " + error.message);
+            });
     }
 
     function deleteSection(selectedSectionId) {
@@ -565,14 +586,18 @@
                 "Content-Type": "application/json",
             }
         })
-            .then(response => response.text())
-            .then(data => {
-                alert(data);
-                if (data.includes("Successfully")) {
-                    location.reload();
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
                 }
+                return response.text();
             })
-            .catch(error => console.error("Error:", error));
+            .then(text => {
+                showSuccessModal("✅ Success: This record has been deleted successfully!");
+            })
+            .catch(error => {
+                showErrorModal("❌ Error: " + error.message);
+            });
     }
 </script>
 

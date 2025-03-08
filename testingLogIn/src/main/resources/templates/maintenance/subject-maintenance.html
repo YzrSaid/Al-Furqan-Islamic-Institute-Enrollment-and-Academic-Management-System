@@ -39,90 +39,90 @@
 
 <body>
     <!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="text-center">
-        <div class="school-logo">
-            <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+    <div class="sidebar" id="sidebar">
+        <div class="text-center">
+            <div class="school-logo">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+            </div>
+            <p class="mt-2">S.Y. 2024-2025</p>
+            <div class="welcome-div">
+                <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+            </div>
         </div>
-        <p class="mt-2">S.Y. 2024-2025</p>
-        <div class="welcome-div">
-            <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+
+        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
+            <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
+        </a>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing">Listing/Register</a>
+            <a href="/enrollment/assessment">Assessment</a>
+            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled">Enrolled</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="transaction-submenu">
+            <a href="/transaction/tuition">Tuition</a>
+            <a href="/transaction/academic-resources">Book Distribution</a>
+        </div>
+
+
+        <a href="/grade-management" class="sidebar-icons">
+            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
+        </a>
+
+        <a href="/schedule" class="sidebar-icons">
+            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
+        </a>
+
+        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
+            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="maintenance-submenu">
+            <a href="/maintenance/school-year">School Year</a>
+            <a href="/maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/subject" class="second-active">Subject</a>
+            <a href="/maintenance/section">Section</a>
+            <a href="/maintenance/fees-management">Fees Management</a>
+            <!-- <a href="/maintenance/teacher">Teacher</a> -->
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
+            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="reports-submenu">
+            <a href="/reports/student">Student Reports</a>
+            <a href="/reports/payment">Payment Reports</a>
+            <a href="/reports/teacher">Teacher Report</a>
+            <a href="/reports/academic-resources">Book Distribution Reports</a>
+        </div>
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="account-submenu">
+            <a href="/accounts/verify-accounts">Verify Accounts</a>
+            <a href="/accounts/manage-accounts">Manage Accounts</a>
+            <a href="/accounts/my-account">My Account</a>
+        </div>
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
+            <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="settings-submenu">
+            <a href="/settings/create-user">Create User</a>
         </div>
     </div>
-
-    <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
-        <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
-    </a>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
-        <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
-        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="enrollment-submenu">
-        <a href="/enrollment/listing">Listing/Register</a>
-        <a href="/enrollment/assessment">Assessment</a>
-        <a href="/enrollment/payment">Payment</a>
-        <a href="/enrollment/enrolled">Enrolled</a>
-    </div>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-        <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
-        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="transaction-submenu">
-        <a href="/transaction/tuition">Tuition</a>
-        <a href="/transaction/academic-resources">Book Distribution</a>
-    </div>
-
-
-    <a href="/grade-management" class="sidebar-icons">
-        <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
-    </a>
-
-    <a href="/schedule" class="sidebar-icons">
-        <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
-    </a>
-
-    <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-        <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
-            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="maintenance-submenu">
-        <a href="/maintenance/school-year">School Year</a>
-        <a href="/maintenance/grade-level">Grade Level</a>
-        <a href="/maintenance/subject" class="second-active">Subject</a>
-        <a href="/maintenance/section">Section</a>
-        <a href="/maintenance/fees-management">Fees Management</a>
-        <!-- <a href="/maintenance/teacher">Teacher</a> -->
-    </div>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-        <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="reports-submenu">
-        <a href="/reports/student">Student Reports</a>
-        <a href="/reports/payment">Payment Reports</a>
-        <a href="/reports/teacher">Teacher Report</a>
-        <a href="/reports/academic-resources">Book Distribution Reports</a>
-    </div>
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-        <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
-                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="account-submenu">
-        <a href="/accounts/verify-accounts">Verify Accounts</a>
-        <a href="/accounts/manage-accounts">Manage Accounts</a>
-        <a href="/accounts/my-account">My Account</a>
-    </div>
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-        <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="settings-submenu">
-        <a href="/settings/create-user">Create User</a>
-    </div>
-</div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
@@ -212,10 +212,28 @@
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
+                    <button data-close-modal="confirmationModal" class="btn-close-confirm">Cancel</button>
                 </div>
             </div>
         </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success modal -->
+        <div id="successModal"
+            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+            <p id="successModalMessage"></p>
+        </div>
+
 
         <!-- Modal for adding subject -->
         <div id="subjectModal" class="subject-modal modal">
@@ -423,7 +441,7 @@
         const subjectName = subjectNameInput.value;
 
         if (!levelId || !subjectName) {
-            alert("Please select a grade level and enter a subject name.");
+            showErrorModal("❌ Error: " + "Please select a grade level and enter a subject name.");
             return;
         }
 
@@ -434,18 +452,17 @@
         fetch(actionUrl, {
             method: "POST"
         })
-            .then(response => response.text())
-            .then(data => {
-                if (data.includes("New Subject Added Successfully")) {
-                    alert(data);
-                    location.reload();  // Refresh page to show the new subject
-                } else {
-                    alert(data); // Show error message from backend
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
                 }
+                return response.text();
+            })
+            .then(text => {
+                showSuccessModal("✅ Success: New subject has been added successfully!");
             })
             .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred while adding the subject.");
+                showErrorModal("❌ Error: " + error.message);
             });
     }
 
@@ -466,14 +483,18 @@
             },
             body: JSON.stringify(subjectData),
         })
-            .then(response => response.text())
-            .then(data => {
-                alert(data);
-                if (data.includes("Successfully")) {
-                    location.reload();
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
                 }
+                return response.text();
             })
-            .catch(error => console.error("Error:", error));
+            .then(text => {
+                showSuccessModal("✅ Success: This record has been edited successfully!");
+            })
+            .catch(error => {
+                showErrorModal("❌ Error: " + error.message);
+            });
     }
 
     // Delete subject
@@ -484,14 +505,18 @@
                 "Content-Type": "application/json",
             }
         })
-            .then(response => response.text())
-            .then(data => {
-                alert(data);
-                if (data.includes("Successfully")) {
-                    location.reload();
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
                 }
+                return response.text();
             })
-            .catch(error => console.error("Error:", error));
+            .then(text => {
+                showSuccessModal("✅ Success: This record has been deleted successfully!");
+            })
+            .catch(error => {
+                showErrorModal("❌ Error: " + error.message);
+            });
     }
 
 </script>

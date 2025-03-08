@@ -332,40 +332,56 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    function toggleModal(modalId, show = true, message = "") {
-        const modal = document.getElementById(modalId);
-        if (!modal) return;
-    
-        if (show) {
-            modal.classList.add("show");
-            modal.style.visibility = "visible";
-            modal.style.opacity = "1";
-            modal.style.pointerEvents = "auto"; // Enable interaction
-        } else {
-            modal.classList.remove("show");
-            modal.style.visibility = "hidden";
-            modal.style.opacity = "0";
-            modal.style.pointerEvents = "none"; // Ensure it doesn't block clicks
-        }
-    
-        // If it's a confirmation modal, update the text
-        if (modalId === "confirmationModal" && message) {
-            document.getElementById("modalText").textContent = message;
-    
-            // Reset confirm button properly to avoid event listener issues
-            let confirmBtn = document.getElementById("confirmAction");
-            let newConfirmBtn = confirmBtn.cloneNode(true);
-            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-    
-            // Reattach event listener
-            newConfirmBtn.addEventListener("click", function () {
-                const action = newConfirmBtn.getAttribute("data-confirm-action");
-                handleConfirmAction(action, event);
-            });
-        }
-    }
-    
+  function toggleModal(modalId, show = true, message = "") {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
 
+    if (show) {
+      modal.classList.add("show");
+      modal.style.visibility = "visible";
+      modal.style.opacity = "1";
+      modal.style.pointerEvents = "auto"; // Enable interaction
+    } else {
+      modal.classList.remove("show");
+      modal.style.visibility = "hidden";
+      modal.style.opacity = "0";
+      modal.style.pointerEvents = "none"; // Ensure it doesn't block clicks
+    }
+
+    // If it's a confirmation modal, update the text
+    if (modalId === "confirmationModal" && message) {
+      document.getElementById("modalText").textContent = message;
+
+      // Reset confirm button properly to avoid event listener issues
+      let confirmBtn = document.getElementById("confirmAction");
+      let newConfirmBtn = confirmBtn.cloneNode(true);
+      confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+    }
+
+    if (modalId.includes("Edit") && show) {
+      const confirmBtn = modal.querySelector(".btn-confirm");
+      const cancelBtn = modal.querySelector(".btn-cancel");
+      const inputs = modal.querySelectorAll("input, textarea, select");
+
+      // Disable form inputs, select elements, checkboxes, and radio buttons
+      document.querySelectorAll("input, select").forEach((input) => {
+        if (input.tagName === "SELECT") {
+          input.disabled = true; // Disable selects
+        } else if (input.type === "checkbox" || input.type === "radio") {
+          input.disabled = true; // Disable checkboxes and radio buttons
+          input.setAttribute("disabled", true); // Double-check to disable it properly
+        } else {
+          input.readOnly = true; // Set other text-based inputs as readonly
+          input.disabled = true; // Disable other inputs like text, number, password, etc.
+        }
+      });
+
+      // Set initial button states
+      confirmBtn.textContent = "Edit";
+      cancelBtn.textContent = "Close";
+      confirmBtn.setAttribute("data-mode", "edit");
+    }
+  }
 
   async function handleConfirmAction(action, event) {
     if (event && typeof event.preventDefault === "function") {
@@ -374,28 +390,44 @@ document.addEventListener("DOMContentLoaded", function () {
       console.warn("⚠️ Warning: Event is missing or invalid");
     }
 
-    console.log(action);
-
     if (!action) {
       console.error("❌ Error: Action is undefined!");
       return;
     }
 
-    // ✅ Always close confirmationModal FIRST
     let confirmationModal = document.getElementById("confirmationModal");
     confirmationModal.style.visibility = "hidden";
     confirmationModal.style.opacity = "0";
 
-    console.log("🚀 Handling Action:", action);
     switch (action) {
       case "addNewStudent":
         alert("Add new student!");
         break;
       case "addGradeLevel":
-        addGradeLevel();
+        // This case is for adding new grade level
+        if (!validateForm("gradeLevelForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          addGradeLevel();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
+        }
         break;
       case "editGradeLevel":
-        editGradeLevel();
+        // This case is for editing new grade level
+        if (!validateForm("gradeLevelEditForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          editGradeLevel();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
+        }
         break;
       case "deleteGradeLevel":
         deleteGradeLevel(selectedGradeLevelId);
@@ -437,19 +469,60 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         break;
       case "addSection":
-        addSection();
+        // This case is for adding subject level
+        if (!validateForm("sectionForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          addSection();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
+        }
         break;
       case "editSection":
-        editSection();
+        // This case is for adding subject level
+        if (!validateForm("sectionEditForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          editSection();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
+        }
         break;
       case "deleteSection":
         deleteSection(selectedSectionId);
         break;
       case "addSubject":
-        addSubject();
+        // This case is for adding subject level
+        if (!validateForm("subjectForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          addSubject();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
+        }
+
         break;
       case "editSubject":
-        editSubject();
+        // This case is for adding subject level
+        if (!validateForm("subjectEditForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          editSubject();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
+        }
         break;
       case "deleteSubject":
         deleteSubject(selectedSubjectId);
@@ -476,8 +549,20 @@ document.addEventListener("DOMContentLoaded", function () {
         editMyAccount(selectedManageAccountId);
         break;
       case "addSchoolYear":
-        if (validateSchoolYear()) {
-          addSchoolYear();
+        // This case is for adding new grade level
+        if (!validateForm("schoolYearForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          if (validateSchoolYear()) {
+            addSchoolYear();
+            document
+              .getElementById("confirmationModal")
+              .classList.remove("show");
+            document.getElementById("confirmationModal").style.visibility =
+              "hidden";
+            document.getElementById("confirmationModal").style.opacity = "0";
+          }
         }
         break;
       case "changePassword":
@@ -506,23 +591,18 @@ document.addEventListener("DOMContentLoaded", function () {
         deactivateSemester();
         break;
       case "addListing":
+        // This case is for adding new student to the listing/registration
         if (!validateForm("studentForm")) {
-          console.error(
-            "❌ Validation failed: Please fill in all required fields."
-          );
-          showErrorModal("⚠️ Please fill in all required fields!"); // ✅ Show error modal
-          return; // 🚀 Stop execution, keep studentForm open
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          addListing();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
         }
-
-        // ✅ If valid, proceed & force close confirmationModal
-        addListing();
-        document.getElementById("confirmationModal").classList.remove("show"); // ✅ Hide it
-        document.getElementById("confirmationModal").style.visibility =
-          "hidden";
-        document.getElementById("confirmationModal").style.opacity = "0";
-
         break;
-
       case "finishSemester":
         finishSemester();
         break;
@@ -536,10 +616,33 @@ document.addEventListener("DOMContentLoaded", function () {
       case "proceedToEnrolled":
         proceedToEnrolled(enrollmentIdLet);
       case "addFee":
-        addFee();
+        // This case is for adding new fee
+        if (!validateForm("feesManagementForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          addFee();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
+        }
         break;
       case "editFee":
-        editFee();
+         // This case is for editing the fee payment
+         if (!validateForm("feesManagementEditModal")) {
+            showErrorModal("⚠️ Please fill in all required fields!");
+            return;
+          } else {
+            editFee();
+            document.getElementById("confirmationModal").classList.remove("show");
+            document.getElementById("confirmationModal").style.visibility =
+              "hidden";
+            document.getElementById("confirmationModal").style.opacity = "0";
+          }
+        break;
+      case "deleteFee":
+        deleteFee(selectedPaymentName);   
         break;
       case "savePayment":
         savePayment();
@@ -549,28 +652,18 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
   }
-  // ✅ Prevent modal from closing when clicking outside
+
   document.addEventListener("click", function (event) {
-    const studentForm = document.getElementById("studentForm");
-    const confirmationModal = document.getElementById("confirmationModal");
+    // Get all open modals
+    const openModals = document.querySelectorAll(".modal.show"); // Assuming 'show' is the class for visible modals
 
-    if (
-      studentForm &&
-      !studentForm.contains(event.target) &&
-      event.target !== studentForm
-    ) {
-      console.log("⛔ Clicked outside studentForm, preventing close...");
-      event.stopPropagation(); // ✅ Prevent closing when clicking outside
-    }
-
-    if (
-      confirmationModal &&
-      !confirmationModal.contains(event.target) &&
-      event.target !== confirmationModal
-    ) {
-      console.log("⛔ Clicked outside confirmationModal, preventing close...");
-      event.stopPropagation(); // ✅ Prevent closing when clicking outside
-    }
+    openModals.forEach((modal) => {
+      // Check if the click was outside of the modal
+      if (!modal.contains(event.target) && event.target !== modal) {
+        console.log(`⛔ Clicked outside ${modal.id}, preventing close...`);
+        event.stopPropagation();
+      }
+    });
   });
 
   function validateForm(formId) {
@@ -586,7 +679,7 @@ document.addEventListener("DOMContentLoaded", function () {
     inputs.forEach((input) => {
       if (!input.value.trim()) {
         valid = false;
-        input.classList.add("error"); // Add a red border or something
+        input.classList.add("error");
       } else {
         input.classList.remove("error");
       }
@@ -595,27 +688,51 @@ document.addEventListener("DOMContentLoaded", function () {
     return valid;
   }
 
-  function showErrorModal(message) {
-    console.log("🟠 Showing error modal with message:", message);
-
+  window.showErrorModal = function (message) {
     const errorModal = document.getElementById("errorModal");
     const errorMessage = document.getElementById("errorMessage");
 
     if (errorModal && errorMessage) {
-      errorMessage.textContent = message; // ✅ Update error message
-
-      // ✅ Remove .show and force reflow before adding it again
+      errorMessage.textContent = message;
       errorModal.classList.remove("show");
-      void errorModal.offsetWidth; // 🔥 Forces reflow to restart animation
+      void errorModal.offsetWidth;
       errorModal.classList.add("show");
 
       // Ensure visibility and opacity are reset
       errorModal.style.visibility = "visible";
       errorModal.style.opacity = "1";
     } else {
-      alert(`⚠️ ${message}`); // Fallback if modal is missing
+      alert(`⚠️ ${message}`);
     }
-  }
+  };
+
+  window.showSuccessModal = function (message) {
+    // Assuming you have a modal element with an ID 'successModal'
+    const modal = document.getElementById("successModal");
+    const modalMessage = document.getElementById("successModalMessage");
+
+    if (modal && modalMessage) {
+      modalMessage.innerHTML = message;
+      modal.style.display = "block";
+
+      // Set the timeout to hide the modal after the message is displayed
+      setTimeout(() => {
+        modal.style.display = "none";
+        // After the modal is hidden, reload the page or redirect
+        if (
+          message ===
+          "✅ Account has been created successfully! This record will be sent for approval."
+        ) {
+          window.location.href = "/login"; // Redirect after modal hides
+        } else {
+          location.reload(); // Reload the page for other messages
+        }
+      }, 1500); // 1.5 seconds is enough for the user to see the message
+    } else {
+      alert(message);
+      location.reload();
+    }
+  };
 
   document.querySelectorAll("[data-close-modal]").forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -623,10 +740,10 @@ document.addEventListener("DOMContentLoaded", function () {
       let modal = document.getElementById(modalId);
 
       if (modal) {
-        modal.classList.remove("show"); // ✅ Hide modal visually
+        modal.classList.remove("show");
         modal.style.visibility = "hidden";
         modal.style.opacity = "0";
-        modal.style.pointerEvents = "none"; // 🔥 Prevent it from blocking clicks
+        modal.style.pointerEvents = "none";
       }
     });
   });
@@ -638,27 +755,24 @@ document.addEventListener("DOMContentLoaded", function () {
         let errorModal = document.getElementById("errorModal");
         let studentForm = document.getElementById("studentForm");
 
-        // ✅ Hide error modal only
         errorModal.style.visibility = "hidden";
         errorModal.style.opacity = "0";
 
-        // ✅ Ensure confirmationModal STAYS CLOSED
         let confirmationModal = document.getElementById("confirmationModal");
         confirmationModal.style.visibility = "hidden";
         confirmationModal.style.opacity = "0";
 
-        // ✅ Keep studentForm open
         studentForm.style.visibility = "visible";
         studentForm.style.opacity = "1";
       });
     });
 
-  document
-    .getElementById("studentForm")
-    .addEventListener("submit", function (event) {
-      event.preventDefault(); // ✅ Stops form submission
+  document.body.addEventListener("submit", function (event) {
+    if (event.target && event.target.id === "studentForm") {
+      event.preventDefault();
       console.log("⛔ Form submission prevented!");
-    });
+    }
+  });
 
   document.body.addEventListener("click", function (event) {
     const target = event.target;
@@ -721,12 +835,14 @@ document.addEventListener("DOMContentLoaded", function () {
             input.disabled = false;
           } else {
             input.readOnly = false;
+            input.disabled = false;
           }
         });
 
         target.textContent = "Update";
         cancelBtn.textContent = "Cancel";
         target.setAttribute("data-mode", "update");
+        enableFormInputs();
       } else if (target.getAttribute("data-mode") === "update") {
         const message =
           target.getAttribute("data-message") ||
@@ -1081,6 +1197,7 @@ function printReport() {
   window.print();
 }
 
+// This will hide and show the password in the login/sign up pages
 document.addEventListener("DOMContentLoaded", function () {
   const passwordField = document.getElementById("password");
   const toggleIcon = document.getElementById("togglePassword");
@@ -1092,13 +1209,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
   toggleIcon.addEventListener("click", function () {
     if (passwordField.type === "password") {
-      passwordField.type = "text"; // Show password
-      toggleIcon.src = "/images/icons/eye.png"; // Open eye icon
-      toggleIcon.alt = "Hide Password"; // Update alt text
+      passwordField.type = "text";
+      toggleIcon.src = "/images/icons/eye.png";
+      toggleIcon.alt = "Hide Password";
     } else {
-      passwordField.type = "password"; // Hide password
-      toggleIcon.src = "/images/icons/hidden-pass.png"; // Closed eye icon
-      toggleIcon.alt = "Show Password"; // Update alt text
+      passwordField.type = "password";
+      toggleIcon.src = "/images/icons/hidden-pass.png";
+      toggleIcon.alt = "Show Password";
     }
   });
 });
+
+// Listen for clicks on the cancel button inside the modal
+document.addEventListener("click", function (event) {
+  if (event.target.classList.contains("btn-cancel")) {
+    clearForm();
+  }
+});
+
+function clearForm() {
+  document
+    .querySelectorAll(".modal input, .modal select, .modal textarea")
+    .forEach((element) => {
+      if (element.type === "checkbox" || element.type === "radio") {
+        element.checked = false; // Uncheck checkboxes/radios
+      } else {
+        element.value = ""; // Clear text inputs, dropdowns & textareas
+      }
+    });
+}

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -207,17 +208,34 @@
                 Fee</button>
         </div>
 
-      <!-- Modal for confirmation -->
+        <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                    <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
-         
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success modal -->
+        <div id="successModal"
+            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+            <p id="successModalMessage"></p>
+        </div>
+
 
         <!-- Modal for adding fees -->
         <div id="feesManagementModal" class="fees-management-modal modal">
@@ -285,8 +303,8 @@
             </div>
         </div> -->
 
-         <!-- Modal for editing fees -->
-         <div id="feesManagementEditModal" class="fees-management-edit-modal modal">
+        <!-- Modal for editing fees -->
+        <div id="feesManagementEditModal" class="fees-management-edit-modal modal">
             <div class="fees-management-edit-modal-content">
                 <h2>Fee Information</h2>
                 <form method="post" action="" id="feesManagementForm">
@@ -295,25 +313,25 @@
                     <br><br>
 
                     <label for="amount">Amount</label>
-                    <input type="number" id="amountEdit"> <br> <br>
+                    <input type="number" id="amountEdit"> <br><br>
 
                     <h6>Grade Levels Required by this Payment:</h6>
 
-                    <div class="payment-container">
-                        <div class="payment">
-                            <input type="checkbox" id="" name="payment" value="paymentEdit">
-                            <label for="paymentEdit"></label>
-                        </div>
+                    <!-- This container will be used for editing payments -->
+                    <div class="payment-container-edit">
+                        <!-- Dynamically populated checkboxes will go here -->
                     </div>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" 
-                             id="confirmFee">Edi</button>
-                        <button type="button" class="btn-cancel" data-close-modal="feesManagementEditModal">Cancel</button>
+                        <button type="button" class="btn-confirm" id="editFeeButton" data-action="editFee"
+                            data-message="Are you sure you want to update this fee?">Edit</button>
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="feesManagementEditModal">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
+
 
         <!-- Modal for editing the grade level
         <div id="feesManagementEditModal" class="fees-management-edit-modal modal">
@@ -345,6 +363,34 @@
 </body>
 
 <script>
+    // Function to enable inputs and checkboxes
+    window.enableFormInputs = function () {
+        // Enable all inputs, selects, checkboxes, and radio buttons
+        document.querySelectorAll('input, select').forEach((input) => {
+            if (input.tagName === "SELECT") {
+                input.disabled = false; // Enable selects
+            } else if (input.type === "checkbox" || input.type === "radio") {
+                input.disabled = false; // Enable checkboxes and radio buttons
+            } else {
+                input.readOnly = false; // Set text-based inputs as editable
+                input.disabled = false; // Enable other inputs like text, number, password, etc.
+            }
+        });
+    }
+    // Function to disable inputs and checkboxes after they are populated
+    window.disableFormInputs = function () {
+        // Disable all inputs, selects, checkboxes, and radio buttons
+        document.querySelectorAll('input, select').forEach((input) => {
+            if (input.tagName === "SELECT") {
+                input.disabled = true; // Disable selects
+            } else if (input.type === "checkbox" || input.type === "radio") {
+                input.disabled = true; // Disable checkboxes and radio buttons
+            } else {
+                input.readOnly = true; // Set other text-based inputs as readonly
+                input.disabled = true; // Disable other inputs like text, number, password, etc.
+            }
+        });
+    }
     document.getElementById("addAFeeButton").addEventListener("click", function () {
         fetchGradeLevels();
     });
@@ -367,46 +413,6 @@
                 console.error("Error fetching payments:", error);
             });
     }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        // Handle clicking the edit (compose) icon
-        document.body.addEventListener("click", function (event) {
-            const target = event.target.closest("[data-open-modal='feesManagementEditModal']");
-            if (target) {
-                // Get attributes from clicked button
-                const selectedFeeId = target.getAttribute("data-id");
-                const paymentName = target.getAttribute("data-name");
-                const requiredAmount = target.getAttribute("data-amount");
-                const gradeLevels = target.getAttribute("data-grade-levels")?.split(",") || []; // Convert to array
-
-                console.log("Selected Fee ID:", selectedFeeId); // Debugging
-                console.log("Grade Levels:", gradeLevels); // Debugging
-
-                // Populate modal fields
-                document.getElementById("paymentNameEdit").value = paymentName;
-                document.getElementById("amountEdit").value = requiredAmount;
-                document.getElementById("feesManagementForm").dataset.id = selectedFeeId; // Store ID for submission
-
-                // Clear existing checkboxes
-                const container = document.querySelector(".payment-container");
-                container.innerHTML = '';
-
-                // Populate checkboxes
-                gradeLevels.forEach(level => {
-                    const div = document.createElement("div");
-                    div.classList.add("payment");
-                    div.innerHTML = `
-                    <input type="checkbox" id="grade${level}" name="payment" value="${level}" checked>
-                    <label for="grade${level}">${level}</label>
-                `;
-                    container.appendChild(div);
-                });
-            }
-        });
-    });
-
-
-
     function populateTable(payments) {
         const tableBody = document.querySelector("#lamesa tbody");
         tableBody.innerHTML = ""; // Clear existing rows
@@ -426,7 +432,7 @@
 
                     <img class="edit-fee" data-id="${payment.id}" data-name="${payment.name}" data-amount="${payment.requiredAmount}" data-grade-levels="${payment.gradeLevelNames.join(',')}" data-open-modal="feesManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon">
                     
-                        <img data-open-modal="confirmationModal" data-action="deleteGradeLevel" 
+                        <img data-open-modal="confirmationModal"  data-name="${payment.name}" data-action="deleteFee" 
                                      data-message="Are you sure you want to delete this fee?" 
                                      src="/images/icons/bin.png" alt="grade-level-delete-icon">
                         
@@ -477,15 +483,97 @@
             const responseData = await response.text();
 
             if (response.ok) {
-                alert("New payment added successfully!");
-                location.reload();
-            } else {
-                alert(responseData);
+                showSuccessModal("✅ Success: New payment has been added successfully!");
             }
         } catch (error) {
             console.error("Error:", error);
-            alert("An error occurred. Please try again.");
+            showErrorModal("❌ Error: " + error.message);
         }
+    }
+
+    // Function to handle editing the fee
+    function editFee() {
+        const paymentId = document.getElementById("feesManagementEditModal").dataset.id;
+        const paymentName = document.getElementById("paymentNameEdit").value; // Get the updated payment name
+        const requiredAmount = document.getElementById("amountEdit").value; // Get the updated amount
+
+        // Get the selected grade levels
+        const selectedGradeLevels = [];
+        document.querySelectorAll("input[name='gradeLevels']:checked").forEach(checkbox => {
+            selectedGradeLevels.push(checkbox.value); // Add the selected grade level to the array
+        });
+
+        // Prepare the data to send in the request
+        const updatedFeeData = {
+            id: paymentId,
+            name: paymentName,
+            requiredAmount: requiredAmount,
+            gradeLevelNames: selectedGradeLevels
+        };
+
+        console.log(updatedFeeData);
+
+        console.log("Updated Fee Data:", updatedFeeData); // Debugging
+
+        fetch(`/payments/update/${paymentId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedFeeData),
+        })
+            .then(response => response.text())  // Use .text() since you're getting plain text, not JSON
+            .then(data => {
+                console.log(data); // You should now get the plain text message from the backend
+                if (data === "Required payment updated successfully") {
+                    showSuccessModal("✅ Success: Payment Record has been updated successfully!");
+                } else if (data === "Updating payment record failed as payment name not found") {
+                    showErrorModal("❌ Updating payment record failed as payment name not found");
+                } else if (data === "Process Failed") {
+                    showErrorModal("❌ An error occurred while updating the payment. Please try again later.");
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                showErrorModal("❌ An error occurred while updating the payment. Please try again later.");
+            });
+    }
+
+    let selectedPaymentName;
+
+    // Add event delegation to listen for delete button clicks
+    document.querySelector("#lamesa tbody").addEventListener("click", function (event) {
+        // Check if the clicked element is a delete button (image with data-action="deleteFee")
+        if (event.target && event.target.getAttribute("data-action") === "deleteFee") {
+            // Capture the payment name from the data-name attribute
+            selectedPaymentName = event.target.getAttribute("data-name");
+            console.log(selectedPaymentName);
+        }
+    });
+
+    function deleteFee(selectedPaymentName) {
+        // Send DELETE request to the backend
+        fetch(`/payments/delete/${selectedPaymentName}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then(response => response.text())  // Get the response as plain text
+            .then(data => {
+                console.log(data);  // Log the response for debugging
+
+                // Show a success message if the payment was deleted
+                if (data.includes("deleted successfully")) {
+                    showSuccessModal("✅ Success: Payment record has been deleted successfully!");
+                } else {
+                    showErrorModal(`❌ An error occurred while deleting the payment. Please try again later.`);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                showErrorModal("❌ An error occurred while deleting the payment. Please try again later.");
+            });
     }
 
 
@@ -517,6 +605,80 @@
             })
             .catch(error => console.error("Error fetching grade levels:", error));
     }
+
+    let selectedPaymentId;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle clicking the edit button to open the fees management modal
+        document.body.addEventListener("click", function (event) {
+            const target = event.target.closest("[data-open-modal='feesManagementEditModal']"); // Find closest modal trigger
+
+            if (target) {
+                selectedPaymentId = target.getAttribute("data-id"); // Get the ID
+                const paymentName = target.getAttribute("data-name"); // Get the payment name
+                const requiredAmount = target.getAttribute("data-amount"); // Get the amount
+                const gradeLevelNames = target.getAttribute("data-grade-levels").split(","); // Get the grade level names (as an array)
+
+                console.log("Selected Payment ID:", selectedPaymentId); // Debugging
+                console.log("Grade Level Names:", gradeLevelNames); // Debugging
+
+                // Set the payment name and amount in the form
+                document.getElementById("paymentNameEdit").value = paymentName;
+                document.getElementById("amountEdit").value = requiredAmount;
+
+                // Store the ID in the form
+                document.getElementById("feesManagementEditModal").dataset.id = selectedPaymentId;
+
+                // Populate the grade levels checkboxes
+                populateGradeLevelsForEdit(gradeLevelNames);
+            }
+        });
+    });
+
+    // This function will populate the grade levels for editing a payment
+    function populateGradeLevelsForEdit(gradeLevelNames, isUpdateMode = false) {
+        console.log("yawa");
+
+        fetch("/gradelevel/all")
+            .then(response => response.json())
+            .then(gradeLevels => {
+                const paymentContainer = document.querySelector(".payment-container-edit");
+                paymentContainer.innerHTML = ""; // Clear previous data
+
+                gradeLevels.forEach(gradeLevel => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("payment");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `grade-${gradeLevel.levelId}`;
+                    checkbox.name = "gradeLevels";
+                    checkbox.value = gradeLevel.levelName;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `grade-${gradeLevel.levelId}`;
+                    label.textContent = gradeLevel.levelName;
+
+                    // Check if the grade level is selected for the current fee and mark the checkbox
+                    if (gradeLevelNames && gradeLevelNames.includes(gradeLevel.levelName)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    paymentContainer.appendChild(paymentDiv);
+                });
+
+                // After populating the checkboxes, now enable/disable form inputs based on the mode
+                if (isUpdateMode) {
+                    enableFormInputs();
+                } else {
+                    disableFormInputs();
+                }
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
 </script>
 
 </html>

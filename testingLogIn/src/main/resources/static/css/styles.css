@@ -1259,10 +1259,10 @@ table td {
   align-items: center;
 }
 .modal {
-    pointer-events: none; /* Prevent hidden modals from blocking interactions */
+  pointer-events: none; /* Prevent hidden modals from blocking interactions */
 }
 .modal.show {
-    pointer-events: auto; /* Enable interactions when modal is visible */
+  pointer-events: auto; /* Enable interactions when modal is visible */
 }
 
 .payment-modal-buttons {
@@ -1293,6 +1293,18 @@ table td {
 }
 
 .btn-cancel {
+  background-color: #dc3545;
+  color: white;
+  width: 100px;
+  font-weight: 500;
+}
+.btn-close-confirm {
+  background-color: #dc3545;
+  color: white;
+  width: 100px;
+  font-weight: 500;
+}
+.error-btn-cancel {
   background-color: #dc3545;
   color: white;
   width: 100px;
@@ -1381,9 +1393,10 @@ table td {
   width: 360px;
 }
 
-#place-of-birth {
+.student-form-group .place-of-birth {
   width: 850px;
 }
+
 #motherName,
 #fatherName,
 #guardianName {
@@ -2407,6 +2420,11 @@ td[rowspan] {
   gap: 10px; /* Spacing between items */
 }
 
+.payment-container-edit {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  gap: 10px; /* Spacing between items */
+}
 .payment {
   display: flex;
   align-items: center;

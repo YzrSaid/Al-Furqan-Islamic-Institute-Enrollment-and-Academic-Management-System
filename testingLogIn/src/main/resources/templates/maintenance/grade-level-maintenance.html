@@ -94,7 +94,6 @@
             <a href="/maintenance/subject">Subject</a>
             <a href="/maintenance/section">Section</a>
             <a href="/maintenance/fees-management">Fees Management</a>
-            <!-- <a href="/maintenance/teacher">Teacher</a> -->
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
@@ -220,9 +219,26 @@
                 <p id="modalText"></p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                    <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success modal -->
+        <div id="successModal"
+            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+            <p id="successModalMessage"></p>
         </div>
 
         <!-- Modal for adding grade level -->
@@ -300,13 +316,17 @@
                 },
                 body: formData.toString(),  // Convert FormData to a string
             })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message || "Action completed successfully!");
-                    location.reload();
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    showSuccessModal("✅ Success: New grade level has been added successfully!");
                 })
                 .catch(error => {
-                    alert("Error: " + error.message);
+                    showErrorModal("❌ Error: " + error.message);
                 });
         }
 
@@ -403,7 +423,10 @@
                     tableBody.innerHTML = "";
 
                     data.forEach(grade => {
+                        console.log(grade);
                         const row = document.createElement("tr");
+
+                        
                         row.innerHTML = `
                     <td>${grade.levelName}</td>
                     <td>${grade.preRequisite}</td>
@@ -433,13 +456,13 @@
 
         document.addEventListener("click", function (event) {
             const target = event.target;
-            console.log("Clicked Element:", target); 
-            console.log("Element Dataset:", target.dataset); 
+            console.log("Clicked Element:", target);
+            console.log("Element Dataset:", target.dataset);
 
             if (target.dataset.openModal === "gradeLevelEditModal") {
                 console.log("Target has openModal attribute!");
                 const gradeLevelId = target.dataset.id;
-                console.log("Grade Level ID:", gradeLevelId); 
+                console.log("Grade Level ID:", gradeLevelId);
 
                 if (!gradeLevelId) {
                     console.error(
@@ -509,27 +532,35 @@
                 },
                 body: JSON.stringify(gradeLevelData),
             })
-                .then(response => response.text())
-                .then(data => {
-                    alert(data);
-                    if (data.includes("Successfully")) {
-                        location.reload();
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
                     }
+                    return response.text();
                 })
-                .catch(error => console.error("Error:", error));
+                .then(text => {
+                    showSuccessModal("✅ Success: This record has been edited successfully!");
+                })
+                .catch(error => {
+                    showErrorModal("❌ Error: " + error.message);
+                });
         }
         function deleteGradeLevel(selectedGradeLevelId) {
             fetch(`/gradelevel/${selectedGradeLevelId}`, {
                 method: "DELETE",
             })
-                .then(response => response.text())
-                .then(data => {
-                    alert(data);
-                    if (data.includes("Successfully")) {
-                        location.reload();
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
                     }
+                    return response.text();
                 })
-                .catch(error => console.error("Error deleting grade level:", error));
+                .then(text => {
+                    showSuccessModal("✅ Success: This record been deleted successfully!");
+                })
+                .catch(error => {
+                    showErrorModal("❌ Error: " + error.message);
+                });
         }
     </script>
 </body>

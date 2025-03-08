@@ -58,7 +58,6 @@
         })
         .then(response => {
             if (response.ok) {
-                alert('Go to Dashboard');
                 window.location.href = '/home';
             } else {
                 return response.json(); // Parse the error response

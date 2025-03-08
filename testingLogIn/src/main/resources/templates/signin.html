@@ -85,11 +85,30 @@
 
                 <button type="submit" id="login-btn">Sign Up</button>
             </form>
-            <h4 id="signup-link">Already have an account? <a href="/login">Log in here.</a></h4>
+            <h4 id="signup-link">Already have an account? <a onclick="proceed('login')">Log in here.</a></h4>
         </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success modal -->
+        <div id="successModal"
+            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+     background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+            <p id="successModalMessage"></p>
+        </div>
+
     </div>
+
+
 </body>
-<!-- <script th:src="@{/js/publicip.js}" defer></script> -->
 <script th:src="@{/js/script.js}" defer></script>
 <script>
     document.getElementById('signup-form').addEventListener('submit', function (event) {
@@ -108,11 +127,11 @@
                 if (response.ok) {
                         window.location.href = '/login';
                     return response.text().then(text => {
-                        //alert(text);
+                        showSuccessModal("✅ Account has been created successfully! This record will be sent for approval.");
                     });
                 } else {
                     return response.text().then(text => {
-                        alert(text); // Display error message
+                        showErrorModal("An unexpected error occurred. Please try again.");
                     });
                 }
             })

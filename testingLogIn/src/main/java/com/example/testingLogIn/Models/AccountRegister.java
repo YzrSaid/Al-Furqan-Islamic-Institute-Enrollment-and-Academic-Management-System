@@ -5,6 +5,7 @@ import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Enums.Role;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class AccountRegister {
     private String address;
     private String contactNumber;
     private LocalDate birthdate;
+    
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private boolean isNotDeleted;

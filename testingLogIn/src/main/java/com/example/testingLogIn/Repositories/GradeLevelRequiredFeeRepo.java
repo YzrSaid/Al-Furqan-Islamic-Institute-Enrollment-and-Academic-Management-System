@@ -21,11 +21,13 @@ public interface GradeLevelRequiredFeeRepo extends JpaRepository<GradeLevelToReq
     
     @Query("SELECT glr FROM GradeLevelToRequiredPayment glr "+
            "WHERE glr.isNotDeleted = true "+
+           "AND glr.requiredFee.isNotDeleted = true "+
            "AND glr.gradeLevel.levelId = :gardeLevelid")
     List<GradeLevelToRequiredPayment> findByGradeLevel(@Param("gardeLevelid") int gardeLevelid);
     
     @Query("SELECT SUM(glr.requiredFee.requiredAmount) FROM GradeLevelToRequiredPayment glr "+
-           "WHERE glr.isNotDeleted = true "+
+           "WHERE glr.requiredFee.isNotDeleted = true "+
+           "AND glr.isNotDeleted = true "+
            "AND glr.gradeLevel.levelId = :gradeLevelId")
     Double findTotalAmountByGradeLevel(@Param("gradeLevelId") int gradeLevelId);
 }

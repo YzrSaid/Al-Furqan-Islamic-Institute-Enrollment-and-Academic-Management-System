@@ -35,6 +35,12 @@ public class GradeLevelServices {
         }else
             return false;
     }
+    public List<GradeLevelDTO> getAllGradeLevelsDTO(){
+        return gradeLevelRepo.findAll().stream()
+                             .filter(GradeLevel::isNotDeleted)
+                             .map(GradeLevel::mapperDTO)
+                             .collect(Collectors.toList());
+    }
 
     public List<GradeLevel> getAllGradeLevels(){
         return gradeLevelRepo.findAll().stream()
@@ -44,7 +50,8 @@ public class GradeLevelServices {
     
     public List<GradeLevel> getNoSuccessorsGradeLevels(){
         Set<Integer> levelIdSuccessors = new HashSet<>();
-        getAllGradeLevels().forEach(gradeLevel -> {
+        getAllGradeLevels()
+                .forEach(gradeLevel -> {
                                         if(gradeLevel.getPreRequisite() != null)
                                             levelIdSuccessors.add(gradeLevel.getPreRequisite().getLevelId());
         });

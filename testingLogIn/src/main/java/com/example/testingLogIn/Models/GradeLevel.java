@@ -34,11 +34,16 @@ public class GradeLevel {
     private GradeLevel preRequisite;
     
     public GradeLevelDTO mapperDTO(){
+        try{
+        System.out.println(preRequisite.getLevelName());
+        }catch(Exception e){
+            
+        }
         return GradeLevelDTO.builder()
                             .isNotDeleted(isNotDeleted)
                             .levelId(levelId)
                             .levelName(levelName)
-                            .preRequisite(preRequisite.getLevelName())
+                            .preRequisite(preRequisite != null ? preRequisite.getLevelName() : "None")
                             .build();
     }
 }

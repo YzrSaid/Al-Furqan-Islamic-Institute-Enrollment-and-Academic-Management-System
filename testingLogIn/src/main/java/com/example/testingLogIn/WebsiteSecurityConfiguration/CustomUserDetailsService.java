@@ -118,6 +118,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserModel AccountRegToUserModel(AccountRegister accountRegister) {
+        System.out.println(accountRegister.getBirthdate());
         return UserModel.builder()
                 .isNotRestricted(true)
                 .isNotDeleted(true)

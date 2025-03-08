@@ -22,9 +22,9 @@ public class GradeLevelControllers {
 
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/all")
-    public ResponseEntity<List<GradeLevel>> getAllGradeLevels() {
+    public ResponseEntity<List<GradeLevelDTO>> getAllGradeLevels() {
         try{
-            return new ResponseEntity<>(gradeLevelServices.getAllGradeLevels(), HttpStatus.OK);
+            return new ResponseEntity<>(gradeLevelServices.getAllGradeLevelsDTO(), HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

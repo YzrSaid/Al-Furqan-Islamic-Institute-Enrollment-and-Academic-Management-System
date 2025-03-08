@@ -1050,7 +1050,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 <input type="time">
             </td>
             <td>
+                <input type="time">
+            </td>
+            <td>
                 <img class="delete-row" src="/images/icons/cross.png" alt="Delete" style="display: inline-block; cursor: pointer;">
+                <button id="saveButton">Save</button>
             </td>
         `;
     attachDeleteEvent(newRow);
@@ -1137,30 +1141,12 @@ document.addEventListener("DOMContentLoaded", () => {
       .querySelectorAll(".delete-row")
       .forEach((btn) => (btn.style.display = "inline-block"));
   });
-  //old
-  //   addRowBtn.addEventListener("click", () => {
-  //     tableBody.appendChild(createRow());
-  //     updateButtonState();
-  //     // Ensure button remains "Save" when adding more rows
-  //     saveBtn.textContent = "Save"; // Force it to remain "Save"
-  //   });
-
-  //new
   addRowBtn.addEventListener("click", () => {
     tableBody.appendChild(createRow());
     saveBtn.textContent = "Save";
     addRowBtn.style.display = "block"; // Ensure it stays visible
     clearBtn.style.display = "block"; // Ensure clear button stays visible
   });
-
-  //   clearBtn.addEventListener("click", () => {
-  //     tableBody.innerHTML = ""; // Clears everything
-  //     saveBtn.textContent = "Add";
-  //     firstClick = true;
-  //     addRowBtn.style.display = "none";
-  //     clearBtn.style.display = "none";
-  //   });
-
   window.clearSched = function () {
     tableBody.innerHTML = ""; // Clears everything
     saveBtn.textContent = "Add";
@@ -1168,10 +1154,6 @@ document.addEventListener("DOMContentLoaded", () => {
     addRowBtn.style.display = "none";
     clearBtn.style.display = "none";
   };
-  //   window.updateAfterSched = function () {
-  //     addRowBtn.style.display = "none";
-  //     clearBtn.style.display = "none";
-  //   };
   updateButtonState();
 });
 

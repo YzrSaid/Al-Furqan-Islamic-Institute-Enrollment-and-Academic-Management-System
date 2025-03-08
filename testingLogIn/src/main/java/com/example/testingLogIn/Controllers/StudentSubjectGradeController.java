@@ -25,6 +25,7 @@ public class StudentSubjectGradeController {
     
     @GetMapping("/section/{sectionId}")
     public ResponseEntity<Map<String,List<StudentSubjectGradeDTO>>> getStudentGradesBySubjectCurrentSem(@PathVariable int sectionId){
+        System.out.println("The section is "+sectionId);
         try{
             return new ResponseEntity<>(ssgService.getStudentGradesBySection(sectionId),HttpStatus.OK);
         }catch(Exception e){

@@ -331,7 +331,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            fetchGradeLevels(); // Fetch grade levels when the page loads
+            fetchGradeLevels(); 
             populatePreRequisiteDropdown();
         });
 
@@ -357,6 +357,7 @@
                 .catch(error => console.error("Error:", error));
         }
         function populateEditDropdown(currentGradeLevelId, selectedPreReqId) {
+            console.log(selectedPreReqId);
             const dropdown = document.getElementById("pre-req-grade-level-edit");
             dropdown.innerHTML = ""; // Clear previous options
 
@@ -379,8 +380,8 @@
                     console.log(selectedPreReqId !== null);
                     if (selectedPreReqId !== null) {
                         const selectedPreReq = document.createElement("option");
-                        selectedPreReq.value = selectedPreReqId.levelId;
-                        selectedPreReq.textContent = selectedPreReqId.levelName;
+                        selectedPreReq.value = selectedPreReqId;
+                        selectedPreReq.textContent = selectedPreReqId;
                         selectedPreReq.selected = true;
                         dropdown.appendChild(selectedPreReq);
                     }
@@ -436,11 +437,11 @@
                                <img data-open-modal="gradeLevelEditModal" 
                                     src="/images/icons/compose.png" 
                                     alt="grade-level-edit-icon" 
-                                    data-id="${grade.levelId}">
+                                    data-id="${grade.levelId}" data-prereq="${grade.preRequisite || 'NONE'}"
 
                                 <img data-open-modal="confirmationModal" data-action="deleteGradeLevel" 
                                      data-message="Are you sure you want to delete this grade level?" 
-                                     data-id="${grade.levelId}" 
+                                     data-id="${grade.levelId}" data-prereq="${grade.preRequisite || 'NONE'}"
                                      src="/images/icons/bin.png" alt="grade-level-delete-icon">
                             </div>
                         </div>
@@ -453,6 +454,7 @@
         }
 
         let selectedGradeLevelId = null; // Global variable
+        let selectedPreReqId = null;
 
         document.addEventListener("click", function (event) {
             const target = event.target;

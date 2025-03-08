@@ -331,6 +331,35 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// Function to enable inputs and checkboxes
+window.enableFormInputs = function () {
+  // Enable all inputs, selects, checkboxes, and radio buttons
+  document.querySelectorAll("input, select").forEach((input) => {
+    if (input.tagName === "SELECT") {
+      input.disabled = false; // Enable selects
+    } else if (input.type === "checkbox" || input.type === "radio") {
+      input.disabled = false; // Enable checkboxes and radio buttons
+    } else {
+      input.readOnly = false; // Set text-based inputs as editable
+      input.disabled = false; // Enable other inputs like text, number, password, etc.
+    }
+  });
+};
+// Function to disable inputs and checkboxes after they are populated
+window.disableFormInputs = function () {
+  // Disable all inputs, selects, checkboxes, and radio buttons
+  document.querySelectorAll("input, select").forEach((input) => {
+    if (input.tagName === "SELECT") {
+      input.disabled = true; // Disable selects
+    } else if (input.type === "checkbox" || input.type === "radio") {
+      input.disabled = true; // Disable checkboxes and radio buttons
+    } else {
+      input.readOnly = true; // Set other text-based inputs as readonly
+      input.disabled = true; // Disable other inputs like text, number, password, etc.
+    }
+  });
+};
+
 document.addEventListener("DOMContentLoaded", function () {
   function toggleModal(modalId, show = true, message = "") {
     const modal = document.getElementById(modalId);
@@ -358,22 +387,14 @@ document.addEventListener("DOMContentLoaded", function () {
       confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
     }
 
-    if (modalId.includes("Edit") && show) {
+    if (modalId.includes("Edit")) {
       const confirmBtn = modal.querySelector(".btn-confirm");
       const cancelBtn = modal.querySelector(".btn-cancel");
       const inputs = modal.querySelectorAll("input, textarea, select");
 
       // Disable form inputs, select elements, checkboxes, and radio buttons
       document.querySelectorAll("input, select").forEach((input) => {
-        if (input.tagName === "SELECT") {
-          input.disabled = true; // Disable selects
-        } else if (input.type === "checkbox" || input.type === "radio") {
-          input.disabled = true; // Disable checkboxes and radio buttons
-          input.setAttribute("disabled", true); // Double-check to disable it properly
-        } else {
-          input.readOnly = true; // Set other text-based inputs as readonly
-          input.disabled = true; // Disable other inputs like text, number, password, etc.
-        }
+        disableFormInputs();
       });
 
       // Set initial button states
@@ -382,6 +403,20 @@ document.addEventListener("DOMContentLoaded", function () {
       confirmBtn.setAttribute("data-mode", "edit");
     }
   }
+
+  // Event listener to enable inputs when reopening the modal
+  document.addEventListener("click", function (event) {
+    const target = event.target;
+
+    // Correct condition to detect close button or modal close trigger
+    if (
+      target.classList.contains("btn-cancel") ||
+      target.closest("[data-close-modal]")
+    ) {
+      // Re-enable inputs inside the modal when reopened
+      enableFormInputs();
+    }
+  });
 
   async function handleConfirmAction(action, event) {
     if (event && typeof event.preventDefault === "function") {
@@ -632,20 +667,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         break;
       case "editFee":
-         // This case is for editing the fee payment
-         if (!validateForm("feesManagementEditModal")) {
-            showErrorModal("⚠️ Please fill in all required fields!");
-            return;
-          } else {
-            editFee();
-            document.getElementById("confirmationModal").classList.remove("show");
-            document.getElementById("confirmationModal").style.visibility =
-              "hidden";
-            document.getElementById("confirmationModal").style.opacity = "0";
-          }
+        // This case is for editing the fee payment
+        if (!validateForm("feesManagementEditModal")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          editFee();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
+        }
         break;
       case "deleteFee":
-        deleteFee(selectedPaymentName);   
+        deleteFee(selectedPaymentName);
         break;
       case "savePayment":
         savePayment();

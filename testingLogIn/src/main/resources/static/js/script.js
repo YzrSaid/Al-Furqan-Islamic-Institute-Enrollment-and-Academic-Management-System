@@ -400,6 +400,9 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmationModal.style.opacity = "0";
 
     switch (action) {
+        case "saveSchedule":
+            saveSchedule();
+        break;
       case "addNewStudent":
         alert("Add new student!");
         break;
@@ -1054,12 +1057,64 @@ document.addEventListener("DOMContentLoaded", () => {
             </td>
             <td>
                 <img class="delete-row" src="/images/icons/cross.png" alt="Delete" style="display: inline-block; cursor: pointer;">
-                <button id="saveButton">Save</button>
+                <button data-action="saveSchedule" data-message="Sure?" id="saveButtonSchedule">Save</button>
             </td>
         `;
     attachDeleteEvent(newRow);
     attachDoubleClickDrag(newRow);
     return newRow;
+  }
+  
+  function saveSchedule(){
+      console.log('Hello');
+        const path = window.location.pathname;
+
+        const pathParts = path.split('/');
+        const sectionId = pathParts[pathParts.length - 1];
+        console.log(sectionId);
+//    const subject = document.getElementById('subject').value;
+//    const teacher = document.getElementById('teacher').value;
+//    const day = document.getElementById('days').value;
+//    const startTime = document.getElementById('startTime').value;
+//    const endTime = document.getElementById('endTime').value;
+//
+//    // Validate that all fields are filled
+//    if (!subject || !teacher || !day || !startTime || !endTime) {
+//        alert('Please fill in all fields.');
+//        return;
+//    }
+//
+//    // Create the data object to send to the API
+//    const data = {
+//        subject: subject,
+//        teacher: teacher,
+//        day: day,
+//        startTime: startTime,
+//        endTime: endTime
+//    };
+//
+//    // Send the data to the API using fetch
+//    fetch('https://your-api-endpoint.com/save', {
+//        method: 'POST',
+//        headers: {
+//            'Content-Type': 'application/json'
+//        },
+//        body: JSON.stringify(data)
+//    })
+//    .then(response => {
+//        if (!response.ok) {
+//            throw new Error('Network response was not ok');
+//        }
+//        return response.json();
+//    })
+//    .then(result => {
+//        console.log('Success:', result);
+//        alert('Data saved successfully!');
+//    })
+//    .catch(error => {
+//        console.error('Error:', error);
+//        alert('Failed to save data.');
+//    });
   }
 
   function attachDeleteEvent(row) {

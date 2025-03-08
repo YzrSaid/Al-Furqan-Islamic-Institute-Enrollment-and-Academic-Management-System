@@ -63,10 +63,15 @@ public class GradeLevelServices {
                 .toList();
     }
 
-    public GradeLevelDTO getGradeLevel(int levelId) {
+    public GradeLevelDTO getGradeLevelDTO(int levelId) {
         return gradeLevelRepo.findAll().stream()
                 .filter(gradelvl -> gradelvl.getLevelId() == levelId && gradelvl.isNotDeleted())
                 .map(GradeLevel::mapperDTO)
+                .findFirst().orElse(null);
+    }
+    public GradeLevel getGradeLevel(int levelId) {
+        return gradeLevelRepo.findAll().stream()
+                .filter(gradelvl -> gradelvl.getLevelId() == levelId && gradelvl.isNotDeleted())
                 .findFirst().orElse(null);
     }
 

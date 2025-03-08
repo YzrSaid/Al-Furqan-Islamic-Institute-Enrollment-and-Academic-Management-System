@@ -64,7 +64,7 @@ public class GradeLevelControllers {
 
     @GetMapping("/{levelId}")
     public ResponseEntity<GradeLevelDTO> getGradeLevelById(@PathVariable int levelId) {
-        return new ResponseEntity<>(gradeLevelServices.getGradeLevel(levelId), HttpStatus.OK);
+        return new ResponseEntity<>(gradeLevelServices.getGradeLevelDTO(levelId), HttpStatus.OK);
     }
 
     @PutMapping("/update-grade-level")

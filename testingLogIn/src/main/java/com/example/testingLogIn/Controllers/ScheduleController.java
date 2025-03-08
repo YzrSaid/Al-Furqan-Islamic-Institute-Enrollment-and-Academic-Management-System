@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  * @author magno
  */
-@RequestMapping("/schedules/")
+@RequestMapping("/schedules")
 @Controller
 public class ScheduleController {
     
@@ -56,14 +55,18 @@ public class ScheduleController {
         }
     }
     
-    @PostMapping("add")
-    public ResponseEntity<Map<String,List<ScheduleDTO>>> addSchedules(@RequestBody List<ScheduleDTO> schedules){
+    @PostMapping("/add")
+    public ResponseEntity<String> addSchedules(@RequestBody ScheduleDTO schedule){
         try{
-            Map<String,List<ScheduleDTO>> schedsRejected = scheduleService.addNewSchedules(schedules);
-            if(schedsRejected.isEmpty())
-                return new ResponseEntity<>(HttpStatus.OK);
-            else
-                return new ResponseEntity<>(schedsRejected,HttpStatus.CONFLICT);
+            int result = scheduleService.addNewSchedule(schedule);
+            switch(result){
+                case 1:
+                    return new ResponseEntity<>("Conflict with the Teacher's Existing Schedule",HttpStatus.CONFLICT);
+                case 2:
+                    return new ResponseEntity<>("Conflict with the Section's Existing Schedule",HttpStatus.CONFLICT);
+                default:
+                    return new ResponseEntity<>("Schedule Successfully Added",HttpStatus.OK);
+            }
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
+        <a href="/home" class="active sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
@@ -48,7 +48,7 @@
         </div>
 
 
-        <a href="/grade-management" class="active sidebar-icons">
+        <a href="/grade-management" class="sidebar-icons">
             <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
 
@@ -77,7 +77,7 @@
             <a href="/reports/student">Student Reports</a>
             <a href="/reports/payment">Payment Reports</a>
             <a href="/reports/teacher">Teacher Report</a>
-            <a href="/reports/academic-resources">Book Distribution Reports</a>
+            <a href="/reports/academic-resources">Book Distribution</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
             <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
@@ -93,7 +93,7 @@
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="/settings/create-user">Create User</a>
+            <a href="settings/create-user">Create User</a>
         </div>
     </div>
 
@@ -202,52 +202,99 @@
         fetchStudentSubjectGrades(sectionId,subjectId);
     });
     
-    function fetchStudentSubjectGrades(sectionId,subjectId){
-        fetch(`/student-grades/section-records/${sectionId}/${subjectId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json(); // Parse the response as JSON
-            })
-            .then(data => {
-                const tableBody = document.querySelector("#restaurant-table tbody");
-                tableBody.innerHTML = "";
-                
-                data.forEach(rec => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <tr>
-                            <td>${rec.studentId}</td>
-                            <td>${rec.studentLastName}, ${rec.studentFirstName} ${rec.studentMiddleName}</td>
-                            <td><input type="number" min="1" max="100" name="student-grade" id="student-grade"></td>
-                            <td>
-                                <div class="dropdown">
-                                    <div class="action-container action">
-                                        <a href=""><img src="/images/icons/add-button.png" alt="add-icon"></a>
-                                    </div>
+function fetchStudentSubjectGrades(sectionId, subjectId) {
+    fetch(`/student-grades/section-records/${sectionId}/${subjectId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json(); // Parse the response as JSON
+        })
+        .then(data => {
+            const tableBody = document.querySelector("#restaurant-table tbody");
+            tableBody.innerHTML = "";
 
-                                    <div class="action-container action">
-                                        <a href=""><img src="/images/icons/compose.png" alt="edit-icon"></a>
-                                    </div>
+            data.forEach(rec => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <tr>
+                        <td>${rec.studentId}</td>
+                        <td>${rec.studentLastName}, ${rec.studentFirstName} ${rec.studentMiddleName}</td>
+                        <td><input type="number" min="1" max="100" name="student-grade" class="student-grade" value="${rec.subjectGrade}" id="student-grade-${rec.studGradeId}"></td>`;
+                        if (rec.subjectGrade === null) {
+                            row.innerHTML +=`
+                                    <td>
+                                            <div class="action-container action">
+                                                <a href="#" class="save-grade" data-grade-id="${rec.studGradeId}">
+                                                    <img src="/images/icons/check.png" alt="save-icon">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }else{
+                            row.innerHTML +=`
+                                    <td>
+                                        <div class="dropdown">
+                                            <div class="action-container action">
+                                                <a href=""><img src="/images/icons/compose.png" alt="edit-icon"></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                tableBody.appendChild(row);
+            });
 
-                                    <div class="action-container action">
-                                        <a href=""><img src="/images/icons/bin.png" alt="delete-icon"></a>
-                                    </div>
-                                    <div class="action-container action">
-                                        <a href=""><img src="/images/icons/check.png" alt="save-icon"></a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        `;
-                    tableBody.appendChild(row);
+            // Add event listeners to all "Save" buttons
+            document.querySelectorAll('.save-grade').forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent the default link behavior
+                    const gradeId = this.getAttribute('data-grade-id'); // Get the grade ID
+                    const inputField = document.querySelector(`#student-grade-${gradeId}`); // Find the corresponding input field
+                    const gradeValue = inputField.value; // Get the value of the input field
+
+                    // Call the saveGrade function with the grade ID and value
+                    saveGrade(gradeId, gradeValue);
+                });
             });
-            })
-            .catch(error => {
-                console.error("Error fetching data:", error);
-            });
-    }
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+        });
+}
+
+function saveGrade(gradeId, subGrade) {
+    console.log("Grade ID:", gradeId);
+    console.log("Grade Value:", subGrade);
+
+    fetch('/student-grades/save', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            studGradeId: gradeId,
+            subjectGrade: subGrade
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text(); // Parse the response as plain text
+    })
+    .then(data => {
+        console.log('Success:', data); // Log the plain text response
+        window.location.reload(); // Reload the page
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to save grade. Please try again.'); // Show an error message to the user
+    });
+}
 </script>
 
 </html>

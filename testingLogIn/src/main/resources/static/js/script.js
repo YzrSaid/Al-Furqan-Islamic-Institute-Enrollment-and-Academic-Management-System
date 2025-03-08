@@ -1062,163 +1062,174 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function createRow() {
+//let firstClick = true; // Track if it's the first click
+//let draggedRow = null; // Track the currently dragged row
+
+async function createRow() {
+    const path = window.location.pathname;
+    const pathParts = path.split('/');
+    const sectionId = pathParts[pathParts.length - 1];
+    console.log('Section ID:', sectionId);
+
+    // Create the new row
     const newRow = document.createElement("tr");
     newRow.classList.add("sched-row");
     newRow.setAttribute("draggable", "false"); // Default: Not draggable
     newRow.innerHTML = `
-            <td>
-                <select name="subject">
-                    <option value="" disabled selected>Choose a subject</option>
-                </select>
-            </td>
-            <td>
-                <select name="teacher">
-                    <option value="" disabled selected>Choose a teacher</option>
-                </select>
-            </td>
-            <td>
-                <select name="days">
-                    <option value="" disabled selected>Choose a day</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                </select>
-            </td>
-            <td>
-                <input type="time">
-            </td>
-            <td>
-                <input type="time">
-            </td>
-            <td>
-                <img class="delete-row" src="/images/icons/cross.png" alt="Delete" style="display: inline-block; cursor: pointer;">
-                <button data-action="saveSchedule" data-message="Sure?" id="saveButtonSchedule">Save</button>
-            </td>
-        `;
+        <td>
+            <select name="subject" id="subject-select">
+                <option value="" disabled selected>Choose a subject</option>
+            </select>
+        </td>
+        <td>
+            <select name="teacher"  id="teacher-select">
+                <option value="" disabled selected>Choose a teacher</option>
+            </select>
+        </td>
+        <td>
+            <select id="day" name="days">
+                <option value="" disabled selected>Choose a day</option>
+                <option value="SATURDAY">Saturday</option>
+                <option value="SUNDAY">Sunday</option>
+            </select>
+        </td>
+        <td>
+            <input id="starttime" type="time">
+        </td>
+        <td>
+            <input id="endtime" type="time">
+        </td>
+        <td>
+            <img class="delete-row" src="/images/icons/cross.png" alt="Delete" style="display: inline-block; cursor: pointer;">
+            <button onClick="saveSchedule()" data-message="Sure?" id="saveButtonSchedule">Save</button>
+        </td>
+    `;
+
+    // Fetch and populate subjects
+    await populateSubjects(sectionId, newRow);
+
+    // Fetch and populate teachers
+    await populateTeachers(newRow);
+
+    // Attach event listeners
     attachDeleteEvent(newRow);
     attachDoubleClickDrag(newRow);
+
     return newRow;
-  }
-  
-  function saveSchedule(){
-      console.log('Hello');
-        const path = window.location.pathname;
+}
 
-        const pathParts = path.split('/');
-        const sectionId = pathParts[pathParts.length - 1];
-        console.log(sectionId);
-//    const subject = document.getElementById('subject').value;
-//    const teacher = document.getElementById('teacher').value;
-//    const day = document.getElementById('days').value;
-//    const startTime = document.getElementById('startTime').value;
-//    const endTime = document.getElementById('endTime').value;
-//
-//    // Validate that all fields are filled
-//    if (!subject || !teacher || !day || !startTime || !endTime) {
-//        alert('Please fill in all fields.');
-//        return;
-//    }
-//
-//    // Create the data object to send to the API
-//    const data = {
-//        subject: subject,
-//        teacher: teacher,
-//        day: day,
-//        startTime: startTime,
-//        endTime: endTime
-//    };
-//
-//    // Send the data to the API using fetch
-//    fetch('https://your-api-endpoint.com/save', {
-//        method: 'POST',
-//        headers: {
-//            'Content-Type': 'application/json'
-//        },
-//        body: JSON.stringify(data)
-//    })
-//    .then(response => {
-//        if (!response.ok) {
-//            throw new Error('Network response was not ok');
-//        }
-//        return response.json();
-//    })
-//    .then(result => {
-//        console.log('Success:', result);
-//        alert('Data saved successfully!');
-//    })
-//    .catch(error => {
-//        console.error('Error:', error);
-//        alert('Failed to save data.');
-//    });
-  }
+// Function to fetch and populate subjects
+async function populateSubjects(sectionId, row) {
+    try {
+        const response = await fetch(`/subject/section/${sectionId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const subjects = await response.json();
 
-  function attachDeleteEvent(row) {
+        const subjectSelect = row.querySelector("#subject-select");
+        subjects.forEach(subject => {
+            console.log(subject);
+            const option = document.createElement("option");
+            option.value = subject.subjectName; // Use subject ID as the value
+            option.textContent = subject.subjectName; // Use subject name as the display text
+            subjectSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Error fetching subjects:", error);
+    }
+}
+
+// Function to fetch and populate teachers
+async function populateTeachers(row) {
+    try {
+        const response = await fetch("/user/teachers");
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const teachers = await response.json();
+
+        const teacherSelect = row.querySelector("#teacher-select");
+        teachers.forEach(teacher => {
+            console.log(teacher);
+            const option = document.createElement("option");
+            option.value = teacher.firstname+" "+teacher.lastname; // Use teacher ID as the value
+            option.textContent = teacher.firstname+" "+teacher.lastname; // Use teacher name as the display text
+            teacherSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Error fetching teachers:", error);
+    }
+}
+
+function attachDeleteEvent(row) {
     row.querySelector(".delete-row").addEventListener("click", () => {
-      row.remove();
-      updateButtonState();
+        row.remove();
+        updateButtonState();
     });
-  }
+}
 
-  function attachDoubleClickDrag(row) {
+function attachDoubleClickDrag(row) {
     row.addEventListener("dblclick", () => {
-      row.setAttribute("draggable", "true"); // Enable dragging on double-click
-      row.classList.add("dragging-enabled");
+        row.setAttribute("draggable", "true"); // Enable dragging on double-click
+        row.classList.add("dragging-enabled");
     });
 
     row.addEventListener("dragstart", (e) => {
-      if (row.getAttribute("draggable") !== "true") {
-        e.preventDefault();
-        return;
-      }
-      draggedRow = row;
-      row.classList.add("dragging");
-      e.dataTransfer.effectAllowed = "move";
+        if (row.getAttribute("draggable") !== "true") {
+            e.preventDefault();
+            return;
+        }
+        draggedRow = row;
+        row.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
     });
 
     row.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      const afterElement = getDragAfterElement(tableBody, e.clientY);
-      if (afterElement == null) {
-        tableBody.appendChild(draggedRow);
-      } else {
-        tableBody.insertBefore(draggedRow, afterElement);
-      }
+        e.preventDefault();
+        const afterElement = getDragAfterElement(tableBody, e.clientY);
+        if (afterElement == null) {
+            tableBody.appendChild(draggedRow);
+        } else {
+            tableBody.insertBefore(draggedRow, afterElement);
+        }
     });
 
     row.addEventListener("dragend", () => {
-      draggedRow.classList.remove("dragging");
-      draggedRow.setAttribute("draggable", "false"); // Disable dragging after release
-      draggedRow.classList.remove("dragging-enabled");
-      draggedRow = null;
+        draggedRow.classList.remove("dragging");
+        draggedRow.setAttribute("draggable", "false"); // Disable dragging after release
+        draggedRow.classList.remove("dragging-enabled");
+        draggedRow = null;
     });
-  }
+}
 
-  function getDragAfterElement(container, y) {
+function getDragAfterElement(container, y) {
     const draggableElements = [
-      ...container.querySelectorAll(".sched-row:not(.dragging)"),
+        ...container.querySelectorAll(".sched-row:not(.dragging)"),
     ];
 
     return draggableElements.reduce(
-      (closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        return offset < 0 && offset > closest.offset
-          ? { offset, element: child }
-          : closest;
-      },
-      { offset: Number.NEGATIVE_INFINITY }
+        (closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            return offset < 0 && offset > closest.offset
+                ? { offset, element: child }
+                : closest;
+        },
+        { offset: Number.NEGATIVE_INFINITY }
     ).element;
-  }
+}
 
-  saveBtn.addEventListener("click", () => {
+saveBtn.addEventListener("click", async () => {
     const visibleRows = Array.from(tableBody.children).filter(
-      (row) => !row.classList.contains("hidden-row")
+        (row) => !row.classList.contains("hidden-row")
     );
     const hasVisibleRows = visibleRows.length > 0;
 
     if (firstClick) {
-      // First time clicking "Add"
-      tableBody.appendChild(createRow());
+        // First time clicking "Add"
+        const newRow = await createRow(); // Await the creation of the new row
+        tableBody.appendChild(newRow);
       addRowBtn.style.display = "block";
       clearBtn.style.display = "block";
       firstClick = false;

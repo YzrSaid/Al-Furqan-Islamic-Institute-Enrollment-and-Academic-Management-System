@@ -79,16 +79,18 @@ public class SectionServices {
                 return 5;
         }
     }
-    
-    //GET ALL NOT DELETED SECTION
+
     public List<SectionDTO> getAllSections(){
         return sectionRepo.findAll().stream()
                           .filter(section -> section.isNotDeleted() && section.getLevel().isNotDeleted())
                           .map(Section::toSectionDTO)
                           .collect(Collectors.toList());
     }
-    
-    //GET THE SECTION
+
+    public Section getSectionById(int sectionNumber){
+        return sectionRepo.findById(sectionNumber).orElse(null);
+    }
+
     public SectionDTO getSection(int sectionNumber){
         Section sec = sectionRepo.findById(sectionNumber).orElse(null);
         
@@ -145,7 +147,6 @@ public class SectionServices {
     }
     
     public Section getSectionByName(String sectionName){
-        System.out.println("Getting section named "+sectionName);
         return sectionRepo.findAll().stream()
                           .filter(section -> section.isNotDeleted() &&
                                             section.getSectionName().toLowerCase().equalsIgnoreCase(sectionName))

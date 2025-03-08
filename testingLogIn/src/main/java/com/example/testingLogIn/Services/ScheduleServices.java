@@ -29,32 +29,17 @@ public class ScheduleServices {
     @Autowired
     private SubjectServices subjectService;
     
-    public Map<String,List<ScheduleDTO>> addNewSchedules(List<ScheduleDTO> newSchedules){
-        Map<String,List<ScheduleDTO>> rejectedSchedules = new HashMap();
-        List<ScheduleDTO> teacherConflict = new ArrayList<>();
-        List<ScheduleDTO> sectionConflict = new ArrayList<>();
-        newSchedules.forEach(SchedDTO ->{
-            boolean isValid=true;
-            UserModel teacher = getTeacherByName(SchedDTO.getTeacherName().toLowerCase());
-            Section section = sectionService.getSectionByName(SchedDTO.getSectionName().toLowerCase());
-            if(isTeacherSchedConflict(teacher,SchedDTO,true)){
-                isValid = false;
-                if(!rejectedSchedules.containsKey("Teacher Conflict Schedule"))
-                    rejectedSchedules.put("Teacher Conflict Schedule", teacherConflict);
-                rejectedSchedules.get("Teacher Conflict Schedule").add(SchedDTO);
-            }else if(isSectionSchedConflict(section, SchedDTO,true)){
-                isValid = false;
-                if(!rejectedSchedules.containsKey("Section Conflict Schedule"))
-                    rejectedSchedules.put("Section Conflict Schedule", sectionConflict);
-                rejectedSchedules.get("Section Conflict Schedule").add(SchedDTO);
-            }
-            
-            if(isValid)
-                scheduleRepo.save(ScheduleDTOtoSchedule(SchedDTO));
-            
-        });
+    public int addNewSchedule(ScheduleDTO newSchedule){
+        UserModel teacher = getTeacherByName(newSchedule.getTeacherName().toLowerCase());
+        Section section = sectionService.getSectionById(newSchedule.getSectionId());
+        if(isTeacherSchedConflict(teacher,newSchedule,true))
+            return 1;
+        else if(isSectionSchedConflict(section, newSchedule,true))
+            return 2;
+
+        scheduleRepo.save(ScheduleDTOtoSchedule(newSchedule));
         
-        return rejectedSchedules;
+        return 0;
     }
     
     public List<ScheduleDTO> getSchedulesByTeacher(String teacherName){
@@ -177,7 +162,7 @@ public class ScheduleServices {
         return Schedule.builder()
                        .teacher(getTeacherByName(schedDTO.getTeacherName().toLowerCase()))
                        .subject(subjectService.getByName(schedDTO.getSubject().toLowerCase()))
-                       .section(sectionService.getSectionByName(schedDTO.getSectionName().toLowerCase()))
+                       .section(sectionService.getSectionById(schedDTO.getSectionId()))
                        .day(schedDTO.getDay())
                        .timeStart(schedDTO.getTimeStart())
                        .timeEnd(schedDTO.getTimeEnd())

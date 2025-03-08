@@ -26,19 +26,19 @@
             </div>
         </div>
 
-        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
+        <a href="/home" class="active sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('secollment-submenu', event)">
-            <img th:src="@{/images/icons/secollment.png}" alt="Enrollment Icon"> Enrollment
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
             <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
-        <div class="submenu" id="secollment-submenu">
-            <a href="/secollment/listing">Listing/Register</a>
-            <a href="/secollment/assessment">Assessment</a>
-            <a href="/secollment/payment">Payment</a>
-            <a href="/secollment/secolled">Enrolled</a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing">Listing/Register</a>
+            <a href="/enrollment/assessment">Assessment</a>
+            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled">Enrolled</a>
         </div>
 
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
@@ -47,11 +47,11 @@
         </a>
         <div class="submenu" id="transaction-submenu">
             <a href="/transaction/tuition">Tuition</a>
-            <a href="/transaction/academic-resources"> Book Distribution</a>
+            <a href="/transaction/academic-resources">Book Distribution</a>
         </div>
 
 
-        <a href="/grade-management" class="active sidebar-icons">
+        <a href="/grade-management" class="sidebar-icons">
             <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
 
@@ -80,7 +80,7 @@
             <a href="/reports/student">Student Reports</a>
             <a href="/reports/payment">Payment Reports</a>
             <a href="/reports/teacher">Teacher Report</a>
-            <a href="/reports/academic-resources">Book Distribution Reports</a>
+            <a href="/reports/academic-resources">Book Distribution</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
             <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
@@ -96,7 +96,7 @@
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="/settings/create-user">Create User</a>
+            <a href="settings/create-user">Create User</a>
         </div>
     </div>
 

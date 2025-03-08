@@ -69,12 +69,6 @@ public class SectionController {
         return new ResponseEntity<>(sectionService.getSectionByNameDTO(sectionName.toLowerCase()), HttpStatus.OK);
     }
 
-//    @GetMapping("/name/{sectionName}")
-//    public ResponseEntity<Section> getSectionByName(@PathVariable String sectionName) {
-//        System.out.println(sectionName);
-//        return new ResponseEntity<>(sectionService.getSectionByName(sectionName.toLowerCase()), HttpStatus.OK);
-//    }
-   
     @PostMapping("/add")
     public ResponseEntity<Map<String, String>> addNewSection(@RequestBody SectionDTO sectionDTO) {
         Map<String, String> response = new HashMap<>();
@@ -106,21 +100,6 @@ public class SectionController {
         }
 
     }
-
-    // @PutMapping("/update")
-    // public ResponseEntity<String> updateSectionRecord(@PathVariable SectionDTO
-    // sectionDTO) {
-    // try {
-    // if (sectionService.updateSection(sectionDTO))
-    // return new ResponseEntity<>("Section Record Updated Successfully",
-    // HttpStatus.OK);
-    // else
-    // return new ResponseEntity<>("Section Record Not Found",
-    // HttpStatus.NOT_FOUND);
-    // } catch (Exception e) {
-    // return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
-    // }
-    // }
 
     @PutMapping("/update")
     public ResponseEntity<String> updateSectionRecord(@RequestBody SectionDTO sectionDTO){

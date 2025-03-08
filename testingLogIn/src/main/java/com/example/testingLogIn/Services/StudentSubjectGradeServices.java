@@ -94,4 +94,14 @@ public class StudentSubjectGradeServices {
         
         return subjectStudGrades;
     }
+    
+    public boolean updateStudentGrade(StudentSubjectGradeDTO studGrade){
+        StudentSubjectGrade studSubGrade = ssgRepo.findById(studGrade.getStudGradeId()).orElse(null);
+        if(studSubGrade == null)
+            return false;
+        
+        studSubGrade.setSubjectGrade(studGrade.getSubjectGrade());
+        ssgRepo.save(studSubGrade);
+        return true;
+    }
 }

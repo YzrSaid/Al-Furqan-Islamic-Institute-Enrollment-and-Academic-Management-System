@@ -25,7 +25,7 @@
             </div>
         </div>
 
-        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
+        <a href="/home" class="active sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
@@ -50,7 +50,7 @@
         </div>
 
 
-        <a href="/grade-management" class="active sidebar-icons">
+        <a href="/grade-management" class="sidebar-icons">
             <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
 
@@ -79,7 +79,7 @@
             <a href="/reports/student">Student Reports</a>
             <a href="/reports/payment">Payment Reports</a>
             <a href="/reports/teacher">Teacher Report</a>
-            <a href="/reports/academic-resources">Book Distribution Reports</a>
+            <a href="/reports/academic-resources">Book Distribution</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
             <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
@@ -95,7 +95,7 @@
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="settings-submenu">
-            <a href="/settings/create-user">Create User</a>
+            <a href="settings/create-user">Create User</a>
         </div>
     </div>
 

@@ -18,88 +18,91 @@ public class GradeLevelServices {
     @Autowired
     GradeLevelRepo gradeLevelRepo;
 
-    public boolean addNewGradeLevel(String levelName, String preRequisite){
+    public boolean addNewGradeLevel(String levelName, String preRequisite) {
         GradeLevel pre = null;
-        if(!preRequisite.equalsIgnoreCase("NONE")){
+        if (!preRequisite.equalsIgnoreCase("NONE")) {
             pre = getByName(preRequisite);
-            if(pre == null)
-                throw new NullPointerException();}
-        
-        if(getByName(levelName) == null){
+            if (pre == null)
+                throw new NullPointerException();
+        }
+
+        if (getByName(levelName) == null) {
             GradeLevel newGrade = new GradeLevel();
             newGrade.setNotDeleted(true);
             newGrade.setLevelName(levelName);
             newGrade.setPreRequisite(pre);
             gradeLevelRepo.save(newGrade);
             return true;
-        }else
+        } else
             return false;
     }
-    public List<GradeLevelDTO> getAllGradeLevelsDTO(){
+
+    public List<GradeLevelDTO> getAllGradeLevelsDTO() {
         return gradeLevelRepo.findAll().stream()
-                             .filter(GradeLevel::isNotDeleted)
-                             .map(GradeLevel::mapperDTO)
-                             .collect(Collectors.toList());
+                .filter(GradeLevel::isNotDeleted)
+                .map(GradeLevel::mapperDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<GradeLevel> getAllGradeLevels(){
+    public List<GradeLevel> getAllGradeLevels() {
         return gradeLevelRepo.findAll().stream()
-                             .filter(GradeLevel::isNotDeleted)
-                             .collect(Collectors.toList());
+                .filter(GradeLevel::isNotDeleted)
+                .collect(Collectors.toList());
     }
-    
-    public List<GradeLevel> getNoSuccessorsGradeLevels(){
+
+    public List<GradeLevel> getNoSuccessorsGradeLevels() {
         Set<Integer> levelIdSuccessors = new HashSet<>();
         getAllGradeLevels()
                 .forEach(gradeLevel -> {
-                                        if(gradeLevel.getPreRequisite() != null)
-                                            levelIdSuccessors.add(gradeLevel.getPreRequisite().getLevelId());
-        });
-        
+                    if (gradeLevel.getPreRequisite() != null)
+                        levelIdSuccessors.add(gradeLevel.getPreRequisite().getLevelId());
+                });
+
         return getAllGradeLevels().stream()
-                                .filter(gradeLevel -> !levelIdSuccessors.contains(gradeLevel.getLevelId()))
-                                .toList();
+                .filter(gradeLevel -> !levelIdSuccessors.contains(gradeLevel.getLevelId()))
+                .toList();
     }
-    
-    public GradeLevel getGradeLevel(int levelId){
+
+    public GradeLevelDTO getGradeLevel(int levelId) {
         return gradeLevelRepo.findAll().stream()
-                             .filter(gradelvl -> gradelvl.getLevelId() == levelId && gradelvl.isNotDeleted())
-                             .findFirst().orElse(null);
+                .filter(gradelvl -> gradelvl.getLevelId() == levelId && gradelvl.isNotDeleted())
+                .map(GradeLevel::mapperDTO)
+                .findFirst().orElse(null);
     }
-    
-    public boolean updateGradeLevel(GradeLevelDTO gradeLevel){
+
+    public boolean updateGradeLevel(GradeLevelDTO gradeLevel) {
         String preReqWord = gradeLevel.getPreRequisite();
-        GradeLevel newPreRequisite = preReqWord.equalsIgnoreCase("NONE")? null : 
-                                    gradeLevelRepo.findById(Integer.valueOf(preReqWord)).orElse(null);
-        
+        GradeLevel newPreRequisite = preReqWord.equalsIgnoreCase("NONE") ? null
+                : gradeLevelRepo.findById(Integer.valueOf(preReqWord)).orElse(null);
+
         GradeLevel updated = gradeLevelRepo.findById(gradeLevel.getLevelId()).orElse(null);
-        if(updated !=null){
+        if (updated != null) {
             updated.setLevelName(gradeLevel.getLevelName());
             updated.setPreRequisite(newPreRequisite);
             gradeLevelRepo.save(updated);
             return true;
-        }else
+        } else
             return false;
     }
-    
-    public boolean deleteGradeLevel(int levelId){
+
+    public boolean deleteGradeLevel(int levelId) {
         GradeLevel todelete = gradeLevelRepo.findAll().stream()
-                                           .filter(gradeL -> gradeL.isNotDeleted() && 
-                                                   gradeL.getLevelId() == levelId)
-                                           .findFirst().orElse(null);
-        
-        if(todelete !=null){
+                .filter(gradeL -> gradeL.isNotDeleted() &&
+                        gradeL.getLevelId() == levelId)
+                .findFirst().orElse(null);
+
+        if (todelete != null) {
             todelete.setNotDeleted(false);
             gradeLevelRepo.save(todelete);
             return true;
-        }else
+        } else
             return false;
     }
-    
-    public GradeLevel getByName(String levelname){
+
+    public GradeLevel getByName(String levelname) {
         return gradeLevelRepo.findAll().stream()
-                      .filter(gradeLevel -> gradeLevel.isNotDeleted() &&
-                                            gradeLevel.getLevelName().equalsIgnoreCase(levelname))
-                      .findFirst().orElse(null);
+                .filter(gradeLevel -> gradeLevel.isNotDeleted() &&
+                        gradeLevel.getLevelName().equalsIgnoreCase(levelname))
+                .findFirst().orElse(null);
     }
 }

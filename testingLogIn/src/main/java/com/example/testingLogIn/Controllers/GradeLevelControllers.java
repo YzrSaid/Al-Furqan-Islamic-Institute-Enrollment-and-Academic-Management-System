@@ -63,7 +63,7 @@ public class GradeLevelControllers {
     }
 
     @GetMapping("/{levelId}")
-    public ResponseEntity<GradeLevel> getGradeLevelById(@PathVariable int levelId) {
+    public ResponseEntity<GradeLevelDTO> getGradeLevelById(@PathVariable int levelId) {
         return new ResponseEntity<>(gradeLevelServices.getGradeLevel(levelId), HttpStatus.OK);
     }
 

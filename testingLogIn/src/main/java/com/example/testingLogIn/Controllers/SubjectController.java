@@ -37,6 +37,16 @@ public class SubjectController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
+    
+    @GetMapping("/section/{sectionId}")
+    public ResponseEntity<List<SubjectDTO>> getSubjectBySection(@PathVariable int sectionId){
+        try{
+            return new ResponseEntity<>(subjectService.getSectionSubjects(sectionId),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
     @GetMapping("/all")
     public ResponseEntity<List<SubjectDTO>> getAllSubjects(){
         try{

@@ -1,7 +1,9 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.ModelDTO.SubjectDTO;
 import com.example.testingLogIn.Models.GradeLevel;
+import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Subject;
 import com.example.testingLogIn.Repositories.SubjectRepo;
 import java.util.List;
@@ -20,6 +22,8 @@ public class SubjectServices {
     private SubjectRepo subjectRepo;
     @Autowired
     private GradeLevelServices gradeLevelService;
+    @Autowired
+    private SectionServices sectionService;
     
     public List<SubjectDTO> getSubjectByGrade(String gradeLevel){
         return subjectRepo.findAll().stream()
@@ -29,6 +33,12 @@ public class SubjectServices {
                                              subject.isNotDeleted())
                           .map(Subject::mapper)
                           .collect(Collectors.toList());
+    }
+    
+    public List<SubjectDTO> getSectionSubjects(int sectionId){
+        SectionDTO sec = sectionService.getSection(sectionId);
+        
+        return getSubjectByGrade(sec.getGradeLevelName());
     }
     
     public SubjectDTO getSubject(int subjectNumber){

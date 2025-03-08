@@ -58,7 +58,6 @@ public class ScheduleController {
     
     @PostMapping("add")
     public ResponseEntity<Map<String,List<ScheduleDTO>>> addSchedules(@RequestBody List<ScheduleDTO> schedules){
-        System.out.println("I'm going to add");
         try{
             Map<String,List<ScheduleDTO>> schedsRejected = scheduleService.addNewSchedules(schedules);
             if(schedsRejected.isEmpty())

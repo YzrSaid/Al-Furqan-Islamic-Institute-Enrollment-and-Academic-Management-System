@@ -37,6 +37,25 @@
                 }
             }
         });
+        
+        const searchInput = document.querySelector('.search-input');
+        const searchButton = document.querySelector('.search-btn');
+
+        // Add a click event listener to the search button
+        searchButton.addEventListener('click', function () {
+            // Retrieve the value of the input field
+            const searchValue = searchInput.value.trim().replaceAll(" ","_");
+
+            // Check if the input is not empty
+            if (searchValue) {
+                window.location.href='/reports/payment/'+searchValue;
+            } else {
+                // Handle empty input
+                alert('Please enter a search term.');
+            }
+        });
+        
+        fetchRecords();
     });
 </script>
 
@@ -158,10 +177,9 @@
         </div>
 
         <div class="search-div">
-            <!-- Searchbox and sort btn -->
             <div class="search">
                 <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
+                    <input type="text" placeholder="Search using student Id..." class="search-input" />
                     <button class="search-btn">Search</button>
                 </div>
                 <div class="sort-container">
@@ -176,13 +194,14 @@
         </div>
 
         <!-- Table -->
-        <table class="payment-report-table">
+        <table id="table-ko" class="payment-report-table">
             <thead>
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
-                    <th>Balance</th>
-                    <th>Action</th>
+                    <th>Date</th>
+                    <th>Fee Paid</th>
+                    <th>Amount</th>
                 </tr>
             </thead>
             <tbody>
@@ -211,5 +230,47 @@
     <!-- Custom JS -->
     <script th:src="@{/js/script.js}"></script>
 </body>
+<script>
+    function fetchRecords(){
+        const path = window.location.pathname;
 
+        const pathParts = path.split('/');
+        const studentName = pathParts[pathParts.length - 1];
+        var url ="";
+        if(pathParts.length === 3){
+            url="/paymentrecord/all";
+        }else{
+            url="/paymentrecord/student/id/"+studentName;
+        }
+        fetch(url)
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch grade levels");
+                return res.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#table-ko tbody");
+                tableBody.innerHTML = "";
+                
+                data.forEach(pr => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                            <tr>
+                                <td>${pr.studentId}</td>
+                                <td>${pr.studentFirstName} ${pr.studentLastName} ${pr.studentLastName}</td>
+                                <td>${pr.datePaid}</td>
+                                <td>${pr.requiredPaymentName}</td>
+                                <td>
+                                    <div class="status-container">
+                                        <div class="status" id="status-balance"><span>₱</span>${pr.amount}</div>
+                                    </div>
+                                </td>
+                            </tr>
+                                `;
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error:", error));
+    }
+</script>
 </html>

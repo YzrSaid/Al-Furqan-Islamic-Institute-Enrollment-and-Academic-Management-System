@@ -37,7 +37,7 @@ public class PaymentRecordService {
     }
     
     public boolean addNewRecord(PaymentRecordDTO paymentRec){
-        Student student = studentRepo.findById(paymentRec.getStudentId()).orElse(null);
+        Student student = studentRepo.findById(paymentRec.getStudId()).orElse(null);
         
         if(student == null)
             return false;
@@ -65,6 +65,13 @@ public class PaymentRecordService {
         enrollmentCheck.updatepcs(record.getStudent().getStudentId());
         return true;
     }
+    
+    public List<PaymentRecordDTO> getAllPaymentRecords(){
+        return paymentRepo.getAllRecords().stream()
+                        .map(PaymentRecords::DTOmapper)
+                        .toList();
+    }
+    
     public List<PaymentRecordDTO> getAllPaymentRecordsBySem(int semId){
         return paymentRepo.getRecordsBySem(semId).stream()
                         .map(PaymentRecords::DTOmapper)
@@ -80,6 +87,18 @@ public class PaymentRecordService {
         return paymentRepo.getAllStudentPaymentRecord(studentId).stream()
                             .map(PaymentRecords::DTOmapper)
                             .toList();
+    }
+    
+    public List<PaymentRecordDTO> getAllStudentPaymentRecordsByName(String studentName){
+        try{
+            Student student = studentRepo.findByStudentDisplayId(studentName);
+            System.out.println(student.getFirstName());
+            return paymentRepo.getAllStudentPaymentRecord(student.getStudentId()).stream()
+                                .map(PaymentRecords::DTOmapper)
+                                .toList();
+        }catch(NullPointerException npe){
+            return null;
+        }
     }
     
 }

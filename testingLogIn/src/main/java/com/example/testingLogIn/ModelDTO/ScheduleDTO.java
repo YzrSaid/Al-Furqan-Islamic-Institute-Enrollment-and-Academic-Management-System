@@ -24,4 +24,7 @@ public class ScheduleDTO {
     private LocalTime timeEnd;
     private String timeEndString;
     private boolean isNotDeleted;
+    
+    private Integer gradedCount;
+    private Integer toBeGradedCount;
 }

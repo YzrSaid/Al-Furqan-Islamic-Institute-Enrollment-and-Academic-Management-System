@@ -49,7 +49,8 @@ public class PaymentRecords {
         return PaymentRecordDTO.builder()
                             .recordId(recordId)
                 
-                            .studentId(student.getStudentId())
+                            .studId(student.getStudentId())
+                            .studentId(student.getStudentDisplayId())
                             .studentFirstName(student.getFirstName())
                             .studentLastName(student.getLastName())
                             .studentMiddleName(student.getMiddleName())

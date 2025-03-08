@@ -13,7 +13,8 @@ import lombok.*;
 public class PaymentRecordDTO {
     private int recordId;
     
-    private int studentId;
+    private int studId;
+    private String studentId;
     private String studentFirstName;
     private String studentLastName;
     private String studentMiddleName;

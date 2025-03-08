@@ -42,11 +42,10 @@ public class SectionController {
 
     @GetMapping("/all")
     public ResponseEntity<List<SectionDTO>> getAllSections() {
-        System.out.println("Someone fetched");
         try {
-            System.out.println("Sending to someone...");
             return new ResponseEntity<>(sectionService.getAllSections(), HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

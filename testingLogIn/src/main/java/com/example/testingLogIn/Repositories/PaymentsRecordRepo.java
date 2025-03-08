@@ -60,4 +60,7 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
             @Param("studentId") int studentId,
             @Param("reqPaymentId") int reqPaymentId,
             @Param("semId") int semId);
+    
+    @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid DESC")
+    List<PaymentRecords> getAllRecords();
 }

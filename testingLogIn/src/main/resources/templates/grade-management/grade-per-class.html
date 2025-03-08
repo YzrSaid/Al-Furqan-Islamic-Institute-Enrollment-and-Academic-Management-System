@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -25,7 +25,7 @@
             </div>
         </div>
 
-        <a href="/home" class="active sidebar-icons menu" onclick="clearSubmenus()">
+        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
@@ -50,7 +50,7 @@
         </div>
 
 
-        <a href="/grade-management" class="sidebar-icons">
+        <a href="/grade-management" class="active sidebar-icons">
             <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
 
@@ -180,10 +180,8 @@
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Get the current URL path
         const path = window.location.pathname;
 
-        // Split the path by '/' and extract the last part
         const pathParts = path.split('/');
         const sectionId = pathParts[pathParts.length - 1];
 
@@ -206,11 +204,11 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <td>${value.subject}</td>
-                            <td>${value.subject}</td>
+                            <td>${value.teacherName}</td>
                             <td>
                                 <div class="dropdown">
                                     <div class="status-container">
-                                        <div class="status" id="status-grade-management">20/20</div>
+                                        <div class="status" id="status-grade-management">${value.gradedCount}/${value.toBeGradedCount}</div>
                                     </div>
                                     <div class="action-container action">
                                         <a href="/grade-management/subject/${sectionId}/${value.subjectId}" class="view-per-subject"><img src="/images/icons/compose.png"

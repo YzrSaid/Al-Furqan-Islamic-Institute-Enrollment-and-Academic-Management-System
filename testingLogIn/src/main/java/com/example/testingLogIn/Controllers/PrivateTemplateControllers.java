@@ -114,6 +114,11 @@ public class PrivateTemplateControllers {
         return "/reports/payment-reports";
     }
     
+    @GetMapping("/reports/payment/{studentName}")
+    public String getPaymentReportsByStudent(){
+        return "/reports/payment-reports";
+    }
+    
     @GetMapping("/reports/student")
     public String getStudentReports(){
         return "/reports/student-reports";

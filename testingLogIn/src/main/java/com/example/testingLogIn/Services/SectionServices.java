@@ -6,6 +6,7 @@ import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
+import com.example.testingLogIn.Repositories.ScheduleRepo;
 import com.example.testingLogIn.Repositories.SectionRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
@@ -25,12 +26,14 @@ public class SectionServices {
     private final GradeLevelRepo gradeRepo;
     private final SectionRepo sectionRepo;
     private final UserRepo userRepo;
+    private final ScheduleRepo schedRepo;
 
     @Autowired
-    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo) {
+    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo, ScheduleRepo schedRepo) {
         this.gradeRepo = gradeRepo;
         this.sectionRepo = sectionRepo;
         this.userRepo = userRepo;
+        this.schedRepo = schedRepo;
     }
     //Get by Grade Level Name
     public List<SectionDTO> getSectionsByLevel(String gradeLevel){
@@ -84,6 +87,7 @@ public class SectionServices {
         return sectionRepo.findAll().stream()
                           .filter(section -> section.isNotDeleted() && section.getLevel().isNotDeleted())
                           .map(Section::toSectionDTO)
+                          .peek(sec -> sec.setSubSchedCount(schedRepo.getUniqueSubjectCountBySection(sec.getNumber())))
                           .collect(Collectors.toList());
     }
 

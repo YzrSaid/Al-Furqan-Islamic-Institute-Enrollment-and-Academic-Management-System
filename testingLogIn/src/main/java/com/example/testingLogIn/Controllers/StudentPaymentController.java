@@ -27,13 +27,11 @@ public class StudentPaymentController{
     @PostMapping("/add")
     public ResponseEntity<String> addNewPaymentRecord(@RequestBody PaymentRecordDTO newRecord){
         try{
-            System.out.println(newRecord);
             if(paymentService.addNewRecord(newRecord))
                 return new ResponseEntity<>("Payment Transaction Completed",HttpStatus.OK);
             else
                 return new ResponseEntity<>("Transaction Failed. Student record not found",HttpStatus.NOT_FOUND);
         }catch(Exception e){
-            e.printStackTrace();
             return new ResponseEntity<>("Transaction Failed",HttpStatus.CONFLICT);
         }
     }
@@ -42,6 +40,15 @@ public class StudentPaymentController{
     public ResponseEntity<List<PaymentRecordDTO>> getPaymentRecordsBySem(@PathVariable int semId){
         try{
             return new ResponseEntity<>(paymentService.getAllPaymentRecordsBySem(semId),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
+    @GetMapping("/all")
+    public ResponseEntity<List<PaymentRecordDTO>> getAllPaymentRecords(){
+        try{
+            return new ResponseEntity<>(paymentService.getAllPaymentRecords(),HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -61,6 +68,17 @@ public class StudentPaymentController{
         try{
             return new ResponseEntity<>(paymentService.getAllStudentPaymentRecords(studentId),HttpStatus.OK);
         }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    
+    @GetMapping("/student/id/{studentId}")
+    public ResponseEntity<List<PaymentRecordDTO>> getByStudentNamePaymentRecords(@PathVariable String studentId){
+        System.out.println(studentId);
+        try{
+            return new ResponseEntity<>(paymentService.getAllStudentPaymentRecordsByName(studentId),HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

@@ -343,30 +343,30 @@
     };
     
     console.log(data);
-fetch('/schedules/add', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
-})
-.then(response => {
-    return response.text().then(message => {
-        // Handle different status codes
-        if (response.ok) {
-            // Success (HTTP 200 OK)
-            alert(message); // Display the success message
-            window.location.reload(); // Reload the page
-        } else {
-            alert(message);
-        }
+    fetch('/schedules/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
+    })
+    .then(response => {
+        return response.text().then(message => {
+            // Handle different status codes
+            if (response.ok) {
+                // Success (HTTP 200 OK)
+                alert(message); // Display the success message
+                window.location.reload(); // Reload the page
+            } else {
+                alert(message);
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Display the error message to the user
+        alert(error.message);
     });
-})
-.catch(error => {
-    console.error('Error:', error);
-    // Display the error message to the user
-    alert(error.message);
-});
   }
 
     function setUpTables(){
@@ -397,6 +397,7 @@ fetch('/schedules/add', {
                             <td>${rec.timeStartString}</td>
                             <td>${rec.timeEndString}</td>
                             <td>
+                                <button onClick="deleteThis(${rec.scheduleNumber})">D</button>
                                 <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
                             </td>
                         </tr>
@@ -407,6 +408,26 @@ fetch('/schedules/add', {
             .catch(error => {
                 console.error("Error fetching data:", error);
             });
+    }
+    
+    function deleteThis(schedId){
+        fetch('/schedules/delete/'+schedId, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            return response.text().then(message => {
+                if (response.ok) {
+                    alert(message);
+                    window.location.reload();
+                } else {
+                    alert(message);
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message);
+        });
     }
 </script>
 

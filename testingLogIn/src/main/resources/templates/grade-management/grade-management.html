@@ -26,7 +26,7 @@
             </div>
         </div>
 
-        <a href="/home" class="active sidebar-icons menu" onclick="clearSubmenus()">
+        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
@@ -51,7 +51,7 @@
         </div>
 
 
-        <a href="/grade-management" class="sidebar-icons">
+        <a href="/grade-management" class="active sidebar-icons">
             <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
         </a>
 
@@ -222,7 +222,7 @@
                                     <td>
                                         <div class="dropdown">
                                             <div class="status-container">
-                                                <div class="status" id="status-grade-management">20/20</div>
+                                                <div class="status" id="status-grade-management">${sec.subSchedCount}</div>
                                             </div>
                                             <!-- <div class="action-container action">
                                                 <a href="grade-per-class.html"><img th:src="@{/images/icons/compose.png}"

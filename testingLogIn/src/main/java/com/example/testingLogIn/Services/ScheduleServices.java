@@ -6,6 +6,8 @@ import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.Models.Schedule;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Repositories.ScheduleRepo;
+import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
+import com.example.testingLogIn.Repositories.sySemesterRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 import java.util.ArrayList;
@@ -28,6 +30,10 @@ public class ScheduleServices {
     private SectionServices sectionService;
     @Autowired
     private SubjectServices subjectService;
+    @Autowired
+    private StudentSubjectGradeRepo ssgRepo;
+    @Autowired
+    private sySemesterRepo semRepo;
     
     public int addNewSchedule(ScheduleDTO newSchedule){
         UserModel teacher = getTeacherByName(newSchedule.getTeacherName().toLowerCase());
@@ -69,23 +75,34 @@ public class ScheduleServices {
     }
     
         public Map<Integer,ScheduleDTO> getSubjectsUniqeTeacher(int sectionId){
-        SectionDTO section = sectionService.getSection(sectionId);
-        if(section == null)
-            throw new NullPointerException();
-        
-        Map<Integer,ScheduleDTO> subjectTeachers = new HashMap<>();
-        List<Schedule> sectionScheds = scheduleRepo.findSectionSchedules(section.getNumber()).stream()
-                            .sorted(Comparator
-                                .comparing(Schedule::getDay)
-                                .thenComparing(Schedule::getTimeStart))
-                            .toList();
-        
-        sectionScheds.forEach(sched -> {
-            if(!subjectTeachers.containsKey(sched.getSubject().getSubjectNumber()))
-                subjectTeachers.put(sched.getSubject().getSubjectNumber(), sched.mapper());
-        });
-        
-        return subjectTeachers;
+            SectionDTO section = sectionService.getSection(sectionId);
+            if(section == null)
+                throw new NullPointerException();
+
+            Map<Integer,ScheduleDTO> subjectTeachers = new HashMap<>();
+            List<Schedule> sectionScheds = scheduleRepo.findSectionSchedules(section.getNumber()).stream()
+                                                    .sorted(Comparator
+                                                    .comparing(Schedule::getDay)
+                                                    .thenComparing(Schedule::getTimeStart))
+                                                    .toList();
+
+            sectionScheds.forEach(sched -> {
+                if(!subjectTeachers.containsKey(sched.getSubject().getSubjectNumber()))
+                    subjectTeachers.put(sched.getSubject().getSubjectNumber(), sched.mapper());
+            });
+            for(Integer key : subjectTeachers.keySet()){
+                ScheduleDTO sched = subjectTeachers.get(key);
+                subjectTeachers.get(key).setGradedCount(ssgRepo.getTotalGraded(
+                        sched.getSubjectId(),
+                        sched.getSubjectId(), 
+                        semRepo.findCurrentActive().getSySemNumber()));
+                subjectTeachers.get(key).setToBeGradedCount(ssgRepo.getGradesBySectionSubjectSem(
+                        sched.getSubjectId(),
+                        sched.getSubjectId(), 
+                        semRepo.findCurrentActive().getSySemNumber()).size());
+            }
+
+            return subjectTeachers;
     }
     
     public int updateSchedule(ScheduleDTO schedDTO){

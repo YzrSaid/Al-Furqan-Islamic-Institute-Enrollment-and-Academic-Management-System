@@ -45,5 +45,9 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             @Param("subjectId") int subjectId,
             @Param("semId") int semId);
 
-
+    @Query("SELECT COUNT(sg) FROM StudentSubjectGrade sg WHERE sg.subjectGrade IS NOT NULL")
+    Integer getTotalGraded(
+            @Param("sectionId") int sectionId,
+            @Param("subjectId") int subjectId,
+            @Param("semId") int semId);
 }

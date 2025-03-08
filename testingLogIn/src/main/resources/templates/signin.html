@@ -113,11 +113,9 @@
 <script>
     document.getElementById('signup-form').addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent default form submission
-
         const form = event.target;
         const formData = new FormData(form);
         console.log(formData);
-        alert();
 
         fetch(form.action, {
             method: 'POST',
@@ -125,7 +123,6 @@
         })
             .then(response => {
                 if (response.ok) {
-                        window.location.href = '/login';
                     return response.text().then(text => {
                         showSuccessModal("✅ Account has been created successfully! This record will be sent for approval.");
                     });
@@ -136,7 +133,7 @@
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                showErrorModal("An unexpected error occurred. Please try again.");
             });
     });
 </script>

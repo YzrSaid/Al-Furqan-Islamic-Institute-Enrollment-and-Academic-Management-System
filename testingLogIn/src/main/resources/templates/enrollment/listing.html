@@ -258,10 +258,6 @@
                 <form id="studentForm">
                     <div class="header">
                         <h5>Personal Information</h5>
-                        <div class="checkbox">
-                            <label for="scholar">Scholar:</label>
-                            <input type="checkbox" id="scholar">
-                        </div>
                     </div>
 
                     <div class="student-form-group">
@@ -275,7 +271,7 @@
                         <input type="text" id="studentMiddleName" placeholder="Optional">
                     </div> <br>
 
-                    <div class="student-form-group half">
+                    <div class="student-form-group">
                         <label for="gender">Gender:</label>
                         <select id="gender" required>
                             <option value="" disabled selected>Select Gender</option>
@@ -285,7 +281,14 @@
 
                         <label for="birthdate">Birthdate:</label>
                         <input type="date" id="birthdate" required>
+
+                        <div class="checkbox">
+                            <label for="scholar">Scholar:</label>
+                            <input type="checkbox" id="scholar">
+                        </div>
+
                     </div> <br>
+
 
                     <div class="student-form-group">
                         <label for="place-of-birth">Place of Birth:</label>
@@ -348,6 +351,17 @@
                 </form>
             </div>
         </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
 
 
         <!-- Modal for transferee enrollment -->
@@ -565,7 +579,7 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         document.body.addEventListener("click", function (event) {
-            if (event.target.closest(".proceedButton")) { 
+            if (event.target.closest(".proceedButton")) {
                 event.preventDefault(); // Prevent default link behavior
 
                 enrollmentIdLet = event.target.closest(".proceedButton").getAttribute("data-enrollment-id");
@@ -660,7 +674,7 @@
             firstName: document.getElementById("studentFirstName").value.trim(),
             lastName: document.getElementById("studentLastName").value.trim(),
             middleName: document.getElementById("studentMiddleName").value.trim() || null,
-            gender: document.getElementById("gender").value || null, // Ensure null if not selected
+            gender: document.getElementById("gender").value || null,
             birthdate: document.getElementById("birthdate").value,
             birthPlace: document.getElementById("place-of-birth").value.trim() || null,
 
@@ -697,12 +711,13 @@
             })
             .then(text => {
                 alert(text || "Student added successfully!");
-                location.reload();
+                location.reload(); // ✅ Reload only when the request is successful
             })
             .catch(error => {
-                alert("Error: " + error.message);
+                showErrorModal("❌ Error: " + error.message); // ✅ Show error in modal instead of alert
             });
     }
+
 
 </script>
 

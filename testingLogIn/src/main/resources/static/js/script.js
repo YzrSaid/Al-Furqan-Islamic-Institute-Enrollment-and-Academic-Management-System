@@ -326,58 +326,67 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("a.view-per-subject").forEach((link) => {
     link.addEventListener("click", function (event) {
       event.preventDefault(); // Prevent default navigation
-      window.location.href = "/grade-per-class"; 
+      window.location.href = "/grade-per-class";
     });
   });
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  function toggleModal(modalId, show = true, message = "") {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-      modal.style.visibility = show ? "visible" : "hidden";
-      modal.style.opacity = show ? "1" : "0";
-
-      // If the modal is the confirmation modal, update the text
-      if (modalId === "confirmationModal" && message) {
-        document.getElementById("modalText").textContent = message;
-
-        // Reset confirm action properly to avoid previous events messing up
-        let confirmBtn = document.getElementById("confirmAction");
-        let newConfirmBtn = confirmBtn.cloneNode(true);
-        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-
-        // // Set new event listener for confirm action
-        // newConfirmBtn.setAttribute("data-confirm-action", action);
-        // newConfirmBtn.addEventListener("click", function () {
-        //   handleConfirmAction(action);
-        //   toggleModal("confirmationModal", false);
-        // });
-      }
-
-      if (modalId.includes("Edit") && show) {
-        const confirmBtn = modal.querySelector(".btn-confirm");
-        const cancelBtn = modal.querySelector(".btn-cancel");
-        const inputs = modal.querySelectorAll("input, textarea, select");
-
-        // Reset inputs and selects to readonly/disabled mode
-        inputs.forEach((input) => {
-          if (input.tagName === "SELECT") {
-            input.disabled = true;
-          } else {
-            input.readOnly = true;
-          }
-        });
-
-        // Set initial button states
-        confirmBtn.textContent = "Edit";
-        cancelBtn.textContent = "Close";
-        confirmBtn.setAttribute("data-mode", "edit");
-      }
+    function toggleModal(modalId, show = true, message = "") {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+    
+        if (show) {
+            modal.classList.add("show");
+            modal.style.visibility = "visible";
+            modal.style.opacity = "1";
+            modal.style.pointerEvents = "auto"; // Enable interaction
+        } else {
+            modal.classList.remove("show");
+            modal.style.visibility = "hidden";
+            modal.style.opacity = "0";
+            modal.style.pointerEvents = "none"; // Ensure it doesn't block clicks
+        }
+    
+        // If it's a confirmation modal, update the text
+        if (modalId === "confirmationModal" && message) {
+            document.getElementById("modalText").textContent = message;
+    
+            // Reset confirm button properly to avoid event listener issues
+            let confirmBtn = document.getElementById("confirmAction");
+            let newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+    
+            // Reattach event listener
+            newConfirmBtn.addEventListener("click", function () {
+                const action = newConfirmBtn.getAttribute("data-confirm-action");
+                handleConfirmAction(action, event);
+            });
+        }
     }
-  }
+    
 
-  async function handleConfirmAction(action) {
+
+  async function handleConfirmAction(action, event) {
+    if (event && typeof event.preventDefault === "function") {
+      event.preventDefault();
+    } else {
+      console.warn("⚠️ Warning: Event is missing or invalid");
+    }
+
+    console.log(action);
+
+    if (!action) {
+      console.error("❌ Error: Action is undefined!");
+      return;
+    }
+
+    // ✅ Always close confirmationModal FIRST
+    let confirmationModal = document.getElementById("confirmationModal");
+    confirmationModal.style.visibility = "hidden";
+    confirmationModal.style.opacity = "0";
+
+    console.log("🚀 Handling Action:", action);
     switch (action) {
       case "addNewStudent":
         alert("Add new student!");
@@ -390,6 +399,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "deleteGradeLevel":
         deleteGradeLevel(selectedGradeLevelId);
+        break;
       case "makeSchoolYearInactive":
         actionUrl = "/school-year/inactivate";
         method = "PUT";
@@ -490,16 +500,29 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("Activation blocked.");
           return; // 🚀 Stop the function from running
         }
-
         activateSemester();
-
         break;
       case "deactivateSemester":
         deactivateSemester();
         break;
       case "addListing":
+        if (!validateForm("studentForm")) {
+          console.error(
+            "❌ Validation failed: Please fill in all required fields."
+          );
+          showErrorModal("⚠️ Please fill in all required fields!"); // ✅ Show error modal
+          return; // 🚀 Stop execution, keep studentForm open
+        }
+
+        // ✅ If valid, proceed & force close confirmationModal
         addListing();
+        document.getElementById("confirmationModal").classList.remove("show"); // ✅ Hide it
+        document.getElementById("confirmationModal").style.visibility =
+          "hidden";
+        document.getElementById("confirmationModal").style.opacity = "0";
+
         break;
+
       case "finishSemester":
         finishSemester();
         break;
@@ -511,12 +534,13 @@ document.addEventListener("DOMContentLoaded", function () {
         proceedToPayment(enrollmentIdLet, sectionNumberLet);
         break;
       case "proceedToEnrolled":
-        proceedToEnrolled(enrollmentIdLet)  
+        proceedToEnrolled(enrollmentIdLet);
       case "addFee":
         addFee();
         break;
       case "editFee":
         editFee();
+        break;
       case "savePayment":
         savePayment();
         break;
@@ -525,6 +549,116 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
   }
+  // ✅ Prevent modal from closing when clicking outside
+  document.addEventListener("click", function (event) {
+    const studentForm = document.getElementById("studentForm");
+    const confirmationModal = document.getElementById("confirmationModal");
+
+    if (
+      studentForm &&
+      !studentForm.contains(event.target) &&
+      event.target !== studentForm
+    ) {
+      console.log("⛔ Clicked outside studentForm, preventing close...");
+      event.stopPropagation(); // ✅ Prevent closing when clicking outside
+    }
+
+    if (
+      confirmationModal &&
+      !confirmationModal.contains(event.target) &&
+      event.target !== confirmationModal
+    ) {
+      console.log("⛔ Clicked outside confirmationModal, preventing close...");
+      event.stopPropagation(); // ✅ Prevent closing when clicking outside
+    }
+  });
+
+  function validateForm(formId) {
+    let form = document.getElementById(formId);
+    if (!form) {
+      console.error("❌ Form not found:", formId);
+      return false;
+    }
+
+    let inputs = form.querySelectorAll("input[required], select[required]");
+    let valid = true;
+
+    inputs.forEach((input) => {
+      if (!input.value.trim()) {
+        valid = false;
+        input.classList.add("error"); // Add a red border or something
+      } else {
+        input.classList.remove("error");
+      }
+    });
+
+    return valid;
+  }
+
+  function showErrorModal(message) {
+    console.log("🟠 Showing error modal with message:", message);
+
+    const errorModal = document.getElementById("errorModal");
+    const errorMessage = document.getElementById("errorMessage");
+
+    if (errorModal && errorMessage) {
+      errorMessage.textContent = message; // ✅ Update error message
+
+      // ✅ Remove .show and force reflow before adding it again
+      errorModal.classList.remove("show");
+      void errorModal.offsetWidth; // 🔥 Forces reflow to restart animation
+      errorModal.classList.add("show");
+
+      // Ensure visibility and opacity are reset
+      errorModal.style.visibility = "visible";
+      errorModal.style.opacity = "1";
+    } else {
+      alert(`⚠️ ${message}`); // Fallback if modal is missing
+    }
+  }
+
+  document.querySelectorAll("[data-close-modal]").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      let modalId = this.getAttribute("data-close-modal");
+      let modal = document.getElementById(modalId);
+
+      if (modal) {
+        modal.classList.remove("show"); // ✅ Hide modal visually
+        modal.style.visibility = "hidden";
+        modal.style.opacity = "0";
+        modal.style.pointerEvents = "none"; // 🔥 Prevent it from blocking clicks
+      }
+    });
+  });
+
+  document
+    .querySelectorAll("[data-close-modal='errorModal']")
+    .forEach((btn) => {
+      btn.addEventListener("click", function () {
+        let errorModal = document.getElementById("errorModal");
+        let studentForm = document.getElementById("studentForm");
+
+        // ✅ Hide error modal only
+        errorModal.style.visibility = "hidden";
+        errorModal.style.opacity = "0";
+
+        // ✅ Ensure confirmationModal STAYS CLOSED
+        let confirmationModal = document.getElementById("confirmationModal");
+        confirmationModal.style.visibility = "hidden";
+        confirmationModal.style.opacity = "0";
+
+        // ✅ Keep studentForm open
+        studentForm.style.visibility = "visible";
+        studentForm.style.opacity = "1";
+      });
+    });
+
+  document
+    .getElementById("studentForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // ✅ Stops form submission
+      console.log("⛔ Form submission prevented!");
+    });
 
   document.body.addEventListener("click", function (event) {
     const target = event.target;
@@ -609,18 +743,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Handle Confirm Action in Confirmation Modal
     if (target.id === "confirmAction") {
-      const action = target.getAttribute("data-confirm-action"); // Get correct action
-      handleConfirmAction(action); // Call the function to execute the action
+      const action = target.getAttribute("data-confirm-action"); // ✅ Get action
+      handleConfirmAction(action, event); // ✅ Pass event properly
 
-      // Close confirmation modal
-      toggleModal("confirmationModal", false);
+      // Only close confirmation modal if validation passes
+      if (validateForm("studentForm")) {
+        toggleModal("confirmationModal", false);
 
-      // Find the parent modal (the Edit Modal) and close it
-      const openModal = document.querySelector(
-        ".modal[style*='visibility: visible']"
-      );
-      if (openModal) {
-        toggleModal(openModal.id, false);
+        // Close the parent modal (Edit Modal) if open
+        const openModal = document.querySelector(
+          ".modal[style*='visibility: visible']"
+        );
+        if (openModal) {
+          toggleModal(openModal.id, false);
+        }
       }
     }
   });

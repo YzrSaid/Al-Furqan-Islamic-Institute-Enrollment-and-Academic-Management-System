@@ -408,8 +408,6 @@
                                     <h6>1, 000</h6>
                                 </div>
                                 <button id="transaction-record-btn">View Record</button>
-
-
                             </div>
 
                         </div>
@@ -1000,24 +998,23 @@
         }
     }
     function goList() {
-    fetch("/enrollment/all/listing")
-        .then(res => {
-            if (!res.ok) throw new Error("Failed to fetch grade levels");
-            return res.json();
-        })
-        .then(data => {
-            const tableBody = document.querySelector("#lamesa tbody");
-            tableBody.innerHTML = "";
+        fetch("/enrollment/all/listing")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch grade levels");
+                return res.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#lamesa tbody");
+                tableBody.innerHTML = "";
 
-            data.forEach(enr => {
-                console.log(enr);
-                enrollmentIdLet = enr.enrollmentId;
+                data.forEach(enr => {
+                    console.log(enr);
+                    enrollmentIdLet = enr.enrollmentId;
 
-                const row = document.createElement("tr");
-                row.setAttribute("data-enrollment-id", enr.enrollmentId);
-                row.classList.add("clickable-row");
+                    const row = document.createElement("tr");
+                    row.setAttribute("data-enrollment-id", enr.enrollmentId);
 
-                row.innerHTML = `
+                    row.innerHTML = `
                 <td>${enr.student.studentDisplayId}</td>
                 <td>${enr.student.firstName} ${enr.student.middleName} ${enr.student.lastName}</td>
                 <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
@@ -1031,8 +1028,10 @@
                             </button>
                         </div>
                         <div class="dropdown-status-content" id="dropdown-listing">
+                            <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}">View Record</a>
+
                             <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" 
-                                data-open-modal="gradeLevelModal"> Proceed </a>
+                                data-open-modal="gradeLevelModal">Proceed</a>
 
                             <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
                                 data-message="Are you sure you want to cancel this registration?">
@@ -1043,38 +1042,29 @@
                 </td>
             `;
 
-                tableBody.appendChild(row);
-            });
+                    tableBody.appendChild(row);
+                });
 
-            // ✅ Improved Click Logic
-            document.addEventListener("click", function (event) {
-                const target = event.target;
+                // ✅ Event Listener for 'View Record'
+                document.addEventListener("click", function (event) {
+                    const target = event.target;
 
-                // 🚫 Prevent row click when interacting with dropdown elements
-                if (
-                    target.classList.contains("dropdown-status-btn") || 
-                    target.closest(".dropdown-status-content")
-                ) {
-                    return; // Exit early
-                }
-
-                // ✅ Clickable row logic
-                const clickedRow = target.closest(".clickable-row");
-                if (clickedRow) {
-                    const enrollmentId = clickedRow.getAttribute("data-enrollment-id");
-                    console.log("Clicked Enrollment ID:", enrollmentId);
-                }
-            });
-        })
-        .catch(error => console.error("Error:", error));
-}
+                    if (target.classList.contains("viewRecordButton")) {
+                        const enrollmentId = target.getAttribute("data-enrollment-id");
+                        console.log("🔍 View Record for Enrollment ID:", enrollmentId);
+                        // Add logic for opening a modal or redirecting here
+                    }
+                });
+            })
+            .catch(error => console.error("Error:", error));
+    }
 
 
     document.addEventListener("click", function (event) {
-        const clickedRow = event.target.closest(".clickable-row"); // ✅ Detect clicked row
-        if (clickedRow) {
-            const enrollmentId = clickedRow.getAttribute("data-enrollment-id"); // ✅ Capture enrollment ID
-            console.log(`Clicked Enrollment ID: ${enrollmentId}`);
+        const viewRecordButton = event.target.closest(".viewRecordButton"); // ✅ Detect "View Record" click
+        if (viewRecordButton) {
+            const enrollmentId = viewRecordButton.getAttribute("data-enrollment-id"); // ✅ Capture enrollment ID
+            console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
 
             // Show the modal
             const modal = document.getElementById("studentInformationModal");
@@ -1084,17 +1074,9 @@
                 modal.style.opacity = "1";
                 modal.style.pointerEvents = "auto";
             }
-
-            // // Populate the form with data
-            // fetch(`/enrollment/${enrollmentId}`)
-            //     .then(response => response.json())
-            //     .then(enrollmentData => {
-            //         document.getElementById("studentName").value = `${enrollmentData.student.firstName} ${enrollmentData.student.lastName}`;
-            //         document.getElementById("enrollmentStatus").value = enrollmentData.enrollmentStatus;
-            //     })
-            //     .catch(error => console.error("Error fetching enrollment data:", error));
         }
     });
+
 
 
     document.getElementById("scholar").addEventListener("change", function () {

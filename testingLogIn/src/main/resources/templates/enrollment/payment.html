@@ -291,7 +291,7 @@
                         <h6>Received payment from</h6>
                         <input type="text" id="payee-name" readonly>
                         <h6>Student ID</h6>
-                        <input type="text" id="student-id" readonly value="0001">
+                        <input type="text" id="payee-id" readonly value="0001">
                         <h6>sum of ₱</h6>
                         <input type="number" id="payment-amount">
                         <h6>as payment for</h6>
@@ -347,7 +347,7 @@
 
             // Populate modal fields
             document.querySelector("#payee-name").value = studentName;
-            document.querySelector("#addPaymentModal input[type='text'][readonly]").textContent = studentId;
+            document.querySelector("#payee-id").value = studentId;
 
             // Fetch and populate the current active school year
             try {

@@ -79,7 +79,7 @@ public class StudentSubjectGradeServices {
     
     public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesBySemester(int studentId){
         List<StudentSubjectGrade> gradesList = ssgRepo.getGradesByStudent(studentId);
-        //Section and Grade Level as Key
+
         Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap();
         
         gradesList

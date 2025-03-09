@@ -54,6 +54,7 @@ public class StudentSubjectGrade {
                                     .studentFirstName(student.getFirstName())
                                     .studentLastName(student.getLastName())
                                     .studentMiddleName(student.getLastName())
+                                    .subjectName(subject.getSubjectName())
                                     .subjectGrade(subjectGrade)
                                     .build();
     }

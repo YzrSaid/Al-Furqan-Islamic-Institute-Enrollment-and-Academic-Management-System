@@ -435,8 +435,8 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmationModal.style.opacity = "0";
 
     switch (action) {
-        case "saveSchedule":
-            saveSchedule();
+      case "saveSchedule":
+        saveSchedule();
         break;
       case "addNewStudent":
         alert("Add new student!");
@@ -627,6 +627,9 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "deactivateSemester":
         deactivateSemester();
+        break;
+      case "addListingExisting":
+        addListing();
         break;
       case "addListing":
         // This case is for adding new student to the listing/registration
@@ -1062,14 +1065,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-//let firstClick = true; // Track if it's the first click
-//let draggedRow = null; // Track the currently dragged row
+  //let firstClick = true; // Track if it's the first click
+  //let draggedRow = null; // Track the currently dragged row
 
-async function createRow() {
+  async function createRow() {
     const path = window.location.pathname;
-    const pathParts = path.split('/');
+    const pathParts = path.split("/");
     const sectionId = pathParts[pathParts.length - 1];
-    console.log('Section ID:', sectionId);
+    console.log("Section ID:", sectionId);
 
     // Create the new row
     const newRow = document.createElement("tr");
@@ -1116,120 +1119,120 @@ async function createRow() {
     attachDoubleClickDrag(newRow);
 
     return newRow;
-}
+  }
 
-// Function to fetch and populate subjects
-async function populateSubjects(sectionId, row) {
+  // Function to fetch and populate subjects
+  async function populateSubjects(sectionId, row) {
     try {
-        const response = await fetch(`/subject/section/${sectionId}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const subjects = await response.json();
+      const response = await fetch(`/subject/section/${sectionId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const subjects = await response.json();
 
-        const subjectSelect = row.querySelector("#subject-select");
-        subjects.forEach(subject => {
-            console.log(subject);
-            const option = document.createElement("option");
-            option.value = subject.subjectName; // Use subject ID as the value
-            option.textContent = subject.subjectName; // Use subject name as the display text
-            subjectSelect.appendChild(option);
-        });
+      const subjectSelect = row.querySelector("#subject-select");
+      subjects.forEach((subject) => {
+        console.log(subject);
+        const option = document.createElement("option");
+        option.value = subject.subjectName; // Use subject ID as the value
+        option.textContent = subject.subjectName; // Use subject name as the display text
+        subjectSelect.appendChild(option);
+      });
     } catch (error) {
-        console.error("Error fetching subjects:", error);
+      console.error("Error fetching subjects:", error);
     }
-}
+  }
 
-// Function to fetch and populate teachers
-async function populateTeachers(row) {
+  // Function to fetch and populate teachers
+  async function populateTeachers(row) {
     try {
-        const response = await fetch("/user/teachers");
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const teachers = await response.json();
+      const response = await fetch("/user/teachers");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const teachers = await response.json();
 
-        const teacherSelect = row.querySelector("#teacher-select");
-        teachers.forEach(teacher => {
-            console.log(teacher);
-            const option = document.createElement("option");
-            option.value = teacher.firstname+" "+teacher.lastname; // Use teacher ID as the value
-            option.textContent = teacher.firstname+" "+teacher.lastname; // Use teacher name as the display text
-            teacherSelect.appendChild(option);
-        });
+      const teacherSelect = row.querySelector("#teacher-select");
+      teachers.forEach((teacher) => {
+        console.log(teacher);
+        const option = document.createElement("option");
+        option.value = teacher.firstname + " " + teacher.lastname; // Use teacher ID as the value
+        option.textContent = teacher.firstname + " " + teacher.lastname; // Use teacher name as the display text
+        teacherSelect.appendChild(option);
+      });
     } catch (error) {
-        console.error("Error fetching teachers:", error);
+      console.error("Error fetching teachers:", error);
     }
-}
+  }
 
-function attachDeleteEvent(row) {
+  function attachDeleteEvent(row) {
     row.querySelector(".delete-row").addEventListener("click", () => {
-        row.remove();
-        updateButtonState();
+      row.remove();
+      updateButtonState();
     });
-}
+  }
 
-function attachDoubleClickDrag(row) {
+  function attachDoubleClickDrag(row) {
     row.addEventListener("dblclick", () => {
-        row.setAttribute("draggable", "true"); // Enable dragging on double-click
-        row.classList.add("dragging-enabled");
+      row.setAttribute("draggable", "true"); // Enable dragging on double-click
+      row.classList.add("dragging-enabled");
     });
 
     row.addEventListener("dragstart", (e) => {
-        if (row.getAttribute("draggable") !== "true") {
-            e.preventDefault();
-            return;
-        }
-        draggedRow = row;
-        row.classList.add("dragging");
-        e.dataTransfer.effectAllowed = "move";
+      if (row.getAttribute("draggable") !== "true") {
+        e.preventDefault();
+        return;
+      }
+      draggedRow = row;
+      row.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
     });
 
     row.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        const afterElement = getDragAfterElement(tableBody, e.clientY);
-        if (afterElement == null) {
-            tableBody.appendChild(draggedRow);
-        } else {
-            tableBody.insertBefore(draggedRow, afterElement);
-        }
+      e.preventDefault();
+      const afterElement = getDragAfterElement(tableBody, e.clientY);
+      if (afterElement == null) {
+        tableBody.appendChild(draggedRow);
+      } else {
+        tableBody.insertBefore(draggedRow, afterElement);
+      }
     });
 
     row.addEventListener("dragend", () => {
-        draggedRow.classList.remove("dragging");
-        draggedRow.setAttribute("draggable", "false"); // Disable dragging after release
-        draggedRow.classList.remove("dragging-enabled");
-        draggedRow = null;
+      draggedRow.classList.remove("dragging");
+      draggedRow.setAttribute("draggable", "false"); // Disable dragging after release
+      draggedRow.classList.remove("dragging-enabled");
+      draggedRow = null;
     });
-}
+  }
 
-function getDragAfterElement(container, y) {
+  function getDragAfterElement(container, y) {
     const draggableElements = [
-        ...container.querySelectorAll(".sched-row:not(.dragging)"),
+      ...container.querySelectorAll(".sched-row:not(.dragging)"),
     ];
 
     return draggableElements.reduce(
-        (closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = y - box.top - box.height / 2;
-            return offset < 0 && offset > closest.offset
-                ? { offset, element: child }
-                : closest;
-        },
-        { offset: Number.NEGATIVE_INFINITY }
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        return offset < 0 && offset > closest.offset
+          ? { offset, element: child }
+          : closest;
+      },
+      { offset: Number.NEGATIVE_INFINITY }
     ).element;
-}
+  }
 
-saveBtn.addEventListener("click", async () => {
+  saveBtn.addEventListener("click", async () => {
     const visibleRows = Array.from(tableBody.children).filter(
-        (row) => !row.classList.contains("hidden-row")
+      (row) => !row.classList.contains("hidden-row")
     );
     const hasVisibleRows = visibleRows.length > 0;
 
     if (firstClick) {
-        // First time clicking "Add"
-        const newRow = await createRow(); // Await the creation of the new row
-        tableBody.appendChild(newRow);
+      // First time clicking "Add"
+      const newRow = await createRow(); // Await the creation of the new row
+      tableBody.appendChild(newRow);
       addRowBtn.style.display = "block";
       clearBtn.style.display = "block";
       firstClick = false;

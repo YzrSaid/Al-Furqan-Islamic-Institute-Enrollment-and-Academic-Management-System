@@ -1298,6 +1298,19 @@ table td {
   width: 100px;
   font-weight: 500;
 }
+#transaction-record-btn {
+  background-color: #28a745;
+  color: white;
+  width: 150px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 8px 22px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 .btn-close-confirm {
   background-color: #dc3545;
   color: white;
@@ -1365,7 +1378,15 @@ table td {
 .half {
   width: 65%;
 }
-
+.half-stud-info {
+  width: 30%;
+}
+.half-stud-info-small {
+  width: 30%;
+}
+.half-stud-info-small input {
+  width: 120px;
+}
 #motherOccupation,
 #fatherOccupation,
 #guardianOccupation {
@@ -1640,6 +1661,29 @@ input[type="checkbox"] {
   margin-top: 10px;
 }
 
+.student-information-modal h2 {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
+.student-information-modal h1 {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+.student-information-modal h3 {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
 .student-modal-content h2 {
   font-size: 30px;
   font-weight: bold;
@@ -1672,7 +1716,8 @@ input[type="checkbox"] {
 .list-of-payments-modal-content label,
 .add-payment-modal-content label,
 .fees-management-modal-content label,
-.fees-management-edit-modal-content label {
+.fees-management-edit-modal-content label,
+.student-information-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -1694,6 +1739,7 @@ input[type="checkbox"] {
 .add-grade-level-assessment-modal-content input,
 .list-of-payments-modal-content input,
 .fees-management-edit-modal-content input,
+.student-information-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
@@ -1727,7 +1773,8 @@ input[type="checkbox"] {
 .add-grade-level-assessment-modal,
 .school-year-modal,
 .fees-management-modal,
-.fees-management-edit-modal {
+.fees-management-edit-modal,
+.student-information-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -1744,10 +1791,28 @@ input[type="checkbox"] {
 .school-year-modal.show,
 .fees-management-modal.show,
 .fees-management-edit-modal.show,
-.add-grade-level-assessment-modal.show {
+.add-grade-level-assessment-modal.show,
+.student-information-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
+}
+
+/* student information modal */
+.student-information-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 1100px;
+  height: 95vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  /* max-height: 70vh; */
+
+  text-align: left;
+  position: relative;
+  z-index: 1001;
 }
 
 .fees-management-modal-content,
@@ -1935,7 +2000,8 @@ input[type="checkbox"] {
 .student-form-group input {
   width: 200px;
 }
-.subject-form-group {
+
+.form-group .subject-form-group {
   margin-bottom: 20px;
 }
 
@@ -2466,4 +2532,155 @@ td[rowspan] {
   background-color: #f8f9fa;
   cursor: pointer;
   transform: scale(1.1);
+}
+
+.small-text p {
+  margin: 0;
+  font-size: 12px;
+}
+.small-text {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #cedd2d; */
+}
+.column1 {
+  display: flex;
+  flex-direction: column;
+  /* background-color: #218838; */
+  width: 60%;
+  margin-bottom: 30px;
+}
+.column2 {
+  display: flex;
+  flex-direction: column;
+  /* background-color: #218838; */
+  width: 40%;
+  margin-bottom: 30px;
+}
+.column2:nth-child(2) {
+  gap: 20px;
+}
+
+.half {
+  width: 65%;
+}
+.half-unique {
+  gap: 20px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+}
+.half-50 {
+  width: 300px;
+  display: flex;
+  align-items: center;
+}
+
+.half-unique label {
+  white-space: nowrap;
+  width: 120px;
+}
+.half-stud-info {
+  width: 30%;
+}
+.half-stud-info-small {
+  width: 10%;
+}
+.half-stud-info-small input {
+  width: 120px;
+}
+
+.container {
+  padding: 20px 15px;
+  border-radius: 8px;
+  background-color: #d2eed3;
+}
+
+.container-two {
+  display: flex;
+  justify-content: space-between;
+}
+
+.column-main {
+  width: 45%;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #d2eed341;
+}
+#madrasaNameLastAttended,
+#madrasaAddress {
+  width: 750px !important;
+}
+.table-container {
+  padding: 0px 0px 20px 0px;
+}
+
+.mini-table th,
+.mini-table td {
+  border: 1px solid #050505;
+  padding: 10px;
+  text-align: left;
+  text-align: center;
+  font-weight: 500;
+  font-size: 13px;
+  background-color: #f6f6f6;
+}
+.mini-table th {
+  text-align: center;
+  background-color: rgb(87, 88, 89);
+  color: white;
+}
+
+#status-type {
+  background-color: #218838;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+#stud-type-row h6 {
+  font-weight: bold;
+  margin-top: 10px;
+  display: flex;
+}
+#stud-type-row {
+  gap: 10px;
+  width: 150px;
+}
+
+#scholar-row h6 {
+  font-weight: bold;
+  margin-top: 10px;
+  display: flex;
+}
+#scholar-row {
+  gap: 10px;
+  width: 100px;
+}
+
+.clickable-row {
+  cursor: pointer;
+  background-color: #f9f9f9;
+}
+
+.clickable-row:hover {
+  background-color: #27ae5f1e;
+}
+
+/* 🚫 Prevent the 'Action' column from being part of the clickable area */
+.clickable-row .non-clickable {
+  pointer-events: none; /* Ignore hover and clicks */
+}
+
+/* 🔹 Re-enable interaction for dropdown buttons inside the Action column */
+.clickable-row .non-clickable .dropdown,
+.clickable-row .non-clickable .dropdown * {
+  pointer-events: auto; /* Allows dropdown interactions */
 }

@@ -159,7 +159,7 @@
         <!-- Enrollment Buttons -->
         <div class="enrollment-buttons">
             <button class="new-student" data-open-modal="newStudentModal">NEW STUDENT</button>
-            <button id="old-student" data-open-modal="oldStudentModal">OLD STUDENT</button>
+            <button id="old-student" data-open-modal="oldStudentModal">EXISTING RECORDS</button>
             <button id="transferee" data-open-modal="transfereeStudentModal">TRANSFEREE</button>
         </div>
 
@@ -218,111 +218,111 @@
                 </tr>
             </tbody>
         </table>
-        <!-- Modal for confirmation -->
-        <div id="confirmationModal" class="modal">
-            <div class="modal-content">
-                <p id="modalText"></p>
-                <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
-                </div>
-            </div>
-        </div>
 
-        <!-- Modal for listing add grade level -->
-        <div id="gradeLevelModal" class="grade-level-modal modal">
-            <div class="grade-level-modal-content">
-                <h2>Enroll To</h2>
-                <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
-                    <label for="levelName">Grade Level Name:</label>
-                    <select name="levelName" id="levelName">
-                        <option value="" disabled>Choose a Grade Level</option>
-                    </select>
-                    <br><br>
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="proceedAssessment"
-                            data-message="Are you sure you want to proceed this registration from Listing to Assessment?"
-                            id="confirmGradeLevel" data-open-modal="confirmationModal">
-                            Confirm
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal for new student enrollment -->
-        <div id="newStudentModal" class="student-modal modal">
-            <div class="student-modal-content">
-                <h2>Student Information</h2>
-                <form id="studentForm">
+        <!-- Modal for student information -->
+        <div id="studentInformationModal" class="student-information-modal modal">
+            <div class="student-information-modal-content">
+                <h1>Student Information</h1>
+                <form method="" action="" id="studentInformationForm">
                     <div class="header">
-                        <h5>Personal Information</h5>
-                    </div>
+                        <div class="half-unique">
+                            <label for="student-id">Student ID: </label>
+                            <input type="text" id="student-id">
+                        </div> <br>
 
-                    <div class="student-form-group">
-                        <label for="studentFirstName">First Name:</label>
-                        <input type="text" id="studentFirstName" required>
+                        <div style="display: flex; gap: 50px;">
+                            <div class="half-unique" id="stud-type-row">
+                                <label for="type">Student Type:</label>
+                                <h6>New</h6>
+                            </div>
 
-                        <label for="studentLastName">Last Name:</label>
-                        <input type="text" id="studentLastName" required>
-
-                        <label for="studentMiddleName">Middle Name:</label>
-                        <input type="text" id="studentMiddleName" placeholder="Optional">
-                    </div> <br>
-
-                    <div class="student-form-group">
-                        <label for="gender">Gender:</label>
-                        <select id="gender" required>
-                            <option value="" disabled selected>Select Gender</option>
-                            <option value="MALE">Male</option>
-                            <option value="FEMALE">Female</option>
-                        </select>
-
-                        <label for="birthdate">Birthdate:</label>
-                        <input type="date" id="birthdate" required>
-
-                        <div class="checkbox">
-                            <label for="scholar">Scholar:</label>
-                            <input type="checkbox" id="scholar">
+                            <div class="half-unique" id="scholar-row">
+                                <label for="type">Scholar:</label>
+                                <h6>Yes</h6>
+                            </div>
                         </div>
 
-                    </div> <br>
+
+                    </div>
 
 
-                    <div class="student-form-group">
-                        <label>Place of Birth:</label>
-                        <input type="text" id="placeOfBirth" class="place-of-birth">
-                    </div> <br>
+                    <div style="display: flex; align-content: center; justify-items: left;">
+                        <h2>Personal Information</h2>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="column1">
+                                <div>
+                                    <label for="name">Name</label>
+                                    <div class="student-form-group half">
+                                        <input type="text" id="firstName">
+                                        <input type="text" id="middleName">
+                                        <input type="text" id="lastName">
+                                    </div>
+                                    <div class="small-text">
+                                        <p>First</p>
+                                        <p>Middle</p>
+                                        <p>Last</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column2">
+                                <!-- Gender, BDate, and Scholar -->
+                                <div class="student-form-group half-stud-info-small" style="margin-bottom: 0px;">
+                                    <label for="gender">Gender:</label>
+                                    <input type="text" id="gender" style="width: 80px;">
+
+                                    <label for="birthdate">Birthdate:</label>
+                                    <input type="date" id="birthdate" readonly style="width: 120px;">
+                                </div>
+                            </div>
+
+                            <div class="student-form-group">
+                                <div>
+                                    <label for="address">Address:</label>
+                                    <div class="student-form-group half-unique">
+                                        <input type="text" id="street" required placeholder="Street">
+                                        <input type="text" id="barangay" required placeholder="Barangay">
+                                        <input type="text" id="city" required placeholder="City">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label>Place of Birth:</label>
+                                    <div class="student-form-group">
+                                        <input type="text" id="placeOfBirth" class="place-of-birth"
+                                            style="width: 390px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                        <h2>Additional Information</h2>
+                    </div>
 
                     <div>
-                        <label for="address">Address:</label>
+                        <h6>Father's Information</h6>
                         <div class="student-form-group">
-                            <input type="text" id="street" required placeholder="Street">
-                            <input type="text" id="barangay" required placeholder="Barangay">
-                            <input type="text" id="city" required placeholder="City">
-                        </div>
-                    </div> <br> <br>
+                            <label for="fatherName">Name:</label>
+                            <input type="text" id="fatherName">
 
-                    <h5>Parent's/Guardian's Information</h5>
+                            <label for="fatherOccupation">Occupation:</label>
+                            <input type="text" id="fatherOccupation">
+                        </div> <br>
+                    </div>
+                    <div>
+                        <h6>Mother's Information</h6>
+                        <div class="student-form-group">
+                            <label for="motherName">Name:</label>
+                            <input type="text" id="motherName">
 
-                    <h6>Father's Information</h6>
-                    <div class="student-form-group">
-                        <label for="fatherName">Name:</label>
-                        <input type="text" id="fatherName" required>
-
-                        <label for="fatherOccupation">Occupation:</label>
-                        <input type="text" id="fatherOccupation">
-                    </div> <br>
-
-                    <h6>Mother's Information</h6>
-                    <div class="student-form-group">
-                        <label for="motherName">Name:</label>
-                        <input type="text" id="motherName" required>
-
-                        <label for="motherOccupation">Occupation:</label>
-                        <input type="text" id="motherOccupation">
-                    </div> <br>
+                            <label for="motherOccupation">Occupation:</label>
+                            <input type="text" id="motherOccupation">
+                        </div> <br>
+                    </div>
 
                     <h6>Guardian's Information</h6>
                     <div class="student-form-group">
@@ -335,127 +335,15 @@
 
                     <div class="student-form-group">
                         <label for="guardianContactNumber">Contact Number:</label>
-                        <input type="text" id="guardianContactNumber">
+                        <input type="text" id="guardianContactNumber" style="width: 385px;">
 
                         <label for="guardianAddress">Address:</label>
-                        <input type="text" id="guardianAddress">
+                        <input type="text" id="guardianAddress" style="width: 355px;">
                     </div> <br>
 
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmStudent" data-action="addListing"
-                            data-open-modal="confirmationModal"
-                            data-message="Are you sure you want to add this new student?">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelStudent"
-                            data-close-modal="newStudentModal">Cancel</button>
+                    <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                        <h2>For Transferees Only</h2>
                     </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Error Modal -->
-        <div id="errorModal" class="modal">
-            <div class="modal-content">
-                <p id="errorMessage"></p>
-                <div class="modal-buttons">
-                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Success modal -->
-        <div id="successModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
-            <p id="successModalMessage"></p>
-        </div>
-
-
-
-
-
-        <!-- Modal for transferee enrollment -->
-        <div id="transfereeStudentModal" class="student-modal modal">
-            <div class="student-modal-content">
-                <h2>Student Information</h2>
-                <form id="studentForm">
-                    <div class="header">
-                        <h5>Personal Information</h5>
-                    </div>
-
-                    <div class="student-form-group">
-                        <label for="studentFirstName">First Name:</label>
-                        <input type="text" id="studentFirstName" required>
-
-                        <label for="studentLastName">Last Name:</label>
-                        <input type="text" id="studentLastName" required>
-
-                        <label for="studentMiddleName">Middle Name:</label>
-                        <input type="text" id="studentMiddleName" placeholder="Optional">
-                    </div> <br>
-
-                    <div class="student-form-group half">
-                        <label for="gender">Gender:</label>
-                        <select id="gender" required>
-                            <option value="" disabled selected>Select Gender</option>
-                            <option value="MALE">Male</option>
-                            <option value="FEMALE">Female</option>
-                        </select>
-
-                        <label for="birthdate">Birthdate:</label>
-                        <input type="date" id="birthdate" required>
-                    </div> <br>
-
-                    <div class="student-form-group">
-                        <label>Place of Birth:</label>
-                        <input type="text" id="placeOfBirthTransferee" class="place-of-birth">
-                    </div> <br>
-
-                    <div>
-                        <label for="address">Address:</label>
-                        <div class="student-form-group">
-                            <input type="text" id="street" required placeholder="Street">
-                            <input type="text" id="barangay" required placeholder="Barangay">
-                            <input type="text" id="city" required placeholder="City">
-                        </div>
-                    </div> <br> <br>
-
-                    <h5>Parent's/Guardian's Information</h5>
-
-                    <h6>Father's Information</h6>
-                    <div class="student-form-group">
-                        <label for="fatherName">Name:</label>
-                        <input type="text" id="fatherName" required>
-
-                        <label for="fatherOccupation">Occupation:</label>
-                        <input type="text" id="fatherOccupation">
-                    </div> <br>
-
-                    <h6>Mother's Information</h6>
-                    <div class="student-form-group">
-                        <label for="motherName">Name:</label>
-                        <input type="text" id="motherName" required>
-
-                        <label for="motherOccupation">Occupation:</label>
-                        <input type="text" id="motherOccupation">
-                    </div> <br>
-
-                    <h6>Guardian's Information</h6>
-                    <div class="student-form-group">
-                        <label for="guardianName">Name:</label>
-                        <input type="text" id="guardianName">
-
-                        <label for="guardianOccupation">Occupation:</label>
-                        <input type="text" id="guardianOccupation">
-                    </div> <br>
-
-                    <div class="student-form-group">
-                        <label for="guardianContactNumber">Contact Number:</label>
-                        <input type="text" id="guardianContactNumberTransferee">
-
-                        <label for="guardianAddress">Address:</label>
-                        <input type="text" id="guardianAddress">
-                    </div> <br>
-
-                    <h5>For Transferees Only</h5>
 
                     <div class="student-form-group">
                         <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
@@ -475,80 +363,570 @@
                         <input type="text" id="madrasaAddress">
                     </div> <br>
 
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="confirmStudent"
-                            data-open-modal="confirmationModal"
-                            data-message="Are you sure you want to add this new student?">Confirm</button>
-                        <button type="button" class="btn-cancel" id="cancelStudent"
-                            data-close-modal="transfereeStudentModal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-
-        <!-- Modal for old student enrollment -->
-        <div id="oldStudentModal" class="old-student-modal modal">
-            <div class="old-student-modal-content">
-                <div>
-                    <h2>Old Student List</h2>
-                    <div class="search-div">
-                        <!-- Searchbox btn -->
-                        <div class="search">
-                            <div class="search-container">
-                                <input type="text" placeholder="Search..." class="search-input" />
-                                <button class="search-btn">Search</button>
-                            </div>
+                    <div style="display: flex; gap: 365px;">
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>Financial Information</h2>
                         </div>
 
-                        <div class="table-container">
-                            <table>
-                                <!-- Table -->
-                                <table class="old-student-table">
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>Book Distribution</h2>
+                        </div>
+                    </div>
+
+                    <div class="container-two">
+                        <div class="column-main">
+                            <p>Recent Transactions</p>
+                            <div class="table-container">
+                                <table class="mini-table" id="payment-table">
                                     <thead>
                                         <tr>
-                                            <th>Student ID</th>
-                                            <th>Student Name</th>
-                                            <th>Grade Level</th>
-                                            <th>Action</th>
+                                            <th>Name</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>001</td>
-                                            <td>Batman</td>
-                                            <td>Grade 1 - Lamok</td>
+                                            <td>Book</td>
+                                            <td><span>P</span>2,000</td>
                                             <td>
-                                                <div class="action-container">
-                                                    <div class="action">
-                                                        <img data-open-modal="confirmationModal"
-                                                            data-id="${student.student_Id}"
-                                                            data-message="Are you sure you want to register this old student?"
-                                                            src="/images/icons/add-button.png" alt="add-button-icon">
-                                                    </div>
+                                                <div class="status-container">
+                                                    <div class="status" id="status-payments">Unpaid</div>
+                                                </div>
+                                            </td>
+                                            <td>February 12, 2025</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin: 0px;">
+                                <div style="display: flex; gap: 10px;">
+                                    <h6>Balance:</h6>
+                                    <h6>1, 000</h6>
+                                </div>
+                                <button id="transaction-record-btn">View Record</button>
+
+
+                            </div>
+
+                        </div>
+
+                        <div class="column-main">
+                            <p>Recent Distributions</p>
+                            <div class="table-container">
+                                <table class="mini-table" id="distribution-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Grade Level</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Grade 1</td>
+                                            <td>February 12, 2025</td>
+                                            <td>
+                                                <div class="status-container">
+                                                    <div class="status" id="status-distribution">Completed</div>
                                                 </div>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </table>
+                            </div>
+                        </div>
+                    </div> <br>
+
+                    <div>
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>Grades</h2>
                         </div>
                     </div>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-cancel" id="cancelStudent"
-                        data-close-modal="oldStudentModal">Close</button>
-                </div>
-                </form>
+
+                    <div class="container-two">
+                        <div class="column-main">
+                            <div class="table-container">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div style="display: flex; gap: 8px;">
+                                        <label>School Year:</label>
+                                        <h6 id="sy">2025-2026</h6>
+                                    </div>
+                                    <div style="display: flex; gap: 8px;">
+                                        <label>Semester:</label>
+                                        <h6 id="sem">1st Semester</h6>
+                                    </div>
+                                </div>
+                                <table class="mini-table" id="grades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Grade</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>English</td>
+                                            <td>78</td>
+                                            <td>
+                                                <div class="status-container">
+                                                    <div class="status" id="grade-remarks">Pass</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <tr id="average-row">
+                                            <td>Average</td>
+                                            <td>90</td>
+                                            <td>
+                                                <div class="status-container">
+                                                    <div class="status" id="average-remarks">Pass</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="column-main">
+                            <div class="table-container">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div style="display: flex; gap: 8px;">
+                                        <label>School Year:</label>
+                                        <h6 id="sy">2025-2026</h6>
+                                    </div>
+                                    <div style="display: flex; gap: 8px;">
+                                        <label>Semester:</label>
+                                        <h6 id="sem">1st Semester</h6>
+                                    </div>
+                                </div>
+                                <table class="mini-table" id="grades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Grade</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>English</td>
+                                            <td>78</td>
+                                            <td>
+                                                <div class="status-container">
+                                                    <div class="status" id="grade-remarks">Pass</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <tr id="average-row">
+                                            <td>Average</td>
+                                            <td>90</td>
+                                            <td>
+                                                <div class="status-container">
+                                                    <div class="status" id="average-remarks">Pass</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="studentInformationModal">Close</button>
+                    </div>
             </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for confirmation -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <p id="modalText"></p>
+            <div class="modal-buttons">
+                <button id="confirmAction" class="btn-confirm">Confirm</button>
+                <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for listing add grade level -->
+    <div id="gradeLevelModal" class="grade-level-modal modal">
+        <div class="grade-level-modal-content">
+            <h2>Enroll To</h2>
+            <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
+                <label for="levelName">Grade Level Name:</label>
+                <select name="levelName" id="levelName">
+                    <option value="" disabled>Choose a Grade Level</option>
+                </select>
+                <br><br>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" data-action="proceedAssessment"
+                        data-message="Are you sure you want to proceed this registration from Listing to Assessment?"
+                        id="confirmGradeLevel" data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for new student enrollment -->
+    <div id="newStudentModal" class="student-modal modal">
+        <div class="student-modal-content">
+            <h2>Student Information</h2>
+            <form id="studentForm">
+                <div class="header">
+                    <h5>Personal Information</h5>
+                </div>
+
+                <div class="student-form-group">
+                    <label for="studentFirstName">First Name:</label>
+                    <input type="text" id="studentFirstName" required>
+
+                    <label for="studentLastName">Last Name:</label>
+                    <input type="text" id="studentLastName" required>
+
+                    <label for="studentMiddleName">Middle Name:</label>
+                    <input type="text" id="studentMiddleName" placeholder="Optional">
+                </div> <br>
+
+                <div class="student-form-group">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                    </select>
+
+                    <label for="birthdate">Birthdate:</label>
+                    <input type="date" id="birthdate" required>
+
+                    <div class="checkbox">
+                        <label for="scholar">Scholar:</label>
+                        <input type="checkbox" id="scholar">
+                    </div>
+
+                </div> <br>
+
+
+                <div class="student-form-group">
+                    <label>Place of Birth:</label>
+                    <input type="text" id="placeOfBirth" class="place-of-birth">
+                </div> <br>
+
+                <div>
+                    <label for="address">Address:</label>
+                    <div class="student-form-group">
+                        <input type="text" id="street" required placeholder="Street">
+                        <input type="text" id="barangay" required placeholder="Barangay">
+                        <input type="text" id="city" required placeholder="City">
+                    </div>
+                </div> <br> <br>
+
+                <h5>Parent's/Guardian's Information</h5>
+
+                <h6>Father's Information</h6>
+                <div class="student-form-group">
+                    <label for="fatherName">Name:</label>
+                    <input type="text" id="fatherName" required>
+
+                    <label for="fatherOccupation">Occupation:</label>
+                    <input type="text" id="fatherOccupation">
+                </div> <br>
+
+                <h6>Mother's Information</h6>
+                <div class="student-form-group">
+                    <label for="motherName">Name:</label>
+                    <input type="text" id="motherName" required>
+
+                    <label for="motherOccupation">Occupation:</label>
+                    <input type="text" id="motherOccupation">
+                </div> <br>
+
+                <h6>Guardian's Information</h6>
+                <div class="student-form-group">
+                    <label for="guardianName">Name:</label>
+                    <input type="text" id="guardianName">
+
+                    <label for="guardianOccupation">Occupation:</label>
+                    <input type="text" id="guardianOccupation">
+                </div> <br>
+
+                <div class="student-form-group">
+                    <label for="guardianContactNumber">Contact Number:</label>
+                    <input type="text" id="guardianContactNumber">
+
+                    <label for="guardianAddress">Address:</label>
+                    <input type="text" id="guardianAddress">
+                </div> <br>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" id="confirmStudent" data-action="addListing"
+                        data-open-modal="confirmationModal"
+                        data-message="Are you sure you want to add this new student?">Confirm</button>
+                    <button type="button" class="btn-cancel" id="cancelStudent"
+                        data-close-modal="newStudentModal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <p id="errorMessage"></p>
+            <div class="modal-buttons">
+                <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success modal -->
+    <div id="successModal"
+        style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+        <p id="successModalMessage"></p>
+    </div>
+
+    <!-- Modal for transferee enrollment -->
+    <div id="transfereeStudentModal" class="student-modal modal">
+        <div class="student-modal-content">
+            <h2>Student Information</h2>
+            <form id="studentForm">
+                <div class="header">
+                    <h5>Personal Information</h5>
+                </div>
+
+                <div class="student-form-group">
+                    <label for="studentFirstName">First Name:</label>
+                    <input type="text" id="studentFirstName" required>
+
+                    <label for="studentLastName">Last Name:</label>
+                    <input type="text" id="studentLastName" required>
+
+                    <label for="studentMiddleName">Middle Name:</label>
+                    <input type="text" id="studentMiddleName" placeholder="Optional">
+                </div> <br>
+
+                <div class="student-form-group half">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                    </select>
+
+                    <label for="birthdate">Birthdate:</label>
+                    <input type="date" id="birthdate" required>
+                </div> <br>
+
+                <div class="student-form-group">
+                    <label>Place of Birth:</label>
+                    <input type="text" id="placeOfBirthTransferee" class="place-of-birth">
+                </div> <br>
+
+                <div>
+                    <label for="address">Address:</label>
+                    <div class="student-form-group">
+                        <input type="text" id="street" required placeholder="Street">
+                        <input type="text" id="barangay" required placeholder="Barangay">
+                        <input type="text" id="city" required placeholder="City">
+                    </div>
+                </div> <br> <br>
+
+                <h5>Parent's/Guardian's Information</h5>
+
+                <h6>Father's Information</h6>
+                <div class="student-form-group">
+                    <label for="fatherName">Name:</label>
+                    <input type="text" id="fatherName" required>
+
+                    <label for="fatherOccupation">Occupation:</label>
+                    <input type="text" id="fatherOccupation">
+                </div> <br>
+
+                <h6>Mother's Information</h6>
+                <div class="student-form-group">
+                    <label for="motherName">Name:</label>
+                    <input type="text" id="motherName" required>
+
+                    <label for="motherOccupation">Occupation:</label>
+                    <input type="text" id="motherOccupation">
+                </div> <br>
+
+                <h6>Guardian's Information</h6>
+                <div class="student-form-group">
+                    <label for="guardianName">Name:</label>
+                    <input type="text" id="guardianName">
+
+                    <label for="guardianOccupation">Occupation:</label>
+                    <input type="text" id="guardianOccupation">
+                </div> <br>
+
+                <div class="student-form-group">
+                    <label for="guardianContactNumber">Contact Number:</label>
+                    <input type="text" id="guardianContactNumberTransferee">
+
+                    <label for="guardianAddress">Address:</label>
+                    <input type="text" id="guardianAddress">
+                </div> <br>
+
+                <h5>For Transferees Only</h5>
+
+                <div class="student-form-group">
+                    <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
+                    <input type="text" id="lastGradeLevelCompleted">
+
+                    <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
+                    <input type="text" id="lastMadrasaYearCompleted">
+                </div> <br>
+
+                <div class="student-form-group">
+                    <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                    <input type="text" id="madrasaNameLastAttended">
+
+
+                </div> <br>
+
+                <div class="student-form-group">
+                    <label for="madrasaAddress">Madrasa Address:</label>
+                    <input type="text" id="madrasaAddress" style="width: 900px;">
+                </div> <br>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" id="confirmStudent" data-open-modal="confirmationModal"
+                        data-message="Are you sure you want to add this new student?">Confirm</button>
+                    <button type="button" class="btn-cancel" id="cancelStudent"
+                        data-close-modal="transfereeStudentModal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal for old student enrollment -->
+    <div id="oldStudentModal" class="old-student-modal modal">
+        <div class="old-student-modal-content">
+            <div>
+                <h2>Existing Records</h2>
+                <div class="search-div">
+                    <!-- Searchbox btn -->
+                    <div class="search">
+                        <div class="search-container">
+                            <input type="text" placeholder="Search..." class="search-input" />
+                            <button class="search-btn">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <!-- Table -->
+                            <table class="old-student-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Student Name</th>
+                                        <th>Grade Level</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>001</td>
+                                        <td>Batman</td>
+                                        <td>Grade 1 - Lamok</td>
+                                        <td>
+                                            <div class="action-container">
+                                                <div class="action">
+                                                    <img data-open-modal="confirmationModal"
+                                                        data-id="${student.student_Id}"
+                                                        data-message="Are you sure you want to register this old student?"
+                                                        src="/images/icons/add-button.png" alt="add-button-icon">
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-cancel" id="cancelStudent"
+                    data-close-modal="oldStudentModal">Close</button>
+            </div>
+            </form>
         </div>
     </div>
     <script th:src="@{/js/script.js}"></script>
 </body>
 
 <script>
+    async function fetchStudents() {
+        try {
+            const response = await fetch("/students/all");
+            if (!response.ok) {
+                throw new Error("Failed to fetch students");
+            }
+
+            const students = await response.json();
+            const studentTableBody = document.querySelector(".old-student-table tbody");
+
+            // Clear previous data
+            studentTableBody.innerHTML = "";
+
+            // Populate table with fetched data
+            students.forEach(student => {
+                const fullName = `${student.firstName} ${student.middleName || ""} ${student.lastName}`.trim();
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                <td>${student.studentDisplayId}</td>
+                <td>${fullName}</td>
+                <td>${student.currentGradeSection || "NONE"}</td>
+                <td>
+                    <div class="action-container">
+                        <div class="action">
+                            <img 
+                                data-open-modal="confirmationModal"
+                                data-id="${student.studentId}" 
+                                data-action="addListingExisting"
+                                data-message="Are you sure you want to register this old student?"
+                                src="/images/icons/add-button.png" 
+                                alt="add-button-icon"
+                            >
+                        </div>
+                    </div>
+                </td>
+            `;
+
+                studentTableBody.appendChild(row);
+            });
+
+        } catch (error) {
+            console.error("Error fetching students:", error);
+            alert("Failed to fetch student data. Please try again.");
+        }
+    }
+
+
     document.addEventListener("DOMContentLoaded", function () {
         fetchAllGradeLevels();
+        fetchStudents();
     });
 
     async function fetchAllGradeLevels() {
@@ -621,50 +999,104 @@
             alert("Transaction failed. Try again.");
         }
     }
-
     function goList() {
-        fetch("/enrollment/all/listing")
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch grade levels");
-                return res.json();
-            })
-            .then(data => {
-                const tableBody = document.querySelector("#lamesa tbody");
-                tableBody.innerHTML = "";
+    fetch("/enrollment/all/listing")
+        .then(res => {
+            if (!res.ok) throw new Error("Failed to fetch grade levels");
+            return res.json();
+        })
+        .then(data => {
+            const tableBody = document.querySelector("#lamesa tbody");
+            tableBody.innerHTML = "";
 
-                data.forEach(enr => {
-                    console.log(enr);
-                    enrollmentIdLet = enr.enrollmentId;
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                                <td>${enr.student.studentDisplayId}</td>
-                                <td>${enr.student.firstName} ${enr.student.middleName} ${enr.student.lastName}</td>
-                                <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
-                                <td>${enr.student.new ? 'New Student' : 'Old Student'}</td>
-                                <td>
-                                    <div class="dropdown">
-                                        <div class="status-container">
-                                            <div class="status" id="status-registration">${enr.enrollmentStatus}</div>
-                                            <button class="dropdown-status-btn">
-                                                <i class="fas fa-chevron-down"></i> <!-- Icon is the button -->
-                                            </button>
-                                        </div>
-                                        <div class="dropdown-status-content" id="dropdown-listing">
-                                           <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" data-open-modal="gradeLevelModal"> Proceed </a>
+            data.forEach(enr => {
+                console.log(enr);
+                enrollmentIdLet = enr.enrollmentId;
+
+                const row = document.createElement("tr");
+                row.setAttribute("data-enrollment-id", enr.enrollmentId);
+                row.classList.add("clickable-row");
+
+                row.innerHTML = `
+                <td>${enr.student.studentDisplayId}</td>
+                <td>${enr.student.firstName} ${enr.student.middleName} ${enr.student.lastName}</td>
+                <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
+                <td>${enr.student.new ? 'New Student' : 'Old Student'}</td>
+                <td>
+                    <div class="dropdown">
+                        <div class="status-container">
+                            <div class="status" id="status-registration">${enr.enrollmentStatus}</div>
+                            <button class="dropdown-status-btn">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="dropdown-status-content" id="dropdown-listing">
+                            <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" 
+                                data-open-modal="gradeLevelModal"> Proceed </a>
+
+                            <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
+                                data-message="Are you sure you want to cancel this registration?">
+                                Cancel Registration
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            `;
+
+                tableBody.appendChild(row);
+            });
+
+            // ✅ Improved Click Logic
+            document.addEventListener("click", function (event) {
+                const target = event.target;
+
+                // 🚫 Prevent row click when interacting with dropdown elements
+                if (
+                    target.classList.contains("dropdown-status-btn") || 
+                    target.closest(".dropdown-status-content")
+                ) {
+                    return; // Exit early
+                }
+
+                // ✅ Clickable row logic
+                const clickedRow = target.closest(".clickable-row");
+                if (clickedRow) {
+                    const enrollmentId = clickedRow.getAttribute("data-enrollment-id");
+                    console.log("Clicked Enrollment ID:", enrollmentId);
+                }
+            });
+        })
+        .catch(error => console.error("Error:", error));
+}
 
 
+    document.addEventListener("click", function (event) {
+        const clickedRow = event.target.closest(".clickable-row"); // ✅ Detect clicked row
+        if (clickedRow) {
+            const enrollmentId = clickedRow.getAttribute("data-enrollment-id"); // ✅ Capture enrollment ID
+            console.log(`Clicked Enrollment ID: ${enrollmentId}`);
 
-                                            <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
-                                        </div>
-                                    </div>
-                                </td>
-                                `;
+            // Show the modal
+            const modal = document.getElementById("studentInformationModal");
+            if (modal) {
+                modal.classList.add("show");
+                modal.style.visibility = "visible";
+                modal.style.opacity = "1";
+                modal.style.pointerEvents = "auto";
+            }
 
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error("Error:", error));
-    }
+            // // Populate the form with data
+            // fetch(`/enrollment/${enrollmentId}`)
+            //     .then(response => response.json())
+            //     .then(enrollmentData => {
+            //         document.getElementById("studentName").value = `${enrollmentData.student.firstName} ${enrollmentData.student.lastName}`;
+            //         document.getElementById("enrollmentStatus").value = enrollmentData.enrollmentStatus;
+            //     })
+            //     .catch(error => console.error("Error fetching enrollment data:", error));
+        }
+    });
+
+
     document.getElementById("scholar").addEventListener("change", function () {
         this.checked;
     });

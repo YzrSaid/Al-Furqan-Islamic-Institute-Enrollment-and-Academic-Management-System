@@ -47,7 +47,6 @@ public class StudentController {
     public ResponseEntity<String> addStudents(@RequestBody StudentDTO students){
         try{
             if(studentService.addStudent(students)){
-                System.out.println("Will return success");
                 return new ResponseEntity<>("New Student Added Successfully",HttpStatus.OK);}
             else
                 return new ResponseEntity<>("Student Name Already Exist",HttpStatus.NOT_ACCEPTABLE);

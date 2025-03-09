@@ -498,14 +498,16 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("schoolYearId").value
         );
         break;
-      case "addStudent":
-        actionUrl = "/student/add";
-        method = "POST";
-        formData.append(
-          "studentName",
-          document.getElementById("studentName").value
-        );
-        break;
+//      case "addStudent":
+//        actionUrl = "/student/add";
+//        method = "POST";
+//        formData.append(
+//          "studentName",
+//          document.getElementById("studentName").value
+//        );
+//        console.log(formData);
+//        alert('stopper');
+//        break;
       case "addSection":
         // This case is for adding subject level
         if (!validateForm("sectionForm")) {

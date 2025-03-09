@@ -44,6 +44,7 @@ public class StudentServices {
                                     .lastName(student.getLastName())
                                     .middleName(student.getMiddleName())
                                     .gender(student.getGender())
+                                    .birthPlace(student.getBirthPlace())
                                     .birthdate(student.getBirthdate())
                                     .cellphoneNum(student.getCellphoneNum())
                                     .address(student.getAddress())

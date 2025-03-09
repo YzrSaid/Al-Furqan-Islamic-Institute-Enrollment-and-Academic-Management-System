@@ -740,25 +740,25 @@
 
                 <div class="student-form-group">
                     <label for="studentFirstName">First Name:</label>
-                    <input type="text" id="studentFirstName" required>
+                    <input type="text" name="firstname" id="studentFirstName" required>
 
                     <label for="studentLastName">Last Name:</label>
-                    <input type="text" id="studentLastName" required>
+                    <input type="text" name="lastname" id="studentLastName" required>
 
                     <label for="studentMiddleName">Middle Name:</label>
-                    <input type="text" id="studentMiddleName" placeholder="Optional">
+                    <input type="text" name="middlename" id="studentMiddleName" placeholder="Optional">
                 </div> <br>
 
                 <div class="student-form-group">
                     <label for="gender">Gender:</label>
-                    <select id="gender" required>
+                    <select id="studgender" required>
                         <option value="" disabled selected>Select Gender</option>
                         <option value="MALE">Male</option>
                         <option value="FEMALE">Female</option>
                     </select>
 
                     <label for="birthdate">Birthdate:</label>
-                    <input type="date" id="birthdate" required>
+                    <input type="date" id="studbirthdate" required>
 
                     <div class="checkbox">
                         <label for="scholar">Scholar:</label>
@@ -770,15 +770,15 @@
 
                 <div class="student-form-group">
                     <label>Place of Birth:</label>
-                    <input type="text" id="placeOfBirth" class="place-of-birth">
+                    <input type="text" id="studplaceOfBirth" class="place-of-birth">
                 </div> <br>
 
                 <div>
-                    <label for="address">Address:</label>
-                    <div class="student-form-group">
-                        <input type="text" id="street" required placeholder="Street">
-                        <input type="text" id="barangay" required placeholder="Barangay">
-                        <input type="text" id="city" required placeholder="City">
+                    <label for="studaddress">Address:</label>
+                    <div id="studaddress" class="student-form-group">
+                        <input type="text" id="studstreet" required placeholder="Street">
+                        <input type="text" id="studbarangay" required placeholder="Barangay">
+                        <input type="text" id="studcity" required placeholder="City">
                     </div>
                 </div> <br> <br>
 
@@ -786,37 +786,37 @@
 
                 <h6>Father's Information</h6>
                 <div class="student-form-group">
-                    <label for="fatherName">Name:</label>
-                    <input type="text" id="fatherName" required>
+                    <label for="studfatherName">Name:</label>
+                    <input type="text" name="fatherName" id="studfatherName" required>
 
-                    <label for="fatherOccupation">Occupation:</label>
-                    <input type="text" id="fatherOccupation">
+                    <label for="studfatherOccupation">Occupation:</label>
+                    <input type="text" id="studfatherOccupation">
                 </div> <br>
 
                 <h6>Mother's Information</h6>
                 <div class="student-form-group">
-                    <label for="motherName">Name:</label>
-                    <input type="text" id="motherName" required>
+                    <label for="studmotherName">Name:</label>
+                    <input type="text" id="studmotherName" required>
 
-                    <label for="motherOccupation">Occupation:</label>
-                    <input type="text" id="motherOccupation">
+                    <label for="studmotherOccupation">Occupation:</label>
+                    <input type="text" id="studmotherOccupation">
                 </div> <br>
 
                 <h6>Guardian's Information</h6>
                 <div class="student-form-group">
-                    <label for="guardianName">Name:</label>
-                    <input type="text" id="guardianName">
+                    <label for="studguardianName">Name:</label>
+                    <input type="text" id="studguardianName">
 
-                    <label for="guardianOccupation">Occupation:</label>
-                    <input type="text" id="guardianOccupation">
+                    <label for="studguardianOccupation">Occupation:</label>
+                    <input type="text" id="studguardianOccupation">
                 </div> <br>
 
                 <div class="student-form-group">
-                    <label for="guardianContactNumber">Contact Number:</label>
-                    <input type="text" id="guardianContactNumber">
+                    <label for="studguardianContactNumber">Contact Number:</label>
+                    <input type="text" id="studguardianContactNumber">
 
-                    <label for="guardianAddress">Address:</label>
-                    <input type="text" id="guardianAddress">
+                    <label for="studguardianAddress">Address:</label>
+                    <input type="text" id="studguardianAddress">
                 </div> <br>
 
                 <div class="modal-buttons">
@@ -943,119 +943,119 @@
     </div>
 
     <!-- Modal for transferee enrollment -->
-    <div id="transfereeStudentModal" class="student-modal modal">
-        <div class="student-modal-content">
-            <h2>Student Information</h2>
-            <form id="studentForm">
-                <div class="header">
-                    <h5>Personal Information</h5>
-                </div>
+<!--    <div id="transfereeStudentModal" class="student-modal modal">-->
+<!--        <div class="student-modal-content">-->
+<!--            <h2>Student Information</h2>-->
+<!--            <form id="studentForm">-->
+<!--                <div class="header">-->
+<!--                    <h5>Personal Information</h5>-->
+<!--                </div>-->
 
-                <div class="student-form-group">
-                    <label for="studentFirstName">First Name:</label>
-                    <input type="text" id="studentFirstName" required>
+<!--                <div class="student-form-group">-->
+<!--                    <label for="studentFirstName">First Name:</label>-->
+<!--                    <input type="text" id="studentFirstName" required>-->
 
-                    <label for="studentLastName">Last Name:</label>
-                    <input type="text" id="studentLastName" required>
+<!--                    <label for="studentLastName">Last Name:</label>-->
+<!--                    <input type="text" id="studentLastName" required>-->
 
-                    <label for="studentMiddleName">Middle Name:</label>
-                    <input type="text" id="studentMiddleName" placeholder="Optional">
-                </div> <br>
+<!--                    <label for="studentMiddleName">Middle Name:</label>-->
+<!--                    <input type="text" id="studentMiddleName" placeholder="Optional">-->
+<!--                </div> <br>-->
 
-                <div class="student-form-group half">
-                    <label for="gender">Gender:</label>
-                    <select id="gender" required>
-                        <option value="" disabled selected>Select Gender</option>
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
-                    </select>
+<!--                <div class="student-form-group half">-->
+<!--                    <label for="gender">Gender:</label>-->
+<!--                    <select id="gender" required>-->
+<!--                        <option value="" disabled selected>Select Gender</option>-->
+<!--                        <option value="MALE">Male</option>-->
+<!--                        <option value="FEMALE">Female</option>-->
+<!--                    </select>-->
 
-                    <label for="birthdate">Birthdate:</label>
-                    <input type="date" id="birthdate" required>
-                </div> <br>
+<!--                    <label for="birthdate">Birthdate:</label>-->
+<!--                    <input type="date" id="birthdate" required>-->
+<!--                </div> <br>-->
 
-                <div class="student-form-group">
-                    <label>Place of Birth:</label>
-                    <input type="text" id="placeOfBirthTransferee" class="place-of-birth">
-                </div> <br>
+<!--                <div class="student-form-group">-->
+<!--                    <label>Place of Birth:</label>-->
+<!--                    <input type="text" id="placeOfBirthTransferee" class="place-of-birth">-->
+<!--                </div> <br>-->
 
-                <div>
-                    <label for="address">Address:</label>
-                    <div class="student-form-group">
-                        <input type="text" id="street" required placeholder="Street">
-                        <input type="text" id="barangay" required placeholder="Barangay">
-                        <input type="text" id="city" required placeholder="City">
-                    </div>
-                </div> <br> <br>
+<!--                <div>-->
+<!--                    <label for="address">Address:</label>-->
+<!--                    <div class="student-form-group">-->
+<!--                        <input type="text" id="street" required placeholder="Street">-->
+<!--                        <input type="text" id="barangay" required placeholder="Barangay">-->
+<!--                        <input type="text" id="city" required placeholder="City">-->
+<!--                    </div>-->
+<!--                </div> <br> <br>-->
 
-                <h5>Parent's/Guardian's Information</h5>
+<!--                <h5>Parent's/Guardian's Information</h5>-->
 
-                <h6>Father's Information</h6>
-                <div class="student-form-group">
-                    <label for="fatherName">Name:</label>
-                    <input type="text" id="fatherName" required>
+<!--                <h6>Father's Information</h6>-->
+<!--                <div class="student-form-group">-->
+<!--                    <label for="fatherName">Name:</label>-->
+<!--                    <input type="text" id="fatherName" required>-->
 
-                    <label for="fatherOccupation">Occupation:</label>
-                    <input type="text" id="fatherOccupation">
-                </div> <br>
+<!--                    <label for="fatherOccupation">Occupation:</label>-->
+<!--                    <input type="text" id="fatherOccupation">-->
+<!--                </div> <br>-->
 
-                <h6>Mother's Information</h6>
-                <div class="student-form-group">
-                    <label for="motherName">Name:</label>
-                    <input type="text" id="motherName" required>
+<!--                <h6>Mother's Information</h6>-->
+<!--                <div class="student-form-group">-->
+<!--                    <label for="motherName">Name:</label>-->
+<!--                    <input type="text" id="motherName" required>-->
 
-                    <label for="motherOccupation">Occupation:</label>
-                    <input type="text" id="motherOccupation">
-                </div> <br>
+<!--                    <label for="motherOccupation">Occupation:</label>-->
+<!--                    <input type="text" id="motherOccupation">-->
+<!--                </div> <br>-->
 
-                <h6>Guardian's Information</h6>
-                <div class="student-form-group">
-                    <label for="guardianName">Name:</label>
-                    <input type="text" id="guardianName">
+<!--                <h6>Guardian's Information</h6>-->
+<!--                <div class="student-form-group">-->
+<!--                    <label for="guardianName">Name:</label>-->
+<!--                    <input type="text" id="guardianName">-->
 
-                    <label for="guardianOccupation">Occupation:</label>
-                    <input type="text" id="guardianOccupation">
-                </div> <br>
+<!--                    <label for="guardianOccupation">Occupation:</label>-->
+<!--                    <input type="text" id="guardianOccupation">-->
+<!--                </div> <br>-->
 
-                <div class="student-form-group">
-                    <label for="guardianContactNumber">Contact Number:</label>
-                    <input type="text" id="guardianContactNumberTransferee">
+<!--                <div class="student-form-group">-->
+<!--                    <label for="guardianContactNumber">Contact Number:</label>-->
+<!--                    <input type="text" id="guardianContactNumberTransferee">-->
 
-                    <label for="guardianAddress">Address:</label>
-                    <input type="text" id="guardianAddress">
-                </div> <br>
+<!--                    <label for="guardianAddress">Address:</label>-->
+<!--                    <input type="text" id="guardianAddress">-->
+<!--                </div> <br>-->
 
-                <h5>For Transferees Only</h5>
+<!--                <h5>For Transferees Only</h5>-->
 
-                <div class="student-form-group">
-                    <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                    <input type="text" id="lastGradeLevelCompleted">
+<!--                <div class="student-form-group">-->
+<!--                    <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>-->
+<!--                    <input type="text" id="lastGradeLevelCompleted">-->
 
-                    <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                    <input type="text" id="lastMadrasaYearCompleted">
-                </div> <br>
+<!--                    <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>-->
+<!--                    <input type="text" id="lastMadrasaYearCompleted">-->
+<!--                </div> <br>-->
 
-                <div class="student-form-group">
-                    <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                    <input type="text" id="madrasaNameLastAttended">
+<!--                <div class="student-form-group">-->
+<!--                    <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>-->
+<!--                    <input type="text" id="madrasaNameLastAttended">-->
 
 
-                </div> <br>
+<!--                </div> <br>-->
 
-                <div class="student-form-group">
-                    <label for="madrasaAddress">Madrasa Address:</label>
-                    <input type="text" id="madrasaAddress" style="width: 900px;">
-                </div> <br>
+<!--                <div class="student-form-group">-->
+<!--                    <label for="madrasaAddress">Madrasa Address:</label>-->
+<!--                    <input type="text" id="madrasaAddress" style="width: 900px;">-->
+<!--                </div> <br>-->
 
-                <div class="modal-buttons">
-                    <button type="button" class="btn-confirm" id="confirmStudent" data-open-modal="confirmationModal"
-                        data-message="Are you sure you want to add this new student?">Confirm</button>
-                    <button type="button" class="btn-cancel" id="cancelStudent"
-                        data-close-modal="transfereeStudentModal">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
+<!--                <div class="modal-buttons">-->
+<!--                    <button type="button" class="btn-confirm" id="confirmStudent" data-open-modal="confirmationModal"-->
+<!--                        data-message="Are you sure you want to add this new student?">Confirm</button>-->
+<!--                    <button type="button" class="btn-cancel" id="cancelStudent"-->
+<!--                        data-close-modal="transfereeStudentModal">Cancel</button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
 
 
     <!-- Modal for old student enrollment -->
@@ -1495,14 +1495,13 @@
         this.checked;
     });
 
-
     function addListing() {
         const actionUrl = "/students/add"; // Update with your actual API endpoint
         const method = "POST";
 
         // Collect input values
-        const birthPlace =
-            document.getElementById("placeOfBirth")?.value?.trim() ||
+        const birthplace =
+            document.getElementById("studplaceOfBirth")?.value?.trim() ||
             document.getElementById("placeOfBirthTransferee")?.value?.trim() ||
             null;
 
@@ -1511,9 +1510,9 @@
             firstName: document.getElementById("studentFirstName").value.trim(),
             lastName: document.getElementById("studentLastName").value.trim(),
             middleName: document.getElementById("studentMiddleName")?.value?.trim() || null,
-            gender: document.getElementById("gender")?.value || null,
-            birthdate: document.getElementById("birthdate")?.value || null,
-            birthPlace: birthPlace, // Use the extracted birthPlace variable
+            gender: document.getElementById("studgender").value || null,
+            birthdate: document.getElementById("studbirthdate").value || null,
+            birthPlace: birthplace, // Use the extracted birthPlace variable
 
             // Address
             address: [
@@ -1523,16 +1522,16 @@
             ].filter(Boolean).join(", "), // Removes empty values
 
             // Parent's Information
-            fatherName: document.getElementById("fatherName")?.value?.trim() || null,
-            fatherOccupation: document.getElementById("fatherOccupation")?.value?.trim() || null,
-            motherName: document.getElementById("motherName")?.value?.trim() || null,
-            motherOccupation: document.getElementById("motherOccupation")?.value?.trim() || null,
+            fatherName: document.getElementById("studfatherName")?.value?.trim() || null,
+            fatherOccupation: document.getElementById("studfatherOccupation")?.value?.trim() || null,
+            motherName: document.getElementById("studmotherName")?.value?.trim() || null,
+            motherOccupation: document.getElementById("studmotherOccupation")?.value?.trim() || null,
 
             // Guardian's Information
-            guardianName: document.getElementById("guardianName")?.value?.trim() || null,
-            guardianOccupation: document.getElementById("guardianOccupation")?.value?.trim() || null,
-            guardianContactNum: document.getElementById("guardianContactNumber")?.value?.trim() || null,
-            guardianAddress: document.getElementById("guardianAddress")?.value?.trim() || null
+            guardianName: document.getElementById("studguardianName")?.value?.trim() || null,
+            guardianOccupation: document.getElementById("studguardianOccupation")?.value?.trim() || null,
+            guardianContactNum: document.getElementById("studguardianContactNumber")?.value?.trim() || null,
+            guardianAddress: document.getElementById("studguardianAddress")?.value?.trim() || null
         };
 
         console.log("Student Data:", studentData);

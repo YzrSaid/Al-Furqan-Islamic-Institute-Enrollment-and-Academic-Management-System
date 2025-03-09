@@ -58,12 +58,17 @@ public class    Enrollment {
     private boolean isNotDeleted;
     
     public EnrollmentDTO DTOmapper(boolean isComplete){
+        GradeLevel preReq = null;
+        try{
+            preReq = gradeLevelToEnroll.getPreRequisite();
+        }catch(NullPointerException npe){
+        }
         return EnrollmentDTO.builder()
                             .enrollmentId(enrollmentId)
                             .student(student)
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
-                            .preRequisiteId(gradeLevelToEnroll.getPreRequisite() != null ? gradeLevelToEnroll.getPreRequisite().getLevelId() : null)
+                            .preRequisiteId(preReq != null ? preReq.getLevelId() : null)
                             .gradeLevelToEnroll(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)
                             .sectionToEnroll(sectionToEnroll != null ? gradeLevelToEnroll.getLevelName()+" - "+sectionToEnroll.getSectionName() : null)
                             .enrollmentStatus(enrollmentStatus)

@@ -38,7 +38,8 @@ public class PaymentRecordService {
     
     public boolean addNewRecord(PaymentRecordDTO paymentRec){
         Student student = studentRepo.findById(paymentRec.getStudId()).orElse(null);
-        
+        System.out.println(paymentRec.getStudId());
+        System.out.println(student.getFirstName());
         if(student == null)
             return false;
         

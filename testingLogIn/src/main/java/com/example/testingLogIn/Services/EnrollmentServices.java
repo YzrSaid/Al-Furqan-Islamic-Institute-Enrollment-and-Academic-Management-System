@@ -189,6 +189,7 @@ public class EnrollmentServices {
         Enrollment er = enrollmentRepo.findById(enrollmentId).orElse(null);
         EnrollmentPaymentView epv = EnrollmentPaymentView.builder()
                                         .studentId(er.getStudent().getStudentId())
+                                        .studentDisplayId(er.getStudent().getStudentDisplayId())
                                         .studentFirstName(er.getStudent().getFirstName())
                                         .studentLastName(er.getStudent().getLastName())
                                         .studentMiddleName(er.getStudent().getMiddleName())

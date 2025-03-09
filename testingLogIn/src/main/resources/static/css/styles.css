@@ -1418,9 +1418,12 @@ table td {
 .half-stud-info-small input {
   width: 120px;
 }
-#motherOccupation,
-#fatherOccupation,
-#guardianOccupation {
+#transfereemotherOccupation,
+#transfereefatherOccupation,
+#transfereeguardianOccupation,
+#studmotherOccupation,
+#studfatherOccupation,
+#studguardianOccupation {
   width: 520px;
 }
 
@@ -1428,9 +1431,10 @@ table td {
   width: 84.5%;
 }
 
-#fatherAddress,
-#motherAddress,
-#guardianAddress {
+#transfereefatherAddress,
+#transfereemotherAddress,
+#transfereeguardianAddress,
+#studguardianAddress {
   width: 335px;
 }
 
@@ -1439,9 +1443,10 @@ table td {
   width: 717px;
 }
 
-#fatherContactNumber,
-#motherContactNumber,
-#guardianContactNumber {
+#transfereefatherContactNumber,
+#transfereemotherContactNumber,
+#transfereeguardianContactNumber,
+#studguardianContactNumber {
   width: 360px;
 }
 
@@ -1449,15 +1454,21 @@ table td {
   width: 850px;
 }
 
-#motherName,
-#fatherName,
-#guardianName {
+#transfereemotherName,
+#transfereefatherName,
+#transfereeguardianName,
+#studmotherName,
+#studfatherName,
+#studguardianName {
   width: 700px;
 }
 
-.student-form-group #street,
-.student-form-group #barangay,
-.student-form-group #city {
+.student-form-group #studstreet,
+.student-form-group #studbarangay,
+.student-form-group #studcity,
+.student-form-group #transfereestreet,
+.student-form-group #transfereebarangay,
+.student-form-group #transfereecity {
   width: 300px;
 }
 
@@ -1503,7 +1514,7 @@ table td {
   display: flex;
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 1001;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;

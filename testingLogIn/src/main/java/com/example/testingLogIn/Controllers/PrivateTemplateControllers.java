@@ -163,6 +163,12 @@ public class PrivateTemplateControllers {
         return "/grade-management/grade-per-class";
     }
 
+
+    @GetMapping("/class-list")
+    public String getClassList(){
+        return "/class-list";
+    }
+
     // these are for schedule pages
 
     @GetMapping("/schedule")

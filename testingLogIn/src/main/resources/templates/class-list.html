@@ -5,13 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<script th:src="@{/js/script.js}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
@@ -83,7 +82,7 @@
             <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
         </a>
 
-        <a href="/class-list" class="sidebar-icons">
+        <a href="/class-list" class="active sidebar-icons">
             <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class List Icon"> Class List
         </a>
 
@@ -108,16 +107,16 @@
             <a href="/reports/student">Student Reports</a>
             <a href="/reports/payment">Payment Reports</a>
             <a href="/reports/teacher">Teacher Report</a>
-            <a href="/reports/academic-resources">Book Distribution Reports</a>
+            <a href="/reports/academic-resources">Book Distribution Report</a>
         </div>
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
             <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
             <a href="/accounts/verify-accounts">Verify Accounts</a>
             <a href="/accounts/manage-accounts">Manage Accounts</a>
-            <a href="/accounts/my-account" class="second-active">My Account</a>
+            <a href="/accounts/my-account">My Account</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
             <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
@@ -150,55 +149,51 @@
             </div>
         </div>
         <div class="text-link">
-            <h4>My Account</h4>
+            <h4 id="grade-level-and-section-name">Class List</h4>
             <p>Main</p>
             <p>/</p>
-            <p>Accounts</p>
-            <p>/</p>
-            <p>My Account</p>
+            <p>Class List</p>
         </div>
-        <div class="my-account-container-wrapper">
-            <div class="my-account-container">
-                <div class="half-width">
-                    <div class="user-id">
-                        <label for="user-id" id="user-id-label">User ID:</label>
-                        <p id="user-id">0001</p>
-                    </div>
-                </div>
-                <div class="email">
-                    <label for="email">Email:</label>
-                    <p id="email">sample@gmail.com</p>
-                </div>
-                <div class="half-width">
-                    <div class="first-name">
-                        <label for="first-name">First Name:</label>
-                        <p id="first-name">Batman</p>
-                    </div>
-                    <div class="last-name">
-                        <label for="last-name">Last Name:</label>
-                        <p id="last-name">Rizal</p>
-                    </div>
-                </div>
-                <div class="account-type">
-                    <label for="account-type">Account Type:</label>
-                    <p id="account-type">Admin</p>
-                </div>
-            </div>
 
-            <!-- this is for the edit and change password divs -->
-            <!-- <div class="change-password-container">
-                <div class="change-password">
-                    <button id="openChangePasswordModal" class="btn-change-password"
-                        data-open-modal="changePasswordModal">Change Password</button>
+        <div class="search-div">
+            <!-- Searchbox and sort btn -->
+            <div class="search">
+                <div class="search-container">
+                    <input type="text" placeholder="Search..." class="search-input" />
+                    <button class="search-btn">Search</button>
                 </div>
-            </div> -->
-            <div class="edit-account-container">
-                <div class="edit-account">
-                    <button class="btn-edit" id="openMyAccountEditModal" data-open-modal="myAccountEditModal">Edit My
-                        Account</button>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                    </select>
                 </div>
             </div>
         </div>
+
+        <!-- Table -->
+        <table id="table-ba-to" class="verify-accounts-table">
+            <thead>
+                <tr>
+                    <th>Grade Level</th>
+                    <th>Section</th>
+                    <th>Students</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Grade 1</td>
+                    <td>Malunggay</td>
+                    <td>30</td>
+                    <td>
+                        <div class="action-container">
+                            <a href="/schedules/sched-board" class="view-sched">View Class List</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
@@ -262,7 +257,7 @@
 
         <!-- Modal for changing password -->
         <div class="my-account-container-wrapper">
-            <div id="changePasswordModal" class="change-password-modal modal">
+            <div id="changePasswordModal" class="change-password-modal">
                 <div class="change-password-modal-content">
                     <h2>Change Password</h2>
                     <form action="" id="changePasswordForm">
@@ -277,7 +272,7 @@
                         <div class="change-pass-div">
                             <ul>
                                 <li>Must be 8 characters</li>
-                                <li>Must contain a spacial character</li>
+                                <li>Must contain a special character</li>
                                 <li>Must contain upper and lower case</li>
                             </ul>
                         </div>
@@ -287,14 +282,52 @@
                         </div>
                         <div class="modal-buttons change-pass-buttons">
                             <button type="button" class="btn-confirm" id="confirmChangePassword"
-                                data-action="changePassword" data-open-modal="confirmationModal"
-                                data-message="Are you sure you want update the password for this account?">Confirm</button>
+                                data-action="change-password">Confirm</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+
     </div>
+    <script th:src="@{/js/script.js}"></script>
 </body>
+<script>
+    function getAllSections(){
+        console.log('getting the sections');
+        fetch(`/section/all`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#table-ba-to tbody");
+                tableBody.innerHTML = "";
+                
+                data.forEach(rec => {
+                    console.log(rec);
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <tr>
+                            <td>${rec.gradeLevelName}</td>
+                            <td>${rec.sectionName}</td>
+                            <td></td>
+                            <td>
+                                <div class="action-container">
+                                    <a href="/schedule/sched-board/${rec.number}" class="view-sched">View Class List</a>
+                                </div>
+                            </td>
+                        </tr>
+                        `;
+                    tableBody.appendChild(row);
+            });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    }
+</script>
 
 </html>

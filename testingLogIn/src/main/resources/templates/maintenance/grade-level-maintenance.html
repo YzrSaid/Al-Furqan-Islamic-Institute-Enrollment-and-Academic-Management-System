@@ -84,6 +84,10 @@
             <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
         </a>
 
+        <a href="/class-list" class="sidebar-icons">
+            <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class List Icon"> Class List
+        </a>
+
         <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
             <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
                 class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
@@ -331,7 +335,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            fetchGradeLevels(); 
+            fetchGradeLevels();
             populatePreRequisiteDropdown();
         });
 
@@ -427,26 +431,31 @@
                         console.log(grade);
                         const row = document.createElement("tr");
 
-                        
-                        row.innerHTML = `
-                    <td>${grade.levelName}</td>
-                    <td>${grade.preRequisite}</td>
-                    <td>
-                        <div class="action-container">
-                            <div class="action">
-                               <img data-open-modal="gradeLevelEditModal" 
-                                    src="/images/icons/compose.png" 
-                                    alt="grade-level-edit-icon" 
-                                    data-id="${grade.levelId}" data-prereq="${grade.preRequisite || 'NONE'}"
 
-                                <img data-open-modal="confirmationModal" data-action="deleteGradeLevel" 
-                                     data-message="Are you sure you want to delete this grade level?" 
-                                     data-id="${grade.levelId}" data-prereq="${grade.preRequisite || 'NONE'}"
-                                     src="/images/icons/bin.png" alt="grade-level-delete-icon">
-                            </div>
-                        </div>
-                    </td>
-                `;
+                        row.innerHTML = `
+    <td>${grade.levelName}</td>
+    <td>${grade.preRequisite}</td>
+    <td>
+        <div class="action-container">
+            <div class="action">
+                <img data-open-modal="gradeLevelEditModal" 
+                     src="/images/icons/compose.png" 
+                     alt="grade-level-edit-icon" 
+                     data-id="${grade.levelId}" 
+                     data-prereq="${grade.preRequisite || 'NONE'}">
+                
+                <img data-open-modal="confirmationModal" 
+                     data-action="deleteGradeLevel" 
+                     data-message="Are you sure you want to delete this grade level?" 
+                     data-id="${grade.levelId}" 
+                     data-prereq="${grade.preRequisite || 'NONE'}"
+                     src="/images/icons/bin.png" 
+                     alt="grade-level-delete-icon">
+            </div>
+        </div>
+    </td>
+`;
+
                         tableBody.appendChild(row);
                     });
                 })

@@ -83,6 +83,10 @@
             <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
         </a>
 
+        <a href="/class-list" class="sidebar-icons">
+            <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class List Icon"> Class List
+        </a>
+
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
             <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
                 class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
@@ -166,9 +170,6 @@
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
                     </select>
                 </div>
             </div>
@@ -311,6 +312,23 @@
         </div>
     </div>
 
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <p id="errorMessage"></p>
+            <div class="modal-buttons">
+                <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success modal -->
+    <div id="successModal"
+        style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+        <p id="successModalMessage"></p>
+    </div>
+
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -445,10 +463,10 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-                    alert("✅ Enrollment successfully moved to payment.");
+                    showSuccessModal("✅ Success: New student has been added successfully!");
                     location.reload(); // Reloads the page
                 } else {
-                    alert(`⚠️ ${text}`); // Shows backend response in an alert
+                    showErrorModal("❌ Error:" + text);
                 }
             })
             .catch(error => {
@@ -502,9 +520,6 @@
                                 <a href="#" class="proceedButton"  data-action="proceedToPayment" data-open-modal="addGradeLevelAssessmentModal"
                                    data-enrollment-id="${enr.enrollmentId}" data-grade-level-id="${enr.gradeLevelToEnroll}" 
                                    style="display: ${enr.qualified ? 'block' : 'none'};">Proceed</a>
-
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-                                   data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
                             </div>
                         </div>
                     </td>

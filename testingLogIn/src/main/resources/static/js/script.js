@@ -498,16 +498,16 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("schoolYearId").value
         );
         break;
-//      case "addStudent":
-//        actionUrl = "/student/add";
-//        method = "POST";
-//        formData.append(
-//          "studentName",
-//          document.getElementById("studentName").value
-//        );
-//        console.log(formData);
-//        alert('stopper');
-//        break;
+      //      case "addStudent":
+      //        actionUrl = "/student/add";
+      //        method = "POST";
+      //        formData.append(
+      //          "studentName",
+      //          document.getElementById("studentName").value
+      //        );
+      //        console.log(formData);
+      //        alert('stopper');
+      //        break;
       case "addSection":
         // This case is for adding subject level
         if (!validateForm("sectionForm")) {
@@ -633,13 +633,26 @@ document.addEventListener("DOMContentLoaded", function () {
       case "addListingExisting":
         addListingOldStudent();
         break;
-      case "addListing":
+      case "transfereeAddListing":
+        // This case is for adding transferee student to the listing/registration
+        if (!validateForm("studentFormTransferee")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          transfereeAddListing();
+          document.getElementById("confirmationModal").classList.remove("show");
+          document.getElementById("confirmationModal").style.visibility =
+            "hidden";
+          document.getElementById("confirmationModal").style.opacity = "0";
+        }
+        break;
+      case "studAddListing":
         // This case is for adding new student to the listing/registration
         if (!validateForm("studentForm")) {
           showErrorModal("⚠️ Please fill in all required fields!");
           return;
         } else {
-          addListing();
+          studAddListing();
           document.getElementById("confirmationModal").classList.remove("show");
           document.getElementById("confirmationModal").style.visibility =
             "hidden";
@@ -769,7 +782,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }, 1500); // 1.5 seconds is enough for the user to see the message
     } else {
-          alert(message);
       location.reload();
     }
   };

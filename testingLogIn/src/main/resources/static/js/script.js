@@ -748,7 +748,6 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   window.showSuccessModal = function (message) {
-    // Assuming you have a modal element with an ID 'successModal'
     const modal = document.getElementById("successModal");
     const modalMessage = document.getElementById("successModalMessage");
 
@@ -756,10 +755,8 @@ document.addEventListener("DOMContentLoaded", function () {
       modalMessage.innerHTML = message;
       modal.style.display = "block";
 
-      // Set the timeout to hide the modal after the message is displayed
       setTimeout(() => {
         modal.style.display = "none";
-        // After the modal is hidden, reload the page or redirect
         if (
           message ===
           "✅ Account has been created successfully! This record will be sent for approval."
@@ -770,7 +767,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }, 1500); // 1.5 seconds is enough for the user to see the message
     } else {
-      alert(message);
+          alert(message);
       location.reload();
     }
   };

@@ -1387,6 +1387,28 @@
             alert("Transaction failed. Try again.");
         }
     }
+
+    function addExistingStudent(studentId){
+            fetch('/enrollment/add/student/'+studentId, {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 }
+             })
+             .then(response => {
+                 return response.text().then(message => {
+                     if (response.ok) {
+                         showSuccessModal(message);
+                         window.location.reload(); // Reload the page
+                     } else {
+                         showErrorModal(message);
+                     }
+                 });
+             })
+             .catch(error => {
+                 showErrorModal(message);
+             });
+     }
     // function goList() {
     //     fetch("/enrollment/all/listing")
     //         .then(res => {

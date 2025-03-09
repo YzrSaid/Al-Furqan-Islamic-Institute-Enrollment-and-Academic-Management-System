@@ -291,7 +291,7 @@
                             <h6>Received payment from</h6>
                             <input type="text" id="payee-name" readonly>
                             <h6>Student ID</h6>
-                            <input type="number" id="student-id" readonly value="0001">
+                            <input type="text" id="student-id" readonly value="0001">
                             <h6>sum of ₱</h6>
                             <input type="number" id="payment-amount">
                             <h6>as payment for</h6>
@@ -334,8 +334,8 @@
             if (addButton) {
                 // Retrieve student information
                 const studentName = document.querySelector("#student-name")?.textContent?.trim();
-                const studentId = document.querySelector("#student-id")?.textContent?.trim();
-
+                const studentId = document.querySelector("#student-id")?.textContent;
+                alert(studentId);
                 if (!studentName || !studentId) {
                     console.error("Student information not found");
                     return;
@@ -343,7 +343,7 @@
 
                 // Populate modal fields
                 document.querySelector("#payee-name").value = studentName;
-                document.querySelector("#addPaymentModal input[type='number'][readonly]").value = studentId;
+                document.querySelector("#addPaymentModal input[type='text'][readonly]").textContent = studentId;
 
                 // Fetch and populate the current active school year
                 try {
@@ -455,7 +455,7 @@
 
             // Prepare data for API
             const paymentData = {
-                studentId: studentId,
+                studId: payerId,
                 amount: paymentAmount,
                 requiredPaymentId: requiredPaymentId,
             };
@@ -518,8 +518,18 @@
                     tableBody.innerHTML = "";
 
                     data.forEach(rec => {
-                        console.log(rec);
-                        const row = document.createElement("tr");
+                    console.log(rec.complete);
+                    const row = document.createElement("tr");
+                    const proceedBtn = rec.complete ? `
+                        <a href="#"
+                           data-open-modal="confirmationModal"
+                           data-action="proceedToEnrolled"
+                           id="proceed-btn"
+                           data-message="Are you sure you want to proceed and finish enrollment?"
+                           data-enrollment-id="${rec.enrollmentId}">
+                           Proceed
+                        </a>
+                    ` : '';
                         row.innerHTML = `
                                     <tr>
                                         <td>${rec.student.studentId}</td>
@@ -537,9 +547,7 @@
                                                 </div>
                                                 <div class="dropdown-status-content" id="dropdown-listing">
                                                     <a href="#" class="action" data-open-modal="listOfPaymentsModal" data-enrollment-id="${rec.enrollmentId}">View List of Payments</a>
-                                                    <a href="#" data-open-modal="confirmationModal" data-action="proceedToEnrolled" id="proceed-btn"
-                                                        data-message="Are you sure you want to proceed and finish enrollment?" data-enrollment-id="${rec.enrollmentId}">Proceed</a>
-
+                                                    ${proceedBtn}
                                                         <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" data-message="Are you sure you want to cancel this registration?">Cancel Registration</a>
                                                 </div>
                                             </div>
@@ -553,7 +561,6 @@
         }
 
         document.addEventListener("click", function (event) {
-            // Check if the clicked element is for opening the "List of Payments" modal
             const proceedButton = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
             if (proceedButton) {
                 const enrollmentId = proceedButton.getAttribute("data-enrollment-id");
@@ -595,7 +602,7 @@
             }
             return "";
         }
-
+        var payerId = 0;
         function fetchPayments(enrollmentId) {
             fetch(`/enrollment/paymentView/${enrollmentId}`)
                 .then(res => res.json())
@@ -606,7 +613,8 @@
                     if (!studentname || !studentId) return console.error("Dropdown for sections not found");
 
                     studentname.textContent = epv.studentFirstName + ' ' + epv.studentLastName;
-                    studentId.textContent = epv.studentId;
+                    studentId.textContent = epv.studentDisplayId;
+                    payerId = epv.studentId;
 
                     const tableBody = document.querySelector("#table-ni-kharl tbody");
                     tableBody.innerHTML = "";

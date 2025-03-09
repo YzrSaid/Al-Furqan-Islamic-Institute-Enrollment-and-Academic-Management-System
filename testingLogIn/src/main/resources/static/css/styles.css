@@ -67,6 +67,11 @@ body {
   flex-direction: column;
   width: 50%;
 }
+#signup-form-large {
+  display: flex;
+  flex-direction: column;
+  width: 66%;
+}
 #forgot-pass {
   width: 100%;
   display: flex;
@@ -685,6 +690,31 @@ th {
   width: 20%;
 }
 
+.payment-table th:nth-child(1),
+.payment-table td:nth-child(1) {
+  width: 14%;
+}
+.payment-table th:nth-child(2),
+.payment-table td:nth-child(2) {
+  width: 30%;
+}
+.payment-table th:nth-child(3),
+.payment-table td:nth-child(3) {
+  width: 15%;
+}
+.payment-table th:nth-child(4),
+.payment-table td:nth-child(4) {
+  width: 20%;
+}
+.payment-table th:nth-child(5),
+.payment-table td:nth-child(5) {
+  width: 20%;
+}
+.payment-table th:nth-child(6),
+.payment-table td:nth-child(6) {
+  width: 20%;
+}
+
 .assessment-table th:nth-child(1),
 .assessment-table td:nth-child(1) {
   width: 10%;
@@ -1017,7 +1047,8 @@ table td {
 .payment-report-table,
 .acad-resources-table,
 .assessment-table,
-.fees-table {
+.fees-table,
+.payment-table {
   width: 92.5%;
   margin: 0px 50px;
 }
@@ -1431,7 +1462,8 @@ table td {
 }
 
 .my-account-edit-modal,
-.list-of-payments-modal {
+.list-of-payments-modal,
+.view-book-modal {
   visibility: hidden;
   opacity: 0;
   display: flex;
@@ -1445,13 +1477,15 @@ table td {
   transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
 }
 .my-account-edit-modal.show,
-.list-of-payments-modal.show {
+.list-of-payments-modal.show,
+.view-book-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
 }
 .my-account-edit-modal-content,
-.list-of-payments-modal-content {
+.list-of-payments-modal-content,
+.view-book-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 10px;
@@ -1653,7 +1687,8 @@ input[type="checkbox"] {
 .list-of-payments-modal h2,
 .fees-management-modal-content h2,
 .fees-management-edit-modal-content h2,
-.add-payment-modal h2 {
+.add-payment-modal h2,
+.view-book-modal h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -1717,7 +1752,8 @@ input[type="checkbox"] {
 .add-payment-modal-content label,
 .fees-management-modal-content label,
 .fees-management-edit-modal-content label,
-.student-information-modal-content label {
+.student-information-modal-content label,
+.view-book-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -1736,6 +1772,7 @@ input[type="checkbox"] {
 .change-password-modal-content input,
 .view-grades-modal-content input,
 .fees-management-modal-content input,
+.view-book-modal-content input,
 .add-grade-level-assessment-modal-content input,
 .list-of-payments-modal-content input,
 .fees-management-edit-modal-content input,
@@ -2242,7 +2279,6 @@ input[type="checkbox"] {
 .create-user-container {
   width: 40%;
   display: flex;
-  margin-top: 40px;
   align-self: center;
   justify-self: center;
 }

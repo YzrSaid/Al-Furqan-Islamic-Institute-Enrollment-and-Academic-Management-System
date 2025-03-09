@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="../../static/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script>
@@ -30,7 +30,7 @@
                 // Update arrow icon
                 let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
                 if (arrowIconImg) {
-                    arrowIconImg.src = "/testingLogIn/src/main/resources/static/images/icons/greater-than.png";
+                    arrowIconImg.src = "/images/icons/greater-than.png";
                 }
             }
         });
@@ -46,7 +46,7 @@
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
             <div class="welcome-div">
-                <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+                <p>WELCOME, <span class="account-text">ADMIN!</span></p>
             </div>
         </div>
 
@@ -111,8 +111,8 @@
                     th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
         <div class="submenu" id="account-submenu">
-            <a href="/accounts/verify-accounts" >Verify Accounts</a>
-            <a href="/accounts/manage-accounts" >Manage Accounts</a>
+            <a href="/accounts/verify-accounts">Verify Accounts</a>
+            <a href="/accounts/manage-accounts">Manage Accounts</a>
             <a href="/accounts/my-account" class="second-active">My Account</a>
         </div>
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
@@ -129,17 +129,17 @@
         <div class="topbar">
             <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
-                    <img src="../../static/images/icons/burger_menu_icon.png" alt="Menu">
+                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
                 </span>
 
                 <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
             </div>
             <div class="dropdown-logout">
                 <div class="user-icon dropdown-logout-toggle">
-                    <img src="../../static/images/icons/account.png" onclick="toggleDropdown('dropdownUserIcon')"
+                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Super Admin</span></h6>
+                        <h6><span>Admin</span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -177,17 +177,17 @@
                 </div>
                 <div class="account-type">
                     <label for="account-type">Account Type:</label>
-                    <p id="account-type">Super Admin</p>
+                    <p id="account-type">Admin</p>
                 </div>
             </div>
 
             <!-- this is for the edit and change password divs -->
-            <div class="change-password-container">
+            <!-- <div class="change-password-container">
                 <div class="change-password">
                     <button id="openChangePasswordModal" class="btn-change-password"
                         data-open-modal="changePasswordModal">Change Password</button>
                 </div>
-            </div>
+            </div> -->
             <div class="edit-account-container">
                 <div class="edit-account">
                     <button class="btn-edit" id="openMyAccountEditModal" data-open-modal="myAccountEditModal">Edit My

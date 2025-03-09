@@ -118,7 +118,7 @@
                 </div>
             </div>
         </div>
-        <div class="text-link">
+        <div id="theTextLink" class="text-link">
             <h4>Science</h4>
             <p>Main</p>
             <p>/</p>
@@ -213,8 +213,16 @@ function fetchStudentSubjectGrades(sectionId, subjectId) {
         .then(data => {
             const tableBody = document.querySelector("#restaurant-table tbody");
             tableBody.innerHTML = "";
-
+            let subjectName;
+            let sectionName;
             data.forEach(rec => {
+                if (!subjectName && rec.subjectName) {
+                    subjectName = rec.subjectName;
+                }
+
+                if (!sectionName && rec.gradeAndSection) {
+                    sectionName = rec.gradeAndSection;
+                }
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <tr>
@@ -247,6 +255,19 @@ function fetchStudentSubjectGrades(sectionId, subjectId) {
                         }
                 tableBody.appendChild(row);
             });
+            console.log(subjectName);
+            console.log(sectionName);
+            document.querySelector("#theTextLink").innerHTML = `
+                    <div id="theTextLink" class="text-link">
+                        <h4>${subjectName}</h4>
+                        <p>Main</p>
+                        <p>/</p>
+                        <p>Grade Management</p>
+                        <p>/</p>
+                        <p id="grade-and-section">${sectionName}</p>
+                        <p>/</p>
+                        <p>${subjectName}</p>
+                    </div>`;
 
             // Add event listeners to all "Save" buttons
             document.querySelectorAll('.save-grade').forEach(button => {

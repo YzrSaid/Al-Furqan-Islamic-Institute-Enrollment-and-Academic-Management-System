@@ -21,6 +21,7 @@ public class EnrollmentDTO {
     private Student student;
     private String schoolYear;
     private Semester semester;
+    private Integer preRequisiteId;
     private String gradeLevelToEnroll;
     private String sectionToEnroll;
     private String remarks;

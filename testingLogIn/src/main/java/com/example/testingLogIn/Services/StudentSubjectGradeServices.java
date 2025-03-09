@@ -76,6 +76,24 @@ public class StudentSubjectGradeServices {
         
         return subjectStudGrades;
     }
+
+    public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesOfPreRequisite(int studentId,int preRequisiteId){
+        List<StudentSubjectGrade> gradesList = ssgRepo.getGradesByStudentGradeLevel(studentId,preRequisiteId);
+        System.out.println(gradesList.size());
+        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap();
+        gradesList
+                .forEach(studGrade -> {
+                    String gradeLevelAndSectionSem = studGrade.getSection().getLevel().getLevelName()+" - "+
+                            studGrade.getSection().getSectionName()+" : "+
+                            studGrade.getSemester().getSchoolYear().getSchoolYear()+"-"+studGrade.getSemester().getSem()+ " sem";
+                    System.out.println(gradeLevelAndSectionSem);
+                    if(!subjectStudGrades.containsKey(gradeLevelAndSectionSem))
+                        subjectStudGrades.put(gradeLevelAndSectionSem, new ArrayList<StudentSubjectGradeDTO>());
+                    subjectStudGrades.get(gradeLevelAndSectionSem).add(studGrade.DTOmapper());
+                });
+
+        return subjectStudGrades;
+    }
     
     public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesBySemester(int studentId){
         List<StudentSubjectGrade> gradesList = ssgRepo.getGradesByStudent(studentId);

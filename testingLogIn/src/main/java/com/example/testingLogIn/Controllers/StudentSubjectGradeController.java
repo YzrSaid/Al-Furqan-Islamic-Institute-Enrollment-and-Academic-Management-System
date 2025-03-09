@@ -53,6 +53,16 @@ public class StudentSubjectGradeController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
+
+    @GetMapping("/student/{studentId}/{preRequisiteId}")
+    public ResponseEntity<Map<String,List<StudentSubjectGradeDTO>>> getStudentCurrentGrades(@PathVariable int studentId,@PathVariable int preRequisiteId){
+        try{
+            return new ResponseEntity<>(ssgService.getStudentGradesOfPreRequisite(studentId,preRequisiteId),HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
     
     @PutMapping("/save")
     public ResponseEntity<String> editStudentGrades(@RequestBody StudentSubjectGradeDTO studGraded){

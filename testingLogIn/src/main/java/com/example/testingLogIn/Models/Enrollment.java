@@ -63,6 +63,7 @@ public class    Enrollment {
                             .student(student)
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
+                            .preRequisiteId(gradeLevelToEnroll.getPreRequisite() != null ? gradeLevelToEnroll.getPreRequisite().getLevelId() : null)
                             .gradeLevelToEnroll(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)
                             .sectionToEnroll(sectionToEnroll != null ? gradeLevelToEnroll.getLevelName()+" - "+sectionToEnroll.getSectionName() : null)
                             .enrollmentStatus(enrollmentStatus)

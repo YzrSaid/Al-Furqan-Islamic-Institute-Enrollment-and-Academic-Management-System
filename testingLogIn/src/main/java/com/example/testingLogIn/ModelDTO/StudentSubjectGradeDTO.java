@@ -15,6 +15,7 @@ public class StudentSubjectGradeDTO {
     private String studentFirstName;
     private String studentLastName;
     private String studentMiddleName;
+    private String gradeAndSection;
     private String subjectName;
     private Integer subjectGrade;
 }

@@ -32,7 +32,6 @@ public class ScheduleController {
         try{
             return new ResponseEntity<>(scheduleService.getSchedulesByTeacher(teacherName),HttpStatus.OK);
         }catch(NullPointerException npe){
-            System.out.println(npe.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

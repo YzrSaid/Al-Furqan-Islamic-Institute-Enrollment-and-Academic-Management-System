@@ -59,6 +59,7 @@ public class EnrollmentController {
     @GetMapping("/all/{status}")
     public ResponseEntity<List<EnrollmentDTO>> getEnrollmentRecordsByStatus(@PathVariable String status){
         try{
+            System.out.println(status);
             return new ResponseEntity<>(enrollmentService.getAllEnrollment(status),HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();

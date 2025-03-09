@@ -54,9 +54,8 @@ public class SectionController {
     public ResponseEntity<SectionDTO> getSection(@PathVariable int sectionNumber) {
         try {
             SectionDTO section = sectionService.getSection(sectionNumber);
-
             if (section != null)
-                return new ResponseEntity<>(section, HttpStatus.FOUND);
+                return new ResponseEntity<>(section, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -102,7 +101,6 @@ public class SectionController {
 
     @PutMapping("/update")
     public ResponseEntity<String> updateSectionRecord(@RequestBody SectionDTO sectionDTO){
-        System.out.println(sectionDTO.getNumber());
         try{
             if(sectionService.updateSection(sectionDTO))
                 return new ResponseEntity<>("Section Record Updated Successfully",HttpStatus.OK);

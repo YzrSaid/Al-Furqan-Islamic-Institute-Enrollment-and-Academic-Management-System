@@ -93,11 +93,11 @@ public class ScheduleServices {
             for(Integer key : subjectTeachers.keySet()){
                 ScheduleDTO sched = subjectTeachers.get(key);
                 subjectTeachers.get(key).setGradedCount(ssgRepo.getTotalGraded(
-                        sched.getSubjectId(),
+                        sched.getSectionId(),
                         sched.getSubjectId(), 
                         semRepo.findCurrentActive().getSySemNumber()));
                 subjectTeachers.get(key).setToBeGradedCount(ssgRepo.getGradesBySectionSubjectSem(
-                        sched.getSubjectId(),
+                        sched.getSectionId(),
                         sched.getSubjectId(), 
                         semRepo.findCurrentActive().getSySemNumber()).size());
             }

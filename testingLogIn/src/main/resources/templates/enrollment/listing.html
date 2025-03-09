@@ -899,11 +899,8 @@
                 <td>
                     <div class="action-container">
                         <div class="action">
-                            <img 
-                                data-open-modal="confirmationModal"
-                                data-id="${student.studentId}" 
-                                data-action="addListingExisting"
-                                data-message="Are you sure you want to register this old student?"
+                            <img
+                                onClick="addExistingStudent(${student.studentId})"
                                 src="/images/icons/add-button.png" 
                                 alt="add-button-icon"
                             >
@@ -926,6 +923,28 @@
         fetchAllGradeLevels();
         fetchStudents();
     });
+
+    function addExistingStudent(studentId){
+           fetch('/enrollment/add/student/'+studentId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        showSuccessModal(message);
+                        window.location.reload(); // Reload the page
+                    } else {
+                        showErrorModal(message);
+                    }
+                });
+            })
+            .catch(error => {
+                showErrorModal(message);
+            });
+    }
 
     async function fetchAllGradeLevels() {
         try {

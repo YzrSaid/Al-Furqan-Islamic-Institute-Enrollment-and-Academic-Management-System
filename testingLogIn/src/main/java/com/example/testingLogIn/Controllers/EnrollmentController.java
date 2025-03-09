@@ -25,11 +25,26 @@ public class EnrollmentController {
     
     @Autowired
     private EnrollmentServices enrollmentService;
-    
+
+    @PostMapping("/add/student/{studentId}")
+    public ResponseEntity<String> addExistingStudentToListing(@PathVariable Integer studentId){
+        try{
+            if(enrollmentService.addStudentToListing(null,studentId))
+                return new ResponseEntity<>("Student Successfully Added To Listing",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Student Is Already In Enrollment Process",HttpStatus.CONFLICT);
+        }catch(NullPointerException npe){
+            return new ResponseEntity<>("Student Record Not Found",HttpStatus.NOT_FOUND);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Transaction Failed",HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping("/add/listing")
     public ResponseEntity<String> addStudentToListing(@RequestBody StudentDTO student){
         try{
-            if(enrollmentService.addStudentToListing(student))
+            if(enrollmentService.addStudentToListing(student,null))
                 return new ResponseEntity<>("Student Successfully Added To Listing",HttpStatus.OK);
             else
                 return new ResponseEntity<>("Student Is Already In Enrollment Process",HttpStatus.CONFLICT);

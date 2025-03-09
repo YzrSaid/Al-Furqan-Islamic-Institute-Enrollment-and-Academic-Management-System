@@ -629,7 +629,7 @@ document.addEventListener("DOMContentLoaded", function () {
         deactivateSemester();
         break;
       case "addListingExisting":
-        addListing();
+        addListingOldStudent();
         break;
       case "addListing":
         // This case is for adding new student to the listing/registration

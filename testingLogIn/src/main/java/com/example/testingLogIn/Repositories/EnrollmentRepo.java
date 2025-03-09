@@ -18,12 +18,10 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
     
 @Query("SELECT COUNT(e) > 0 FROM Enrollment e " +
        "WHERE e.isNotDeleted = true " +
-       "AND e.student.firstName = :firstName "+
-       "AND e.student.lastName = :lastName "+
+       "AND e.student.studentId = :studentId "+
        "AND e.SYSemester.sySemNumber = :activeSemNumber")
 boolean studentCurrentlyEnrolled(
-    @Param("firstName") String firstName,
-    @Param("lastName") String lastName,
+    @Param("studentId") int studentId,
     @Param("activeSemNumber") int activeSemNumber);
 
 @Query("SELECT e FROM Enrollment e " +

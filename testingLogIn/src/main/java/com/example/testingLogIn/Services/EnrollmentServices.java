@@ -55,15 +55,19 @@ public class EnrollmentServices {
         this.payRecRepo = payRecRepo;
     }
     
-    public boolean addStudentToListing(StudentDTO stud){
-        Student student = studentRepo.findByName(stud.getFirstName(), stud.getLastName());
+    public boolean addStudentToListing(StudentDTO stud,Integer studentId){
+        Student student = null;
+        if(stud != null)
+            student = studentRepo.findByName(stud.getFirstName(), stud.getLastName());
+        else
+            student = studentRepo.findById(studentId).orElse(null);
+
         if(student == null || !student.isNotDeleted())
             throw new NullPointerException();
-        else if(enrollmentRepo.studentCurrentlyEnrolled(stud.getFirstName(),
-                                                            stud.getLastName(), 
+        else if(enrollmentRepo.studentCurrentlyEnrolled(student.getStudentId(),
                                                             sySemRepo.findCurrentActive().getSySemNumber()))
             return false;
-        
+
         Enrollment enroll = new Enrollment();
         enroll.setEnrollmentStatus(EnrollmentStatus.LISTING);
         enroll.setStudent(student);
@@ -89,11 +93,11 @@ public class EnrollmentServices {
             boolean isQualified = true;
             if(!student.isNew() && gradeLevelToEnroll.getPreRequisite() != null){
                 int nextLevelPreReqId = gradeLevelToEnroll.getPreRequisite().getLevelId();
-                System.out.println("Enrolling to "+gradeLevelToEnroll.getLevelName());
-                System.out.println("Which is a successor of "+student.getCurrentGradeSection().getLevel().getLevelName());
                 isQualified = ssgService.didStudentPassed(student.getStudentId(),
                         nextLevelPreReqId);
-                System.out.println("Am I qualified? : " + isQualified);
+                
+                if(student.getCurrentGradeSection().getLevel().getLevelId() == gradeLevelToEnroll.getLevelId())
+                    isQualified = true;
                 if((!isQualified) && student.getCurrentGradeSection().getLevel().getLevelId() == nextLevelPreReqId){
                     enrollmentRecord.setRemarks("Congratulation! You Are Qualified To Your Current Grade");
                 }else if(!isQualified)

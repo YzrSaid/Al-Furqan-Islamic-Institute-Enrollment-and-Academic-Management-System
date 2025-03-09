@@ -65,7 +65,7 @@ public class StudentServices {
                                     .madrasaAddress(student.getMadrasaAddress())
                                     .build();
             studentRepo.save(newStudent);
-            enrollmentService.addStudentToListing(student);
+            enrollmentService.addStudentToListing(student,null);
             return true;
         }
     }

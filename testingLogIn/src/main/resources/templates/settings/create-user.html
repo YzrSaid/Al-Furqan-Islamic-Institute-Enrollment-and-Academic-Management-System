@@ -46,7 +46,7 @@
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
             <div class="welcome-div">
-                <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+                <p>WELCOME, <span class="account-text">ADMIN!</span></p>
             </div>
         </div>
 
@@ -139,7 +139,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Super Admin</span></h6>
+                        <h6><span>Admin</span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -155,8 +155,8 @@
         </div>
         <div class="create-user-container">
             <div class="form-container">
-                <form action="/register" method="post">
-                    <div class="input-group-half create-user">
+                <form action="/user/register" method="post" id="signup-form-large">
+                    <div class="input-group-half">
                         <div class="input-group">
                             <input class="input-group-input" type="text" name="firstname" id="firstname" placeholder=""
                                 required>
@@ -172,28 +172,56 @@
                             required>
                         <label class="input-group-label" for="email">Email</label>
                     </div>
+                    <div class="input-group-half">
+                        <div class="input-group">
+                            <div class="account-type-div">
+                                <label class="normal-label" for="gender">Gender</label>
+                                <select name="gender" id="gender">
+                                    <option value="">Choose a gender</option>
+                                    <option value="MALE">Male</option>
+                                    <option value="FEMALE">Female</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <div id="account-type-div">
-                        <label id="label-select" for="account-type">Account Type</label>
-                        <select name="role" id="account-type">
-                            <option value="" disabled selected>Choose</option>
-                            <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
-                            <option value="TEACHER">Teacher</option>
-                        </select>
-                    </div> <br>
-
-                    <div class="input-group">
-                        <input class="input-group-input" type="password" name="password" id="password" placeholder="">
-                        <label class="input-group-label" id="label" for="password">Password</label>
+                        <div class="input-group">
+                            <div class="account-type-div">
+                                <label class="normal-label" for="account-type">Account Type</label>
+                                <select name="role" id="account-type">
+                                    <option value="" disabled selected>Choose</option>
+                                    <!-- <option value="ADMIN">Admin</option> -->
+                                    <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
+                                    <option value="TEACHER">Teacher</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="input-group">
-                        <input class="input-group-input" type="password" name="password_confirm" id="confirm-pass"
+                        <div class="account-type-div">
+                            <label class="normal-label" for="address">Birthdate</label>
+                            <input type="date" id="birthdate" name="birthdate" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="address" id="address" placeholder=""
+                            required>
+                        <label class="input-group-label" for="address">Address</label>
+                    </div>
+
+                    <div class="input-group">
+                        <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber"
                             placeholder="" required>
-                        <label class="input-group-label" id="label" for="confirm-pass">Confirm Password</label>
-                    </div> <br>
-                    <button type="submit" id="login-btn" class="create-user-btn" data-open-modal="confirmationModal"
-                        data-message="Are you sure you want to add and create this user?"
-                        data-action="createUser">Create Account</button>
+                        <label class="input-group-label" for="contactNumber">Contact Number</label>
+                    </div>
+                    <div class="input-group">
+                        <input class="input-group-input" type="password" name="password" id="password" required
+                            placeholder=" ">
+                        <label class="input-group-label" for="password">Password</label>
+                        <img th:src="@{/images/icons/hidden-pass.png}" alt="Show Password" class="toggle-password"
+                            id="togglePassword">
+                    </div>
+
+                    <button type="submit" id="login-btn">Sign Up</button>
                 </form>
             </div>
         </div>
@@ -207,8 +235,58 @@
                 </div>
             </div>
         </div>
+
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success modal -->
+        <div id="successModal"
+            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+     background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+            <p id="successModalMessage"></p>
+        </div>
     </div>
     <script th:src="@{/js/script.js}"></script>
 </body>
+<script>
+    document.getElementById('signup-form-large').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const form = event.target; // Define 'form' from the event target
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries()); // Convert FormData to JSON
+
+        fetch(form.action, { // Now 'form' is correctly defined
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text().then(text => {
+                        showSuccessModal("✅ Account has been created successfully!");
+                    });
+                } else {
+                    return response.text().then(text => {
+                        showErrorModal("❌ " + text); // Show server error response
+                    });
+                }
+            })
+            .catch(error => {
+                showErrorModal("❌ An unexpected error occurred. Please try again.");
+            });
+    });
+
+</script>
 
 </html>

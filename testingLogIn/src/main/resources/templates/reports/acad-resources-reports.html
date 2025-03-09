@@ -49,7 +49,7 @@
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
             <div class="welcome-div">
-                <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+                <p>WELCOME, <span class="account-text">ADMIN!</span></p>
             </div>
         </div>
 
@@ -141,7 +141,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Super Admin</span></h6>
+                        <h6><span>Admin</span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -149,12 +149,48 @@
         </div>
 
         <div class="text-link">
-            <h4>Academic Resources Reports</h4>
+            <h4>Book Distribution Reports</h4>
             <p>Main</p>
             <p>/</p>
             <p>Reports</p>
             <p>/</p>
-            <p>Academic Resources Reports</p>
+            <p>Book Distribution Reports</p>
+        </div>
+
+        <!-- Modal for viewBookModal -->
+        <div id="viewBookModal" class="view-book-modal modal">
+            <div class="view-book-modal-content">
+                <h2>Book Distribution Record</h2>
+
+                <div class="half-width" id="view-grade-studId">
+                    <label for="student-id">Student ID:</label>
+                    <h6 id="student-id">2025-0001</h6>
+                </div>
+                <div class="half-width" id="view-grade-studName">
+                    <label for="student-name">Student Name:</label>
+                    <h6 id="student-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- List of Payments Table -->
+                <table id="table-ni-kharl" class="view-list-of-payments-table">
+                    <thead>
+                        <tr>
+                            <th>Date of Distribution</th>
+                            <th>Grade Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <td>February 12, 2025</td>
+                        <td>Grade 1</td>
+                    </tbody>
+                </table>
+
+                <!-- Close button -->
+                <div class="close-button" id="view-grades-close-btn">
+                    <button type="button" data-close-modal="viewBookModal" class="btn-cancel"
+                        id="close-button">Close</button>
+                </div>
+            </div>
         </div>
 
         <div class="search-div">
@@ -167,10 +203,18 @@
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
                     </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for confirmation -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p id="modalText"></p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -179,24 +223,27 @@
         <table class="acad-resources-table">
             <thead>
                 <tr>
-                    <th>Academic Resources</th>
-                    <th>Distribution</th>
-                    <th>Action</th>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Grade Level & Section</th>
+                    <th>Distribution Status</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Books</td>
+                    <td>2025-0001</td>
+                    <td>Albert Einstein</td>
+                    <td>Grade 1 - Rose</td>
                     <td>
-                        <div class="status-container">
-                            <div class="status" id="status-books">200/200</div>
-                        </div>
-                    </td>
-                    <td>
+
                         <div class="dropdown">
+                            <div class="status-container">
+                                <div class="status" id="status-books">Complete</div>
+                            </div>
                             <div class="action-container action">
                                 <a href="#" class="view-acad-resources-type">
-                                    <img th:src="@{/images/icons/eye.png}" alt="edit-icon">
+                                    <img th:src="@{/images/icons/eye.png}" data-open-modal="viewBookModal"
+                                        alt="edit-icon">
                                 </a>
                             </div>
                         </div>

@@ -46,7 +46,7 @@
             </div>
             <p class="mt-2">S.Y. 2024-2025</p>
             <div class="welcome-div">
-                <p>WELCOME, <span class="account-text">SUPER ADMIN!</span></p>
+                <p>WELCOME, <span class="account-text">ADMIN!</span></p>
             </div>
         </div>
 
@@ -139,7 +139,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Super Admin</span></h6>
+                        <h6><span>Admin</span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -1243,34 +1243,34 @@
     });
 
     function fetchPayments(enrollmentId) {
-            fetch(`/enrollment/paymentView/${enrollmentId}`)
-                .then(res => res.json())
-                .then(epv => {
-                    console.log('The object is', epv);
-                    const studentname = document.querySelector("#student-name");
-                    const studentId = document.querySelector("#student-id");
-                    alert(epv.studentId);
-                    if (!studentname || !studentId) return console.error("Dropdown for sections not found");
+        fetch(`/enrollment/paymentView/${enrollmentId}`)
+            .then(res => res.json())
+            .then(epv => {
+                console.log('The object is', epv);
+                const studentname = document.querySelector("#student-name");
+                const studentId = document.querySelector("#student-id");
+                alert(epv.studentId);
+                if (!studentname || !studentId) return console.error("Dropdown for sections not found");
 
-                    studentname.textContent = epv.studentFirstName + ' ' + epv.studentLastName;
-                    studentId.textContent = epv.studentId;
+                studentname.textContent = epv.studentFirstName + ' ' + epv.studentLastName;
+                studentId.textContent = epv.studentId;
 
-                    const tableBody = document.querySelector("#table-ni-kharl tbody");
-                    tableBody.innerHTML = "";
-                    const feeStatusArray = Object.entries(epv.feeStatus);
+                const tableBody = document.querySelector("#table-ni-kharl tbody");
+                tableBody.innerHTML = "";
+                const feeStatusArray = Object.entries(epv.feeStatus);
 
-                    feeStatusArray.forEach(([key, value]) => {
-                        const match = key.match(/name=([^,]+), requiredAmount=([\d.]+)/);
-                        if (match) {
-                            const name = match[1];
-                            const requiredAmount = match[2];
+                feeStatusArray.forEach(([key, value]) => {
+                    const match = key.match(/name=([^,]+), requiredAmount=([\d.]+)/);
+                    if (match) {
+                        const name = match[1];
+                        const requiredAmount = match[2];
 
-                            const row = document.createElement("tr");
+                        const row = document.createElement("tr");
 
-                            // Get class for status
-                            const statusClass = getPaymentStatusClass(value);
+                        // Get class for status
+                        const statusClass = getPaymentStatusClass(value);
 
-                            row.innerHTML = `
+                        row.innerHTML = `
                         <td>${name}</td>
                         <td>${requiredAmount}</td>
                         <td>
@@ -1287,12 +1287,12 @@
                             </div>
                         </td>`;
 
-                            tableBody.appendChild(row);
-                        }
-                    });
-                })
-                .catch(error => console.error("Error fetching sections:", error));
-        }
+                        tableBody.appendChild(row);
+                    }
+                });
+            })
+            .catch(error => console.error("Error fetching sections:", error));
+    }
 
     async function fetchAllGradeLevels() {
         try {
@@ -1388,27 +1388,27 @@
         }
     }
 
-    function addExistingStudent(studentId){
-            fetch('/enrollment/add/student/'+studentId, {
-                 method: 'POST',
-                 headers: {
-                     'Content-Type': 'application/json'
-                 }
-             })
-             .then(response => {
-                 return response.text().then(message => {
-                     if (response.ok) {
-                         showSuccessModal(message);
-                         window.location.reload(); // Reload the page
-                     } else {
-                         showErrorModal(message);
-                     }
-                 });
-             })
-             .catch(error => {
-                 showErrorModal(message);
-             });
-     }
+    function addExistingStudent(studentId) {
+        fetch('/enrollment/add/student/' + studentId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        showSuccessModal(message);
+                        window.location.reload(); // Reload the page
+                    } else {
+                        showErrorModal(message);
+                    }
+                });
+            })
+            .catch(error => {
+                showErrorModal(message);
+            });
+    }
     // function goList() {
     //     fetch("/enrollment/all/listing")
     //         .then(res => {
@@ -1741,79 +1741,79 @@
             .catch(error => console.error("Error fetching sections:", error));
     }
 
-     document.addEventListener("click", async function (event) {
-            const addButton = event.target.closest('.add-payment-btn');
+    document.addEventListener("click", async function (event) {
+        const addButton = event.target.closest('.add-payment-btn');
 
-            if (addButton) {
-                // Retrieve student information
-                const studentName = document.querySelector("#student-name")?.textContent?.trim();
-                const studentId = document.querySelector("#student-id")?.textContent?.trim();
+        if (addButton) {
+            // Retrieve student information
+            const studentName = document.querySelector("#student-name")?.textContent?.trim();
+            const studentId = document.querySelector("#student-id")?.textContent?.trim();
 
-                if (!studentName || !studentId) {
-                    console.error("Student information not found");
+            if (!studentName || !studentId) {
+                console.error("Student information not found");
+                return;
+            }
+
+            // Populate modal fields
+            document.querySelector("#payee-name").value = studentName;
+            document.querySelector("#addPaymentModal input[type='number'][readonly]").value = studentId;
+
+            // Fetch and populate the current active school year
+            try {
+                let response = await fetch("/semester/currentactive");
+                if (!response.ok) throw new Error("Failed to fetch active school year");
+
+                let data = await response.json();
+
+                // Get input elements
+                let semesterInput = document.getElementById("semester");
+                let schoolYearInput = document.getElementById("school-year");
+
+                if (semesterInput) {
+                    semesterInput.value = data.sem;
+                } else {
+                    console.error("Semester input field not found in the modal");
+                }
+
+                if (schoolYearInput) {
+                    schoolYearInput.value = data.schoolYear.schoolYear;
+                    console.log("Fetched School Year:", data.schoolYear.schoolYear);
+                    console.log("Fetched Semester:", data.sem);
+                } else {
+                    console.error("School year input field not found in the modal");
+                }
+            } catch (error) {
+                console.error("Error fetching current active school year:", error);
+            }
+
+            try {
+                let response = await fetch("/payments/all");
+                if (!response.ok) throw new Error("Failed to fetch required payments");
+
+                let data = await response.json();
+
+                let paymentList = document.getElementById("payment-list");
+                if (!paymentList) {
+                    console.error("Payment list dropdown not found");
                     return;
                 }
 
-                // Populate modal fields
-                document.querySelector("#payee-name").value = studentName;
-                document.querySelector("#addPaymentModal input[type='number'][readonly]").value = studentId;
+                // Clear existing options (except the placeholder)
+                paymentList.innerHTML = '<option value="" disabled selected>Choose</option>';
 
-                // Fetch and populate the current active school year
-                try {
-                    let response = await fetch("/semester/currentactive");
-                    if (!response.ok) throw new Error("Failed to fetch active school year");
+                Object.values(data).forEach(payment => {
+                    let option = document.createElement("option");
+                    option.value = payment.id;
+                    option.textContent = payment.name;
+                    paymentList.appendChild(option);
+                });
 
-                    let data = await response.json();
-
-                    // Get input elements
-                    let semesterInput = document.getElementById("semester");
-                    let schoolYearInput = document.getElementById("school-year");
-
-                    if (semesterInput) {
-                        semesterInput.value = data.sem;
-                    } else {
-                        console.error("Semester input field not found in the modal");
-                    }
-
-                    if (schoolYearInput) {
-                        schoolYearInput.value = data.schoolYear.schoolYear;
-                        console.log("Fetched School Year:", data.schoolYear.schoolYear);
-                        console.log("Fetched Semester:", data.sem);
-                    } else {
-                        console.error("School year input field not found in the modal");
-                    }
-                } catch (error) {
-                    console.error("Error fetching current active school year:", error);
-                }
-
-                try {
-                    let response = await fetch("/payments/all");
-                    if (!response.ok) throw new Error("Failed to fetch required payments");
-
-                    let data = await response.json();
-
-                    let paymentList = document.getElementById("payment-list");
-                    if (!paymentList) {
-                        console.error("Payment list dropdown not found");
-                        return;
-                    }
-
-                    // Clear existing options (except the placeholder)
-                    paymentList.innerHTML = '<option value="" disabled selected>Choose</option>';
-
-                    Object.values(data).forEach(payment => {
-                        let option = document.createElement("option");
-                        option.value = payment.id;
-                        option.textContent = payment.name;
-                        paymentList.appendChild(option);
-                    });
-
-                    console.log("Fetched Payment List:", data);
-                } catch (error) {
-                    console.error("Error fetching payment list:", error);
-                }
+                console.log("Fetched Payment List:", data);
+            } catch (error) {
+                console.error("Error fetching payment list:", error);
             }
-        });
+        }
+    });
 
 
 

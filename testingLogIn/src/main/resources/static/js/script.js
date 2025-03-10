@@ -671,6 +671,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "proceedToEnrolled":
         proceedToEnrolled(enrollmentIdLet);
+        break;
       case "addFee":
         // This case is for adding new fee
         if (!validateForm("feesManagementForm")) {

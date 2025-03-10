@@ -35,9 +35,6 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
            "ORDER BY pr.datePaid DESC")
     List<PaymentRecords> getRecordsBySem(@Param("semId") int semId);
     
-    @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid")
-    List<PaymentRecords> getAllRecordsSortByDate(Sort sort);
-    
     @Query("SELECT pr FROM PaymentRecords pr "+
            "WHERE pr.student.studentId = :studentId "+
            "ORDER BY pr.datePaid DESC")

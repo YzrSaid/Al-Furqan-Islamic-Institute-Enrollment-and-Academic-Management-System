@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.aop.AopInvocationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 /**
  *
@@ -22,6 +23,7 @@ public class StudentSubjectGradeServices {
     private final SubjectRepo subjectRepo;
     private final sySemesterRepo semRepo;
 
+    @Autowired
     public StudentSubjectGradeServices(StudentSubjectGradeRepo ssgRepo, SubjectRepo subjectRepo, sySemesterRepo semRepo) {
         this.ssgRepo = ssgRepo;
         this.subjectRepo = subjectRepo;
@@ -30,10 +32,8 @@ public class StudentSubjectGradeServices {
     
     public boolean didStudentPassed(int studentId, int gradeLevelId){
         try{
-            boolean result = ssgRepo.didStudentPassed(studentId, gradeLevelId);
-            return result;
+            return ssgRepo.didStudentPassed(studentId, gradeLevelId);
         }catch(AopInvocationException aie){
-            System.out.println("Nag error");
             return false;
         }
     }
@@ -64,7 +64,7 @@ public class StudentSubjectGradeServices {
     
     public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesBySection(int sectionId){
         List<StudentSubjectGrade> gradesList = ssgRepo.getSectionGradesByCurrentSem(sectionId, semRepo.findCurrentActive().getSySemNumber());
-        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap();
+        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap<>();
         
         gradesList
                 .forEach(studGrade -> {
@@ -79,14 +79,12 @@ public class StudentSubjectGradeServices {
 
     public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesOfPreRequisite(int studentId,int preRequisiteId){
         List<StudentSubjectGrade> gradesList = ssgRepo.getGradesByStudentGradeLevel(studentId,preRequisiteId);
-        System.out.println(gradesList.size());
-        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap();
+        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap<>();
         gradesList
                 .forEach(studGrade -> {
                     String gradeLevelAndSectionSem = studGrade.getSection().getLevel().getLevelName()+" - "+
                             studGrade.getSection().getSectionName()+" : "+
                             studGrade.getSemester().getSchoolYear().getSchoolYear()+"-"+studGrade.getSemester().getSem()+ " sem";
-                    System.out.println(gradeLevelAndSectionSem);
                     if(!subjectStudGrades.containsKey(gradeLevelAndSectionSem))
                         subjectStudGrades.put(gradeLevelAndSectionSem, new ArrayList<StudentSubjectGradeDTO>());
                     subjectStudGrades.get(gradeLevelAndSectionSem).add(studGrade.DTOmapper());
@@ -98,7 +96,7 @@ public class StudentSubjectGradeServices {
     public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesBySemester(int studentId){
         List<StudentSubjectGrade> gradesList = ssgRepo.getGradesByStudent(studentId);
 
-        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap();
+        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap<>();
         
         gradesList
                 .forEach(studGrade -> {

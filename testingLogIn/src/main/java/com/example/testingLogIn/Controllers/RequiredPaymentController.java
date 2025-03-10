@@ -31,8 +31,6 @@ public class RequiredPaymentController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addRequiredPayments(@RequestBody RequiredPaymentsDTO reqPayments) {
-        System.out.println(reqPayments);
-
         try {
             if (reqPaymentService.addNewPayments(reqPayments))
                 return new ResponseEntity<>("New payment added successfully", HttpStatus.OK);
@@ -71,7 +69,6 @@ public class RequiredPaymentController {
     @PutMapping("/update/{feeId}")
     public ResponseEntity<String> updatedSelectedPayment(@PathVariable int feeId,
             @RequestBody RequiredPaymentsDTO updated) {
-                System.out.println(feeId);
         try {
             if (reqPaymentService.updatePayment(feeId, updated))
                 return new ResponseEntity<>("Required payment updated successfully", HttpStatus.OK);

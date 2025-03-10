@@ -21,20 +21,24 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ScheduleServices {
-    
+
+    private final ScheduleRepo scheduleRepo;
+    private final UserRepo userRepo;
+    private final SectionServices sectionService;
+    private final SubjectServices subjectService;
+    private final StudentSubjectGradeRepo ssgRepo;
+    private final sySemesterRepo semRepo;
+
     @Autowired
-    private ScheduleRepo scheduleRepo;
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private SectionServices sectionService;
-    @Autowired
-    private SubjectServices subjectService;
-    @Autowired
-    private StudentSubjectGradeRepo ssgRepo;
-    @Autowired
-    private sySemesterRepo semRepo;
-    
+    public ScheduleServices(ScheduleRepo scheduleRepo, UserRepo userRepo, SectionServices sectionService, SubjectServices subjectService, StudentSubjectGradeRepo ssgRepo, sySemesterRepo semRepo) {
+        this.scheduleRepo = scheduleRepo;
+        this.userRepo = userRepo;
+        this.sectionService = sectionService;
+        this.subjectService = subjectService;
+        this.ssgRepo = ssgRepo;
+        this.semRepo = semRepo;
+    }
+
     public int addNewSchedule(ScheduleDTO newSchedule){
         UserModel teacher = getTeacherByName(newSchedule.getTeacherName().toLowerCase());
         Section section = sectionService.getSectionById(newSchedule.getSectionId());

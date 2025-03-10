@@ -49,38 +49,27 @@ public class SectionServices {
     public int addSection(SectionDTO sectionDTO){
         UserModel user= getUserByFullName(sectionDTO.getAdviserName());
         GradeLevel gradeLevel = getGradeLevel(sectionDTO.getGradeLevelName());
-        int result = user == null ?            1:
-                     gradeLevel == null ?      2:
+        int result = user == null ?             1:
+                     gradeLevel == null ?       2:
                      doesTeacherHaveAdvisory
-                                 (user) ? 3:
+                                 (user) ?       3:
                      getSectionByName
         (sectionDTO.getSectionName()
-                .toLowerCase()) != null        ? 4:
-                                               5;
-        
-        switch(result){
-            case 1:
-                //Teacher Record/Account Does Not Exist
-                return 1;
-            case 2 :
-                return 2;/*Grade Level Info Does Not Exist*/
-            case 3:
-                //If the Selected Teacher already have an Advisory Class
-                return 3;
-            case 4:
-                //If the section name already exist
-                return 4;
-            default:
-                Section newSection = Section.builder()
-                                            .adviser(user)
-                                            .level(gradeLevel)
-                                            .sectionName(sectionDTO.getSectionName())
-                                            .capacity(sectionDTO.getCapacity())
-                                            .isNotDeleted(true)
-                                            .build();
-                sectionRepo.save(newSection);
-                return 5;
+                .toLowerCase()) != null      ?  4:
+                                                5;
+
+        if (result == 5) {
+            Section newSection = Section.builder()
+                    .adviser(user)
+                    .level(gradeLevel)
+                    .sectionName(sectionDTO.getSectionName())
+                    .capacity(sectionDTO.getCapacity())
+                    .isNotDeleted(true)
+                    .build();
+            sectionRepo.save(newSection);
+            return 5;
         }
+        return result;
     }
 
     public List<SectionDTO> getAllSections(){
@@ -107,7 +96,6 @@ public class SectionServices {
     //UPDATE SECTION RECORD
     public boolean updateSection(SectionDTO sectionDTO){
         Section toUpdate = sectionRepo.findById(sectionDTO.getNumber()).orElse(null);
-        System.out.println("the number is "+sectionDTO.getNumber());
         if(toUpdate != null){
             toUpdate.setLevel(getGradeLevel(sectionDTO.getGradeLevelName()));
             toUpdate.setAdviser(getUserByFullName(sectionDTO.getAdviserName()));

@@ -47,24 +47,24 @@ public class PaymentCheckerService {
             checker.setSem(sysem);
             checker.setStudent(student);
             checker.setComplete(false);
+            assert student != null;
             if(student.isScholar())
                 checker.setComplete(true);
             
             checkerRepo.save(checker);
             current = checkerRepo.getCurrent(studentId, sysem.getSySemNumber());
         }
-        
+
+        assert student != null;
         if(!student.isScholar()){
             boolean isComplete = true;
             List<PaymentRecords> records = paymentRecordRepo.getCurrentPaidRequiredPaymentOfStudent(studentId, sysem.getSySemNumber());
             List<GradeLevelToRequiredPayment> toPayList = reqFeeGradelvlRepo.findByGradeLevel(gradeLevelId);
             Set<Integer> paidRecorded = new HashSet<>();
             for(PaymentRecords pr : records){
-                System.out.println(pr.getRequiredPayment().getId());
                 paidRecorded.add(pr.getRequiredPayment().getId());
             }
             for(GradeLevelToRequiredPayment topay: toPayList){
-                System.out.println(topay.getRequiredFee().getId());
                 if(!paidRecorded.contains(topay.getRequiredFee().getId())){
                     isComplete = false;
                     break;}

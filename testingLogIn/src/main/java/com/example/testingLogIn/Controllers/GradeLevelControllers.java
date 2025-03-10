@@ -43,7 +43,6 @@ public class GradeLevelControllers {
     public ResponseEntity<Map<String, String>> addGradeLevel(@RequestParam String levelName,
             @RequestParam String preRequisite) { 
         Map<String, String> response = new HashMap<>();
-        System.out.println(preRequisite);
 
         try {
             if (gradeLevelServices.addNewGradeLevel(levelName, preRequisite)) {

@@ -78,7 +78,7 @@ public class SchoolYearServices {
     
     private boolean doesSchoolYearExist(String schoolYear){
         return schoolYearRepo.findAll().stream()
-                             .filter(sy -> sy.isNotDeleted() && sy.getSchoolYear().equals(schoolYear))
+                             .filter(sy -> sy.isNotDeleted() && sy.getSchoolYear().equalsIgnoreCase(schoolYear))
                              .findFirst().orElse(null) != null;
     }
 }

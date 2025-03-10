@@ -17,14 +17,18 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SubjectServices {
-    
+
+    private final SubjectRepo subjectRepo;
+    private final GradeLevelServices gradeLevelService;
+    private final SectionServices sectionService;
+
     @Autowired
-    private SubjectRepo subjectRepo;
-    @Autowired
-    private GradeLevelServices gradeLevelService;
-    @Autowired
-    private SectionServices sectionService;
-    
+    public SubjectServices(SubjectRepo subjectRepo, GradeLevelServices gradeLevelService, SectionServices sectionService) {
+        this.subjectRepo = subjectRepo;
+        this.gradeLevelService = gradeLevelService;
+        this.sectionService = sectionService;
+    }
+
     public List<SubjectDTO> getSubjectByGrade(String gradeLevel){
         return subjectRepo.findAll().stream()
                           .filter(subject ->subject.getGradeLevel().isNotDeleted() && 
@@ -58,19 +62,19 @@ public class SubjectServices {
         return subjectRepo.findAll().stream()
                           .filter(subj -> subj.isNotDeleted() &&
                                             subj.getGradeLevel().isNotDeleted())
-                          .map(subject -> SubjectToSubjectDTO(subject))
+                          .map(this::SubjectToSubjectDTO)
                           .collect(Collectors.toList());
     }
             
-    public boolean addNewSubject(int levelId,String subjectname){
+    public boolean addNewSubject(int levelId,String subjectName){
         if(gradeLevelService.getGradeLevel(levelId) == null)
             throw new NullPointerException("Grade Level Not Found");
         
-        if(!doesSubjectNameExist(levelId,subjectname)){
+        if(!doesSubjectNameExist(levelId,subjectName)){
             Subject sub=new Subject();
             sub.setNotDeleted(true);
             sub.setGradeLevel(gradeLevelService.getGradeLevel(levelId));
-            sub.setSubjectName(subjectname);
+            sub.setSubjectName(subjectName);
             
             subjectRepo.save(sub);
             
@@ -82,7 +86,7 @@ public class SubjectServices {
     public Subject getByName(String subjectName){
         return subjectRepo.findAll().stream()
                           .filter(subject -> subject.isNotDeleted() &&
-                                             subjectName.toLowerCase().equals(subject.getSubjectName().toLowerCase()))
+                                             subjectName.equalsIgnoreCase(subject.getSubjectName()))
                           //.map(Subject::mapper)
                             .findFirst().orElse(null);
     }

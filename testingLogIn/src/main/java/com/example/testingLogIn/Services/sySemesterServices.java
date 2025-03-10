@@ -19,11 +19,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class sySemesterServices {
+    private final sySemesterRepo semesterRepo;
+    private final SchoolYearRepo syRepo;
+
     @Autowired
-    private sySemesterRepo semesterRepo;
-    @Autowired
-    private SchoolYearRepo syRepo;
-    
+    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo) {
+        this.semesterRepo = semesterRepo;
+        this.syRepo = syRepo;
+    }
+
     public void addSemesters(String schoolYearName){
         SchoolYear sy = syRepo.getByName(schoolYearName);
         if(sy != null){
@@ -49,11 +53,11 @@ public class sySemesterServices {
     }
     
     public Map<String,List<SchoolYearSemester>> getAllSemesters(){
-        Map<String,List<SchoolYearSemester>> toReturn = new HashMap();
+        Map<String,List<SchoolYearSemester>> toReturn = new HashMap<>();
         List<SchoolYearSemester> allSem = semesterRepo.findAll().stream()
                            .filter(sem -> sem.getSchoolYear().isNotDeleted())
                            .sorted(Comparator.comparing((SchoolYearSemester sem) -> sem.getSchoolYear().getSchoolYear(), Comparator.reverseOrder())
-                                                    .thenComparing(sem -> sem.getSem()))
+                                                    .thenComparing(SchoolYearSemester::getSem))
                            .toList();
         
         allSem.forEach(sem -> {
@@ -106,8 +110,7 @@ public class sySemesterServices {
     
     private void disableAll(){
             semesterRepo
-                .findAll()
-                .stream().forEach(sem -> {
+                .findAll().forEach(sem -> {
                     sem.setActive(false);
                     semesterRepo.save(sem);
                 });

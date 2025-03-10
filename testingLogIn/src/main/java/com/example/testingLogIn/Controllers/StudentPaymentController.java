@@ -74,7 +74,6 @@ public class StudentPaymentController{
     
     @GetMapping("/student/id/{studentId}")
     public ResponseEntity<List<PaymentRecordDTO>> getByStudentNamePaymentRecords(@PathVariable String studentId){
-        System.out.println(studentId);
         try{
             return new ResponseEntity<>(paymentService.getAllStudentPaymentRecordsByName(studentId),HttpStatus.OK);
         }catch(Exception e){

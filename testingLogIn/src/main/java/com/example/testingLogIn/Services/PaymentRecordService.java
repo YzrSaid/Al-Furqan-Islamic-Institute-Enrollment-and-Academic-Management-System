@@ -38,8 +38,6 @@ public class PaymentRecordService {
     
     public boolean addNewRecord(PaymentRecordDTO paymentRec){
         Student student = studentRepo.findById(paymentRec.getStudId()).orElse(null);
-        System.out.println(paymentRec.getStudId());
-        System.out.println(student.getFirstName());
         if(student == null)
             return false;
         
@@ -80,7 +78,7 @@ public class PaymentRecordService {
     }
     public List<PaymentRecordDTO> getAllTimeRecordsByDate(String condition){
         Sort sort = condition.equalsIgnoreCase("DESC") ? Sort.by(Sort.Order.desc("datePaid")) : Sort.by(Sort.Order.asc("datePaid"));
-        return paymentRepo.getAllRecordsSortByDate(sort).stream()
+        return paymentRepo.findAll(sort).stream()
                             .map(PaymentRecords::DTOmapper)
                             .toList();
     }
@@ -93,7 +91,6 @@ public class PaymentRecordService {
     public List<PaymentRecordDTO> getAllStudentPaymentRecordsByName(String studentName){
         try{
             Student student = studentRepo.findByStudentDisplayId(studentName);
-            System.out.println(student.getFirstName());
             return paymentRepo.getAllStudentPaymentRecord(student.getStudentId()).stream()
                                 .map(PaymentRecords::DTOmapper)
                                 .toList();

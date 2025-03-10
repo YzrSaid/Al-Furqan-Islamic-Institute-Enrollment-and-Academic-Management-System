@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.ModelDTO.GradeLevelToRequiredPaymentDTO;
@@ -35,7 +31,7 @@ public class RequiredPaymentsServices {
         this.reqFeeGradelvlRepo = reqFeeGradelvlRepo;
     }
     
-    public RequiredFees getRequiredPaymebtById(int reqPaymentId){
+    public RequiredFees getRequiredPaymentById(int reqPaymentId){
         return reqPaymentsRepo.findById(reqPaymentId).orElse(null);
     }
     
@@ -77,7 +73,7 @@ public class RequiredPaymentsServices {
     
     public List<RequiredPaymentsDTO> getAllPayments(){
         List<RequiredFees> paymentsList = reqPaymentsRepo.findAll().stream()
-                                .filter(payment -> payment.isNotDeleted())
+                                .filter(RequiredFees::isNotDeleted)
                                 .toList();
         List<RequiredPaymentsDTO> uniquePayments = new ArrayList<>();
         
@@ -89,7 +85,7 @@ public class RequiredPaymentsServices {
                                                         .gradeLevelNames(new ArrayList<String>())
                                                         .build();
                 reqFeeGradelvlRepo.findByRequiredFee(payment.getId()).stream()
-                        .filter(gradelvlrec -> gradelvlrec.isNotDeleted())
+                        .filter(GradeLevelToRequiredPayment::isNotDeleted)
                         .forEach(gradelvl -> {
                             paymentDTO.getGradeLevelNames().add(gradelvl.getGradeLevel().getLevelName());
                         });
@@ -101,19 +97,18 @@ public class RequiredPaymentsServices {
     
     public List<GradeLevelToRequiredPaymentDTO> getPaymentsByGradeLevel(int gradeLevelId){
         return reqFeeGradelvlRepo.findByRequiredFee(gradeLevelId).stream()
-                        .filter(gradelvlrec -> gradelvlrec.isNotDeleted())
+                        .filter(GradeLevelToRequiredPayment::isNotDeleted)
                         .map(GradeLevelToRequiredPayment::DTOmapper)
                         .toList();
     }
     
     public boolean updatePayment(int feeId, RequiredPaymentsDTO updated){
         RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
+        assert toUpdate != null;
         toUpdate.setName(updated.getName());
         toUpdate.setRequiredAmount(updated.getRequiredAmount());
         reqPaymentsRepo.save(toUpdate);
-        if(toUpdate == null)
-            return false;
-        
+
         List<GradeLevelToRequiredPayment> affectedRows = reqFeeGradelvlRepo.findByRequiredFee(feeId);
         
         for(GradeLevelToRequiredPayment payment : affectedRows){
@@ -140,7 +135,6 @@ public class RequiredPaymentsServices {
     }
     
     public boolean deleteRequiredPayment(String requiredPaymentName){
-        System.out.println(requiredPaymentName);
         reqPaymentsRepo.deleteRequiredPaymentByName(requiredPaymentName);
         return true;
     }

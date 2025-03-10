@@ -658,7 +658,7 @@ fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
             if (statusText === "QUALIFIED") {
                 statusElement.style.backgroundColor = "#28a745"; // Green
                 statusElement.style.color = "white";
-            } else if (statusText === "UNQUALIFIED") { // Fix this condition
+            } else if (statusText === "NOT QUALIFIED") { // Fix this condition
                 statusElement.style.backgroundColor = "#E74424"; // Red
                 statusElement.style.color = "white";
             }

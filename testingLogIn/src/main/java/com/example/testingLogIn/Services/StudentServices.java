@@ -31,9 +31,9 @@ public class StudentServices {
     
     public boolean addStudent(StudentDTO student){
         String year = LocalDate.now().getYear()+"";
-        String count = studentRepo.findStudentNextId(year)+1+"";
+        StringBuilder count = new StringBuilder(studentRepo.findStudentNextId(year) + 1 + "");
         for(int i=count.length() ; i<4 ; i++){
-            count = "0"+count;
+            count.insert(0, "0");
         }
         if(doesStudentNameExist(student))
             return false;

@@ -15,13 +15,12 @@ import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.PaymentsRecordRepo;
-import com.example.testingLogIn.Repositories.RequiredPaymentsRepo;
 import com.example.testingLogIn.Repositories.SectionRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,6 +82,7 @@ public class EnrollmentServices {
     public int addToAssessment(int enrollmentId, int gradeLevelId) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         GradeLevel gradeLevelToEnroll = gradeLevelRepo.findById(gradeLevelId).orElse(null);
+        assert enrollmentRecord != null;
         Student student = enrollmentRecord.getStudent();
         if (!enrollmentRecord.isNotDeleted())
             return 1;
@@ -153,12 +153,14 @@ public class EnrollmentServices {
             enrollmentRepo.save(enrollmentRecord);
             ssgService.addStudentGrades(enrollmentRecord);
 
-            Student student = enrollmentRecord.getStudent();
+            Student student = studentRepo.findById(enrollmentRecord.getStudent().getStudentId()).orElse(null);
+            assert student != null;
             student.setNew(false);
-            student.setStudentBalance(student.getStudentBalance() + gradelvlReqFeesRepo
+            Double toAdd=(gradelvlReqFeesRepo
                     .findTotalAmountByGradeLevel(enrollmentRecord.getGradeLevelToEnroll().getLevelId()));
+            double newBalance=student.getStudentBalance() + (toAdd == null ? 0 :toAdd);
+            student.setStudentBalance(newBalance);
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
-            System.out.println("Student Updated");
             studentRepo.save(student);
 
             return 2;
@@ -188,11 +190,13 @@ public class EnrollmentServices {
 
     public EnrollmentDTO getEnrollment(int enrollmentId) {
         Enrollment enr = enrollmentRepo.findById(enrollmentId).orElse(null);
+        assert enr != null;
         return enr.DTOmapper(isComplete(enr));
     }
 
     public EnrollmentPaymentView getStudentPaymentStatus(int enrollmentId) {
         Enrollment er = enrollmentRepo.findById(enrollmentId).orElse(null);
+        assert er != null;
         EnrollmentPaymentView epv = EnrollmentPaymentView.builder()
                 .studentId(er.getStudent().getStudentId())
                 .studentDisplayId(er.getStudent().getStudentDisplayId())
@@ -212,7 +216,8 @@ public class EnrollmentServices {
                     try {
                         totalCurrentlyPaid = payRecRepo.getTotalPaidByStudentForFeeInSemester(
                                 er.getStudent().getStudentId(), toPay.getId(), actvSemId);
-                    } catch (NullPointerException npe) {
+                    } catch (NullPointerException ignored) {
+                        //nothing to do
                     }
                     String status = totalCurrentlyPaid == 0 ? "Unpaid"
                             : totalCurrentlyPaid > 0 && totalCurrentlyPaid < toPay.getRequiredAmount()
@@ -220,7 +225,6 @@ public class EnrollmentServices {
                                     : "Fully Paid";
                     epv.getFeeStatus().put(toPay, status);
                 });
-        epv.getFeeStatus().containsValue("Unpaid");
 
         return epv;
     }

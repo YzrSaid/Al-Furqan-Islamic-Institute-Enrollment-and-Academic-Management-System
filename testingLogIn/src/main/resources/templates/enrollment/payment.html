@@ -299,7 +299,7 @@
                             <h6>sum of ₱</h6>
                             <input type="number" id="payment-amount">
                             <h6>as payment for</h6>
-                            <select name="payment-list" id="payment-list">
+                            <select onchange="printThis(this.value)" name="payment-list" id="payment-list">
                                 <option value="" disabled>Choose</option>
                             </select>
                         </div> <br> <br>
@@ -408,7 +408,7 @@
 <!--                }-->
 
                 try {
-                    let response = await fetch("/payments/all");
+                    let response = await fetch("/payments/grade/"+gradeLevelId);
                     if (!response.ok) throw new Error("Failed to fetch required payments");
 
                     let data = await response.json();
@@ -419,13 +419,15 @@
                         return;
                     }
 
-                    // Clear existing options (except the placeholder)
-                    paymentList.innerHTML = '<option value="" disabled selected>Choose</option>';
+                    paymentList.innerHTML = `
+                                            <option value="" disabled selected>Choose</option>
+                                            <option value="all">All</option>
+                                        `;
 
                     Object.values(data).forEach(payment => {
                         let option = document.createElement("option");
-                        option.value = payment.id;
-                        option.textContent = payment.name;
+                        option.value = payment.requiredFeeId;
+                        option.textContent = payment.requiredFeeName;
                         paymentList.appendChild(option);
                     });
 
@@ -487,29 +489,30 @@
                 return;
             }
 
-            // Prepare data for API
-            const paymentData = {
-                studId: payerId,
-                amount: paymentAmount,
-                requiredPaymentId: requiredPaymentId,
-            };
+ const endpoint = requiredPaymentId === "all"
+        ? `/paymentrecord/add/all/${payerId}/${gradeLevelId}/${paymentAmount}?forEnrollment=true`
+        : "/paymentrecord/add";
 
-            console.log("Sending Payment Data:", paymentData);
+    const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: requiredPaymentId === "all" ? null : JSON.stringify({
+            studId: payerId,
+            amount: paymentAmount,
+            requiredPaymentId: requiredPaymentId,
+        }),
+    };
 
-            // Send request
-            fetch("/paymentrecord/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(paymentData)
-            })
-                .then(response => response.text())
-                .then(message => {
-                    showSuccessModal(message);
-                })
-                .catch(error => {
-                    console.error("Error adding payment:", error);
-                    alert("Failed to add payment. Please try again.");
-                });
+    // Send the fetch request
+    fetch(endpoint, requestOptions)
+        .then(response => response.text())
+        .then(message => {
+            showSuccessModal(message);
+        })
+        .catch(error => {
+            console.error("Error adding payment:", error);
+            alert("Failed to add payment. Please try again.");
+        });
         }
 
 
@@ -551,7 +554,7 @@
                     tableBody.innerHTML = "";
 
                     data.forEach(rec => {
-                        console.log(rec.complete);
+                        console.log(rec);
                         const row = document.createElement("tr");
                         const proceedBtn = rec.complete ? `
                     <a href="#"
@@ -579,7 +582,7 @@
                                                 </button>
                                             </div>
                                             <div class="dropdown-status-content" id="dropdown-listing">
-                                                <a href="#" class="action" data-open-modal="listOfPaymentsModal" data-enrollment-id="${rec.enrollmentId}">View List of Payments</a>
+                                                <a href="#" class="action" data-open-modal="listOfPaymentsModal" data-level-Id="${rec.gradeLevelToEnrollId}" data-enrollment-id="${rec.enrollmentId}">View List of Payments</a>
                                                 ${proceedBtn}
                                             </div>
                                         </div>
@@ -591,15 +594,15 @@
                 })
                 .catch(error => console.error("Error:", error));
         }
-
+        let gradeLevelId;
         document.addEventListener("click", function (event) {
             const proceedButton = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
             if (proceedButton) {
                 const enrollmentId = proceedButton.getAttribute("data-enrollment-id");
+                gradeLevelId = proceedButton.getAttribute("data-level-Id");
                 if (!enrollmentId) return console.error("Enrollment Id Not Found");
 
                 fetchPayments(enrollmentId);
-                fetchCurrentUser();
             }
         });
 
@@ -706,6 +709,44 @@
                 .catch(error => console.error("Error fetching sections:", error));
         }
 
+        function printThis(feeId){
+            console.log(feeId);
+            var url = `/paymentrecord/balance/${payerId}?feeId=${feeId}&gradeLevelId=${gradeLevelId}&currentSem=true`;
+            if(feeId === "all"){
+                url = `/paymentrecord/balance/${payerId}?gradeLevelId=${gradeLevelId}&currentSem=true`;
+            }
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Student Balance:", data);
+                    const paymentAmountInput = document.getElementById('payment-amount');
+                    if (paymentAmountInput) {
+                        paymentAmountInput.value = data; // Set the value of the input field
+                        paymentAmountInput.max = data;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching student balance:", error);
+                });
+        }
+
+        const paymentAmountInput = document.getElementById('payment-amount');
+        if (paymentAmountInput) {
+            paymentAmountInput.addEventListener('input', function () {
+                const maxValue = parseFloat(this.max);
+                const enteredValue = parseFloat(this.value);
+
+                if (enteredValue > maxValue) {
+                    alert(maxValue+' nalang imong need bayaran, di na pwde musobra sussss');
+                    this.value = maxValue;
+                }
+            });
+        }
 
         function proceedToEnrolled(enrollmentIdLet) {
             const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;

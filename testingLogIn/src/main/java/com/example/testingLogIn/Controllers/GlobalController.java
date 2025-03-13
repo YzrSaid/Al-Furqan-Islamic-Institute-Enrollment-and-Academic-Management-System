@@ -23,9 +23,9 @@ public class GlobalController {
     private sySemesterServices semService;
 
     @ModelAttribute("userRole")
-    public String getUserRole(){
+    public String getUserRole() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth != null && auth.getPrincipal() instanceof UserModel user){
+        if (auth != null && auth.getPrincipal() instanceof UserModel user) {
             return user.getRole().toString();
         }
 
@@ -33,34 +33,44 @@ public class GlobalController {
     }
 
     @ModelAttribute("userFullName")
-    public String getUserFullName(){
+    public String getUserFullName() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth != null && auth.getPrincipal() instanceof UserModel user){
-            return user.getFirstname()+" "+user.getLastname();
+        if (auth != null && auth.getPrincipal() instanceof UserModel user) {
+            return user.getFirstname() + " " + user.getLastname();
+        }
+        return "UNKNOWN";
+    }
+
+    @ModelAttribute("userFirstName")
+    public String getUserFirstName() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof UserModel user) {
+            return user.getFirstname(); 
         }
         return "UNKNOWN";
     }
 
     @ModelAttribute("currentSY")
-    public String currentSchoolYear(){
-        try{
+    public String currentSchoolYear() {
+        try {
             return semService.getCurrentActive().getSchoolYear().getSchoolYear();
-        }catch(Exception e){
+        } catch (Exception e) {
             return "NOT FOUND";
         }
     }
 
     @ModelAttribute("currentSem")
-    public String currentSem(){
-        try{
+    public String currentSem() {
+        try {
             return semService.getCurrentActive().getSem() == Semester.First ? "First" : "Second";
-        }catch(Exception e){
+        } catch (Exception e) {
             return "NOT FOUND";
         }
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public RedirectView handleNoHandlerFoundException(NoHandlerFoundException ex, RedirectAttributes redirectAttributes) {
+    public RedirectView handleNoHandlerFoundException(NoHandlerFoundException ex,
+            RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", "The requested resource was not found.");
         return new RedirectView("/home"); // Redirect to a custom error page
     }

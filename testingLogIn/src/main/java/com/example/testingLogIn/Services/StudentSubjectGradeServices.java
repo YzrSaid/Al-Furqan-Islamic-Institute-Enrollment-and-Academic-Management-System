@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 /**
  *
@@ -37,7 +38,8 @@ public class StudentSubjectGradeServices {
             return false;
         }
     }
-    
+
+    @Async
     public void addStudentGrades(Enrollment enrollment){
         subjectRepo.findAll().stream()
                     .filter(subject ->  subject.isNotDeleted() && 

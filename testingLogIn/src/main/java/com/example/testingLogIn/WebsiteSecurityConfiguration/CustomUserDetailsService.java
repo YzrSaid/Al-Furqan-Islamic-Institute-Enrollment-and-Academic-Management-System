@@ -92,15 +92,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepo.findByUsername(username) != null;
     }
 
-    public String getLoggedInUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            String currentUserName = authentication.getName();
-            return currentUserName;
-        }
-        return null;
-    }
-    
     public UserModel getCurrentlyLoggedInUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {

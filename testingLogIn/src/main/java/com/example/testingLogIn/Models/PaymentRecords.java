@@ -2,14 +2,10 @@ package com.example.testingLogIn.Models;
 
 import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import java.time.LocalDate;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 
 /**
  *
@@ -17,6 +13,7 @@ import lombok.*;
  */
 @Builder
 @Data
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

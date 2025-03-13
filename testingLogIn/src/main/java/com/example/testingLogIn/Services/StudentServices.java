@@ -3,10 +3,15 @@ package com.example.testingLogIn.Services;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.PagedResponse.StudentDTOPage;
 import com.example.testingLogIn.Repositories.StudentRepo;
+
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,9 +31,7 @@ public class StudentServices {
         this.sectionServices = sectionServices;
         this.enrollmentService = enrollmentService;
     }
-    
-    
-    
+
     public boolean addStudent(StudentDTO student){
         String year = LocalDate.now().getYear()+"";
         StringBuilder count = new StringBuilder(studentRepo.findStudentNextId(year) + 1 + "");
@@ -72,25 +75,25 @@ public class StudentServices {
     }
     
     public List<StudentDTO> getAllStudent(){
-        return studentRepo.findRegisteredStudents().stream()
+        return studentRepo.findByIsNotDeletedTrue().stream()
                             .map(Student::DTOmapper)
                             .toList();
     }
     
     public List<StudentDTO> getNewStudents(){
-        return studentRepo.findNewStudents().stream()
+        return studentRepo.findByIsNotDeletedTrueAndIsNewTrue().stream()
                             .map(Student::DTOmapper)
                             .toList();
     }
     
     public List<StudentDTO> getOldStudents(){
-        return studentRepo.findOldStudents().stream()
+        return studentRepo.findByIsNotDeletedTrueAndIsNewFalse().stream()
                             .map(Student::DTOmapper)
                             .toList();
     }
     
     public List<StudentDTO> getTransfereeStudents(){
-        return studentRepo.findTransfereeStudents().stream()
+        return studentRepo.findByIsNotDeletedTrueAndIsTransfereeTrue().stream()
                             .map(Student::DTOmapper)
                             .toList();
     }
@@ -150,7 +153,42 @@ public class StudentServices {
         return studentRepo.existsByNameIgnoreCaseAndNotDeleted(
                 null,
                 student.getFirstName(),
-                student.getLastName()
-    );
+                student.getLastName());
     }
+
+    public StudentDTOPage getStudentPage(String studentType, String condition, int pageNo, int pageSize){
+        Sort sort = condition.equalsIgnoreCase("asc") ?
+                Sort.by(Sort.Order.asc("studentDisplayId")) :
+                Sort.by(Sort.Order.desc("studentDisplayId"));
+
+        Page<StudentDTO> studentPage = null;
+        if(studentType.equalsIgnoreCase("new"))
+            studentPage = studentRepo.findByIsNewTrue(PageRequest.of(pageNo-1,pageSize,sort)).map(Student::DTOmapper);
+        else
+            studentPage = studentRepo.findByIsNewFalse(PageRequest.of(pageNo-1,pageSize,sort)).map(Student::DTOmapper);
+
+        return StudentDTOPage.builder()
+                .content(studentPage.getContent())
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(studentPage.getTotalElements())
+                .totalPages(studentPage.getTotalPages())
+                .isLast(studentPage.isLast())
+                .build();
+    }
+
+    public StudentDTOPage getStudentByNameOrDisplayId(String word, int pageNo, int pageSize){
+        Page<StudentDTO> studentPage = studentRepo.findByStudentDisplayIdOrName(word,PageRequest.of(pageNo-1,pageSize))
+                                                                                .map(Student::DTOmapper);
+        return StudentDTOPage.builder()
+                            .content(studentPage.getContent())
+                            .pageNo(pageNo)
+                            .pageSize(pageSize)
+                            .totalElements(studentPage.getNumberOfElements())
+                            .totalPages(studentPage.getTotalPages())
+                            .isLast(studentPage.isLast())
+                            .build();
+    }
+
+
 }

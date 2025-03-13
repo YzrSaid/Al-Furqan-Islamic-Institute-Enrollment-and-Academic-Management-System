@@ -4,15 +4,14 @@ import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
 import com.example.testingLogIn.Services.PaymentRecordService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class StudentPaymentController{
     @Autowired
     private PaymentRecordService paymentService;
-    
+
     @PostMapping("/add")
     public ResponseEntity<String> addNewPaymentRecord(@RequestBody PaymentRecordDTO newRecord){
         try{
@@ -33,6 +32,34 @@ public class StudentPaymentController{
                 return new ResponseEntity<>("Transaction Failed. Student record not found",HttpStatus.NOT_FOUND);
         }catch(Exception e){
             return new ResponseEntity<>("Transaction Failed",HttpStatus.CONFLICT);
+        }
+    }
+
+    //auto-allocate
+    @PostMapping("/add/all/{studentId}/{gradeLevel}/{amount}")
+    public ResponseEntity<String> addPaymentAutoAllocate(@PathVariable int studentId,
+                                                         @PathVariable int gradeLevel,
+                                                         @PathVariable double amount,
+                                                         @RequestParam(required = false,defaultValue = "false") boolean forEnrollment){
+        System.out.println(forEnrollment);
+        try{
+            if(paymentService.addPaymentAutoAllocate(studentId,gradeLevel,amount,forEnrollment))
+                return new ResponseEntity<>("Payment recorded successfully",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Transaction unsuccessfully",HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
+
+            return new ResponseEntity<>("Compilation Error. Report to SlimFordy",HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/{condition}/{page}/{size}")
+    public ResponseEntity<PagedModel<EntityModel<PaymentRecordDTO>>> testingPage(@PathVariable String condition, @PathVariable int page, @PathVariable int size){
+        try{
+            return new ResponseEntity<>(paymentService.testingPageable(condition,page,size), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
     
@@ -53,11 +80,20 @@ public class StudentPaymentController{
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-    
+
     @GetMapping("/datepaid/{condition}")
     public ResponseEntity<List<PaymentRecordDTO>> getPaymentRecordsByDateSort(@PathVariable String condition){
         try{
-            return new ResponseEntity<>(paymentService.getAllTimeRecordsByDate(condition),HttpStatus.OK);
+            return new ResponseEntity<>(paymentService.getAllTimeRecordsByDates(condition),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/datepaid/{condition}/{pageNum}")
+    public ResponseEntity<PagedModel<EntityModel<PaymentRecordDTO>>> getPaymentRecordsPage(@PathVariable String condition, @PathVariable int pageNum){
+        try{
+            return new ResponseEntity<>(paymentService.getAllTimeRecordsByDate(condition,pageNum),HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

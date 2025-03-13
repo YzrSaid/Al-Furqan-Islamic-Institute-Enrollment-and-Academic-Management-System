@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PrivateTemplateControllers {
 
-    @GetMapping("/home")
+    @GetMapping("/h?me")
     public String getDashboard(){
         return "dashboard";
     }

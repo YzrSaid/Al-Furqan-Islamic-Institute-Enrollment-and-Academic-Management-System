@@ -1,6 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
-import com.example.testingLogIn.Models.GradeLevelToRequiredPayment;
+import com.example.testingLogIn.Models.GradeLevelRequiredFees;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,20 +12,20 @@ import org.springframework.stereotype.Repository;
  * @author magno
  */
 @Repository
-public interface GradeLevelRequiredFeeRepo extends JpaRepository<GradeLevelToRequiredPayment,Integer>{
+public interface GradeLevelRequiredFeeRepo extends JpaRepository<GradeLevelRequiredFees,Integer>{
     
-    @Query("SELECT glr FROM GradeLevelToRequiredPayment glr "+
+    @Query("SELECT glr FROM GradeLevelRequiredFees glr "+
            "WHERE glr.isNotDeleted = true "+
            "AND glr.requiredFee.id = :feeId")
-    List<GradeLevelToRequiredPayment> findByRequiredFee(@Param("feeId") int feeId);
+    List<GradeLevelRequiredFees> findByRequiredFee(@Param("feeId") int feeId);
     
-    @Query("SELECT glr FROM GradeLevelToRequiredPayment glr "+
+    @Query("SELECT glr FROM GradeLevelRequiredFees glr "+
            "WHERE glr.isNotDeleted = true "+
            "AND glr.requiredFee.isNotDeleted = true "+
            "AND glr.gradeLevel.levelId = :gardeLevelid")
-    List<GradeLevelToRequiredPayment> findByGradeLevel(@Param("gardeLevelid") int gardeLevelid);
+    List<GradeLevelRequiredFees> findByGradeLevel(@Param("gardeLevelid") int gardeLevelid);
     
-    @Query("SELECT SUM(glr.requiredFee.requiredAmount) FROM GradeLevelToRequiredPayment glr "+
+    @Query("SELECT SUM(glr.requiredFee.requiredAmount) FROM GradeLevelRequiredFees glr "+
            "WHERE glr.requiredFee.isNotDeleted = true "+
            "AND glr.isNotDeleted = true "+
            "AND glr.gradeLevel.levelId = :gradeLevelId")

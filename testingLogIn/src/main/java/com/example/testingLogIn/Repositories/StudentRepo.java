@@ -1,7 +1,12 @@
 package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.Models.Student;
+
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,25 +26,20 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
     @Param("firstName") String firstName,
     @Param("lastName") String lastName
 );
-    
-    @Query("select s from Student s "
-            + "WHERE s.isNotDeleted = true")
-    List<Student> findRegisteredStudents();
-    
-    @Query("SELECT s from Student s "+
-           "WHERE s.isNotDeleted = true "+
-           "AND isNew = true")
-    List<Student> findNewStudents();
-    
-    @Query("SELECT s from Student s "+
-           "WHERE s.isNotDeleted = true "+
-           "AND isNew = false")
-    List<Student> findOldStudents();
-    
-    @Query("SELECT s from Student s "+
-           "WHERE s.isNotDeleted = true "+
-           "AND s.isTransferee = true")
-    List<Student> findTransfereeStudents();
+    List<Student> findByIsNotDeletedTrue();
+
+    Page<Student> findByIsNewTrue(Pageable pageable);//will replace the method below soon
+    List<Student> findByIsNotDeletedTrueAndIsNewTrue();
+    Page<Student> findByIsNewFalse(Pageable pageable);//will replace the method below soon
+    List<Student> findByIsNotDeletedTrueAndIsNewFalse();
+
+    @Query("SELECT s FROM Student s " +
+            "WHERE s.isNotDeleted = true " +
+            "AND (s.studentDisplayId LIKE CONCAT('%', :search, '%') " +
+            "OR CONCAT(s.firstName, ' ', s.lastName) LIKE CONCAT('%', :search, '%')) ")
+    Page<Student> findByStudentDisplayIdOrName(@Param("search")String searching, Pageable pageable);
+
+    List<Student> findByIsNotDeletedTrueAndIsTransfereeTrue();
     
     @Query( "SELECT s from Student s "+
             "WHERE s.isNotDeleted = true "+
@@ -48,15 +48,14 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
     Student findByName(
             @Param("firstName") String firstname,
             @Param("lastName") String lastname);
-    
+
     @Query("SELECT s FROM Student s " +
             "WHERE s.isNotDeleted = true " +
-            "AND s.studentDisplayId = :displayId")
-    Student findByStudentDisplayId(@Param("displayId") String displayId);
+            "AND (s.studentDisplayId LIKE CONCAT('%', :searching, '%') " +
+            "OR CONCAT(s.firstName, ' ', s.lastName) LIKE CONCAT('%', :searching, '%'))")
+    Optional<Student> findByStudentDisplayIDOrName(@Param("searching") String searching);
     
     @Query("SELECT COUNT(s) from Student s "+
            "WHERE s.studentDisplayId LIKE %:year%")
     Integer findStudentNextId(@Param("year") String year);
-    
-    
 }

@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-public class GradeLevelToRequiredPayment {
+public class GradeLevelRequiredFees {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

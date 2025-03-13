@@ -6,8 +6,7 @@ import com.example.testingLogIn.ModelDTO.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Models.GradeLevelToRequiredPayment;
-import com.example.testingLogIn.Models.PaymentCompleteCheck;
+import com.example.testingLogIn.Models.GradeLevelRequiredFees;
 import com.example.testingLogIn.Models.RequiredFees;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
@@ -20,6 +19,7 @@ import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,24 +36,23 @@ public class EnrollmentServices {
     private final sySemesterRepo sySemRepo;
     private final GradeLevelRepo gradeLevelRepo;
     private final StudentSubjectGradeServices ssgService;
-    private final PaymentCheckerService pcs;
     private final GradeLevelRequiredFeeRepo gradelvlReqFeesRepo;
     private final PaymentsRecordRepo payRecRepo;
+    private final StudentFeesListService studFeeListService;
 
     @Autowired
     public EnrollmentServices(StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo,
             EnrollmentRepo enrollmentRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService,
-            PaymentCheckerService pcs, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo,
-            PaymentsRecordRepo payRecRepo) {
+            GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo,StudentFeesListService studFeeListService) {
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
         this.sySemRepo = sySemRepo;
         this.enrollmentRepo = enrollmentRepo;
         this.gradeLevelRepo = gradeLevelRepo;
         this.ssgService = ssgService;
-        this.pcs = pcs;
         this.gradelvlReqFeesRepo = gradelvlReqFeesRepo;
         this.payRecRepo = payRecRepo;
+        this.studFeeListService = studFeeListService;
     }
 
     public boolean addStudentToListing(StudentDTO stud, Integer studentId) {
@@ -125,23 +124,12 @@ public class EnrollmentServices {
         else if (section == null)
             return 2;
         else {
-            PaymentCompleteCheck checker = pcs.addIfNotExistElseUpdate(enrollmentRecord.getStudent().getStudentId(),
-                    section.getLevel().getLevelId());
-
-            enrollmentRecord.setPcc(checker);
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.PAYMENT);
             enrollmentRecord.setSectionToEnroll(section);
             enrollmentRepo.save(enrollmentRecord);
 
             return 3;
         }
-    }
-
-    public void updatepcs(int studentId) {
-        Enrollment toUpdate = enrollmentRepo.getRecordByStudent(studentId,
-                sySemRepo.findCurrentActive().getSySemNumber());
-        if (toUpdate != null && toUpdate.getSectionToEnroll() != null)
-            pcs.addIfNotExistElseUpdate(studentId, toUpdate.getSectionToEnroll().getLevel().getLevelId());
     }
 
     public int addToEnrolled(int enrollmentId) {
@@ -151,9 +139,8 @@ public class EnrollmentServices {
         else {
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.ENROLLED);
             enrollmentRepo.save(enrollmentRecord);
-            ssgService.addStudentGrades(enrollmentRecord);
 
-            Student student = studentRepo.findById(enrollmentRecord.getStudent().getStudentId()).orElse(null);
+            Student student = enrollmentRecord.getStudent();
             assert student != null;
             student.setNew(false);
             Double toAdd=(gradelvlReqFeesRepo
@@ -162,6 +149,11 @@ public class EnrollmentServices {
             student.setStudentBalance(newBalance);
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
             studentRepo.save(student);
+
+            CompletableFuture<Void> updateStudent = CompletableFuture.runAsync(() -> studentRepo.save(student));
+            CompletableFuture<Void> addStudentGrades = CompletableFuture.runAsync(() -> ssgService.addStudentGrades(enrollmentRecord));
+            CompletableFuture<Void> addFeesRecord = CompletableFuture.runAsync(() -> studFeeListService.addFeesRecord(enrollmentRecord));
+            CompletableFuture.allOf(updateStudent,addFeesRecord,addStudentGrades).join();
 
             return 2;
         }
@@ -173,7 +165,7 @@ public class EnrollmentServices {
                 enrollmentStatus,
                 sySemRepo.findCurrentActive().getSySemNumber())
                 .stream()
-                .map(enr -> enr.DTOmapper(isComplete(enr)))
+                .map(this::isComplete)
                 .toList();
     }
 
@@ -191,7 +183,7 @@ public class EnrollmentServices {
     public EnrollmentDTO getEnrollment(int enrollmentId) {
         Enrollment enr = enrollmentRepo.findById(enrollmentId).orElse(null);
         assert enr != null;
-        return enr.DTOmapper(isComplete(enr));
+        return isComplete(enr);
     }
 
     public EnrollmentPaymentView getStudentPaymentStatus(int enrollmentId) {
@@ -206,7 +198,7 @@ public class EnrollmentServices {
                 .feeStatus(new HashMap<>())
                 .build();
 
-        List<GradeLevelToRequiredPayment> gradeFeeList = gradelvlReqFeesRepo
+        List<GradeLevelRequiredFees> gradeFeeList = gradelvlReqFeesRepo
                 .findByGradeLevel(er.getGradeLevelToEnroll().getLevelId());
         int actvSemId = sySemRepo.findCurrentActive().getSySemNumber();
         gradeFeeList
@@ -220,29 +212,31 @@ public class EnrollmentServices {
                         //nothing to do
                     }
                     String status = totalCurrentlyPaid == 0 ? "Unpaid"
-                            : totalCurrentlyPaid > 0 && totalCurrentlyPaid < toPay.getRequiredAmount()
-                                    ? "Partially Paid"
-                                    : "Fully Paid";
+                            : totalCurrentlyPaid > 0 &&
+        totalCurrentlyPaid < toPay.getRequiredAmount()
+                                                            ? "Partially Paid"
+                                                            : "Fully Paid";
                     epv.getFeeStatus().put(toPay, status);
                 });
 
         return epv;
     }
 
-    private boolean isComplete(Enrollment e) {
+    private EnrollmentDTO isComplete(Enrollment e) {
+        boolean isComplete = true;
         try {
-            List<GradeLevelToRequiredPayment> gradeFeeList = gradelvlReqFeesRepo
+            List<GradeLevelRequiredFees> gradeFeeList = gradelvlReqFeesRepo
                     .findByGradeLevel(e.getGradeLevelToEnroll().getLevelId());
-            for (GradeLevelToRequiredPayment gr : gradeFeeList) {
-                Integer result = payRecRepo.getTotalRecordCount(e.getStudent().getStudentId(),
+            for (GradeLevelRequiredFees gr : gradeFeeList) {
+                Double result = payRecRepo.totalPaidForSpecificFee(e.getStudent().getStudentId(),
                         gr.getRequiredFee().getId(),
                         sySemRepo.findCurrentActive().getSySemNumber());
                 if (result == null || result == 0)
-                    return false;
+                    isComplete = false;
             }
-            return true;
         } catch (NullPointerException npe) {
-            return false;
+            isComplete = false;
         }
+        return e.DTOmapper(isComplete);
     }
 }

@@ -1,8 +1,11 @@
 package com.example.testingLogIn.Repositories;
 
+import com.example.testingLogIn.ModelDTO.TotalPaid;
 import com.example.testingLogIn.Models.PaymentRecords;
 import java.util.List;
-import org.springframework.data.domain.Sort;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -49,15 +52,20 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
             @Param("reqPaymentId") int reqPaymentId,
             @Param("semId") int semId);
     
-    @Query("SELECT COUNT(*) from PaymentRecords pr "+
+    @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid DESC")
+    List<PaymentRecords> getAllRecords();
+
+    @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid")
+    Page<PaymentRecords> getRecordsPage(Pageable pageable);
+    
+    @Query("SELECT NEW com.example.testingLogIn.ModelDTO.TotalPaid(SUM(pr.amount),pr.requiredPayment.requiredAmount,pr.requiredPayment) FROM PaymentRecords pr WHERE pr.student.studentId = :studId GROUP BY pr.SYSem,pr.requiredPayment")
+    List<TotalPaid> totalPaidPerFee(@Param("studId") int studentId);
+
+    @Query("SELECT SUM(pr.amount) from PaymentRecords pr "+
             "WHERE pr.student.studentId = :studentId "+
             "AND pr.SYSem.sySemNumber = :semId "+
             "AND pr.requiredPayment.id = :reqPaymentId")
-    Integer getTotalRecordCount(
-            @Param("studentId") int studentId,
-            @Param("reqPaymentId") int reqPaymentId,
-            @Param("semId") int semId);
-    
-    @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid DESC")
-    List<PaymentRecords> getAllRecords();
+    Double totalPaidForSpecificFee(@Param("studentId") int studentId,
+                                   @Param("reqPaymentId") int reqPaymentId,
+                                   @Param("semId") int semId);
 }

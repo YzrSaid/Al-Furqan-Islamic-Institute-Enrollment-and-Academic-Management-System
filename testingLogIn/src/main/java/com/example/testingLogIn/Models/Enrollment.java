@@ -46,10 +46,6 @@ public class    Enrollment {
     @JoinColumn(name = "sectionToEnroll")
     private Section sectionToEnroll;
     
-    @ManyToOne
-    @JoinColumn(name = "completePaymentCheck")
-    private PaymentCompleteCheck pcc;
-    
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus enrollmentStatus;
     

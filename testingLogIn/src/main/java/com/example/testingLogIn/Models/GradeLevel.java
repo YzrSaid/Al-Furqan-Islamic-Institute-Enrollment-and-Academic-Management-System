@@ -35,7 +35,6 @@ public class GradeLevel {
     
     public GradeLevelDTO mapperDTO(){
         try{
-        System.out.println(preRequisite.getLevelName());
         }catch(Exception e){
             
         }

@@ -668,7 +668,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "proceedToPayment":
         proceedToPayment(enrollmentIdLet, sectionNumberLet);
-        break;
+        break;  
       case "proceedToEnrolled":
         proceedToEnrolled(enrollmentIdLet);
         break;

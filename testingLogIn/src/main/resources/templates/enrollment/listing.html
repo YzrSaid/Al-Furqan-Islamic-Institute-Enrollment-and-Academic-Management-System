@@ -178,7 +178,7 @@
                     <button class="search-btn">Search</button>
                 </div>
                 <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
+                    <select title="sort" name="sort" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
                     </select>
                 </div>
@@ -222,6 +222,14 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button id="prevPage" disabled>&laquo;</button>
+            <div id="pageNumbers"></div>
+            <button id="nextPage">&raquo;</button>
+        </div>
+
 
         <!-- Modal for student information -->
         <div id="studentInformationModal" class="student-information-modal modal">
@@ -1271,7 +1279,7 @@
                 const studentId = document.querySelector("#student-id-list");
                 if (!studentname || !studentId) return console.error("Dropdown for sections not found");
 
-                studentname.textContent = epv.studentFirstName +(epv.studentMiddleName ? ' ' + epv.studentMiddleName : '') +' ' + epv.studentLastName;
+                studentname.textContent = epv.studentFirstName + (epv.studentMiddleName ? ' ' + epv.studentMiddleName : '') + ' ' + epv.studentLastName;
                 studentId.textContent = epv.studentDisplayId;
                 payerId = epv.studentId;
 
@@ -1419,8 +1427,6 @@
             });
     }
 
-
-
     document.addEventListener("DOMContentLoaded", function () {
         document.body.addEventListener("click", function (event) {
             if (event.target.closest(".proceedButton")) {
@@ -1506,68 +1512,7 @@
                 showErrorModal(message);
             });
     }
-    // function goList() {
-    //     fetch("/enrollment/all/listing")
-    //         .then(res => {
-    //             if (!res.ok) throw new Error("Failed to fetch grade levels");
-    //             return res.json();
-    //         })
-    //         .then(data => {
-    //             const tableBody = document.querySelector("#lamesa tbody");
-    //             tableBody.innerHTML = "";
-
-    //             data.forEach(enr => {
-    //                 console.log(enr);
-    //                 enrollmentIdLet = enr.enrollmentId;
-
-    //                 const row = document.createElement("tr");
-    //                 row.setAttribute("data-enrollment-id", enr.enrollmentId);
-
-    //                 row.innerHTML = `
-    //             <td>${enr.student.studentDisplayId}</td>
-    //             <td>${enr.student.firstName} ${enr.student.middleName} ${enr.student.lastName}</td>
-    //             <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
-    //             <td>${enr.student.new ? 'New Student' : 'Old Student'}</td>
-    //             <td>
-    //                 <div class="dropdown">
-    //                     <div class="status-container">
-    //                         <div class="status" id="status-registration">${enr.enrollmentStatus}</div>
-    //                         <button class="dropdown-status-btn">
-    //                             <i class="fas fa-chevron-down"></i>
-    //                         </button>
-    //                     </div>
-    //                     <div class="dropdown-status-content" id="dropdown-listing">
-    //                         <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}">View Record</a>
-
-    //                         <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" 
-    //                             data-open-modal="gradeLevelModal">Proceed</a>
-
-    //                         <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-    //                             data-message="Are you sure you want to cancel this registration?">
-    //                             Cancel Registration
-    //                         </a>
-    //                     </div>
-    //                 </div>
-    //             </td>
-    //         `;
-
-    //                 tableBody.appendChild(row);
-    //             });
-
-    //             // ✅ Event Listener for 'View Record'
-    //             document.addEventListener("click", function (event) {
-    //                 const target = event.target;
-
-    //                 if (target.classList.contains("viewRecordButton")) {
-    //                     const enrollmentId = target.getAttribute("data-enrollment-id");
-    //                     console.log("🔍 View Record for Enrollment ID:", enrollmentId);
-    //                     // Add logic for opening a modal or redirecting here
-    //                 }
-    //             });
-    //         })
-    //         .catch(error => console.error("Error:", error));
-    // }
-
+    
 
     document.addEventListener("click", function (event) {
         const viewRecordButton = event.target.closest(".viewRecordButton"); // ✅ Detect "View Record" click
@@ -1782,12 +1727,12 @@
                             ` : ''}
                         `;
                             break;
-                        case "ENROLLED":  
+                        case "ENROLLED":
                             dropdownContent = `
                             <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}" 
                                data-open-modal="studentInformationModal"> View Record </a> 
-                                  `; 
-                                  break;
+                                  `;
+                            break;
 
                         default:
                             dropdownContent = `<p>No actions available</p>`;

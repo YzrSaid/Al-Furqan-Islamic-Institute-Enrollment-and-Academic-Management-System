@@ -3,18 +3,15 @@ package com.example.testingLogIn.Controllers;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.ModelDTO.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
+import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
 import com.example.testingLogIn.Services.EnrollmentServices;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
 /**
  *
  * @author magno
@@ -60,6 +57,18 @@ public class EnrollmentController {
     public ResponseEntity<List<EnrollmentDTO>> getEnrollmentRecordsByStatus(@PathVariable String status){
         try{
             return new ResponseEntity<>(enrollmentService.getAllEnrollment(status),HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/all/paged/{status}")
+    public ResponseEntity<EnrollmentDTOPage> getEnrollmentRecordsByStatusPage(@PathVariable String status,
+                                                                              @RequestParam(required = false,defaultValue = "1") Integer pageNo,
+                                                                              @RequestParam(required = false,defaultValue = "10") Integer pageSize){
+        try{
+            return new ResponseEntity<>(enrollmentService.getAllEnrollmentPage(status,pageNo,pageSize),HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);

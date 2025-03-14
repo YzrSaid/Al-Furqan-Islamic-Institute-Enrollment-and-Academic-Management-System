@@ -4,12 +4,8 @@ import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.ModelDTO.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
-import com.example.testingLogIn.Models.Enrollment;
-import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Models.GradeLevelRequiredFees;
-import com.example.testingLogIn.Models.RequiredFees;
-import com.example.testingLogIn.Models.Section;
-import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.Models.*;
+import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
 import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
@@ -20,8 +16,12 @@ import com.example.testingLogIn.Repositories.sySemesterRepo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -167,6 +167,22 @@ public class EnrollmentServices {
                 .stream()
                 .map(this::isComplete)
                 .toList();
+    }
+
+    public EnrollmentDTOPage getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo-1,pageSize);
+        EnrollmentStatus estatus = getEnrollmentStatus(status);
+        int sem = sySemRepo.findCurrentActive().getSySemNumber();
+
+        Page<EnrollmentDTO> enrollmentPage = enrollmentRepo.findRecordsByStatusAndSemesterPage(estatus,sem,pageable).map(this::isComplete);
+        return EnrollmentDTOPage.builder()
+                .content(enrollmentPage.getContent())
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPages(enrollmentPage.getTotalPages())
+                .totalElements(enrollmentPage.getTotalElements())
+                .isLast(enrollmentPage.isLast())
+                .build();
     }
 
     private EnrollmentStatus getEnrollmentStatus(String status) {

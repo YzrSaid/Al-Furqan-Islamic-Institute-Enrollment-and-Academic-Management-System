@@ -711,7 +711,6 @@
         }
 
         function printThis(feeId){
-            console.log(feeId);
             var url = `/paymentrecord/balance/${payerId}?feeId=${feeId}&gradeLevelId=${gradeLevelId}&currentSem=true`;
             if(feeId === "all"){
                 url = `/paymentrecord/balance/${payerId}?gradeLevelId=${gradeLevelId}&currentSem=true`;

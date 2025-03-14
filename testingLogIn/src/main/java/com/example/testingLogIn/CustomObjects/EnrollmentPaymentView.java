@@ -1,4 +1,4 @@
-package com.example.testingLogIn.ModelDTO;
+package com.example.testingLogIn.CustomObjects;
 
 import com.example.testingLogIn.Models.RequiredFees;
 import java.util.Map;

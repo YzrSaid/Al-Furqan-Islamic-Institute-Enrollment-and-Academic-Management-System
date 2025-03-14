@@ -6,23 +6,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-/**
- *
- * @author magno
- */
 @Getter
 @Setter
 @ToString
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class RequiredFees {
-    
+public class Discount {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String name;
-    private double requiredAmount;
+    private int discountId;
+
+    private String discountName;
     private boolean isNotDeleted;
+
+    private double fixedDiscount;
+    private float percentageDiscount;
 }

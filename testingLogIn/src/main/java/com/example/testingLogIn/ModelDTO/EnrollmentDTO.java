@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EnrollmentDTO {
     private int enrollmentId;
-    private Student student;
+    private StudentDTO student;
     private String schoolYear;
     private Semester semester;
     private Integer preRequisiteId;

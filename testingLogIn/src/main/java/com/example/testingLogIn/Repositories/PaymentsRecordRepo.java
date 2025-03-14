@@ -1,6 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
-import com.example.testingLogIn.ModelDTO.TotalPaid;
+import com.example.testingLogIn.CustomObjects.TotalPaid;
 import com.example.testingLogIn.Models.PaymentRecords;
 import java.util.List;
 
@@ -58,14 +58,14 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
     @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid")
     Page<PaymentRecords> getRecordsPage(Pageable pageable);
     
-    @Query("SELECT NEW com.example.testingLogIn.ModelDTO.TotalPaid(SUM(pr.amount),pr.requiredPayment.requiredAmount,pr.requiredPayment) FROM PaymentRecords pr "+
-           "WHERE pr.student.studentId = :studId GROUP BY pr.requiredPayment")
+    @Query("SELECT NEW com.example.testingLogIn.CustomObjects.TotalPaid(SUM(pr.amount),pr.requiredPayment.requiredAmount,pr.requiredPayment) FROM PaymentRecords pr "+
+           "WHERE pr.student.studentId = :studId GROUP BY pr.requiredPayment,pr.requiredPayment.requiredAmount")
     List<TotalPaid> totalPaidPerFee(@Param("studId") int studentId);
 
     @Query("SELECT SUM(pr.amount) from PaymentRecords pr "+
             "WHERE pr.student.studentId = :studentId "+
-            "AND (:semId IS NULL OR pr.SYSem.sySemNumber = :semId) "+
-            "AND pr.requiredPayment.id = :reqPaymentId")
+            "AND pr.requiredPayment.id = :reqPaymentId "+
+            "AND (:semId IS NULL OR pr.SYSem.sySemNumber = :semId)")
     Double totalPaidForSpecificFee(@Param("studentId") int studentId,
                                    @Param("reqPaymentId") int reqPaymentId,
                                    @Param("semId") Integer semId);

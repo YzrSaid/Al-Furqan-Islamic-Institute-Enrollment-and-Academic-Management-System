@@ -6,11 +6,12 @@ import com.example.testingLogIn.Enums.Role;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
+import lombok.*;
+
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

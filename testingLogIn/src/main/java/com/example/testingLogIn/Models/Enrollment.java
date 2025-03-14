@@ -10,15 +10,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 /**
  *
  * @author magno
  */
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -61,7 +61,7 @@ public class    Enrollment {
         }
         return EnrollmentDTO.builder()
                             .enrollmentId(enrollmentId)
-                            .student(student)
+                            .student(student.DTOmapper())
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
                             .preRequisiteId(preReq != null ? preReq.getLevelId() : null)

@@ -1,7 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
-import com.example.testingLogIn.ModelDTO.EnrollmentPaymentView;
+import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
 import com.example.testingLogIn.Services.EnrollmentServices;

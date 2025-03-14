@@ -15,15 +15,15 @@ import reactor.core.publisher.Mono;
 @RestControllerAdvice
 public class CustomErrorController {
 
-    @ExceptionHandler(NoResourceFoundException.class)
-    public Mono<String> handleNoResourceFoundException(NoResourceFoundException ex, ServerWebExchange exchange) throws IllegalStateException {
-        exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
-        return Mono.just("error"); // Return the name of the error view or a custom message
-    }
-
-    @ExceptionHandler(Exception.class)
-    public Mono<String> handleGenericException(Exception ex, ServerWebExchange exchange) throws IllegalStateException {
-        exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
-        return Mono.just("error"); // Return the name of the error view or a custom message
-    }
+//    @ExceptionHandler(NoResourceFoundException.class)
+//    public Mono<String> handleNoResourceFoundException(NoResourceFoundException ex, ServerWebExchange exchange) throws IllegalStateException {
+//        exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
+//        return Mono.just("error"); // Return the name of the error view or a custom message
+//    }
+//
+//    @ExceptionHandler(Exception.class)
+//    public Mono<String> handleGenericException(Exception ex, ServerWebExchange exchange) throws IllegalStateException {
+//        exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+//        return Mono.just("error"); // Return the name of the error view or a custom message
+//    }
 }

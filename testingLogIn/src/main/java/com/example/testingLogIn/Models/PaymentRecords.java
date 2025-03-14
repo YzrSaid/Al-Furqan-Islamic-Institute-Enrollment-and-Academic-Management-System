@@ -12,7 +12,8 @@ import java.time.LocalDate;
  * @author magno
  */
 @Builder
-@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor

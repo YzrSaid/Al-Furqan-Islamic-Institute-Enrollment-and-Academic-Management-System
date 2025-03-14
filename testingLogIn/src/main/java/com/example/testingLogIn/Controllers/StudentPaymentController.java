@@ -1,5 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.PaymentObject;
+import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
 import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
 import com.example.testingLogIn.Services.PaymentRecordService;
 import java.util.List;
@@ -36,13 +38,14 @@ public class StudentPaymentController{
     }
 
     //auto-allocate
-    @PostMapping("/add/all/{studentId}/{gradeLevel}/{amount}")
-    public ResponseEntity<String> addPaymentAutoAllocate(@PathVariable int studentId,
-                                                         @PathVariable int gradeLevel,
+    @PostMapping("/add/all/{studentId}/{amount}")
+    public ResponseEntity<String> addPayment(@PathVariable int studentId,
+                                                         @RequestParam(required = false) Integer gradeLevel,
                                                          @PathVariable double amount,
-                                                         @RequestParam(required = false,defaultValue = "false") boolean forEnrollment){
+                                                         @RequestParam(required = false,defaultValue = "false") boolean forEnrollment,
+                                                         @RequestBody PaymentObject po){
         try{
-            if(paymentService.addPaymentAutoAllocate(studentId,gradeLevel,amount,forEnrollment))
+            if(paymentService.addPaymentAutoAllocate(studentId,gradeLevel,amount,forEnrollment,po.getFeesId()))
                 return new ResponseEntity<>("Payment recorded successfully",HttpStatus.OK);
             else
                 return new ResponseEntity<>("Transaction unsuccessfully",HttpStatus.OK);
@@ -90,6 +93,16 @@ public class StudentPaymentController{
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    //To do
+    @GetMapping("/form/{studentId}")
+    public ResponseEntity<StudentPaymentForm> getPaymentForm(@PathVariable int studentId,@RequestParam(required = false) Integer gradeLevelId){
+        try{
+            return new ResponseEntity<>(paymentService.getStudentPaymentForm(studentId,gradeLevelId),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

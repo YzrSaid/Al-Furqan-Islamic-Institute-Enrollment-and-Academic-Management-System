@@ -2,7 +2,7 @@ package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
-import com.example.testingLogIn.ModelDTO.EnrollmentPaymentView;
+import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.*;
 import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
@@ -16,7 +16,6 @@ import com.example.testingLogIn.Repositories.sySemesterRepo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -234,7 +233,9 @@ public class EnrollmentServices {
                                                             : "Fully Paid";
                     epv.getFeeStatus().put(toPay, status);
                 });
-
+        for(RequiredFees s : epv.getFeeStatus().keySet()){
+            System.out.println(s.getName());
+        }
         return epv;
     }
 

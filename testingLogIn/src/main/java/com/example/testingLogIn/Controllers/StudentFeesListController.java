@@ -1,7 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
-import com.example.testingLogIn.ModelDTO.TotalPaid;
+import com.example.testingLogIn.CustomObjects.TotalPaid;
 import com.example.testingLogIn.Repositories.PaymentsRecordRepo;
 import com.example.testingLogIn.Services.StudentFeesListService;
 import org.springframework.beans.factory.annotation.Autowired;

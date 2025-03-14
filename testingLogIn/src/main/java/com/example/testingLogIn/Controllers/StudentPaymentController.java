@@ -41,7 +41,6 @@ public class StudentPaymentController{
                                                          @PathVariable int gradeLevel,
                                                          @PathVariable double amount,
                                                          @RequestParam(required = false,defaultValue = "false") boolean forEnrollment){
-        System.out.println(forEnrollment);
         try{
             if(paymentService.addPaymentAutoAllocate(studentId,gradeLevel,amount,forEnrollment))
                 return new ResponseEntity<>("Payment recorded successfully",HttpStatus.OK);
@@ -77,6 +76,19 @@ public class StudentPaymentController{
         try{
             return new ResponseEntity<>(paymentService.getAllPaymentRecords(),HttpStatus.OK);
         }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/balance/{studentId}")
+    public ResponseEntity<Double> getStudentBalance(@PathVariable int studentId,
+                                                    @RequestParam(required = false) Integer feeId,
+                                                    @RequestParam(required = false) Integer gradeLevelId,
+                                                    @RequestParam(required = false) Boolean currentSem){
+        try{
+            return new ResponseEntity<>(paymentService.getStudentBalance(studentId,feeId,gradeLevelId,currentSem),HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

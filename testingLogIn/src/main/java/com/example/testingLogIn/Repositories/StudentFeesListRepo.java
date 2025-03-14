@@ -14,4 +14,9 @@ public interface StudentFeesListRepo extends JpaRepository<StudentFeesList,Integ
 
     @Query("SELECT sfl FROM StudentFeesList sfl WHERE sfl.student.studentId = :studId AND(:semId IS NULL OR sfl.sem.sySemNumber = :semId)")
     List<StudentFeesList> findBySem(@Param("studId") int studentId,@Param("semId") Integer semId);
+
+    @Query("SELECT COUNT(sf) FROM StudentFeesList sf "+ 
+           "WHERE sf.fee.id =:feeId " +
+           "AND sf.student.studentId = :studentId")
+    Integer feesCount(@Param("studentId") int studentId, @Param("feeId") int feeId);
 }

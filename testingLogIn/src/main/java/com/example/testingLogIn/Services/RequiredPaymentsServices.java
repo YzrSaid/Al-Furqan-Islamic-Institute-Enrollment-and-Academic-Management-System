@@ -93,7 +93,7 @@ public class RequiredPaymentsServices {
     }
     
     public List<GradeLevelToRequiredPaymentDTO> getPaymentsByGradeLevel(int gradeLevelId){
-        return reqFeeGradelvlRepo.findByRequiredFee(gradeLevelId).stream()
+        return reqFeeGradelvlRepo.findByGradeLevel(gradeLevelId).stream()
                         .filter(GradeLevelRequiredFees::isNotDeleted)
                         .map(GradeLevelRequiredFees::DTOmapper)
                         .toList();

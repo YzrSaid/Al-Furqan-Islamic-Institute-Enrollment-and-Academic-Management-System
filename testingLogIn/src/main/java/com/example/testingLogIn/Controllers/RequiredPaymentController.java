@@ -53,8 +53,7 @@ public class RequiredPaymentController {
     }
 
     @GetMapping("/grade/{gradeLevelId}")
-    public ResponseEntity<List<GradeLevelToRequiredPaymentDTO>> getAllReqPaymentsByGradeLevel(
-            @PathVariable int gradeLevelId) {
+    public ResponseEntity<List<GradeLevelToRequiredPaymentDTO>> getAllReqPaymentsByGradeLevel(@PathVariable int gradeLevelId) {
         try {
             List<GradeLevelToRequiredPaymentDTO> toreturn = reqPaymentService.getPaymentsByGradeLevel(gradeLevelId);
             if (!toreturn.isEmpty())

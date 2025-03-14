@@ -43,6 +43,7 @@ public class PaymentRecordService {
     private final sySemesterRepo SYSemRepo;
     private final CustomUserDetailsService userService;
     private final GradeLevelRequiredFeeRepo gradeReqFee;
+    private final StudentFeesListRepo studFeesRepo;
 
     @Setter
     @Getter
@@ -53,13 +54,15 @@ public class PaymentRecordService {
 
     @Autowired
     public PaymentRecordService(PaymentsRecordRepo paymentRepo, StudentRepo studentRepo, RequiredPaymentsRepo reqPaymentsRepo,
-                                sySemesterRepo SYSemRepo, CustomUserDetailsService userService, GradeLevelRequiredFeeRepo gradeReqFee) {
+                                sySemesterRepo SYSemRepo, CustomUserDetailsService userService, GradeLevelRequiredFeeRepo gradeReqFee,
+                                StudentFeesListRepo studFeesRepo) {
         this.paymentRepo = paymentRepo;
         this.studentRepo = studentRepo;
         this.reqPaymentsRepo = reqPaymentsRepo;
         this.SYSemRepo = SYSemRepo;
         this.userService = userService;
         this.gradeReqFee = gradeReqFee;
+        this.studFeesRepo = studFeesRepo;
     }
     
     public boolean addNewRecord(PaymentRecordDTO paymentRec){
@@ -98,7 +101,7 @@ public class PaymentRecordService {
             }
         }else {
             for(TotalPaid paid : paymentRepo.totalPaidPerFee(studentId)){
-                double remainingBalance = paid.getRequiredTotalAmount() - paid.getTotalPaid();
+                double remainingBalance = (paid.getRequiredTotalAmount()*studFeesRepo.feesCount(studentId,paid.getFee().getId())) - paid.getTotalPaid();
                 if(remainingBalance>0)
                     toSortByBalance.add(MapperObject.builder()
                                     .requiredFees(paid.getFee())
@@ -141,6 +144,32 @@ public class PaymentRecordService {
         record.setRequiredPayment(reqPaymentsRepo.findById(feeId).orElse(null));
         paymentRepo.save(record);
         return true;
+    }
+
+    public double getStudentBalance(int studentId,Integer feeId,Integer gradeLevelId,Boolean isCurrentSem){
+        Student student = studentRepo.findById(studentId).orElse(null);
+        SchoolYearSemester sem = SYSemRepo.findCurrentActive();
+        assert student != null;
+        if(feeId == null) {
+            if (isCurrentSem != null && isCurrentSem) {
+                double toReturn = 0;
+                for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
+                    Double result = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber());
+                    double paidAmount = result != null ? result : 0;
+                    double totalFeeBalance = reqFee.getRequiredFee().getRequiredAmount() - paidAmount;
+                    toReturn += totalFeeBalance;
+                }
+                return toReturn;
+            }
+            return student.getStudentBalance();
+        }else{
+            Integer semId = isCurrentSem != null ? SYSemRepo.findCurrentActive().getSySemNumber() : null;
+            RequiredFees reqFee = reqPaymentsRepo.findById(feeId).orElse(null);
+            assert reqFee != null;
+            double totalPaidAmount = paymentRepo.totalPaidForSpecificFee(studentId,feeId,semId);
+            double totalFeeBalance = isCurrentSem != null ? reqFee.getRequiredAmount() : reqFee.getRequiredAmount() * studFeesRepo.feesCount(studentId,feeId);
+            return totalFeeBalance-totalPaidAmount;
+        }
     }
     
     public List<PaymentRecordDTO> getAllPaymentRecords(){

@@ -58,14 +58,15 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
     @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid")
     Page<PaymentRecords> getRecordsPage(Pageable pageable);
     
-    @Query("SELECT NEW com.example.testingLogIn.ModelDTO.TotalPaid(SUM(pr.amount),pr.requiredPayment.requiredAmount,pr.requiredPayment) FROM PaymentRecords pr WHERE pr.student.studentId = :studId GROUP BY pr.SYSem,pr.requiredPayment")
+    @Query("SELECT NEW com.example.testingLogIn.ModelDTO.TotalPaid(SUM(pr.amount),pr.requiredPayment.requiredAmount,pr.requiredPayment) FROM PaymentRecords pr "+
+           "WHERE pr.student.studentId = :studId GROUP BY pr.requiredPayment")
     List<TotalPaid> totalPaidPerFee(@Param("studId") int studentId);
 
     @Query("SELECT SUM(pr.amount) from PaymentRecords pr "+
             "WHERE pr.student.studentId = :studentId "+
-            "AND pr.SYSem.sySemNumber = :semId "+
+            "AND (:semId IS NULL OR pr.SYSem.sySemNumber = :semId) "+
             "AND pr.requiredPayment.id = :reqPaymentId")
     Double totalPaidForSpecificFee(@Param("studentId") int studentId,
                                    @Param("reqPaymentId") int reqPaymentId,
-                                   @Param("semId") int semId);
+                                   @Param("semId") Integer semId);
 }

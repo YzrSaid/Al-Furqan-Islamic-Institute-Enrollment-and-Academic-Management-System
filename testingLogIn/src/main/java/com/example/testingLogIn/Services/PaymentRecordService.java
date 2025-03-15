@@ -1,6 +1,8 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.FeesAndBalance;
 import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
+import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
 import com.example.testingLogIn.CustomObjects.TotalPaid;
 import com.example.testingLogIn.Models.*;
@@ -44,6 +46,8 @@ public class PaymentRecordService {
     private final CustomUserDetailsService userService;
     private final GradeLevelRequiredFeeRepo gradeReqFee;
     private final StudentFeesListRepo studFeesRepo;
+    @Autowired
+    private DiscountsServices discService;
 
     @Setter
     @Getter
@@ -82,20 +86,22 @@ public class PaymentRecordService {
         studentRepo.save(student);
         return true;
     }
-
-    public boolean addPaymentAutoAllocate(int studentId, Integer gradeLevelId,double amount,boolean isForEnrollment,List<Integer> feesId){
+    //NEW WAY OF PAYING
+    public boolean addPaymentAutoAllocate(int studentId, Integer gradeLevelId,double amount,List<Integer> feesId){
         Student student = studentRepo.findById(studentId).orElse(null);
         assert student!=null;
         SchoolYearSemester sem = SYSemRepo.findCurrentActive();
         List<MapperObject> toSortByBalance = new ArrayList<>();
         setTheAmount(amount);
-        if(isForEnrollment) {//during enrollment
+        StudentTotalDiscount std = discService.getStudentTotalDiscount(studentId);
+        if(gradeLevelId != null) {//during enrollment
             for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
                 if(feesId.contains(reqFee.getRequiredFee().getId())) {
-                    System.out.println(reqFee.getRequiredFee().getName());
                     Double result = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber());
                     double paidAmount = result != null ? result : 0;
-                    double totalFeeBalance = reqFee.getRequiredFee().getRequiredAmount() - paidAmount;
+                    double initialAmount = reqFee.getRequiredFee().getRequiredAmount();
+                    double discountedAmount = initialAmount-((initialAmount * std.getTotalPercentageDiscount())+std.getTotalFixedDiscount());
+                    double totalFeeBalance = discountedAmount - paidAmount;
                     if (totalFeeBalance > 0)
                         toSortByBalance.add(MapperObject.builder()
                                 .requiredFees(reqFee.getRequiredFee())
@@ -108,8 +114,7 @@ public class PaymentRecordService {
                 if(feesId.contains(paid.getFee().getId())) {
                     Double amountPaid = paymentRepo.totalPaidForSpecificFee(studentId,paid.getFee().getId(),null);
                     amountPaid = amountPaid != null ? amountPaid : 0;
-
-                    double remainingBalance = (paid.getFee().getRequiredAmount() * studFeesRepo.feesCount(studentId, paid.getFee().getId())) - amountPaid;
+                    double remainingBalance = studFeesRepo.totalPerFeesByStudent(studentId, paid.getFee().getId()) - amountPaid;
                     if (remainingBalance > 0)
                         toSortByBalance.add(MapperObject.builder()
                                 .requiredFees(paid.getFee())
@@ -176,8 +181,9 @@ public class PaymentRecordService {
             Integer semId = isCurrentSem != null ? SYSemRepo.findCurrentActive().getSySemNumber() : null;//to remove
             RequiredFees reqFee = reqPaymentsRepo.findById(feeId).orElse(null);//to remove
             assert reqFee != null;
-            double totalPaidAmount = paymentRepo.totalPaidForSpecificFee(studentId,feeId,semId);//(studentId,feeId,null)
-            double totalFeeBalance = isCurrentSem != null ? reqFee.getRequiredAmount() : reqFee.getRequiredAmount() * studFeesRepo.feesCount(studentId,feeId);
+            Double amountPaid = paymentRepo.totalPaidForSpecificFee(studentId,feeId,semId);
+            double totalPaidAmount = amountPaid == null ? 0 : amountPaid;//(studentId,feeId,null)
+            double totalFeeBalance = isCurrentSem != null ? reqFee.getRequiredAmount() : studFeesRepo.totalPerFeesByStudent(studentId,feeId);
             return totalFeeBalance-totalPaidAmount;
         }
     }
@@ -185,38 +191,41 @@ public class PaymentRecordService {
     public StudentPaymentForm getStudentPaymentForm(int studentId,  Integer gradeLevelId){
         Student student = studentRepo.findById(studentId).orElse(null);
         SchoolYearSemester sem = SYSemRepo.findCurrentActive();
-        Map<Double,RequiredFees> feesBalance = new HashMap<>();
+        Map<RequiredFees,Double> feesBalance = new HashMap<>();
         assert student != null;
         StudentPaymentForm studentPaymentForm = StudentPaymentForm.builder()
                                                     .totalFee(0.0d)
                                                     .student(student.DTOmapper())
+                                                    .feesAndBalance(new ArrayList<>())
                                                     .build();
         double totalBalance = 0;
         //for enrollment
         if(gradeLevelId != null){
+            StudentTotalDiscount std = discService.getStudentTotalDiscount(studentId);
             for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
                 Double result = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber());
                 double paidAmount = result != null ? result : 0;
-                double remainingBalance = reqFee.getRequiredFee().getRequiredAmount() - paidAmount;
+                double initialAmount = reqFee.getRequiredFee().getRequiredAmount();
+                double discountedAmount = Math.ceil(initialAmount - ((initialAmount*std.getTotalPercentageDiscount())-std.getTotalFixedDiscount()));
+                double remainingBalance = discountedAmount - paidAmount;
                 if(remainingBalance>0){
-                    feesBalance.put(remainingBalance,reqFee.getRequiredFee());
+                    studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(reqFee.getRequiredFee(),remainingBalance));
                     totalBalance+=remainingBalance;}
             }
         }else{//For all time debt
             for(StudentFeesList sfl : studFeesRepo.findBySem(studentId,null)) {
                 if (!feesBalance.containsValue(sfl.getFee())) {
                     double totalPaidAmount = paymentRepo.totalPaidForSpecificFee(studentId, sfl.getFee().getId(), null);//(studentId,feeId,null)
-                    double totalFeeBalance = sfl.getFee().getRequiredAmount() * studFeesRepo.feesCount(studentId, sfl.getFee().getId());
-                    double remainingBalance = totalFeeBalance - totalPaidAmount;
+                    double totalFeeBalance = studFeesRepo.totalPerFeesByStudent(studentId, sfl.getFee().getId());
+                    double remainingBalance = Math.ceil(totalFeeBalance - totalPaidAmount);
                     if (remainingBalance > 0) {
-                        feesBalance.put(remainingBalance, sfl.getFee());
                         totalBalance += remainingBalance;
+                        studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance));
                     }
                 }
             }
         }
         studentPaymentForm.setTotalFee(totalBalance);
-        studentPaymentForm.setFeesAndBalance(feesBalance);
         return studentPaymentForm;
     }
     

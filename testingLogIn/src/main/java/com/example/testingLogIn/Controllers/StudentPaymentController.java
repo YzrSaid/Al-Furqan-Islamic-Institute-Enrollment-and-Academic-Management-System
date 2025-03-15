@@ -25,6 +25,7 @@ public class StudentPaymentController{
     @Autowired
     private PaymentRecordService paymentService;
 
+    //WILL BE REMOVED NEXT PAYMENT PROCESS UPDATE
     @PostMapping("/add")
     public ResponseEntity<String> addNewPaymentRecord(@RequestBody PaymentRecordDTO newRecord){
         try{
@@ -37,15 +38,14 @@ public class StudentPaymentController{
         }
     }
 
-    //auto-allocate
+    //WILL BE USED FOR NEW PROCESS
     @PostMapping("/add/all/{studentId}/{amount}")
     public ResponseEntity<String> addPayment(@PathVariable int studentId,
-                                                         @RequestParam(required = false) Integer gradeLevel,
-                                                         @PathVariable double amount,
-                                                         @RequestParam(required = false,defaultValue = "false") boolean forEnrollment,
-                                                         @RequestBody PaymentObject po){
+                                             @RequestParam(required = false) Integer gradeLevel,//gradeLevel with value is for enrollment payment part
+                                             @PathVariable double amount,
+                                             @RequestBody PaymentObject po){
         try{
-            if(paymentService.addPaymentAutoAllocate(studentId,gradeLevel,amount,forEnrollment,po.getFeesId()))
+            if(paymentService.addPaymentAutoAllocate(studentId,gradeLevel,amount,po.getFeesId()))
                 return new ResponseEntity<>("Payment recorded successfully",HttpStatus.OK);
             else
                 return new ResponseEntity<>("Transaction unsuccessfully",HttpStatus.OK);
@@ -83,6 +83,7 @@ public class StudentPaymentController{
         }
     }
 
+    //TO BE REMOVED
     @GetMapping("/balance/{studentId}")
     public ResponseEntity<Double> getStudentBalance(@PathVariable int studentId,
                                                     @RequestParam(required = false) Integer feeId,
@@ -96,8 +97,8 @@ public class StudentPaymentController{
         }
     }
 
-    //To do
-    @GetMapping("/form/{studentId}")
+    //NEW STUDENT PAYMENT FORM
+    @GetMapping("/form/{studentId}")                                                    //if gradeLevelId = false (for all time debt) else if gradeLevelId has value, it is for the enrollment Payment form
     public ResponseEntity<StudentPaymentForm> getPaymentForm(@PathVariable int studentId,@RequestParam(required = false) Integer gradeLevelId){
         try{
             return new ResponseEntity<>(paymentService.getStudentPaymentForm(studentId,gradeLevelId),HttpStatus.OK);

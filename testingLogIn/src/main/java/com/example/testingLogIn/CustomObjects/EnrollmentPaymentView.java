@@ -2,10 +2,7 @@ package com.example.testingLogIn.CustomObjects;
 
 import com.example.testingLogIn.Models.RequiredFees;
 import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  *

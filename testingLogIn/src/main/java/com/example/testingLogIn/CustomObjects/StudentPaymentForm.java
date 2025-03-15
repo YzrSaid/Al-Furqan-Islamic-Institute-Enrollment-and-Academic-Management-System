@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -15,6 +16,6 @@ import java.util.Map;
 public class StudentPaymentForm {
     private StudentDTO student;
     private double totalFee;
-    private Map<Double,RequiredFees> feesAndBalance = new HashMap<>();
+    private List<FeesAndBalance> feesAndBalance;
 
 }

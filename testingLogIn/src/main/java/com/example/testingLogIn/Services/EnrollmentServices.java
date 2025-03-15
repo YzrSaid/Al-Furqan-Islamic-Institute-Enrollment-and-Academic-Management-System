@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
@@ -38,20 +39,23 @@ public class EnrollmentServices {
     private final GradeLevelRequiredFeeRepo gradelvlReqFeesRepo;
     private final PaymentsRecordRepo payRecRepo;
     private final StudentFeesListService studFeeListService;
+    private final DiscountsServices discService;
 
     @Autowired
-    public EnrollmentServices(StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo,
-            EnrollmentRepo enrollmentRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService,
-            GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo,StudentFeesListService studFeeListService) {
+    private PaymentRecordService paymentService;
+
+    @Autowired
+    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService) {
+        this.enrollmentRepo = enrollmentRepo;
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
         this.sySemRepo = sySemRepo;
-        this.enrollmentRepo = enrollmentRepo;
         this.gradeLevelRepo = gradeLevelRepo;
         this.ssgService = ssgService;
         this.gradelvlReqFeesRepo = gradelvlReqFeesRepo;
         this.payRecRepo = payRecRepo;
         this.studFeeListService = studFeeListService;
+        this.discService = discService;
     }
 
     public boolean addStudentToListing(StudentDTO stud, Integer studentId) {
@@ -215,27 +219,26 @@ public class EnrollmentServices {
 
         List<GradeLevelRequiredFees> gradeFeeList = gradelvlReqFeesRepo
                 .findByGradeLevel(er.getGradeLevelToEnroll().getLevelId());
+        StudentTotalDiscount std = discService.getStudentTotalDiscount(er.getStudent().getStudentId());
         int actvSemId = sySemRepo.findCurrentActive().getSySemNumber();
         gradeFeeList
                 .forEach(reqFee -> {
                     RequiredFees toPay = reqFee.getRequiredFee();
-                    double totalCurrentlyPaid = 0;
+                    double totalPaid = 0;
                     try {
-                        totalCurrentlyPaid = payRecRepo.getTotalPaidByStudentForFeeInSemester(
+                        totalPaid = payRecRepo.getTotalPaidByStudentForFeeInSemester(
                                 er.getStudent().getStudentId(), toPay.getId(), actvSemId);
                     } catch (NullPointerException ignored) {
                         //nothing to do
                     }
-                    String status = totalCurrentlyPaid == 0 ? "Unpaid"
-                            : totalCurrentlyPaid > 0 &&
-        totalCurrentlyPaid < toPay.getRequiredAmount()
-                                                            ? "Partially Paid"
-                                                            : "Fully Paid";
+                    double reqAmount = toPay.getRequiredAmount();
+                    double discountedBalance = Math.ceil(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
+                    String status = totalPaid >= discountedBalance? "Fully Paid":
+                                    totalPaid > 0 ?                 "Partially Paid":
+                                                                    "Unpaid";
+                    toPay.setRequiredAmount(discountedBalance);
                     epv.getFeeStatus().put(toPay, status);
                 });
-        for(RequiredFees s : epv.getFeeStatus().keySet()){
-            System.out.println(s.getName());
-        }
         return epv;
     }
 
@@ -254,6 +257,9 @@ public class EnrollmentServices {
         } catch (NullPointerException npe) {
             isComplete = false;
         }
+        if(!isComplete && paymentService.getStudentPaymentForm(e.getStudent().getStudentId(),e.getGradeLevelToEnroll().getLevelId()).getTotalFee() == 0)
+            isComplete=true;
+
         return e.DTOmapper(isComplete);
     }
 }

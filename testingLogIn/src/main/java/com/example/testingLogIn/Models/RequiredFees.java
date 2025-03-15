@@ -10,9 +10,7 @@ import lombok.*;
  *
  * @author magno
  */
-@Getter
-@Setter
-@ToString
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

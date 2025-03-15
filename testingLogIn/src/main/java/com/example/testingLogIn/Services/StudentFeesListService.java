@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
 import com.example.testingLogIn.ModelDTO.StudentFeesListDTO;
 import com.example.testingLogIn.Models.Enrollment;
@@ -20,15 +21,20 @@ public class StudentFeesListService {
     private StudentFeesListRepo studFeeRepo;
     @Autowired
     private GradeLevelRequiredFeeRepo gradeReqFeeRepo;
-
+    @Autowired
+    private DiscountsServices discService;;
     @Async
     public void addFeesRecord(Enrollment e){
+        StudentTotalDiscount std = discService.getStudentTotalDiscount(e.getStudent().getStudentId());
         gradeReqFeeRepo.findByGradeLevel(e.getGradeLevelToEnroll().getLevelId())
                 .forEach(reqFee -> {
+                    double reqAmount = reqFee.getRequiredFee().getRequiredAmount();
+                    double discountedAmount = Math.ceil(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
                     studFeeRepo.save(StudentFeesList.builder()
                                     .fee(reqFee.getRequiredFee())
                                     .sem(e.getSYSemester())
                                     .student(e.getStudent())
+                                    .amount(discountedAmount)
                                     .build());
                 });
     }

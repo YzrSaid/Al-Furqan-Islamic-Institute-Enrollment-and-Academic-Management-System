@@ -53,6 +53,9 @@ public class GradeLevelServices {
     public List<GradeLevel> getGradeLevelNoPreRequisite(){
         return gradeLevelRepo.findByPreRequisiteIsNullAndIsNotDeletedTrue();
     }
+    public List<GradeLevel> getGradeLevelSuccessor(int levelId){
+        return gradeLevelRepo.findSuccessors(levelId);
+    }
 
     public List<GradeLevel> getNoSuccessorsGradeLevels() {
         Set<Integer> levelIdSuccessors = new HashSet<>();

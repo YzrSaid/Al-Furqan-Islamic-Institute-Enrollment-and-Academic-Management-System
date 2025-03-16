@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.Enums.RegistrationStatus;
+import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.Services.AccountRegisterServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
@@ -45,15 +46,19 @@ public class AccountRegisterController {
         }
     }
     
-    @PutMapping("/confirm/{id}")
-    public ResponseEntity<String> confirmAccountRegistration(@PathVariable int id){
+    @PutMapping("/confirm/{id}/{role}")
+    public ResponseEntity<String> confirmAccountRegistration(@PathVariable int id,@PathVariable String role){
+        Role staffRole = role.equalsIgnoreCase("teacher") ? Role.TEACHER : Role.ENROLLMENT_STAFF;
         try{
-        AccountRegister accountToConfirm = accountRegisterServices.getAccount(id);
+            AccountRegister accountToConfirm = accountRegisterServices.getAccount(id);
+
         if(accountToConfirm == null){
             return new ResponseEntity<>("Account Not Found",HttpStatus.NOT_FOUND);
+
         }else if(customUserDetailsService.usernameExist(accountToConfirm.getUsername()))
             return new ResponseEntity<>("Email Already Taken",HttpStatus.NOT_ACCEPTABLE);
         else{
+            accountToConfirm.setRole(staffRole);
             customUserDetailsService.registerNewUser(accountToConfirm);
             accountToConfirm.setStatus(RegistrationStatus.APPROVED);
             accountRegisterServices.registerAccount(accountToConfirm);

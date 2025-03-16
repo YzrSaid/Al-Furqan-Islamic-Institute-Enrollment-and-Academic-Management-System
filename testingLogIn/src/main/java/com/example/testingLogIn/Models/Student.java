@@ -66,6 +66,7 @@ public class Student {
                         .birthdate(birthdate)
                         .address(address)
                         .balanceAmount(studentBalance)
+                        .currentGradeLevel(currentGradeSection != null ? currentGradeSection.getLevel() : null)
                         .currentGradeSection(currentGradeSection != null? currentGradeSection.getLevel().getLevelName()
                                             +" - "+currentGradeSection.getSectionName() : "NONE")
                 

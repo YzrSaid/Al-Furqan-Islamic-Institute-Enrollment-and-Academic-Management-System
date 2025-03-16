@@ -260,7 +260,7 @@
 
                     <label for="pre-req">Pre-Requisite Grade Level</label>
                     <select name="pre-req" id="pre-req-grade-level">
-                        <option value="" disabled>Choose a pre-requisite</option>
+                        <option value="NONE" disabled>Choose a pre-requisite</option>
                         <option value="NONE">None</option>
                     </select>
 
@@ -351,7 +351,7 @@
                     const dropdown = document.getElementById("pre-req-grade-level");
                     // Clear existing options and add default option
                     dropdown.innerHTML = `
-                <option value="" disabled selected>Choose a pre-requisite</option>
+                <option value="NONE" disabled selected>Choose a pre-requisite</option>
                 <option value="NONE">None</option> 
             `;
 
@@ -374,7 +374,7 @@
                 .then(data => {
                     // Add "Choose a pre-requisite" option as a disabled placeholder
                     const defaultOption = document.createElement("option");
-                    defaultOption.value = "";
+                    defaultOption.value = "NONE";
                     defaultOption.textContent = "Choose a pre-requisite";
                     defaultOption.disabled = true;
                     dropdown.appendChild(defaultOption);

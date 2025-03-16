@@ -1,6 +1,7 @@
 package com.example.testingLogIn.ModelDTO;
 
 import com.example.testingLogIn.Enums.Gender;
+import com.example.testingLogIn.Models.GradeLevel;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
@@ -25,7 +26,7 @@ public class StudentDTO {
     private String cellphoneNum;
     private String birthPlace;
     private double balanceAmount;
-    
+    private GradeLevel currentGradeLevel;
     private String currentGradeSection;
     
     private String motherName;

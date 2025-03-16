@@ -39,6 +39,14 @@ public class GradeLevelControllers {
         }
     }
 
+    @GetMapping("/successor/{levelId}")
+    public ResponseEntity<List<GradeLevel>> getGradeLevelSuccessor(@PathVariable int levelId){
+        try{
+            return new ResponseEntity<>(gradeLevelServices.getGradeLevelSuccessor(levelId),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
     @GetMapping("/no-successor-grade-level")
     public ResponseEntity<List<GradeLevel>> getNoSuccessorGradeLevel(){
         try{

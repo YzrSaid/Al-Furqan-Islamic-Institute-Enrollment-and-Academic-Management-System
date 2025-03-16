@@ -16,9 +16,7 @@ import java.util.List;
 
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

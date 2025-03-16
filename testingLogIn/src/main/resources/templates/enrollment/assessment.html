@@ -368,31 +368,33 @@
             .catch(error => console.error("Error fetching sections:", error));
     }
 
-    function fetchGradeLevels(selectedGrade, selectTag) {
-        console.log(`Fetching grade levels... (Selected Grade: ${selectedGrade})`);
-
-        // Disable the onChange event listener while loading
+    function fetchGradeLevels(selectedGrade, selectTag,isStudentNew,currentLevelId, isTransferee) {
+        var url = "/gradelevel/successor/"+currentLevelId;
+        isStudentNew = isStudentNew === true || isStudentNew === "true";
+        isTransferee = isStudentNew === true || isStudentNew === "true";
+        if(isStudentNew && isTransferee){
+            url = "/gradelevel/all";
+        }
+        else if(isStudentNew){
+            url = "/gradelevel/no-pre-requisite";
+        }
         const originalOnChange = selectTag.getAttribute("onChange");
         selectTag.removeAttribute("onChange");
 
-        fetch("/gradelevel/all")
+        fetch(url)
             .then(res => {
-                console.log("Response received:", res);
                 if (!res.ok) {
                     throw new Error(`HTTP error! Status: ${res.status}`);
                 }
                 return res.json();
             })
             .then(gradeLevels => {
-                console.log("Grade Levels Data:", gradeLevels);
-
                 if (!Array.isArray(gradeLevels) || gradeLevels.length === 0) {
                     console.warn("No grade levels received or data is not an array.");
                     return;
                 }
 
                 selectTag.innerHTML = ""; // Clear existing options
-                console.log("Cleared existing options");
 
                 let foundMatch = false;
 
@@ -402,21 +404,12 @@
                         return;
                     }
 
-                    console.log(`Adding grade level: ID=${grade.levelId}, Name=${grade.levelName}`);
-
                     const option = document.createElement("option");
                     option.value = grade.levelId;
                     option.textContent = grade.levelName;
-
-                    // ✅ Corrected comparison (Name to Name)
-                    console.log(
-                        `Comparing selectedGrade (${selectedGrade}) with grade.levelName (${grade.levelName})`
-                    );
-
                     if (String(selectedGrade).trim().toLowerCase() === String(grade.levelName).trim().toLowerCase()) {
                         option.selected = true;
                         foundMatch = true;
-                        console.log(`✅ Match found! Preselected: ${grade.levelName}`);
                     }
 
                     selectTag.appendChild(option);
@@ -425,8 +418,6 @@
                 if (!foundMatch) {
                     console.warn(`⚠️ No matching grade level found for selectedGrade: ${selectedGrade}`);
                 }
-
-                console.log("Grade levels loaded successfully. Total count:", gradeLevels.length);
 
                 // Re-enable the onChange event listener after populating the dropdown
                 selectTag.setAttribute("onChange", originalOnChange);
@@ -447,9 +438,6 @@
 
                 // Get the selected section number value
                 sectionNumberLet = document.querySelector("#section").value;
-
-                console.log("Enrollment ID:", enrollmentIdLet);
-                console.log("Selected Section:", sectionNumberLet);
             }
         });
     });
@@ -465,7 +453,6 @@
         }
 
         const apiUrl = `/enrollment/add/payment/${enrollmentIdLet}/${sectionNumberLet}`;
-        console.log(`🔄 Sending request to: ${apiUrl}`);
 
         fetch(apiUrl, {
             method: "PUT",
@@ -473,8 +460,6 @@
         })
             .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
             .then(({ text, status }) => {
-                console.log(`🔹 API Response (${status}): ${text}`);
-
                 if (status === 200) {
                     showSuccessModal("✅ Success: New student has been added successfully!");
                     location.reload(); // Reloads the page
@@ -495,7 +480,6 @@
                 return res.json();
             })
             .then(data => {
-                console.log(data);
                 const tableBody = document.querySelector("#lamesa tbody");
                 if (!tableBody) return console.error("Table body not found");
 
@@ -507,15 +491,18 @@
                 }
 
                 data.content.forEach(enr => {
-                    console.log(enr.student);
+                    const levelId = enr.student.currentGradeLevel?.levelId ?? null;
+                    const levelName = enr.student.currentGradeLevel === null ? "NONE" : enr.student.currentGradeLevel.levelName;
+                    console.log(levelName);
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId || "N/A"}</td>
                     <td>${enr.student.firstName} ${enr.student.middleName || ""} ${enr.student.lastName}</td>
-                    <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
+                    <td>${levelName}</td>
                     <td>
                         <select onChange="printer(this.options[this.selectedIndex].value, ${enr.enrollmentId})" 
-                                class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}">
+                                class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" data-isStudent-new="${enr.student.new}"
+                                data-current-gradeId="${levelId}" data-isStudent-transferee="${enr.student.transferee}">
                             <option>Loading...</option> <!-- Placeholder -->
                         </select>
                     </td>
@@ -545,17 +532,15 @@
                         </div>
                     </td>
                 `;
-
                     tableBody.appendChild(row);
                 });
-
-                // Populate grade level dropdowns
                 document.querySelectorAll(".grade-level-dropdown").forEach(selectTag => {
+                    const currentLevelId = selectTag.getAttribute("data-current-gradeId");
+                    const isStudentNew = selectTag.getAttribute("data-isStudent-new");
+                    const isTransferee = selectTag.getAttribute("data-isStudent-transferee");
                     const enrollmentId = selectTag.getAttribute("data-enrollment-id");
-                    console.log("The enrollment Id is " + enrollmentId);
                     const selectedGrade = data.content.find(e => e.enrollmentId == enrollmentId)?.gradeLevelToEnroll;
-                    console.log(selectedGrade);
-                    fetchGradeLevels(selectedGrade, selectTag);
+                    fetchGradeLevels(selectedGrade, selectTag,isStudentNew,currentLevelId,isTransferee);
                 });
 
                 updateStatusColors();
@@ -592,7 +577,6 @@
             const preRequisiteId = target.getAttribute("data-prerequisite");
             document.getElementById("student-name").textContent = target.getAttribute("data-stud-name");
             document.getElementById("student-id").textContent = target.getAttribute("data-displayId");
-            console.log("The name is " + target.getAttribute("data-stud-name"));
             if (!studentId) {
                 console.error(
                     "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
@@ -650,8 +634,6 @@
         if (proceedButton) {
             const gradeLevel = proceedButton.getAttribute("data-grade-level-id");
             if (!gradeLevel) return console.error("Grade level not found for section selection");
-
-            console.log("Grade Level Selected:", gradeLevel);
 
             // Set grade level in modal input field
             const gradeLevelInput = document.querySelector("#grade-level");

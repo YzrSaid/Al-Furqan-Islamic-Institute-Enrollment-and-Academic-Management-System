@@ -1179,7 +1179,6 @@
 
 
     document.addEventListener("DOMContentLoaded", function () {
-        //fetchAllGradeLevels();
         fetchStudents();
     });
 
@@ -1326,17 +1325,18 @@
             .catch(error => console.error("Error fetching sections:", error));
     }
 
-    async function fetchAllGradeLevels(isStudentNew) {
+    async function fetchAllGradeLevels(isStudentNew,isTransferee, currentLevelId) {
         try {
-        console.log(isStudentNew);
-        isStudentNew = isStudentNew === true || isStudentNew === "true";
-            var response = null;
-             if(isStudentNew === true){
-             console.log('getting all no pre req gradeLevels');
+            isStudentNew = isStudentNew === true || isStudentNew === "true";
+            isTransferee = isTransferee === true || isTransferee === "true";
+
+            var response = await fetch("/gradelevel/successor/"+currentLevelId);
+            if(isStudentNew && isTransferee){
+                response= await fetch('/gradelevel/all');
+            }
+             else if(isStudentNew === true){
                 response = await fetch('/gradelevel/no-pre-requisite');}
-             else { response= await fetch('/gradelevel/all'); // Adjust if API runs on a different port
-             console.log('getting all gradeLevels');
-             }
+
             if (!response.ok) throw new Error("Failed to fetch grade levels");
             const data = await response.json();
             populateGradeLevelDropdown(data);
@@ -1768,6 +1768,7 @@
 
                 tableBody.innerHTML = "";
                 data.content.forEach(enr => {
+                    const levelId = enr.student.currentGradeLevel?.levelId ?? null;
                     const row = document.createElement("tr");
                     row.setAttribute("data-enrollment-id", enr.enrollmentId);
                     row.classList.add("clickable-row");
@@ -1778,7 +1779,7 @@
                         <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}" 
                            data-open-modal="studentInformationModal"> View Record </a>
                         <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" data-isStudent-new="${enr.student.new}"
-                           data-open-modal="gradeLevelModal"> Proceed </a>
+                           data-isTransferee="${enr.student.transferee}" data-current-gradeId="${levelId}" data-open-modal="gradeLevelModal"> Proceed </a>
                         <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" 
                            data-message="Are you sure you want to cancel this registration?"> Cancel Registration </a>
                         `;
@@ -1817,11 +1818,11 @@
                             dropdownContent = `<p>No actions available</p>`;
                             break;
                     }
-
+                    const levelName = enr.student.currentGradeLevel === null ? "NONE" : enr.student.currentGradeLevel.levelName;
                     row.innerHTML = `
                 <td>${enr.student.studentDisplayId}</td>
                 <td>${enr.student.firstName} ${enr.student.middleName ? enr.student.middleName + ' ' : ''} ${enr.student.lastName}</td>
-                <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
+                <td>${levelName}</td>
                 <td>${enr.student.new ? 'New Student' : 'Old Student'}</td>
                 <td>
                     <div class="dropdown">
@@ -1956,11 +1957,10 @@
             fetchSections(gradeLevel);
         }
         if(gradeLevelbtn){
-            console.log("Grade level will show");
-            console.log(gradeLevelbtn.getAttribute("data-isStudent-new"));
             const isStudentNew = gradeLevelbtn.getAttribute("data-isStudent-new");
-            console.log(isStudentNew);
-            fetchAllGradeLevels(isStudentNew);
+            const isTransferee = gradeLevelbtn.getAttribute("data-isTransferee");
+            const currentGradeId = gradeLevelbtn.getAttribute("data-current-gradeId");
+            fetchAllGradeLevels(isStudentNew, isTransferee, currentGradeId);
         }
     });
 

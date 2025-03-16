@@ -29,7 +29,16 @@ public class GradeLevelControllers {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-    
+
+    @GetMapping("/no-pre-requisite")
+    public ResponseEntity<List<GradeLevel>> getStartingGrades(){
+        try{
+            return new ResponseEntity<>(gradeLevelServices.getGradeLevelNoPreRequisite(),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
     @GetMapping("/no-successor-grade-level")
     public ResponseEntity<List<GradeLevel>> getNoSuccessorGradeLevel(){
         try{

@@ -23,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 /**
  *
  * @author magno
@@ -140,6 +139,7 @@ public class EnrollmentServices {
         if (enrollmentRecord == null || !enrollmentRecord.isNotDeleted())
             return 1;
         else {
+            StudentTotalDiscount std = discService.getStudentTotalDiscount(enrollmentRecord.getStudent().getStudentId());
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.ENROLLED);
             enrollmentRepo.save(enrollmentRecord);
 
@@ -148,6 +148,7 @@ public class EnrollmentServices {
             student.setNew(false);
             Double toAdd=(gradelvlReqFeesRepo
                     .findTotalAmountByGradeLevel(enrollmentRecord.getGradeLevelToEnroll().getLevelId()));
+            toAdd = toAdd - Math.ceil(((toAdd*std.getTotalPercentageDiscount())+std.getTotalFixedDiscount()));
             double newBalance=student.getStudentBalance() + (toAdd == null ? 0 :toAdd);
             student.setStudentBalance(newBalance);
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
@@ -257,8 +258,12 @@ public class EnrollmentServices {
         } catch (NullPointerException npe) {
             isComplete = false;
         }
-        if(!isComplete && paymentService.getStudentPaymentForm(e.getStudent().getStudentId(),e.getGradeLevelToEnroll().getLevelId()).getTotalFee() == 0)
-            isComplete=true;
+        try {
+            if (!isComplete && paymentService.getStudentPaymentForm(e.getStudent().getStudentId(), e.getGradeLevelToEnroll().getLevelId()).getTotalFee() == 0)
+                isComplete = true;
+        }catch (NullPointerException npe){
+            //do nothing
+        }
 
         return e.DTOmapper(isComplete);
     }

@@ -52,7 +52,8 @@ public class EnrollmentController {
             return new ResponseEntity<>("Transaction Failed",HttpStatus.BAD_REQUEST);
         }
     }
-    
+
+    //WILL BE REMOVED
     @GetMapping("/all/{status}")
     public ResponseEntity<List<EnrollmentDTO>> getEnrollmentRecordsByStatus(@PathVariable String status){
         try{

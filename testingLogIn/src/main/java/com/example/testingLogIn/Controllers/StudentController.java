@@ -22,7 +22,7 @@ public class StudentController {
     
     @Autowired
     private StudentServices studentService;
-    
+    //WILL BE REMOVED AND CHANGED BY PAGINATION
     @GetMapping("/all")
     public ResponseEntity<List<StudentDTO>> getAllStudents(){
         return new ResponseEntity<>(studentService.getAllStudent(),HttpStatus.OK);

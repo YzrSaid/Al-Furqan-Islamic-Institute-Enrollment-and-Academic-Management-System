@@ -12,6 +12,7 @@
     <groupId>com.example</groupId>
     <artifactId>Al_Furqan_SOFTWARE_ENGINEERING</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>testingLogIn</name>
     <description>Demo project for Spring Boot</description>
     <url />

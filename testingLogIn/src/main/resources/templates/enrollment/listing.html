@@ -1178,7 +1178,7 @@
 
 
     document.addEventListener("DOMContentLoaded", function () {
-        fetchAllGradeLevels();
+        //fetchAllGradeLevels();
         fetchStudents();
     });
 
@@ -1325,11 +1325,18 @@
             .catch(error => console.error("Error fetching sections:", error));
     }
 
-    async function fetchAllGradeLevels() {
+    async function fetchAllGradeLevels(isStudentNew) {
         try {
-            const response = await fetch('/gradelevel/all'); // Adjust if API runs on a different port
+        console.log(isStudentNew);
+        isStudentNew = isStudentNew === true || isStudentNew === "true";
+            var response = null;
+             if(isStudentNew === true){
+             console.log('getting all no pre req gradeLevels');
+                response = await fetch('/gradelevel/no-pre-requisite');}
+             else { response= await fetch('/gradelevel/all'); // Adjust if API runs on a different port
+             console.log('getting all gradeLevels');
+             }
             if (!response.ok) throw new Error("Failed to fetch grade levels");
-
             const data = await response.json();
             populateGradeLevelDropdown(data);
         } catch (error) {
@@ -1683,6 +1690,7 @@
                     const paginatedItems = data.slice(start, end);
 
                     paginatedItems.forEach(enr => {
+                    console.log(enr);
                         const row = document.createElement("tr");
                         row.setAttribute("data-enrollment-id", enr.enrollmentId);
                         row.classList.add("clickable-row");
@@ -1693,7 +1701,7 @@
                                 dropdownContent = `
                                 <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}" 
                                    data-open-modal="studentInformationModal"> View Record </a>
-                                <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" 
+                                <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" data-isStudent-new="${enr.student.new}"
                                    data-open-modal="gradeLevelModal"> Proceed </a>
                                 <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" 
                                    data-message="Are you sure you want to cancel this registration?"> Cancel Registration </a>
@@ -1824,6 +1832,7 @@
 
     // Handle Proceed Button Click (Attach to Modal)
     document.addEventListener("click", function (event) {
+        const gradeLevelbtn = event.target.closest('[data-open-modal="gradeLevelModal"]');
         const proceedButton = event.target.closest('[data-open-modal="addGradeLevelAssessmentModal"]');
 
         if (proceedButton) {
@@ -1840,6 +1849,11 @@
 
             // Populate sections dropdown
             fetchSections(gradeLevel);
+        }
+        if(gradeLevelbtn){
+            const isStudentNew = gradeLevelbtn.getAttribute("data-isStudent-new");
+            console.log(isStudentNew);
+            fetchAllGradeLevels(isStudentNew);
         }
     });
 

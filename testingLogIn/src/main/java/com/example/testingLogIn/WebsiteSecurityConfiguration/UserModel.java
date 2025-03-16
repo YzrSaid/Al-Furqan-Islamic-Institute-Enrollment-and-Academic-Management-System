@@ -3,6 +3,7 @@ package com.example.testingLogIn.WebsiteSecurityConfiguration;
 import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.UserDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ public class UserModel implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int staffId;
     private String username;
-    private String password;
+    @JsonIgnore private String password;
     private boolean isNotRestricted;
     private boolean isNotDeleted;
     

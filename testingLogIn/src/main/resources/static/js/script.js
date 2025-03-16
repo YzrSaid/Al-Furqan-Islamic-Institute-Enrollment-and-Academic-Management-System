@@ -779,13 +779,13 @@ document.addEventListener("DOMContentLoaded", function () {
           message ===
           "✅ Account has been created successfully! This record will be sent for approval."
         ) {
-          window.location.href = "/login"; // Redirect after modal hides
+          window.location.href = "/login"; 
         } else {
-          location.reload(); // Reload the page for other messages
+          location.reload(); 
         }
-      }, 1500); // 1.5 seconds is enough for the user to see the message
+      }, 1500); 
     } else {
-      location.reload();
+      showErrorModal(`⚠️ Oops! Something went wrong. Please refresh or try again.`);
     }
   };
 
@@ -837,18 +837,18 @@ document.addEventListener("DOMContentLoaded", function () {
     if (target.matches("[data-open-modal]")) {
       const modalId = target.getAttribute("data-open-modal");
       const message = target.getAttribute("data-message") || "";
-      const action = target.getAttribute("data-action") || ""; // Get action
+      const action = target.getAttribute("data-action") || ""; 
 
       document
         .getElementById("confirmAction")
-        .setAttribute("data-confirm-action", action); // Store action
+        .setAttribute("data-confirm-action", action); 
 
       // Check if the clicked button is the saveBtn
       if (target === saveBtn) {
         if (saveBtn.textContent.trim() === "Add") {
           console.log("🔄 Changing text to Save...");
-          saveBtn.textContent = "Save"; // Change text to Save
-          return; // Stop execution so modal does NOT open
+          saveBtn.textContent = "Save"; 
+          return; 
         }
       }
 
@@ -914,8 +914,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Handle Confirm Action in Confirmation Modal
     if (target.id === "confirmAction") {
-      const action = target.getAttribute("data-confirm-action"); // ✅ Get action
-      handleConfirmAction(action, event); // ✅ Pass event properly
+      const action = target.getAttribute("data-confirm-action"); 
+      handleConfirmAction(action, event); 
 
       // Only close confirmation modal if validation passes
       if (validateForm("studentForm")) {

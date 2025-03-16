@@ -1681,7 +1681,7 @@
             .then(data => {
                 const tableBody = document.querySelector("#lamesa tbody");
                 const paginationContainer = document.querySelector("#pagination");
-
+                console.log(data);
                 function displayPage(page) {
                     tableBody.innerHTML = "";
                     const start = (page - 1) * rowsPerPage;
@@ -1689,7 +1689,7 @@
                     const paginatedItems = data.slice(start, end);
 
                     paginatedItems.forEach(enr => {
-                    console.log(enr);
+                        console.log(enr);
                         const row = document.createElement("tr");
                         row.setAttribute("data-enrollment-id", enr.enrollmentId);
                         row.classList.add("clickable-row");
@@ -1958,6 +1958,8 @@
             fetchSections(gradeLevel);
         }
         if(gradeLevelbtn){
+            console.log("Grade level will show");
+            console.log(gradeLevelbtn.getAttribute("data-isStudent-new"));
             const isStudentNew = gradeLevelbtn.getAttribute("data-isStudent-new");
             console.log(isStudentNew);
             fetchAllGradeLevels(isStudentNew);

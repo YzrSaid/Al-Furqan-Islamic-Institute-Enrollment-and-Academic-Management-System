@@ -1681,15 +1681,14 @@
             .then(data => {
                 const tableBody = document.querySelector("#lamesa tbody");
                 const paginationContainer = document.querySelector("#pagination");
-                console.log(data);
-                function displayPage(page) {
+                function displayPage(data) {
                     tableBody.innerHTML = "";
                     const start = (page - 1) * rowsPerPage;
                     const end = start + rowsPerPage;
                     const paginatedItems = data.slice(start, end);
 
-                    paginatedItems.forEach(enr => {
-                        console.log(enr);
+                    data.content.forEach(enr => {
+                    console.log(enr);
                         const row = document.createElement("tr");
                         row.setAttribute("data-enrollment-id", enr.enrollmentId);
                         row.classList.add("clickable-row");
@@ -1772,14 +1771,13 @@
                     const row = document.createElement("tr");
                     row.setAttribute("data-enrollment-id", enr.enrollmentId);
                     row.classList.add("clickable-row");
-
                     let dropdownContent = "";
                     switch (enr.enrollmentStatus) {
                         case "LISTING":
                             dropdownContent = `
                         <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}" 
                            data-open-modal="studentInformationModal"> View Record </a>
-                        <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" 
+                        <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" data-isStudent-new="${enr.student.new}"
                            data-open-modal="gradeLevelModal"> Proceed </a>
                         <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" 
                            data-message="Are you sure you want to cancel this registration?"> Cancel Registration </a>

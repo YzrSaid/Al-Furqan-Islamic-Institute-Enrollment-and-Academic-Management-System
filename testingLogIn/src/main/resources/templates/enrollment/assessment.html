@@ -373,7 +373,7 @@
     function fetchGradeLevels(selectedGrade, selectTag,isStudentNew,currentLevelId, isTransferee) {
         var url = "/gradelevel/successor/"+currentLevelId;
         isStudentNew = isStudentNew === true || isStudentNew === "true";
-        isTransferee = isStudentNew === true || isStudentNew === "true";
+        isTransferee = isTransferee === true || isTransferee === "true";
         if(isStudentNew && isTransferee){
             url = "/gradelevel/all";
         }
@@ -495,7 +495,7 @@
                 data.content.forEach(enr => {
                     const levelId = enr.student.currentGradeLevel?.levelId ?? null;
                     const levelName = enr.student.currentGradeLevel === null ? "NONE" : enr.student.currentGradeLevel.levelName;
-                    console.log(levelName);
+                    console.log(enr.student.transferee);
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId || "N/A"}</td>
@@ -537,11 +537,12 @@
                     tableBody.appendChild(row);
                 });
                 document.querySelectorAll(".grade-level-dropdown").forEach(selectTag => {
-                    const currentLevelId = selectTag.getAttribute("data-current-gradeId");
-                    const isStudentNew = selectTag.getAttribute("data-isStudent-new");
-                    const isTransferee = selectTag.getAttribute("data-isStudent-transferee");
-                    const enrollmentId = selectTag.getAttribute("data-enrollment-id");
-                    const selectedGrade = data.content.find(e => e.enrollmentId == enrollmentId)?.gradeLevelToEnroll;
+                    var currentLevelId = selectTag.getAttribute("data-current-gradeId");
+                    var isStudentNew = selectTag.getAttribute("data-isStudent-new");
+                    var isTransferee = selectTag.getAttribute("data-isStudent-transferee");
+                    console.log(isTransferee);
+                    var enrollmentId = selectTag.getAttribute("data-enrollment-id");
+                    var selectedGrade = data.content.find(e => e.enrollmentId == enrollmentId)?.gradeLevelToEnroll;
                     fetchGradeLevels(selectedGrade, selectTag,isStudentNew,currentLevelId,isTransferee);
                 });
 

@@ -18,9 +18,8 @@ import org.springframework.data.repository.query.Param;
 public interface StudentRepo extends JpaRepository<Student,Integer> {
     @Query("SELECT COUNT(s) > 0 FROM Student s " +
        "WHERE s.isNotDeleted = true "+
-       "AND (:studentId IS NULL OR s.studentId != :studentId) " +
-       "AND Lower(s.firstName) = Lower(:firstName) " +
-       "AND Lower(s.lastName) = Lower(:lastName)")
+       "AND (:studentId IS NULL OR s.studentId != :studentId) "+
+       "AND Lower(s.fullName) LIKE CONCAT(:firstName,' ',:lastName)")
 boolean existsByNameIgnoreCaseAndNotDeleted(
     @Param("studentId") Integer studentId,
     @Param("firstName") String firstName,
@@ -36,15 +35,14 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
     @Query("SELECT s FROM Student s " +
             "WHERE s.isNotDeleted = true " +
             "AND (s.studentDisplayId LIKE CONCAT('%', :search, '%') " +
-            "OR CONCAT(s.firstName, ' ', s.lastName) LIKE CONCAT('%', :search, '%')) ")
+            "OR s.fullName LIKE CONCAT('%', :search, '%')) ")
     Page<Student> findByStudentDisplayIdOrName(@Param("search")String searching, Pageable pageable);
 
     List<Student> findByIsNotDeletedTrueAndIsTransfereeTrue();
     
     @Query( "SELECT s from Student s "+
-            "WHERE s.isNotDeleted = true "+
-            "AND Lower(s.firstName) = Lower(:firstName) " +
-            "AND Lower(s.lastName) = Lower(:lastName)")
+            "WHERE s.isNotDeleted = TRUE "+
+            "AND Lower(s.fullName) LIKE CONCAT(:firstName,' ',:lastName)")
     Student findByName(
             @Param("firstName") String firstname,
             @Param("lastName") String lastname);
@@ -52,7 +50,7 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
     @Query("SELECT s FROM Student s " +
             "WHERE s.isNotDeleted = true " +
             "AND (s.studentDisplayId LIKE CONCAT('%', :searching, '%') " +
-            "OR CONCAT(s.firstName, ' ', s.lastName) LIKE CONCAT('%', :searching, '%'))")
+            "OR LOWER(s.fullName) LIKE CONCAT('%', :searching, '%'))")
     Optional<Student> findByStudentDisplayIDOrName(@Param("searching") String searching);
     
     @Query("SELECT COUNT(s) from Student s "+

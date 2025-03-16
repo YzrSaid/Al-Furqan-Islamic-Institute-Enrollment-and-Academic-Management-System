@@ -42,11 +42,13 @@ public class ScheduleServices {
     public int addNewSchedule(ScheduleDTO newSchedule){
         UserModel teacher = getTeacherByName(newSchedule.getTeacherName().toLowerCase());
         Section section = sectionService.getSectionById(newSchedule.getSectionId());
+        List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(subjectService.getByName(newSchedule.getSubject().toLowerCase()).getSubjectNumber(),section.getNumber(),teacher.getStaffId());
         if(isTeacherSchedConflict(teacher,newSchedule,true))
             return 1;
         else if(isSectionSchedConflict(section, newSchedule,true))
             return 2;
-
+        else if(!res.isEmpty())
+            return 3;
         scheduleRepo.save(ScheduleDTOtoSchedule(newSchedule));
         
         return 0;

@@ -173,12 +173,12 @@ public class EnrollmentServices {
                 .toList();
     }
 
-    public EnrollmentDTOPage getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize) {
+    public EnrollmentDTOPage getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize, String search) {
         Pageable pageable = PageRequest.of(pageNo-1,pageSize);
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = sySemRepo.findCurrentActive().getSySemNumber();
 
-        Page<EnrollmentDTO> enrollmentPage = enrollmentRepo.findRecordsByStatusAndSemesterPage(estatus,sem,pageable).map(this::isComplete);
+        Page<EnrollmentDTO> enrollmentPage = enrollmentRepo.findRecordsByStatusAndSemesterPage(estatus,sem,search,pageable).map(this::isComplete);
         return EnrollmentDTOPage.builder()
                 .content(enrollmentPage.getContent())
                 .pageNo(pageNo)

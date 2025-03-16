@@ -35,13 +35,15 @@ List<Enrollment> findRecordsByStatusAndSemester(
     @Param("status") EnrollmentStatus status,
     @Param("activeSemNumber") int activeSemNumber);
 
-    @Query("SELECT e FROM Enrollment e " +
-            "WHERE e.isNotDeleted = true " +
-            "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
-            "AND e.SYSemester.sySemNumber = :activeSemNumber")
+    @Query("SELECT e FROM Enrollment e " + 
+           "WHERE (:search IS NULL OR e.student.fullName LIKE CONCAT('%',:search,'%')) "+
+           "AND e.isNotDeleted = true " +
+           "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
+           "AND e.SYSemester.sySemNumber = :activeSemNumber")
     Page<Enrollment> findRecordsByStatusAndSemesterPage(
             @Param("status") EnrollmentStatus status,
             @Param("activeSemNumber") int activeSemNumber,
+            @Param("search") String search,
             Pageable pageable);
 
 @Query("SELECT e FROM Enrollment e " +

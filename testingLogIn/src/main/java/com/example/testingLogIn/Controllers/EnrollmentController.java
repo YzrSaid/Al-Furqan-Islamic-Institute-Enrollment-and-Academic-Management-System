@@ -7,6 +7,7 @@ import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
 import com.example.testingLogIn.Services.EnrollmentServices;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -67,9 +68,11 @@ public class EnrollmentController {
     @GetMapping("/all/paged/{status}")
     public ResponseEntity<EnrollmentDTOPage> getEnrollmentRecordsByStatusPage(@PathVariable String status,
                                                                               @RequestParam(required = false,defaultValue = "1") Integer pageNo,
-                                                                              @RequestParam(required = false,defaultValue = "10") Integer pageSize){
+                                                                              @RequestParam(required = false,defaultValue = "10") Integer pageSize,
+                                                                              @RequestParam(required = false) String search){
+        System.out.println("Requested for page "+pageNo);
         try{
-            return new ResponseEntity<>(enrollmentService.getAllEnrollmentPage(status,pageNo,pageSize),HttpStatus.OK);
+            return new ResponseEntity<>(enrollmentService.getAllEnrollmentPage(status,pageNo,pageSize,search),HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);

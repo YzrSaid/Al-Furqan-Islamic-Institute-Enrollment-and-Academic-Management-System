@@ -10,11 +10,11 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 @Entity
-public class Student {
+@Table(indexes = {@Index(name = "idx_full_name", columnList = "full_name")})
+public class Student{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +24,10 @@ public class Student {
     private String firstName;
     private String lastName;
     private String middleName;
+
+    @Column(name = "full_name", insertable = false, updatable = false)
+    private String fullName;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private LocalDate birthdate;

@@ -1497,8 +1497,7 @@
             const result = await response.text();
 
             if (response.ok) {
-                showSuccessModal("✅ Success: This record has been moved to Assessment!");
-                location.reload(); // Reload to update the table
+                goList(currentStat, currentPageNo, currentPageSize);
             } else {
                 showErrorModal("❌ Error: Transaction failed. Please try again!");
             }
@@ -1676,8 +1675,13 @@
                 showErrorModal("❌ Error: please try again!");
             });
     }
-
+    var currentStat = "";
+    var currentPageNo = 0;
+    var currentPageSize =0;
     function goList(status = "LISTING", pageNo = 1, pageSize = 1) {
+        currentStat = status;
+        currentPageNo = pageNo;
+        currentPageSize = pageSize;
         fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}`)
             .then(res => {
                 if (!res.ok) throw new Error("Failed to fetch enrollment records");

@@ -65,6 +65,8 @@ public class ScheduleController {
                     return new ResponseEntity<>("Conflict with the Teacher's Existing Schedule",HttpStatus.CONFLICT);
                 case 2:
                     return new ResponseEntity<>("Conflict with the Section's Existing Schedule",HttpStatus.CONFLICT);
+                case 3:
+                    return new ResponseEntity<>("Someone is already handling this subject on this section",HttpStatus.CONFLICT);
                 default:
                     return new ResponseEntity<>("Schedule Successfully Added",HttpStatus.OK);
             }

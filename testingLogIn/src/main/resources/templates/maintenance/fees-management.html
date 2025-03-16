@@ -496,8 +496,7 @@
                 showSuccessModal("✅ Success: New payment has been added successfully!");
             }
         } catch (error) {
-            console.error("Error:", error);
-            showErrorModal("❌ Error: " + error.message);
+            showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
         }
     }
 

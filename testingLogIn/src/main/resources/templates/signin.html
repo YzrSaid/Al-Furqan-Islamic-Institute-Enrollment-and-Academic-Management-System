@@ -20,45 +20,37 @@
                 <h3>Al-Furqan Islamic Institute Inc.</h3>
             </div>
             <form action="/register/add" method="post" id="signup-form">
+                <label class="normal-label" for="name">Full Name</label>
                 <div class="input-group-half">
                     <div class="input-group">
-                        <input class="input-group-input" type="text" name="firstname" id="firstname" placeholder=""
-                            required>
-                        <label class="input-group-label" for="firstname">First Name</label>
+                        <input class="input-group-input" type="text" name="firstname" id="firstname"
+                            placeholder="First Name" required>
                     </div>
                     <div class="input-group">
-                        <input class="input-group-input" type="text" name="lastname" id="lastname" placeholder="">
-                        <label class="input-group-label" for="lastname">Last Name</label>
+                        <input class="input-group-input" type="text" name="lastname" id="lastname"
+                            placeholder="Last Name">
+                    </div>
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="middlename" id="middlnamee"
+                            placeholder="Optional">
                     </div>
                 </div>
                 <div class="input-group">
                     <input class="input-group-input" type="email" name="username" id="email" placeholder="" required>
                     <label class="input-group-label" for="email">Email</label>
                 </div>
-                <div class="input-group-half">
-                    <div class="input-group">
-                        <div class="account-type-div">
-                            <label class="normal-label" for="gender">Gender</label>
-                            <select name="gender" id="gender">
-                                <option value="">Choose a gender</option>
-                                <option value="MALE">Male</option>
-                                <option value="FEMALE">Female</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="input-group">
-                        <div class="account-type-div">
-                            <label class="normal-label" for="account-type">Account Type</label>
-                            <select name="role" id="account-type">
-                                <option value="" disabled selected>Choose</option>
-                                <!-- <option value="ADMIN">Admin</option> -->
-                                <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
-                                <option value="TEACHER">Teacher</option>
-                            </select>
-                        </div>
+                <div class="input-group">
+                    <div class="account-type-div">
+                        <label class="normal-label" for="gender">Gender</label>
+                        <select name="gender" id="gender" required>
+                            <option value="">Choose a gender</option>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                        </select>
                     </div>
                 </div>
+
                 <div class="input-group">
                     <div class="account-type-div">
                         <label class="normal-label" for="address">Birthdate</label>
@@ -98,13 +90,13 @@
             </div>
         </div>
 
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
         <!-- Success modal -->
-        <div id="successModal"
-            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-     background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+        <div id="successModal">
             <p id="successModalMessage"></p>
         </div>
-
     </div>
 
 

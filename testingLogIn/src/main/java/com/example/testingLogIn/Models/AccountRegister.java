@@ -31,6 +31,7 @@ public class AccountRegister {
     
     private String firstname;
     private String lastname;
+    private String middlename;
     private String address;
     private String contactNumber;
     private LocalDate birthdate;

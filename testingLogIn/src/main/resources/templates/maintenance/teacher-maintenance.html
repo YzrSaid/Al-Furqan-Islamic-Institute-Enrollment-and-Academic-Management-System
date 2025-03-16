@@ -349,7 +349,7 @@
                     location.reload();
                 })
                 .catch(error => {
-                    alert("Error: " + error.message);
+                    showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
                 });
         }
     </script>

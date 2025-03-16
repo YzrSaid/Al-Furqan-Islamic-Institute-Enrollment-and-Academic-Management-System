@@ -472,7 +472,7 @@
                 showSuccessModal("✅ Success: New subject has been added successfully!");
             })
             .catch(error => {
-                showErrorModal("❌ Error: " + error.message);
+                showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
             });
     }
 
@@ -500,10 +500,10 @@
                 return response.text();
             })
             .then(text => {
-                showSuccessModal("✅ Success: This record has been edited successfully!");
+                showSuccessModal("✅ Success: This record has been updated successfully!");
             })
             .catch(error => {
-                showErrorModal("❌ Error: " + error.message);
+                showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
             });
     }
 
@@ -525,7 +525,7 @@
                 showSuccessModal("✅ Success: This record has been deleted successfully!");
             })
             .catch(error => {
-                showErrorModal("❌ Error: " + error.message);
+                showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
             });
     }
 

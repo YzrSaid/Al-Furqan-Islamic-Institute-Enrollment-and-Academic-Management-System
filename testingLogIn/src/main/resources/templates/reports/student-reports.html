@@ -47,7 +47,9 @@
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div> <br>
-            <p th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">S.Y. 2024-2025</p> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
             <div class="welcome-div">
                 <p>
                     Welcome,

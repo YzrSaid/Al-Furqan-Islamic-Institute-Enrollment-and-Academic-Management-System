@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -17,7 +19,9 @@
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div> <br>
-            <p th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">S.Y. 2024-2025</p> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
             <div class="welcome-div">
                 <p>
                     Welcome,
@@ -206,39 +210,39 @@
         const pathParts = path.split('/');
         const subjectId = pathParts[pathParts.length - 1];
         const sectionId = pathParts[pathParts.length - 2];
-        
-        fetchStudentSubjectGrades(sectionId,subjectId);
-    });
-    
-function fetchStudentSubjectGrades(sectionId, subjectId) {
-    fetch(`/student-grades/section-records/${sectionId}/${subjectId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json(); // Parse the response as JSON
-        })
-        .then(data => {
-            const tableBody = document.querySelector("#restaurant-table tbody");
-            tableBody.innerHTML = "";
-            let subjectName;
-            let sectionName;
-            data.forEach(rec => {
-                if (!subjectName && rec.subjectName) {
-                    subjectName = rec.subjectName;
-                }
 
-                if (!sectionName && rec.gradeAndSection) {
-                    sectionName = rec.gradeAndSection;
+        fetchStudentSubjectGrades(sectionId, subjectId);
+    });
+
+    function fetchStudentSubjectGrades(sectionId, subjectId) {
+        fetch(`/student-grades/section-records/${sectionId}/${subjectId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                const row = document.createElement("tr");
-                row.innerHTML = `
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#restaurant-table tbody");
+                tableBody.innerHTML = "";
+                let subjectName;
+                let sectionName;
+                data.forEach(rec => {
+                    if (!subjectName && rec.subjectName) {
+                        subjectName = rec.subjectName;
+                    }
+
+                    if (!sectionName && rec.gradeAndSection) {
+                        sectionName = rec.gradeAndSection;
+                    }
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
                     <tr>
                         <td>${rec.studentId}</td>
                         <td>${rec.studentLastName}, ${rec.studentFirstName} ${rec.studentMiddleName}</td>
                         <td><input type="number" min="1" max="100" name="student-grade" class="student-grade" value="${rec.subjectGrade}" id="student-grade-${rec.studGradeId}"></td>`;
-                        if (rec.subjectGrade === null) {
-                            row.innerHTML +=`
+                    if (rec.subjectGrade === null) {
+                        row.innerHTML += `
                                     <td>
                                             <div class="action-container action">
                                                 <a href="#" class="save-grade" data-grade-id="${rec.studGradeId}">
@@ -249,8 +253,8 @@ function fetchStudentSubjectGrades(sectionId, subjectId) {
                                     </td>
                                 </tr>
                             `;
-                        }else{
-                            row.innerHTML +=`
+                    } else {
+                        row.innerHTML += `
                                     <td>
                                         <div class="dropdown">
                                             <div class="action-container action">
@@ -260,12 +264,12 @@ function fetchStudentSubjectGrades(sectionId, subjectId) {
                                     </td>
                                 </tr>
                             `;
-                        }
-                tableBody.appendChild(row);
-            });
-            console.log(subjectName);
-            console.log(sectionName);
-            document.querySelector("#theTextLink").innerHTML = `
+                    }
+                    tableBody.appendChild(row);
+                });
+                console.log(subjectName);
+                console.log(sectionName);
+                document.querySelector("#theTextLink").innerHTML = `
                     <div id="theTextLink" class="text-link">
                         <h4>${subjectName}</h4>
                         <p>Main</p>
@@ -277,53 +281,53 @@ function fetchStudentSubjectGrades(sectionId, subjectId) {
                         <p>${subjectName}</p>
                     </div>`;
 
-            // Add event listeners to all "Save" buttons
-            document.querySelectorAll('.save-grade').forEach(button => {
-                button.addEventListener('click', function (event) {
-                    event.preventDefault(); // Prevent the default link behavior
-                    const gradeId = this.getAttribute('data-grade-id'); // Get the grade ID
-                    const inputField = document.querySelector(`#student-grade-${gradeId}`); // Find the corresponding input field
-                    const gradeValue = inputField.value; // Get the value of the input field
+                // Add event listeners to all "Save" buttons
+                document.querySelectorAll('.save-grade').forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault(); // Prevent the default link behavior
+                        const gradeId = this.getAttribute('data-grade-id'); // Get the grade ID
+                        const inputField = document.querySelector(`#student-grade-${gradeId}`); // Find the corresponding input field
+                        const gradeValue = inputField.value; // Get the value of the input field
 
-                    // Call the saveGrade function with the grade ID and value
-                    saveGrade(gradeId, gradeValue);
+                        // Call the saveGrade function with the grade ID and value
+                        saveGrade(gradeId, gradeValue);
+                    });
                 });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
             });
+    }
+
+    function saveGrade(gradeId, subGrade) {
+        console.log("Grade ID:", gradeId);
+        console.log("Grade Value:", subGrade);
+
+        fetch('/student-grades/save', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                studGradeId: gradeId,
+                subjectGrade: subGrade
+            }),
         })
-        .catch(error => {
-            console.error("Error fetching data:", error);
-        });
-}
-
-function saveGrade(gradeId, subGrade) {
-    console.log("Grade ID:", gradeId);
-    console.log("Grade Value:", subGrade);
-
-    fetch('/student-grades/save', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            studGradeId: gradeId,
-            subjectGrade: subGrade
-        }),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text(); // Parse the response as plain text
-    })
-    .then(data => {
-        console.log('Success:', data); // Log the plain text response
-        window.location.reload(); // Reload the page
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to save grade. Please try again.'); // Show an error message to the user
-    });
-}
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.text(); // Parse the response as plain text
+            })
+            .then(data => {
+                console.log('Success:', data); // Log the plain text response
+                window.location.reload(); // Reload the page
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to save grade. Please try again.'); // Show an error message to the user
+            });
+    }
 </script>
 
 </html>

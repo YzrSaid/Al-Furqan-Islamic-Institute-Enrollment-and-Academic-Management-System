@@ -44,12 +44,15 @@
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div>
-            <p th:text="|S.Y ${currentSY} - ${currentSem} sem|" class="mt-2">S.Y. 2024-2025</p>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
             <div class="welcome-div">
-                <p th:text="${userRole == 'ADMIN' ?   'WELCOME, ADMIN' :
-                              userRole == 'TEACHER' ? 'WELCOME, TEACHER' :
-                                                      'WELCOME, ENROLLMENT STAFF'}">
-                    WELCOME, <span class="account-text">ADMIN!</span></p>
+                <p>
+                    Welcome,
+                    <span class="account-text" th:text="|${userFirstName} (${userRole})|"></span>
+                </p>
+
             </div>
         </div>
 
@@ -366,7 +369,7 @@
 
 
     function fetchAdvisers() {
-        fetch("/section/adviserids") 
+        fetch("/section/adviserids")
             .then(response => response.json())
             .then(data => {
                 const adviserSelect = document.getElementById("adviser");

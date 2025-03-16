@@ -37,24 +37,24 @@
                 }
             }
         });
-        
+
         const searchInput = document.querySelector('.search-input');
         const searchButton = document.querySelector('.search-btn');
 
         // Add a click event listener to the search button
         searchButton.addEventListener('click', function () {
             // Retrieve the value of the input field
-            const searchValue = searchInput.value.trim().replaceAll(" ","_");
+            const searchValue = searchInput.value.trim().replaceAll(" ", "_");
 
             // Check if the input is not empty
             if (searchValue) {
-                window.location.href='/reports/payment/'+searchValue;
+                window.location.href = '/reports/payment/' + searchValue;
             } else {
                 // Handle empty input
                 alert('Please enter a search term.');
             }
         });
-        
+
         fetchRecords();
     });
 </script>
@@ -66,7 +66,9 @@
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div> <br>
-            <p th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">S.Y. 2024-2025</p> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
             <div class="welcome-div">
                 <p>
                     Welcome,
@@ -237,16 +239,16 @@
     <script th:src="@{/js/script.js}"></script>
 </body>
 <script>
-    function fetchRecords(){
+    function fetchRecords() {
         const path = window.location.pathname;
 
         const pathParts = path.split('/');
         const studentName = pathParts[pathParts.length - 1];
-        var url ="";
-        if(pathParts.length === 3){
-            url="/paymentrecord/all";
-        }else{
-            url="/paymentrecord/student/id/"+studentName;
+        var url = "";
+        if (pathParts.length === 3) {
+            url = "/paymentrecord/all";
+        } else {
+            url = "/paymentrecord/student/id/" + studentName;
         }
         fetch(url)
             .then(res => {
@@ -256,7 +258,7 @@
             .then(data => {
                 const tableBody = document.querySelector("#table-ko tbody");
                 tableBody.innerHTML = "";
-                
+
                 data.forEach(pr => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
@@ -279,4 +281,5 @@
             .catch(error => console.error("Error:", error));
     }
 </script>
+
 </html>

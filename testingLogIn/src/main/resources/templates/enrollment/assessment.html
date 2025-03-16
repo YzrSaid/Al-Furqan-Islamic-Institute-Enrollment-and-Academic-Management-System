@@ -193,9 +193,9 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
-                    <td>Martin Francisco</td>
-                    <td>Grade 1 - Baliwasan</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td>
                         <div class="status-container">
                             <div class="status" id="student-type">New</div>
@@ -222,6 +222,17 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <div id="pagination" class="pagination">
+                <button id="prevPage" disabled>&laquo;</button>
+                <div id="pageNumbers"></div>
+                <button id="nextPage">&raquo;</button>
+            </div>
+        </div>
+
+
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
@@ -239,7 +250,6 @@
             <div class="add-grade-level-assessment-modal-content">
                 <h2>Promote To</h2>
 
-
                 <label for="grade-level">Grade Level:</label>
                 <input type="text" id="grade-level" readonly> <br> <br>
 
@@ -247,7 +257,6 @@
                 <select name="section" id="section">
                     <option value="" disabled selected>Choose</option>
                 </select>
-
 
                 <div class="modal-buttons">
                     <button type="button" class="btn-confirm" data-action="proceedToPayment"
@@ -479,12 +488,12 @@
             });
     }
 
-
-
-    // Populate table with assessments
-    function getAssessments() {
-        fetch("/enrollment/all/assessment")
-            .then(res => res.json())
+    function getAssessments(status = "ASSESSMENT", pageNo = 1, pageSize = 2) {
+        fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch assessment records");
+                return res.json();
+            })
             .then(data => {
                 console.log(data);
                 const tableBody = document.querySelector("#lamesa tbody");
@@ -492,7 +501,12 @@
 
                 tableBody.innerHTML = ""; // Clear previous data
 
-                data.forEach(enr => {
+                if (!data || !data.content || data.content.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
+                    return;
+                }
+
+                data.content.forEach(enr => {
                     console.log(enr.student);
                     const row = document.createElement("tr");
                     row.innerHTML = `
@@ -500,13 +514,14 @@
                     <td>${enr.student.firstName} ${enr.student.middleName || ""} ${enr.student.lastName}</td>
                     <td>${enr.student.currentGradeSection === null ? "NONE" : enr.student.currentGradeSection?.level?.levelName || "N/A"}</td>
                     <td>
-                        <select onChange="printer(this.options[this.selectedIndex].value, ${enr.enrollmentId})" class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}">
+                        <select onChange="printer(this.options[this.selectedIndex].value, ${enr.enrollmentId})" 
+                                class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}">
                             <option>Loading...</option> <!-- Placeholder -->
                         </select>
                     </td>
                     <td>
                         <div class="status-container">
-                            <div class="status statusQualified">
+                            <div class="status ${enr.qualified ? 'statusQualified' : 'statusNotQualified'}">
                                 ${enr.qualified ? "Qualified" : "Not Qualified"}
                             </div>
                         </div>
@@ -518,10 +533,12 @@
                                 <button class="dropdown-status-btn"><i class="fas fa-chevron-down"></i></button>
                             </div>
                             <div class="dropdown-status-content">
-                                <a href="#" class="action" data-displayId="${enr.student.studentDisplayId}" data-prerequisite="${enr.preRequisiteId}"
-                                        data-stud-name="${enr.student.firstName} ${enr.student.middleName || ""} ${enr.student.lastName}"
-                                data-id="${enr.student.studentId}" data-open-modal="viewGradesModal">View Grades</a>
-                                <a href="#" class="proceedButton"  data-action="proceedToPayment" data-open-modal="addGradeLevelAssessmentModal"
+                                <a href="#" class="action" data-displayId="${enr.student.studentDisplayId}" 
+                                   data-prerequisite="${enr.preRequisiteId}"
+                                   data-stud-name="${enr.student.firstName} ${enr.student.middleName || ""} ${enr.student.lastName}"
+                                   data-id="${enr.student.studentId}" data-open-modal="viewGradesModal">View Grades</a>
+                                <a href="#" class="proceedButton" data-action="proceedToPayment" 
+                                   data-open-modal="addGradeLevelAssessmentModal"
                                    data-enrollment-id="${enr.enrollmentId}" data-grade-level-id="${enr.gradeLevelToEnroll}" 
                                    style="display: ${enr.qualified ? 'block' : 'none'};">Proceed</a>
                             </div>
@@ -536,78 +553,98 @@
                 document.querySelectorAll(".grade-level-dropdown").forEach(selectTag => {
                     const enrollmentId = selectTag.getAttribute("data-enrollment-id");
                     console.log("The enrollment Id is " + enrollmentId);
-                    const selectedGrade = data.find(e => e.enrollmentId == enrollmentId)?.gradeLevelToEnroll;
+                    const selectedGrade = data.content.find(e => e.enrollmentId == enrollmentId)?.gradeLevelToEnroll;
                     console.log(selectedGrade);
                     fetchGradeLevels(selectedGrade, selectTag);
                 });
 
-                updateStatusColors(); // Ensure status colors are updated
+                updateStatusColors();
+                updateAssessmentPagination(status, pageNo, pageSize, data.totalPages);
             })
             .catch(error => console.error("Error fetching assessments:", error));
     }
+
+    function updateAssessmentPagination(status, currentPage, pageSize, totalPages) {
+        const paginationContainer = document.querySelector("#pagination");
+        paginationContainer.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement("button");
+            button.innerText = i;
+            button.classList.add("pagination-button");
+            if (i === currentPage) button.classList.add("active");
+            button.addEventListener("click", () => {
+                getAssessments(status, i, pageSize);
+            });
+            paginationContainer.appendChild(button);
+        }
+    }
+
 
     document.addEventListener("click", function (event) {
         const target = event.target;
         const proceedButton = event.target.closest('[data-open-modal="addGradeLevelAssessmentModal"]');
 
-        if(target.dataset.openModal === "viewGradesModal"){
+        if (target.dataset.openModal === "viewGradesModal") {
             const studentId = target.dataset.id;
             const preRequisiteId = target.getAttribute("data-prerequisite");
-            document.getElementById("student-name").textContent=target.getAttribute("data-stud-name");
-            document.getElementById("student-id").textContent=target.getAttribute("data-displayId");
-            console.log("The name is "+target.getAttribute("data-stud-name"));
+            document.getElementById("student-name").textContent = target.getAttribute("data-stud-name");
+            document.getElementById("student-id").textContent = target.getAttribute("data-displayId");
+            console.log("The name is " + target.getAttribute("data-stud-name"));
             if (!studentId) {
-                    console.error(
-                        "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
-                    );
-                    return;
-                }
+                console.error(
+                    "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
+                );
+                return;
+            }
 
-fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
-    .then((response) => response.json())
-    .then((data) => {
-        const tableBody = document.querySelector("#lamesaa tbody");
-        tableBody.innerHTML = "";
+            fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    const tableBody = document.querySelector("#lamesaa tbody");
+                    tableBody.innerHTML = "";
 
-        const studentGradesMap = new Map(Object.entries(data));
+                    const studentGradesMap = new Map(Object.entries(data));
 
-        studentGradesMap.forEach((values, key) => {
-            const keyRow = document.createElement("tr");
-            keyRow.innerHTML = `<td colspan="3"><strong>${key}</strong></td>`; // Use colspan to span all columns
-            tableBody.appendChild(keyRow);
+                    studentGradesMap.forEach((values, key) => {
+                        const keyRow = document.createElement("tr");
+                        keyRow.innerHTML = `<td colspan="3"><strong>${key}</strong></td>`; // Use colspan to span all columns
+                        tableBody.appendChild(keyRow);
 
-        let gradeTotal = 0;
-        let gradeCount = 0;
+                        let gradeTotal = 0;
+                        let gradeCount = 0;
 
-        values.forEach((grade) => {
-            gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
-            gradeCount++;
+                        values.forEach((grade) => {
+                            gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
+                            gradeCount++;
 
-            const gradeRow = document.createElement("tr");
-            gradeRow.innerHTML = `
+                            const gradeRow = document.createElement("tr");
+                            gradeRow.innerHTML = `
                 <td>${grade.subjectName}</td>
                 <td>${grade.subjectName}</td>
                 <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
             `;
-            // Append gradeRow to the table body
-            tableBody.appendChild(gradeRow);
-        });
+                            // Append gradeRow to the table body
+                            tableBody.appendChild(gradeRow);
+                        });
 
-        // Calculate the average grade after the loop is finished
-        const avg = gradeCount > 0 ? gradeTotal / gradeCount : 0; // Avoid division by 0
+                        // Calculate the average grade after the loop is finished
+                        const avg = gradeCount > 0 ? gradeTotal / gradeCount : 0; // Avoid division by 0
 
-        // Create the average row (this should be done outside the loop)
-        const averageRow = document.createElement("tr");
-        averageRow.id = "average-row";
-        averageRow.innerHTML = `
+                        // Create the average row (this should be done outside the loop)
+                        const averageRow = document.createElement("tr");
+                        averageRow.id = "average-row";
+                        averageRow.innerHTML = `
             <td colspan="2">Average</td>
             <td>${avg.toFixed(2)}</td>
         `;
-        // Append the average row after all grade rows have been appended
-        tableBody.appendChild(averageRow);
-        });
-    })
-    .catch((error) => console.error("Error fetching grade level:", error));
+                        // Append the average row after all grade rows have been appended
+                        tableBody.appendChild(averageRow);
+                    });
+                })
+                .catch((error) => console.error("Error fetching grade level:", error));
         }
 
         if (proceedButton) {
@@ -646,7 +683,7 @@ fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
             } else {
                 // Handle non-OK responses (e.g., 400, 500 errors)
                 const errorMessage = await response.text();
-                alert(errorMessage); // Show the error message from the server
+                alert(errorMessage); 
             }
         } catch (error) {
             // Handle network errors or other exceptions
@@ -657,14 +694,16 @@ fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
 
     function updateStatusColors() {
         document.querySelectorAll(".statusQualified").forEach(statusElement => {
-            const statusText = statusElement.textContent.trim().toUpperCase(); // Normalize case and trim spaces
+            const statusText = statusElement.textContent.trim().toUpperCase(); 
 
             if (statusText === "QUALIFIED") {
-                statusElement.style.backgroundColor = "#28a745"; // Green
-                statusElement.style.color = "white";
-            } else if (statusText === "NOT QUALIFIED") { // Fix this condition
-                statusElement.style.backgroundColor = "#E74424"; // Red
-                statusElement.style.color = "white";
+                statusElement.style.color = "#28a745";
+                statusElement.style.fontWeight = "bolder";
+                statusElement.style.fontSize = "15px";
+            } else if (statusText === "NOT QUALIFIED") {
+                statusElement.style.fontWeight = "bolder";
+                statusElement.style.fontSize = "15px";
+                statusElement.style.color = "#E74424";
             }
         });
     }

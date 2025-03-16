@@ -668,7 +668,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "proceedToPayment":
         proceedToPayment(enrollmentIdLet, sectionNumberLet);
-        break;  
+        break;
       case "proceedToEnrolled":
         proceedToEnrolled(enrollmentIdLet);
         break;
@@ -762,17 +762,19 @@ document.addEventListener("DOMContentLoaded", function () {
       alert(`⚠️ ${message}`);
     }
   };
-
   window.showSuccessModal = function (message) {
     const modal = document.getElementById("successModal");
     const modalMessage = document.getElementById("successModalMessage");
+    const overlay = document.getElementById("successModalOverlay");
 
-    if (modal && modalMessage) {
+    if (modal && modalMessage && overlay) {
       modalMessage.innerHTML = message;
       modal.style.display = "block";
+      overlay.style.display = "block";
 
       setTimeout(() => {
         modal.style.display = "none";
+        overlay.style.display = "none";
         if (
           message ===
           "✅ Account has been created successfully! This record will be sent for approval."

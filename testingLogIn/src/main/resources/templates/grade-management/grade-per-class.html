@@ -234,6 +234,7 @@
                         tableBody.innerHTML = "";
 
                         Object.entries(data).forEach(([key, value]) => {
+                        console.log("Value is :"+value);
                             const row = document.createElement("tr");
                             row.innerHTML = `
                                 <td>${value.subject}</td>

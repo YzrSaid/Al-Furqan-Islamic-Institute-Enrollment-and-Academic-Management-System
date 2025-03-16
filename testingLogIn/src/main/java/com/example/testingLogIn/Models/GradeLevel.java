@@ -29,7 +29,7 @@ public class GradeLevel {
 
     @ManyToOne
     @JoinColumn(name = "preRequisite", nullable = true)
-    @JsonIgnore // Prevents infinite recursion
+    @JsonIgnore
     private GradeLevel preRequisite;
     
     public GradeLevelDTO mapperDTO(){

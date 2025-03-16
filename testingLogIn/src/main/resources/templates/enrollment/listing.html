@@ -1209,8 +1209,9 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-                    showSuccessModal("✅ Success: New student has been added successfully!");
-                    location.reload(); // Reloads the page
+<!--                    showSuccessModal("✅ Success: New student has been added successfully!");-->
+<!--                    location.reload(); // Reloads the page-->
+                        goList(currentStat, currentPageNo, currentPageSize);
                 } else {
                     showErrorModal("❌ Error:" + text);
                 }
@@ -1435,7 +1436,8 @@
         })
             .then(response => response.text())
             .then(message => {
-                showSuccessModal(message);
+<!--                showSuccessModal(message);-->
+                goList(currentStat, currentPageNo, currentPageSize);
             })
             .catch(error => {
                 console.error("Error adding payment:", error);
@@ -1467,8 +1469,9 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-                    showSuccessModal("✅ Success: Student successfully enrolled!");
-                    location.reload(); // Reloads the page after successful enrollment
+<!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
+<!--                    location.reload(); // Reloads the page after successful enrollment-->
+                    goList(currentStat, currentPageNo, currentPageSize);
                 } else {
                     // showErrorModal("❌ Error: " + text);
                     location.reload();
@@ -1516,8 +1519,9 @@
             .then(response => {
                 return response.text().then(message => {
                     if (response.ok) {
-                        showSuccessModal(message);
-                        window.location.reload(); // Reload the page
+                    goList(currentStat, currentPageNo, currentPageSize);
+<!--                        showSuccessModal(message);-->
+<!--                        window.location.reload(); // Reload the page-->
                     } else {
                         showErrorModal(message);
                     }
@@ -1606,7 +1610,8 @@
                 return response.text();
             })
             .then(text => {
-                showSuccessModal("✅ Success: New student has been added successfully!");
+<!--                showSuccessModal("✅ Success: New student has been added successfully!");-->
+                goList(currentStat, currentPageNo, currentPageSize);
             })
             .catch(error => {
                 showErrorModal("❌ Error: Please try again!");

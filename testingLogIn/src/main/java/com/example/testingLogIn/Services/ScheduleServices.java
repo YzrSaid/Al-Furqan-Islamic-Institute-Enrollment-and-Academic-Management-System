@@ -1,10 +1,12 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.SubjectSectionCount;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.Models.Schedule;
 import com.example.testingLogIn.Models.Section;
+import com.example.testingLogIn.Models.Subject;
 import com.example.testingLogIn.Repositories.ScheduleRepo;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
@@ -17,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,7 +47,9 @@ public class ScheduleServices {
     public int addNewSchedule(ScheduleDTO newSchedule){
         UserModel teacher = getTeacherByName(newSchedule.getTeacherName().toLowerCase());
         Section section = sectionService.getSectionById(newSchedule.getSectionId());
-        List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(subjectService.getByName(newSchedule.getSubject().toLowerCase()).getSubjectNumber(),section.getNumber(),teacher.getStaffId());
+        List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(subjectService.getByName(newSchedule.getSubject().toLowerCase()).getSubjectNumber()
+                                                                                            ,section.getNumber(),
+                                                                                            teacher.getStaffId());
         if(isTeacherSchedConflict(teacher,newSchedule,true))
             return 1;
         else if(isSectionSchedConflict(section, newSchedule,true))
@@ -53,7 +60,6 @@ public class ScheduleServices {
         
         return 0;
     }
-    
     public List<ScheduleDTO> getSchedulesByTeacher(String teacherName){
         UserModel teacher = getTeacherByName(teacherName.toLowerCase());
         if(teacher == null){
@@ -80,7 +86,7 @@ public class ScheduleServices {
                             .toList();
     }
     
-        public Map<Integer,ScheduleDTO> getSubjectsUniqeTeacher(int sectionId){
+    public Map<Integer,ScheduleDTO> getSubjectsUniqeTeacher(int sectionId){
             SectionDTO section = sectionService.getSection(sectionId);
             if(section == null)
                 throw new NullPointerException();
@@ -98,14 +104,16 @@ public class ScheduleServices {
             });
             for(Integer key : subjectTeachers.keySet()){
                 ScheduleDTO sched = subjectTeachers.get(key);
-                subjectTeachers.get(key).setGradedCount(ssgRepo.getTotalGraded(
+                Integer toBeGraded = ssgRepo.getGradesBySectionSubjectSem(
                         sched.getSectionId(),
-                        sched.getSubjectId(), 
-                        semRepo.findCurrentActive().getSySemNumber()));
-                subjectTeachers.get(key).setToBeGradedCount(ssgRepo.getGradesBySectionSubjectSem(
+                        sched.getSubjectId(),
+                        semRepo.findCurrentActive().getSySemNumber()).size();
+                Integer graded = ssgRepo.getTotalGraded(
                         sched.getSectionId(),
-                        sched.getSubjectId(), 
-                        semRepo.findCurrentActive().getSySemNumber()).size());
+                        sched.getSubjectId(),
+                        semRepo.findCurrentActive().getSySemNumber());
+                subjectTeachers.get(key).setGradedCount(graded);
+                subjectTeachers.get(key).setToBeGradedCount(toBeGraded);
             }
 
             return subjectTeachers;
@@ -113,7 +121,9 @@ public class ScheduleServices {
     
     public int updateSchedule(ScheduleDTO schedDTO){
         Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElse(null);
-        
+        UserModel t = getTeacherByName(schedDTO.getTeacherName().toLowerCase());
+        List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(subjectService.getByName(schedDTO.getSubject().toLowerCase()).getSubjectNumber()
+                ,toUpdate.getSection().getNumber(),t.getStaffId());
         if(toUpdate != null && toUpdate.isNotDeleted()){
             Schedule updated = ScheduleDTOtoSchedule(schedDTO);
             UserModel teacher = updated.getTeacher();
@@ -122,7 +132,8 @@ public class ScheduleServices {
                 return 1;
             }else if(isSectionSchedConflict(section, schedDTO,false)){
                 return 2;
-            }
+            }else if(!res.isEmpty())
+                return 3;
             
             toUpdate.setTeacher(updated.getTeacher());
             toUpdate.setSubject(updated.getSubject());
@@ -132,10 +143,10 @@ public class ScheduleServices {
             toUpdate.setTimeEnd(updated.getTimeEnd());
             
             scheduleRepo.save(toUpdate);
-            return 3;
+            return 4;
             
         }
-        return 4;
+        return 5;
     }
     
     public boolean deleteSchedule(int schedNum){
@@ -200,5 +211,39 @@ public class ScheduleServices {
                                        teacherName.toLowerCase().contains(t.getFirstname().toLowerCase()) &&
                                        teacherName.toLowerCase().contains(t.getLastname().toLowerCase()))
                             .findFirst().orElse(null);
+    }
+
+    //FOR TEACHER UNIQUE SUBJECTS HANDLING
+    public List<SubjectSectionCount> getTeacherSubjects(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken)
+            return null;
+
+        UserModel teacher =(UserModel) authentication.getPrincipal();
+        return scheduleRepo.findTeacherSubjectAndSectionCount(teacher.getStaffId());
+    }
+
+    public Map<Integer,ScheduleDTO> getSectionsBySubject(int subjectId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken)
+            return null;
+        UserModel teacher =(UserModel) authentication.getPrincipal();
+        Map<Integer,ScheduleDTO> scheduleList = scheduleRepo.findByTeacherSubject(teacher.getStaffId(),subjectId).stream()
+                .collect(Collectors.toMap(sched -> sched.getSubject().getSubjectNumber(),Schedule::mapper));
+        for(Integer key : scheduleList.keySet()){
+            ScheduleDTO sched = scheduleList.get(key);
+            Integer toBeGraded = ssgRepo.getGradesBySectionSubjectSem(
+                    sched.getSectionId(),
+                    sched.getSubjectId(),
+                    semRepo.findCurrentActive().getSySemNumber()).size();
+            Integer graded = ssgRepo.getTotalGraded(
+                    sched.getSectionId(),
+                    sched.getSubjectId(),
+                    semRepo.findCurrentActive().getSySemNumber());
+            scheduleList.get(key).setGradedCount(graded);
+            scheduleList.get(key).setToBeGradedCount(toBeGraded);
+        }
+
+        return scheduleList;
     }
 }

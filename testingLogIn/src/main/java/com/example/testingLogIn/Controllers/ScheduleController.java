@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.SubjectSectionCount;
 import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.Services.ScheduleServices;
 
@@ -86,6 +87,8 @@ public class ScheduleController {
             case 2:
                 return new ResponseEntity<>("Conflict with the Section's other existing schedule",HttpStatus.CONFLICT);
             case 3:
+                return new ResponseEntity<>("Someone is already handling this subject on this section",HttpStatus.OK);
+            case 4:
                 return new ResponseEntity<>("Schedule Updated Successfully",HttpStatus.OK);
             default:
                 return new ResponseEntity<>("Schedule Not Found",HttpStatus.NOT_FOUND);
@@ -98,5 +101,15 @@ public class ScheduleController {
             return new ResponseEntity<>("Schedule Deleted Successfully",HttpStatus.OK);
         else
             return new ResponseEntity<>("Schedule Not Found",HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<List<SubjectSectionCount>> testNow(){
+        return new ResponseEntity<>(scheduleService.getTeacherSubjects(),HttpStatus.OK);
+    }
+
+    @GetMapping("/test/{subjectId}")
+    public ResponseEntity<Map<Integer,ScheduleDTO>> testNow(@PathVariable int subjectId){
+        return new ResponseEntity<>(scheduleService.getSectionsBySubject(subjectId),HttpStatus.OK);
     }
 }

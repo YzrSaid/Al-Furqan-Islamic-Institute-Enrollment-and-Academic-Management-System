@@ -12,6 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
+import java.util.Optional;
+
 /**
  *
  * @author magno
@@ -54,20 +56,15 @@ public class    Enrollment {
     private boolean isNotDeleted;
     
     public EnrollmentDTO DTOmapper(boolean isComplete){
-        GradeLevel preReq = null;
-        try{
-            preReq = gradeLevelToEnroll.getPreRequisite();
-        }catch(NullPointerException npe){
-        }
         return EnrollmentDTO.builder()
                             .enrollmentId(enrollmentId)
                             .student(student.DTOmapper())
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
-                            .preRequisiteId(preReq != null ? preReq.getLevelId() : null)
-                            .gradeLevelToEnrollId(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelId() : null)
-                            .gradeLevelToEnroll(gradeLevelToEnroll != null ? gradeLevelToEnroll.getLevelName() : null)
-                            .sectionToEnroll(sectionToEnroll != null ? gradeLevelToEnroll.getLevelName()+" - "+sectionToEnroll.getSectionName() : null)
+                            .preRequisiteId(Optional.ofNullable(gradeLevelToEnroll.getPreRequisite()).map(GradeLevel::getLevelId).orElse(null))
+                            .gradeLevelToEnrollId(Optional.ofNullable(gradeLevelToEnroll).map(GradeLevel::getLevelId).orElse(null))
+                            .gradeLevelToEnroll(Optional.ofNullable(gradeLevelToEnroll).map(GradeLevel::getLevelName).orElse(null))
+                            .sectionToEnroll(Optional.ofNullable(sectionToEnroll).map(sec -> sec.getLevel().getLevelName()+"-"+sec.getSectionName()).orElse(null))
                             .enrollmentStatus(enrollmentStatus)
                             .studentMiddleName(student.getMiddleName())
                             .remarks(remarks)

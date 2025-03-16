@@ -94,12 +94,15 @@ public class PaymentRecordService {
         List<MapperObject> toSortByBalance = new ArrayList<>();
         setTheAmount(amount);
         StudentTotalDiscount std = discService.getStudentTotalDiscount(studentId);
+
         if(gradeLevelId != null) {//during enrollment
             for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
                 if(feesId.contains(reqFee.getRequiredFee().getId())) {
-                    Double result = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber());
-                    double paidAmount = result != null ? result : 0;
-                    double initialAmount = reqFee.getRequiredFee().getRequiredAmount();
+//                    Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber())).orElse(0.0); uncomment if magka error hahahha
+//                    Double result = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber());
+                    double paidAmount = Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber())).orElse(0.0);
+
+                    double initialAmount = reqFee.getRequiredFee().getRequiredAmount();//initial amount deducted by the discount
                     double discountedAmount = initialAmount-((initialAmount * std.getTotalPercentageDiscount())+std.getTotalFixedDiscount());
                     double totalFeeBalance = discountedAmount - paidAmount;
                     if (totalFeeBalance > 0)
@@ -114,7 +117,7 @@ public class PaymentRecordService {
                 if(feesId.contains(paid.getFee().getId())) {
                     Double amountPaid = paymentRepo.totalPaidForSpecificFee(studentId,paid.getFee().getId(),null);
                     amountPaid = amountPaid != null ? amountPaid : 0;
-                    double remainingBalance = studFeesRepo.totalPerFeesByStudent(studentId, paid.getFee().getId()) - amountPaid;
+                    double remainingBalance = Optional.ofNullable(studFeesRepo.totalPerFeesByStudent(studentId, paid.getFee().getId())).orElse(0d) - amountPaid;
                     if (remainingBalance > 0)
                         toSortByBalance.add(MapperObject.builder()
                                 .requiredFees(paid.getFee())
@@ -188,6 +191,7 @@ public class PaymentRecordService {
         }
     }
 
+    //A payment form object
     public StudentPaymentForm getStudentPaymentForm(int studentId,  Integer gradeLevelId){
         Student student = studentRepo.findById(studentId).orElse(null);
         SchoolYearSemester sem = SYSemRepo.findCurrentActive();
@@ -203,8 +207,7 @@ public class PaymentRecordService {
         if(gradeLevelId != null){
             StudentTotalDiscount std = discService.getStudentTotalDiscount(studentId);
             for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
-                Double result = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber());
-                double paidAmount = result != null ? result : 0;
+                double paidAmount = Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber())).orElse(0.0d);
                 double initialAmount = reqFee.getRequiredFee().getRequiredAmount();
                 double discountedAmount = Math.ceil(initialAmount - ((initialAmount*std.getTotalPercentageDiscount())-std.getTotalFixedDiscount()));
                 double remainingBalance = discountedAmount - paidAmount;

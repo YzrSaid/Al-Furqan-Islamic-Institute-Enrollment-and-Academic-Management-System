@@ -16,6 +16,7 @@ import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ public class EnrollmentServices {
     public int addToAssessment(int enrollmentId, int gradeLevelId) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         GradeLevel gradeLevelToEnroll = gradeLevelRepo.findById(gradeLevelId).orElse(null);
-        assert enrollmentRecord != null;
+        Optional.ofNullable(enrollmentRecord).orElseThrow(NullPointerException::new);
         Student student = enrollmentRecord.getStudent();
         if (!enrollmentRecord.isNotDeleted())
             return 1;
@@ -146,10 +147,11 @@ public class EnrollmentServices {
             Student student = enrollmentRecord.getStudent();
             assert student != null;
             student.setNew(false);
-            Double toAdd=(gradelvlReqFeesRepo
-                    .findTotalAmountByGradeLevel(enrollmentRecord.getGradeLevelToEnroll().getLevelId()));
+            double toAdd= Optional.ofNullable(gradelvlReqFeesRepo
+                    .findTotalAmountByGradeLevel(enrollmentRecord.getGradeLevelToEnroll().getLevelId())).orElse(0.0) ;
+
             toAdd = toAdd - Math.ceil(((toAdd*std.getTotalPercentageDiscount())+std.getTotalFixedDiscount()));
-            double newBalance=student.getStudentBalance() + (toAdd == null ? 0 :toAdd);
+            double newBalance=student.getStudentBalance() + toAdd;
             student.setStudentBalance(newBalance);
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
             studentRepo.save(student);
@@ -225,13 +227,8 @@ public class EnrollmentServices {
         gradeFeeList
                 .forEach(reqFee -> {
                     RequiredFees toPay = reqFee.getRequiredFee();
-                    double totalPaid = 0;
-                    try {
-                        totalPaid = payRecRepo.getTotalPaidByStudentForFeeInSemester(
-                                er.getStudent().getStudentId(), toPay.getId(), actvSemId);
-                    } catch (NullPointerException ignored) {
-                        //nothing to do
-                    }
+                    double totalPaid = Optional.ofNullable(payRecRepo.getTotalPaidByStudentForFeeInSemester(er.getStudent().getStudentId(), toPay.getId(), actvSemId)).orElse(0.0);
+
                     double reqAmount = toPay.getRequiredAmount();
                     double discountedBalance = Math.ceil(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
                     String status = totalPaid >= discountedBalance? "Fully Paid":

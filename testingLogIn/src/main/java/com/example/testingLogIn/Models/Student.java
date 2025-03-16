@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
+
 import lombok.*;
 
 @AllArgsConstructor
@@ -70,9 +72,9 @@ public class Student{
                         .birthdate(birthdate)
                         .address(address)
                         .balanceAmount(studentBalance)
-                        .currentGradeLevel(currentGradeSection != null ? currentGradeSection.getLevel() : null)
-                        .currentGradeSection(currentGradeSection != null? currentGradeSection.getLevel().getLevelName()
-                                            +" - "+currentGradeSection.getSectionName() : "NONE")
+                        .currentGradeLevel(Optional.ofNullable(currentGradeSection).map(Section::getLevel).orElse(null))
+                        .currentGradeSection(Optional.ofNullable(currentGradeSection).map(sec -> sec.getLevel().getLevelName()).orElse("")
+                                            +Optional.ofNullable(currentGradeSection).map(sec ->"-"+ sec.getSectionName()).orElse("NONE"))
                 
                         .motherName(motherName)
                         .motherOccupation(motherOccupation)

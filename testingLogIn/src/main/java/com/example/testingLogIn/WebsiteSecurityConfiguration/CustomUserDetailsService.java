@@ -100,7 +100,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return null;
     }
     
-        public UserDTO getCurrentlyLoggedInUserDTO(){
+    public UserDTO getCurrentlyLoggedInUserDTO(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
                 return ((UserModel)authentication.getPrincipal()).mapperDTO();

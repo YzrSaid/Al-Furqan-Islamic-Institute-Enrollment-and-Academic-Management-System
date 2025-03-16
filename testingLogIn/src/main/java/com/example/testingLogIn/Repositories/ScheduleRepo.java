@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
+import com.example.testingLogIn.CustomObjects.SubjectSectionCount;
 import com.example.testingLogIn.Models.Schedule;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -55,4 +56,17 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Integer>{
     
     @Query("SELECT COUNT(DISTINCT s.subject.subjectNumber) FROM Schedule s WHERE s.isNotDeleted = TRUE AND s.section.number = :sectionId")
     Integer getUniqueSubjectCountBySection(@Param("sectionId") int sectionId);
+    
+    @Query("SELECT NEW com.example.testingLogIn.CustomObjects.SubjectSectionCount(sc.subject,COUNT(DISTINCT sc.section)) FROM Schedule sc " + 
+           "WHERE sc.isNotDeleted = TRUE " + 
+           "AND sc.teacher.staffId = :teacherId "+
+           "GROUP BY sc.subject")
+    List<SubjectSectionCount> findTeacherSubjectAndSectionCount(@Param("teacherId") int teacherId);
+    
+    @Query("SELECT sc FROM Schedule sc " + 
+           "WHERE sc.isNotDeleted = TRUE " + 
+           "AND sc.teacher.staffId = :teacherId " + 
+           "AND sc.subject.subjectNumber = :subjectId " + 
+           "GROUP BY sc.section")
+    List<Schedule> findByTeacherSubject(@Param("teacherId") int teacherId, @Param("subjectId") int subjectId);
 }

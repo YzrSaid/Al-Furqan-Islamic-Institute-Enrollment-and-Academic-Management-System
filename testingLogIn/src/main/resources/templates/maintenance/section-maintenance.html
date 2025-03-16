@@ -548,7 +548,7 @@
                 return response.text();
             })
             .then(text => {
-                showSuccessModal("✅ Success: New section has been added successfully!");
+                showSuccessModal(text);
             })
             .catch(error => {
                 showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);

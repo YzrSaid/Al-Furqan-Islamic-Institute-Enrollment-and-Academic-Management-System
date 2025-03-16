@@ -509,7 +509,6 @@ document.addEventListener("DOMContentLoaded", function () {
       //        alert('stopper');
       //        break;
       case "addSection":
-        // This case is for adding subject level
         if (!validateForm("sectionForm")) {
           showErrorModal("⚠️ Please fill in all required fields!");
           return;

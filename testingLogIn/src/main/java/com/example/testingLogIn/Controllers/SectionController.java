@@ -68,33 +68,26 @@ public class SectionController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Map<String, String>> addNewSection(@RequestBody SectionDTO sectionDTO) {
+    public ResponseEntity<String> addNewSection(@RequestBody SectionDTO sectionDTO) {
         Map<String, String> response = new HashMap<>();
-
         try {
             int result = sectionService.addSection(sectionDTO);
-
+            System.out.println(result);
             switch (result) {
                 case 1:
-                    response.put("error", "Teacher Information Not Found");
-                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>("Teacher Information Not Found", HttpStatus.NOT_FOUND);
                 case 2:
-                    response.put("error", "Grade Level Information Not Found");
-                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>("Grade Level Information Not Found", HttpStatus.NOT_FOUND);
                 case 3:
-                    response.put("error", "The Selected Teacher Already Has an Advisory Class");
-                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+                    return new ResponseEntity<>("The Selected Teacher Already Has an Advisory Class", HttpStatus.NOT_ACCEPTABLE);
                 case 4:
-                    response.put("error", "Section Name Already Exists");
-                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+                    return new ResponseEntity<>("Section Name Already Exists", HttpStatus.NOT_ACCEPTABLE);
                 default:
-                    response.put("message", "Section Information Added Successfully");
-                    return new ResponseEntity<>(response, HttpStatus.OK);
+                    return new ResponseEntity<>("Section Information Added Successfully", HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace(); // ✅ This will print the error in your backend console
-            response.put("error", "Process Failed: " + e.getMessage()); // ✅ Include the error message
-            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Process Failed: " + e.getMessage(), HttpStatus.CONFLICT);
         }
 
     }

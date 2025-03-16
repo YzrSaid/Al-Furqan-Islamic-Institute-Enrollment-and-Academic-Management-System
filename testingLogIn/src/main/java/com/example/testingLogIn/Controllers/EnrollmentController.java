@@ -70,7 +70,6 @@ public class EnrollmentController {
                                                                               @RequestParam(required = false,defaultValue = "1") Integer pageNo,
                                                                               @RequestParam(required = false,defaultValue = "10") Integer pageSize,
                                                                               @RequestParam(required = false) String search){
-        System.out.println("Requested for page "+pageNo);
         try{
             return new ResponseEntity<>(enrollmentService.getAllEnrollmentPage(status,pageNo,pageSize,search),HttpStatus.OK);
         }catch(Exception e){

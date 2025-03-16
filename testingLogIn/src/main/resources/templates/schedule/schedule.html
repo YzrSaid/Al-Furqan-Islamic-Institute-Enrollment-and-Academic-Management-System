@@ -44,7 +44,9 @@
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div> <br>
-            <p th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">S.Y. 2024-2025</p> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
             <div class="welcome-div">
                 <p>
                     Welcome,
@@ -300,7 +302,7 @@
     <script th:src="@{/js/script.js}"></script>
 </body>
 <script>
-    function getAllSections(){
+    function getAllSections() {
         console.log('getting the sections');
         fetch(`/section/all`)
             .then(response => {
@@ -312,7 +314,7 @@
             .then(data => {
                 const tableBody = document.querySelector("#table-ba-to tbody");
                 tableBody.innerHTML = "";
-                
+
                 data.forEach(rec => {
                     console.log(rec);
                     const row = document.createElement("tr");
@@ -329,7 +331,7 @@
                         </tr>
                         `;
                     tableBody.appendChild(row);
-            });
+                });
             })
             .catch(error => {
                 console.error("Error fetching data:", error);

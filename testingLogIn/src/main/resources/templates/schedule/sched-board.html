@@ -40,349 +40,355 @@
 </script>
 
 <body>
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="text-center">
-        <div class="school-logo">
-            <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
-        </div> <br>
-        <p th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">S.Y. 2024-2025</p> <br>
-        <div class="welcome-div">
-            <p>
-                Welcome,
-                <span class="account-text" th:text="|${userFirstName} (${userRole})|"></span>
-            </p>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="text-center">
+            <div class="school-logo">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+            </div> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
+            <div class="welcome-div">
+                <p>
+                    Welcome,
+                    <span class="account-text" th:text="|${userFirstName} (${userRole})|"></span>
+                </p>
 
+            </div>
+        </div>
+
+        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
+            <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
+        </a>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing">Listing/Register</a>
+            <a href="/enrollment/assessment">Assessment</a>
+            <a href="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled">Enrolled</a>
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="transaction-submenu">
+            <a href="/transaction/tuition">Tuition</a>
+            <a href="/transaction/academic-resources">Book Distribution</a>
+        </div>
+
+
+        <a href="/grade-management" class="sidebar-icons">
+            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
+        </a>
+
+        <a href="/schedule" class="active sidebar-icons">
+            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
+        </a>
+
+        <a href="/class-list" class="sidebar-icons">
+            <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class List Icon"> Class List
+        </a>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
+            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="maintenance-submenu">
+            <a href="/maintenance/school-year">School Year</a>
+            <a href="/maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/subject">Subject</a>
+            <a href="/maintenance/section">Section</a>
+            <a href="/maintenance/fees-management">Fees Management</a>
+            <!-- <a href="/maintenance/teacher">Teacher</a> -->
+        </div>
+
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
+            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="reports-submenu">
+            <a href="/reports/student">Student Reports</a>
+            <a href="/reports/payment">Payment Reports</a>
+            <a href="/reports/teacher">Teacher Report</a>
+            <a href="/reports/academic-resources">Book Distribution Reports</a>
+        </div>
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="account-submenu">
+            <a href="/accounts/verify-accounts">Verify Accounts</a>
+            <a href="/accounts/manage-accounts">Manage Accounts</a>
+            <a href="/accounts/my-account">My Account</a>
+        </div>
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
+            <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="settings-submenu">
+            <a href="/settings/create-user">Create User</a>
         </div>
     </div>
 
-    <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
-        <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
-    </a>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
-        <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
-        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="enrollment-submenu">
-        <a href="/enrollment/listing">Listing/Register</a>
-        <a href="/enrollment/assessment">Assessment</a>
-        <a href="/enrollment/payment">Payment</a>
-        <a href="/enrollment/enrolled">Enrolled</a>
-    </div>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-        <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
-        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="transaction-submenu">
-        <a href="/transaction/tuition">Tuition</a>
-        <a href="/transaction/academic-resources">Book Distribution</a>
-    </div>
-
-
-    <a href="/grade-management" class="sidebar-icons">
-        <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
-    </a>
-
-    <a href="/schedule" class="active sidebar-icons">
-        <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
-    </a>
-
-    <a href="/class-list" class="sidebar-icons">
-        <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class List Icon"> Class List
-    </a>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-        <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
-            class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="maintenance-submenu">
-        <a href="/maintenance/school-year">School Year</a>
-        <a href="/maintenance/grade-level">Grade Level</a>
-        <a href="/maintenance/subject">Subject</a>
-        <a href="/maintenance/section">Section</a>
-        <a href="/maintenance/fees-management">Fees Management</a>
-        <!-- <a href="/maintenance/teacher">Teacher</a> -->
-    </div>
-
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-        <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="reports-submenu">
-        <a href="/reports/student">Student Reports</a>
-        <a href="/reports/payment">Payment Reports</a>
-        <a href="/reports/teacher">Teacher Report</a>
-        <a href="/reports/academic-resources">Book Distribution Reports</a>
-    </div>
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-        <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
-                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="account-submenu">
-        <a href="/accounts/verify-accounts">Verify Accounts</a>
-        <a href="/accounts/manage-accounts">Manage Accounts</a>
-        <a href="/accounts/my-account">My Account</a>
-    </div>
-    <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-        <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="settings-submenu">
-        <a href="/settings/create-user">Create User</a>
-    </div>
-</div>
-
-<!-- Topbar with Hamburger & User Icon -->
-<div class="dashboard-container" id="content">
-    <div class="topbar">
-        <div class="main-topbar">
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="topbar">
+            <div class="main-topbar">
                 <span class="hamburger" onclick="toggleSidebar()">
                     <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
                 </span>
 
-            <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
-        </div>
-        <div class="dropdown-logout">
-            <div class="user-icon dropdown-logout-toggle">
-                <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
-                     alt="User Icon">
-                <div id="dropdownUserIcon" class="dropdown-logout-content">
-                    <h6><span>Admin</span></h6>
-                    <a href="/logout">Log Out</a>
+                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+            </div>
+            <div class="dropdown-logout">
+                <div class="user-icon dropdown-logout-toggle">
+                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
+                        alt="User Icon">
+                    <div id="dropdownUserIcon" class="dropdown-logout-content">
+                        <h6><span>Admin</span></h6>
+                        <a href="/logout">Log Out</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="text-link">
-        <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
-        <p>Main</p>
-        <p>/</p>
-        <p>Maintenance</p>
-        <p>/</p>
-        <p>Schedule</p>
-    </div>
-    <div class="sched-board">
-        <div class="grade-lev-container">
+        <div class="text-link">
             <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
-            <h4 id="adviser">Sir Jisun</h4>
+            <p>Main</p>
+            <p>/</p>
+            <p>Maintenance</p>
+            <p>/</p>
+            <p>Schedule</p>
         </div>
+        <div class="sched-board">
+            <div class="grade-lev-container">
+                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+                <h4 id="adviser">Sir Jisun</h4>
+            </div>
 
-        <table id="paragas-eatery-table" class="sched-table">
-            <thead>
-            <tr>
-                <th>Subject</th>
-                <th>Teacher</th>
-                <th>Days</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody id="scheduleBody">
-            <tr class="sched-row hidden-row">
-                <td>
-                    <select name="subject">
-                        <option value="" disabled selected>Choose a subject</option>
-                    </select>
-                </td>
-                <td>
-                    <select name="teacher">
-                        <option value="" disabled selected>Choose a teacher</option>
-                    </select>
-                </td>
-                <td>
-                    <select name="days">
-                        <option value="" disabled selected>Choose a day</option>
-                        <option value="Saturday">Saturday</option>
-                        <option value="Sunday">Sunday</option>
-                    </select>
-                </td>
-                <td>
-                    <input type="time">
-                </td>
-                <td>
-                    <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
-                </td>
-            </tr>
-            </tbody>
-        </table>
+            <table id="paragas-eatery-table" class="sched-table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Teacher</th>
+                        <th>Days</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody">
+                    <tr class="sched-row hidden-row">
+                        <td>
+                            <select name="subject">
+                                <option value="" disabled selected>Choose a subject</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="teacher">
+                                <option value="" disabled selected>Choose a teacher</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="days">
+                                <option value="" disabled selected>Choose a day</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="time">
+                        </td>
+                        <td>
+                            <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <div class="add-row-container">
-            <img id="addRowBtn" th:src="@{/images/icons/add-button.png}" alt="">
-        </div>
-    </div>
-
-    <!-- buttons -->
-    <div class="btn-container">
-        <button class="save-button" data-action="saveSched" data-message="Are you sure you want to save this schedule" id="saveBtn" data-open-modal="confirmationModal">Add</button>
-        <button class="clear-button" data-action="clearSched" data-message="Are you sure you want to clear all the schedule" id="clearBtn" data-open-modal="confirmationModal">
-            Clear</button>
-    </div>
-
-
-    <!-- Modal for confirmation -->
-    <div id="confirmationModal" class="modal">
-        <div class="modal-content">
-            <p id="modalText"></p>
-            <div class="modal-buttons">
-                <button id="confirmAction" class="btn-confirm">Confirm</button>
-                <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+            <div class="add-row-container">
+                <img id="addRowBtn" th:src="@{/images/icons/add-button.png}" alt="">
             </div>
         </div>
-    </div>
 
-    <!-- Modal for edit account -->
-    <div class="my-account-container-wrapper">
-        <div id="myAccountEditModal" class="my-account-edit-modal modal">
-            <div class="my-account-edit-modal-content">
-                <h2>My Account Information</h2>
-                <form action="" id="myAccountEditForm">
-                    <div class="half-width">
-                        <div class="user-id">
-                            <label for="user-id" id="user-id-label">User ID:</label>
-                            <p id="user-id">0001</p>
-                        </div>
-                    </div> <br>
-                    <div class="half-width">
-                        <div class="email">
-                            <label for="email">Email:</label>
-                            <p id="email">sample@gmail.com</p>
-                        </div>
-                    </div> <br>
-                    <div class="half-width student-form-group">
-                        <div class="first-name">
-                            <label for="first-name">First Name:</label>
-                            <input type="text" id="first-name" value="Batman" readonly>
-                        </div>
-                        <div class="last-name">
-                            <label for="last-name">Last Name:</label>
-                            <input type="text" id="last-name" value="Rizal" readonly>
-                        </div>
-                    </div> <br>
-                    <div class="account-type">
-                        <label for="account-type">Account Type:</label>
-                        <select name="account-type" id="account-type">
-                            <option value="" disabled>Select account type</option>
-                            <option value="ADMIN_Enrollment">Admin - Enrollment</option>
-                            <option value="TEACHER">Teacher</option>
-                        </select>
-                    </div>
+        <!-- buttons -->
+        <div class="btn-container">
+            <button class="save-button" data-action="saveSched"
+                data-message="Are you sure you want to save this schedule" id="saveBtn"
+                data-open-modal="confirmationModal">Add</button>
+            <button class="clear-button" data-action="clearSched"
+                data-message="Are you sure you want to clear all the schedule" id="clearBtn"
+                data-open-modal="confirmationModal">
+                Clear</button>
+        </div>
 
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="editMyAccount"
+
+        <!-- Modal for confirmation -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p id="modalText"></p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for edit account -->
+        <div class="my-account-container-wrapper">
+            <div id="myAccountEditModal" class="my-account-edit-modal modal">
+                <div class="my-account-edit-modal-content">
+                    <h2>My Account Information</h2>
+                    <form action="" id="myAccountEditForm">
+                        <div class="half-width">
+                            <div class="user-id">
+                                <label for="user-id" id="user-id-label">User ID:</label>
+                                <p id="user-id">0001</p>
+                            </div>
+                        </div> <br>
+                        <div class="half-width">
+                            <div class="email">
+                                <label for="email">Email:</label>
+                                <p id="email">sample@gmail.com</p>
+                            </div>
+                        </div> <br>
+                        <div class="half-width student-form-group">
+                            <div class="first-name">
+                                <label for="first-name">First Name:</label>
+                                <input type="text" id="first-name" value="Batman" readonly>
+                            </div>
+                            <div class="last-name">
+                                <label for="last-name">Last Name:</label>
+                                <input type="text" id="last-name" value="Rizal" readonly>
+                            </div>
+                        </div> <br>
+                        <div class="account-type">
+                            <label for="account-type">Account Type:</label>
+                            <select name="account-type" id="account-type">
+                                <option value="" disabled>Select account type</option>
+                                <option value="ADMIN_Enrollment">Admin - Enrollment</option>
+                                <option value="TEACHER">Teacher</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button type="button" class="btn-confirm" data-action="editMyAccount"
                                 data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
-                            Edit
-                        </button>
-                        <button type="button" class="btn-cancel"
+                                Edit
+                            </button>
+                            <button type="button" class="btn-cancel"
                                 data-close-modal="myAccountEditModal">Close</button>
-                    </div>
-                </form>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modal for changing password -->
-    <div class="my-account-container-wrapper">
-        <div id="changePasswordModal" class="change-password-modal">
-            <div class="change-password-modal-content">
-                <h2>Change Password</h2>
-                <form action="" id="changePasswordForm">
-                    <div class="change-pass-div">
-                        <label for="current-passowrd">Current Password</label>
-                        <input type="password" id="current-passowrd">
-                    </div>
-                    <div class="change-pass-div">
-                        <label for="new-password">New Password</label>
-                        <input type="password" id="new-password">
-                    </div>
-                    <div class="change-pass-div">
-                        <ul>
-                            <li>Must be 8 characters</li>
-                            <li>Must contain a spacial character</li>
-                            <li>Must contain upper and lower case</li>
-                        </ul>
-                    </div>
-                    <div class="change-pass-div">
-                        <label for="confirm-password">Confirm Password</label>
-                        <input type="password" id="confirm-password">
-                    </div>
-                    <div class="modal-buttons change-pass-buttons">
-                        <button type="button" class="btn-confirm" id="confirmChangePassword"
+        <!-- Modal for changing password -->
+        <div class="my-account-container-wrapper">
+            <div id="changePasswordModal" class="change-password-modal">
+                <div class="change-password-modal-content">
+                    <h2>Change Password</h2>
+                    <form action="" id="changePasswordForm">
+                        <div class="change-pass-div">
+                            <label for="current-passowrd">Current Password</label>
+                            <input type="password" id="current-passowrd">
+                        </div>
+                        <div class="change-pass-div">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password">
+                        </div>
+                        <div class="change-pass-div">
+                            <ul>
+                                <li>Must be 8 characters</li>
+                                <li>Must contain a spacial character</li>
+                                <li>Must contain upper and lower case</li>
+                            </ul>
+                        </div>
+                        <div class="change-pass-div">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password">
+                        </div>
+                        <div class="modal-buttons change-pass-buttons">
+                            <button type="button" class="btn-confirm" id="confirmChangePassword"
                                 data-action="change-password">Confirm</button>
-                    </div>
-                </form>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-</div>
+    </div>
 
 </body>
 <script>
-  function saveSchedule(){
-    const path = window.location.pathname;
+    function saveSchedule() {
+        const path = window.location.pathname;
 
-    const pathParts = path.split('/');
-    const secId = pathParts[pathParts.length - 1];
-    const subjectName = document.getElementById('subject-select').value;
-    const teacher = document.getElementById('teacher-select').value;
-    const day = document.getElementById('day').value;
-    const startTime = document.getElementById('starttime').value;
-    const endTime = document.getElementById('endtime').value;
+        const pathParts = path.split('/');
+        const secId = pathParts[pathParts.length - 1];
+        const subjectName = document.getElementById('subject-select').value;
+        const teacher = document.getElementById('teacher-select').value;
+        const day = document.getElementById('day').value;
+        const startTime = document.getElementById('starttime').value;
+        const endTime = document.getElementById('endtime').value;
 
-    // Validate that all fields are filled
-    if (!subjectName || !teacher || !day || !startTime || !endTime) {
-        alert('Please fill in all fields.');
-        return;
-    }else if (startTime >= endTime) {
-        alert('End time must be after start time.');
-        return;
+        // Validate that all fields are filled
+        if (!subjectName || !teacher || !day || !startTime || !endTime) {
+            alert('Please fill in all fields.');
+            return;
+        } else if (startTime >= endTime) {
+            alert('End time must be after start time.');
+            return;
+        }
+
+        const data = {
+            sectionId: secId,
+            subject: subjectName,
+            teacherName: teacher,
+            day: day,
+            timeStart: startTime,
+            timeEnd: endTime
+        };
+
+        fetch('/schedules/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
+        })
+            .then(response => {
+                return response.text().then(message => {
+                    // Handle different status codes
+                    if (response.ok) {
+                        // Success (HTTP 200 OK)
+                        alert(message); // Display the success message
+                        window.location.reload(); // Reload the page
+                    } else {
+                        alert(message);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Display the error message to the user
+                alert(error.message);
+            });
     }
 
-    const data = {
-        sectionId: secId,
-        subject: subjectName,
-        teacherName: teacher,
-        day: day,
-        timeStart: startTime,
-        timeEnd: endTime
-    };
-
-    fetch('/schedules/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
-    })
-    .then(response => {
-        return response.text().then(message => {
-            // Handle different status codes
-            if (response.ok) {
-                // Success (HTTP 200 OK)
-                alert(message); // Display the success message
-                window.location.reload(); // Reload the page
-            } else {
-                alert(message);
-            }
-        });
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // Display the error message to the user
-        alert(error.message);
-    });
-  }
-
-    function setUpTables(){
+    function setUpTables() {
         const path = window.location.pathname;
 
         const pathParts = path.split('/');
         const sectionId = pathParts[pathParts.length - 1];
         console.log(sectionId);
-        
+
         fetch(`/schedules/section/${sectionId}`)
             .then(response => {
                 if (!response.ok) {
@@ -393,7 +399,7 @@
             .then(data => {
                 const tableBody = document.querySelector("#paragas-eatery-table tbody");
                 tableBody.innerHTML = "";
-                
+
                 data.forEach(rec => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
@@ -410,31 +416,31 @@
                         </tr>
                         `;
                     tableBody.appendChild(row);
-            });
+                });
             })
             .catch(error => {
                 console.error("Error fetching data:", error);
             });
     }
-    
-    function deleteThis(schedId){
-        fetch('/schedules/delete/'+schedId, {
+
+    function deleteThis(schedId) {
+        fetch('/schedules/delete/' + schedId, {
             method: 'DELETE'
         })
-        .then(response => {
-            return response.text().then(message => {
-                if (response.ok) {
-                    alert(message);
-                    window.location.reload();
-                } else {
-                    alert(message);
-                }
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        alert(message);
+                        window.location.reload();
+                    } else {
+                        alert(message);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);
             });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert(error.message);
-        });
     }
 </script>
 

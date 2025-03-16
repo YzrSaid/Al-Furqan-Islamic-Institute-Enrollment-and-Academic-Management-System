@@ -44,7 +44,9 @@
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div> <br>
-            <p th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">S.Y. 2024-2025</p> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
             <div class="welcome-div">
                 <p>
                     Welcome,
@@ -756,6 +758,9 @@
         </div>
     </div>
 
+    <!-- Background overlay -->
+    <div id="successModalOverlay"></div>
+
     <!-- Success modal -->
     <div id="successModal">
         <p id="successModalMessage"></p>
@@ -1328,15 +1333,17 @@
 
     async function fetchAllGradeLevels(isStudentNew) {
         try {
-        console.log(isStudentNew);
-        isStudentNew = isStudentNew === true || isStudentNew === "true";
+            console.log(isStudentNew);
+            isStudentNew = isStudentNew === true || isStudentNew === "true";
             var response = null;
-             if(isStudentNew === true){
-             console.log('getting all no pre req gradeLevels');
-                response = await fetch('/gradelevel/no-pre-requisite');}
-             else { response= await fetch('/gradelevel/all'); // Adjust if API runs on a different port
-             console.log('getting all gradeLevels');
-             }
+            if (isStudentNew === true) {
+                console.log('getting all no pre req gradeLevels');
+                response = await fetch('/gradelevel/no-pre-requisite');
+            }
+            else {
+                response = await fetch('/gradelevel/all'); // Adjust if API runs on a different port
+                console.log('getting all gradeLevels');
+            }
             if (!response.ok) throw new Error("Failed to fetch grade levels");
             const data = await response.json();
             populateGradeLevelDropdown(data);
@@ -1955,7 +1962,7 @@
             // Populate sections dropdown
             fetchSections(gradeLevel);
         }
-        if(gradeLevelbtn){
+        if (gradeLevelbtn) {
             console.log("Grade level will show");
             console.log(gradeLevelbtn.getAttribute("data-isStudent-new"));
             const isStudentNew = gradeLevelbtn.getAttribute("data-isStudent-new");

@@ -44,7 +44,9 @@
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div> <br>
-            <p th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">S.Y. 2024-2025</p> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
             <div class="welcome-div">
                 <p>
                     Welcome,
@@ -683,7 +685,7 @@
             } else {
                 // Handle non-OK responses (e.g., 400, 500 errors)
                 const errorMessage = await response.text();
-                alert(errorMessage); 
+                alert(errorMessage);
             }
         } catch (error) {
             // Handle network errors or other exceptions
@@ -694,7 +696,7 @@
 
     function updateStatusColors() {
         document.querySelectorAll(".statusQualified").forEach(statusElement => {
-            const statusText = statusElement.textContent.trim().toUpperCase(); 
+            const statusText = statusElement.textContent.trim().toUpperCase();
 
             if (statusText === "QUALIFIED") {
                 statusElement.style.color = "#28a745";

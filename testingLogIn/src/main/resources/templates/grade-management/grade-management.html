@@ -20,7 +20,9 @@
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div> <br>
-            <p th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">S.Y. 2024-2025</p> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
             <div class="welcome-div">
                 <p>
                     Welcome,
@@ -180,8 +182,8 @@
                                         alt="edit-icon"></a>
                             </div> -->
                             <div class="action-container action">
-                                <a href="/grade-management/class" class="view-per-class"><img src="/images/icons/compose.png"
-                                        alt="edit-icon"></a>
+                                <a href="/grade-management/class" class="view-per-class"><img
+                                        src="/images/icons/compose.png" alt="edit-icon"></a>
                             </div>
                         </div>
                     </td>
@@ -204,8 +206,8 @@
     document.addEventListener("DOMContentLoaded", function () {
         getSections();
     });
-    
-    function getSections(){
+
+    function getSections() {
         fetch("/section/all")
             .then(res => {
                 if (!res.ok) throw new Error("Failed to fetch grade levels");
@@ -214,7 +216,7 @@
             .then(data => {
                 const tableBody = document.querySelector("#lamesa tbody");
                 tableBody.innerHTML = "";
-                
+
                 data.forEach(sec => {
                     console.log(sec);
                     secollmentIdLet = sec.secollmentId;
@@ -248,4 +250,5 @@
             .catch(error => console.error("Error:", error));
     }
 </script>
+
 </html>

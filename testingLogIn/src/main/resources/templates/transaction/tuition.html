@@ -45,7 +45,9 @@
             <div class="school-logo">
                 <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
             </div> <br>
-            <p th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">S.Y. 2024-2025</p> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
             <div class="welcome-div">
                 <p>
                     Welcome,
@@ -201,7 +203,8 @@
                         <div class="dropdown">
                             <div class="action-container action">
                                 <a href="#" class="view-student">
-                                    <img data-open-modal="addPaymentModalView" th:src="@{/images/icons/eye.png}" alt="edit-icon">
+                                    <img data-open-modal="addPaymentModalView" th:src="@{/images/icons/eye.png}"
+                                        alt="edit-icon">
                                 </a>
                             </div>
                         </div>
@@ -332,8 +335,8 @@
                                 data-message="Are you sure you want to save this payment?">Save
                             </button> -->
 
-                            <button type="button" data-close-modal="addPaymentModalView" class="btn-close-confirm no-print"
-                                id="close-button">Close</button>
+                            <button type="button" data-close-modal="addPaymentModalView"
+                                class="btn-close-confirm no-print" id="close-button">Close</button>
                         </div>
                     </div>
 

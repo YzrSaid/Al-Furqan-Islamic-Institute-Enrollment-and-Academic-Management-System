@@ -149,7 +149,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Admin</span></h6>
+                        <h6><span th:text="(${userRole})"></span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -583,6 +583,9 @@
     <!-- Modal for adding a section to what grade level it will be enrolled to (assessment) -->
     <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
         <div class="add-grade-level-assessment-modal-content">
+            <!-- Close Button -->
+            <span class="close-modal" data-close-modal="addGradeLevelAssessmentModal">&times;</span>
+
             <h2>Promote To</h2>
 
             <label for="grade-level">Grade Level:</label>
@@ -609,6 +612,9 @@
     <div id="addPaymentModal" class="add-payment-modal modal">
         <div class="printable-area">
             <div class="add-payment-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
+
                 <div class="header-container">
                     <h2>Payment Form</h2>
                     <div class="logo">
@@ -673,6 +679,9 @@
     <!-- Modal for listOfPaymentsModal -->
     <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
         <div class="list-of-payments-modal-content">
+            <!-- Close Button -->
+            <span class="close-modal" data-close-modal="listOfPaymentsModal">&times;</span>
+
             <h2>List of Payments</h2>
 
             <div class="half-width" id="view-grade-studId">
@@ -729,6 +738,9 @@
     <!-- Modal for listing add grade level -->
     <div id="gradeLevelModal" class="grade-level-modal modal">
         <div class="grade-level-modal-content">
+            <!-- Close Button -->
+            <span class="close-modal" data-close-modal="gradeLevelModal">&times;</span>
+
             <h2>Enroll To</h2>
             <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
                 <label for="levelName">Grade Level Name:</label>
@@ -770,6 +782,9 @@
     <!-- Modal for adding a a section to what grade level it will be enrolled to (assessment) -->
     <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
         <div class="add-grade-level-assessment-modal-content">
+            <!-- Close Button -->
+            <span class="close-modal" data-close-modal="addGradeLevelAssessmentModal">&times;</span>
+
             <h2>Promote To</h2>
 
             <label for="grade-level">Grade Level:</label>
@@ -795,6 +810,9 @@
     <!-- Modal for viewing grades -->
     <div id="viewGradesModal" class="view-grades-modal modal">
         <div class="view-grades-modal-content">
+            <!-- Close Button -->
+            <span class="close-modal" data-close-modal="viewGradesModal">&times;</span>
+
             <h2>Student Grades</h2>
 
             <div class="half-width" id="view-grade-studId">
@@ -864,6 +882,9 @@
     <!-- Modal for new student enrollment -->
     <div id="newStudentModal" class="student-modal modal">
         <div class="student-modal-content">
+            <!-- Close Button -->
+            <span class="close-modal" data-close-modal="newStudentModal">&times;</span>
+
             <h2>Student Information</h2>
             <form id="studentForm">
                 <div class="header">
@@ -966,6 +987,9 @@
     <!-- Modal for transferee enrollment -->
     <div id="transfereeStudentModal" class="student-modal modal">
         <div class="student-modal-content">
+            <!-- Close Button -->
+            <span class="close-modal" data-close-modal="feesManagementModal">&times;</span>
+
             <h2>Student Information</h2>
             <form id="studentFormTransferee">
                 <div class="header">
@@ -1209,8 +1233,8 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-<!--                    showSuccessModal("✅ Success: New student has been added successfully!");-->
-<!--                    location.reload(); // Reloads the page-->
+// <!--                    showSuccessModal("✅ Success: New student has been added successfully!");-->
+// <!--                    location.reload(); // Reloads the page-->
                         goList(currentStat, currentPageNo, currentPageSize);
                 } else {
                     showErrorModal("❌ Error:" + text);
@@ -1436,7 +1460,7 @@
         })
             .then(response => response.text())
             .then(message => {
-<!--                showSuccessModal(message);-->
+// <!--                showSuccessModal(message);-->
                 goList(currentStat, currentPageNo, currentPageSize);
             })
             .catch(error => {
@@ -1469,8 +1493,8 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-<!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
-<!--                    location.reload(); // Reloads the page after successful enrollment-->
+// <!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
+// <!--                    location.reload(); // Reloads the page after successful enrollment-->
                     goList(currentStat, currentPageNo, currentPageSize);
                 } else {
                     // showErrorModal("❌ Error: " + text);
@@ -1520,8 +1544,8 @@
                 return response.text().then(message => {
                     if (response.ok) {
                     goList(currentStat, currentPageNo, currentPageSize);
-<!--                        showSuccessModal(message);-->
-<!--                        window.location.reload(); // Reload the page-->
+// <!--                        showSuccessModal(message);-->
+// <!--                        window.location.reload(); // Reload the page-->
                     } else {
                         showErrorModal(message);
                     }
@@ -1557,7 +1581,7 @@
     });
 
     function studAddListing() {
-        const actionUrl = "/students/add"; // Update with your actual API endpoint
+        const actionUrl = "/students/add"; 
         const method = "POST";
 
         // Collect input values
@@ -1594,7 +1618,7 @@
             guardianAddress: document.getElementById("studguardianAddress")?.value?.trim() || null
         };
 
-        console.log("Student Data:", studentData);
+        // console.log("Student Data:", studentData);
 
         fetch(actionUrl, {
             method: method,
@@ -1610,7 +1634,7 @@
                 return response.text();
             })
             .then(text => {
-<!--                showSuccessModal("✅ Success: New student has been added successfully!");-->
+// <!--                showSuccessModal("✅ Success: New student has been added successfully!");-->
                 goList(currentStat, currentPageNo, currentPageSize);
             })
             .catch(error => {

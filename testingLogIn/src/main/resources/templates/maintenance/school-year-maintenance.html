@@ -148,7 +148,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Admin</span></h6>
+                        <h6><span th:text="(${userRole})"></span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -228,6 +228,9 @@
         <!-- Modal for Adding School Year -->
         <div id="schoolYearModal" class="school-year-modal modal">
             <div class="school-year-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="schoolYearModal">&times;</span>
+
                 <h2>Add New School Year</h2>
                 <form method="post" id="schoolYearForm">
                     <label for="school-year-name">School Year:</label>
@@ -702,7 +705,7 @@
             })
             .then(message => {
                 showSuccessModal("✅ Success: " + message);
-                fetchSchoolYears(); 
+                fetchSchoolYears();
             })
             .catch(error => {
                 showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
@@ -711,10 +714,10 @@
 
     function updateStatusColors() {
         document.querySelectorAll(".status").forEach(statusElement => {
-            const statusText = statusElement.textContent.trim().toUpperCase(); 
-            const statusId = statusElement.id; 
+            const statusText = statusElement.textContent.trim().toUpperCase();
+            const statusId = statusElement.id;
 
-            console.log(`Status ID: ${statusId}, Text: ${statusText}`); 
+            console.log(`Status ID: ${statusId}, Text: ${statusText}`);
 
             if (statusText === "INACTIVE" || statusText === "N/A") {
                 statusElement.style.backgroundColor = "#A3A3A3";

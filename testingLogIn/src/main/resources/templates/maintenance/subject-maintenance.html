@@ -149,7 +149,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Admin</span></h6>
+                        <h6><span th:text="(${userRole})"></span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -192,9 +192,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Software Engineering</td>
-                    <td>30</td>
+                <!-- <tr>
+                    <td></td>
+                    <td></td>
                     <td>
                         <div class="action-container">
                             <div class="action">
@@ -207,7 +207,7 @@
                             </div>
                         </div>
                     </td>
-                </tr>
+                </tr> -->
             </tbody>
         </table>
 
@@ -237,17 +237,22 @@
             </div>
         </div>
 
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
         <!-- Success modal -->
-        <div id="successModal"
-            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+        <div id="successModal">
             <p id="successModalMessage"></p>
         </div>
+
 
 
         <!-- Modal for adding subject -->
         <div id="subjectModal" class="subject-modal modal">
             <div class="subject-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="subjectModal">&times;</span>
+
                 <h2>Add New Subject</h2>
                 <form id="subjectForm">
                     <div>
@@ -276,6 +281,9 @@
         <!-- Modal for editing a subject -->
         <div id="subjectEditModal" class="subject-edit-modal modal">
             <div class="subject-edit-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="subjectEditModal">&times;</span>
+
                 <h2>Subject Information</h2>
                 <form id="subjectEditForm">
                     <div>

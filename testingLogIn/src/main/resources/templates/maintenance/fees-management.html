@@ -148,7 +148,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Admin</span></h6>
+                        <h6><span th:text="(${userRole})"></span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -238,18 +238,22 @@
                 </div>
             </div>
         </div>
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
 
         <!-- Success modal -->
-        <div id="successModal"
-            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+        <div id="successModal">
             <p id="successModalMessage"></p>
         </div>
+
 
 
         <!-- Modal for adding fees -->
         <div id="feesManagementModal" class="fees-management-modal modal">
             <div class="fees-management-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="feesManagementModal">&times;</span>
+
                 <h2>Add New Fee</h2>
                 <form method="post" action="" id="feesManagementForm">
                     <label for="paymentName">Payment Name:</label>
@@ -264,7 +268,23 @@
                     <div class="payment-container">
                         <div class="payment">
                             <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment"></label>
+                            <label for="payment">Book</label>
+                        </div>
+                        <div class="payment">
+                            <input type="checkbox" id="" name="payment" value="payment">
+                            <label for="payment">Book</label>
+                        </div>
+                        <div class="payment">
+                            <input type="checkbox" id="" name="payment" value="payment">
+                            <label for="payment">Book</label>
+                        </div>
+                        <div class="payment">
+                            <input type="checkbox" id="" name="payment" value="payment">
+                            <label for="payment">Book</label>
+                        </div>
+                        <div class="payment">
+                            <input type="checkbox" id="" name="payment" value="payment">
+                            <label for="payment">Book</label>
                         </div>
                     </div>
 
@@ -586,34 +606,34 @@
     }
 
 
-    function fetchGradeLevels() {
-        fetch("/gradelevel/all")
-            .then(response => response.json())
-            .then(data => {
-                const paymentContainer = document.querySelector(".payment-container");
-                paymentContainer.innerHTML = ""; // Clear previous data
+    // function fetchGradeLevels() {
+    //     fetch("/gradelevel/all")
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             const paymentContainer = document.querySelector(".payment-container");
+    //             paymentContainer.innerHTML = ""; // Clear previous data
 
-                data.forEach(gradeLevel => {
-                    const paymentDiv = document.createElement("div");
-                    paymentDiv.classList.add("payment");
+    //             data.forEach(gradeLevel => {
+    //                 const paymentDiv = document.createElement("div");
+    //                 paymentDiv.classList.add("payment");
 
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.id = `grade-${gradeLevel.levelId}`;
-                    checkbox.name = "gradeLevels";
-                    checkbox.value = gradeLevel.levelName;
+    //                 const checkbox = document.createElement("input");
+    //                 checkbox.type = "checkbox";
+    //                 checkbox.id = `grade-${gradeLevel.levelId}`;
+    //                 checkbox.name = "gradeLevels";
+    //                 checkbox.value = gradeLevel.levelName;
 
-                    const label = document.createElement("label");
-                    label.htmlFor = `grade-${gradeLevel.levelId}`;
-                    label.textContent = gradeLevel.levelName;
+    //                 const label = document.createElement("label");
+    //                 label.htmlFor = `grade-${gradeLevel.levelId}`;
+    //                 label.textContent = gradeLevel.levelName;
 
-                    paymentDiv.appendChild(checkbox);
-                    paymentDiv.appendChild(label);
-                    paymentContainer.appendChild(paymentDiv);
-                });
-            })
-            .catch(error => console.error("Error fetching grade levels:", error));
-    }
+    //                 paymentDiv.appendChild(checkbox);
+    //                 paymentDiv.appendChild(label);
+    //                 paymentContainer.appendChild(paymentDiv);
+    //             });
+    //         })
+    //         .catch(error => console.error("Error fetching grade levels:", error));
+    // }
 
     let selectedPaymentId;
 

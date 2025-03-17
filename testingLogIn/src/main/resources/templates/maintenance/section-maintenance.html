@@ -149,7 +149,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Admin</span></h6>
+                        <h6><span th:text="(${userRole})"></span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -194,17 +194,6 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Rizal</td>
-                    <td>Grade 1</td>
-                    <td>30</td>
-                    <td>
-                        <div class="action-container">
-                            <div class="action" id="openSectionEditModal"><img data-open-modal="sectionEditModal"
-                                    th:src="@{/images/icons/compose.png}" alt=""></div>
-                        </div>
-                    </td>
-                </tr>
             </tbody>
         </table>
 
@@ -235,16 +224,20 @@
             </div>
         </div>
 
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
         <!-- Success modal -->
-        <div id="successModal"
-            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+        <div id="successModal">
             <p id="successModalMessage"></p>
         </div>
 
         <!-- Modal for adding a section -->
         <div id="sectionModal" class="section-modal modal">
             <div class="section-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="sectionModal">&times;</span>
+
                 <h2>Add New Section</h2>
                 <form method="post" id="sectionForm">
                     <div>
@@ -285,10 +278,13 @@
         <!-- Modal for editing a section -->
         <div id="sectionEditModal" class="section-edit-modal modal">
             <div class="section-edit-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="sectionEditModal">&times;</span>
+
                 <h2>Section Information</h2>
                 <form method="post" id="sectionEditForm">
                     <div>
-                        <p id="schedId" style="height: 0; overflow: hidden;">dsa</p>
+                        <p id="schedId" style="height: 0; overflow: hidden;"></p>
                         <label for="gradeLevel">Grade Level:</label>
                         <select name="gradeLevel" id="gradeLevelEdit" required>
                             <option value="" disabled selected>Select Grade Level</option>
@@ -524,6 +520,15 @@
         const actionUrl = "/section/add";
         const method = "POST";
 
+        // Collect input values
+        const adviser = document.getElementById("adviser").value;
+
+        // Validate if a prerequisite is selected
+        if (adviser === "") {
+            showErrorModal("❌ Error: Please choose an adviser.");
+            return; 
+        }
+
         const formData = {
             gradeLevelName: document.getElementById("gradeLevel").value,
             sectionName: document.getElementById("sectionName").value,
@@ -531,8 +536,7 @@
             adviserName: document.getElementById("adviser").value
         };
 
-        console.log("Sending data:", JSON.stringify(formData));
-
+        // console.log("Sending data:", JSON.stringify(formData));
 
         fetch(actionUrl, {
             method: method,
@@ -557,6 +561,15 @@
 
     function editSection() {
         const form = document.getElementById("sectionEditForm");
+
+        // Collect input values
+        const adviser = document.getElementById("adviser").value;
+
+        // Validate if a prerequisite is selected
+        if (adviser === "") {
+            showErrorModal("❌ Error: Please choose an adviser.");
+            return; 
+        }
 
         const sectionData = {
             number: document.getElementById("schedId").innerText,

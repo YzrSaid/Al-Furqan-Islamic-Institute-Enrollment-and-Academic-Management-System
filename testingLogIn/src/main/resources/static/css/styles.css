@@ -1320,8 +1320,14 @@ table td {
 .btn-confirm {
   background-color: #28a745;
   color: white;
-  width: 100px;
+  min-width: 100px;
   font-weight: 500;
+}
+
+#save-payment-btn {
+  width: 86%;
+  height: 50px;
+  border-radius: 12px;
 }
 
 .btn-cancel {
@@ -1517,7 +1523,6 @@ table td {
   inset: 0;
   z-index: 1001;
   background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
   align-items: center;
   justify-content: center;
   transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
@@ -1532,11 +1537,93 @@ table td {
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 850px;
-  min-height: 55vh;
+  width: 615px;
+  height: 90vh;
   text-align: left;
   position: relative;
   z-index: 1001;
+  overflow-y: scroll;
+}
+.payee-info-container {
+  padding: 0px 35px;
+  display: flex;
+  flex-direction: column;
+}
+
+#payee-info {
+  display: flex;
+  gap: 20px;
+}
+
+#payee-info div {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+#label-id {
+  margin-right: 25px;
+}
+#label-sem {
+  margin-right: 37px;
+}
+#label-amount {
+  margin-right: 45px;
+}
+
+.amount-container {
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0;
+  height: 40px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.currency-symbol {
+  background-color: #d4ecd4;
+  padding: 8px 12px;
+  font-weight: bold;
+  color: black;
+  border-right: 1px solid transparent;
+}
+
+input#payment-amount {
+  border: none;
+  padding: 8px;
+  font-size: 16px;
+  flex: 1;
+  outline: none;
+}
+
+.payment-container {
+  background-color: #e6f4e6;
+  padding: 15px;
+  border-radius: 8px;
+  width: 100%;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width input {
+  width: 72.5% !important;
+}
+.add-payment-modal-content input,
+.add-payment-modal-content select {
+  padding: 8px;
+  width: 130px;
+  min-width: 130px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 .old-student-modal {
@@ -1803,14 +1890,6 @@ input[type="checkbox"] {
 .my-account-edit-modal-content select,
 .add-grade-level-assessment-modal-content select {
   width: 100%;
-  padding: 8px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
-}
-.add-payment-modal-content input,
-.add-payment-modal-content select {
   padding: 8px;
   margin: 5px 0;
   border: 1px solid #ccc;
@@ -2191,6 +2270,13 @@ input[type="checkbox"] {
   display: flex;
   gap: 40px;
 }
+.half-payee {
+  display: flex;
+  justify-content: space-between;
+}
+.full-width {
+  display: flex;
+}
 
 .first-name,
 .last-name,
@@ -2349,9 +2435,8 @@ input[type="checkbox"] {
   padding: 10px;
   gap: 100px;
 }
-.header-container h2 {
+.header-container h3 {
   font-weight: bold;
-  font-size: 35px;
 }
 #sem-sy {
   display: flex;
@@ -2411,13 +2496,37 @@ input[type="checkbox"] {
 }
 
 .collector-info-container {
-  text-align: center;
-  justify-content: center;
+  text-align: left; /* Aligns text to the left */
   margin-left: auto;
-  margin-right: 0;
-  width: 50%;
+  margin-right: auto;
+  width: fit-content; /* Ensures it doesn't stretch across the whole width */
   padding: 0;
   margin-top: 15px;
+}
+
+.collector-name-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the name and position */
+}
+
+#collector-name {
+  border: none !important;
+  border-bottom: 1px solid black !important;
+  outline: none;
+  text-align: center;
+  width: 200px; /* Adjust as needed */
+  font-weight: bold;
+  font-size: 16px;
+  background: transparent;
+  padding: 0 5px; /* Adjust side padding if needed */
+}
+
+#position {
+  font-size: 14px;
+  color: gray; /* Match the gray effect in the second image */
+  text-align: center;
+  margin-top: 5px;
 }
 
 .save-payment-btn-container {
@@ -2431,35 +2540,6 @@ input[type="checkbox"] {
   padding: 10px 20px;
   border: none;
   cursor: pointer;
-}
-.collector-info-container {
-  text-align: center;
-  margin-top: 15px;
-}
-
-.collector-info-container h5 {
-  margin-bottom: 5px;
-}
-
-.collector-name-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#collector-name {
-  text-align: center;
-  width: 70%;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-#position {
-  margin-top: 5px;
-  font-size: 14px;
-  color: #555;
 }
 
 /* Hide elements when printing */
@@ -2520,7 +2600,7 @@ td[rowspan] {
 
 .toggle-password {
   position: absolute;
-  right: 10px; /* Adjust spacing from the right */
+  right: 10px; 
   top: 50%;
   transform: translateY(-50%);
   width: 20px; /* Adjust icon size */
@@ -2530,10 +2610,51 @@ td[rowspan] {
 
 .payment-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two columns */
-  gap: 10px; /* Spacing between items */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }
 
+.payment-container-group {
+    background-color: #e6f4e6;
+
+    border-radius: 8px;
+    width: 100%;
+    min-height: 150px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .payment-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 5px; 
+    width: fit-content; 
+    flex-wrap: nowrap;
+  }
+  
+  .payment-item input[type="checkbox"] {
+    transform: scale(1);
+    cursor: pointer;
+    margin-right: -25px; 
+    margin-left: -35px;
+  }
+  
+  .payment-item label {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+  }
+  
+  .payment-wrapper {
+    margin-top: 30px;
+    padding: 0 35px;
+  }
+  
 .payment-container-edit {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Two columns */
@@ -2547,6 +2668,8 @@ td[rowspan] {
   white-space: nowrap;
   width: fit-content;
 }
+
+
 
 .payment input[type="checkbox"] {
   transform: scale(1);
@@ -2769,28 +2892,42 @@ td[rowspan] {
 
 /* Background overlay */
 #successModalOverlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Semi-black background */
-    z-index: 9999;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-black background */
+  z-index: 9999;
 }
 
 /* Styles for successModal */
 #successModal {
-    display: none;
-    position: fixed;
-    top: 0%;
-    left: 50%;
-    transform: translate(-50%, 0); 
-    background: #218838;
-    color: #ffffff;
-    font-weight: bolder;
-    padding: 30px;
-    border-radius: 7px;
-    text-align: center;
-    z-index: 10000;
+  display: none;
+  position: fixed;
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background: #218838;
+  color: #ffffff;
+  font-weight: bolder;
+  padding: 30px;
+  border-radius: 7px;
+  text-align: center;
+  z-index: 10000;
+}
+
+/* styles for close modal (x) button */
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-modal:hover {
+  color: red;
 }

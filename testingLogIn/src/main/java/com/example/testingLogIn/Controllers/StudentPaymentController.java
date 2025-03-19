@@ -32,19 +32,6 @@ public class StudentPaymentController{
     @Autowired
     private PaymentTransactionRepo transactionRepo;
 
-    //WILL BE REMOVED NEXT PAYMENT PROCESS UPDATE
-    @PostMapping("/add")
-    public ResponseEntity<String> addNewPaymentRecord(@RequestBody PaymentRecordDTO newRecord){
-        try{
-            if(paymentService.addNewRecord(newRecord))
-                return new ResponseEntity<>("Payment Transaction Completed",HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Transaction Failed. Student record not found",HttpStatus.NOT_FOUND);
-        }catch(Exception e){
-            return new ResponseEntity<>("Transaction Failed",HttpStatus.CONFLICT);
-        }
-    }
-
     //WILL BE USED FOR NEW PROCESS
     @PostMapping("/add/all/{studentId}/{amount}")
     public ResponseEntity<Object> addPayment(@PathVariable int studentId,
@@ -90,20 +77,6 @@ public class StudentPaymentController{
         try{
             return new ResponseEntity<>(paymentService.getAllPaymentRecords(),HttpStatus.OK);
         }catch(Exception e){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-    }
-
-    //TO BE REMOVED
-    @GetMapping("/balance/{studentId}")
-    public ResponseEntity<Double> getStudentBalance(@PathVariable int studentId,
-                                                    @RequestParam(required = false) Integer feeId,
-                                                    @RequestParam(required = false) Integer gradeLevelId,
-                                                    @RequestParam(required = false) Boolean currentSem){
-        try{
-            return new ResponseEntity<>(paymentService.getStudentBalance(studentId,feeId,gradeLevelId,currentSem),HttpStatus.OK);
-        }catch(Exception e){
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

@@ -73,21 +73,6 @@ public class PaymentRecordService {
         this.gradeReqFee = gradeReqFee;
         this.studFeesRepo = studFeesRepo;
     }
-
-    //For deletion after new form update
-    public boolean addNewRecord(PaymentRecordDTO paymentRec){
-        Student student = studentRepo.findById(paymentRec.getStudId()).orElse(null);
-        if(student == null)
-            return false;
-        PaymentRecords newPaymentRecord = PaymentRecords.builder()
-                                                    .requiredPayment(reqPaymentsRepo.findById(paymentRec.getRequiredPaymentId()).orElse(null))
-                                                    .amount(paymentRec.getAmount())
-                                                    .build();
-        paymentRepo.save(newPaymentRecord);
-        student.setStudentBalance(student.getStudentBalance()-paymentRec.getAmount());
-        studentRepo.save(student);
-        return true;
-    }
     //NEW WAY OF PAYING
     public PaymentTransactionDTO addPaymentAutoAllocate(int studentId, Integer gradeLevelId, double amount, List<Integer> feesId){
         PaymentTransaction transaction = generateTransaction();
@@ -108,7 +93,6 @@ public class PaymentRecordService {
         if(gradeLevelId != null) {//during enrollment
             for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
                 if(feesId.contains(reqFee.getRequiredFee().getId())) {
-                    System.out.println(reqFee.getRequiredFee().getId());
                     double paidAmount = Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber())).orElse(0.0);
 
                     double initialAmount = reqFee.getRequiredFee().getRequiredAmount();//initial amount deducted by the discount
@@ -172,35 +156,6 @@ public class PaymentRecordService {
         paymentRepo.save(record);
         return true;
     }
-    //To be removed next student payment form update
-    public double getStudentBalance(int studentId,Integer feeId,Integer gradeLevelId,Boolean isCurrentSem){
-        Student student = studentRepo.findById(studentId).orElse(null);
-        SchoolYearSemester sem = SYSemRepo.findCurrentActive();
-        assert student != null;
-        if(feeId == null) {
-            //for enrollment part
-            if (isCurrentSem != null && isCurrentSem) {
-                double toReturn = 0;
-                for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
-                    Double result = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber());
-                    double paidAmount = result != null ? result : 0;
-                    double totalFeeBalance = reqFee.getRequiredFee().getRequiredAmount() - paidAmount;
-                    toReturn += totalFeeBalance;
-                }
-                return toReturn;
-            }
-            return student.getStudentBalance();
-        }else{
-            Integer semId = isCurrentSem != null ? SYSemRepo.findCurrentActive().getSySemNumber() : null;//to remove
-            RequiredFees reqFee = reqPaymentsRepo.findById(feeId).orElse(null);//to remove
-            assert reqFee != null;
-            Double amountPaid = paymentRepo.totalPaidForSpecificFee(studentId,feeId,semId);
-            double totalPaidAmount = amountPaid == null ? 0 : amountPaid;//(studentId,feeId,null)
-            double totalFeeBalance = isCurrentSem != null ? reqFee.getRequiredAmount() : studFeesRepo.totalPerFeesByStudent(studentId,feeId);
-            return totalFeeBalance-totalPaidAmount;
-        }
-    }
-
     //A payment form object
     public StudentPaymentForm getStudentPaymentForm(int studentId,  Integer gradeLevelId){
         Student student = studentRepo.findById(studentId).orElse(null);

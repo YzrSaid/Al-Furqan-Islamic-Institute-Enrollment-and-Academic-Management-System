@@ -173,13 +173,13 @@
         </table>
 
         <!-- Pagination -->
-        <!-- <div class="pagination-container">
+        <div class="pagination-container">
             <div id="pagination" class="pagination">
                 <button id="prevPage" disabled>&laquo;</button>
                 <div id="pageNumbers"></div>
                 <button id="nextPage">&raquo;</button>
             </div>
-        </div> -->
+        </div>
 
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
@@ -296,7 +296,7 @@
                             <label for="amount" id="label-amount">Amount:</label>
                             <div class="input-wrapper">
                                 <span class="currency-symbol">₱</span>
-                                <input type="number" id="payment-amount" placeholder="0.00">
+                                <input type="number" max="0" id="payment-amount" placeholder="0.00">
                             </div>
                         </div>
                     </div>
@@ -396,36 +396,6 @@
                 } else {
                     console.error("Date input field not found in the modal");
                 }
-
-                // <!--                TO BE REMOVED-->
-                // <!--                // Fetch and populate the current active school year-->
-                // <!--                try {-->
-                // <!--                    let response = await fetch("/semester/currentactive");-->
-                // <!--                    if (!response.ok) throw new Error("Failed to fetch active school year");-->
-
-                // <!--                    let data = await response.json();-->
-
-                // <!--                    // Get input elements-->
-                // <!--                    let semesterInput = document.getElementById("semester");-->
-                // <!--                    let schoolYearInput = document.getElementById("school-year");-->
-
-                // <!--                    if (semesterInput) {-->
-                // <!--                        semesterInput.value = data.sem;-->
-                // <!--                    } else {-->
-                // <!--                        console.error("Semester input field not found in the modal");-->
-                // <!--                    }-->
-
-                // <!--                    if (schoolYearInput) {-->
-                // <!--                        schoolYearInput.value = data.schoolYear.schoolYear;-->
-                // <!--                        console.log("Fetched School Year:", data.schoolYear.schoolYear);-->
-                // <!--                        console.log("Fetched Semester:", data.sem);-->
-                // <!--                    } else {-->
-                // <!--                        console.error("School year input field not found in the modal");-->
-                // <!--                    }-->
-                // <!--                } catch (error) {-->
-                // <!--                    console.error("Error fetching current active school year:", error);-->
-                // <!--                }-->
-
                 try {
                     let response = await fetch("/payments/grade/" + gradeLevelId);
                     if (!response.ok) throw new Error("Failed to fetch required payments");
@@ -449,91 +419,11 @@
                         option.textContent = payment.requiredFeeName;
                         paymentList.appendChild(option);
                     });
-
-                    console.log("Fetched Payment List:", data);
                 } catch (error) {
                     console.error("Error fetching payment list:", error);
                 }
             }
         });
-
-
-        function savePayment() {
-            // Retrieve elements
-            const studentIdElement = document.getElementById("student-id");
-            const paymentAmountElement = document.getElementById("payment-amount");
-            const paymentListElement = document.getElementById("payment-list");
-
-            // Debugging logs
-            console.log("Student ID Element:", studentIdElement);
-            console.log("Payment List Element:", paymentListElement);
-
-            // Ensure elements exist
-            if (!studentIdElement) {
-                alert("Student ID not found.");
-                console.error("Student ID element is missing from the DOM.");
-                return;
-            }
-            if (!paymentListElement) {
-                alert("Payment list dropdown not found.");
-                console.error("Payment list dropdown is missing.");
-                return;
-            }
-            if (!paymentAmountElement) {
-                alert("Payment amount field not found.");
-                console.error("Payment amount input is missing.");
-                return;
-            }
-
-            // Retrieve values
-            const studentId = studentIdElement.textContent.trim();
-            const paymentAmount = paymentAmountElement.value.trim();
-            const requiredPaymentId = paymentListElement.value.trim();
-
-            console.log("Extracted Student ID:", studentId);
-            console.log("Selected Payment ID:", requiredPaymentId);
-            console.log("Entered Payment Amount:", paymentAmount);
-
-            // Validate required fields
-            if (!studentId) {
-                alert("Student ID is missing.");
-                return;
-            }
-            if (!requiredPaymentId) {
-                alert("Please select a payment type.");
-                return;
-            }
-            if (!paymentAmount || paymentAmount == 0) {
-                alert("Please enter a payment amount.");
-                return;
-            }
-
-            const endpoint = requiredPaymentId === "all"
-                ? `/paymentrecord/add/all/${payerId}/${gradeLevelId}/${paymentAmount}?forEnrollment=true`
-                : "/paymentrecord/add";
-
-            const requestOptions = {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: requiredPaymentId === "all" ? null : JSON.stringify({
-                    studId: payerId,
-                    amount: paymentAmount,
-                    requiredPaymentId: requiredPaymentId,
-                }),
-            };
-
-            // Send the fetch request
-            fetch(endpoint, requestOptions)
-                .then(response => response.text())
-                .then(message => {
-                    showSuccessModal(message);
-                })
-                .catch(error => {
-                    console.error("Error adding payment:", error);
-                    alert("Failed to add payment. Please try again.");
-                });
-        }
-
 
         function printReport() {
             window.print();
@@ -578,50 +468,59 @@
                         tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
                         return;
                     }
-
                     data.content.forEach(rec => {
-                        console.log(rec);
-                        const row = document.createElement("tr");
-                        const proceedBtn = rec.complete ? `
-                    <a href="#"
-                       data-open-modal="confirmationModal"
-                       data-action="proceedToEnrolled"
-                       id="proceed-btn"
-                       data-message="Are you sure you want to proceed and finish enrollment?"
-                       data-enrollment-id="${rec.enrollmentId}">
-                       Proceed
-                    </a>
-                ` : '';
+                        let row = document.createElement("tr");
 
+                        // Safely handle null/undefined values
+                        let studentName = `${rec.student.firstName || ""} ${rec.student.middleName ? rec.student.middleName + ' ' : ''}${rec.student.lastName || ""}`.trim();
+                        let gradeSection = rec.student.currentGradeSection?.level?.levelName || "N/A";
+                        let sectionToEnroll = rec.sectionToEnroll || "N/A";
+                        let studentType = rec.student.new ? 'New Student' : 'Old Student';
+
+                        // Conditionally render proceed button
+                        let proceedBtn = rec.complete === true ? `
+                            <a href="#"
+                               data-open-modal="confirmationModal"
+                               data-action="proceedToEnrolled"
+                               id="proceed-btn-${rec.enrollmentId}"
+                               data-message="Are you sure you want to proceed and finish enrollment?"
+                               data-enrollment-id="${rec.enrollmentId}">
+                               Proceed
+                            </a>
+                        ` : '';
+
+                        // Build row content
                         row.innerHTML = `
-                    <td>${rec.student.studentDisplayId || "N/A"}</td>
-                    <td>${rec.student.firstName} ${rec.student.middleName ? rec.student.middleName + ' ' : ''}${rec.student.lastName}</td>
-                    <td>${rec.student.currentGradeSection === null ? "NONE" : rec.student.currentGradeSection?.level?.levelName || "N/A"}</td>
-                    <td>${rec.sectionToEnroll || "N/A"}</td>
-                    <td>${rec.student.new ? 'New Student' : 'Old Student'}</td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status" id="status-payment">PAYMENT</div>
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                            </div>
-                            <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" class="action" data-open-modal="listOfPaymentsModal" 
-                                   data-level-id="${rec.gradeLevelToEnrollId}" 
-                                   data-enrollment-id="${rec.enrollmentId}">
-                                    View List of Payments
-                                </a>
-                                ${proceedBtn}
-                            </div>
-                        </div>
-                    </td>
-                `;
+                            <td>${rec.student.studentDisplayId || "N/A"}</td>
+                            <td>${studentName}</td>
+                            <td>${gradeSection}</td>
+                            <td>${sectionToEnroll}</td>
+                            <td>${studentType}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <div class="status-container">
+                                        <div class="status" id="status-payment">PAYMENT</div>
+                                        <button class="dropdown-status-btn">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-status-content" id="dropdown-listing">
+                                        <a href="#" class="action" data-open-modal="listOfPaymentsModal"
+                                           data-student-id="${rec.student.studentId}"
+                                           data-level-id="${rec.gradeLevelToEnrollId}"
+                                           data-enrollment-id="${rec.enrollmentId}">
+                                            View List of Payments
+                                        </a>
+                                        ${proceedBtn}
+                                    </div>
+                                </div>
+                            </td>
+                        `;
 
                         tableBody.appendChild(row);
                     });
-
+                    console.log(data.totalPages);
+                    console.log("I am at page" + pageNo);
                     updatePaymentPagination(status, pageNo, pageSize, data.totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
@@ -630,7 +529,7 @@
         function updatePaymentPagination(status, currentPage, pageSize, totalPages) {
             console.log(currentPage);
             const paginationContainer = document.querySelector("#pagination");
-            paginationContainer.innerHTML = "";
+            paginationContainer.innerHTML = ``;
 
             if (totalPages <= 1) return;
 
@@ -646,20 +545,123 @@
             }
         }
 
+        let studentId;
         let gradeLevelId;
         document.addEventListener("click", function (event) {
-            const proceedButton = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
-            if (proceedButton) {
-                const enrollmentId = proceedButton.getAttribute("data-enrollment-id");
-                gradeLevelId = proceedButton.getAttribute("data-level-Id");
+            const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
+            const paymentBtn = event.target.closest('[data-open-modal="addPaymentModal"]');
+            if (viewListbtn) {
+                studentId = viewListbtn.getAttribute("data-student-id");
+                const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
+                gradeLevelId = viewListbtn.getAttribute("data-level-Id");
                 if (!enrollmentId) return console.error("Enrollment Id Not Found");
-
                 fetchPayments(enrollmentId);
+            }else if(paymentBtn){
+                setUpPaymentForm();
             }
         });
 
+        async function setUpPaymentForm(){
+            paymentAmountInput.max = 0;
+            paymentAmountInput.value =0.0;
+            let response = await fetch(`/paymentrecord/form/${studentId}?gradeLevelId=${gradeLevelId}`);
+            if (!response.ok) throw new Error("wa nakita");
+            let data = await response.json();
+            const student = data.student;
+
+            const studentname = document.querySelector("#payee-name");
+            const studentDisplayId = document.querySelector("#payee-id");
+            studentname.value = student.firstName + (student.middleName ? ' ' + student.middleName : '') + ' ' + student.lastName;
+            studentDisplayId.value = student.studentDisplayId;
+
+            const paymentContainer = document.querySelector(".payment-container-group");
+            paymentContainer.innerHTML = '';
+            data.feesAndBalance.forEach(par =>{
+                    const paymentItem = document.createElement("div");
+                    paymentItem.classList.add("payment-item");
+                    console.log(par);
+                    console.log(par.balance);
+                    const input = document.createElement("input");
+                    input.type = "checkbox";
+                    input.name = par.fee.name;
+                    input.value = par.fee.id;
+                    input.addEventListener("change", (event) => {
+                            handleCheckboxChange(event, par.balance);
+                        });
+
+                    let label = document.createElement("label");
+                    label.textContent = par.fee.name;
+                    label.setAttribute("for", par.fee.name);
+
+                    paymentItem.appendChild(input);
+                    paymentItem.appendChild(label);
+                    paymentContainer.appendChild(paymentItem);
+            });
+        }
+
+        function handleCheckboxChange(event,balance) {
+            const checkbox = event.target; // The checkbox that was clicked
+            const value = checkbox.value; // The value of the checkbox
+            const isChecked = checkbox.checked; // Whether the checkbox is checked or unchecked
+            const currentMax = parseFloat(paymentAmountInput.max) || 0;
+            let newMax = 0;
+            if (isChecked) {
+                newMax = currentMax + balance;
+            } else {
+                newMax = currentMax - balance;
+            }
+            paymentAmountInput.max = newMax;
+            if(paymentAmountInput.value > newMax){
+                paymentAmountInput.value = newMax;
+            }
+        }
+
+        function savePayment(){
+            const feesSelectedId = getCheckedPaymentValues();
+            const totalAmount = paymentAmountInput.value;
+
+            if(totalAmount == 0){
+                alert("DLi pwde wlay kay ibayad uys");
+                return;
+            }else if(feesSelectedId.length == 0){
+                alert("Dapat naa ka pilion");
+                return;
+            }
+
+            const url = `/paymentrecord/add/all/${encodeURIComponent(studentId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(gradeLevelId)}`;
+            const obj = {
+                feesId: feesSelectedId
+            };
+
+            fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(obj)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(obj => {
+                alert("This play the following in a receipt. May console log pd ni after sa 2nd alert");
+                alert(JSON.stringify(obj));
+                console.log(obj);
+            })
+            .catch(error => {
+                console.error("Error adding payment:", error);
+                alert("Failed to add payment. Please try again.");
+            });
+        }
+
+        function getCheckedPaymentValues() {
+            const checkedCheckboxes = document.querySelectorAll('.payment-container-group input[type="checkbox"]:checked');
+            const checkedValues = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
+            return checkedValues;
+        }
+
         let enrollmentIdLet = null;
-        // Ensure the event listener is added only once when the page loads
         document.addEventListener("click", function (event) {
             const proceedToEnrolledButton = event.target.closest("#proceed-btn"); // Check if the clicked element is the button
 
@@ -698,12 +700,12 @@
                 .then(epv => {
                     console.log('The object is', epv);
                     const studentname = document.querySelector("#student-name");
-                    const studentId = document.querySelector("#student-id");
+                    const studentDisplayId = document.querySelector("#student-id");
                     if (!studentname || !studentId) return console.error("Dropdown for sections not found");
 
                     studentname.textContent = epv.studentFirstName + (epv.studentMiddleName ? ' ' + epv.studentMiddleName : '') + ' ' + epv.studentLastName;
 
-                    studentId.textContent = epv.studentDisplayId;
+                    studentDisplayId.textContent = epv.studentDisplayId;
                     payerId = epv.studentId;
 
                     const tableBody = document.querySelector("#table-ni-kharl tbody");
@@ -732,7 +734,7 @@
                     <td>
                         <div class="action-container">
                             <div class="action">
-                                <img data-open-modal="addPaymentModal" src="/images/icons/add-button.png"
+                                <img data-open-modal="addPaymentModals" src="/images/icons/add-button.png"
                                     alt="add-payment-icon" class="add-payment-btn">
                             </div>
                         </div>

@@ -13,23 +13,39 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface StudentFeesListRepo extends JpaRepository<StudentFeesList,Integer> {
 
-    @Query("SELECT sfl FROM StudentFeesList sfl WHERE sfl.student.studentId = :studId AND(:semId IS NULL OR sfl.sem.sySemNumber = :semId)")
+    @Query("SELECT sfl FROM StudentFeesList sfl " +
+            "JOIN sfl.student stud "+
+            "JOIN sfl.sem s "+
+            "WHERE (:semId IS NULL OR s.sySemNumber = :semId) "+
+            "AND stud.studentId = :studId")
     List<StudentFeesList> findBySem(@Param("studId") int studentId,@Param("semId") Integer semId);
 
-    @Query("SELECT sfl FROM StudentFeesList sfl WHERE sfl.student.studentId = :studId GROUP BY sfl.fee")
+    @Query("SELECT sfl FROM StudentFeesList sfl " +
+            "JOIN sfl.student stud "+
+            "JOIN sfl.fee fee "+
+            "WHERE stud.studentId = :studId " +
+            "GROUP BY fee")
     List<StudentFeesList> findUniqueFees(@Param("studId") int studentId);
 
-    @Query("SELECT COUNT(sf) FROM StudentFeesList sf "+ 
-           "WHERE sf.fee.id =:feeId " +
-           "AND sf.student.studentId = :studentId")
+    @Query("SELECT COUNT(sfl) FROM StudentFeesList sfl "+
+            "JOIN sfl.student stud "+
+            "WHERE sfl.fee.id =:feeId " +
+            "AND stud.studentId = :studentId")
     Integer feesCount(@Param("studentId") int studentId, @Param("feeId") int feeId);
     
-    @Query("SELECT SUM(sf.amount) FROM StudentFeesList sf WHERE sf.fee.id =:feeId AND sf.student.studentId = :studentId")
+    @Query("SELECT SUM(sfl.amount) FROM StudentFeesList sfl " +
+            "JOIN sfl.student stud "+
+            "JOIN sfl.fee fee "+
+            "WHERE fee.id =:feeId " +
+            "AND stud.studentId = :studentId")
     Double totalPerFeesByStudent(@Param("studentId") int studentId, @Param("feeId") int feeId);
     
-    @Query("SELECT sf FROM StudentFeesList sf " + 
-           "WHERE sf.fee.id = :feeId " + 
-           "AND sf.student.studentId = :studentId " + 
-           "AND sf.sem.sySemNumber = :semId")
+    @Query("SELECT sfl FROM StudentFeesList sfl " +
+            "JOIN sfl.student stud "+
+            "JOIN sfl.sem s "+
+            "JOIN sfl.fee fee "+
+            "WHERE fee.id = :feeId " +
+            "AND s.sySemNumber = :semId "+
+            "AND stud.studentId = :studentId")
     Optional<StudentFeesList> getFeesBySem(@Param("studentId") int studentId, @Param("feeId") int feeId,@Param("semId") int semId);
 }

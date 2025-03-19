@@ -61,10 +61,11 @@ public class EnrollmentServices {
     public boolean addStudentToListing(StudentDTO stud, Integer studentId) {
         Student student = null;
         if (stud != null)
-            student = studentRepo.findByName(stud.getFirstName(), stud.getLastName());
+            student = studentRepo.findByName(stud.getFirstName(), stud.getLastName(),stud.getMiddleName());
         else
             student = studentRepo.findById(studentId).orElse(null);
 
+        System.out.println(student.getStudentDisplayId());
         if (student == null || !student.isNotDeleted())
             throw new NullPointerException();
         else if (enrollmentRepo.studentCurrentlyEnrolled(student.getStudentId(),
@@ -77,7 +78,8 @@ public class EnrollmentServices {
         enroll.setSYSemester(sySemRepo.findCurrentActive());
         enroll.setNotDeleted(true);
         enrollmentRepo.save(enroll);
-
+        System.out.println(student.getStudentDisplayId());
+        System.out.println("Added to listing");
         return true;
     }
 
@@ -246,20 +248,17 @@ public class EnrollmentServices {
             List<GradeLevelRequiredFees> gradeFeeList = gradelvlReqFeesRepo
                     .findByGradeLevel(e.getGradeLevelToEnroll().getLevelId());
             for (GradeLevelRequiredFees gr : gradeFeeList) {
-                Double result = payRecRepo.totalPaidForSpecificFee(e.getStudent().getStudentId(),
+                Double result = Optional.ofNullable(payRecRepo.totalPaidForSpecificFee(e.getStudent().getStudentId(),
                         gr.getRequiredFee().getId(),
-                        sySemRepo.findCurrentActive().getSySemNumber());
-                if (result == null || result == 0)
+                        sySemRepo.findCurrentActive().getSySemNumber())).orElse(0.0);
+                if (result == 0){
                     isComplete = false;
+                    break;}
             }
-        } catch (NullPointerException npe) {
-            isComplete = false;
-        }
-        try {
             if (!isComplete && paymentService.getStudentPaymentForm(e.getStudent().getStudentId(), e.getGradeLevelToEnroll().getLevelId()).getTotalFee() == 0)
                 isComplete = true;
-        }catch (NullPointerException npe){
-            //do nothing
+        } catch (NullPointerException npe) {
+            isComplete = false;
         }
 
         return e.DTOmapper(isComplete);

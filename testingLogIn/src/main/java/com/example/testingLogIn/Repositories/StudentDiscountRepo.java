@@ -13,15 +13,17 @@ public interface StudentDiscountRepo extends JpaRepository<StudentDiscount,Integ
     
     @Query("SELECT NEW com.example.testingLogIn.CustomObjects.StudentTotalDiscount(SUM(sd.discount.percentageDiscount),SUM(sd.discount.fixedDiscount)) "+
            "FROM StudentDiscount sd "+
+            "JOIN sd.student stud "+
            "WHERE sd.discount.isNotDeleted = TRUE "+
            "AND sd.isNotDeleted = TRUE "+
-           "AND sd.student.studentId = :studentId")
+           "AND stud.studentId = :studentId")
     Optional<StudentTotalDiscount> getStudentTotalDiscount(@Param("studentId") int studentId);
 
-    @Query("SELECT sd FROM StudentDiscount sd " + 
-           "WHERE sd.discount.isNotDeleted = TRUE "+
-           "AND sd.isNotDeleted = TRUE " +
-           "AND sd.student.studentId = :studentId " + 
-           "AND sd.discount.discountId = :discountId")
+    @Query("SELECT sd FROM StudentDiscount sd " +
+            "JOIN sd.student stud "+
+            "WHERE sd.discount.isNotDeleted = TRUE "+
+            "AND sd.isNotDeleted = TRUE " +
+            "AND sd.discount.discountId = :discountId "+
+            "AND stud.studentId = :studentId")
     List<StudentDiscountRepo> findStudentDiscountRecord(@Param("studentId") int studentId, @Param("discountId") int discountId);
 }

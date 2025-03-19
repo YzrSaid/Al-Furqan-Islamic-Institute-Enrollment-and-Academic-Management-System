@@ -108,7 +108,7 @@ public class StudentServices {
         Student toUpdate = getStudent(stud.getStudentId());
         if(toUpdate == null)
             throw new NullPointerException();                    //checks if a student with not the same ID has the same name
-        else if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(stud.getStudentId(),stud.getFirstName(),stud.getLastName()))
+        else if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(stud.getStudentId(),stud.getFirstName(),stud.getLastName(),stud.getMiddleName()))
             return false;
         else{
             toUpdate.setFirstName(stud.getFirstName());
@@ -153,7 +153,8 @@ public class StudentServices {
         return studentRepo.existsByNameIgnoreCaseAndNotDeleted(
                 null,
                 student.getFirstName(),
-                student.getLastName());
+                student.getLastName(),
+                student.getMiddleName());
     }
 
     public StudentDTOPage getStudentPage(String studentType, String condition, int pageNo, int pageSize){

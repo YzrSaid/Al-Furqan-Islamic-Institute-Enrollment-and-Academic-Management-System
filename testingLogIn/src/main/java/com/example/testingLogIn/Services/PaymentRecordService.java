@@ -5,10 +5,13 @@ import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
 import com.example.testingLogIn.CustomObjects.TotalPaid;
+import com.example.testingLogIn.ModelDTO.PaymentTransactionDTO;
 import com.example.testingLogIn.Models.*;
 import com.example.testingLogIn.Repositories.*;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -48,6 +51,8 @@ public class PaymentRecordService {
     private final StudentFeesListRepo studFeesRepo;
     @Autowired
     private DiscountsServices discService;
+    @Autowired
+    private PaymentTransactionRepo transactionRepo;
 
     @Setter
     @Getter
@@ -75,10 +80,7 @@ public class PaymentRecordService {
         if(student == null)
             return false;
         PaymentRecords newPaymentRecord = PaymentRecords.builder()
-                                                    .student(student)
-                                                    .receiver(userService.getCurrentlyLoggedInUser())
                                                     .requiredPayment(reqPaymentsRepo.findById(paymentRec.getRequiredPaymentId()).orElse(null))
-                                                    .SYSem(SYSemRepo.findCurrentActive())
                                                     .amount(paymentRec.getAmount())
                                                     .build();
         paymentRepo.save(newPaymentRecord);
@@ -87,10 +89,18 @@ public class PaymentRecordService {
         return true;
     }
     //NEW WAY OF PAYING
-    public boolean addPaymentAutoAllocate(int studentId, Integer gradeLevelId,double amount,List<Integer> feesId){
+    public PaymentTransactionDTO addPaymentAutoAllocate(int studentId, Integer gradeLevelId, double amount, List<Integer> feesId){
+        PaymentTransaction transaction = generateTransaction();
         Student student = studentRepo.findById(studentId).orElse(null);
-        assert student!=null;
         SchoolYearSemester sem = SYSemRepo.findCurrentActive();
+        assert student!=null;
+        transaction.setStudent(student);
+        transaction.setSYSem(sem);
+        transactionRepo.save(transaction);
+        PaymentTransaction tran = transactionRepo.findById(transaction.getTransactionId()).orElse(null);
+        assert tran != null;
+        tran.setParticulars(new ArrayList<>());
+
         List<MapperObject> toSortByBalance = new ArrayList<>();
         setTheAmount(amount);
         StudentTotalDiscount std = discService.getStudentTotalDiscount(studentId);
@@ -98,8 +108,7 @@ public class PaymentRecordService {
         if(gradeLevelId != null) {//during enrollment
             for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
                 if(feesId.contains(reqFee.getRequiredFee().getId())) {
-//                    Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber())).orElse(0.0); uncomment if magka error hahahha
-//                    Double result = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber());
+                    System.out.println(reqFee.getRequiredFee().getId());
                     double paidAmount = Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber())).orElse(0.0);
 
                     double initialAmount = reqFee.getRequiredFee().getRequiredAmount();//initial amount deducted by the discount
@@ -142,16 +151,17 @@ public class PaymentRecordService {
             setTheAmount(getTheAmount()-toAllocate);
             count.getAndIncrement();
 
-            paymentRepo.save(PaymentRecords.builder().student(student)
-                            .requiredPayment(fee.getRequiredFees())
-                            .amount(toAllocate)
-                            .SYSem(sem)
-                            .receiver(userService.getCurrentlyLoggedInUser())
-                            .build());
+            PaymentRecords particular = PaymentRecords.builder()
+                    .transaction(tran)
+                    .requiredPayment(fee.getRequiredFees())
+                    .amount(toAllocate)
+                    .build();
+            paymentRepo.save(particular);
+            tran.getParticulars().add(particular);
         });
         student.setStudentBalance(student.getStudentBalance()-amount);
         studentRepo.save(student);
-        return true;
+        return tran.DTOmapper();
     }
 
     public boolean editRecord(int recordId, int feeId){
@@ -286,6 +296,20 @@ public class PaymentRecordService {
         Page<PaymentRecords> recordsPage = paymentRepo.getRecordsPage(PageRequest.of(page, size, sort));
 
         return pagedResourcesAssembler.toModel(recordsPage.map(PaymentRecords::DTOmapper));
+    }
+
+    private PaymentTransaction generateTransaction(){
+        int transactionCount = Optional.ofNullable(transactionRepo.countTotalTransactions()).orElse(0);
+        LocalDate currentDate = LocalDate.now();
+        String transactionId = String.valueOf(   currentDate.getYear()+""+
+                                                currentDate.getMonthValue()+""+
+                                                currentDate.getDayOfWeek().toString().charAt(0)+
+                                                transactionCount);
+        return PaymentTransaction.builder()
+                .transactionId(transactionId)
+                .staff(userService.getCurrentlyLoggedInUser())
+                .dateReceived(currentDate)
+                .build();
     }
     
 }

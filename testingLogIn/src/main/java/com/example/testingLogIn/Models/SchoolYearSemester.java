@@ -20,7 +20,6 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 @Entity
 public class SchoolYearSemester {
     
@@ -40,4 +39,9 @@ public class SchoolYearSemester {
     private boolean isFinished;
     private boolean isActive;
     private boolean isNotDeleted;
+
+    @Override
+    public String toString() {
+        return schoolYear.getSchoolYear()+" - "+sem+" semester";
+    }
 }

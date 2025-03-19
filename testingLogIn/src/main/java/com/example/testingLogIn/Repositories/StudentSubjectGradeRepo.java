@@ -16,30 +16,39 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     
     @Query("SELECT CASE WHEN EXISTS ( " +
            "SELECT 1 FROM StudentSubjectGrade sg " +
-           "WHERE sg.student.studentId = :studentId " +
-           "AND sg.section.level.levelId = :gradeLevelId " +
-           "GROUP BY sg.semester " +
-           "HAVING AVG(sg.subjectGrade) > 74" +
+            "JOIN sg.student stud "+
+            "JOIN sg.section.level lvl "+
+            "JOIN sg.semester sem "+
+            "WHERE stud.studentId = :studentId " +
+            "AND lvl.levelId = :gradeLevelId " +
+            "GROUP BY sem " +
+            "HAVING AVG(sg.subjectGrade) > 74" +
            ") THEN true ELSE false END")
     boolean didStudentPassed(
         @Param("studentId") int studentId,
         @Param("gradeLevelId") int gradeLevelId);
 
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
-           "WHERE sg.section.number = :sectionId "+
-           "AND sg.semester.sySemNumber = :semId")
+            "JOIN sg.section sec "+
+            "JOIN sg.semester s "+
+            "WHERE sec.number = :sectionId "+
+            "AND s.sySemNumber = :semId")
     List<StudentSubjectGrade> getSectionGradesByCurrentSem(
             @Param("sectionId") int sectionId,
             @Param("semId") int semId);
 
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
-           "WHERE sg.student.studentId = :studentId")
+            "JOIN sg.student s "+
+            "WHERE s.studentId = :studentId")
     List<StudentSubjectGrade> getGradesByStudent(@Param("studentId") int studentId);
 
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
-            "WHERE sg.student.studentId = :studentId "+
-            "AND sg.section.level.levelId = :levelId " +
-            "ORDER BY sg.semester DESC")
+            "JOIN sg.section sec "+
+            "JOIN sg.student s "+
+            "JOIN sg.semester sem "+
+            "WHERE s.studentId = :studentId "+
+            "AND sec.level.levelId = :levelId " +
+            "ORDER BY sem DESC")
     List<StudentSubjectGrade> getGradesByStudentGradeLevel(@Param("studentId") int studentId,@Param("levelId") int levelid);
     
     @Query("SELECT sg FROM StudentSubjectGrade sg "+

@@ -772,15 +772,11 @@
         if (paymentAmountInput) {
             paymentAmountInput.addEventListener('input', function () {
                 const maxValue = parseFloat(this.max);
-                const minValue = parseFloat(this.min);
                 const enteredValue = parseFloat(this.value);
 
                 if (enteredValue > maxValue) {
                     alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
                     this.value = maxValue;
-                } else if (enteredValue < minValue) {
-                    alert("Bawal Kuripot");
-                    this.value = minValue;
                 }
             });
         }

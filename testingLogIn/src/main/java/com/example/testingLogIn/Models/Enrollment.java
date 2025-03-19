@@ -56,12 +56,13 @@ public class    Enrollment {
     private boolean isNotDeleted;
     
     public EnrollmentDTO DTOmapper(boolean isComplete){
+        Integer preReqId = gradeLevelToEnroll == null ? null : gradeLevelToEnroll.getPreRequisite() == null ? null :gradeLevelToEnroll.getPreRequisite().getLevelId();
         return EnrollmentDTO.builder()
                             .enrollmentId(enrollmentId)
                             .student(student.DTOmapper())
                             .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
                             .semester(SYSemester.getSem())
-                            .preRequisiteId(Optional.ofNullable(gradeLevelToEnroll.getPreRequisite()).map(GradeLevel::getLevelId).orElse(null))
+                            .preRequisiteId(preReqId)
                             .gradeLevelToEnrollId(Optional.ofNullable(gradeLevelToEnroll).map(GradeLevel::getLevelId).orElse(null))
                             .gradeLevelToEnroll(Optional.ofNullable(gradeLevelToEnroll).map(GradeLevel::getLevelName).orElse(null))
                             .sectionToEnroll(Optional.ofNullable(sectionToEnroll).map(sec -> sec.getLevel().getLevelName()+"-"+sec.getSectionName()).orElse(null))

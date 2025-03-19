@@ -20,26 +20,31 @@ import org.springframework.stereotype.Repository;
 public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
     
 @Query("SELECT COUNT(e) > 0 FROM Enrollment e " +
-       "WHERE e.isNotDeleted = true " +
-       "AND e.student.studentId = :studentId "+
-       "AND e.SYSemester.sySemNumber = :activeSemNumber")
+        "JOIN e.student stud "+
+        "JOIN e.SYSemester s "+
+        "WHERE e.isNotDeleted = true " +
+        "AND stud.studentId = :studentId "+
+        "AND s.sySemNumber = :activeSemNumber")
 boolean studentCurrentlyEnrolled(
     @Param("studentId") int studentId,
     @Param("activeSemNumber") int activeSemNumber);
 
 @Query("SELECT e FROM Enrollment e " +
-       "WHERE e.isNotDeleted = true " +
-       "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
-       "AND e.SYSemester.sySemNumber = :activeSemNumber")
+        "JOIN e.SYSemester s "+
+        "WHERE e.isNotDeleted = true " +
+        "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
+        "AND s.sySemNumber = :activeSemNumber")
 List<Enrollment> findRecordsByStatusAndSemester(
     @Param("status") EnrollmentStatus status,
     @Param("activeSemNumber") int activeSemNumber);
 
-    @Query("SELECT e FROM Enrollment e " + 
-           "WHERE (:search IS NULL OR e.student.fullName LIKE CONCAT('%',:search,'%')) "+
-           "AND e.isNotDeleted = true " +
-           "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
-           "AND e.SYSemester.sySemNumber = :activeSemNumber")
+    @Query("SELECT e FROM Enrollment e " +
+            "JOIN e.student stud "+
+            "JOIN e.SYSemester s "+
+            "WHERE e.isNotDeleted = true " +
+            "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
+            "AND s.sySemNumber = :activeSemNumber "+
+            "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%'))")
     Page<Enrollment> findRecordsByStatusAndSemesterPage(
             @Param("status") EnrollmentStatus status,
             @Param("activeSemNumber") int activeSemNumber,
@@ -47,9 +52,11 @@ List<Enrollment> findRecordsByStatusAndSemester(
             Pageable pageable);
 
 @Query("SELECT e FROM Enrollment e " +
-       "WHERE e.isNotDeleted = true " +
-       "AND e.student.studentId = :studentId "+
-       "AND e.SYSemester.sySemNumber = :activeSemNumber")
+        "JOIN e.student stud "+
+        "JOIN e.SYSemester s "+
+        "WHERE e.isNotDeleted = true " +
+        "AND s.sySemNumber = :activeSemNumber "+
+        "AND stud.studentId = :studentId")
 Enrollment getRecordByStudent(
     @Param("studentId") int studentId,
     @Param("activeSemNumber") int activeSemNumber);

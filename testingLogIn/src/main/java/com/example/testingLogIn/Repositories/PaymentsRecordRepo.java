@@ -16,56 +16,51 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer>{
-    @Query("SELECT pr FROM PaymentRecords pr " +
-           "WHERE pr.student.studentId = :studentId " +
-           "AND pr.SYSem.sySemNumber = :semId " +
-           "GROUP BY pr.requiredPayment")
-    List<PaymentRecords> getCurrentPaidRequiredPaymentOfStudent(
-            @Param("studentId") int studentId,
-            @Param("semId") int semId);
-    
-    @Query("SELECT COUNT(*)>0 from PaymentRecords pr "+
-            "WHERE pr.student.studentId = :studentId "+
-            "AND pr.SYSem.sySemNumber = :semId "+
-            "AND pr.requiredPayment.id = :reqPaymentId")
-    boolean doesExist(
-            @Param("studentId") int studentId,
-            @Param("reqPaymentId") int reqPaymentId,
-            @Param("semId") int semId);
-    
     @Query("SELECT pr FROM PaymentRecords pr "+
-           "WHERE pr.SYSem.sySemNumber = :semId "+
-           "ORDER BY pr.datePaid DESC")
+           "JOIN pr.transaction pt "+
+           "JOIN pt.SYSem s "+
+           "WHERE s.sySemNumber = :semId")
     List<PaymentRecords> getRecordsBySem(@Param("semId") int semId);
     
-    @Query("SELECT pr FROM PaymentRecords pr "+
-           "WHERE pr.student.studentId = :studentId "+
-           "ORDER BY pr.datePaid DESC")
+    @Query("SELECT pr FROM PaymentRecords pr " +
+       "JOIN pr.transaction pt " +
+       "JOIN pt.student s " +
+       "WHERE s.studentId = :studentId")
     List<PaymentRecords> getAllStudentPaymentRecord(@Param("studentId") int studentId);
     
     @Query("SELECT SUM(pr.amount) from PaymentRecords pr "+
-            "WHERE pr.student.studentId = :studentId "+
-            "AND pr.SYSem.sySemNumber = :semId "+
+            "JOIN pr.transaction pt "+
+            "JOIN pt.SYSem s "+
+            "JOIN pt.student stud "+
+            "WHERE stud.studentId = :studentId "+
+            "AND s.sySemNumber = :semId "+
             "AND pr.requiredPayment.id = :reqPaymentId")
     Double getTotalPaidByStudentForFeeInSemester(
             @Param("studentId") int studentId,
             @Param("reqPaymentId") int reqPaymentId,
             @Param("semId") int semId);
     
-    @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid DESC")
+    @Query("SELECT pr FROM PaymentRecords pr")
     List<PaymentRecords> getAllRecords();
 
-    @Query("SELECT pr FROM PaymentRecords pr ORDER BY pr.datePaid")
+    @Query("SELECT pr FROM PaymentRecords pr")
     Page<PaymentRecords> getRecordsPage(Pageable pageable);
     
-    @Query("SELECT NEW com.example.testingLogIn.CustomObjects.TotalPaid(SUM(pr.amount),pr.requiredPayment.requiredAmount,pr.requiredPayment) FROM PaymentRecords pr "+
-           "WHERE pr.student.studentId = :studId GROUP BY pr.requiredPayment,pr.requiredPayment.requiredAmount")
+    @Query("SELECT NEW com.example.testingLogIn.CustomObjects.TotalPaid(SUM(pr.amount),rp.requiredAmount,pr.requiredPayment) FROM PaymentRecords pr "+
+           "JOIN pr.transaction t "+
+            "JOIN t.student s "+
+            "JOIN pr.requiredPayment rp "+
+            "WHERE s.studentId = :studId GROUP BY pr.requiredPayment,rp.requiredAmount")
     List<TotalPaid> totalPaidPerFee(@Param("studId") int studentId);
 
     @Query("SELECT SUM(pr.amount) from PaymentRecords pr "+
-            "WHERE pr.student.studentId = :studentId "+
-            "AND pr.requiredPayment.id = :reqPaymentId "+
-            "AND (:semId IS NULL OR pr.SYSem.sySemNumber = :semId)")
+            "JOIN pr.requiredPayment rp "+
+            "JOIN pr.transaction t "+
+            "JOIN t.SYSem s "+
+            "JOIN t.student stud "+
+            "WHERE stud.studentId = :studentId "+
+            "AND rp.id = :reqPaymentId "+
+            "AND (:semId IS NULL OR s.sySemNumber = :semId)")
     Double totalPaidForSpecificFee(@Param("studentId") int studentId,
                                    @Param("reqPaymentId") int reqPaymentId,
                                    @Param("semId") Integer semId);

@@ -17,13 +17,16 @@ import org.springframework.data.repository.query.Param;
  */
 public interface StudentRepo extends JpaRepository<Student,Integer> {
     @Query("SELECT COUNT(s) > 0 FROM Student s " +
-       "WHERE s.isNotDeleted = true "+
-       "AND (:studentId IS NULL OR s.studentId != :studentId) "+
-       "AND Lower(s.fullName) LIKE CONCAT(:firstName,' ',:lastName)")
+        "WHERE s.isNotDeleted = true "+
+        "AND (:studentId IS NULL OR s.studentId != :studentId) "+
+        "AND Lower(s.fullName) LIKE CONCAT('%',:lastName,'%') "+
+        "AND Lower(s.fullName) LIKE CONCAT('%',:firstName,'%') "+
+        "AND (:middleName IS NULL OR s.fullName LIKE CONCAT('%',:middleName,'%'))")
 boolean existsByNameIgnoreCaseAndNotDeleted(
     @Param("studentId") Integer studentId,
     @Param("firstName") String firstName,
-    @Param("lastName") String lastName
+    @Param("lastName") String lastName,
+    @Param("middleName") String middleName
 );
     List<Student> findByIsNotDeletedTrue();
 
@@ -42,10 +45,13 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
     
     @Query( "SELECT s from Student s "+
             "WHERE s.isNotDeleted = TRUE "+
-            "AND Lower(s.fullName) LIKE CONCAT(:firstName,' ',:lastName)")
+            "AND s.fullName LIKE CONCAT('%',:firstName,'%') "+
+            "AND s.fullName LIKE CONCAT('%',:lastName,'%') "+
+            "AND (:middleName IS NULL OR s.fullName LIKE CONCAT('%',:middleName,'%'))")
     Student findByName(
             @Param("firstName") String firstname,
-            @Param("lastName") String lastname);
+            @Param("lastName") String lastname,
+            @Param("middleName") String middleName);
 
     @Query("SELECT s FROM Student s " +
             "WHERE s.isNotDeleted = true " +

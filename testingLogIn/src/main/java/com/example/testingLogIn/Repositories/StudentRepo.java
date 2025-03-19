@@ -57,7 +57,7 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
             "WHERE s.isNotDeleted = true " +
             "AND (s.studentDisplayId LIKE CONCAT('%', :searching, '%') " +
             "OR LOWER(s.fullName) LIKE CONCAT('%', :searching, '%'))")
-    Optional<Student> findByStudentDisplayIDOrName(@Param("searching") String searching);
+    List<Student> findByStudentDisplayIDOrName(@Param("searching") String searching);
     
     @Query("SELECT COUNT(s) from Student s "+
            "WHERE s.studentDisplayId LIKE %:year%")

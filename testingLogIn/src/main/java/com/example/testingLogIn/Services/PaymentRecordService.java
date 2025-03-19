@@ -148,14 +148,6 @@ public class PaymentRecordService {
         return tran.DTOmapper();
     }
 
-    public boolean editRecord(int recordId, int feeId){
-        PaymentRecords record = paymentRepo.findById(recordId).orElse(null);
-        if(record == null)
-            return false;
-        record.setRequiredPayment(reqPaymentsRepo.findById(feeId).orElse(null));
-        paymentRepo.save(record);
-        return true;
-    }
     //A payment form object
     public StudentPaymentForm getStudentPaymentForm(int studentId,  Integer gradeLevelId){
         Student student = studentRepo.findById(studentId).orElse(null);
@@ -195,62 +187,6 @@ public class PaymentRecordService {
         }
         studentPaymentForm.setTotalFee(totalBalance);
         return studentPaymentForm;
-    }
-    
-    public List<PaymentRecordDTO> getAllPaymentRecords(){
-        return paymentRepo.getAllRecords().stream()
-                        .map(PaymentRecords::DTOmapper)
-                        .toList();
-    }
-    
-    public List<PaymentRecordDTO> getAllPaymentRecordsBySem(int semId){
-        return paymentRepo.getRecordsBySem(semId).stream()
-                        .map(PaymentRecords::DTOmapper)
-                        .toList();
-    }
-
-    public List<PaymentRecordDTO> getAllTimeRecordsByDates(String condition){
-        Sort sort = condition.equalsIgnoreCase("desc") ?
-                Sort.by(Sort.Order.desc("datePaid")) :
-                Sort.by(Sort.Order.asc("datePaid"));
-        return paymentRepo.findAll(sort).stream()
-                .map(PaymentRecords::DTOmapper)
-                .toList();
-    }
-
-    public PagedModel<EntityModel<PaymentRecordDTO>> getAllTimeRecordsByDate(String condition, int page){
-        Sort sort = condition.equalsIgnoreCase("desc") ?
-                Sort.by(Sort.Order.desc("datePaid")) :
-                Sort.by(Sort.Order.asc("datePaid"));
-        Page<PaymentRecordDTO> recordsPage = paymentRepo.findAll(PageRequest.of(page,15,sort)).map(PaymentRecords::DTOmapper);
-        return pagedResourcesAssembler.toModel(recordsPage);
-    }
-
-    public List<PaymentRecordDTO> getAllStudentPaymentRecords(int studentId){
-        return paymentRepo.getAllStudentPaymentRecord(studentId).stream()
-                            .map(PaymentRecords::DTOmapper)
-                            .toList();
-    }
-    
-    public List<PaymentRecordDTO> getAllStudentPaymentRecordsByName(String studentName){
-        try{
-            Student student = studentRepo.findByStudentDisplayIDOrName(studentName).orElse(null);
-            assert student != null;
-            return paymentRepo.getAllStudentPaymentRecord(student.getStudentId()).stream()
-                                .map(PaymentRecords::DTOmapper)
-                                .toList();
-        }catch(NullPointerException npe){
-            return null;
-        }
-    }
-
-    public PagedModel<EntityModel<PaymentRecordDTO>> testingPageable(String condition, int page, int size){
-        Sort sort = condition.equalsIgnoreCase("desc") ?
-                    Sort.by(Sort.Order.desc("datePaid")) :
-                    Sort.by(Sort.Order.asc("datePaid"));
-        Page<PaymentRecords> recordsPage = paymentRepo.getRecordsPage(PageRequest.of(page, size, sort));
-
-        return pagedResourcesAssembler.toModel(recordsPage.map(PaymentRecords::DTOmapper));
     }
 
     private PaymentTransaction generateTransaction(){

@@ -148,7 +148,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Admin</span></h6>
+                        <h6><span th:text="(${userRole})"></span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>

@@ -124,7 +124,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Admin</span></h6>
+                        <h6><span th:text="(${userRole})"></span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -169,47 +169,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Martin Francisco</td>
-                    <td>Grade 1 - Baliwasan</td>
-                    <td>Grade 2 - Rizal</td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="student-type">New</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status" id="status-payment">Complete</div>
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                            </div>
-                            <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" class="action" data-open-modal="listOfPaymentsModal">View List of
-                                    Payments</a>
-                                <a href="#" data-open-modal="confirmationModal" data-action="proceedEnrolled"
-                                    data-message="Are you sure you want to proceed and finish enrollment?">Proceed</a>
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-                                    data-message="Are you sure you want to cancel this registration?">cel
-                                    Registration</a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
             </tbody>
         </table>
 
         <!-- Pagination -->
-        <div class="pagination-container">
+        <!-- <div class="pagination-container">
             <div id="pagination" class="pagination">
                 <button id="prevPage" disabled>&laquo;</button>
                 <div id="pageNumbers"></div>
                 <button id="nextPage">&raquo;</button>
             </div>
-        </div>
+        </div> -->
 
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
@@ -225,6 +195,9 @@
         <!-- Modal for listOfPaymentsModal -->
         <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
             <div class="list-of-payments-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="listOfPaymentsModal">&times;</span>
+
                 <h2>List of Payments</h2>
 
                 <div class="half-width" id="view-grade-studId">
@@ -273,7 +246,13 @@
                 <div class="close-button" id="view-grades-close-btn">
                     <button type="button" data-close-modal="listOfPaymentsModal" class="btn-cancel"
                         id="close-button">Close</button>
+
+                    <button id="open-add-payment-modal">
+                        <img id="add-button" data-open-modal="addPaymentModal" th:src="@{/images/icons/add-button.png}"
+                            alt="add-payment-icon">
+                    </button>
                 </div>
+
             </div>
         </div>
 
@@ -281,62 +260,86 @@
         <div id="addPaymentModal" class="add-payment-modal modal">
             <div class="printable-area">
                 <div class="add-payment-modal-content">
+                    <!-- Close Button -->
+                    <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
                     <div class="header-container">
-                        <h2>Payment Form</h2>
-                        <div class="logo">
-                            <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
-                        </div>
+                        <h3>Payment Form</h3>
                     </div> <br>
-                    <div class="date-sem-container">
-                        <div class="separator">
-                            <div class="half-width">
-                                <label for="date">Date:</label>
+
+                    <div class="payee-info-container" id="payee-info">
+                        <div class="half-width half-payee">
+                            <div>
+                                <label for="student-id" id="label-id">Student ID:</label>
+                                <input type="text" id="payee-id" readonly>
+                            </div>
+                            <div>
+                                <label for="Date">Date:</label>
                                 <input type="date" id="date">
                             </div>
-                            <div id="sem-sy">
-                                <div class="half-width">
-                                    <label for="semester">Semester:</label>
-                                    <input th:value="${currentSem}" type="text" id="semester" readonly>
-                                </div>
-                                <div class="half-width">
-                                    <label for="school-year">School Year:</label>
-                                    <input th:value="${currentSY}" type="text" id="school-year" readonly>
-                                </div>
-                            </div>
                         </div>
-                        <div class="content-container">
-                            <h6>Received payment from</h6>
+
+                        <div class="full-width">
+                            <label for="payee-name">Student Name:</label>
                             <input type="text" id="payee-name" readonly>
-                            <h6>Student ID</h6>
-                            <input type="text" id="payee-id" readonly value="0001">
-                            <h6>sum of ₱</h6>
-                            <input type="number" id="payment-amount">
-                            <h6>as payment for</h6>
-                            <select onchange="printThis(this.value)" name="payment-list" id="payment-list">
-                                <option value="" disabled>Choose</option>
-                            </select>
-                        </div> <br> <br>
-
-                        <div id="staff-receiver" class="collector-info-container">
-                            <h6>Received/Collected By:</h6>
-                            <div class="collector-name-container">
-                                <input th:value="${userFullName}" type="text" readonly value="Mohammad Aldrin Said"
-                                    id="collector-name">
-                                <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        </div>
+                        <div class="half-width half-payee">
+                            <div>
+                                <label for="semester" id="label-sem">Semester:</label>
+                                <input th:value="${currentSem}" type="text" id="semester" readonly>
+                            </div>
+                            <div>
+                                <label for="school-year">S.Y.</label>
+                                <input th:value="${currentSY}" type="text" id="school-year" readonly>
                             </div>
                         </div>
-
-                        <div class="modal-buttons payment-modal-buttons">
-                            <button class="no-print" onclick="printReport()">Print Report</button>
-
-                            <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                                data-open-modal="confirmationModal" data-action="savePayment"
-                                data-message="Are you sure you want to save this payment?">Save
-                            </button>
-
-                            <button type="button" data-close-modal="addPaymentModal" class="btn-close-confirm no-print"
-                                id="close-button">Close</button>
+                        <div class="full-width amount-container">
+                            <label for="amount" id="label-amount">Amount:</label>
+                            <div class="input-wrapper">
+                                <span class="currency-symbol">₱</span>
+                                <input type="number" id="payment-amount" placeholder="0.00">
+                            </div>
                         </div>
+                    </div>
+                    <div class="payment-wrapper">
+                        <h6>Payment For:</h6>
+                        <div class="payment-container-group">
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                        </div> <br>
+                    </div>
+                    
+
+                    <div id="staff-receiver" class="collector-info-container">
+                        <h6>Received/Collected By:</h6>
+                        <div class="collector-name-container">
+                            <input th:value="${userFullName}" type="text" readonly value="Mohammad Aldrin Said"
+                                id="collector-name">
+                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-buttons payment-modal-buttons">
+                        <button class="no-print" onclick="printReport()">Print Report</button>
+
+                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                            data-open-modal="confirmationModal" data-action="savePayment"
+                            data-message="Are you sure you want to save this payment?">Save Payment
+                        </button>
                     </div>
 
                 </div>
@@ -361,7 +364,7 @@
     <div id="successModal">
         <p id="successModalMessage"></p>
     </div>
-    
+
     <script th:src="@{/js/script.js}"></script>
     <script>
         document.addEventListener("click", async function (event) {
@@ -625,7 +628,7 @@
         }
 
         function updatePaymentPagination(status, currentPage, pageSize, totalPages) {
-        console.log(currentPage);
+            console.log(currentPage);
             const paginationContainer = document.querySelector("#pagination");
             paginationContainer.innerHTML = "";
 

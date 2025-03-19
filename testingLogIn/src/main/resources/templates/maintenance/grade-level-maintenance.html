@@ -148,7 +148,7 @@
                     <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
                         alt="User Icon">
                     <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span>Admin</span></h6>
+                        <h6><span th:text="(${userRole})"></span></h6>
                         <a href="/logout">Log Out</a>
                     </div>
                 </div>
@@ -232,6 +232,9 @@
         <!-- Modal for adding grade level -->
         <div id="gradeLevelModal" class="grade-level-modal modal">
             <div class="grade-level-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="gradeLevelModal">&times;</span>
+
                 <h2>Add New Grade Level</h2>
                 <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
                     <label for="levelName">Grade Level Name:</label>
@@ -256,9 +259,13 @@
             </div>
         </div>
 
+
         <!-- Modal for editing the grade level -->
         <div id="gradeLevelEditModal" class="grade-level-edit-modal modal">
             <div class="grade-level-edit-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="gradeLevelEditModal">&times;</span>
+
                 <h2>Grade Level Information</h2>
                 <form method="" action="" id="gradeLevelEditForm">
                     <label for="levelName">Grade Level Name:</label>

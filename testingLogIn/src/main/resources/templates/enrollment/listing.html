@@ -607,75 +607,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal for addPaymentModal-->
-    <div id="addPaymentModal" class="add-payment-modal modal">
-        <div class="printable-area">
-            <div class="add-payment-modal-content">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
-
-                <div class="header-container">
-                    <h2>Payment Form</h2>
-                    <div class="logo">
-                        <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
-                    </div>
-                </div> <br>
-                <div class="date-sem-container">
-                    <div class="separator">
-                        <div class="half-width">
-                            <label for="date">Date:</label>
-                            <input type="date" id="date">
-                        </div>
-                        <div id="sem-sy">
-                            <div class="half-width">
-                                <label for="semester">Semester:</label>
-                                <input type="text" id="semester" readonly>
-                            </div>
-                            <div class="half-width">
-                                <label for="school-year">School Year:</label>
-                                <input type="text" id="school-year" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content-container">
-                        <h6>Received payment from</h6>
-                        <input type="text" id="payee-name" readonly>
-                        <h6>Student ID</h6>
-                        <input type="text" id="payee-id" readonly>
-                        <h6>sum of ₱</h6>
-                        <input type="number" id="payment-amount">
-                        <h6>as payment for</h6>
-                        <select name="payment-list" id="payment-list">
-                            <option value="" disabled>Choose</option>
-                        </select>
-                    </div> <br> <br>
-
-                    <div id="staff-receiver" class="collector-info-container">
-                        <h6>Received/Collected By:</h6>
-                        <div class="collector-name-container">
-                            <input type="text" readonly value="Mohammad Aldrin Said" id="collector-name">
-                            <p id="position">Enrollment Staff</p>
-                        </div>
-                    </div>
-
-                    <div class="modal-buttons payment-modal-buttons">
-                        <button class="no-print" onclick="printReport()">Print Report</button>
-
-                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                            data-open-modal="confirmationModal" data-action="savePayment"
-                            data-message="Are you sure you want to save this payment?">Save
-                        </button>
-
-                        <button type="button" data-close-modal="addPaymentModal" class="btn-close-confirm no-print"
-                            id="close-button">Close</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
+  
     <!-- Modal for listOfPaymentsModal -->
     <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
         <div class="list-of-payments-modal-content">
@@ -1098,6 +1030,198 @@
                         data-close-modal="transfereeStudentModal">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="receipt-modal modal">
+        <div class="printable-area">
+            <div class="receipt-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="receiptModal">&times;</span>
+
+                <!-- Receipt Header -->
+                <div class="header-container-payment">
+                    <div class="left-header">
+                        <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        <div class="school-info">
+                            <h3>AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
+                            <p>Talabaan, Zamboanga City</p>
+                            <p>Phone #: 09358268263</p>
+                        </div>
+                    </div>
+
+                    <div class="right-header">
+                        <div class="receipt-box">
+                            <h2>RECEIPT</h2>
+                        </div>
+                        <p>Semester & SY: <strong>1ST SEM | 2021-2022</strong></p>
+                    </div>
+                </div>
+
+                <div class="separator-line"></div>
+
+                <!-- Student Info -->
+                <div class="student-info-container">
+                    <div class="payment-student-info-container">
+                        <div class="half-width">
+                            <label id="receipt-student-id-label">Student ID:</label>
+                            <input type="text" id="receipt-student-id" readonly>
+                        </div>
+
+                        <div class="half-width">
+                            <label>Date:</label>
+                            <input type="date" id="receipt-date" readonly>
+                        </div>
+                    </div>
+                    <div class="payment-student-info-container">
+                        <div class="half-width">
+                            <label id="receipt-student-name-label">Student Name:</label>
+                            <input type="text" id="receipt-student-name" readonly>
+                        </div>
+
+                        <div class="half-width">
+                            <label id="receipt-number-label">Receipt Number:</label>
+                            <input type="text" id="receipt-number" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Table -->
+                <div class="receipt-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ITEM #</th>
+                                <th>DESCRIPTION</th>
+                                <th>AMOUNT</th>
+                                <th>DISCOUNT</th>
+                                <th>TOTAL AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receipt-items">
+                            <tr>
+                                <td>1</td>
+                                <td>Tuition Fee</td>
+                                <td>1,000.00</td>
+                                <td>-200.00</td>
+                                <td>800.00</td>
+                            </tr>
+                            <!-- Additional rows will be inserted dynamically if needed -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Total Amount -->
+                <div class="total-container">
+                    <p>Total Amount Due: <strong>₱ 800.00</strong></p>
+                </div>
+
+                <!-- Collected By Section -->
+                <div id="staff-receiver" class="collector-info-container">
+                    <h6>Received/Collected By:</h6>
+                    <div class="collector-name-container">
+                        <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                        <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                    </div>
+                </div>
+
+                <!-- Print Button -->
+                <div class="modal-buttons">
+                    <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+        <!-- Modal for addPaymentModal-->
+        <div id="addPaymentModal" class="add-payment-modal modal">
+            <div class="printable-area">
+                <div class="add-payment-modal-content">
+                    <!-- Close Button -->
+                    <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
+                    <div class="header-container">
+                        <h3>Payment Form</h3>
+                    </div> <br>
+
+                    <div class="payee-info-container" id="payee-info">
+                        <div class="half-width half-payee">
+                            <div>
+                                <label for="student-id" id="label-id">Student ID:</label>
+                                <input type="text" id="payee-id" readonly>
+                            </div>
+                            <div>
+                                <label for="Date">Date:</label>
+                                <input type="date" id="date">
+                            </div>
+                        </div>
+
+                        <div class="full-width">
+                            <label for="payee-name">Student Name:</label>
+                            <input type="text" id="payee-name" readonly>
+                        </div>
+                        <div class="half-width half-payee">
+                            <div>
+                                <label for="semester" id="label-sem">Semester:</label>
+                                <input th:value="${currentSem}" type="text" id="semester" readonly>
+                            </div>
+                            <div>
+                                <label for="school-year">S.Y.</label>
+                                <input th:value="${currentSY}" type="text" id="school-year" readonly>
+                            </div>
+                        </div>
+                        <div class="full-width amount-container">
+                            <label for="amount" id="label-amount">Amount:</label>
+                            <div class="input-wrapper">
+                                <span class="currency-symbol">₱</span>
+                                <input type="number" max="0" id="payment-amount" placeholder="0.00">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="payment-wrapper">
+                        <h6>Payment For:</h6>
+                        <div class="payment-container-group">
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                        </div> <br>
+                    </div>
+
+
+                    <div id="staff-receiver" class="collector-info-container">
+                        <h6>Received/Collected By:</h6>
+                        <div class="collector-name-container">
+                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-buttons payment-modal-buttons">
+                        <button class="no-print" onclick="printReport()">Print Report</button>
+
+                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                            data-open-modal="confirmationModal" data-action="savePayment"
+                            data-message="Are you sure you want to save this payment?">Save Payment
+                        </button>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 

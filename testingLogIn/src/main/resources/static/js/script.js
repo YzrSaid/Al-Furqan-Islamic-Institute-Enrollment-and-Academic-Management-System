@@ -1276,7 +1276,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", function () {
   const printButton = document.querySelector(
-    ".no-print[onclick='printReport()']"
+    ".no-print[onclick='printReceipt()']"
   );
   const saveButton = document.getElementById("save-payment-btn");
   const confirmActionButton = document.getElementById("confirmAction");
@@ -1292,7 +1292,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Function to handle printing
-function printReport() {
+function printReceipt() {
   window.print();
 }
 

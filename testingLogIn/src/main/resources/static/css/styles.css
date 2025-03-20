@@ -716,23 +716,15 @@ th {
 
 .receipt-table th:nth-child(1),
 .receipt-table td:nth-child(1) {
-  width: 14%;
+  width: 15%;
 }
 .receipt-table th:nth-child(2),
 .receipt-table td:nth-child(2) {
-  width: 30%;
+  width: 60%;
 }
 .receipt-table th:nth-child(3),
 .receipt-table td:nth-child(3) {
-  width: 15%;
-}
-.receipt-table th:nth-child(4),
-.receipt-table td:nth-child(4) {
-  width: 20%;
-}
-.receipt-table th:nth-child(5),
-.receipt-table td:nth-child(5) {
-  width: 20%;
+  width: 25%;
 }
 
 .assessment-table th:nth-child(1),
@@ -1103,25 +1095,28 @@ table td {
 
 .paid-status,
 #status-books {
-  background-color: #218838;
-  color: white;
+  text-transform: uppercase;
+  color: #218838;
   padding: 5px;
   border-radius: 4px;
+  font-weight: bolder;
   text-align: center;
 }
 
 .unpaid-status,
 #status-balance {
-  background-color: #dc3545;
-  color: white;
+  text-transform: uppercase;
+  color: #dc3545;
   padding: 5px;
+  font-weight: bolder;
   border-radius: 4px;
   text-align: center;
 }
 .partially-paid-status,
 #status-balance {
-  background-color: #cedd2d;
-  color: white;
+  color: #cedd2d;
+  text-transform: uppercase;
+  font-weight: bolder;
   padding: 5px;
   border-radius: 4px;
   text-align: center;
@@ -1307,6 +1302,11 @@ table td {
 
 .modal-buttons {
   margin-top: 35px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.print-button {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -1526,17 +1526,23 @@ table td {
 }
 .receipt-modal-content {
   background: white !important;
-  padding: 40px;
+  padding: 20px 0;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 1000px;
+  width: 650px;
   height: 95vh;
   text-align: left;
   position: relative;
   z-index: 1001;
   overflow-y: scroll;
   overflow-x: hidden;
+  transform-origin: center;
 }
+
+.receipt-modal-content > * {
+  transform: scale(0.8);
+}
+
 .my-account-edit-modal-content,
 .list-of-payments-modal-content,
 .view-book-modal-content {
@@ -2537,10 +2543,9 @@ input[type="checkbox"] {
 .collector-info-container {
   text-align: left;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 0;
   width: fit-content;
-  padding: 0;
-  margin-top: 15px;
+  padding: 10px 40px;
 }
 
 .collector-name-container {
@@ -2581,24 +2586,102 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
+.receipt-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.receipt-table th,
+.receipt-table td,
+.receipt-table tfoot td {
+  border: 2px solid #000;
+  padding: 10px;
+}
+
+.receipt-table tfoot td {
+  text-align: left;
+}
+
 /* Hide elements when printing */
 @media print {
-  .no-print {
+  /* Hide unwanted elements */
+  .no-print,
+  .close-modal,
+  .print-button {
     display: none !important;
   }
 
-  #printableArea,
-  #printableArea * {
-    visibility: visible;
+  .receipt-table thead,
+  .receipt-table tfoot {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
+  /* ✅ Ensure content fits neatly within the page */
   #printableArea {
-    position: absolute;
-    left: 0;
-    top: 0;
     width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    transform: scale(1.5); /* Slight scaling to fit */
+    transform-origin: center; /* Keeps it centered */
+    padding: 20px;
+  }
+
+  /* Fit content perfectly */
+  body,
+  html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevents content overflow */
+  }
+
+  /* ✅ Make the table fit better */
+  .receipt-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px; /* Adjust font size */
+  }
+
+  .receipt-table th,
+  .receipt-table td,
+  .receipt-table tfoot {
+    padding: 10px;
+    text-align: center;
+  }
+
+  /* Improve input aesthetics */
+  .receipt-modal-content input {
+    border: none !important;
+    outline: none !important;
+    background: transparent;
+    font-size: 14px; /* Match input font size */
+  }
+
+  /* Improve aesthetics of "Received by" section */
+  .collector-name-container {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .collector-info-container {
+    margin-top: 40px;
+  }
+  .receipt-modal-content {
+    width: 100%;
+    padding: 40px;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    overflow-y: hidden !important;
+  }
+
+  /* Hide URL and page count */
+  @page {
+    margin: 0;
   }
 }
+
 .first-sem {
   background-color: #fbfbfb;
 }
@@ -2972,7 +3055,6 @@ td[rowspan] {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
 }
 
 .left-header {
@@ -2998,7 +3080,6 @@ td[rowspan] {
 
 .separator-line {
   border-bottom: 3px solid #000;
-  margin: 20px 0;
   width: 100%;
 }
 
@@ -3101,69 +3182,86 @@ td[rowspan] {
   font-size: 16px;
   border-radius: 5px;
 }
-
 .print-btn:hover {
   background: #218838;
 }
 
-/* Close Button */
-.close-modal {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-#receipt-student-id {
-  width: 200px;
-}
-#receipt-student-id-label {
-  margin-right: 31px;
-}
-#receipt-date {
-  width: 200px;
-}
-#receipt-student-name {
-  width: 300px;
-}
-#receipt-student-name-label {
-  width: 115px;
-}
-
-#receipt-number {
-  width: 200px;
-}
-#receipt-number-label {
-  width: 130px;
-}
+/* Flexbox container with proper sizing */
 .payment-student-info-container {
   display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
   width: 100%;
-  justify-content: space-between;
-}
-.payment-student-info-container:first-child {
-  display: flex;
-  gap: 160px;
-}
-.payment-student-info-container:nth-child(2) {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 40px;
 }
 
-.payment-student-info-container:nth-child(2) > div {
-  flex: 1;
+/* Each row takes 50% width (2 columns) */
+.payment-student-info-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
+  width: calc(50% - 10px); /* Ensures side-by-side layout */
 }
 
-.payment-student-info-container:nth-child(2) label {
+/* Labels with consistent width */
+.payment-student-info-row label {
+  min-width: 130px;
   white-space: nowrap;
+  font-weight: bold;
 }
-.payment-student-info-container:nth-child(2) input {
+
+/* Uniform input styling */
+.payment-student-info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Consistent input styling */
+.payment-student-info-row input {
   flex: 1;
-  min-width: 0;
+  min-width: 150px;
+  max-width: 200px;
+  height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* ✅ Specific fix for date input */
+.payment-student-info-row input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  min-width: 150px;
+  max-width: 200px;
+  height: 38px;
+}
+
+/* Fix for consistent spacing */
+.payment-student-info-container > div {
+  margin-bottom: 10px;
+}
+
+.receipt-table tfoot {
+  background-color: #575859;
+  color: #fff;
+  font-weight: bold;
+}
+
+.receipt-table tfoot tr td {
+  text-align: right;
+}
+
+.receipt-table tfoot tr td:last-child {
+  text-align: center;
+}
+
+.receipt-table tfoot tr td:last-child {
+  padding-right: 20px;
+}
+
+#receipt-student-info input {
+  font-size: 16px;
 }

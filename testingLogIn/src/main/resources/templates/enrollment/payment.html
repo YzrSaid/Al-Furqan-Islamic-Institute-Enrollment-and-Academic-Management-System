@@ -224,25 +224,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <td>Tuition</td>
-                        <td>2,000.00</td>
-                        <td>
-                            <div class="status-container">
-                                <div class="status" id="status-payments">Unpaid</div>
-                            </div>
-                        </td>
                     </tbody>
                 </table>
 
                 <!-- Close button -->
-                <div class="close-button" id="view-grades-close-btn">
-                    <button type="button" data-close-modal="listOfPaymentsModal" class="btn-cancel"
-                        id="close-button">Close</button>
-
-                    <button id="open-add-payment-modal">
-                        <img id="add-button" data-open-modal="addPaymentModal" th:src="@{/images/icons/add-button.png}"
-                            alt="add-payment-icon">
-                    </button>
+                <div class="action" id="view-grades-close-btn">
+                    <button type="button" id="open-add-payment-modal" data-open-modal="receiptModal">Add
+                        Payment</button>
                 </div>
 
             </div>
@@ -253,7 +241,7 @@
             <div class="printable-area">
                 <div class="receipt-modal-content">
                     <!-- Close Button -->
-                    <span class="close-modal" data-close-modal="receiptModal">&times;</span>
+                    <span class="close-modal no-print" data-close-modal="receiptModal">&times;</span>
 
                     <!-- Receipt Header -->
                     <div class="header-container-payment">
@@ -277,30 +265,28 @@
                     <div class="separator-line"></div>
 
                     <!-- Student Info -->
-                    <div class="student-info-container">
-                        <div class="payment-student-info-container">
-                            <div class="half-width">
-                                <label id="receipt-student-id-label">Student ID:</label>
-                                <input type="text" id="receipt-student-id" readonly>
-                            </div>
-    
-                            <div class="half-width">
-                                <label>Date:</label>
-                                <input type="date" id="receipt-date" readonly>
-                            </div>
+                    <div class="payment-student-info-container" id="receipt-student-info">
+                        <div class="payment-student-info-row">
+                            <label for="receipt-student-id">Student ID:</label>
+                            <input type="text" id="receipt-student-id" placeholder="">
                         </div>
-                        <div class="payment-student-info-container">
-                            <div class="half-width">
-                                <label id="receipt-student-name-label">Student Name:</label>
-                                <input type="text" id="receipt-student-name" readonly>
-                            </div>
-    
-                            <div class="half-width">
-                                <label id="receipt-number-label">Receipt Number:</label>
-                                <input type="text" id="receipt-number" readonly>
-                            </div>
+
+                        <div class="payment-student-info-row">
+                            <label for="receipt-date">Date:</label>
+                            <input type="date" id="receipt-date">
+                        </div>
+
+                        <div class="payment-student-info-row">
+                            <label for="receipt-student-name">Student Name:</label>
+                            <input type="text" id="receipt-student-name" placeholder="">
+                        </div>
+
+                        <div class="payment-student-info-row">
+                            <label for="receipt-number">Receipt Number:</label>
+                            <input type="text" id="receipt-number" placeholder="">
                         </div>
                     </div>
+
 
                     <!-- Payment Table -->
                     <div class="receipt-table">
@@ -310,26 +296,23 @@
                                     <th>ITEM #</th>
                                     <th>DESCRIPTION</th>
                                     <th>AMOUNT</th>
-                                    <th>DISCOUNT</th>
-                                    <th>TOTAL AMOUNT</th>
                                 </tr>
                             </thead>
                             <tbody id="receipt-items">
                                 <tr>
                                     <td>1</td>
                                     <td>Tuition Fee</td>
-                                    <td>1,000.00</td>
-                                    <td>-200.00</td>
                                     <td>800.00</td>
                                 </tr>
-                                <!-- Additional rows will be inserted dynamically if needed -->
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2">Total Amount Paid:
+                                    </td>
+                                    <td>₱ 800.00</td>
+                                </tr>
+                            </tfoot>
                         </table>
-                    </div>
-
-                    <!-- Total Amount -->
-                    <div class="total-container">
-                        <p>Total Amount Due: <strong>₱ 800.00</strong></p>
                     </div>
 
                     <!-- Collected By Section -->
@@ -342,7 +325,7 @@
                     </div>
 
                     <!-- Print Button -->
-                    <div class="modal-buttons">
+                    <div class="print-button">
                         <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
                     </div>
                 </div>

@@ -171,8 +171,8 @@
             <!-- Searchbox and sort btn -->
             <div class="search">
                 <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+                    <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                    <button onclick="goList(1,1)" class="search-btn">Search</button>
                 </div>
 
                 <!-- Enrollment Buttons -->
@@ -183,8 +183,12 @@
                 </div>
 
                 <div class="sort-container">
-                    <select title="sort" name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
+                    <select title="sort" name="sort" onchange="goList(1,1)" id="sort-select" class="sort-select">
+                        <option value="All" selected>All</option>
+                        <option value="Listing">Listing</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Payment">Payment</option>
+                        <option value="Enrolled">Enrolled</option>
                     </select>
                 </div>
             </div>
@@ -1359,7 +1363,7 @@
                 if (status === 200) {
 // <!--                    showSuccessModal("✅ Success: New student has been added successfully!");-->
 // <!--                    location.reload(); // Reloads the page-->
-                        goList(currentStat, currentPageNo, currentPageSize);
+                        goList(currentPageNo, currentPageSize);
                 } else {
                     showErrorModal("❌ Error:" + text);
                 }
@@ -1585,7 +1589,7 @@
             .then(response => response.text())
             .then(message => {
 // <!--                showSuccessModal(message);-->
-                goList(currentStat, currentPageNo, currentPageSize);
+                goList(currentPageNo, currentPageSize);
             })
             .catch(error => {
                 console.error("Error adding payment:", error);
@@ -1619,7 +1623,7 @@
                 if (status === 200) {
 // <!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
 // <!--                    location.reload(); // Reloads the page after successful enrollment-->
-                    goList(currentStat, currentPageNo, currentPageSize);
+                    goList(currentPageNo, currentPageSize);
                 } else {
                     // showErrorModal("❌ Error: " + text);
                     location.reload();
@@ -1648,7 +1652,7 @@
             const result = await response.text();
 
             if (response.ok) {
-                goList(currentStat, currentPageNo, currentPageSize);
+                goList(currentPageNo, currentPageSize);
             } else {
                 showErrorModal("❌ Error: Transaction failed. Please try again!");
             }
@@ -1667,7 +1671,7 @@
             .then(response => {
                 return response.text().then(message => {
                     if (response.ok) {
-                    goList(currentStat, currentPageNo, currentPageSize);
+                    goList(currentPageNo, currentPageSize);
 // <!--                        showSuccessModal(message);-->
 // <!--                        window.location.reload(); // Reload the page-->
                     } else {
@@ -1759,7 +1763,7 @@
             })
             .then(text => {
 // <!--                showSuccessModal("✅ Success: New student has been added successfully!");-->
-                goList(currentStat, currentPageNo, currentPageSize);
+                goList(currentPageNo, currentPageSize);
             })
             .catch(error => {
                 showErrorModal("❌ Error: Please try again!");
@@ -1828,14 +1832,21 @@
                 showErrorModal("❌ Error: please try again!");
             });
     }
+    function changeView(){
+        console.log("Palitan ang table content");
+        goList(1,1);
+    }
+
     var currentStat = "";
     var currentPageNo = 0;
-    var currentPageSize =0;
-    function goList(status = "LISTING", pageNo = 1, pageSize = 1) {
-        currentStat = status;
+    var currentPageSize = 0;
+    var currentStat = "";
+    function goList(pageNo = 1, pageSize = 1) {
+        const search = document.getElementById("search-stud").value;
+        currentStat = document.getElementById("sort-select").value;
         currentPageNo = pageNo;
         currentPageSize = pageSize;
-        fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}`)
+        fetch(`/enrollment/all/paged/${currentStat}?pageNo=${pageNo}&pageSize=${pageSize}&search=${search}`)
             .then(res => {
                 if (!res.ok) throw new Error("Failed to fetch enrollment records");
                 return res.json();
@@ -1944,7 +1955,7 @@
             prevButton.innerText = "<";
             prevButton.classList.add("pagination-button");
             prevButton.addEventListener("click", () => {
-                goList(status, currentPage - 1, pageSize);
+                goList(currentPage - 1, pageSize);
             });
             paginationContainer.appendChild(prevButton);
         }
@@ -1956,7 +1967,7 @@
             button.classList.add("pagination-button");
             if (i === currentPage) button.classList.add("active");
             button.addEventListener("click", () => {
-                goList(status, i, pageSize);
+                goList(i, pageSize);
             });
             paginationContainer.appendChild(button);
         }
@@ -1967,7 +1978,7 @@
             nextButton.innerText = ">";
             nextButton.classList.add("pagination-button");
             nextButton.addEventListener("click", () => {
-                goList(status, currentPage + 1, pageSize);
+                goList(currentPage + 1, pageSize);
             });
             paginationContainer.appendChild(nextButton);
         }

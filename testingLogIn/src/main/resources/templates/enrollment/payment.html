@@ -145,12 +145,15 @@
             <!-- Searchbox and sort btn -->
             <div class="search">
                 <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+                    <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                    <button onclick="getOnPayments()" class="search-btn">Search</button>
                 </div>
                 <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
+                    <select name="sort" onchange="getOnPayments()" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
+                        <option value="StudentId">Student Id</option>
+                        <option value="StudentName">Student Name</option>
+                        <option value="GradeLevel" >Enrolling Grade Level</option>
                     </select>
                 </div>
             </div>
@@ -545,7 +548,9 @@
         });
 
         function getOnPayments(status = "PAYMENT", pageNo = 1, pageSize = 1) {
-            fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}`)
+            const searchBy = document.getElementById("search-stud").value;
+            const sortBy = document.getElementById("sort-select").value;
+            fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
                 .then(res => {
                     if (!res.ok) throw new Error("Failed to fetch payment records");
                     return res.json();

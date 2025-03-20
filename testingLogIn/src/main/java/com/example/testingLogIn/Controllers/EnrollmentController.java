@@ -69,9 +69,10 @@ public class EnrollmentController {
     public ResponseEntity<EnrollmentDTOPage> getEnrollmentRecordsByStatusPage(@PathVariable String status,
                                                                               @RequestParam(required = false,defaultValue = "1") Integer pageNo,
                                                                               @RequestParam(required = false,defaultValue = "10") Integer pageSize,
+                                                                              @RequestParam(required = false) String sortBy,
                                                                               @RequestParam(required = false) String search){
         try{
-            return new ResponseEntity<>(enrollmentService.getAllEnrollmentPage(status,pageNo,pageSize,search),HttpStatus.OK);
+            return new ResponseEntity<>(enrollmentService.getAllEnrollmentPage(status,pageNo,pageSize,sortBy,search),HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);

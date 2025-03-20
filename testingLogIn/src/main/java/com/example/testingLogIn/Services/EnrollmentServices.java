@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 /**
  *
@@ -175,8 +176,13 @@ public class EnrollmentServices {
                 .toList();
     }
 
-    public EnrollmentDTOPage getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize, String search) {
-        Pageable pageable = PageRequest.of(pageNo-1,pageSize);
+    public EnrollmentDTOPage getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize,String sort ,String search) {
+        Pageable pageable = null;
+        if(sort == null || sort.equals(""))
+            pageable = PageRequest.of(pageNo-1,pageSize);
+        else
+            pageable = PageRequest.of(pageNo-1,pageSize,sortBy(sort));
+
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = sySemRepo.findCurrentActive().getSySemNumber();
 
@@ -191,9 +197,20 @@ public class EnrollmentServices {
                 .build();
     }
 
+    private Sort sortBy(String sort){
+        if(sort.equalsIgnoreCase("StudentId"))
+            return Sort.by("stud.studentDisplayId").ascending();
+        else if(sort.equalsIgnoreCase("StudentName"))
+            return Sort.by("stud.firstName").ascending();
+        else
+            return Sort.by("gl").ascending();
+    }
+
     private EnrollmentStatus getEnrollmentStatus(String status) {
-        if (status.equalsIgnoreCase("LISTING"))
+        if(status.equalsIgnoreCase("All"))
             return null;
+        else if (status.equalsIgnoreCase("LISTING"))
+            return EnrollmentStatus.LISTING;
         else if (status.equalsIgnoreCase("ASSESSMENT"))
             return EnrollmentStatus.ASSESSMENT;
         else if (status.equalsIgnoreCase("PAYMENT"))

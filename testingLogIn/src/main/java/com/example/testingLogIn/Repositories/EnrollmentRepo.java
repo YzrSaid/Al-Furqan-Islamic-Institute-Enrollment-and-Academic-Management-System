@@ -41,10 +41,12 @@ List<Enrollment> findRecordsByStatusAndSemester(
     @Query("SELECT e FROM Enrollment e " +
             "JOIN e.student stud "+
             "JOIN e.SYSemester s "+
+            "JOIN e.gradeLevelToEnroll gl "+
             "WHERE e.isNotDeleted = true " +
             "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
             "AND s.sySemNumber = :activeSemNumber "+
-            "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%'))")
+            "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%') " +
+            "OR stud.studentDisplayId LIKE CONCAT('%',:search,'%'))")
     Page<Enrollment> findRecordsByStatusAndSemesterPage(
             @Param("status") EnrollmentStatus status,
             @Param("activeSemNumber") int activeSemNumber,

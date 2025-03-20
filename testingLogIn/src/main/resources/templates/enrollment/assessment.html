@@ -167,15 +167,18 @@
         </div>
 
         <div class="search-div">
-            <!-- Searchbox and sort btn -->
             <div class="search">
                 <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+                    <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                    <button onclick="getAssessments()" class="search-btn">Search</button>
                 </div>
                 <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
+                    <label for="sort-select">Order By</label>
+                    <select name="sort" onchange="getAssessments()" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
+                        <option value="StudentId">Student Id</option>
+                        <option value="StudentName">Student Name</option>
+                        <option value="GradeLevel" >Enrolling Grade Level</option>
                     </select>
                 </div>
             </div>
@@ -446,7 +449,6 @@
     });
 
     function proceedToPayment(enrollmentIdLet, sectionNumberLet) {
-        // Re-fetch the sectionNumber to ensure we have the latest value
         sectionNumberLet = document.querySelector("#section").value;
 
         // Check if section is selected
@@ -477,7 +479,9 @@
     }
 
     function getAssessments(status = "ASSESSMENT", pageNo = 1, pageSize = 2) {
-        fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}`)
+        const searchBy = document.getElementById("search-stud").value;
+        const sortBy = document.getElementById("sort-select").value;
+        fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
             .then(res => {
                 if (!res.ok) throw new Error("Failed to fetch assessment records");
                 return res.json();

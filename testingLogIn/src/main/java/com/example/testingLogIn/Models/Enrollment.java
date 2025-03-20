@@ -25,7 +25,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Builder
 @Entity
-public class    Enrollment {
+public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int enrollmentId;

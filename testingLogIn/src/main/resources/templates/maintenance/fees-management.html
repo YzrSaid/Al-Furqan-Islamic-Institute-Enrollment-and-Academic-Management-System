@@ -266,26 +266,7 @@
                     <h6>Grade Levels Required by this Payment:</h6>
 
                     <div class="payment-container">
-                        <div class="payment">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
+                       
                     </div>
 
                     <div class="modal-buttons">
@@ -606,34 +587,34 @@
     }
 
 
-    // function fetchGradeLevels() {
-    //     fetch("/gradelevel/all")
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             const paymentContainer = document.querySelector(".payment-container");
-    //             paymentContainer.innerHTML = ""; // Clear previous data
+    function fetchGradeLevels() {
+        fetch("/gradelevel/all")
+            .then(response => response.json())
+            .then(data => {
+                const paymentContainer = document.querySelector(".payment-container");
+                paymentContainer.innerHTML = ""; // Clear previous data
 
-    //             data.forEach(gradeLevel => {
-    //                 const paymentDiv = document.createElement("div");
-    //                 paymentDiv.classList.add("payment");
+                data.forEach(gradeLevel => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("payment");
 
-    //                 const checkbox = document.createElement("input");
-    //                 checkbox.type = "checkbox";
-    //                 checkbox.id = `grade-${gradeLevel.levelId}`;
-    //                 checkbox.name = "gradeLevels";
-    //                 checkbox.value = gradeLevel.levelName;
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `grade-${gradeLevel.levelId}`;
+                    checkbox.name = "gradeLevels";
+                    checkbox.value = gradeLevel.levelName;
 
-    //                 const label = document.createElement("label");
-    //                 label.htmlFor = `grade-${gradeLevel.levelId}`;
-    //                 label.textContent = gradeLevel.levelName;
+                    const label = document.createElement("label");
+                    label.htmlFor = `grade-${gradeLevel.levelId}`;
+                    label.textContent = gradeLevel.levelName;
 
-    //                 paymentDiv.appendChild(checkbox);
-    //                 paymentDiv.appendChild(label);
-    //                 paymentContainer.appendChild(paymentDiv);
-    //             });
-    //         })
-    //         .catch(error => console.error("Error fetching grade levels:", error));
-    // }
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    paymentContainer.appendChild(paymentDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
 
     let selectedPaymentId;
 

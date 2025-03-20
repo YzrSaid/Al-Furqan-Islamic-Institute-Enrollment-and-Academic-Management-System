@@ -256,6 +256,109 @@
             </div>
         </div>
 
+        <!-- Receipt Modal -->
+        <div id="receiptModal" class="receipt-modal modal">
+            <div class="printable-area">
+                <div class="receipt-modal-content">
+                    <!-- Close Button -->
+                    <span class="close-modal" data-close-modal="receiptModal">&times;</span>
+
+                    <!-- Receipt Header -->
+                    <div class="header-container-payment">
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                            <div class="school-info">
+                                <h3>AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
+                                <p>Talabaan, Zamboanga City</p>
+                                <p>Phone #: 09358268263</p>
+                            </div>
+                        </div>
+
+                        <div class="right-header">
+                            <div class="receipt-box">
+                                <h2>RECEIPT</h2>
+                            </div>
+                            <p>Semester & SY: <strong>1ST SEM | 2021-2022</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+
+                    <!-- Student Info -->
+                    <div class="student-info-container">
+                        <div class="payment-student-info-container">
+                            <div class="half-width">
+                                <label id="receipt-student-id-label">Student ID:</label>
+                                <input type="text" id="receipt-student-id" readonly>
+                            </div>
+    
+                            <div class="half-width">
+                                <label>Date:</label>
+                                <input type="date" id="receipt-date" readonly>
+                            </div>
+                        </div>
+                        <div class="payment-student-info-container">
+                            <div class="half-width">
+                                <label id="receipt-student-name-label">Student Name:</label>
+                                <input type="text" id="receipt-student-name" readonly>
+                            </div>
+    
+                            <div class="half-width">
+                                <label id="receipt-number-label">Receipt Number:</label>
+                                <input type="text" id="receipt-number" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Table -->
+                    <div class="receipt-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ITEM #</th>
+                                    <th>DESCRIPTION</th>
+                                    <th>AMOUNT</th>
+                                    <th>DISCOUNT</th>
+                                    <th>TOTAL AMOUNT</th>
+                                </tr>
+                            </thead>
+                            <tbody id="receipt-items">
+                                <tr>
+                                    <td>1</td>
+                                    <td>Tuition Fee</td>
+                                    <td>1,000.00</td>
+                                    <td>-200.00</td>
+                                    <td>800.00</td>
+                                </tr>
+                                <!-- Additional rows will be inserted dynamically if needed -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Total Amount -->
+                    <div class="total-container">
+                        <p>Total Amount Due: <strong>₱ 800.00</strong></p>
+                    </div>
+
+                    <!-- Collected By Section -->
+                    <div id="staff-receiver" class="collector-info-container">
+                        <h6>Received/Collected By:</h6>
+                        <div class="collector-name-container">
+                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        </div>
+                    </div>
+
+                    <!-- Print Button -->
+                    <div class="modal-buttons">
+                        <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
         <!-- Modal for addPaymentModal-->
         <div id="addPaymentModal" class="add-payment-modal modal">
             <div class="printable-area">
@@ -321,13 +424,12 @@
                             </div>
                         </div> <br>
                     </div>
-                    
+
 
                     <div id="staff-receiver" class="collector-info-container">
                         <h6>Received/Collected By:</h6>
                         <div class="collector-name-container">
-                            <input th:value="${userFullName}" type="text" readonly value="Mohammad Aldrin Said"
-                                id="collector-name">
+                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
                             <p id="position" th:text="${userRole}">Enrollment Staff</p>
                         </div>
                     </div>
@@ -364,6 +466,7 @@
     <div id="successModal">
         <p id="successModalMessage"></p>
     </div>
+
 
     <script th:src="@{/js/script.js}"></script>
     <script>
@@ -505,7 +608,7 @@
                                         </button>
                                     </div>
                                     <div class="dropdown-status-content" id="dropdown-listing">
-                                        <a href="#" class="action" data-open-modal="listOfPaymentsModal"
+                                        <a href="#" class="action" data-open-modal="receiptModal"
                                            data-student-id="${rec.student.studentId}"
                                            data-level-id="${rec.gradeLevelToEnrollId}"
                                            data-enrollment-id="${rec.enrollmentId}">
@@ -556,14 +659,14 @@
                 gradeLevelId = viewListbtn.getAttribute("data-level-Id");
                 if (!enrollmentId) return console.error("Enrollment Id Not Found");
                 fetchPayments(enrollmentId);
-            }else if(paymentBtn){
+            } else if (paymentBtn) {
                 setUpPaymentForm();
             }
         });
 
-        async function setUpPaymentForm(){
+        async function setUpPaymentForm() {
             paymentAmountInput.max = 0;
-            paymentAmountInput.value =0.0;
+            paymentAmountInput.value = 0.0;
             let response = await fetch(`/paymentrecord/form/${studentId}?gradeLevelId=${gradeLevelId}`);
             if (!response.ok) throw new Error("wa nakita");
             let data = await response.json();
@@ -576,30 +679,30 @@
 
             const paymentContainer = document.querySelector(".payment-container-group");
             paymentContainer.innerHTML = '';
-            data.feesAndBalance.forEach(par =>{
-                    const paymentItem = document.createElement("div");
-                    paymentItem.classList.add("payment-item");
-                    console.log(par);
-                    console.log(par.balance);
-                    const input = document.createElement("input");
-                    input.type = "checkbox";
-                    input.name = par.fee.name;
-                    input.value = par.fee.id;
-                    input.addEventListener("change", (event) => {
-                            handleCheckboxChange(event, par.balance);
-                        });
+            data.feesAndBalance.forEach(par => {
+                const paymentItem = document.createElement("div");
+                paymentItem.classList.add("payment-item");
+                console.log(par);
+                console.log(par.balance);
+                const input = document.createElement("input");
+                input.type = "checkbox";
+                input.name = par.fee.name;
+                input.value = par.fee.id;
+                input.addEventListener("change", (event) => {
+                    handleCheckboxChange(event, par.balance);
+                });
 
-                    let label = document.createElement("label");
-                    label.textContent = par.fee.name;
-                    label.setAttribute("for", par.fee.name);
+                let label = document.createElement("label");
+                label.textContent = par.fee.name;
+                label.setAttribute("for", par.fee.name);
 
-                    paymentItem.appendChild(input);
-                    paymentItem.appendChild(label);
-                    paymentContainer.appendChild(paymentItem);
+                paymentItem.appendChild(input);
+                paymentItem.appendChild(label);
+                paymentContainer.appendChild(paymentItem);
             });
         }
 
-        function handleCheckboxChange(event,balance) {
+        function handleCheckboxChange(event, balance) {
             const checkbox = event.target; // The checkbox that was clicked
             const value = checkbox.value; // The value of the checkbox
             const isChecked = checkbox.checked; // Whether the checkbox is checked or unchecked
@@ -611,19 +714,19 @@
                 newMax = currentMax - balance;
             }
             paymentAmountInput.max = newMax;
-            if(paymentAmountInput.value > newMax){
+            if (paymentAmountInput.value > newMax) {
                 paymentAmountInput.value = newMax;
             }
         }
 
-        function savePayment(){
+        function savePayment() {
             const feesSelectedId = getCheckedPaymentValues();
             const totalAmount = paymentAmountInput.value;
 
-            if(totalAmount == 0){
+            if (totalAmount == 0) {
                 alert("DLi pwde wlay kay ibayad uys");
                 return;
-            }else if(feesSelectedId.length == 0){
+            } else if (feesSelectedId.length == 0) {
                 alert("Dapat naa ka pilion");
                 return;
             }
@@ -638,21 +741,21 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(obj)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json(); // Parse the response as JSON
-            })
-            .then(obj => {
-                alert("This play the following in a receipt. May console log pd ni after sa 2nd alert");
-                alert(JSON.stringify(obj));
-                console.log(obj);
-            })
-            .catch(error => {
-                console.error("Error adding payment:", error);
-                alert("Failed to add payment. Please try again.");
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json(); // Parse the response as JSON
+                })
+                .then(obj => {
+                    alert("This play the following in a receipt. May console log pd ni after sa 2nd alert");
+                    alert(JSON.stringify(obj));
+                    console.log(obj);
+                })
+                .catch(error => {
+                    console.error("Error adding payment:", error);
+                    alert("Failed to add payment. Please try again.");
+                });
         }
 
         function getCheckedPaymentValues() {

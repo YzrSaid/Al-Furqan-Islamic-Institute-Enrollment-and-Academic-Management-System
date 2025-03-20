@@ -741,6 +741,8 @@
                     alert("This play the following in a receipt. May console log pd ni after sa 2nd alert");
                     alert(JSON.stringify(obj));
                     console.log(obj);
+                    document.getElementById("addPaymentModal").style.display = "none";
+                    document.getElementById("listOfPaymentsModal").style.display = "none";
                 })
                 .catch(error => {
                     console.error("Error adding payment:", error);

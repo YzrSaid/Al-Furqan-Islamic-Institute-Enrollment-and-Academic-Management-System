@@ -190,10 +190,8 @@
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
-                    <th>Current Grade Level</th>
-                    <th>Enrolling To</th>
-                    <th>Eligibility</th>
-                    <th>Status</th>
+                    <th>Enrolling to</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -244,7 +242,7 @@
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button data-close-modal="confirmationModal" class="btn-close-confirm">Cancel</button>
+                    <button id="cancelProceed" data-close-modal="confirmationModal" class="btn-close-confirm">Cancel</button>
                 </div>
             </div>
         </div>
@@ -354,7 +352,6 @@
         getAssessments();
     });
 
-    // Fetch sections based on selected grade level
     function fetchSections(gradeLevel) {
         fetch(`/section/gradeLevel/${gradeLevel}`)
             .then(res => res.json())
@@ -466,8 +463,14 @@
             .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
             .then(({ text, status }) => {
                 if (status === 200) {
-                    showSuccessModal("✅ Success: New student has been added successfully!");
-                    location.reload(); // Reloads the page
+                    alert(text);
+
+                    const button1 = document.createElement("button");
+                    button1.setAttribute("data-close-modal", "addGradeLevelAssessmentModal");
+                    document.body.appendChild(button1);
+                    button1.click();
+
+                    getAssessments(currentPage,currentPageSize)
                 } else {
                     showErrorModal("❌ Error:" + text);
                 }
@@ -477,11 +480,14 @@
                 alert("❌ Error: Unable to proceed with payment.");
             });
     }
-
-    function getAssessments(status = "ASSESSMENT", pageNo = 1, pageSize = 2) {
+    let currentPage=0;
+    let currentPageSize = 0;
+    function getAssessments(pageNo = 1, pageSize = 2) {
+        currentPage = pageNo;
+        currentPageSize = pageSize;
         const searchBy = document.getElementById("search-stud").value;
         const sortBy = document.getElementById("sort-select").value;
-        fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
+        fetch(`/enrollment/all/paged/ASSESSMENT?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
             .then(res => {
                 if (!res.ok) throw new Error("Failed to fetch assessment records");
                 return res.json();
@@ -504,8 +510,7 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId || "N/A"}</td>
-                    <td>${enr.student.firstName} ${enr.student.middleName || ""} ${enr.student.lastName}</td>
-                    <td>${levelName}</td>
+                    <td>${enr.student.fullName}</td>
                     <td>
                         <select onChange="printer(this.options[this.selectedIndex].value, ${enr.enrollmentId})" 
                                 class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" data-isStudent-new="${enr.student.new}"
@@ -514,16 +519,8 @@
                         </select>
                     </td>
                     <td>
-                        <div class="status-container">
-                            <div class="status ${enr.qualified ? 'statusQualified' : 'statusNotQualified'}">
-                                ${enr.qualified ? "Qualified" : "Not Qualified"}
-                            </div>
-                        </div>
-                    </td>
-                    <td>
                         <div class="dropdown">
                             <div class="status-container">
-                                <div class="status" id="status-assessment">ASSESSMENT</div>
                                 <button class="dropdown-status-btn"><i class="fas fa-chevron-down"></i></button>
                             </div>
                             <div class="dropdown-status-content">
@@ -533,8 +530,8 @@
                                    data-id="${enr.student.studentId}" data-open-modal="viewGradesModal">View Grades</a>
                                 <a href="#" class="proceedButton" data-action="proceedToPayment" 
                                    data-open-modal="addGradeLevelAssessmentModal"
-                                   data-enrollment-id="${enr.enrollmentId}" data-grade-level-id="${enr.gradeLevelToEnroll}" 
-                                   style="display: ${enr.qualified ? 'block' : 'none'};">Proceed</a>
+                                   data-enrollment-id="${enr.enrollmentId}" data-grade-level-id="${enr.gradeLevelToEnroll}"
+                                   ${enr.qualified ? '' : 'style="pointer-events: none; opacity: 0.5; color: gray;"'}>${enr.qualified ? 'Proceed' : 'Not Qualified'}</a>
                             </div>
                         </div>
                     </td>
@@ -552,12 +549,12 @@
                 });
 
                 updateStatusColors();
-                updateAssessmentPagination(status, pageNo, pageSize, data.totalPages);
+                updateAssessmentPagination(pageNo, pageSize, data.totalPages);
             })
             .catch(error => console.error("Error fetching assessments:", error));
     }
 
-    function updateAssessmentPagination(status, currentPage, pageSize, totalPages) {
+    function updateAssessmentPagination(currentPage, pageSize, totalPages) {
         const paginationContainer = document.querySelector("#pagination");
         paginationContainer.innerHTML = "";
 
@@ -569,7 +566,7 @@
             button.classList.add("pagination-button");
             if (i === currentPage) button.classList.add("active");
             button.addEventListener("click", () => {
-                getAssessments(status, i, pageSize);
+                getAssessments(i, pageSize);
             });
             paginationContainer.appendChild(button);
         }
@@ -665,18 +662,15 @@
                 headers: { "Content-Type": "application/json" }
             });
 
-            // Check if the response is OK (status code 200-299)
             if (response.ok) {
                 const result = await response.text(); // Parse the response as text
-                //alert("Napalitan ang grade level to enroll");
-                location.reload(); // Reload the page to update the table
+                alert(result);
+                getAssessments(currentPage,currentPageSize)
             } else {
-                // Handle non-OK responses (e.g., 400, 500 errors)
                 const errorMessage = await response.text();
                 alert(errorMessage);
             }
         } catch (error) {
-            // Handle network errors or other exceptions
             console.error("Error proceeding to assessment:", error);
             alert("Transaction failed. Try again.");
         }

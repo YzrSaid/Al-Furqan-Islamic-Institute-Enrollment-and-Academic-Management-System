@@ -41,7 +41,6 @@ List<Enrollment> findRecordsByStatusAndSemester(
     @Query("SELECT e FROM Enrollment e " +
             "JOIN e.student stud "+
             "JOIN e.SYSemester s "+
-            "JOIN e.gradeLevelToEnroll gl "+
             "WHERE e.isNotDeleted = true " +
             "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
             "AND s.sySemNumber = :activeSemNumber "+

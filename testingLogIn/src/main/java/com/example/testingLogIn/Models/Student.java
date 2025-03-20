@@ -68,6 +68,7 @@ public class Student{
                         .firstName(firstName)
                         .lastName(lastName)
                         .middleName(middleName)
+                        .fullName(fullName)
                         .gender(gender)
                         .birthdate(birthdate)
                         .address(address)

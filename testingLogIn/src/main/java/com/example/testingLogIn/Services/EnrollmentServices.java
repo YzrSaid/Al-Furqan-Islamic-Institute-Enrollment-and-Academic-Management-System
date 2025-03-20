@@ -79,6 +79,7 @@ public class EnrollmentServices {
         enroll.setSYSemester(sySemRepo.findCurrentActive());
         enroll.setNotDeleted(true);
         enrollmentRepo.save(enroll);
+        System.out.println("Success");
         return true;
     }
 
@@ -185,8 +186,8 @@ public class EnrollmentServices {
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = sySemRepo.findCurrentActive().getSySemNumber();
-
-        Page<EnrollmentDTO> enrollmentPage = enrollmentRepo.findRecordsByStatusAndSemesterPage(estatus,sem,search,pageable).map(this::isComplete);
+        Page<Enrollment> enrollments = enrollmentRepo.findRecordsByStatusAndSemesterPage(estatus,sem,search,pageable);
+        Page<EnrollmentDTO> enrollmentPage = enrollments.map(this::isComplete);
         return EnrollmentDTOPage.builder()
                 .content(enrollmentPage.getContent())
                 .pageNo(pageNo)
@@ -198,21 +199,22 @@ public class EnrollmentServices {
     }
 
     private Sort sortBy(String sort){
-        if(sort.equalsIgnoreCase("StudentId"))
-            return Sort.by("stud.studentDisplayId").ascending();
+        if(sort.equalsIgnoreCase("GradeLevel"))
+            return Sort.by("e.gradeLevelToEnroll").ascending();
         else if(sort.equalsIgnoreCase("StudentName"))
             return Sort.by("stud.firstName").ascending();
         else
-            return Sort.by("gl").ascending();
+            return Sort.by("stud.studentDisplayId").ascending();
+
     }
 
     private EnrollmentStatus getEnrollmentStatus(String status) {
         if(status.equalsIgnoreCase("All"))
             return null;
-        else if (status.equalsIgnoreCase("LISTING"))
-            return EnrollmentStatus.LISTING;
         else if (status.equalsIgnoreCase("ASSESSMENT"))
             return EnrollmentStatus.ASSESSMENT;
+        else if (status.equalsIgnoreCase("LISTING"))
+            return EnrollmentStatus.LISTING;
         else if (status.equalsIgnoreCase("PAYMENT"))
             return EnrollmentStatus.PAYMENT;
         else

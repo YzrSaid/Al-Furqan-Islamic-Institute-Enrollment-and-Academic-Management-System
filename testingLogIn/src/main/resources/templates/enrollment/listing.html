@@ -1410,25 +1410,8 @@
             if (!enrollmentId) return console.error("Enrollment Id Not Found");
 
             fetchPayments(enrollmentId);
-            fetchCurrentUser();
         }
     });
-
-    function fetchCurrentUser() {
-        fetch(`/user/current-logged-in`)
-            .then(res => res.json())
-            .then(obj => {
-                document.querySelector("#staff-receiver").innerHTML = `
-                    <div id="staff-receiver" class="collector-info-container">
-                        <h6>Received/Collected By:</h6>
-                        <div class="collector-name-container">
-                            <input type="text" readonly value="${obj.firstname} ${obj.lastname}" id="collector-name">
-                            <p id="position">${obj.role}</p>
-                        </div>
-                    </div>`;
-            })
-            .catch(error => console.error("Error fetching sections:", error));
-    }
 
     var payerId = 0;
     function fetchPayments(enrollmentId) {
@@ -1552,10 +1535,6 @@
         const studentId = studentIdElement.textContent.trim();
         const paymentAmount = paymentAmountElement.value.trim();
         const requiredPaymentId = paymentListElement.value.trim();
-
-        console.log("Extracted Student ID:", studentId);
-        console.log("Selected Payment ID:", requiredPaymentId);
-        console.log("Entered Payment Amount:", paymentAmount);
 
         // Validate required fields
         if (!studentId) {
@@ -1844,6 +1823,7 @@
     function goList(pageNo = 1, pageSize = 1) {
         const search = document.getElementById("search-stud").value;
         currentStat = document.getElementById("sort-select").value;
+        console.log(currentStat);
         currentPageNo = pageNo;
         currentPageSize = pageSize;
         fetch(`/enrollment/all/paged/${currentStat}?pageNo=${pageNo}&pageSize=${pageSize}&search=${search}`)

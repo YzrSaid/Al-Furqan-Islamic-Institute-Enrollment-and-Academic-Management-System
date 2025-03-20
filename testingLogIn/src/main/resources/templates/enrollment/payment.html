@@ -165,10 +165,8 @@
                 <tr>
                     <th>Student ID</th>
                     <th>Student Name</th>
-                    <th>Current Grade Level</th>
-                    <th>Promoted To</th>
-                    <th>Type</th>
-                    <th>Status</th>
+                    <th>Enrolling To</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -229,13 +227,12 @@
 
                 <!-- Close button -->
                 <div class="action" id="view-grades-close-btn">
-                    <button type="button" id="open-add-payment-modal" data-open-modal="receiptModal">Add
+                    <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
                         Payment</button>
                 </div>
 
             </div>
         </div>
-
         <!-- Receipt Modal -->
         <div id="receiptModal" class="receipt-modal modal">
             <div class="printable-area">
@@ -289,7 +286,7 @@
 
 
                     <!-- Payment Table -->
-                    <div class="receipt-table">
+                    <div id="receipt-table" class="receipt-table">
                         <table>
                             <thead>
                                 <tr>
@@ -305,13 +302,6 @@
                                     <td>800.00</td>
                                 </tr>
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="2">Total Amount Paid:
-                                    </td>
-                                    <td>₱ 800.00</td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
 
@@ -529,11 +519,14 @@
             });
             getOnPayments();
         });
-
-        function getOnPayments(status = "PAYMENT", pageNo = 1, pageSize = 1) {
+        let currentPage = 0;
+        let currentPageSize = 0;
+        function getOnPayments(pageNo = 1, pageSize = 1) {
+            currentPage = pageNo;
+            currentPageSize = pageSize;
             const searchBy = document.getElementById("search-stud").value;
             const sortBy = document.getElementById("sort-select").value;
-            fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
+            fetch(`/enrollment/all/paged/PAYMENT?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
                 .then(res => {
                     if (!res.ok) throw new Error("Failed to fetch payment records");
                     return res.json();
@@ -552,34 +545,32 @@
                         let row = document.createElement("tr");
 
                         // Safely handle null/undefined values
-                        let studentName = `${rec.student.firstName || ""} ${rec.student.middleName ? rec.student.middleName + ' ' : ''}${rec.student.lastName || ""}`.trim();
                         let gradeSection = rec.student.currentGradeSection?.level?.levelName || "N/A";
                         let sectionToEnroll = rec.sectionToEnroll || "N/A";
                         let studentType = rec.student.new ? 'New Student' : 'Old Student';
 
-                        // Conditionally render proceed button
                         let proceedBtn = rec.complete === true ? `
                             <a href="#"
                                data-open-modal="confirmationModal"
                                data-action="proceedToEnrolled"
-                               id="proceed-btn-${rec.enrollmentId}"
+                               id="proceed-btn"
                                data-message="Are you sure you want to proceed and finish enrollment?"
                                data-enrollment-id="${rec.enrollmentId}">
                                Proceed
-                            </a>
-                        ` : '';
+                            </a>`
+                            : `
+                                <a style="pointer-events: none; opacity: 0.5; color: gray;">
+                                   Bayarig minimum isa2 suss
+                                </a>`;
 
                         // Build row content
                         row.innerHTML = `
                             <td>${rec.student.studentDisplayId || "N/A"}</td>
-                            <td>${studentName}</td>
-                            <td>${gradeSection}</td>
+                            <td>${rec.student.fullName}</td>
                             <td>${sectionToEnroll}</td>
-                            <td>${studentType}</td>
                             <td>
                                 <div class="dropdown">
                                     <div class="status-container">
-                                        <div class="status" id="status-payment">PAYMENT</div>
                                         <button class="dropdown-status-btn">
                                             <i class="fas fa-chevron-down"></i>
                                         </button>
@@ -602,13 +593,12 @@
                     });
                     console.log(data.totalPages);
                     console.log("I am at page" + pageNo);
-                    updatePaymentPagination(status, pageNo, pageSize, data.totalPages);
+                    updatePaymentPagination(pageNo, pageSize, data.totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
         }
 
-        function updatePaymentPagination(status, currentPage, pageSize, totalPages) {
-            console.log(currentPage);
+        function updatePaymentPagination(currentPage, pageSize, totalPages) {
             const paginationContainer = document.querySelector("#pagination");
             paginationContainer.innerHTML = ``;
 
@@ -620,7 +610,7 @@
                 button.classList.add("pagination-button");
                 if (i === currentPage) button.classList.add("active");
                 button.addEventListener("click", () => {
-                    getOnPayments(status, i, pageSize);
+                    getOnPayments(i, pageSize);
                 });
                 paginationContainer.appendChild(button);
             }
@@ -725,17 +715,56 @@
                     }
                     return response.json(); // Parse the response as JSON
                 })
-                .then(obj => {
-                    alert("This play the following in a receipt. May console log pd ni after sa 2nd alert");
-                    alert(JSON.stringify(obj));
-                    console.log(obj);
-                    document.getElementById("addPaymentModal").style.display = "none";
-                    document.getElementById("listOfPaymentsModal").style.display = "none";
+                .then(receipt => {
+                    document.getElementById("receipt-student-id").value = receipt.student.studentDisplayId;
+                    document.getElementById("receipt-date").value = receipt.date;
+                    document.getElementById("receipt-student-name").value = receipt.student.fullName;
+                    document.getElementById("receipt-number").value = receipt.transactionReference;
+                    document.getElementById("receipt-number").value = receipt.transactionReference;
+
+                    const tableBody = document.querySelector("#receipt-table tbody");
+                    tableBody.innerHTML = "";
+                    let i = 1;
+                    receipt.particulars.forEach(dat =>{
+                        const row = document.createElement("tr");
+                        row.innerHTML =`
+                            <tr>
+                                <td>${i++}</td>
+                                <td>${dat.feeName}</td>
+                                <td>${dat.amountPaid}</td>
+                            </tr>`;
+                        tableBody.appendChild(row);
+                    });
+                    const row = document.createElement("tr");
+                        row.innerHTML =`
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2">Total Amount Paid:
+                                    </td>
+                                    <td>₱ ${receipt.totalAmount}</td>
+                                </tr>
+                            </tfoot>`;
+                    tableBody.appendChild(row);
+                    alert(`Page : ${currentPage} with size of ${currentPageSize}`);
+                    getOnPayments(currentPage,currentPageSize);
+                   closeOpen();
                 })
                 .catch(error => {
                     console.error("Error adding payment:", error);
                     alert("Failed to add payment. Please try again.");
                 });
+        }
+
+        function closeOpen(){
+            const button1 = document.createElement("button");
+            button1.setAttribute("data-close-modal", "addPaymentModal");
+            button1.setAttribute("data-open-modal","receiptModal");
+            const button2 = document.createElement("button");
+            button2.setAttribute("data-close-modal", "listOfPaymentsModal");
+            document.body.appendChild(button1);
+            document.body.appendChild(button2);
+            button1.click();
+            button2.click();
         }
 
         function getCheckedPaymentValues() {
@@ -749,17 +778,7 @@
             const proceedToEnrolledButton = event.target.closest("#proceed-btn"); // Check if the clicked element is the button
 
             if (proceedToEnrolledButton) {
-                console.log("📌 Proceed button clicked!");
-
-                // Retrieve enrollment ID from the button's data attribute
-                const enrollmentIdElement = proceedToEnrolledButton.getAttribute("data-enrollment-id");
-
-                if (enrollmentIdElement) {
-                    enrollmentIdLet = enrollmentIdElement.trim(); // No need for textContent
-                    console.log("📌 Captured Enrollment ID:", enrollmentIdLet);
-                } else {
-                    alert("⚠️ Enrollment ID not found.");
-                }
+                enrollmentIdLet = proceedToEnrolledButton.getAttribute("data-enrollment-id");
             }
         });
 
@@ -849,9 +868,8 @@
             });
         }
 
-        function proceedToEnrolled(enrollmentIdLet) {
+        function proceedToEnrolled() {
             const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;
-            console.log(`🔄 Sending request to: ${apiUrl}`);
 
             fetch(apiUrl, {
                 method: "PUT",
@@ -862,16 +880,16 @@
                     console.log(`🔹 API Response (${status}): ${text}`);
 
                     if (status === 200) {
-                        showSuccessModal("✅ Success: student successfully enrolled!");
-                        location.reload(); // Reloads the page after successful enrollment
+                        alert("Show success message without reloading");
+                        getOnPayments(currentPage,currentPageSize);
                     } else {
-                        // showErrorModal("❌ Error: Please try again!");
-                        location.reload();
+                        showErrorModal("❌ Error: Please try again!");
+                        getOnPayments(currentPage,currentPageSize)
                     }
                 })
                 .catch(error => {
-                    // showErrorModal("❌ Error: Please try again!");
-                    location.reload();
+                    showErrorModal("❌ Error: Please try again!");
+                    getOnPayments(currentPage,currentPageSize)
                 });
         }
 

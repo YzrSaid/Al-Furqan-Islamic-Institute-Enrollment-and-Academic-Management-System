@@ -35,10 +35,10 @@
         });
         getCurrentlyEnrolled();
     });
-    function getCurrentlyEnrolled(status = "ENROLLED", pageNo = 1, pageSize = 2) {
+    function getCurrentlyEnrolled(pageNo = 1, pageSize = 2) {
         const searchBy = document.getElementById("search-stud").value;
         const sortBy = document.getElementById("sort-select").value;
-        fetch(`/enrollment/all/paged/${status}?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
+        fetch(`/enrollment/all/paged/ENROLLED?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
             .then(res => {
                 if (!res.ok) throw new Error("Failed to fetch enrolled students");
                 return res.json();
@@ -64,12 +64,12 @@
                     tableBody.appendChild(row);
                 });
 
-                updateEnrolledPagination(status, pageNo, pageSize, data.totalPages);
+                updateEnrolledPagination(pageNo, pageSize, data.totalPages);
             })
             .catch(error => console.error("Error fetching enrolled students:", error));
     }
 
-    function updateEnrolledPagination(status, currentPage, pageSize, totalPages) {
+    function updateEnrolledPagination(currentPage, pageSize, totalPages) {
         const paginationContainer = document.querySelector("#pagination");
         paginationContainer.innerHTML = "";
 
@@ -81,7 +81,7 @@
             button.classList.add("pagination-button");
             if (i === currentPage) button.classList.add("active");
             button.addEventListener("click", () => {
-                getCurrentlyEnrolled(status, i, pageSize);
+                getCurrentlyEnrolled(i, pageSize);
             });
             paginationContainer.appendChild(button);
         }

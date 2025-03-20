@@ -47,7 +47,7 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
             "WHERE s.isNotDeleted = TRUE "+
             "AND s.fullName LIKE CONCAT('%',:firstName,'%') "+
             "AND s.fullName LIKE CONCAT('%',:lastName,'%') "+
-            "AND (:middleName IS NULL OR s.fullName LIKE CONCAT('%',:middleName,'%'))")
+            "AND s.fullName LIKE CONCAT('%',:middleName,'%')")
     Student findByName(
             @Param("firstName") String firstname,
             @Param("lastName") String lastname,

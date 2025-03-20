@@ -214,9 +214,10 @@
                     <thead>
                         <tr>
                             <th>Type</th>
-                            <th>Amount</th>
+                            <th>Req. Amount</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
                             <th>Status</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -226,18 +227,6 @@
                             <div class="status-container">
                                 <div class="status" id="status-payments">Unpaid</div>
                             </div>
-                        </td>
-                        <td>
-                            <div class="action-container">
-                                <div class="action">
-                                    <button id="open-add-payment-modal" data-open-modal="addPaymentModal">
-                                        <img id="add-button" th:src="@{/images/icons/add-button.png}"
-                                            alt="add-payment-icon">
-                                    </button>
-                                </div>
-
-                            </div>
-
                         </td>
                     </tbody>
                 </table>
@@ -608,7 +597,7 @@
                                         </button>
                                     </div>
                                     <div class="dropdown-status-content" id="dropdown-listing">
-                                        <a href="#" class="action" data-open-modal="receiptModal"
+                                        <a href="#" class="action" data-open-modal="listOfPaymentsModal"
                                            data-student-id="${rec.student.studentId}"
                                            data-level-id="${rec.gradeLevelToEnrollId}"
                                            data-enrollment-id="${rec.enrollmentId}">
@@ -619,7 +608,8 @@
                                 </div>
                             </td>
                         `;
-
+                        <!--receiptModal
+                        listOfPaymentsModal-->
                         tableBody.appendChild(row);
                     });
                     console.log(data.totalPages);
@@ -801,7 +791,6 @@
             fetch(`/enrollment/paymentView/${enrollmentId}`)
                 .then(res => res.json())
                 .then(epv => {
-                    console.log('The object is', epv);
                     const studentname = document.querySelector("#student-name");
                     const studentDisplayId = document.querySelector("#student-id");
                     if (!studentname || !studentId) return console.error("Dropdown for sections not found");
@@ -810,41 +799,22 @@
 
                     studentDisplayId.textContent = epv.studentDisplayId;
                     payerId = epv.studentId;
-
                     const tableBody = document.querySelector("#table-ni-kharl tbody");
                     tableBody.innerHTML = "";
-                    const feeStatusArray = Object.entries(epv.feeStatus);
-
-                    feeStatusArray.forEach(([key, value]) => {
-                        const match = key.match(/name=([^,]+), requiredAmount=([\d.]+)/);
-                        if (match) {
-                            const name = match[1];
-                            const requiredAmount = match[2];
-
-                            const row = document.createElement("tr");
-
-                            // Get class for status
-                            const statusClass = getPaymentStatusClass(value);
-
-                            row.innerHTML = `
-                    <td>${name}</td>
-                    <td>${requiredAmount}</td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status ${statusClass}">${value}</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="action-container">
-                            <div class="action">
-                                <img data-open-modal="addPaymentModals" src="/images/icons/add-button.png"
-                                    alt="add-payment-icon" class="add-payment-btn">
-                            </div>
-                        </div>
-                    </td>`;
-
+                    epv.feeStatus.forEach(datas => {
+                        const row = document.createElement("tr");
+                        const statusClass = getPaymentStatusClass(datas.status);
+                        row.innerHTML =`
+                            <td>${datas.feeName}</td>
+                            <td>${datas.requiredFee}</td>
+                            <td>${datas.totalPaid}</td>
+                            <td>${datas.balance}</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status ${statusClass}">${datas.status}</div>
+                                </div>
+                            </td>`;
                             tableBody.appendChild(row);
-                        }
                     });
                 })
                 .catch(error => console.error("Error fetching sections:", error));

@@ -14,6 +14,8 @@ import com.example.testingLogIn.Repositories.PaymentsRecordRepo;
 import com.example.testingLogIn.Repositories.SectionRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -64,8 +66,6 @@ public class EnrollmentServices {
             student = studentRepo.findByName(stud.getFirstName(), stud.getLastName(),stud.getMiddleName());
         else
             student = studentRepo.findById(studentId).orElse(null);
-
-        System.out.println(student.getStudentDisplayId());
         if (student == null || !student.isNotDeleted())
             throw new NullPointerException();
         else if (enrollmentRepo.studentCurrentlyEnrolled(student.getStudentId(),
@@ -78,8 +78,6 @@ public class EnrollmentServices {
         enroll.setSYSemester(sySemRepo.findCurrentActive());
         enroll.setNotDeleted(true);
         enrollmentRepo.save(enroll);
-        System.out.println(student.getStudentDisplayId());
-        System.out.println("Added to listing");
         return true;
     }
 
@@ -219,7 +217,7 @@ public class EnrollmentServices {
                 .studentFirstName(er.getStudent().getFirstName())
                 .studentLastName(er.getStudent().getLastName())
                 .studentMiddleName(er.getStudent().getMiddleName())
-                .feeStatus(new HashMap<>())
+                .feeStatus(new ArrayList<>())
                 .build();
 
         List<GradeLevelRequiredFees> gradeFeeList = gradelvlReqFeesRepo
@@ -237,7 +235,7 @@ public class EnrollmentServices {
                                     totalPaid > 0 ?                 "Partially Paid":
                                                                     "Unpaid";
                     toPay.setRequiredAmount(discountedBalance);
-                    epv.getFeeStatus().put(toPay, status);
+                    epv.addNewFeeStatus(reqFee.getRequiredFee().getName(),discountedBalance,totalPaid,status);
                 });
         return epv;
     }

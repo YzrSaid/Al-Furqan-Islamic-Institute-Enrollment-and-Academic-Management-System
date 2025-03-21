@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
-    
+    //I changed something in this line by adding this code performance changing comment
 @Query("SELECT COUNT(e) > 0 FROM Enrollment e " +
         "JOIN e.student stud "+
         "JOIN e.SYSemester s "+

@@ -3070,14 +3070,12 @@ td[rowspan] {
   top: 10px;
   right: 15px;
   font-size: 24px;
-  /* font-weight: bold; */
-  font-weight: bolder;
+  font-weight: bold;
   cursor: pointer;
 }
 
 .close-modal:hover {
-  /* color: red; */
-  color: white;
+  color: red;
 }
 
 /* this is the style for the receipt form */

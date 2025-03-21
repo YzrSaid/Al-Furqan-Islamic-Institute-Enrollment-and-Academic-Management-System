@@ -1094,6 +1094,8 @@ table td {
 }
 
 .paid-status,
+.approved-status,
+.unrestricted-status,
 #status-books {
   text-transform: uppercase;
   color: #218838;
@@ -1104,6 +1106,8 @@ table td {
 }
 
 .unpaid-status,
+.rejected-status,
+.restricted-status,
 #status-balance {
   text-transform: uppercase;
   color: #dc3545;
@@ -1113,6 +1117,7 @@ table td {
   text-align: center;
 }
 .partially-paid-status,
+.pending-status,
 #status-balance {
   color: #cedd2d;
   text-transform: uppercase;
@@ -1131,6 +1136,14 @@ table td {
   text-align: center;
 }
 
+.approved-status,
+.rejected-status,
+.pending-status,
+.restricted-status,
+.unrestricted-status {
+  font-size: 14px;
+}
+
 #status-manage-accounts {
   padding: 5px 70px;
 }
@@ -1139,7 +1152,7 @@ table td {
   padding: 10px 40px;
 }
 
-.pending {
+/* .pending {
   background-color: rgb(206, 221, 45);
   color: white;
   padding: 5px 0px;
@@ -1152,10 +1165,9 @@ table td {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
 .action img {
-  color: white;
   padding: 5px 0px;
   border-radius: 5px;
   font-weight: 500;
@@ -1586,6 +1598,10 @@ table td {
   z-index: 1001;
   overflow-y: scroll;
 }
+.add-payment-modal-content label {
+  font-weight: bold !important;
+  font-size: 13px !important;
+}
 .payee-info-container {
   padding: 0px 35px;
   display: flex;
@@ -1830,7 +1846,8 @@ input[type="checkbox"] {
 .fees-management-edit-modal-content h2,
 .add-payment-modal h2,
 .view-book-modal h2,
-.receipt-modal h2 {
+.receipt-modal h2,
+.add-account-type-modal h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -1896,7 +1913,8 @@ input[type="checkbox"] {
 .fees-management-edit-modal-content label,
 .student-information-modal-content label,
 .view-book-modal-content label,
-.receipt-modal-content label {
+.receipt-modal-content label,
+.add-account-type-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -1933,7 +1951,8 @@ input[type="checkbox"] {
 .subject-edit-modal-content select,
 .teacher-edit-modal-content select,
 .my-account-edit-modal-content select,
-.add-grade-level-assessment-modal-content select {
+.add-grade-level-assessment-modal-content select,
+.add-account-type-modal-content select {
   width: 100%;
   padding: 8px;
   margin: 5px 0;
@@ -1947,7 +1966,8 @@ input[type="checkbox"] {
 .school-year-modal,
 .fees-management-modal,
 .fees-management-edit-modal,
-.student-information-modal {
+.student-information-modal,
+.add-account-type-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -1965,7 +1985,8 @@ input[type="checkbox"] {
 .fees-management-modal.show,
 .fees-management-edit-modal.show,
 .add-grade-level-assessment-modal.show,
-.student-information-modal.show {
+.student-information-modal.show,
+.add-account-type-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
@@ -2110,7 +2131,8 @@ input[type="checkbox"] {
 }
 
 .section-modal-content,
-.section-edit-modal-content {
+.section-edit-modal-content,
+.add-account-type-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 10px;
@@ -2319,6 +2341,7 @@ input[type="checkbox"] {
   display: flex;
   justify-content: space-between;
 }
+
 .full-width {
   display: flex;
 }
@@ -2460,12 +2483,16 @@ input[type="checkbox"] {
   align-items: center;
   justify-content: end;
 }
-#view-grades-close-btn {
+#view-grades-close-btn,
+#add-payment-btn {
   display: flex;
   justify-content: center;
   margin-top: 50px;
 }
-#view-grades-close-btn button {
+#view-grades-close-btn button,
+#add-payment-btn button {
+  background-color: #28a745;
+  color: white;
   border: none;
   outline: none;
   font-size: 14px;
@@ -3022,6 +3049,7 @@ td[rowspan] {
 
 /* Styles for successModal */
 #successModal {
+  font-size: 15px;
   display: none;
   position: fixed;
   top: 0%;
@@ -3029,8 +3057,8 @@ td[rowspan] {
   transform: translate(-50%, 0);
   background: #218838;
   color: #ffffff;
-  font-weight: bolder;
-  padding: 30px;
+  font-weight: bold;
+  padding: 25px 50px;
   border-radius: 7px;
   text-align: center;
   z-index: 10000;
@@ -3123,6 +3151,11 @@ td[rowspan] {
   margin-bottom: 5px;
 }
 
+.half-width h6 {
+  font-size: 14.5px;
+  display: block;
+  margin-bottom: 5px;
+}
 .half-width input {
   width: 100%;
   padding: 8px;

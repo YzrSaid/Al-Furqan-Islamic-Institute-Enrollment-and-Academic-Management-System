@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -79,7 +81,6 @@ public class EnrollmentServices {
         enroll.setSYSemester(sySemRepo.findCurrentActive());
         enroll.setNotDeleted(true);
         enrollmentRepo.save(enroll);
-        System.out.println("Success");
         return true;
     }
 
@@ -186,17 +187,33 @@ public class EnrollmentServices {
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = sySemRepo.findCurrentActive().getSySemNumber();
-        Page<Enrollment> enrollments = enrollmentRepo.findRecordsByStatusAndSemesterPage(estatus,sem,search,pageable);
-        Page<EnrollmentDTO> enrollmentPage = enrollments.map(this::isComplete);
+        Page<EnrollmentDTO> enrollments = enrollmentRepo.testing(estatus,sem,search,pageable).map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
+                        enrollmentHandler.getStudent().DTOmapper()));
         return EnrollmentDTOPage.builder()
-                .content(enrollmentPage.getContent())
+                .content(enrollments.getContent())
                 .pageNo(pageNo)
                 .pageSize(pageSize)
-                .totalPages(enrollmentPage.getTotalPages())
-                .totalElements(enrollmentPage.getTotalElements())
-                .isLast(enrollmentPage.isLast())
+                .totalPages(enrollments.getTotalPages())
+                .totalElements(enrollments.getTotalElements())
+                .isLast(enrollments.isLast())
                 .build();
     }
+
+//    public List<EnrollmentDTO> testWithUnregistered(String status,String search){
+//        EnrollmentStatus eStatus = getEnrollmentStatus(status);
+//        int currentSemNum = sySemRepo.findCurrentActive().getSySemNumber();
+//        Page<EnrollmentDTO> enrollments = enrollmentRepo.testing(eStatus,currentSemNum,search,PageRequest.of(0,10))
+//                .map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
+//                        enrollmentHandler.getStudent().DTOmapper()));
+//        return EnrollmentDTOPage.builder()
+//                .content(enrollments.getContent())
+//                .pageNo(pageNo)
+//                .pageSize(pageSize)
+//                .totalPages(enrollments.getTotalPages())
+//                .totalElements(enrollments.getTotalElements())
+//                .isLast(enrollments.isLast())
+//                .build();
+//    }
 
     private Sort sortBy(String sort){
         if(sort.equalsIgnoreCase("GradeLevel"))
@@ -217,8 +234,10 @@ public class EnrollmentServices {
             return EnrollmentStatus.LISTING;
         else if (status.equalsIgnoreCase("PAYMENT"))
             return EnrollmentStatus.PAYMENT;
-        else
+        else if(status.equalsIgnoreCase("ENROLLED"))
             return EnrollmentStatus.ENROLLED;
+        else
+            return EnrollmentStatus.NOT_REGISTERED;
     }
 
     public EnrollmentDTO getEnrollment(int enrollmentId) {
@@ -260,6 +279,9 @@ public class EnrollmentServices {
     }
 
     private EnrollmentDTO isComplete(Enrollment e) {
+        if(e == null)
+            return null;
+
         boolean isComplete = true;
         try {
             List<GradeLevelRequiredFees> gradeFeeList = gradelvlReqFeesRepo

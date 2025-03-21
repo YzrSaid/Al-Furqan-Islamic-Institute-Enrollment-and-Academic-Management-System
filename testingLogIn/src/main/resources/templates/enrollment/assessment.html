@@ -611,9 +611,9 @@
 
                             const gradeRow = document.createElement("tr");
                             gradeRow.innerHTML = `
-                <td>${grade.subjectName}</td>
-                <td>${grade.subjectName}</td>
-                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
+                                <td>${grade.subjectName}</td>
+                                <td>${grade.subjectName}</td>
+                                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
             `;
                             // Append gradeRow to the table body
                             tableBody.appendChild(gradeRow);
@@ -626,9 +626,8 @@
                         const averageRow = document.createElement("tr");
                         averageRow.id = "average-row";
                         averageRow.innerHTML = `
-            <td colspan="2">Average</td>
-            <td>${avg.toFixed(2)}</td>
-        `;
+                                <td colspan="2">Average</td>
+                                <td>${avg.toFixed(2)}</td>`;
                         // Append the average row after all grade rows have been appended
                         tableBody.appendChild(averageRow);
                     });
@@ -656,7 +655,6 @@
     }
     async function updateGradeLevel(enrollmentId, gradeLevelId) {
         try {
-            // Make the PUT request to the server
             const response = await fetch(`/enrollment/add/assessment/${enrollmentId}/${gradeLevelId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" }

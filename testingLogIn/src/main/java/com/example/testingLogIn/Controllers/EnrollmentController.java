@@ -1,9 +1,12 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
+import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
+import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Services.EnrollmentServices;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,17 +54,6 @@ public class EnrollmentController {
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("Transaction Failed",HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    //WILL BE REMOVED
-    @GetMapping("/all/{status}")
-    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentRecordsByStatus(@PathVariable String status){
-        try{
-            return new ResponseEntity<>(enrollmentService.getAllEnrollment(status),HttpStatus.OK);
-        }catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 

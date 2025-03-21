@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
+import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.SchoolYearSemester;
@@ -61,4 +62,16 @@ List<Enrollment> findRecordsByStatusAndSemester(
 Enrollment getRecordByStudent(
     @Param("studentId") int studentId,
     @Param("activeSemNumber") int activeSemNumber);
+
+@Query("SELECT NEW com.example.testingLogIn.CustomObjects.EnrollmentHandler(e,stud) from Student stud " +
+        "LEFT JOIN Enrollment e " +
+        "ON e.student.studentId = stud.studentId AND e.SYSemester.sySemNumber = :activeSemNumber "+
+        "WHERE (e.isNotDeleted = true OR e.student IS NULL) "+
+        "AND (:status IS NULL OR (CASE WHEN e.student IS NULL THEN 'NOT_REGISTERED' ELSE e.enrollmentStatus END) = :status) "+
+        "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%') " +
+        "OR stud.studentDisplayId LIKE CONCAT('%',:search,'%'))")
+Page<EnrollmentHandler> testing(@Param("status")            EnrollmentStatus status,
+                                @Param("activeSemNumber")   int activeSemNumber,
+                                @Param("search")            String search,
+                                                            Pageable pageable);
 }

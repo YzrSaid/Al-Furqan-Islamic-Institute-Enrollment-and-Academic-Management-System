@@ -56,7 +56,8 @@ public class Enrollment {
     private boolean isNotDeleted;
     
     public EnrollmentDTO DTOmapper(boolean isComplete){
-        Integer preReqId = gradeLevelToEnroll == null ? null : gradeLevelToEnroll.getPreRequisite() == null ? null :gradeLevelToEnroll.getPreRequisite().getLevelId();
+        Integer preReqId = gradeLevelToEnroll == null ? null : gradeLevelToEnroll.getPreRequisite() == null ?
+                null :gradeLevelToEnroll.getPreRequisite().getLevelId();
         return EnrollmentDTO.builder()
                             .enrollmentId(enrollmentId)
                             .student(student.DTOmapper())

@@ -3075,7 +3075,8 @@ td[rowspan] {
 }
 
 .close-modal:hover {
-  color: red;
+  /* color: red; */
+  color: white;
 }
 
 /* this is the style for the receipt form */

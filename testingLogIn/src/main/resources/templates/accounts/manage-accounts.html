@@ -194,36 +194,26 @@
                 </tr>
             </thead>
             <tbody id="accounts-table-body">
-                <tr>
-                    <td>134</td>
-                    <td>Ma'am Balan</td>
-                    <td>TEACHER</td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status" id="status-manage-accounts">UNRESTRICTED</div>
-                            </div>
-                            <div class="action-container">
-                                <div class="action" id="action-manage-accounts"><img
-                                        th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></div>
-
-                                <div class="dropdown-status-content" id="dropdown-school-year">
-                                    <a href="#" data-action="restrictAccount"
-                                        data-message="Are you sure you want to restrict this account?"
-                                        data-open-modal="confirmationModal">Restrict</a>
-                                    <a href="#" data-action="unrestrictAccount"
-                                        data-message="Are you sure you want to unrestrict this account?"
-                                        data-open-modal="confirmationModal">Unrestrict</a>
-
-                                    <!-- this is for edit account -->
-                                    <a href="#" data-open-modal="myAccountEditModal">Edit Account</a>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
             </tbody>
         </table>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
@@ -347,7 +337,7 @@
         const roleMapping = {
             "ENROLLMENT_STAFF": "Enrollment Staff",
             "TEACHER": "Teacher",
-            "ADMIN": "Admin" // Add more mappings as needed
+            "ADMIN": "Admin"
         };
 
         accounts.forEach(account => {
@@ -355,10 +345,10 @@
 
             console.log(account);
 
-            // Convert role to a more readable format
-            const readableRole = roleMapping[account.role] || account.role; // Fallback to original if not in mapping
+            // ✅ Use the correct role format
+            const readableRole = roleMapping[account.role] || account.role;
 
-            // Determine status and action text
+            // ✅ Correctly map status and actions based on the DB value
             const statusText = account.notRestricted ? "UNRESTRICTED" : "RESTRICTED";
             const oppositeAction = account.notRestricted ? "restrictAccount" : "unrestrictAccount";
             const oppositeActionText = account.notRestricted ? "Restrict" : "Unrestrict";
@@ -366,40 +356,50 @@
                 ? "Are you sure you want to restrict this account?"
                 : "Are you sure you want to unrestrict this account?";
 
-            row.innerHTML = `
-        <td>${account.staffId}</td>
-        <td>${account.firstname} ${account.lastname}</td>
-        <td>${account.username}</td>
-        <td>${readableRole}</td> <!-- Use the mapped role -->
-        <td>
-            <div class="dropdown">
-                <div class="status-container">
-                    <div class="status ${account.isNotRestricted ? 'unrestricted' : 'restricted'}" id="status-manage-accounts">
-                        ${statusText}
-                    </div>
-                </div>
-                <div class="action-container">
-                    <div class="action"><img src="/images/icons/arrow-down.png" alt="arrow-down"></div>
+            // ✅ Use the new color function
+            const statusClass = getAccountStatusClass(statusText);
 
-                    <div class="dropdown-status-content">
-                        <a href="#" data-action="${oppositeAction}"
-                            data-message="${confirmationMessage}"
-                            data-open-modal="confirmationModal">
-                            ${oppositeActionText}
-                        </a>
-                        <a href="#" data-open-modal="myAccountEditModal">Edit Account</a>
+            row.innerHTML = `
+            <td>${account.staffId}</td>
+            <td>${account.firstname} ${account.lastname}</td>
+            <td>${account.username}</td>
+            <td>${readableRole}</td> <!-- Use the mapped role -->
+            <td>
+                <div class="dropdown">
+                    <div class="status-container">
+                        <div class="status ${statusClass}" id="status-manage-accounts">
+                            ${statusText}
+                        </div>
+                    </div>
+                    <div class="action-container">
+                        <div class="action"><i class="fas fa-chevron-down"></i></div>
+
+                        <div class="dropdown-status-content">
+                            <a href="#" data-action="${oppositeAction}"
+                                data-message="${confirmationMessage}"
+                                data-open-modal="confirmationModal">
+                                ${oppositeActionText}
+                            </a>
+                            <a href="#" data-open-modal="myAccountEditModal">Edit Account</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </td>
-    `;
+            </td>
+        `;
 
             tableBody.appendChild(row);
         });
-
-        updateStatusColors();
     }
 
+    function getAccountStatusClass(status) {
+        status = status.toLowerCase();
+        if (status === "unrestricted") {
+            return "unrestricted-status";
+        } else if (status === "restricted") {
+            return "restricted-status";
+        }
+        return "";
+    }
 
     let selectedManageAccountId = null; // Initialize globally
 
@@ -480,10 +480,11 @@
         fetch(`/user/unrestrict/${userId}`, { method: 'PUT' })
             .then(response => response.text())
             .then(message => {
-                alert(message); // Show success message
-                fetchUserAccounts(); // Refresh the table
+                showSuccessModal("✅ Success: Account has been unrestricted successfully!");
             })
-            .catch(error => console.error('Error unrestricting user:', error));
+            .catch(error => {
+                showErrorModal("❌ Error: " + error.message);
+            });
     }
 
 
@@ -491,13 +492,12 @@
         fetch(`/user/restrict/${userId}`, { method: 'PUT' })
             .then(response => response.text())
             .then(message => {
-                alert(message); // Show success message
-                fetchUserAccounts(); // Refresh the table
+                showSuccessModal("✅ Success: Account has been restricted successfully!");
             })
-            .catch(error => console.error('Error restricting user:', error));
+            .catch(error => {
+                showErrorModal("❌ Error: " + error.message);
+            });
     }
-
-
 </script>
 
 </html>

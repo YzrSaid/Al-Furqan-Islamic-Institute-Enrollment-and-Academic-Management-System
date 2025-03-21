@@ -573,7 +573,7 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Edit Teacher");
         break;
       case "verifyAccount":
-        verifyAccount(selectedVerificationId);
+        verifyAccount(selectedVerificationId, selectedRole);
         break;
       case "rejectAccount":
         rejectAccount(selectedVerificationId);

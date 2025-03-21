@@ -201,13 +201,13 @@
 
                 <h2>List of Payments</h2>
 
-                <div class="half-width" id="view-grade-studId">
+                <div class="half-width">
                     <label for="student-id">Student ID:</label>
-                    <h6 id="student-id">0001</h6>
+                    <h6 id="student-id"></h6>
                 </div>
-                <div class="half-width" id="view-grade-studName">
+                <div class="half-width">
                     <label for="student-name">Student Name:</label>
-                    <h6 id="student-name">Martin Francisco</h6>
+                    <h6 id="student-name"></h6>
                 </div> <br>
 
                 <!-- List of Payments Table -->
@@ -225,8 +225,8 @@
                     </tbody>
                 </table>
 
-                <!-- Close button -->
-                <div class="action" id="view-grades-close-btn">
+                <!-- Add Payment button -->
+                <div class="action" id="add-payment-btn">
                     <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
                         Payment</button>
                 </div>
@@ -335,7 +335,7 @@
                     </div> <br>
 
                     <div class="payee-info-container" id="payee-info">
-                        <div class="half-width half-payee">
+                        <div class="half-payee">
                             <div>
                                 <label for="student-id" id="label-id">Student ID:</label>
                                 <input type="text" id="payee-id" readonly>
@@ -369,9 +369,9 @@
                         </div>
                     </div>
                     <div class="payment-wrapper">
-                        <h6>Payment For:</h6>
+                        <label>Payment For:</label>
                         <div class="payment-container-group">
-                            <div class="payment-item">
+                            <!-- <div class="payment-item">
                                 <input type="checkbox" id="" name="payment" value="payment">
                                 <label for="payment">Book</label>
                             </div>
@@ -386,7 +386,7 @@
                             <div class="payment-item">
                                 <input type="checkbox" id="" name="payment" value="payment">
                                 <label for="payment">Book</label>
-                            </div>
+                            </div> -->
                         </div> <br>
                     </div>
 
@@ -401,8 +401,6 @@
 
 
                     <div class="modal-buttons payment-modal-buttons">
-                        <button class="no-print" onclick="printReport()">Print Report</button>
-
                         <button id="save-payment-btn" class="btn-confirm no-print" type="button"
                             data-open-modal="confirmationModal" data-action="savePayment"
                             data-message="Are you sure you want to save this payment?">Save Payment
@@ -698,7 +696,6 @@
                 alert("Dapat naa ka pilion");
                 return;
             }
-
             const url = `/paymentrecord/add/all/${encodeURIComponent(studentId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(gradeLevelId)}`;
             const obj = {
                 feesId: feesSelectedId

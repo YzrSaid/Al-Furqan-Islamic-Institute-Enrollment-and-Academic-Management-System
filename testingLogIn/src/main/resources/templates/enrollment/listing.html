@@ -618,54 +618,36 @@
 
             <h2>List of Payments</h2>
 
-            <div class="half-width" id="view-grade-studId">
-                <label for="student-id">Student ID:</label>
+            <div class="half-width">
+                <label for="student-id-list">Student ID:</label>
                 <h6 id="student-id-list"></h6>
             </div>
-            <div class="half-width" id="view-grade-studName">
+            <div class="half-width">
                 <label for="student-name">Student Name:</label>
-                <h6 id="student-name">Martin Francisco</h6>
+                <h6 id="student-name"></h6>
             </div> <br>
 
             <!-- List of Payments Table -->
             <table id="table-ni-kharl" class="view-list-of-payments-table">
                 <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Req. Amount</th>
-                        <th>Amount Paid</th>
-                        <th>Balance</th>
-                        <th>Status</th>
-                    </tr>
+                <tr>
+                    <th>Type</th>
+                    <th>Req. Amount</th>
+                    <th>Amount Paid</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <td>Tuition</td>
-                    <td>2,000.00</td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="status-payments">Unpaid</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="action-container">
-                            <div class="action">
-                                <button id="open-add-payment-modal" data-open-modal="addPaymentModal">
-                                    <img id="add-button" th:src="@{/images/icons/add-button.png}"
-                                        alt="add-payment-icon">
-                                </button>
-                            </div>
-
-                        </div>
-
-                    </td>
                 </tbody>
             </table>
 
-            <!-- Close button -->
-            <div class="close-button" id="view-grades-close-btn">
-                <button type="button" data-close-modal="listOfPaymentsModal" class="btn-cancel"
-                    id="close-button">Close</button>
+            <!-- Add Payment button -->
+            <div class="action" id="add-payment-btn">
+                <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
+                    Payment</button>
             </div>
+
         </div>
     </div>
 
@@ -1090,16 +1072,13 @@
                     </div>
                 </div>
 
-                <!-- Payment Table -->
-                <div class="receipt-table">
+                <div id="receipt-table" class="receipt-table">
                     <table>
                         <thead>
                             <tr>
                                 <th>ITEM #</th>
                                 <th>DESCRIPTION</th>
                                 <th>AMOUNT</th>
-                                <th>DISCOUNT</th>
-                                <th>TOTAL AMOUNT</th>
                             </tr>
                         </thead>
                         <tbody id="receipt-items">
@@ -1233,10 +1212,7 @@
 <script>
 
     function proceedToPayment(enrollmentIdLet, sectionNumberLet) {
-        // Re-fetch the sectionNumber to ensure we have the latest value
         sectionNumberLet = document.querySelector("#section").value;
-
-        // Check if section is selected
         if (!sectionNumberLet || sectionNumberLet === "") {
             showErrorModal("❌ Error: Please select a section!");
             return;
@@ -1294,17 +1270,6 @@
         }
         return "";
     }
-
-
-    document.addEventListener("click", function (event) {
-        const proceedButton = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
-        if (proceedButton) {
-            const enrollmentId = proceedButton.getAttribute("data-enrollment-id");
-            if (!enrollmentId) return console.error("Enrollment Id Not Found");
-
-            fetchPayments(enrollmentId);
-        }
-    });
 
     var payerId = 0;
     function fetchPayments(enrollmentId) {
@@ -1378,77 +1343,87 @@
         goList();
     });
 
+    function getCheckedPaymentValues() {
+            const checkedCheckboxes = document.querySelectorAll('.payment-container-group input[type="checkbox"]:checked');
+            const checkedValues = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
+            return checkedValues;
+    }
 
     function savePayment() {
-        // Retrieve elements
-        const studentIdElement = document.getElementById("student-id-list");
-        const paymentAmountElement = document.getElementById("payment-amount");
-        const paymentListElement = document.getElementById("payment-list");
-
-        // Debugging logs
-        console.log("Student ID Element:", studentIdElement);
-        console.log("Payment List Element:", paymentListElement);
-
-        // Ensure elements exist
-        if (!studentIdElement) {
-            alert("Student ID not found.");
-            console.error("Student ID element is missing from the DOM.");
+        const feesSelectedId = getCheckedPaymentValues();
+        const totalAmount = paymentAmountInput.value;
+        if (totalAmount == 0) {
+            alert("DLi pwde wlay kay ibayad uys");
+            return;
+        } else if (feesSelectedId.length == 0) {
+            alert("Dapat naa ka pilion");
             return;
         }
-        if (!paymentListElement) {
-            alert("Payment list dropdown not found.");
-            console.error("Payment list dropdown is missing.");
-            return;
-        }
-        if (!paymentAmountElement) {
-            alert("Payment amount field not found.");
-            console.error("Payment amount input is missing.");
-            return;
-        }
-
-        // Retrieve values
-        const studentId = studentIdElement.textContent.trim();
-        const paymentAmount = paymentAmountElement.value.trim();
-        const requiredPaymentId = paymentListElement.value.trim();
-
-        // Validate required fields
-        if (!studentId) {
-            alert("Student ID is missing.");
-            return;
-        }
-        if (!requiredPaymentId) {
-            alert("Please select a payment type.");
-            return;
-        }
-        if (!paymentAmount) {
-            alert("Please enter a payment amount.");
-            return;
-        }
-
-        // Prepare data for API
-        const paymentData = {
-            studId: payerId,
-            amount: paymentAmount,
-            requiredPaymentId: requiredPaymentId,
+        const url = `/paymentrecord/add/all/${encodeURIComponent(payerStudentId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(payLevelToEnrollId)}`;
+        const obj = {
+            feesId: feesSelectedId
         };
 
-        console.log("Sending Payment Data:", paymentData);
-
-        // Send request
-        fetch("/paymentrecord/add", {
+        fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(paymentData)
+            body: JSON.stringify(obj)
         })
-            .then(response => response.text())
-            .then(message => {
-// <!--                showSuccessModal(message);-->
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(receipt => {
+                document.getElementById("receipt-student-id").value = receipt.student.studentDisplayId;
+                document.getElementById("receipt-date").value = receipt.date;
+                document.getElementById("receipt-student-name").value = receipt.student.fullName;
+                document.getElementById("receipt-number").value = receipt.transactionReference;
+                document.getElementById("receipt-number").value = receipt.transactionReference;
+
+                const tableBody = document.querySelector("#receipt-table tbody");
+                tableBody.innerHTML = "";
+                let i = 1;
+                receipt.particulars.forEach(dat =>{
+                    const row = document.createElement("tr");
+                    row.innerHTML =`
+                        <tr>
+                            <td>${i++}</td>
+                            <td>${dat.feeName}</td>
+                            <td>${dat.amountPaid}</td>
+                        </tr>`;
+                    tableBody.appendChild(row);
+                });
+                const row = document.createElement("tr");
+                    row.innerHTML =`
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">Total Amount Paid:
+                                </td>
+                                <td>₱ ${receipt.totalAmount}</td>
+                            </tr>
+                        </tfoot>`;
+                tableBody.appendChild(row);
                 goList(currentPageNo, currentPageSize);
+               closeOpen();
             })
             .catch(error => {
                 console.error("Error adding payment:", error);
                 alert("Failed to add payment. Please try again.");
             });
+    }
+
+    function closeOpen(){
+            const button1 = document.createElement("button");
+            button1.setAttribute("data-close-modal", "addPaymentModal");
+            button1.setAttribute("data-open-modal","receiptModal");
+            const button2 = document.createElement("button");
+            button2.setAttribute("data-close-modal", "listOfPaymentsModal");
+            document.body.appendChild(button1);
+            document.body.appendChild(button2);
+            button1.click();
+            button2.click();
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -1538,27 +1513,6 @@
                 showErrorModal(message);
             });
     }
-
-
-    document.addEventListener("click", function (event) {
-        const viewRecordButton = event.target.closest(".viewRecordButton"); // ✅ Detect "View Record" click
-        if (viewRecordButton) {
-            const enrollmentId = viewRecordButton.getAttribute("data-enrollment-id"); // ✅ Capture enrollment ID
-            console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
-
-            // Show the modal
-            const modal = document.getElementById("studentInformationModal");
-            if (modal) {
-                modal.classList.add("show");
-                modal.style.visibility = "visible";
-                modal.style.opacity = "1";
-                modal.style.pointerEvents = "auto";
-            }
-        }
-    });
-
-
-
     document.getElementById("scholar").addEventListener("change", function () {
         this.checked;
     });
@@ -1879,13 +1833,18 @@
                 <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}" 
                    data-open-modal="studentInformationModal"> View Record </a>
                 <a href="#" class="viewPaymentsButton" data-enrollment-id="${enr.enrollmentId}" 
-                   data-open-modal="listOfPaymentsModal"> View List of Payments </a>
+                   data-open-modal="listOfPaymentsModal"
+                   data-student-id="${enr.student.studentId}"
+                   data-level-id="${enr.gradeLevelToEnrollId}"
+                   > View List of Payments </a>
                 ${enr.complete ? `
                     <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" 
                        data-open-modal="confirmationModal" 
                        data-message="Are you sure you want to proceed and finish enrollment?" 
                        data-action="proceedToEnrolled"> Proceed </a>
-                ` : ''}
+                ` : `<a style="pointer-events: none; opacity: 0.5; color: gray;">
+                       Bayarig minimum isa2 suss
+                    </a>`}
             `;
             case "ENROLLED":
                 return `
@@ -1946,91 +1905,6 @@
             paginationContainer.appendChild(nextButton);
         }
     }
-
-
-    document.addEventListener("click", function (event) {
-        const target = event.target;
-        const enrollmentId = target.getAttribute("data-enrollment-id");
-
-        if (target.classList.contains("viewRecordButton")) {
-            console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
-            openModal("studentInformationModal");
-        }
-
-        if (target.classList.contains("proceedButton")) {
-            const modalId = target.getAttribute("data-open-modal");
-            console.log(`🚀 Proceeding with Enrollment ID: ${enrollmentId}`);
-            openModal(modalId);
-        }
-
-        if (target.dataset.openModal=== "viewGradesModal") {
-            const studentId = target.dataset.id;
-            const preRequisiteId = target.getAttribute("data-prerequisite");
-            document.getElementById("student-grade-name").textContent = target.getAttribute("data-stud-name");
-            document.getElementById("student-grade-id").textContent = target.getAttribute("data-displayId");
-            const tableBody = document.querySelector("#lamesaa tbody");
-            tableBody.innerHTML = `<td colspan="4">No Records Found</td>`;
-            if(preRequisiteId === "null"){
-                return;
-            }
-
-            if (!studentId) {
-                console.error(
-                    "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
-                );
-                return;
-            }
-
-            fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    const studentGradesMap = new Map(Object.entries(data));
-                    if(studentGradesMap.size === 0) {
-                        return;}
-                    tableBody.innerHTML = "";
-                    studentGradesMap.forEach((values, key) => {
-                        const keyRow = document.createElement("tr");
-                        keyRow.innerHTML = `<td colspan="3"><strong>${key}</strong></td>`; // Use colspan to span all columns
-                        tableBody.appendChild(keyRow);
-
-                        let gradeTotal = 0;
-                        let gradeCount = 0;
-                        values.forEach((grade) => {
-                            gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
-                            gradeCount++;
-
-                            const gradeRow = document.createElement("tr");
-                            gradeRow.innerHTML = `
-                                <td>${grade.subjectName}</td>
-                                <td>${grade.subjectName}</td>
-                                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
-                            `;
-                            tableBody.appendChild(gradeRow);
-                        });
-
-                        // Calculate the average grade after the loop is finished
-                        const avg = gradeCount > 0 ? gradeTotal / gradeCount : 0; // Avoid division by 0
-
-                        // Create the average row (this should be done outside the loop)
-                        const averageRow = document.createElement("tr");
-                        averageRow.id = "average-row";
-                        averageRow.innerHTML = `
-                                <td colspan="2">Average</td>
-                                <td>${avg.toFixed(2)}</td>`;
-                        // Append the average row after all grade rows have been appended
-                        tableBody.appendChild(averageRow);
-                    });
-                })
-                .catch((error) => console.error("Error fetching grade level:", error));
-        }
-
-        if (target.classList.contains("viewPaymentsButton")) {
-            console.log(`💰 Viewing Payments for Enrollment ID: ${enrollmentId}`);
-            openModal("listOfPaymentsModal");
-        }
-    });
-
-
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -2040,56 +1914,210 @@
             modal.style.pointerEvents = "auto";
         }
     }
-
+    let payerStudentId;
+    let payLevelToEnrollId;
     document.addEventListener("click", function (event) {
-        const gradeLevelbtn = event.target.closest('[data-open-modal="gradeLevelModal"]');
-        const proceedButton = event.target.closest('[data-open-modal="addGradeLevelAssessmentModal"]');
+        const target = event.target;
+        const gradeLevelbtn = target.closest('[data-open-modal="gradeLevelModal"]');
+        const proceedButton = target.closest('[data-open-modal="addGradeLevelAssessmentModal"]');
+        const enrollmentId = target.getAttribute("data-enrollment-id");
+        const paymentList = target.closest('[data-open-modal="listOfPaymentsModal"]');
+        const viewRecordButton = target.closest(".viewRecordButton");
+        const paymentBtn = target.closest('[data-open-modal="addPaymentModal"]');
+        const proceedToEnrolledButton = target.closest("#proceed-btn");
+        if (proceedToEnrolledButton) {
+            const enrollmentIdElement = proceedToEnrolledButton.getAttribute("data-enrollment-id");
 
+            if (enrollmentIdElement) {
+                enrollmentIdLet = enrollmentIdElement.trim();
+            } else {
+                alert("⚠️ Enrollment ID not found.");
+            }
+        }
+        if(paymentBtn){
+            alert("Will set up payment form");
+            setUpPaymentForm();
+        }
+        else if (paymentList) {
+            const enrollmentId = paymentList.getAttribute("data-enrollment-id");
+            if (!enrollmentId) return console.error("Enrollment Id Not Found");
+            payerStudentId = paymentList.getAttribute("data-student-id");
+            payLevelToEnrollId = paymentList.getAttribute("data-level-Id");
+            fetchPayments(enrollmentId);
+        }
+        else if (viewRecordButton) {
+            const enrollmentId = viewRecordButton.getAttribute("data-enrollment-id"); // ✅ Capture enrollment ID
+            console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
+
+            // Show the modal
+            const modal = document.getElementById("studentInformationModal");
+            if (modal) {
+                modal.classList.add("show");
+                modal.style.visibility = "visible";
+                modal.style.opacity = "1";
+                modal.style.pointerEvents = "auto";
+            }
+        }
+        if (target.classList.contains("viewRecordButton")) {
+            console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
+            openModal("studentInformationModal");
+        }
+        if (target.classList.contains("proceedButton")) {
+            const modalId = target.getAttribute("data-open-modal");
+            openModal(modalId);
+        }
+        if (target.dataset.openModal=== "viewGradesModal") {
+            viewStudentGrade(target);
+        }
+        if (target.classList.contains("viewPaymentsButton")) {
+            console.log(`💰 Viewing Payments for Enrollment ID: ${enrollmentId}`);
+            openModal("listOfPaymentsModal");
+        }
         if (proceedButton) {
             const gradeLevel = proceedButton.getAttribute("data-grade-level-id");
             if (!gradeLevel) return console.error("Grade level not found for section selection");
-
-            console.log("Grade Level Selected:", gradeLevel);
-
-            // Set grade level in modal input field
             const gradeLevelInput = document.querySelector("#grade-level");
             if (gradeLevelInput) {
                 gradeLevelInput.value = gradeLevel;
             }
-
-            // Populate sections dropdown
             fetchSections(gradeLevel);
         }
         if(gradeLevelbtn){
             const isStudentNew = gradeLevelbtn.getAttribute("data-isStudent-new");
             const isTransferee = gradeLevelbtn.getAttribute("data-isTransferee");
             const currentGradeId = gradeLevelbtn.getAttribute("data-current-gradeId");
-            alert(isStudentNew+" "+isTransferee+" "+currentGradeId);
             fetchAllGradeLevels(isStudentNew, isTransferee, currentGradeId);
         }
     });
 
-    let enrollmentIdLet = null;
-    // Ensure the event listener is added only once when the page loads
-    document.addEventListener("click", function (event) {
-        const proceedToEnrolledButton = event.target.closest("#proceed-btn"); // Check if the clicked element is the button
-
-        if (proceedToEnrolledButton) {
-            console.log("📌 Proceed button clicked!");
-
-            // Retrieve enrollment ID from the button's data attribute
-            const enrollmentIdElement = proceedToEnrolledButton.getAttribute("data-enrollment-id");
-
-            if (enrollmentIdElement) {
-                enrollmentIdLet = enrollmentIdElement.trim(); // No need for textContent
-                console.log("📌 Captured Enrollment ID:", enrollmentIdLet);
+    function handleCheckboxChange(event, balance) {
+            const checkbox = event.target; // The checkbox that was clicked
+            const value = checkbox.value; // The value of the checkbox
+            const isChecked = checkbox.checked; // Whether the checkbox is checked or unchecked
+            const currentMax = parseFloat(paymentAmountInput.max) || 0;
+            let newMax = 0;
+            if (isChecked) {
+                newMax = currentMax + balance;
             } else {
-                alert("⚠️ Enrollment ID not found.");
+                newMax = currentMax - balance;
             }
-        }
-    });
+            paymentAmountInput.max = newMax;
+            if (paymentAmountInput.value > newMax) {
+                paymentAmountInput.value = newMax;
+            }
+    }
+    const paymentAmountInput = document.getElementById('payment-amount');
+        if (paymentAmountInput) {
+            paymentAmountInput.addEventListener('input', function () {
+                const maxValue = parseFloat(this.max);
+                const enteredValue = parseFloat(this.value);
 
-    // Fetch sections based on selected grade level
+                if (enteredValue > maxValue) {
+                    alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
+                    this.value = maxValue;
+                }
+            });
+        }
+    async function setUpPaymentForm() {
+        paymentAmountInput.max = 0;
+        paymentAmountInput.value = 0.0;
+        let response = await fetch(`/paymentrecord/form/${payerStudentId}?gradeLevelId=${payLevelToEnrollId}`);
+        if (!response.ok) throw new Error("wa nakita");
+        let data = await response.json();
+        const student = data.student;
+
+        const studentname = document.querySelector("#payee-name");
+        const studentDisplayId = document.querySelector("#payee-id");
+        studentname.value = student.fullName;
+        studentDisplayId.value = student.studentDisplayId;
+
+        const paymentContainer = document.querySelector(".payment-container-group");
+        paymentContainer.innerHTML = '';
+        data.feesAndBalance.forEach(par => {
+            const paymentItem = document.createElement("div");
+            paymentItem.classList.add("payment-item");
+            console.log(par);
+            console.log(par.balance);
+            const input = document.createElement("input");
+            input.type = "checkbox";
+            input.name = par.fee.name;
+            input.value = par.fee.id;
+            input.addEventListener("change", (event) => {
+                handleCheckboxChange(event, par.balance);
+            });
+
+            let label = document.createElement("label");
+            label.textContent = par.fee.name;
+            label.setAttribute("for", par.fee.name);
+
+            paymentItem.appendChild(input);
+            paymentItem.appendChild(label);
+            paymentContainer.appendChild(paymentItem);
+        });
+    }
+
+    function viewStudentGrade(target){
+        const studentId = target.dataset.id;
+        const preRequisiteId = target.getAttribute("data-prerequisite");
+        document.getElementById("student-grade-name").textContent = target.getAttribute("data-stud-name");
+        document.getElementById("student-grade-id").textContent = target.getAttribute("data-displayId");
+        const tableBody = document.querySelector("#lamesaa tbody");
+        tableBody.innerHTML = `<td colspan="4">No Records Found</td>`;
+        if(preRequisiteId === "null"){
+            return;
+        }
+
+        if (!studentId) {
+            console.error(
+                "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
+            );
+            return;
+        }
+
+        fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const studentGradesMap = new Map(Object.entries(data));
+                if(studentGradesMap.size === 0) {
+                    return;}
+                tableBody.innerHTML = "";
+                studentGradesMap.forEach((values, key) => {
+                    const keyRow = document.createElement("tr");
+                    keyRow.innerHTML = `<td colspan="3"><strong>${key}</strong></td>`; // Use colspan to span all columns
+                    tableBody.appendChild(keyRow);
+
+                    let gradeTotal = 0;
+                    let gradeCount = 0;
+                    values.forEach((grade) => {
+                        gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
+                        gradeCount++;
+
+                        const gradeRow = document.createElement("tr");
+                        gradeRow.innerHTML = `
+                            <td>${grade.subjectName}</td>
+                            <td>${grade.subjectName}</td>
+                            <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
+                        `;
+                        tableBody.appendChild(gradeRow);
+                    });
+
+                    // Calculate the average grade after the loop is finished
+                    const avg = gradeCount > 0 ? gradeTotal / gradeCount : 0; // Avoid division by 0
+
+                    // Create the average row (this should be done outside the loop)
+                    const averageRow = document.createElement("tr");
+                    averageRow.id = "average-row";
+                    averageRow.innerHTML = `
+                            <td colspan="2">Average</td>
+                            <td>${avg.toFixed(2)}</td>`;
+                    // Append the average row after all grade rows have been appended
+                    tableBody.appendChild(averageRow);
+                });
+            })
+            .catch((error) => console.error("Error fetching grade level:", error));
+    }
+
+    let enrollmentIdLet = null;
     function fetchSections(gradeLevel) {
         fetch(`/section/gradeLevel/${gradeLevel}`)
             .then(res => res.json())

@@ -35,26 +35,30 @@
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
         </a>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
-            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
-            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="enrollment-submenu">
-            <a href="/enrollment/listing">Listing/Register</a>
-            <a href="/enrollment/assessment">Assessment</a>
-            <a href="/enrollment/payment">Payment</a>
-            <a href="/enrollment/enrolled">Enrolled</a>
-        </div>
+        <th:block th:if="${userRole == 'ADMIN'}">
+            <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+                <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+                <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+            </a>
+            <div class="submenu" id="enrollment-submenu">
+                <a href="/enrollment/listing">Listing/Register</a>
+                <a href="/enrollment/assessment">Assessment</a>
+                <a href="/enrollment/payment">Payment</a>
+                <a href="/enrollment/enrolled">Enrolled</a>
+            </div>
+        </th:block>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="transaction-submenu">
-            <a href="/transaction/tuition">Tuition</a>
-            <a href="/transaction/academic-resources">Book Distribution</a>
-        </div>
 
+        <th:block th:if="${userRole == 'ADMIN' || userRole == 'ENROLLMENT_STAFF'}">
+            <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+                <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+                <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+            </a>
+            <div class="submenu" id="transaction-submenu">
+                <a href="/transaction/tuition">Payment Transactions</a>
+                <a href="/transaction/academic-resources">Book Distribution</a>
+            </div>
+        </th:block>
 
         <a href="/grade-management" class="active sidebar-icons">
             <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
@@ -68,47 +72,59 @@
             <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class List Icon"> Class List
         </a>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="maintenance-submenu">
-            <a href="/maintenance/school-year">School Year</a>
-            <a href="/maintenance/grade-level">Grade Level</a>
-            <a href="/maintenance/subject">Subject</a>
-            <a href="/maintenance/section">Section</a>
-            <a href="/maintenance/fees-management">Fees Management</a>
-            <!-- <a href="/maintenance/teacher">Teacher</a> -->
-        </div>
+        <th:block th:if="${userRole == 'ADMIN'}">
+            <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
+                <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
+                    class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+            </a>
+            <div class="submenu" id="maintenance-submenu">
+                <a href="/maintenance/school-year">School Year</a>
+                <a href="/maintenance/grade-level">Grade Level</a>
+                <a href="/maintenance/subject">Subject</a>
+                <a href="/maintenance/section">Section</a>
+                <a href="/maintenance/fees-management">Fees Management</a>
+                <!-- <a href="/maintenance/teacher">Teacher</a> -->
+            </div>
+        </th:block>
 
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="reports-submenu">
-            <a href="/reports/student">Student Reports</a>
-            <a href="/reports/payment">Payment Reports</a>
-            <a href="/reports/teacher">Teacher Report</a>
-            <a href="/reports/academic-resources">Book Distribution</a>
-        </div>
+        <th:block th:if="${userRole == 'ADMIN'}">
+            <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
+                <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span
+                    class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+            </a>
+            <div class="submenu" id="reports-submenu">
+                <a href="/reports/student">Student Reports</a>
+                <a href="/reports/payment">Payment Reports</a>
+                <a href="/reports/teacher">Teacher Report</a>
+                <a href="/reports/academic-resources">Book Distribution</a>
+            </div>
+        </th:block>
+
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
         </a>
+
         <div class="submenu" id="account-submenu">
-            <a href="/accounts/verify-accounts">Verify Accounts</a>
-            <a href="/accounts/manage-accounts">Manage Accounts</a>
+            <th:block th:if="${userRole == 'ADMIN'}">
+                <a href="/accounts/verify-accounts">Verify Accounts</a>
+                <a href="/accounts/manage-accounts">Manage Accounts</a>
+            </th:block>
+
             <a href="/accounts/my-account">My Account</a>
         </div>
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-            <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
+
+        <th:block th:if="${userRole == ADMIN}">
+            <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
+                <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
+                        th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+            </a>
+        </th:block>
+
         <div class="submenu" id="settings-submenu">
             <a href="settings/create-user">Create User</a>
         </div>
     </div>
-
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
@@ -234,7 +250,7 @@
                         tableBody.innerHTML = "";
 
                         Object.entries(data).forEach(([key, value]) => {
-                        console.log("Value is :"+value);
+                            console.log("Value is :" + value);
                             const row = document.createElement("tr");
                             row.innerHTML = `
                                 <td>${value.subject}</td>

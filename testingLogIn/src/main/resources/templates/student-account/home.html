@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
+</head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "/images/icons/greater-than.png";
+                }
+            }
+        });
+    });
+</script>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="text-center">
+            <div class="school-logo">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+            </div> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
+            <div class="welcome-div">
+                <p>
+                    Welcome,
+                    <span class="account-text">SAID, MOHAMMAD ALDRIN NAWADIL!</span>
+                </p>
+
+            </div>
+        </div>
+
+        <a href="home" class="active sidebar-icons menu" onclick="clearSubmenus()">
+            <img th:src="@{/images/icons/home.png}" alt="Dashboard Icon"> Home
+        </a>
+
+        <a href="personal-profile" class="sidebar-icons">
+            <img th:src="@{/images/icons/account.png}" alt="Grade Icon"> My Personal Profile
+        </a>
+       
+        <a href="grades" class="sidebar-icons">
+            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grades
+        </a>
+
+        <a href="class-schedule" class="sidebar-icons">
+            <img th:src="@{/images/icons/schedule.png}" alt="Grade Icon"> Class Schedule
+        </a>
+    </div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="topbar">
+            <div class="main-topbar">
+                <span class="hamburger" onclick="toggleSidebar()">
+                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
+                </span>
+
+                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+            </div>
+            <div class="dropdown-logout">
+                <div class="user-icon dropdown-logout-toggle">
+                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
+                        alt="User Icon">
+                    <div id="dropdownUserIcon" class="dropdown-logout-content">
+                        <!-- <h6><span th:text="(${userRole})"></span></h6> -->
+                        <h6><span>STUDENT</span></h6>
+                        <a href="/logout">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-link">
+            <h4>Home</h4>
+            <p>Main</p>
+            <p>/</p>
+            <p>Home</p>
+        </div> <br>
+
+        <div class="welcome-card-div">
+            <div class="col-md-10">
+                <div class="card p-3 shadow-sm welcome-card">
+                    <h2 class="welcome-salutation">Welcome to Your Student Portal!</h2>
+                    <p>
+                        This portal offers a secure and user-friendly platform for managing your
+                        academic activities.
+                        Beyond enrollment, students can also view their grades, check their schedule, and access
+                        their profile with ease.
+
+                        The system operates under strict principles of integrity, security, and responsible usage Any unauthorized access, misuse, or tampering with the system is strictly prohibited.
+                    </p>
+                    <p>
+                        For assistance or inquiries, you may also visit us at the Enrollment Office for further support.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <script th:src="@{/js/script.js}"></script>
+</body>
+
+</html>

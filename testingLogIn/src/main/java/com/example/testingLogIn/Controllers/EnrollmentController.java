@@ -136,5 +136,16 @@ public class EnrollmentController {
             return new ResponseEntity<>("Transaction Failed. Try Again.",HttpStatus.CONFLICT);
         }
     }
+
+    @GetMapping("/cancel/{enrollmentId}")
+    public ResponseEntity<String> cancelEnrollment(@PathVariable int enrollmentId){
+        try{
+            boolean result = enrollmentService.cancelEnrollment(enrollmentId);
+            return new ResponseEntity<>("Enrollment Cancelled Successfully",HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Transaction Failed. Try Again.",HttpStatus.CONFLICT);
+        }
+    }
     
 }

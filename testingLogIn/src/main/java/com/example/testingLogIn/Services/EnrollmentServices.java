@@ -84,6 +84,13 @@ public class EnrollmentServices {
         return true;
     }
 
+    public boolean cancelEnrollment(int enrollmentId){
+        Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElseThrow(NullPointerException::new);
+        enrollmentRecord.setNotDeleted(false);
+        enrollmentRepo.save(enrollmentRecord);
+        return true;
+    }
+
     public int addToAssessment(int enrollmentId, int gradeLevelId) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         GradeLevel gradeLevelToEnroll = gradeLevelRepo.findById(gradeLevelId).orElse(null);
@@ -186,6 +193,7 @@ public class EnrollmentServices {
             pageable = PageRequest.of(pageNo-1,pageSize,sortBy(sort));
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
+        System.out.println(estatus);
         int sem = sySemRepo.findCurrentActive().getSySemNumber();
         Page<EnrollmentDTO> enrollments = enrollmentRepo.testing(estatus,sem,search,pageable).map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
                         enrollmentHandler.getStudent().DTOmapper()));
@@ -198,23 +206,6 @@ public class EnrollmentServices {
                 .isLast(enrollments.isLast())
                 .build();
     }
-
-//    public List<EnrollmentDTO> testWithUnregistered(String status,String search){
-//        EnrollmentStatus eStatus = getEnrollmentStatus(status);
-//        int currentSemNum = sySemRepo.findCurrentActive().getSySemNumber();
-//        Page<EnrollmentDTO> enrollments = enrollmentRepo.testing(eStatus,currentSemNum,search,PageRequest.of(0,10))
-//                .map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
-//                        enrollmentHandler.getStudent().DTOmapper()));
-//        return EnrollmentDTOPage.builder()
-//                .content(enrollments.getContent())
-//                .pageNo(pageNo)
-//                .pageSize(pageSize)
-//                .totalPages(enrollments.getTotalPages())
-//                .totalElements(enrollments.getTotalElements())
-//                .isLast(enrollments.isLast())
-//                .build();
-//    }
-
     private Sort sortBy(String sort){
         if(sort.equalsIgnoreCase("GradeLevel"))
             return Sort.by("e.gradeLevelToEnroll").ascending();
@@ -236,8 +227,10 @@ public class EnrollmentServices {
             return EnrollmentStatus.PAYMENT;
         else if(status.equalsIgnoreCase("ENROLLED"))
             return EnrollmentStatus.ENROLLED;
-        else
+        else if(status.equalsIgnoreCase("NOT_REGISTERED"))
             return EnrollmentStatus.NOT_REGISTERED;
+        else
+            return EnrollmentStatus.CANCELLED;
     }
 
     public EnrollmentDTO getEnrollment(int enrollmentId) {
@@ -262,8 +255,7 @@ public class EnrollmentServices {
                 .findByGradeLevel(er.getGradeLevelToEnroll().getLevelId());
         StudentTotalDiscount std = discService.getStudentTotalDiscount(er.getStudent().getStudentId());
         int actvSemId = sySemRepo.findCurrentActive().getSySemNumber();
-        gradeFeeList
-                .forEach(reqFee -> {
+        gradeFeeList.forEach(reqFee -> {
                     RequiredFees toPay = reqFee.getRequiredFee();
                     double totalPaid = Optional.ofNullable(payRecRepo.getTotalPaidByStudentForFeeInSemester(er.getStudent().getStudentId(), toPay.getId(), actvSemId)).orElse(0.0);
 

@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -80,6 +82,10 @@ public class UserModel implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getFullName(){
+        return firstname+" "+ Optional.ofNullable(middlename).map(m -> m+" ").orElse("")+lastname;
     }
     
     public UserDTO mapperDTO(){

@@ -13,5 +13,6 @@ public enum EnrollmentStatus {
     ASSESSMENT,
     PAYMENT,
     ENROLLED,
-    NOT_REGISTERED
+    NOT_REGISTERED,
+    CANCELLED
 }

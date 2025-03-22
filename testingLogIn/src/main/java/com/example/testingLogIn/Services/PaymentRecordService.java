@@ -7,10 +7,10 @@ import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
 import com.example.testingLogIn.CustomObjects.TotalPaid;
 import com.example.testingLogIn.ModelDTO.PaymentTransactionDTO;
 import com.example.testingLogIn.Models.*;
+import com.example.testingLogIn.PagedResponse.PaymentTransactionDTOPage;
 import com.example.testingLogIn.Repositories.*;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,6 +23,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -81,6 +82,8 @@ public class PaymentRecordService {
         assert student!=null;
         transaction.setStudent(student);
         transaction.setSYSem(sem);
+        transaction.setTotalAmount(amount);
+        transaction.setNotVoided(true);
         transactionRepo.save(transaction);
         PaymentTransaction tran = transactionRepo.findById(transaction.getTransactionId()).orElse(null);
         assert tran != null;
@@ -148,7 +151,6 @@ public class PaymentRecordService {
         return tran.DTOmapper();
     }
 
-    //A payment form object
     public StudentPaymentForm getStudentPaymentForm(int studentId,  Integer gradeLevelId){
         Student student = studentRepo.findById(studentId).orElse(null);
         SchoolYearSemester sem = SYSemRepo.findCurrentActive();
@@ -187,6 +189,41 @@ public class PaymentRecordService {
         }
         studentPaymentForm.setTotalFee(totalBalance);
         return studentPaymentForm;
+    }
+
+    public PaymentTransactionDTOPage getTransactions(int pageNo, int pageSize,String type,String search){
+        Pageable pageable = PageRequest.of(pageNo-1,pageSize);
+        Page<?> transactionPage = null;
+
+        if(type.equalsIgnoreCase("Transaction"))
+            transactionPage = transactionRepo.getTransactionsIsVoided(search,true,pageable).map(PaymentTransaction::DTOmapper);
+        else if(type.equalsIgnoreCase("Voided"))
+            transactionPage = transactionRepo.getTransactionsIsVoided(search,false,pageable).map(PaymentTransaction::DTOmapper);
+        else
+            transactionPage = paymentRepo.getRecordsByFee(Integer.parseInt(type),pageable).map(PaymentRecords::DTOmapper);
+
+        return PaymentTransactionDTOPage.builder()
+                .content(transactionPage.getContent())
+                .totalPages(transactionPage.getTotalPages())
+                .totalElements(transactionPage.getNumberOfElements())
+                .pageSize(transactionPage.getSize())
+                .pageNo(transactionPage.getNumber())
+                .isLast(transactionPage.isLast())
+                .build();
+    }
+
+    public PaymentTransactionDTO getTransactionById(String referenceId){
+        return transactionRepo.findById(referenceId).map(PaymentTransaction::DTOmapper).orElse(null);
+    }
+
+    public boolean voidThePayment(String transactionId){
+        PaymentTransaction transaction = transactionRepo.findById(transactionId).orElseThrow(NullPointerException::new);
+        Student stud = transaction.getStudent();
+        transaction.setNotVoided(false);
+        stud.setStudentBalance(stud.getStudentBalance()+ transaction.getTotalAmount());
+        studentRepo.save(stud);
+        transactionRepo.save(transaction);
+        return true;
     }
 
     private PaymentTransaction generateTransaction(){

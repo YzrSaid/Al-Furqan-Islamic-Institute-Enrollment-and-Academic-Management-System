@@ -39,20 +39,6 @@ List<Enrollment> findRecordsByStatusAndSemester(
     @Param("status") EnrollmentStatus status,
     @Param("activeSemNumber") int activeSemNumber);
 
-    @Query("SELECT e FROM Enrollment e " +
-            "JOIN e.student stud "+
-            "JOIN e.SYSemester s "+
-            "WHERE e.isNotDeleted = true " +
-            "AND (:status IS NULL OR e.enrollmentStatus = :status) "+
-            "AND s.sySemNumber = :activeSemNumber "+
-            "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%') " +
-            "OR stud.studentDisplayId LIKE CONCAT('%',:search,'%'))")
-    Page<Enrollment> findRecordsByStatusAndSemesterPage(
-            @Param("status") EnrollmentStatus status,
-            @Param("activeSemNumber") int activeSemNumber,
-            @Param("search") String search,
-            Pageable pageable);
-
 @Query("SELECT e FROM Enrollment e " +
         "JOIN e.student stud "+
         "JOIN e.SYSemester s "+
@@ -66,8 +52,11 @@ Enrollment getRecordByStudent(
 @Query("SELECT NEW com.example.testingLogIn.CustomObjects.EnrollmentHandler(e,stud) from Student stud " +
         "LEFT JOIN Enrollment e " +
         "ON e.student.studentId = stud.studentId AND e.SYSemester.sySemNumber = :activeSemNumber "+
-        "WHERE (e.isNotDeleted = true OR e.student IS NULL) "+
-        "AND (:status IS NULL OR (CASE WHEN e.student IS NULL THEN 'NOT_REGISTERED' ELSE e.enrollmentStatus END) = :status) "+
+        //"WHERE (e.isNotDeleted = true OR e.student IS NULL) "+
+        "WHERE (:status IS NULL OR (CASE " +
+        "WHEN e.student IS NULL THEN 'NOT_REGISTERED' " +
+        "WHEN e.isNotDeleted = FALSE THEN 'CANCELLED' "+
+        "ELSE e.enrollmentStatus END) = :status) "+
         "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%') " +
         "OR stud.studentDisplayId LIKE CONCAT('%',:search,'%'))")
 Page<EnrollmentHandler> testing(@Param("status")            EnrollmentStatus status,

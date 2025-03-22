@@ -168,14 +168,11 @@
             <div class="search">
                 <div class="search-container">
                     <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                    <button onclick="getOnPayments()" class="search-btn">Search</button>
+                    <button onclick="getRecords(1)" class="search-btn">Search</button>
                 </div>
                 <div class="sort-container">
-                    <select name="sort" onchange="getOnPayments()" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="Book">Book</option>
-                        <option value="Tuition">Tuition</option>
-                        <option value="Transactions">By Transaction</option>
+                    <select name="sort" onchange="getRecords(1)" id="view-by-select" class="sort-select">
+                        <option value="Transaction" selected>Transaction</option>
                     </select>
                 </div>
             </div>
@@ -261,7 +258,6 @@
         <div id="receiptModal" class="receipt-modal modal">
             <div class="printable-area">
                 <div class="receipt-modal-content">
-                    <!-- Close Button -->
                     <span class="close-modal no-print" data-close-modal="receiptModal">&times;</span>
 
                     <!-- Receipt Header -->
@@ -539,26 +535,44 @@
                     }
                 }
             });
-            getOnPayments();
+            fetchMgaBayarin();
+            getRecords();
         });
-        let currentPage = 0;
-        let currentPageSize = 0;
-        function getOnPayments(pageNo = 1, pageSize = 1) {
+
+        let currentPage;
+        let currentPageSize;
+        function getRecords(pageNo = 1, pageSize = 1) {
             currentPage = pageNo;
             currentPageSize = pageSize;
             const searchBy = document.getElementById("search-stud").value;
-            const sortBy = document.getElementById("sort-select").value;
-            fetch(`/enrollment/all/paged/PAYMENT?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
+            const sortBy = document.getElementById("view-by-select").value;
+            if(sortBy == "Transaction" || sortBy == "Voided"){
+                document.querySelector("#realginnas thead").innerHTML = `
+                    <th>No.</th>
+                    <th>Student Name</th>
+                    <th>Date Paid</th>
+                    <th>Transaction Number</th>
+                    <th>Amount Paid</th>
+                    <th>Action</th>`;
+            }else{
+                document.querySelector("#realginnas thead").innerHTML = `
+                    <th>No.</th>
+                    <th>Student Name</th>
+                    <th>Date Paid</th>
+                    <th>Particular</th>
+                    <th>Amount Paid</th>
+                    <th>Action</th>`;
+            }
+            fetch(`/paymentrecord/transactions/all?pageNum=${pageNo}&pageSize=${pageSize}&particular=${sortBy}&q=${searchBy}`)
                 .then(res => {
                     if (!res.ok) throw new Error("Failed to fetch payment records");
                     return res.json();
                 })
                 .then(data => {
                     const tableBody = document.querySelector("#realginnas tbody");
+
                     if (!tableBody) return console.error("Table body not found");
-
-                    tableBody.innerHTML = ""; // Clear previous data
-
+                    tableBody.innerHTML = "";
                     if (!data || !data.content || data.content.length === 0) {
                         tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
                         return;
@@ -566,16 +580,12 @@
                     data.content.forEach(rec => {
                         let row = document.createElement("tr");
 
-                        // Safely handle null/undefined values
-                        let gradeSection = rec.student.currentGradeSection?.level?.levelName || "N/A";
-                        let sectionToEnroll = rec.sectionToEnroll || "N/A";
-                        let studentType = rec.student.new ? 'New Student' : 'Old Student';
-
-                        // Build row content
                         row.innerHTML = `
-                            <td>${rec.student.studentDisplayId || "N/A"}</td>
-                            <td>${rec.student.fullName}</td>
-                            <td>${sectionToEnroll}</td>
+                            <td>TBA</td>
+                            <td>${rec.studentName}</td>
+                            <td>${rec.date}</td>
+                            <td>${rec.transactionReference}</td>
+                            <td>${rec.totalAmount}</td>
                             <td>
                                 <div class="dropdown">
                                 <div class="status-container">
@@ -584,15 +594,14 @@
                                     </button>
                                 </div>
                                 <div class="dropdown-status-content" id="dropdown-listing">
-                                    <a href="#" class="action" data-open-modal="viewReceiptModal"
-                                    data-student-id="${rec.student.studentId}"
-                                    data-enrollment-id="${rec.enrollmentId}">
+                                    <a href="#" class="action" data-open-modal="receiptModal"
+                                    data-transaction-id="${rec.transactionId}">
                                         View Receipt
                                     </a>
 
                                     <a href="#" class="action" data-action="voidTransaction"
                                     data-message="Are you sure you want to void this transaction?"
-                                    data-enrollment-id="${rec.enrollmentId}">
+                                    data-transaction-id="${rec.transactionId}">
                                         Void
                                     </a>
                             </div>
@@ -604,8 +613,7 @@
                         listOfPaymentsModal-->
                         tableBody.appendChild(row);
                     });
-                    console.log(data.totalPages);
-                    console.log("I am at page" + pageNo);
+                    console.log(pageNo);
                     updatePaymentPagination(pageNo, pageSize, data.totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
@@ -623,7 +631,7 @@
                 button.classList.add("pagination-button");
                 if (i === currentPage) button.classList.add("active");
                 button.addEventListener("click", () => {
-                    getOnPayments(i, pageSize);
+                    getRecords(i, pageSize);
                 });
                 paginationContainer.appendChild(button);
             }
@@ -634,6 +642,8 @@
         document.addEventListener("click", function (event) {
             const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
             const paymentBtn = event.target.closest('[data-open-modal="addPaymentModal"]');
+            const viewReceiptbtn = event.target.closest('[data-open-modal="receiptModal"]');
+            const voidTransaction = event.target.closest('[data-action="voidTransaction"]');
             if (viewListbtn) {
                 studentId = viewListbtn.getAttribute("data-student-id");
                 const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
@@ -642,6 +652,13 @@
                 fetchPayments(enrollmentId);
             } else if (paymentBtn) {
                 setUpPaymentForm();
+            }else if(viewReceiptbtn){
+                const receiptId = viewReceiptbtn.getAttribute("data-transaction-id");
+                fetchThisPokemon(receiptId);
+            }else if(voidTransaction){
+                alert("hahaha na void pa kaw roh");
+                const receiptId = voidTransaction.getAttribute("data-transaction-id");
+                voidPaymentTransaction(receiptId);
             }
         });
 
@@ -728,44 +745,58 @@
                     return response.json(); // Parse the response as JSON
                 })
                 .then(receipt => {
-                    document.getElementById("receipt-student-id").value = receipt.student.studentDisplayId;
-                    document.getElementById("receipt-date").value = receipt.date;
-                    document.getElementById("receipt-student-name").value = receipt.student.fullName;
-                    document.getElementById("receipt-number").value = receipt.transactionReference;
-                    document.getElementById("receipt-number").value = receipt.transactionReference;
-
-                    const tableBody = document.querySelector("#receipt-table tbody");
-                    tableBody.innerHTML = "";
-                    let i = 1;
-                    receipt.particulars.forEach(dat => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                            <tr>
-                                <td>${i++}</td>
-                                <td>${dat.feeName}</td>
-                                <td>${dat.amountPaid}</td>
-                            </tr>`;
-                        tableBody.appendChild(row);
-                    });
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                            <tfoot>
-                                <tr>
-                                    <td colspan="2">Total Amount Paid:
-                                    </td>
-                                    <td>₱ ${receipt.totalAmount}</td>
-                                </tr>
-                            </tfoot>`;
-                    tableBody.appendChild(row);
-                    alert(`Page : ${currentPage} with size of ${currentPageSize}`);
-                    getOnPayments(currentPage, currentPageSize);
-                    closeOpen();
+                    const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
+                    viewTheReceipt(decodeURIComponent(receiptJSON));
                 })
                 .catch(error => {
                     console.error("Error adding payment:", error);
                     alert("Failed to add payment. Please try again.");
                 });
         }
+
+    async function fetchThisPokemon(receiptReference){
+        const response =  await fetch(`/paymentrecord/testing/${receiptReference}`);
+        if (!response.ok) throw new Error("Failed to fetch required payments");
+
+        const receipt = await response.json();
+        const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
+        viewTheReceipt(decodeURIComponent(receiptJSON));
+    }
+
+    function viewTheReceipt(receipt){
+        receipt = JSON.parse(receipt);
+        document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
+        document.getElementById("receipt-date").value = receipt.date;
+        document.getElementById("receipt-student-name").value = receipt.studentName;
+        document.getElementById("receipt-number").value = receipt.transactionReference;
+        document.getElementById("receipt-number").value = receipt.transactionReference;
+
+        const tableBody = document.querySelector("#receipt-table tbody");
+        tableBody.innerHTML = "";
+        let i = 1;
+        receipt.particulars.forEach(dat => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <tr>
+                    <td>${i++}</td>
+                    <td>${dat.feeName}</td>
+                    <td>${dat.amountPaid}</td>
+                </tr>`;
+            tableBody.appendChild(row);
+        });
+        const row = document.createElement("tr");
+        row.innerHTML = `
+                <tfoot>
+                    <tr>
+                        <td colspan="2">Total Amount Paid:
+                        </td>
+                        <td>₱ ${receipt.totalAmount}</td>
+                    </tr>
+                </tfoot>`;
+        tableBody.appendChild(row);
+        getRecords(currentPage, currentPageSize);
+        closeOpen();
+    }
 
         function closeOpen() {
             const button1 = document.createElement("button");
@@ -880,30 +911,37 @@
             });
         }
 
-        function proceedToEnrolled() {
-            const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;
-
-            fetch(apiUrl, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" }
+    function voidPaymentTransaction(transactionId) {
+        fetch("/paymentrecord/void_payment?transaction=" + transactionId)
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to void payment transaction");
+                return response.text();
             })
-                .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
-                .then(({ text, status }) => {
-                    console.log(`🔹 API Response (${status}): ${text}`);
+            .then(text => {
+                alert(text);
+                getRecords(currentPage, currentPageSize); // Refresh the records
+            })
+            .catch(error => console.error("Error voiding payment transaction:", error));
+    }
 
-                    if (status === 200) {
-                        alert("Show success message without reloading");
-                        getOnPayments(currentPage, currentPageSize);
-                    } else {
-                        showErrorModal("❌ Error: Please try again!");
-                        getOnPayments(currentPage, currentPageSize)
-                    }
-                })
-                .catch(error => {
-                    showErrorModal("❌ Error: Please try again!");
-                    getOnPayments(currentPage, currentPageSize)
+    function fetchMgaBayarin() {
+        fetch("/payments/all")
+            .then(res => res.json())
+            .then(sections => {
+                const selectTag = document.querySelector("#view-by-select");
+                if (!selectTag) return console.error("Dropdown for sections not found");
+
+                selectTag.innerHTML = `<option value="Transaction" selected>Transaction</option>
+                                        <option value="Voided">Voided Transaction</option>`; // Default option
+                sections.forEach(fee => {
+                    const option = document.createElement("option");
+                    option.value = fee.id;
+                    option.textContent = fee.name;
+                    selectTag.appendChild(option);
                 });
-        }
+            })
+            .catch(error => console.error("Error fetching sections:", error));
+    }
     </script>
 </body>
 

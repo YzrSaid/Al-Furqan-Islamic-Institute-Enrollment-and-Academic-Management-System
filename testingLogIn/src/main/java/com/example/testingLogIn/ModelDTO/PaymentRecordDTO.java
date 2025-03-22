@@ -11,20 +11,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class PaymentRecordDTO {
-    private int recordId;
-    
-    private int studId;
-    private String studentId;
-    private String studentFirstName;
-    private String studentLastName;
-    private String studentMiddleName;
-    
-    private int requiredPaymentId;
-    private String requiredPaymentName;
-    private String schoolYearAndSemester;
-    
-    private String staffReceiverName;
-    
-    private double amount;
-    private LocalDate datePaid;
+    private String transactionId;
+    private String transactionReference;
+    private String receivedBy;
+    private String studentName;
+    private LocalDate date;
+    private String SYSemester;
+    private double totalAmount;
 }

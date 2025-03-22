@@ -188,6 +188,7 @@
                         <option value="Payment">Payment</option>
                         <option value="Enrolled">Enrolled</option>
                         <option value="Not_registered">Wala sa listing</option>
+                        <option value="Cancelled">Cancelled</option>
                     </select>
                 </div>
             </div>
@@ -1375,9 +1376,9 @@
                 return response.json(); // Parse the response as JSON
             })
             .then(receipt => {
-                document.getElementById("receipt-student-id").value = receipt.student.studentDisplayId;
+                document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
                 document.getElementById("receipt-date").value = receipt.date;
-                document.getElementById("receipt-student-name").value = receipt.student.fullName;
+                document.getElementById("receipt-student-name").value = receipt.studentName;
                 document.getElementById("receipt-number").value = receipt.transactionReference;
                 document.getElementById("receipt-number").value = receipt.transactionReference;
 
@@ -1762,7 +1763,7 @@
             if (response.ok) {
                 const result = await response.text(); // Parse the response as text
                 alert(result);
-                goList(currentPageNo, currentPageSize)
+                goList(currentPageNo,currentPageSize);
             } else {
                 const errorMessage = await response.text();
                 alert(errorMessage);
@@ -1826,16 +1827,29 @@
             .catch(error => console.error("Error fetching grade levels:", error));
     }
 
+    async function cancelEnrollment(enrollmentToCancel){//ctrl here
+        let response = await fetch(`/enrollment/cancel/${enrollmentToCancel}`);
+        if (!response.ok) throw new Error("wa nakita");
+        alert(await response.text());
+        goList(currentPageNo,currentPageSize);
+    }
+
     function getDropdownContent(enr) {
+    if(enr.notDeleted === false || enr.notDeleted === "false"){
+        return `<a href="#" ">Ibalik sa dati T_T</a>`;
+    }
         switch (enr.enrollmentStatus) {
             case "LISTING":
                 return `
                 <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" data-isStudent-new="${enr.student.new}"
                    data-isTransferee="${enr.student.transferee}" data-current-gradeId="${enr.student.currentGradeLevel ? enr.student.currentGradeLevel.levelId : 'None'}"
                    data-open-modal="gradeLevelModal"> Proceed </a>
-                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" 
-                   data-message="Are you sure you want to cancel this registration?"> Cancel Registration </a>
+                <a href="#" data-action="cancelRegistration"
+                data-enrollment-id="${enr.enrollmentId}"> Cancel Registration </a>
             `;
+<!--            <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"-->
+<!--                data-enrollment-id="${enr.enrollmentId}"--> ORIGINAL CANCEL
+<!--                   data-message="Are you sure you want to cancel this registration?"> Cancel Registration </a>-->
             case "ASSESSMENT":
                 return `
                 <a href="#" class="action" data-displayId="${enr.student.studentDisplayId}"
@@ -1979,6 +1993,12 @@
         const viewRecordButton = target.closest(".viewRecordButton");
         const paymentBtn = target.closest('[data-open-modal="addPaymentModal"]');
         const proceedToEnrolledButton = target.closest("#proceed-btn");
+        const cancelReg = target.closest('[data-action="cancelRegistration"]');
+        if(cancelReg){
+            alert("Cancelling");
+            const enrollmentIdCancel = cancelReg.getAttribute("data-enrollment-id");
+            cancelEnrollment(enrollmentIdCancel);
+        }
         if (proceedToEnrolledButton) {
             const enrollmentIdElement = proceedToEnrolledButton.getAttribute("data-enrollment-id");
 

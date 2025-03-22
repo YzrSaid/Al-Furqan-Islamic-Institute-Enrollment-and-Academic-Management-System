@@ -32,19 +32,14 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
             "JOIN pr.transaction pt "+
             "JOIN pt.SYSem s "+
             "JOIN pt.student stud "+
-            "WHERE stud.studentId = :studentId "+
+            "WHERE pt.isNotVoided = TRUE AND " +
+            "stud.studentId = :studentId "+
             "AND s.sySemNumber = :semId "+
             "AND pr.requiredPayment.id = :reqPaymentId")
     Double getTotalPaidByStudentForFeeInSemester(
             @Param("studentId") int studentId,
             @Param("reqPaymentId") int reqPaymentId,
             @Param("semId") int semId);
-    
-    @Query("SELECT pr FROM PaymentRecords pr")
-    List<PaymentRecords> getAllRecords();
-
-    @Query("SELECT pr FROM PaymentRecords pr")
-    Page<PaymentRecords> getRecordsPage(Pageable pageable);
     
     @Query("SELECT NEW com.example.testingLogIn.CustomObjects.TotalPaid(SUM(pr.amount),rp.requiredAmount,pr.requiredPayment) FROM PaymentRecords pr "+
            "JOIN pr.transaction t "+
@@ -64,4 +59,12 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
     Double totalPaidForSpecificFee(@Param("studentId") int studentId,
                                    @Param("reqPaymentId") int reqPaymentId,
                                    @Param("semId") Integer semId);
+
+    @Query("SELECT pr from PaymentRecords pr "+
+            "JOIN pr.transaction pt "+
+            //"JOIN pt.SYSem s "+
+            "JOIN pr.requiredPayment rp "+
+            "WHERE pt.isNotVoided = TRUE AND " +
+            "rp.id=:reqPaymentId")
+    Page<PaymentRecords> getRecordsByFee(@Param("reqPaymentId") int reqPaymentId, Pageable pageable);
 }

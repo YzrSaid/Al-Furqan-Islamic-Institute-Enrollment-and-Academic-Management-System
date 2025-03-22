@@ -2,10 +2,8 @@ package com.example.testingLogIn.ModelDTO;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,10 +20,11 @@ class Particular{
 @Builder
 @Data
 public class PaymentTransactionDTO {
-
+    private String transactionId;
     private String transactionReference;
     private String receivedBy;
-    private StudentDTO student;
+    private String studentDisplayId;
+    private String studentName;
     private LocalDate date;
     private String SYSemester;
     private double totalAmount;

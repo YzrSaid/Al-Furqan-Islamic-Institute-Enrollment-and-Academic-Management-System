@@ -37,22 +37,24 @@ public class PaymentTransaction {
     private List<PaymentRecords> particulars;
 
     private LocalDate dateReceived = LocalDate.now();
+    private double totalAmount;
+    private boolean isNotVoided;
 
     public PaymentTransactionDTO DTOmapper(){
-        PaymentTransactionDTO transactionDTO = PaymentTransactionDTO.builder()
+        PaymentTransactionDTO paymentTransactionDTO = PaymentTransactionDTO.builder()
+                .studentDisplayId(student.getStudentDisplayId())
+                .transactionId(transactionId)
                 .transactionReference(transactionId)
-                .receivedBy(staff.getFirstname()+" "+staff.getLastname())
-                .student(student.DTOmapper())
+                .receivedBy(staff.getFullName())
+                .studentName(student.getFullName())
                 .date(dateReceived)
                 .SYSemester(SYSem.toString())
+                .totalAmount(totalAmount)
                 .particulars(new ArrayList<>())
                 .build();
-        double total = 0;
-        for(PaymentRecords pr :particulars){
-            transactionDTO.addNewParticular(pr.getRequiredPayment().getName(),pr.getAmount());
-            total+=pr.getAmount();
-        }
-        transactionDTO.setTotalAmount(total);
-        return transactionDTO;
+        for(PaymentRecords pr :particulars)
+            paymentTransactionDTO.addNewParticular(pr.getRequiredPayment().getName(),pr.getAmount());
+
+        return paymentTransactionDTO;
     }
 }

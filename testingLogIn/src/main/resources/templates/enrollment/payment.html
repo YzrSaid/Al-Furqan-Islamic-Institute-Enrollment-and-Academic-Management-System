@@ -713,9 +713,9 @@
                     return response.json(); // Parse the response as JSON
                 })
                 .then(receipt => {
-                    document.getElementById("receipt-student-id").value = receipt.student.studentDisplayId;
+                    document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
                     document.getElementById("receipt-date").value = receipt.date;
-                    document.getElementById("receipt-student-name").value = receipt.student.fullName;
+                    document.getElementById("receipt-student-name").value = receipt.studentName;
                     document.getElementById("receipt-number").value = receipt.transactionReference;
                     document.getElementById("receipt-number").value = receipt.transactionReference;
 

@@ -38,10 +38,12 @@ public class PaymentRecords {
     
     public PaymentRecordDTO DTOmapper(){
         return PaymentRecordDTO.builder()
-                            .recordId(recordId)
-                            .amount(amount)
-                            .requiredPaymentId(requiredPayment.getId())
-                            .requiredPaymentName(requiredPayment.getName())
+                            .transactionId(transaction.getTransactionId())
+                            .transactionReference(requiredPayment.getName())
+                            .studentName(transaction.getStudent().getFullName())
+                            .receivedBy(transaction.getStaff().getFullName())
+                            .date(transaction.getDateReceived())
+                            .totalAmount(amount)
                             .build();
     }
 }

@@ -369,20 +369,20 @@
 
                     <div class="student-form-group">
                         <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                        <input type="text" id="lastGradeLevelCompletedp">
+                        <input type="text" id="lastGradeLevelCompleted">
 
                         <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                        <input type="text" id="lastMadrasaYearCompletedp">
+                        <input type="text" id="lastMadrasaYearCompleted">
                     </div> <br>
 
                     <div class="student-form-group">
                         <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                        <input type="text" id="madrasaNameLastAttendedp">
+                        <input type="text" id="madrasaNameLastAttended">
                     </div> <br>
 
                     <div class="student-form-group">
                         <label for="madrasaAddress">Madrasa Address:</label>
-                        <input type="text" id="madrasaAddressp">
+                        <input type="text" id="madrasaAddress">
                     </div> <br>
 
                     <div style="display: flex; gap: 365px;">
@@ -1869,10 +1869,10 @@
         document.getElementById("street").value = studentProf.address.street;
         document.getElementById("barangay").value= studentProf.address.barangay;
         document.getElementById("city").value= studentProf.address.city;
-<!--        document.getElementById("lastGradeLevelCompletedp").value= studentProf.currentGradeLevel ? studentProf.currentGradeLevel.levelName : 'None';-->
-<!--        document.getElementById("lastMadrasaYearCompletedp").value= studentProf.lastMadrasaYearCompleted;-->
-<!--        document.getElementById("madrasaNameLastAttendedp").value= studentProf.madrasaName;-->
-<!--        document.getElementById("madrasaAddressp").value= studentProf.madrasaAddress;-->
+        document.getElementById("lastGradeLevelCompleted").value= studentProf.currentGradeLevel ? studentProf.currentGradeLevel.levelName : 'None';
+        document.getElementById("lastMadrasaYearCompleted").value= studentProf.lastMadrasaYearCompleted;
+        document.getElementById("madrasaNameLastAttended").value= studentProf.madrasaName;
+        document.getElementById("madrasaAddress").value= studentProf.madrasaAddress;
     }
     //key listener para sa mga forms
     document.addEventListener("keydown", function(event) {

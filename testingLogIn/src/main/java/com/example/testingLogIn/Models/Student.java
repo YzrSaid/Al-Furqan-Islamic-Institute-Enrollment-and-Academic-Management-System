@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Models;
 
+import com.example.testingLogIn.CustomObjects.Address;
 import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -33,7 +34,9 @@ public class Student{
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private LocalDate birthdate;
-    private String address;
+    private String street;
+    private String barangay;
+    private String city;
     private String cellphoneNum;
     private String birthPlace;
     private double studentBalance;
@@ -71,7 +74,8 @@ public class Student{
                         .fullName(fullName)
                         .gender(gender)
                         .birthdate(birthdate)
-                        .address(address)
+                        .birthPlace(birthPlace)
+                        .address(Address.builder().street(street).barangay(barangay).city(city).build())
                         .balanceAmount(studentBalance)
                         .currentGradeLevel(Optional.ofNullable(currentGradeSection).map(Section::getLevel).orElse(null))
                         .currentGradeSection(Optional.ofNullable(currentGradeSection).map(sec -> sec.getLevel().getLevelName()).orElse("")
@@ -94,38 +98,5 @@ public class Student{
                         .lastMadrasaYearCompleted(lastMadrasaYearCompleted)
                         .madrasaAddress(madrasaAddress)
                         .build();
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "studentId=" + studentId +
-                ", studentDisplayId='" + studentDisplayId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", gender=" + gender +
-                ", birthdate=" + birthdate +
-                ", address='" + address + '\'' +
-                ", cellphoneNum='" + cellphoneNum + '\'' +
-                ", birthPlace='" + birthPlace + '\'' +
-                ", studentBalance=" + studentBalance +
-                ", currentGradeSection=" + currentGradeSection +
-                ", motherName='" + motherName + '\'' +
-                ", motherOccupation='" + motherOccupation + '\'' +
-                ", fatherName='" + fatherName + '\'' +
-                ", fatherOccupation='" + fatherOccupation + '\'' +
-                ", guardianName='" + guardianName + '\'' +
-                ", guardianAddress='" + guardianAddress + '\'' +
-                ", guardianContactNum='" + guardianContactNum + '\'' +
-                ", isNew=" + isNew +
-                ", isScholar=" + isScholar +
-                ", isNotDeleted=" + isNotDeleted +
-                ", isTransferee=" + isTransferee +
-                ", madrasaName='" + madrasaName + '\'' +
-                ", lastGradeLevelCompleted='" + lastGradeLevelCompleted + '\'' +
-                ", lastMadrasaYearCompleted='" + lastMadrasaYearCompleted + '\'' +
-                ", madrasaAddress='" + madrasaAddress + '\'' +
-                '}';
     }
 }

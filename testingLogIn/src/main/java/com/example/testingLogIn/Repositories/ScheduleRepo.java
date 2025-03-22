@@ -5,6 +5,8 @@ import com.example.testingLogIn.Models.Schedule;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -69,4 +71,9 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Integer>{
            "AND sc.subject.subjectNumber = :subjectId " + 
            "GROUP BY sc.section")
     List<Schedule> findByTeacherSubject(@Param("teacherId") int teacherId, @Param("subjectId") int subjectId);
+    @Query("SELECT COUNT(sc) FROM Schedule sc " +
+            "WHERE sc.isNotDeleted = TRUE " +
+            "AND sc.teacher.staffId = :teacherId " +
+            "AND sc.subject.subjectNumber = :subjectId")
+    Integer countTeacherSubjectSched(@Param("teacherId") int userId, @Param("subjectId") int subjectId);
 }

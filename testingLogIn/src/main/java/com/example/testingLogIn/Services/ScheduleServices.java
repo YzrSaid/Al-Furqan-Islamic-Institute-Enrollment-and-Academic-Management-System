@@ -12,11 +12,8 @@ import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -228,6 +225,12 @@ public class ScheduleServices {
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken)
             return null;
         UserModel teacher =(UserModel) authentication.getPrincipal();
+
+        Integer subjectCount = Optional.ofNullable(scheduleRepo.countTeacherSubjectSched(teacher.getStaffId(),subjectId)).orElse(0);
+        System.out.println(subjectCount);
+        if(subjectCount == 0)
+            throw new NullPointerException();
+
         Map<Integer,ScheduleDTO> scheduleList = scheduleRepo.findByTeacherSubject(teacher.getStaffId(),subjectId).stream()
                 .collect(Collectors.toMap(sched -> sched.getSubject().getSubjectNumber(),Schedule::mapper));
         for(Integer key : scheduleList.keySet()){

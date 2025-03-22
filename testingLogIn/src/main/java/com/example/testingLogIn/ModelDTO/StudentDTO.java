@@ -1,5 +1,6 @@
 package com.example.testingLogIn.ModelDTO;
 
+import com.example.testingLogIn.CustomObjects.Address;
 import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.Models.GradeLevel;
 import jakarta.persistence.EnumType;
@@ -23,7 +24,7 @@ public class StudentDTO {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private LocalDate birthdate;
-    private String address;
+    private Address address;
     private String cellphoneNum;
     private String birthPlace;
     private double balanceAmount;

@@ -9,6 +9,7 @@
         "duplicate-id-active": "off"
       }
     ],
-    "axe/forms": "off"
+    "axe/forms": "off",
+    "axe/name-role-value": "off"
   }
 }

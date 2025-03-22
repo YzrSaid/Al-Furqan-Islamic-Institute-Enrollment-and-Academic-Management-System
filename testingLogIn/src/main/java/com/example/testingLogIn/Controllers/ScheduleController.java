@@ -5,6 +5,7 @@ import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.Services.ScheduleServices;
 
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,13 +104,18 @@ public class ScheduleController {
             return new ResponseEntity<>("Schedule Not Found",HttpStatus.NOT_FOUND);
     }
 
+    //get the subjects being taught by the teacher
     @GetMapping("/test")
     public ResponseEntity<List<SubjectSectionCount>> testNow(){
         return new ResponseEntity<>(scheduleService.getTeacherSubjects(),HttpStatus.OK);
     }
-
+    //kuhaon ang mga sections nga naay schedule ang kini nga maestra for the specific subject
     @GetMapping("/test/{subjectId}")
-    public ResponseEntity<Map<Integer,ScheduleDTO>> testNow(@PathVariable int subjectId){
-        return new ResponseEntity<>(scheduleService.getSectionsBySubject(subjectId),HttpStatus.OK);
+    public ResponseEntity<?> testNow(@PathVariable int subjectId){
+        try {
+            return new ResponseEntity<>(scheduleService.getSectionsBySubject(subjectId), HttpStatus.OK);
+        }catch(NullPointerException e){
+            return new ResponseEntity<>("Mini wala mn kay subject in ani nga ginatudlo. Hala hacker ka!!!",HttpStatus.UNAUTHORIZED);
+        }
     }
 }

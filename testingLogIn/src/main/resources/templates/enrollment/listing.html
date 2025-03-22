@@ -254,8 +254,8 @@
 
                         <div style="display: flex; gap: 50px;">
                             <div class="half-unique" id="stud-type-row">
-                                <label for="type">Student Type:</label>
-                                <h6>New</h6>
+                                <label for="stud-type">Student Type:</label>
+                                <h6 id="stud-type">New</h6>
                             </div>
 
                             <div class="half-unique" id="scholar-row">
@@ -369,20 +369,20 @@
 
                     <div class="student-form-group">
                         <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                        <input type="text" id="lastGradeLevelCompleted">
+                        <input type="text" id="lastGradeLevelCompletedp">
 
                         <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                        <input type="text" id="lastMadrasaYearCompleted">
+                        <input type="text" id="lastMadrasaYearCompletedp">
                     </div> <br>
 
                     <div class="student-form-group">
                         <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                        <input type="text" id="madrasaNameLastAttended">
+                        <input type="text" id="madrasaNameLastAttendedp">
                     </div> <br>
 
                     <div class="student-form-group">
                         <label for="madrasaAddress">Madrasa Address:</label>
-                        <input type="text" id="madrasaAddress">
+                        <input type="text" id="madrasaAddressp">
                     </div> <br>
 
                     <div style="display: flex; gap: 365px;">
@@ -1536,11 +1536,10 @@
             birthdate: document.getElementById("studbirthdate").value || null,
             birthPlace: birthplace, // Use the extracted birthPlace variable
 
-            address: [
-                document.getElementById("studstreet")?.value?.trim(),
-                document.getElementById("studbarangay")?.value?.trim(),
-                document.getElementById("studcity")?.value?.trim()
-            ].filter(Boolean).join(", "),
+            address: {
+                street : document.getElementById("studstreet")?.value?.trim(),
+                barangay : document.getElementById("studbarangay")?.value?.trim(),
+                city : document.getElementById("studcity")?.value?.trim()},
 
             // Parent's Information
             fatherName: document.getElementById("studfatherName")?.value?.trim() || null,
@@ -1666,11 +1665,15 @@
                 tableBody.innerHTML = "";
 
                 data.content.forEach(enr => {
+                    const studentJson = encodeURIComponent(JSON.stringify(enr.student));
                     const row = document.createElement("tr");
                     row.setAttribute("data-enrollment-id", enr.enrollmentId);
                     row.classList.add("clickable-row");
 
-                    let dropdownContent = getDropdownContent(enr);
+                    let dropdownContent = `
+                    <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}"
+                    data-open-modal="studentInformationModal" onclick="displayStud(decodeURIComponent('${studentJson}'))"> View Record </a>`
+                    +getDropdownContent(enr);
 
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId}</td>
@@ -1804,18 +1807,14 @@
         switch (enr.enrollmentStatus) {
             case "LISTING":
                 return `
-                <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}" 
-                   data-open-modal="studentInformationModal"> View Record </a>
                 <a href="#" class="proceedButton" data-enrollment-id="${enr.enrollmentId}" data-isStudent-new="${enr.student.new}"
-                   data-isTransferee="${enr.student.transferee}" data-current-gradeId="${enr.student.currentGradeLevel.levelId}"
+                   data-isTransferee="${enr.student.transferee}" data-current-gradeId="${enr.student.currentGradeLevel ? enr.student.currentGradeLevel.levelId : 'None'}"
                    data-open-modal="gradeLevelModal"> Proceed </a>
                 <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal" 
                    data-message="Are you sure you want to cancel this registration?"> Cancel Registration </a>
             `;
             case "ASSESSMENT":
                 return `
-                <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}" 
-                   data-open-modal="studentInformationModal"> View Record </a>
                 <a href="#" class="action" data-displayId="${enr.student.studentDisplayId}"
                    data-prerequisite="${enr.preRequisiteId}"
                    data-stud-name="${enr.student.firstName} ${enr.student.middleName || ""} ${enr.student.lastName}"
@@ -1830,8 +1829,6 @@
             `;
             case "PAYMENT":
                 return `
-                <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}" 
-                   data-open-modal="studentInformationModal"> View Record </a>
                 <a href="#" class="viewPaymentsButton" data-enrollment-id="${enr.enrollmentId}" 
                    data-open-modal="listOfPaymentsModal"
                    data-student-id="${enr.student.studentId}"
@@ -1848,13 +1845,47 @@
             `;
             case "ENROLLED":
                 return `
-                <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}" 
-                   data-open-modal="studentInformationModal"> View Record </a>
             `;
             default:
                 return `<p>No actions available</p>`;
         }
     }
+
+    function displayStud(std){//viewing student info(for ctrl-f)
+        const studentProf = JSON.parse(std);
+        console.log(studentProf);
+        document.getElementById("student-id").value = studentProf.studentDisplayId;
+        document.getElementById("firstName").value = studentProf.firstName;
+        document.getElementById("middleName").value = studentProf.middleName;
+        document.getElementById("lastName").value = studentProf.lastName;
+        document.getElementById("gender").value = studentProf.gender;
+        document.getElementById("birthdate").value = studentProf.birthdate;
+        document.getElementById("placeOfBirth").value = studentProf.birthPlace;
+        document.getElementById("fatherName").value = studentProf.fatherName;
+        document.getElementById("fatherOccupation").value = studentProf.fatherOccupation;
+        document.getElementById("motherName").value = studentProf.motherName;
+        document.getElementById("motherOccupation").value = studentProf.motherOccupation;
+        document.getElementById("stud-type").textContent = studentProf.new ? "NEW" : "OLD";
+        document.getElementById("street").value = studentProf.address.street;
+        document.getElementById("barangay").value= studentProf.address.barangay;
+        document.getElementById("city").value= studentProf.address.city;
+<!--        document.getElementById("lastGradeLevelCompletedp").value= studentProf.currentGradeLevel ? studentProf.currentGradeLevel.levelName : 'None';-->
+<!--        document.getElementById("lastMadrasaYearCompletedp").value= studentProf.lastMadrasaYearCompleted;-->
+<!--        document.getElementById("madrasaNameLastAttendedp").value= studentProf.madrasaName;-->
+<!--        document.getElementById("madrasaAddressp").value= studentProf.madrasaAddress;-->
+    }
+    //key listener para sa mga forms
+    document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        const [button,button2] = [document.createElement("button"),document.createElement("button")];
+        button.setAttribute("data-close-modal", "studentInformationModal");
+        button2.setAttribute("data-close-modal","viewGradesModal");
+        document.body.appendChild(button);
+        document.body.appendChild(button2);
+        button.click();
+        button2.click();
+    }
+});
 
     function updatePagination(status, currentPage, pageSize, totalPages) {
         const paginationContainer = document.querySelector("#pagination");
@@ -1944,19 +1975,6 @@
             payerStudentId = paymentList.getAttribute("data-student-id");
             payLevelToEnrollId = paymentList.getAttribute("data-level-Id");
             fetchPayments(enrollmentId);
-        }
-        else if (viewRecordButton) {
-            const enrollmentId = viewRecordButton.getAttribute("data-enrollment-id"); // ✅ Capture enrollment ID
-            console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
-
-            // Show the modal
-            const modal = document.getElementById("studentInformationModal");
-            if (modal) {
-                modal.classList.add("show");
-                modal.style.visibility = "visible";
-                modal.style.opacity = "1";
-                modal.style.pointerEvents = "auto";
-            }
         }
         if (target.classList.contains("viewRecordButton")) {
             console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);

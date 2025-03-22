@@ -50,7 +50,9 @@ public class StudentServices {
                                     .birthPlace(student.getBirthPlace())
                                     .birthdate(student.getBirthdate())
                                     .cellphoneNum(student.getCellphoneNum())
-                                    .address(student.getAddress())
+                                    .street(student.getAddress().getStreet())
+                                    .barangay(student.getAddress().getBarangay())
+                                    .city(student.getAddress().getCity())
                                     .studentBalance(0)
                                     .motherName(student.getMotherName())
                                     .motherOccupation(student.getMotherOccupation())
@@ -116,7 +118,11 @@ public class StudentServices {
             toUpdate.setMiddleName(stud.getMiddleName());
             toUpdate.setCellphoneNum(stud.getCellphoneNum());
             toUpdate.setGender(stud.getGender());
+            toUpdate.setStreet(stud.getAddress().getStreet());
+            toUpdate.setBarangay(stud.getAddress().getBarangay());
+            toUpdate.setCity(stud.getAddress().getCity());
             toUpdate.setBirthdate(stud.getBirthdate());
+            toUpdate.setBirthPlace(stud.getBirthPlace());
             toUpdate.setCurrentGradeSection(section);
             
             toUpdate.setMotherName(stud.getMotherName());

@@ -45,5 +45,9 @@ public class Section {
                              .isNotDeleted(true)
                              .build();
     }
-    
+
+    @Override
+    public String toString() {
+        return level.getLevelName()+" - "+sectionName;
+    }
 }

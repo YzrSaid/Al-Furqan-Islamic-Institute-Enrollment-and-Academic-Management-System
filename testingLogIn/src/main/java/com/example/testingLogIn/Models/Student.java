@@ -59,11 +59,18 @@ public class Student{
     
     private boolean isTransferee;
     private String madrasaName;
-    private String lastGradeLevelCompleted;
+    @ManyToOne
+    @JoinColumn(name="lastGradeLevelCompleted")
+    private GradeLevel lastGradeLevelCompleted;
     private String lastMadrasaYearCompleted;
     private String madrasaAddress;
     
     public StudentDTO DTOmapper(){
+        GradeLevel currentLevel = null;
+        if(isNew && isTransferee)
+            currentLevel = lastGradeLevelCompleted;
+        else
+            currentLevel = Optional.ofNullable(currentGradeSection).map(Section::getLevel).orElse(null);
         return StudentDTO.builder()
                         .studentId(studentId)
                 
@@ -77,9 +84,8 @@ public class Student{
                         .birthPlace(birthPlace)
                         .address(Address.builder().street(street).barangay(barangay).city(city).build())
                         .balanceAmount(studentBalance)
-                        .currentGradeLevel(Optional.ofNullable(currentGradeSection).map(Section::getLevel).orElse(null))
-                        .currentGradeSection(Optional.ofNullable(currentGradeSection).map(sec -> sec.getLevel().getLevelName()).orElse("")
-                                            +Optional.ofNullable(currentGradeSection).map(sec ->"-"+ sec.getSectionName()).orElse("NONE"))
+                        .currentGradeLevel(currentLevel)
+                        .currentGradeSection(Optional.ofNullable(currentGradeSection).map(Section::toString).orElse("NONE"))
                 
                         .motherName(motherName)
                         .motherOccupation(motherOccupation)
@@ -94,7 +100,7 @@ public class Student{
                 
                         .isTransferee(isTransferee)
                         .madrasaName(madrasaName)
-                        .lastGradeLevelCompleted(lastGradeLevelCompleted)
+                        .lastGradeLevelCompleted(Optional.ofNullable(lastGradeLevelCompleted).map(GradeLevel::getLevelName).orElse(null))
                         .lastMadrasaYearCompleted(lastMadrasaYearCompleted)
                         .madrasaAddress(madrasaAddress)
                         .build();

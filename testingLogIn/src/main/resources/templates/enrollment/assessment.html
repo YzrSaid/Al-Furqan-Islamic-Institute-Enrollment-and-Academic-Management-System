@@ -375,12 +375,9 @@
         var url = "/gradelevel/successor/"+currentLevelId;
         isStudentNew = isStudentNew === true || isStudentNew === "true";
         isTransferee = isTransferee === true || isTransferee === "true";
-        if(isStudentNew && isTransferee){
-            url = "/gradelevel/all";
-        }
-        else if(isStudentNew){
-            url = "/gradelevel/no-pre-requisite";
-        }
+        const isLevelIdNull = currentLevelId === null || currentLevelId === "null" || currentLevelId === "None";
+        if((isStudentNew && !isTransferee) || isLevelIdNull){
+                url= '/gradelevel/no-pre-requisite';}
         const originalOnChange = selectTag.getAttribute("onChange");
         selectTag.removeAttribute("onChange");
 
@@ -512,7 +509,7 @@
                     <td>${enr.student.studentDisplayId || "N/A"}</td>
                     <td>${enr.student.fullName}</td>
                     <td>
-                        <select onChange="printer(this.options[this.selectedIndex].value, ${enr.enrollmentId})" 
+                        <select onChange="updateGradeLevel(${enr.enrollmentId},this.options[this.selectedIndex].value)"
                                 class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" data-isStudent-new="${enr.student.new}"
                                 data-current-gradeId="${levelId}" data-isStudent-transferee="${enr.student.transferee}">
                             <option>Loading...</option> <!-- Placeholder -->
@@ -542,7 +539,6 @@
                     var currentLevelId = selectTag.getAttribute("data-current-gradeId");
                     var isStudentNew = selectTag.getAttribute("data-isStudent-new");
                     var isTransferee = selectTag.getAttribute("data-isStudent-transferee");
-                    console.log(isTransferee);
                     var enrollmentId = selectTag.getAttribute("data-enrollment-id");
                     var selectedGrade = data.content.find(e => e.enrollmentId == enrollmentId)?.gradeLevelToEnroll;
                     fetchGradeLevels(selectedGrade, selectTag,isStudentNew,currentLevelId,isTransferee);
@@ -581,7 +577,9 @@
             const studentId = target.dataset.id;
             const preRequisiteId = target.getAttribute("data-prerequisite");
             document.getElementById("student-name").textContent = target.getAttribute("data-stud-name");
-            document.getElementById("student-id").textContent = target.getAttribute("data-displayId");
+            document.getElementById("student-id").textContent = target.getAttribute("data-displayId")
+            const tableBody = document.querySelector("#lamesaa tbody");
+            tableBody.innerHTML = `<td colspan="4">No Records Found</td>`;;
             if (!studentId) {
                 console.error(
                     "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
@@ -589,19 +587,20 @@
                 return;
             }
 
+
             fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
                 .then((response) => response.json())
                 .then((data) => {
-                    const tableBody = document.querySelector("#lamesaa tbody");
-                    tableBody.innerHTML = "";
 
-                    const studentGradesMap = new Map(Object.entries(data));
-
+                    const studentGradesMap = new Map(Object.entries(data.content));
+                    if(studentGradesMap.size === 0) {
+                        alert("Returning");
+                        return;}
+                    tableBody.innerHTML = ``;;
                     studentGradesMap.forEach((values, key) => {
                         const keyRow = document.createElement("tr");
-                        keyRow.innerHTML = `<td colspan="3"><strong>${key}</strong></td>`; // Use colspan to span all columns
+                        keyRow.innerHTML = `<td colspan="3"><strong>${key}</strong></td>`;
                         tableBody.appendChild(keyRow);
-
                         let gradeTotal = 0;
                         let gradeCount = 0;
 
@@ -613,13 +612,9 @@
                             gradeRow.innerHTML = `
                                 <td>${grade.subjectName}</td>
                                 <td>${grade.subjectName}</td>
-                                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
-            `;
-                            // Append gradeRow to the table body
+                                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>`;
                             tableBody.appendChild(gradeRow);
                         });
-
-                        // Calculate the average grade after the loop is finished
                         const avg = gradeCount > 0 ? gradeTotal / gradeCount : 0; // Avoid division by 0
 
                         // Create the average row (this should be done outside the loop)
@@ -649,10 +644,6 @@
             fetchSections(gradeLevel);
         }
     });
-
-    function printer(gradeLevelId, enrollmentId) {
-        updateGradeLevel(enrollmentId, gradeLevelId);
-    }
     async function updateGradeLevel(enrollmentId, gradeLevelId) {
         try {
             const response = await fetch(`/enrollment/add/assessment/${enrollmentId}/${gradeLevelId}`, {

@@ -2,8 +2,14 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import com.example.testingLogIn.Services.StudentSubjectGradeServices;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +20,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class StudentGrades{
+    private Map<String,List<StudentSubjectGradeDTO>> content;
+}
 /**
  *
  * @author magno
@@ -54,9 +66,11 @@ public class StudentSubjectGradeController {
     }
 
     @GetMapping("/student/{studentId}/{preRequisiteId}")
-    public ResponseEntity<Map<String,List<StudentSubjectGradeDTO>>> getStudentCurrentGrades(@PathVariable int studentId,@PathVariable int preRequisiteId){
+    public ResponseEntity<StudentGrades> getStudentCurrentGrades(@PathVariable int studentId,@PathVariable int preRequisiteId){
         try{
-            return new ResponseEntity<>(ssgService.getStudentGradesOfPreRequisite(studentId,preRequisiteId),HttpStatus.OK);
+            StudentGrades studentGrades = new StudentGrades();
+            studentGrades.setContent(ssgService.getStudentGradesOfPreRequisite(studentId,preRequisiteId));
+            return new ResponseEntity<>(studentGrades,HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);

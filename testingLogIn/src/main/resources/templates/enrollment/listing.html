@@ -244,6 +244,9 @@
         <!-- Modal for student information -->
         <div id="studentInformationModal" class="student-information-modal modal">
             <div class="student-information-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="studentInformationModal">&times;</span>
+  
                 <h1>Student Information</h1>
                 <form method="" action="" id="studentInformationForm">
                     <div class="header">
@@ -263,8 +266,6 @@
                                 <h6>Yes</h6>
                             </div>
                         </div>
-
-
                     </div>
 
 
@@ -609,7 +610,7 @@
             </div>
         </div>
     </div>
-  
+
     <!-- Modal for listOfPaymentsModal -->
     <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
         <div class="list-of-payments-modal-content">
@@ -630,13 +631,13 @@
             <!-- List of Payments Table -->
             <table id="table-ni-kharl" class="view-list-of-payments-table">
                 <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Req. Amount</th>
-                    <th>Amount Paid</th>
-                    <th>Balance</th>
-                    <th>Status</th>
-                </tr>
+                    <tr>
+                        <th>Type</th>
+                        <th>Req. Amount</th>
+                        <th>Amount Paid</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                    </tr>
                 </thead>
                 <tbody>
                 </tbody>
@@ -1115,95 +1116,95 @@
         </div>
     </div>
 
-    
-        <!-- Modal for addPaymentModal-->
-        <div id="addPaymentModal" class="add-payment-modal modal">
-            <div class="printable-area">
-                <div class="add-payment-modal-content">
-                    <!-- Close Button -->
-                    <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
-                    <div class="header-container">
-                        <h3>Payment Form</h3>
-                    </div> <br>
 
-                    <div class="payee-info-container" id="payee-info">
-                        <div class="half-width half-payee">
-                            <div>
-                                <label for="student-id" id="label-id">Student ID:</label>
-                                <input type="text" id="payee-id" readonly>
-                            </div>
-                            <div>
-                                <label for="Date">Date:</label>
-                                <input type="date" id="date">
-                            </div>
-                        </div>
+    <!-- Modal for addPaymentModal-->
+    <div id="addPaymentModal" class="add-payment-modal modal">
+        <div class="printable-area">
+            <div class="add-payment-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
+                <div class="header-container">
+                    <h3>Payment Form</h3>
+                </div> <br>
 
-                        <div class="full-width">
-                            <label for="payee-name">Student Name:</label>
-                            <input type="text" id="payee-name" readonly>
+                <div class="payee-info-container" id="payee-info">
+                    <div class="half-width half-payee">
+                        <div>
+                            <label for="student-id" id="label-id">Student ID:</label>
+                            <input type="text" id="payee-id" readonly>
                         </div>
-                        <div class="half-width half-payee">
-                            <div>
-                                <label for="semester" id="label-sem">Semester:</label>
-                                <input th:value="${currentSem}" type="text" id="semester" readonly>
-                            </div>
-                            <div>
-                                <label for="school-year">S.Y.</label>
-                                <input th:value="${currentSY}" type="text" id="school-year" readonly>
-                            </div>
-                        </div>
-                        <div class="full-width amount-container">
-                            <label for="amount" id="label-amount">Amount:</label>
-                            <div class="input-wrapper">
-                                <span class="currency-symbol">₱</span>
-                                <input type="number" max="0" id="payment-amount" placeholder="0.00">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="payment-wrapper">
-                        <h6>Payment For:</h6>
-                        <div class="payment-container-group">
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                        </div> <br>
-                    </div>
-
-
-                    <div id="staff-receiver" class="collector-info-container">
-                        <h6>Received/Collected By:</h6>
-                        <div class="collector-name-container">
-                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        <div>
+                            <label for="Date">Date:</label>
+                            <input type="date" id="date">
                         </div>
                     </div>
 
-
-                    <div class="modal-buttons payment-modal-buttons">
-                        <button class="no-print" onclick="printReport()">Print Report</button>
-
-                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                            data-open-modal="confirmationModal" data-action="savePayment"
-                            data-message="Are you sure you want to save this payment?">Save Payment
-                        </button>
+                    <div class="full-width">
+                        <label for="payee-name">Student Name:</label>
+                        <input type="text" id="payee-name" readonly>
                     </div>
-
+                    <div class="half-width half-payee">
+                        <div>
+                            <label for="semester" id="label-sem">Semester:</label>
+                            <input th:value="${currentSem}" type="text" id="semester" readonly>
+                        </div>
+                        <div>
+                            <label for="school-year">S.Y.</label>
+                            <input th:value="${currentSY}" type="text" id="school-year" readonly>
+                        </div>
+                    </div>
+                    <div class="full-width amount-container">
+                        <label for="amount" id="label-amount">Amount:</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">₱</span>
+                            <input type="number" max="0" id="payment-amount" placeholder="0.00">
+                        </div>
+                    </div>
                 </div>
+                <div class="payment-wrapper">
+                    <h6>Payment For:</h6>
+                    <div class="payment-container-group">
+                        <div class="payment-item">
+                            <input type="checkbox" id="" name="payment" value="payment">
+                            <label for="payment">Book</label>
+                        </div>
+                        <div class="payment-item">
+                            <input type="checkbox" id="" name="payment" value="payment">
+                            <label for="payment">Book</label>
+                        </div>
+                        <div class="payment-item">
+                            <input type="checkbox" id="" name="payment" value="payment">
+                            <label for="payment">Book</label>
+                        </div>
+                        <div class="payment-item">
+                            <input type="checkbox" id="" name="payment" value="payment">
+                            <label for="payment">Book</label>
+                        </div>
+                    </div> <br>
+                </div>
+
+
+                <div id="staff-receiver" class="collector-info-container">
+                    <h6>Received/Collected By:</h6>
+                    <div class="collector-name-container">
+                        <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                        <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                    </div>
+                </div>
+
+
+                <div class="modal-buttons payment-modal-buttons">
+                    <button class="no-print" onclick="printReport()">Print Report</button>
+
+                    <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                        data-open-modal="confirmationModal" data-action="savePayment"
+                        data-message="Are you sure you want to save this payment?">Save Payment
+                    </button>
+                </div>
+
             </div>
         </div>
+    </div>
     </div>
     <script th:src="@{/js/script.js}"></script>
 </body>
@@ -1229,9 +1230,9 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-// <!--                    showSuccessModal("✅ Success: New student has been added successfully!");-->
-// <!--                    location.reload(); // Reloads the page-->
-                        goList(currentPageNo, currentPageSize);
+                    // <!--                    showSuccessModal("✅ Success: New student has been added successfully!");-->
+                    // <!--                    location.reload(); // Reloads the page-->
+                    goList(currentPageNo, currentPageSize);
                 } else {
                     showErrorModal("❌ Error:" + text);
                 }
@@ -1287,9 +1288,9 @@
                 const tableBody = document.querySelector("#table-ni-kharl tbody");
                 tableBody.innerHTML = "";
                 epv.feeStatus.forEach(datas => {
-                        const row = document.createElement("tr");
-                        const statusClass = getPaymentStatusClass(datas.status);
-                        row.innerHTML =`
+                    const row = document.createElement("tr");
+                    const statusClass = getPaymentStatusClass(datas.status);
+                    row.innerHTML = `
                             <td>${datas.feeName}</td>
                             <td>${datas.requiredFee}</td>
                             <td>${datas.totalPaid}</td>
@@ -1299,20 +1300,21 @@
                                     <div class="status ${statusClass}">${datas.status}</div>
                                 </div>
                             </td>`;
-                            tableBody.appendChild(row);
-                    });
+                    tableBody.appendChild(row);
+                });
             })
             .catch(error => console.error("Error fetching sections:", error));
     }
 
-    async function fetchAllGradeLevels(isStudentNew,isTransferee, currentLevelId) {
+    async function fetchAllGradeLevels(isStudentNew, isTransferee, currentLevelId) {
         try {
             isStudentNew = isStudentNew === true || isStudentNew === "true";
             isTransferee = isTransferee === true || isTransferee === "true";
             const isLevelIdNull = currentLevelId === null || currentLevelId === "null" || currentLevelId === "None";
-            let url = "/gradelevel/successor/"+currentLevelId;
-            if((isStudentNew && !isTransferee) || isLevelIdNull){
-                url= '/gradelevel/no-pre-requisite';}
+            let url = "/gradelevel/successor/" + currentLevelId;
+            if ((isStudentNew && !isTransferee) || isLevelIdNull) {
+                url = '/gradelevel/no-pre-requisite';
+            }
             alert(url);
             const response = await fetch(url);
             if (!response.ok) throw new Error("Failed to fetch grade levels");
@@ -1341,9 +1343,9 @@
     });
 
     function getCheckedPaymentValues() {
-            const checkedCheckboxes = document.querySelectorAll('.payment-container-group input[type="checkbox"]:checked');
-            const checkedValues = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
-            return checkedValues;
+        const checkedCheckboxes = document.querySelectorAll('.payment-container-group input[type="checkbox"]:checked');
+        const checkedValues = Array.from(checkedCheckboxes).map(checkbox => checkbox.value);
+        return checkedValues;
     }
 
     function savePayment() {
@@ -1382,9 +1384,9 @@
                 const tableBody = document.querySelector("#receipt-table tbody");
                 tableBody.innerHTML = "";
                 let i = 1;
-                receipt.particulars.forEach(dat =>{
+                receipt.particulars.forEach(dat => {
                     const row = document.createElement("tr");
-                    row.innerHTML =`
+                    row.innerHTML = `
                         <tr>
                             <td>${i++}</td>
                             <td>${dat.feeName}</td>
@@ -1393,7 +1395,7 @@
                     tableBody.appendChild(row);
                 });
                 const row = document.createElement("tr");
-                    row.innerHTML =`
+                row.innerHTML = `
                         <tfoot>
                             <tr>
                                 <td colspan="2">Total Amount Paid:
@@ -1403,7 +1405,7 @@
                         </tfoot>`;
                 tableBody.appendChild(row);
                 goList(currentPageNo, currentPageSize);
-               closeOpen();
+                closeOpen();
             })
             .catch(error => {
                 console.error("Error adding payment:", error);
@@ -1411,16 +1413,16 @@
             });
     }
 
-    function closeOpen(){
-            const button1 = document.createElement("button");
-            button1.setAttribute("data-close-modal", "addPaymentModal");
-            button1.setAttribute("data-open-modal","receiptModal");
-            const button2 = document.createElement("button");
-            button2.setAttribute("data-close-modal", "listOfPaymentsModal");
-            document.body.appendChild(button1);
-            document.body.appendChild(button2);
-            button1.click();
-            button2.click();
+    function closeOpen() {
+        const button1 = document.createElement("button");
+        button1.setAttribute("data-close-modal", "addPaymentModal");
+        button1.setAttribute("data-open-modal", "receiptModal");
+        const button2 = document.createElement("button");
+        button2.setAttribute("data-close-modal", "listOfPaymentsModal");
+        document.body.appendChild(button1);
+        document.body.appendChild(button2);
+        button1.click();
+        button2.click();
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -1447,8 +1449,8 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-// <!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
-// <!--                    location.reload(); // Reloads the page after successful enrollment-->
+                    // <!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
+                    // <!--                    location.reload(); // Reloads the page after successful enrollment-->
                     goList(currentPageNo, currentPageSize);
                 } else {
                     // showErrorModal("❌ Error: " + text);
@@ -1488,7 +1490,7 @@
     }
 
     function addExistingStudent(studentId) {
-    alert(studentId);
+        alert(studentId);
         fetch('/enrollment/add/student/' + studentId, {
             method: 'POST',
             headers: {
@@ -1498,9 +1500,9 @@
             .then(response => {
                 return response.text().then(message => {
                     if (response.ok) {
-                    goList(currentPageNo, currentPageSize);
-// <!--                        showSuccessModal(message);-->
-// <!--                        window.location.reload(); // Reload the page-->
+                        goList(currentPageNo, currentPageSize);
+                        // <!--                        showSuccessModal(message);-->
+                        // <!--                        window.location.reload(); // Reload the page-->
                     } else {
                         showErrorModal(message);
                     }
@@ -1515,7 +1517,7 @@
     });
 
     function studAddListing() {
-        const actionUrl = "/students/add"; 
+        const actionUrl = "/students/add";
         const method = "POST";
 
         // Collect input values
@@ -1534,9 +1536,10 @@
             birthPlace: birthplace, // Use the extracted birthPlace variable
 
             address: {
-                street : document.getElementById("studstreet")?.value?.trim(),
-                barangay : document.getElementById("studbarangay")?.value?.trim(),
-                city : document.getElementById("studcity")?.value?.trim()},
+                street: document.getElementById("studstreet")?.value?.trim(),
+                barangay: document.getElementById("studbarangay")?.value?.trim(),
+                city: document.getElementById("studcity")?.value?.trim()
+            },
 
             // Parent's Information
             fatherName: document.getElementById("studfatherName")?.value?.trim() || null,
@@ -1567,7 +1570,7 @@
                 return response.text();
             })
             .then(text => {
-// <!--                showSuccessModal("✅ Success: New student has been added successfully!");-->
+                // <!--                showSuccessModal("✅ Success: New student has been added successfully!");-->
                 goList(currentPageNo, currentPageSize);
             })
             .catch(error => {
@@ -1637,16 +1640,16 @@
                 showErrorModal("❌ Error: please try again!");
             });
     }
-    function changeView(){
+    function changeView() {
         console.log("Palitan ang table content");
-        goList(1,1);
+        goList(1, 1);
     }
 
     var currentStat = "";
     var currentPageNo = 0;
     var currentPageSize = 0;
     var currentStat = "";
-    function goList(pageNo = 1, pageSize = 1) {
+    function goList(pageNo = 1, pageSize = 10) {
         const search = document.getElementById("search-stud").value;
         currentStat = document.getElementById("sort-select").value;
         console.log(currentStat);
@@ -1666,33 +1669,41 @@
                     const row = document.createElement("tr");
                     row.setAttribute("data-enrollment-id", enr.enrollmentId);
                     row.classList.add("clickable-row");
+                  
+                    const displayStatus = enr.enrollmentStatus === "NOT_REGISTERED" ? "UNREGISTERED" : enr.enrollmentStatus;
 
                     let dropdownContent = `
                     <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}"
                     data-open-modal="studentInformationModal" onclick="displayStud(decodeURIComponent('${studentJson}'))"> View Record </a>`
-                    +getDropdownContent(enr);
+                        + getDropdownContent(enr);
+
+                    // 🔥 Apply the status color class dynamically
+                    const statusClass = getEnrollmentStatusClass(displayStatus);
 
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId}</td>
                     <td>${enr.student.firstName} ${enr.student.middleName ? enr.student.middleName + ' ' : ''} ${enr.student.lastName}</td>`;
-                    if(enr.enrollmentStatus === "ASSESSMENT"){
+
+                    if (enr.enrollmentStatus === "ASSESSMENT") {
                         const levelId = enr.student.currentGradeLevel?.levelId ?? null;
-                        row.innerHTML+=`
-                            <td>
-                                <select onChange="updateGradeLevel(${enr.enrollmentId},this.options[this.selectedIndex].value)"
-                                        class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" data-isStudent-new="${enr.student.new}"
-                                        data-current-grade-Id="${levelId}" data-isStudent-transferee="${enr.student.transferee}">
-                                    <option>Loading...</option> <!-- Placeholder -->
-                                </select>
-                            </td>`;
-                    }else{
-                        row.innerHTML+=`<td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
+                        row.innerHTML += `
+                        <td>
+                            <select onChange="updateGradeLevel(${enr.enrollmentId}, this.options[this.selectedIndex].value)"
+                                    class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" 
+                                    data-isStudent-new="${enr.student.new}" data-current-grade-Id="${levelId}" 
+                                    data-isStudent-transferee="${enr.student.transferee}">
+                                <option>Loading...</option> <!-- Placeholder -->
+                            </select>
+                        </td>`;
+                    } else {
+                        row.innerHTML += `<td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
                     }
-                    row.innerHTML+=`
+
+                    row.innerHTML += `
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
-                                <div class="status" id="status-registration">${enr.enrollmentStatus}</div>
+                                <div class="status ${statusClass}" id="status-registration">${displayStatus}</div> <!-- Modified display -->
                                 <button class="dropdown-status-btn">
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
@@ -1701,22 +1712,44 @@
                                 ${dropdownContent}
                             </div>
                         </div>
-                    </td>
-                `;
+                    </td>`;
+
                     tableBody.appendChild(row);
                 });
+
+
                 document.querySelectorAll(".grade-level-dropdown").forEach(selectTag => {
                     var currentLevelId = selectTag.getAttribute("data-current-grade-Id");
                     var isStudentNew = selectTag.getAttribute("data-isStudent-new");
                     var isTransferee = selectTag.getAttribute("data-isStudent-transferee");
                     var enrollmentId = selectTag.getAttribute("data-enrollment-id");
                     var selectedGrade = data.content.find(e => e.enrollmentId == enrollmentId)?.gradeLevelToEnroll;
-                    fetchGradeLevels(selectedGrade, selectTag,isStudentNew,currentLevelId,isTransferee);
+                    fetchGradeLevels(selectedGrade, selectTag, isStudentNew, currentLevelId, isTransferee);
                 });
 
                 updatePagination(status, pageNo, pageSize, data.totalPages);
             })
             .catch(error => console.error("Error:", error));
+    }
+
+
+    // this function is to control the color of the status color
+    function getEnrollmentStatusClass(status) {
+        status = status.toLowerCase();
+        switch (status) {
+            case "listing":
+                return "listing-status";
+            case "assessment":
+                return "assessment-status";
+            case "payment":
+                return "payment-status";
+            case "enrolled":
+                return "enrolled-status";
+            case "unregistered":
+                return "not-registered-status";
+            default:
+                return "";
+        }
     }
 
     async function updateGradeLevel(enrollmentId, gradeLevelId) {
@@ -1729,7 +1762,7 @@
             if (response.ok) {
                 const result = await response.text(); // Parse the response as text
                 alert(result);
-                goList(currentPageNo,currentPageSize)
+                goList(currentPageNo, currentPageSize)
             } else {
                 const errorMessage = await response.text();
                 alert(errorMessage);
@@ -1740,13 +1773,14 @@
         }
     }
 
-        function fetchGradeLevels(selectedGrade, selectTag,isStudentNew,currentLevelId, isTransferee) {
-        var url = "/gradelevel/successor/"+currentLevelId;
+    function fetchGradeLevels(selectedGrade, selectTag, isStudentNew, currentLevelId, isTransferee) {
+        var url = "/gradelevel/successor/" + currentLevelId;
         isStudentNew = isStudentNew === true || isStudentNew === "true";
         isTransferee = isTransferee === true || isTransferee === "true";
         const isLevelIdNull = currentLevelId === null || currentLevelId === "null" || currentLevelId === "None";
-        if((isStudentNew && !isTransferee) || isLevelIdNull){
-                url= '/gradelevel/no-pre-requisite';}
+        if ((isStudentNew && !isTransferee) || isLevelIdNull) {
+            url = '/gradelevel/no-pre-requisite';
+        }
         const originalOnChange = selectTag.getAttribute("onChange");
         selectTag.removeAttribute("onChange");
 
@@ -1840,7 +1874,7 @@
         }
     }
 
-    function displayStud(std){//viewing student info(for ctrl-f)
+    function displayStud(std) {//viewing student info(for ctrl-f)
         const studentProf = JSON.parse(std);
         console.log(studentProf);
         document.getElementById("student-id").value = studentProf.studentDisplayId;
@@ -1856,25 +1890,25 @@
         document.getElementById("motherOccupation").value = studentProf.motherOccupation;
         document.getElementById("stud-type").textContent = studentProf.new ? "NEW" : "OLD";
         document.getElementById("street").value = studentProf.address.street;
-        document.getElementById("barangay").value= studentProf.address.barangay;
-        document.getElementById("city").value= studentProf.address.city;
-        document.getElementById("lastGradeLevelCompleted").value= studentProf.currentGradeLevel ? studentProf.currentGradeLevel.levelName : 'None';
-        document.getElementById("lastMadrasaYearCompleted").value= studentProf.lastMadrasaYearCompleted;
-        document.getElementById("madrasaNameLastAttended").value= studentProf.madrasaName;
-        document.getElementById("madrasaAddress").value= studentProf.madrasaAddress;
+        document.getElementById("barangay").value = studentProf.address.barangay;
+        document.getElementById("city").value = studentProf.address.city;
+        document.getElementById("lastGradeLevelCompleted").value = studentProf.currentGradeLevel ? studentProf.currentGradeLevel.levelName : 'None';
+        document.getElementById("lastMadrasaYearCompleted").value = studentProf.lastMadrasaYearCompleted;
+        document.getElementById("madrasaNameLastAttended").value = studentProf.madrasaName;
+        document.getElementById("madrasaAddress").value = studentProf.madrasaAddress;
     }
     //key listener para sa mga forms
-    document.addEventListener("keydown", function(event) {
-    if (event.key === "Escape") {
-        const [button,button2] = [document.createElement("button"),document.createElement("button")];
-        button.setAttribute("data-close-modal", "studentInformationModal");
-        button2.setAttribute("data-close-modal","viewGradesModal");
-        document.body.appendChild(button);
-        document.body.appendChild(button2);
-        button.click();
-        button2.click();
-    }
-});
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            const [button, button2] = [document.createElement("button"), document.createElement("button")];
+            button.setAttribute("data-close-modal", "studentInformationModal");
+            button2.setAttribute("data-close-modal", "viewGradesModal");
+            document.body.appendChild(button);
+            document.body.appendChild(button2);
+            button.click();
+            button2.click();
+        }
+    });
 
     function updatePagination(status, currentPage, pageSize, totalPages) {
         const paginationContainer = document.querySelector("#pagination");
@@ -1954,7 +1988,7 @@
                 alert("⚠️ Enrollment ID not found.");
             }
         }
-        if(paymentBtn){
+        if (paymentBtn) {
             alert("Will set up payment form");
             setUpPaymentForm();
         }
@@ -1973,7 +2007,7 @@
             const modalId = target.getAttribute("data-open-modal");
             openModal(modalId);
         }
-        if (target.dataset.openModal=== "viewGradesModal") {
+        if (target.dataset.openModal === "viewGradesModal") {
             viewStudentGrade(target);
         }
         if (target.classList.contains("viewPaymentsButton")) {
@@ -1989,7 +2023,7 @@
             }
             fetchSections(gradeLevel);
         }
-        if(gradeLevelbtn){
+        if (gradeLevelbtn) {
             const isStudentNew = gradeLevelbtn.getAttribute("data-isStudent-new");
             const isTransferee = gradeLevelbtn.getAttribute("data-isTransferee");
             const currentGradeId = gradeLevelbtn.getAttribute("data-current-gradeId");
@@ -1998,33 +2032,33 @@
     });
 
     function handleCheckboxChange(event, balance) {
-            const checkbox = event.target; // The checkbox that was clicked
-            const value = checkbox.value; // The value of the checkbox
-            const isChecked = checkbox.checked; // Whether the checkbox is checked or unchecked
-            const currentMax = parseFloat(paymentAmountInput.max) || 0;
-            let newMax = 0;
-            if (isChecked) {
-                newMax = currentMax + balance;
-            } else {
-                newMax = currentMax - balance;
-            }
-            paymentAmountInput.max = newMax;
-            if (paymentAmountInput.value > newMax) {
-                paymentAmountInput.value = newMax;
-            }
+        const checkbox = event.target; // The checkbox that was clicked
+        const value = checkbox.value; // The value of the checkbox
+        const isChecked = checkbox.checked; // Whether the checkbox is checked or unchecked
+        const currentMax = parseFloat(paymentAmountInput.max) || 0;
+        let newMax = 0;
+        if (isChecked) {
+            newMax = currentMax + balance;
+        } else {
+            newMax = currentMax - balance;
+        }
+        paymentAmountInput.max = newMax;
+        if (paymentAmountInput.value > newMax) {
+            paymentAmountInput.value = newMax;
+        }
     }
     const paymentAmountInput = document.getElementById('payment-amount');
-        if (paymentAmountInput) {
-            paymentAmountInput.addEventListener('input', function () {
-                const maxValue = parseFloat(this.max);
-                const enteredValue = parseFloat(this.value);
+    if (paymentAmountInput) {
+        paymentAmountInput.addEventListener('input', function () {
+            const maxValue = parseFloat(this.max);
+            const enteredValue = parseFloat(this.value);
 
-                if (enteredValue > maxValue) {
-                    alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
-                    this.value = maxValue;
-                }
-            });
-        }
+            if (enteredValue > maxValue) {
+                alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
+                this.value = maxValue;
+            }
+        });
+    }
     async function setUpPaymentForm() {
         paymentAmountInput.max = 0;
         paymentAmountInput.value = 0.0;
@@ -2063,14 +2097,14 @@
         });
     }
 
-    function viewStudentGrade(target){
+    function viewStudentGrade(target) {
         const studentId = target.dataset.id;
         const preRequisiteId = target.getAttribute("data-prerequisite");
         document.getElementById("student-grade-name").textContent = target.getAttribute("data-stud-name");
         document.getElementById("student-grade-id").textContent = target.getAttribute("data-displayId");
         const tableBody = document.querySelector("#lamesaa tbody");
         tableBody.innerHTML = `<td colspan="4">No Records Found</td>`;
-        if(preRequisiteId === "null"){
+        if (preRequisiteId === "null") {
             return;
         }
 
@@ -2085,8 +2119,9 @@
             .then((response) => response.json())
             .then((data) => {
                 const studentGradesMap = new Map(Object.entries(data.content));
-                if(studentGradesMap.size === 0) {
-                    return;}
+                if (studentGradesMap.size === 0) {
+                    return;
+                }
                 tableBody.innerHTML = "";
                 studentGradesMap.forEach((values, key) => {
                     const keyRow = document.createElement("tr");

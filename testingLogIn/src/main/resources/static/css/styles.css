@@ -582,6 +582,7 @@ body {
   display: flex;
   gap: 40px;
   padding: 10px 0px;
+  margin-left: -260px;
 }
 .enrollment-buttons :hover {
   cursor: pointer;
@@ -1092,11 +1093,12 @@ table td {
 
 .status {
   /* background-color: #28a745; */
-  color: white;
+  color: rgb(231, 20, 20);
   padding: 5px 0px;
   border-radius: 5px;
   font-weight: 500;
-  width: 105px;
+  width: 145px;
+  /* padding: 0px 25px; */
   font-size: 13px;
   text-align: center;
   height: 30px;
@@ -1104,13 +1106,30 @@ table td {
   align-items: center;
   justify-content: center;
 }
-#status-registration,
-#status-assessment,
-#status-payment,
-#status-grade-management {
-  color: #28a745;
+
+/* this is the color style for the status in the listing */
+.listing-status,
+.assessment-status,
+.payment-status,
+.enrolled-status,
+.not-registered-status {
   font-weight: bolder;
   font-size: 15px;
+}
+.listing-status {
+  color: #ffc107;
+}
+.assessment-status {
+  color: #007bff;
+}
+.payment-status {
+  color: #fd7e14;
+}
+.enrolled-status {
+  color: #218838;
+}
+.not-registered-status {
+    color: black;
 }
 
 .paid-status,
@@ -1965,6 +1984,8 @@ input[type="checkbox"] {
 .subject-modal-content select,
 .teacher-modal-content select,
 .section-modal-content select,
+.listing-table select,
+.assessment-table select,
 .fees-management-modal-content select,
 .grade-level-edit-modal-content select,
 .section-edit-modal-content select,

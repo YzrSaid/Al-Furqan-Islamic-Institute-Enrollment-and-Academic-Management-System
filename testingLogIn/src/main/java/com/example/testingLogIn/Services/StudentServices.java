@@ -1,9 +1,11 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.ModelDTO.StudentDTO;
+import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.PagedResponse.StudentDTOPage;
+import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 
 import java.time.LocalDate;
@@ -24,6 +26,8 @@ public class StudentServices {
     private final StudentRepo studentRepo;
     private final SectionServices sectionServices;
     private final EnrollmentServices enrollmentService;
+    @Autowired
+    private GradeLevelRepo gradeLevelRepo;
 
     @Autowired
     public StudentServices(StudentRepo studentRepo, SectionServices sectionServices,EnrollmentServices enrollmentService) {
@@ -33,6 +37,7 @@ public class StudentServices {
     }
 
     public boolean addStudent(StudentDTO student){
+        GradeLevel gradeLevel = gradeLevelRepo.findById(student.getLastGradeLevelId()).orElse(null);
         String year = LocalDate.now().getYear()+"";
         StringBuilder count = new StringBuilder(studentRepo.findStudentNextId(year) + 1 + "");
         for(int i=count.length() ; i<4 ; i++){
@@ -66,7 +71,7 @@ public class StudentServices {
                                     .isScholar(student.isScholar())
                                     .isTransferee(student.isTransferee())
                                     .madrasaName(student.getMadrasaName())
-                                    .lastGradeLevelCompleted(student.getLastGradeLevelCompleted())
+                                    .lastGradeLevelCompleted(gradeLevel)
                                     .lastMadrasaYearCompleted(student.getLastMadrasaYearCompleted())
                                     .madrasaAddress(student.getMadrasaAddress())
                                     .build();
@@ -106,6 +111,7 @@ public class StudentServices {
     
     public boolean updateStudent(StudentDTO stud){
         String sectionName = stud.getCurrentGradeSection().substring(stud.getCurrentGradeSection().indexOf("-")+1);
+        GradeLevel gradeLevel = gradeLevelRepo.findById(stud.getLastGradeLevelId()).orElse(null);
         Section section = sectionServices.getSectionByName(sectionName);
         Student toUpdate = getStudent(stud.getStudentId());
         if(toUpdate == null)
@@ -137,7 +143,7 @@ public class StudentServices {
             toUpdate.setTransferee(stud.isTransferee());
             toUpdate.setMadrasaName(stud.getMadrasaName());
             toUpdate.setMadrasaAddress(stud.getMadrasaAddress());
-            toUpdate.setLastGradeLevelCompleted(stud.getLastGradeLevelCompleted());
+            toUpdate.setLastGradeLevelCompleted(gradeLevel);
             toUpdate.setLastMadrasaYearCompleted(stud.getLastGradeLevelCompleted());
             
             studentRepo.save(toUpdate);

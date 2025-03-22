@@ -12,6 +12,30 @@ public class PrivateTemplateControllers {
     public String getDashboard(){
         return "dashboard";
     }
+
+    // These are for the student account
+
+    @GetMapping("student/personal-profile")
+    public String getStudentAccountPersonalProfile(){
+        return "student-account/personal-profile";
+    }
+
+    @GetMapping("student/grades")
+    public String getStudentAccountGrades(){
+        return "student-account/grades";
+    }
+
+    @GetMapping("student/class-schedule")
+    public String getStudentAccountSchedule(){
+        return "student-account/class-schedule";
+    }
+
+
+    @GetMapping("student/home")
+    public String getStudentAccountHome(){
+        return "student-account/home";
+    }
+
     @GetMapping("")
     public String getDashboardzz(){
         return "dashboard";

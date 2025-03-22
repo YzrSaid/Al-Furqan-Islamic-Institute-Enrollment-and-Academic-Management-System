@@ -218,8 +218,9 @@ body {
 /* This is for the dashboard */
 .welcome-div {
   display: flex;
-  height: 55px;
-  margin-bottom: 20px;
+  /* height: 55px;
+  margin-bottom: 20px; */
+  padding: 5px;
   align-items: center;
   justify-content: center;
   border-bottom: 1.5px solid rgba(30, 30, 30, 0.55);
@@ -341,6 +342,25 @@ body {
   column-gap: 80px;
   row-gap: 30px;
   justify-content: center;
+}
+.welcome-card {
+  padding: 40px !important;
+  min-height: 250px;
+  font-size: 15px;
+  line-height: 1.8;
+}
+.welcome-card-div {
+  display: flex;
+  flex-direction: row;
+  column-gap: 80px;
+  row-gap: 30px;
+  justify-content: start;
+}
+.welcome-salutation {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  font-weight: 800;
+  text-align: start;
 }
 .card-title {
   font-size: 2.5rem;

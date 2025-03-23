@@ -91,8 +91,7 @@
             <thead>
                 <tr>
                     <th>Grade Level</th>
-                    <th>Section</th>
-                    <th>Students</th>
+                    <th>Number of Subjects</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -211,7 +210,7 @@
 <script>
     function getAllSections() {
         console.log('getting the sections');
-        fetch(`/section/all`)
+        fetch("/gradelevel/all")
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -227,12 +226,11 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <tr>
-                            <td>${rec.gradeLevelName}</td>
-                            <td>${rec.sectionName}</td>
-                            <td>0 muna hahah</td>
+                            <td>${rec.levelName}</td>
+                            <td>${rec.subjectsCount}</td>
                             <td>
                                 <div class="action-container">
-                                    <a href="/schedule/sched-board/${rec.number}" class="view-sched">View Schedule</a>
+                                    <a href="/maintenance/subjects/${rec.levelName}" class="view-sched">View Subjects</a>
                                 </div>
                             </td>
                         </tr>

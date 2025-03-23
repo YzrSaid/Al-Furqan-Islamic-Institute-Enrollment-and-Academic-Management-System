@@ -20,14 +20,25 @@ public class GradeLevelControllers {
     @Autowired
     GradeLevelServices gradeLevelServices;
 
-    @CrossOrigin(origins = "http://localhost:8081")
+//    @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/all")
     public ResponseEntity<List<GradeLevelDTO>> getAllGradeLevels() {
-        System.out.println("KUKUNIN lahat");
+        System.out.println("Kunin lahat");
         try{
             return new ResponseEntity<>(gradeLevelServices.getAllGradeLevelsDTO(), HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("")     //result is either string or a GradeLevelObject
+    public ResponseEntity<?> getByName(@RequestParam String name){
+        try{
+            return new ResponseEntity<>(gradeLevelServices.getByName(name),HttpStatus.OK);
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>("Grade Level Not Found",HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>("Server Error. Contact SlimFordy",HttpStatus.CONFLICT);
         }
     }
 

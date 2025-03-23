@@ -38,8 +38,7 @@ public class GradeLevelServices {
     }
 
     public List<GradeLevelDTO> getAllGradeLevelsDTO() {
-        return gradeLevelRepo.findAll().stream()
-                .filter(GradeLevel::isNotDeleted)
+        return gradeLevelRepo.findByIsNotDeletedTrue().stream()
                 .map(GradeLevel::mapperDTO)
                 .collect(Collectors.toList());
     }

@@ -84,9 +84,9 @@ public class EnrollmentServices {
         return true;
     }
 
-    public boolean cancelEnrollment(int enrollmentId){
+    public boolean cancelEnrollment(int enrollmentId,boolean undoCancel){
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElseThrow(NullPointerException::new);
-        enrollmentRecord.setNotDeleted(false);
+        enrollmentRecord.setNotDeleted(undoCancel);
         enrollmentRepo.save(enrollmentRecord);
         return true;
     }
@@ -193,7 +193,6 @@ public class EnrollmentServices {
             pageable = PageRequest.of(pageNo-1,pageSize,sortBy(sort));
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
-        System.out.println(estatus);
         int sem = sySemRepo.findCurrentActive().getSySemNumber();
         Page<EnrollmentDTO> enrollments = enrollmentRepo.testing(estatus,sem,search,pageable).map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
                         enrollmentHandler.getStudent().DTOmapper()));

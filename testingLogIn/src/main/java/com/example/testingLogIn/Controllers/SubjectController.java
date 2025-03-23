@@ -31,6 +31,7 @@ public class SubjectController {
     
     @GetMapping("/gradeLevel/{gradeLevel}")
     public ResponseEntity<List<SubjectDTO>> getSubjectByGradeLevel(@PathVariable String gradeLevel){
+        System.out.println(gradeLevel);
         try{
             return new ResponseEntity<>(subjectService.getSubjectByGrade(gradeLevel),HttpStatus.OK);
         }catch(Exception e){

@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
+import com.example.testingLogIn.ModelDTO.GradeLevelDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GradeLevelRepo extends JpaRepository<GradeLevel,Integer> {
     List<GradeLevel> findByPreRequisiteIsNullAndIsNotDeletedTrue();
+    List<GradeLevel> findByIsNotDeletedTrue();
     
     @Query("SELECT gl FROM GradeLevel gl  "+
             "WHERE gl.isNotDeleted = TRUE "+

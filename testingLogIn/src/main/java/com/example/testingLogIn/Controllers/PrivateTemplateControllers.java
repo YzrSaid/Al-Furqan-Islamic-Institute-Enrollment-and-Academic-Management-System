@@ -111,7 +111,12 @@ public class PrivateTemplateControllers {
         return "/maintenance/section-maintenance";
     }
 
-    @GetMapping("/maintenance/subject")
+    @GetMapping("/maintenance/new-subjects")
+    public String getNewSubjectMaintenance() {
+        return "/maintenance/schedule";
+    }
+
+    @GetMapping("/maintenance/subjects/{gradeLevelId}")
     public String getSubjectMaintenance() {
         return "/maintenance/subject-maintenance";
     }

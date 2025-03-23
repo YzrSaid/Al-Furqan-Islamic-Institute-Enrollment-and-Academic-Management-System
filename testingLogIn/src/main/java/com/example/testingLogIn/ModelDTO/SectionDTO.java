@@ -18,6 +18,5 @@ public class SectionDTO {
     private int capacity;
     
     private Integer subSchedCount;
-    
     private boolean isNotDeleted;
 }

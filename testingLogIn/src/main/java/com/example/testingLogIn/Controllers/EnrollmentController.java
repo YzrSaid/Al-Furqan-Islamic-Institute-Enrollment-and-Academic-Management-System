@@ -138,9 +138,10 @@ public class EnrollmentController {
     }
 
     @GetMapping("/cancel/{enrollmentId}")
-    public ResponseEntity<String> cancelEnrollment(@PathVariable int enrollmentId){
+    public ResponseEntity<String> cancelEnrollment(@PathVariable int enrollmentId,
+                                                   @RequestParam(required = false,defaultValue = "false") Boolean undo){
         try{
-            boolean result = enrollmentService.cancelEnrollment(enrollmentId);
+            boolean result = enrollmentService.cancelEnrollment(enrollmentId,undo);
             return new ResponseEntity<>("Enrollment Cancelled Successfully",HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();

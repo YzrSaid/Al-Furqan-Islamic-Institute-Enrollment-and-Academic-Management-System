@@ -45,33 +45,34 @@
 <script th:src="@{/js/script.js}" defer></script>
 
 <script>
-    document.getElementById('login-form').addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent default form submission
+document.getElementById('login-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission
 
-        const form = event.target;
-        const formData = new FormData(form);
+    const form = event.target;
+    const formData = new FormData(form);
 
-        fetch(form.action, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = '/home';
-            } else {
-                return response.json(); // Parse the error response
-            }
-        })
-        .then(data => {
-            if (data && data.error) {
-                // Alert the error message
-                alert(data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            // ✅ Redirect without parsing JSON
+            window.location.href = '/home';  
+        } else {
+            return response.text().then(text => {
+                console.error("Error response:", text); 
+                throw new Error("Failed to login: " + text);
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Login failed. Please check your credentials.");
     });
+});
+
+
 </script>
 
 </body>

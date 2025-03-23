@@ -435,6 +435,9 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmationModal.style.opacity = "0";
 
     switch (action) {
+      case "saveStudentOrTransferee":
+        saveStudentOrTransferee();
+        break;  
       case "saveSchedule":
         saveSchedule();
         break;
@@ -634,7 +637,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "transfereeAddListing":
         // This case is for adding transferee student to the listing/registration
-        if (!validateForm("studentFormTransferee")) {
+        if (!validateForm("studentForm")) {
           showErrorModal("⚠️ Please fill in all required fields!");
           return;
         } else {
@@ -778,13 +781,15 @@ document.addEventListener("DOMContentLoaded", function () {
           message ===
           "✅ Account has been created successfully! This record will be sent for approval."
         ) {
-          window.location.href = "/login"; 
+          window.location.href = "/login";
         } else {
-          location.reload(); 
+          location.reload();
         }
-      }, 1500); 
+      }, 1500);
     } else {
-      showErrorModal(`⚠️ Oops! Something went wrong. Please refresh or try again.`);
+      showErrorModal(
+        `⚠️ Oops! Something went wrong. Please refresh or try again.`
+      );
     }
   };
 
@@ -836,18 +841,18 @@ document.addEventListener("DOMContentLoaded", function () {
     if (target.matches("[data-open-modal]")) {
       const modalId = target.getAttribute("data-open-modal");
       const message = target.getAttribute("data-message") || "";
-      const action = target.getAttribute("data-action") || ""; 
+      const action = target.getAttribute("data-action") || "";
 
       document
         .getElementById("confirmAction")
-        .setAttribute("data-confirm-action", action); 
+        .setAttribute("data-confirm-action", action);
 
       // Check if the clicked button is the saveBtn
       if (target === saveBtn) {
         if (saveBtn.textContent.trim() === "Add") {
           console.log("🔄 Changing text to Save...");
-          saveBtn.textContent = "Save"; 
-          return; 
+          saveBtn.textContent = "Save";
+          return;
         }
       }
 
@@ -913,8 +918,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Handle Confirm Action in Confirmation Modal
     if (target.id === "confirmAction") {
-      const action = target.getAttribute("data-confirm-action"); 
-      handleConfirmAction(action, event); 
+      const action = target.getAttribute("data-confirm-action");
+      handleConfirmAction(action, event);
 
       // Only close confirmation modal if validation passes
       if (validateForm("studentForm")) {
@@ -1337,3 +1342,40 @@ function clearForm() {
       }
     });
 }
+
+// this is for the checkbox in new student modal form
+document.addEventListener("DOMContentLoaded", () => {
+  const transfereeCheckbox = document.getElementById("isTransferee");
+  const transfereeFields = document.getElementById("transfereeFields");
+  const transfereeInputs = transfereeFields.querySelectorAll("input");
+
+  // Toggle visibility and readonly state
+  transfereeCheckbox.addEventListener("change", () => {
+    if (transfereeCheckbox.checked) {
+      transfereeFields.style.display = "block";
+      transfereeFields.classList.add("show");
+
+      // Make transferee fields editable
+      transfereeInputs.forEach((input) => input.removeAttribute("readonly"));
+    } else {
+      transfereeFields.classList.remove("show");
+      transfereeFields.style.display = "none";
+
+      // Make transferee fields readonly
+      transfereeInputs.forEach((input) =>
+        input.setAttribute("readonly", "true")
+      );
+    }
+  });
+});
+
+
+// this is key listener escape for forms
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        const closeButtons = document.querySelectorAll("[data-close-modal]");
+        closeButtons.forEach(button => button.click());
+    }
+});
+
+

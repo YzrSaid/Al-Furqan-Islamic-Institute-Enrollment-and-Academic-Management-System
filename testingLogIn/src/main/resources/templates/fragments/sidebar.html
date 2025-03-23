@@ -1,0 +1,76 @@
+<div class="sidebar" id="sidebar">
+    <div class="text-center">
+        <div class="school-logo">
+            <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+        </div> <br>
+        <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+           th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+        </p> <br>
+        <div class="welcome-div">
+            <p>
+                Welcome, <span class="account-text" th:text="|${userFirstName} (${userRole})|"></span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <a href="/home" 
+       th:classappend="${#httpServletRequest.requestURI == '/home' ? 'active' : ''}" 
+       class="sidebar-icons">
+        <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
+    </a>
+
+    <!-- Enrollment -->
+    <a href="#" 
+       th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/enrollment') ? 'active' : ''}" 
+       class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
+        <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+    </a>
+    <div class="submenu" id="enrollment-submenu" 
+         th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/enrollment') ? 'show' : ''}">
+        <a href="/enrollment/listing" 
+           th:classappend="${#httpServletRequest.requestURI == '/enrollment/listing' ? 'second-active' : ''}">Listing/Register</a>
+        <a href="/enrollment/assessment" 
+           th:classappend="${#httpServletRequest.requestURI == '/enrollment/assessment' ? 'second-active' : ''}">Assessment</a>
+        <a href="/enrollment/payment" 
+           th:classappend="${#httpServletRequest.requestURI == '/enrollment/payment' ? 'second-active' : ''}">Payment</a>
+        <a href="/enrollment/enrolled" 
+           th:classappend="${#httpServletRequest.requestURI == '/enrollment/enrolled' ? 'second-active' : ''}">Enrolled</a>
+    </div>
+
+    <!-- Transaction -->
+    <a href="#" 
+       th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/transaction') ? 'active' : ''}" 
+       class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
+        <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+    </a>
+    <div class="submenu" id="transaction-submenu" 
+         th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/transaction') ? 'show' : ''}">
+        <a href="/transaction/tuition" 
+           th:classappend="${#httpServletRequest.requestURI == '/transaction/tuition' ? 'second-active' : ''}">Payment Transactions</a>
+        <a href="/transaction/academic-resources" 
+           th:classappend="${#httpServletRequest.requestURI == '/transaction/academic-resources' ? 'second-active' : ''}">Book Distribution</a>
+    </div>
+
+    <!-- Grade Management -->
+    <a href="/grade-management" 
+       th:classappend="${#httpServletRequest.requestURI == '/grade-management' ? 'active' : ''}" 
+       class="sidebar-icons">
+        <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
+    </a>
+
+    <!-- Settings -->
+    <a href="#" 
+       th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/settings') ? 'active' : ''}" 
+       class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
+        <img th:src="@{/images/icons/settings.png}" alt="Settings Icon"> Settings 
+        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+    </a>
+    <div class="submenu" id="settings-submenu" 
+         th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/settings') ? 'show' : ''}">
+        <a href="/settings/create-user" 
+           th:classappend="${#httpServletRequest.requestURI == '/settings/create-user' ? 'second-active' : ''}">Create User</a>
+    </div>
+</div>

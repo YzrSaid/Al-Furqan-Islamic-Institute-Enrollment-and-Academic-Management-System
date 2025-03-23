@@ -1129,7 +1129,7 @@ table td {
   color: #218838;
 }
 .not-registered-status {
-    color: black;
+  color: black;
 }
 
 .paid-status,
@@ -1342,7 +1342,7 @@ table td {
   justify-self: center;
   background: white;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   min-width: 500px;
   max-width: 450px;
@@ -1465,7 +1465,7 @@ table td {
 .teacher-edit-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   min-width: 800px;
   min-height: 80vh;
@@ -1477,7 +1477,7 @@ table td {
 .student-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   min-width: 1050px;
   min-height: 80vh;
@@ -1578,7 +1578,7 @@ table td {
 .receipt-modal-content {
   background: white !important;
   padding: 20px 0;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 650px;
   height: 95vh;
@@ -1599,7 +1599,7 @@ table td {
 .view-book-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
   min-height: 55vh;
@@ -1628,7 +1628,7 @@ table td {
 .add-payment-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 615px;
   height: 90vh;
@@ -1745,7 +1745,7 @@ input#payment-amount {
   overflow-y: scroll;
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 800px;
   min-height: 80vh;
@@ -1783,8 +1783,8 @@ input[type="checkbox"] {
   height: 15px;
 }
 .checkbox {
-  width: 100px;
-  margin-right: 210px;
+  margin-left: 33px;
+  width: 110px;
   align-items: center;
   display: flex;
 }
@@ -1794,7 +1794,6 @@ input[type="checkbox"] {
 .teacher-edit-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
   min-height: 80vh;
@@ -1825,7 +1824,7 @@ input[type="checkbox"] {
 .change-password-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 450px;
   height: 75vh;
@@ -2037,7 +2036,7 @@ input[type="checkbox"] {
 .student-information-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 1100px;
   height: 95vh;
@@ -2054,7 +2053,7 @@ input[type="checkbox"] {
 .fees-management-edit-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
   min-height: 40vh;
@@ -2070,7 +2069,7 @@ input[type="checkbox"] {
 .add-grade-level-assessment-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
   min-height: 40vh;
@@ -2103,7 +2102,7 @@ input[type="checkbox"] {
 .view-grades-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 1000px;
   min-height: 70vh;
@@ -2140,7 +2139,7 @@ input[type="checkbox"] {
 .subject-edit-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
   min-height: 45vh;
@@ -2176,7 +2175,7 @@ input[type="checkbox"] {
 .add-account-type-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 600px;
   min-height: 50vh;
@@ -2216,7 +2215,7 @@ input[type="checkbox"] {
 .grade-level-edit-modal-content {
   background: white !important;
   padding: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
   height: 50vh;
@@ -3338,4 +3337,39 @@ td[rowspan] {
 
 #receipt-student-info input {
   font-size: 16px;
+}
+
+.student-information-modal .close-modal {
+  top: 5px !important;
+  right: 200px !important;
+}
+
+.student-modal .close-modal {
+  top: 22px !important;
+  right: 225px !important;
+}
+
+#transfereeFields {
+  display: none;
+}
+
+.exit-btn {
+  position: absolute !important;
+  font-size: 20px !important;
+  color: #fff !important;
+  background: #ff4d4d !important;
+  border-radius: 50% !important;
+  width: 25px !important;
+  height: 25px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+  cursor: pointer !important;
+  transition: background 0.3s !important;
+  z-index: 99999 !important;
+}
+
+.exit-btn:hover {
+  background: #e60000 !important;
 }

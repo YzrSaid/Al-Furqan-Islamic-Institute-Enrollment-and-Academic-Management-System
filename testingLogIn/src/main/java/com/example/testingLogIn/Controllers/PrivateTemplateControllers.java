@@ -9,199 +9,198 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PrivateTemplateControllers {
 
     @GetMapping("/h?me")
-    public String getDashboard(){
+    public String getDashboard() {
         return "dashboard";
     }
 
     // These are for the student account
 
     @GetMapping("student/personal-profile")
-    public String getStudentAccountPersonalProfile(){
+    public String getStudentAccountPersonalProfile() {
         return "student-account/personal-profile";
     }
 
+    @GetMapping("/sidebar")
+    public String getSidebar() {
+        return "fragments/sidebar";
+    }
+
     @GetMapping("student/grades")
-    public String getStudentAccountGrades(){
+    public String getStudentAccountGrades() {
         return "student-account/grades";
     }
 
     @GetMapping("student/class-schedule")
-    public String getStudentAccountSchedule(){
+    public String getStudentAccountSchedule() {
         return "student-account/class-schedule";
     }
 
-
     @GetMapping("student/home")
-    public String getStudentAccountHome(){
+    public String getStudentAccountHome() {
         return "student-account/home";
     }
 
     @GetMapping("")
-    public String getDashboardzz(){
+    public String getDashboardzz() {
         return "dashboard";
     }
 
     @GetMapping("settings/create-user")
-    public String getCreateUser(){
+    public String getCreateUser() {
         return "settings/create-user";
     }
 
     // these are for enrollment pages
 
     @GetMapping("enrollment/listing")
-    public String getListing(){
+    public String getListing() {
         return "/enrollment/listing";
     }
 
     @GetMapping("/enrollment/assessment")
-    public String getAssessment(){
+    public String getAssessment() {
         return "/enrollment/assessment";
     }
 
-    
     @GetMapping("/enrollment/payment")
-    public String getPayment(){
+    public String getPayment() {
         return "/enrollment/payment";
     }
-    
+
     @GetMapping("/enrollment/payment/{enrollmentId}")
-    public String getPaymentwithId(){
+    public String getPaymentwithId() {
         return "/enrollment/payment";
     }
-    
+
     @GetMapping("/enrollment/enrolled")
-    public String getEnrolled(){
+    public String getEnrolled() {
         return "/enrollment/enrolled";
     }
 
-
     // these are for transaction pages
-   
+
     @GetMapping("/transaction/tuition")
-    public String getTuition(){
+    public String getTuition() {
         return "/transaction/tuition";
     }
 
     @GetMapping("/transaction/academic-resources")
-    public String getAcademicResources(){
+    public String getAcademicResources() {
         return "/transaction/academic-resources";
     }
 
     // these are for maintenance page
 
     @GetMapping("/maintenance/grade-level")
-    public String getGradeLevelMaintenance(){
+    public String getGradeLevelMaintenance() {
         return "/maintenance/grade-level-maintenance";
     }
 
-    
     @GetMapping("/maintenance/teacher")
     public String getTeacherMaintenance() {
         return "/maintenance/teacher-maintenance";
     }
 
     @GetMapping("/maintenance/school-year")
-    public String getSchoolYearMaintenance(){
+    public String getSchoolYearMaintenance() {
         return "/maintenance/school-year-maintenance";
     }
 
     @GetMapping("/maintenance/section")
-    public String getSectionMaintenance(){
+    public String getSectionMaintenance() {
         return "/maintenance/section-maintenance";
     }
 
     @GetMapping("/maintenance/subject")
-    public String getSubjectMaintenance(){
+    public String getSubjectMaintenance() {
         return "/maintenance/subject-maintenance";
     }
 
     @GetMapping("/maintenance/fees-management")
-    public String getFeesManagement(){
+    public String getFeesManagement() {
         return "/maintenance/fees-management";
     }
-
 
     // these are for reports pages
 
     @GetMapping("/reports/academic-resources")
-    public String getAcadResourcesReports(){
+    public String getAcadResourcesReports() {
         return "/reports/acad-resources-reports";
     }
 
     @GetMapping("/reports/academic-resources-type")
-    public String getAcadResourcesReportsType(){
+    public String getAcadResourcesReportsType() {
         return "/reports/acad-resources-type";
     }
-    
+
     @GetMapping("/reports/payment")
-    public String getPaymentReports(){
+    public String getPaymentReports() {
         return "/reports/payment-reports";
     }
-    
+
     @GetMapping("/reports/payment/{studentName}")
-    public String getPaymentReportsByStudent(){
+    public String getPaymentReportsByStudent() {
         return "/reports/payment-reports";
     }
-    
+
     @GetMapping("/reports/student")
-    public String getStudentReports(){
+    public String getStudentReports() {
         return "/reports/student-reports";
     }
 
     @GetMapping("/reports/teacher")
-    public String getTeacherReports(){
+    public String getTeacherReports() {
         return "/reports/teacher-reports";
     }
 
     // these are for accounts pages
 
     @GetMapping("/accounts/verify-accounts")
-    public String getAccountVerificationPage(){
+    public String getAccountVerificationPage() {
         return "/accounts/verify-accounts";
     }
 
     @GetMapping("/accounts/my-account")
-    public String getMyAccount(){
+    public String getMyAccount() {
         return "/accounts/my-account";
     }
 
     @GetMapping("/accounts/manage-accounts")
-    public String getManageAccounts(){
+    public String getManageAccounts() {
         return "/accounts/manage-accounts";
     }
 
     // these are for grade management pages
 
     @GetMapping("/grade-management")
-    public String getGradeManagement(){
+    public String getGradeManagement() {
         return "/grade-management/grade-management";
     }
 
     @GetMapping("/grade-management/subject/{sectionId}/{subjectId}")
-    public String getGradeManagementPerSubject(){
+    public String getGradeManagementPerSubject() {
         return "/grade-management/grade-per-subject";
     }
-    
+
     @GetMapping("/grade-management/class/{sectionId}")
-    public String getGradeManagementPerClass(){
+    public String getGradeManagementPerClass() {
         return "/grade-management/grade-per-class";
     }
 
-
     @GetMapping("/class-list")
-    public String getClassList(){
+    public String getClassList() {
         return "/class-list";
     }
 
     // these are for schedule pages
 
     @GetMapping("/schedule")
-    public String getSchedule(){
+    public String getSchedule() {
         return "/schedule/schedule";
     }
-    
+
     @GetMapping("/schedule/sched-board/{secNumber}")
-    public String getSchedBoard(){
+    public String getSchedBoard() {
         return "/schedule/sched-board";
     }
 }

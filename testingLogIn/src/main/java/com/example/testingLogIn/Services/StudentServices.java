@@ -37,6 +37,7 @@ public class StudentServices {
     }
 
     public boolean addStudent(StudentDTO student){
+        System.out.println(student.getLastGradeLevelId());
         GradeLevel gradeLevel = gradeLevelRepo.findById(student.getLastGradeLevelId()).orElse(null);
         String year = LocalDate.now().getYear()+"";
         StringBuilder count = new StringBuilder(studentRepo.findStudentNextId(year) + 1 + "");

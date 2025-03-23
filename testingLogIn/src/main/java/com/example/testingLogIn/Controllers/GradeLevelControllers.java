@@ -23,6 +23,7 @@ public class GradeLevelControllers {
     @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/all")
     public ResponseEntity<List<GradeLevelDTO>> getAllGradeLevels() {
+        System.out.println("KUKUNIN lahat");
         try{
             return new ResponseEntity<>(gradeLevelServices.getAllGradeLevelsDTO(), HttpStatus.OK);
         }catch(Exception e){

@@ -39,100 +39,7 @@
 
 <body>
     <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="text-center">
-            <div class="school-logo">
-                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
-            </div> <br>
-            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
-                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
-            </p> <br>
-            <div class="welcome-div">
-                <p>
-                    Welcome,
-                    <span class="account-text" th:text="|${userFirstName} (${userRole})|"></span>
-                </p>
-
-            </div>
-        </div>
-
-        <a href="/home" class="sidebar-icons menu" onclick="clearSubmenus()">
-            <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
-        </a>
-
-        <a href="#" class="active sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
-            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
-            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="enrollment-submenu">
-            <a href="/enrollment/listing" class="second-active">Listing/Register</a>
-            <a href="/enrollment/assessment">Assessment</a>
-            <a href="/enrollment/payment">Payment</a>
-            <a href="/enrollment/enrolled">Enrolled</a>
-        </div>
-
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
-            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="transaction-submenu">
-            <a href="/transaction/tuition">Payment Transactions</a>
-            <a href="/transaction/academic-resources">Book Distribution</a>
-        </div>
-
-
-        <a href="/grade-management" class="sidebar-icons">
-            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
-        </a>
-
-        <a href="/schedule" class="sidebar-icons">
-            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
-        </a>
-
-        <a href="/class-list" class="sidebar-icons">
-            <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class List Icon"> Class List
-        </a>
-
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)">
-            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance <span
-                class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="maintenance-submenu">
-            <a href="/maintenance/school-year">School Year</a>
-            <a href="/maintenance/grade-level">Grade Level</a>
-            <a href="/maintenance/subject">Subject</a>
-            <a href="/maintenance/section">Section</a>
-            <a href="/maintenance/fees-management">Fees Management</a>
-            <!-- <a href="/maintenance/teacher">Teacher</a> -->
-        </div>
-
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)">
-            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="reports-submenu">
-            <a href="/reports/student">Student Reports</a>
-            <a href="/reports/payment">Payment Reports</a>
-            <a href="/reports/teacher">Teacher Report</a>
-            <a href="/reports/academic-resources">Book Distribution Reports</a>
-        </div>
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)">
-            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="account-submenu">
-            <a href="/accounts/verify-accounts">Verify Accounts</a>
-            <a href="/accounts/manage-accounts">Manage Accounts</a>
-            <a href="/accounts/my-account">My Account</a>
-        </div>
-        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-            <img th:src="@{/images/icons/settings.png}" alt="Reports Icon"> Settings <span class="arrow-icon"><img
-                    th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-        </a>
-        <div class="submenu" id="settings-submenu">
-            <a href="/settings/create-user">Create User</a>
-        </div>
-    </div>
+    <div th:replace="myfragment :: sidebar"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
@@ -165,7 +72,6 @@
             <p>/</p>
             <p>Listing/Register</p>
         </div>
-
 
         <div class="search-div">
             <!-- Searchbox and sort btn -->
@@ -895,8 +801,10 @@
                     <h5>For Transferees Only</h5>
 
                     <div class="student-form-group">
-                        <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                        <input type="text" id="lastGradeLevelCompleted" readonly>
+                        <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
+                        <select id="lastGradeLevelIdCompleted">
+                            <option value="">RANDOM</option>
+                        </select>
 
                         <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
                         <input type="text" id="lastMadrasaYearCompleted" readonly>
@@ -1164,7 +1072,23 @@
                 console.log("Selected Section:", sectionNumberLet);
             }
         });
+        goList();
+        fetchGradeLevelsForm();
     });
+
+    async function fetchGradeLevelsForm(){
+        const gradeLevels = document.getElementById("lastGradeLevelIdCompleted");
+        const response = await fetch("/gradelevel/all");
+        if (!response.ok) throw new Error("Failed to fetch grade levels");
+        const data = await response.json();
+        gradeLevels.innerHTML = '<option value="" disabled selected>Choose a Grade Level</option>';
+        data.forEach(level => {
+            let option = document.createElement("option");
+            option.value = level.levelId;
+            option.textContent = level.levelName;
+            gradeLevels.appendChild(option);
+        });
+    }
 
     function getPaymentStatusClass(status) {
         status = status.toLowerCase();
@@ -1243,11 +1167,6 @@
             selectElement.appendChild(option);
         });
     }
-
-
-    document.addEventListener("DOMContentLoaded", function () {
-        goList();
-    });
 
     function getCheckedPaymentValues() {
         const checkedCheckboxes = document.querySelectorAll('.payment-container-group input[type="checkbox"]:checked');
@@ -1332,16 +1251,16 @@
         button2.click();
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        document.body.addEventListener("click", function (event) {
-            if (event.target.closest(".proceedButton")) {
-                event.preventDefault();
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+<!--        document.body.addEventListener("click", function (event) {-->
+<!--            if (event.target.closest(".proceedButton")) {-->
+<!--                event.preventDefault();-->
 
-                enrollmentIdLet = event.target.closest(".proceedButton").getAttribute("data-enrollment-id");
-                console.log("Enrollment ID:", enrollmentIdLet);
-            }
-        });
-    });
+<!--                enrollmentIdLet = event.target.closest(".proceedButton").getAttribute("data-enrollment-id");-->
+<!--                console.log("Enrollment ID:", enrollmentIdLet);-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
 
     function proceedToEnrolled(enrollmentIdLet) {
         const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;
@@ -1527,14 +1446,12 @@
             motherName: document.getElementById("studmotherName")?.value?.trim() || null,
             motherOccupation: document.getElementById("studmotherOccupation")?.value?.trim() || null,
 
-            // Guardian's Information
             guardianName: document.getElementById("studguardianName")?.value?.trim() || null,
             guardianOccupation: document.getElementById("studguardianOccupation")?.value?.trim() || null,
             guardianContactNum: document.getElementById("studguardianContactNumber")?.value?.trim() || null,
             guardianAddress: document.getElementById("studguardianAddress")?.value?.trim() || null,
-
-            // Transferee-specific Information
-            lastGradeLevelCompleted: document.getElementById("lastGradeLevelCompleted")?.value?.trim() || null,
+            transferee: document.getElementById("isTransferee").checked,
+            lastGradeLevelId: document.getElementById("lastGradeLevelIdCompleted").options[document.getElementById("lastGradeLevelIdCompleted").selectedIndex].value,
             lastMadrasaYearCompleted: document.getElementById("lastMadrasaYearCompleted")?.value?.trim() || null,
             madrasaNameLastAttended: document.getElementById("madrasaNameLastAttended")?.value?.trim() || null,
             madrasaAddress: document.getElementById("madrasaAddress")?.value?.trim() || null

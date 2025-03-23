@@ -45,7 +45,7 @@ public class StudentDTO {
     
     private boolean isTransferee;
     private String madrasaName;
-    private int lastGradeLevelId;
+    private Integer lastGradeLevelId;
     private String lastGradeLevelCompleted;
     private String lastMadrasaYearCompleted;
     private String madrasaAddress;

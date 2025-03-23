@@ -1,4 +1,11 @@
-<div class="sidebar" id="sidebar">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="sidebar" id="sidebar" th:fragment="sidebar">
     <div class="text-center">
         <div class="school-logo">
             <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
@@ -74,3 +81,5 @@
            th:classappend="${#httpServletRequest.requestURI == '/settings/create-user' ? 'second-active' : ''}">Create User</a>
     </div>
 </div>
+</body>
+</html>

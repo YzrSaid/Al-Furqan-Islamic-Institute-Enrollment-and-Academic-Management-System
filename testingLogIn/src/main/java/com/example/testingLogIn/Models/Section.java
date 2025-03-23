@@ -14,9 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 public class Section {
     
@@ -39,7 +37,7 @@ public class Section {
         return SectionDTO.builder()
                              .number(getNumber())
                              .gradeLevelName(level.getLevelName())
-                             .adviserName(adviser.getFirstname()+" "+adviser.getLastname())
+                             .adviserName(adviser.getFullName())
                              .sectionName(getSectionName())
                              .capacity(getCapacity())
                              .isNotDeleted(true)

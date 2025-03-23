@@ -43,6 +43,7 @@ public class UserModel implements UserDetails {
     private String firstname;
     private String lastname;
     private String middlename;
+    private String fullName;
     private String address;
     private String contactNumber;
     @Enumerated(EnumType.STRING)
@@ -83,16 +84,14 @@ public class UserModel implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-    public String getFullName(){
-        return firstname+" "+ Optional.ofNullable(middlename).map(m -> m+" ").orElse("")+lastname;
-    }
     
     public UserDTO mapperDTO(){
         return UserDTO.builder()
                 .username(username)
                 .firstname(firstname)
                 .lastname(lastname)
+                .middlename(middlename)
+                .fullName(fullName)
                 .address(address)
                 .birthdate(birthdate)
                 .gender(gender)

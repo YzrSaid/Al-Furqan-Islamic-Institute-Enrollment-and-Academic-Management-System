@@ -29,5 +29,7 @@ public class UserDTO {
     private Gender gender;
     private String firstname;
     private String lastname;
+    private String middlename;
+    private String fullName;
     private boolean isNotDeleted;
 }

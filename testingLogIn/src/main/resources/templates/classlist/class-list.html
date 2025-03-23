@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-<script th:src="@{/js/script.js}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
@@ -34,7 +33,7 @@
                 }
             }
         });
-        setUpTables();
+        getAllSections();
     });
 </script>
 
@@ -64,75 +63,54 @@
             </div>
         </div>
         <div class="text-link">
-            <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+            <h4 id="grade-level-and-section-name">Class List</h4>
             <p>Main</p>
             <p>/</p>
-            <p>Maintenance</p>
-            <p>/</p>
-            <p>Schedule</p>
+            <p>Class List</p>
         </div>
-        <div class="sched-board">
-            <div class="grade-lev-container">
-                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
-                <h4 id="adviser">Sir Jisun</h4>
-            </div>
 
-            <table id="paragas-eatery-table" class="sched-table">
-                <thead>
-                    <tr>
-                        <th>Subject</th>
-                        <th>Teacher</th>
-                        <th>Day</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="scheduleBody">
-                    <tr class="sched-row hidden-row">
-                        <td>
-                            <select name="subject">
-                                <option value="" disabled selected>Choose a subject</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="teacher">
-                                <option value="" disabled selected>Choose a teacher</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="days">
-                                <option value="" disabled selected>Choose a day</option>
-                                <option value="Saturday">Saturday</option>
-                                <option value="Sunday">Sunday</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="time">
-                        </td>
-                        <td>
-                            <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="add-row-container">
-                <img id="addRowBtn" th:src="@{/images/icons/add-button.png}" alt="">
+        <div class="search-div">
+            <!-- Searchbox and sort btn -->
+            <div class="search">
+                <div class="search-container">
+                    <input type="text" id="searchBy" placeholder="Search..." class="search-input" />
+                    <button onclick="getAllSections()" class="search-btn">Search</button>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" onchange="getAllSections()" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="GRADE_LEVEL">Grade Level</option>
+                        <option value="ENROLLED_COUNT">Enrolled Students</option>
+                        <option value="SECTION_NAME">Section Name</option>
+                    </select>
+                </div>
             </div>
         </div>
 
-        <!-- buttons -->
-        <div class="btn-container">
-            <button class="save-button" data-action="saveSched"
-                data-message="Are you sure you want to save this schedule" id="saveBtn"
-                data-open-modal="confirmationModal">Add</button>
-            <button class="clear-button" data-action="clearSched"
-                data-message="Are you sure you want to clear all the schedule" id="clearBtn"
-                data-open-modal="confirmationModal">
-                Clear</button>
-        </div>
-
+        <!-- Table -->
+        <table id="table-ba-to" class="verify-accounts-table">
+            <thead>
+                <tr>
+                    <th>Grade Level</th>
+                    <th>Section</th>
+                    <th>Adviser</th>
+                    <th>Number of Students</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Grade 1</td>
+                    <td>Malunggay</td>
+                    <td>30</td>
+                    <td>
+                        <div class="action-container">
+                            <a href="/schedules/sched-board" class="view-sched">View Class List</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
@@ -212,7 +190,7 @@
                         <div class="change-pass-div">
                             <ul>
                                 <li>Must be 8 characters</li>
-                                <li>Must contain a spacial character</li>
+                                <li>Must contain a special character</li>
                                 <li>Must contain upper and lower case</li>
                             </ul>
                         </div>
@@ -230,72 +208,13 @@
         </div>
 
     </div>
-
+    <script th:src="@{/js/script.js}"></script>
 </body>
 <script>
-    function saveSchedule() {
-        const path = window.location.pathname;
-
-        const pathParts = path.split('/');
-        const secId = pathParts[pathParts.length - 1];
-        const subjectName = document.getElementById('subject-select').value;
-        const teacher = document.getElementById('teacher-select').value;
-        const day = document.getElementById('day').value;
-        const startTime = document.getElementById('starttime').value;
-        const endTime = document.getElementById('endtime').value;
-
-        // Validate that all fields are filled
-        if (!subjectName || !teacher || !day || !startTime || !endTime) {
-            alert('Please fill in all fields.');
-            return;
-        } else if (startTime >= endTime) {
-            alert('End time must be after start time.');
-            return;
-        }
-
-        const data = {
-            sectionId: secId,
-            subject: subjectName,
-            teacherName: teacher,
-            day: day,
-            timeStart: startTime,
-            timeEnd: endTime
-        };
-
-        fetch('/schedules/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
-        })
-            .then(response => {
-                return response.text().then(message => {
-                    // Handle different status codes
-                    if (response.ok) {
-                        // Success (HTTP 200 OK)
-                        alert(message); // Display the success message
-                        window.location.reload(); // Reload the page
-                    } else {
-                        alert(message);
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Display the error message to the user
-                alert(error.message);
-            });
-    }
-
-    function setUpTables() {
-        const path = window.location.pathname;
-
-        const pathParts = path.split('/');
-        const sectionId = pathParts[pathParts.length - 1];
-        console.log(sectionId);
-
-        fetch(`/schedules/section/${sectionId}`)
+    function getAllSections() {
+        const sortBy = document.getElementById("sort-select").value;
+        const searchBy = document.getElementById("searchBy").value;
+        fetch(`/section/all?willCountStudent=true&q=${searchBy}&sortBy=${sortBy}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -303,21 +222,22 @@
                 return response.json(); // Parse the response as JSON
             })
             .then(data => {
-                const tableBody = document.querySelector("#paragas-eatery-table tbody");
+                const tableBody = document.querySelector("#table-ba-to tbody");
                 tableBody.innerHTML = "";
 
                 data.forEach(rec => {
+                    console.log(rec);
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                        <tr class="sched-row hidden-row">
-                            <td>${rec.subject}</td>
-                            <td>${rec.teacherName}</td>
-                            <td>${rec.day}</td>
-                            <td>${rec.timeStartString}</td>
-                            <td>${rec.timeEndString}</td>
+                        <tr>
+                            <td>${rec.gradeLevelName}</td>
+                            <td>${rec.sectionName}</td>
+                            <td>${rec.adviserName}</td>
+                            <td>${rec.studentEnrolledCount}</td>
                             <td>
-                                <button onClick="deleteThis(${rec.scheduleNumber})">Delete</button>
-                                <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                                <div class="action-container">
+                                    <a href="/class-list/students/${rec.sectionName}" class="view-sched">View Class List</a>
+                                </div>
                             </td>
                         </tr>
                         `;
@@ -326,26 +246,6 @@
             })
             .catch(error => {
                 console.error("Error fetching data:", error);
-            });
-    }
-
-    function deleteThis(schedId) {
-        fetch('/schedules/delete/' + schedId, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                return response.text().then(message => {
-                    if (response.ok) {
-                        alert(message);
-                        window.location.reload();
-                    } else {
-                        alert(message);
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert(error.message);
             });
     }
 </script>

@@ -194,7 +194,12 @@ public class PrivateTemplateControllers {
 
     @GetMapping("/class-list")
     public String getClassList() {
-        return "/class-list";
+        return "/classlist/class-list";
+    }
+
+    @GetMapping("/class-list/students/{sectionName}")
+    public String getClassStudentsList() {
+        return "/classlist/class-students";
     }
 
     // these are for schedule pages

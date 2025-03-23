@@ -16,7 +16,7 @@ public class SectionDTO {
     private String  adviserName;
     private String sectionName;
     private int capacity;
-    
+    private Integer studentEnrolledCount;
     private Integer subSchedCount;
     private boolean isNotDeleted;
 }

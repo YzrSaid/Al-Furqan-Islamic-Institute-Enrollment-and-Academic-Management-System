@@ -269,6 +269,13 @@ public class EnrollmentServices {
         return epv;
     }
 
+    public List<StudentDTO> getEnrolledStudentsBySection(int sectionId){
+        int actvSemId = Optional.ofNullable( sySemRepo.findCurrentActive()).map(SchoolYearSemester::getSySemNumber).orElse(0);
+        return enrollmentRepo.countCurrentlyEnrolled(sectionId,actvSemId).stream()
+                .map(Student::DTOmapper)
+                .collect(Collectors.toList());
+    }
+
     private EnrollmentDTO isComplete(Enrollment e) {
         if(e == null)
             return null;

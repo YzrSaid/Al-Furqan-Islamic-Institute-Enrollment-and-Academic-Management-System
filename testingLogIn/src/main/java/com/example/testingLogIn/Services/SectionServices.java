@@ -1,17 +1,19 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomComparator.SectionComparator;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
+import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.GradeLevel;
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Section;
-import com.example.testingLogIn.Repositories.GradeLevelRepo;
-import com.example.testingLogIn.Repositories.ScheduleRepo;
-import com.example.testingLogIn.Repositories.SectionRepo;
+import com.example.testingLogIn.Repositories.*;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,14 +29,18 @@ public class SectionServices {
     private final SectionRepo sectionRepo;
     private final UserRepo userRepo;
     private final ScheduleRepo schedRepo;
-
+    private final sySemesterRepo semRepo;
+    private final EnrollmentServices enrollmentServices;
     @Autowired
-    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo, ScheduleRepo schedRepo) {
+    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo, ScheduleRepo schedRepo, sySemesterRepo semRepo, EnrollmentServices enrollmentServices) {
         this.gradeRepo = gradeRepo;
         this.sectionRepo = sectionRepo;
         this.userRepo = userRepo;
         this.schedRepo = schedRepo;
+        this.semRepo = semRepo;
+        this.enrollmentServices = enrollmentServices;
     }
+
     //Get by Grade Level Name
     public List<SectionDTO> getSectionsByLevel(String gradeLevel){
         return sectionRepo.findAll().stream()
@@ -72,9 +78,21 @@ public class SectionServices {
         return result;
     }
 
-    public List<SectionDTO> getAllSections(){
-        return sectionRepo.findAll().stream()
-                          .filter(section -> section.isNotDeleted() && section.getLevel().isNotDeleted())
+    public List<StudentDTO> getEnrolledStudentToSection(int sectionId){
+        return enrollmentServices.getEnrolledStudentsBySection(sectionId);
+    }
+
+    public List<SectionDTO> getAllSections(boolean willCountStud,String sortBy, String search){
+        SectionComparator sectionComparator = new SectionComparator();
+        if(willCountStud)
+            return sectionRepo.findSectionsAndGradeLevelNotDeleted(("%"+search.toLowerCase()+"%")).stream()
+                    .map(Section::toSectionDTO)
+                    .peek(sec -> sec.setStudentEnrolledCount(enrollmentServices.getEnrolledStudentsBySection(sec.getNumber()).size()))
+                    .sorted((sec1,sec2) -> sectionComparator.myMethodFactory(sec1,sec2,sortBy))
+                    .collect(Collectors.toList());
+
+        //this is for grade management
+        return sectionRepo.findSectionsAndGradeLevelNotDeleted(null).stream()
                           .map(Section::toSectionDTO)
                           .peek(sec -> sec.setSubSchedCount(schedRepo.getUniqueSubjectCountBySection(sec.getNumber())))
                           .collect(Collectors.toList());
@@ -92,7 +110,7 @@ public class SectionServices {
         
         return null;                     
     }
-    
+
     //UPDATE SECTION RECORD
     public boolean updateSection(SectionDTO sectionDTO){
         Section toUpdate = sectionRepo.findById(sectionDTO.getNumber()).orElse(null);

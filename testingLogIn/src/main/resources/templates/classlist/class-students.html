@@ -87,23 +87,13 @@
         <table id="table-ba-to" class="verify-accounts-table">
             <thead>
                 <tr>
-                    <th>Grade Level</th>
-                    <th>Section</th>
-                    <th>Students</th>
-                    <th>Action</th>
+                    <th>Student Id</th>
+                    <th>Student Name</th>
+                    <th>Gender</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Grade 1</td>
-                    <td>Malunggay</td>
-                    <td>30</td>
-                    <td>
-                        <div class="action-container">
-                            <a href="/schedules/sched-board" class="view-sched">View Class List</a>
-                        </div>
-                    </td>
-                </tr>
+            <tr><td colspan="3">No Records Found</td></tr>
             </tbody>
         </table>
 
@@ -206,40 +196,43 @@
     <script th:src="@{/js/script.js}"></script>
 </body>
 <script>
-    function getAllSections() {
-        console.log('getting the sections');
-        fetch(`/section/all`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json(); // Parse the response as JSON
-            })
-            .then(data => {
-                const tableBody = document.querySelector("#table-ba-to tbody");
-                tableBody.innerHTML = "";
+    document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+        const pathParts = path.split('/');
+        const sectionName = pathParts[pathParts.length - 1];
+        fetchSectionInfo(sectionName);
+    });
 
-                data.forEach(rec => {
-                    console.log(rec);
+    async function fetchSectionInfo(sectionName){
+        const response = await fetch(`/section?sectionName=${sectionName}`);
+        if(!response.ok){
+            alert("Section Invalid.");
+            return;
+        }
+        const result = await response.json();
+        console.log(result);
+        setUpTables(result.number);
+    }
+
+    function setUpTables(sectionId){
+        fetch(`/section/students/${sectionId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.length);
+                if(data.length === 0)return;
+                const tableBody = document.querySelector("#table-ba-to tbody");
+                tableBody.innerHTML = ``;
+                data.forEach(stud => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                        <tr>
-                            <td>${rec.gradeLevelName}</td>
-                            <td>${rec.sectionName}</td>
-                            <td></td>
-                            <td>
-                                <div class="action-container">
-                                    <a href="/schedule/sched-board/${rec.number}" class="view-sched">View Class List</a>
-                                </div>
-                            </td>
-                        </tr>
-                        `;
+                        <td>${stud.studentDisplayId}</td>
+                        <td>${stud.fullName}</td>
+                        <td>${stud.gender}</td>
+                    `;
                     tableBody.appendChild(row);
                 });
             })
-            .catch(error => {
-                console.error("Error fetching data:", error);
-            });
+            .catch(error => console.error("Error fetching subject data:", error));
     }
 </script>
 

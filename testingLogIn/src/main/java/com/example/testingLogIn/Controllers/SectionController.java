@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.SectionDTO;
+import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Services.SectionServices;
@@ -40,10 +41,21 @@ public class SectionController {
         }
     }
 
+    @GetMapping("/students/{sectionId}")
+    public ResponseEntity<List<StudentDTO>> getStudentsOfSection(@PathVariable int sectionId){
+        try{
+            return new ResponseEntity<>(sectionService.getEnrolledStudentToSection(sectionId),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
     @GetMapping("/all")
-    public ResponseEntity<List<SectionDTO>> getAllSections() {
+    public ResponseEntity<List<SectionDTO>> getAllSections(@RequestParam(required = false,defaultValue = "false") boolean willCountStudent,
+                                                           @RequestParam(defaultValue = "ENROLLED_COUNT") String sortBy,
+                                                           @RequestParam(required = false,defaultValue = "") String q) {
         try {
-            return new ResponseEntity<>(sectionService.getAllSections(), HttpStatus.OK);
+            return new ResponseEntity<>(sectionService.getAllSections(willCountStudent,sortBy,q), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -62,8 +74,11 @@ public class SectionController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-    @GetMapping("/name/{sectionName}")
-    public ResponseEntity<SectionDTO> getSectionByNameDTO(@PathVariable String sectionName) {
+    @GetMapping("")
+    public ResponseEntity<SectionDTO> getSectionByNameDTO(@RequestParam String sectionName) {
+        if(sectionName == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
         return new ResponseEntity<>(sectionService.getSectionByNameDTO(sectionName.toLowerCase()), HttpStatus.OK);
     }
 

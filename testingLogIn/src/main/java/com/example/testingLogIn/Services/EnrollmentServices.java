@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CountersService.SectionStudentCountServices;
 import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
@@ -45,12 +46,11 @@ public class EnrollmentServices {
     private final PaymentsRecordRepo payRecRepo;
     private final StudentFeesListService studFeeListService;
     private final DiscountsServices discService;
+    private final SectionStudentCountServices sscService;
+    private final PaymentRecordService paymentService;
 
     @Autowired
-    private PaymentRecordService paymentService;
-
-    @Autowired
-    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService) {
+    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService) {
         this.enrollmentRepo = enrollmentRepo;
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
@@ -61,6 +61,8 @@ public class EnrollmentServices {
         this.payRecRepo = payRecRepo;
         this.studFeeListService = studFeeListService;
         this.discService = discService;
+        this.sscService = sscService;
+        this.paymentService = paymentService;
     }
 
     public boolean addStudentToListing(StudentDTO stud, Integer studentId) {
@@ -166,6 +168,7 @@ public class EnrollmentServices {
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
             studentRepo.save(student);
 
+            CompletableFuture<Void> updateSection = CompletableFuture.runAsync(()-> sscService.updateSectionIfExist(enrollmentRecord));
             CompletableFuture<Void> updateStudent = CompletableFuture.runAsync(() -> studentRepo.save(student));
             CompletableFuture<Void> addStudentGrades = CompletableFuture.runAsync(() -> ssgService.addStudentGrades(enrollmentRecord));
             CompletableFuture<Void> addFeesRecord = CompletableFuture.runAsync(() -> studFeeListService.addFeesRecord(enrollmentRecord));

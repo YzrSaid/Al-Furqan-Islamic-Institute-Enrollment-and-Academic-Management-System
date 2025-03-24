@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.ModelDTO.GradeLevelDTO;
+import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ public class GradeLevelServices {
             if (pre == null)
                 throw new NullPointerException();
         }
-
         if (getByName(levelName) == null) {
             GradeLevel newGrade = new GradeLevel();
             newGrade.setNotDeleted(true);
@@ -108,6 +108,23 @@ public class GradeLevelServices {
             return true;
         } else
             return false;
+    }
+
+    public List<GradeLevelDTO> preRequisiteOfPreRequisite(int gradeLevelId){
+        List<GradeLevelDTO> toReturn = new ArrayList<>();//gradeLevel will be the starting point
+        GradeLevel gradeLevel = gradeLevelRepo.findById(gradeLevelId).orElseThrow(NullPointerException::new);
+        gradeLevel = gradeLevelRepo.findSuccessorOnly(gradeLevel.getLevelId()).orElse(gradeLevel);
+
+        toReturn.add(gradeLevel.mapperDTO());
+        while (true){
+            if(gradeLevel.getPreRequisite() != null)
+                gradeLevel = gradeLevel.getPreRequisite();
+            else
+                break;
+
+            toReturn.add(gradeLevel.mapperDTO());
+        }
+        return toReturn;
     }
 
     public GradeLevel getByName(String levelname) {

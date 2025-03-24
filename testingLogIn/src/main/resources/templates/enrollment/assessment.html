@@ -262,6 +262,8 @@
         const isLevelIdNull = currentLevelId === null || currentLevelId === "null" || currentLevelId === "None";
         if ((isStudentNew && !isTransferee) || isLevelIdNull) {
             url = '/gradelevel/no-pre-requisite';
+        }else if(isTransferee && !isLevelIdNull){
+            url = `/gradelevel/for-transferee/${currentLevelId}`;
         }
         const originalOnChange = selectTag.getAttribute("onChange");
         selectTag.removeAttribute("onChange");

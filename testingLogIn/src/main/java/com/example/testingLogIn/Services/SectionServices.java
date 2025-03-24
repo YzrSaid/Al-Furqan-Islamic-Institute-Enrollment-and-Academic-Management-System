@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CountersService.SectionStudentCountServices;
 import com.example.testingLogIn.CustomComparator.SectionComparator;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
@@ -9,6 +10,7 @@ import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Repositories.*;
+import com.example.testingLogIn.StatisticsModel.SectionStudentCount;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 import java.util.ArrayList;
@@ -31,16 +33,18 @@ public class SectionServices {
     private final ScheduleRepo schedRepo;
     private final sySemesterRepo semRepo;
     private final EnrollmentServices enrollmentServices;
+    private final SectionStudentCountServices sscService;
+
     @Autowired
-    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo, ScheduleRepo schedRepo, sySemesterRepo semRepo, EnrollmentServices enrollmentServices) {
+    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo, ScheduleRepo schedRepo, sySemesterRepo semRepo, EnrollmentServices enrollmentServices, SectionStudentCountServices sscService) {
         this.gradeRepo = gradeRepo;
         this.sectionRepo = sectionRepo;
         this.userRepo = userRepo;
         this.schedRepo = schedRepo;
         this.semRepo = semRepo;
         this.enrollmentServices = enrollmentServices;
+        this.sscService = sscService;
     }
-
     //Get by Grade Level Name
     public List<SectionDTO> getSectionsByLevel(String gradeLevel){
         return sectionRepo.findAll().stream()
@@ -83,11 +87,14 @@ public class SectionServices {
     }
 
     public List<SectionDTO> getAllSections(boolean willCountStud,String sortBy, String search){
+        int activeSemId = Optional.ofNullable(semRepo.findCurrentActive()).map(SchoolYearSemester::getSySemNumber).orElse(0);
         SectionComparator sectionComparator = new SectionComparator();
         if(willCountStud)
             return sectionRepo.findSectionsAndGradeLevelNotDeleted(("%"+search.toLowerCase()+"%")).stream()
                     .map(Section::toSectionDTO)
-                    .peek(sec -> sec.setStudentEnrolledCount(enrollmentServices.getEnrolledStudentsBySection(sec.getNumber()).size()))
+                    .peek(sec -> sec.setStudentEnrolledCount(Optional.ofNullable
+                            (sscService.findSectionCount(sec.getNumber(),activeSemId))
+                            .map(SectionStudentCount::getStudentCount).orElse(0)))
                     .sorted((sec1,sec2) -> sectionComparator.myMethodFactory(sec1,sec2,sortBy))
                     .collect(Collectors.toList());
 

@@ -117,4 +117,13 @@ public class GradeLevelControllers {
             return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
         }
     }
+
+    @GetMapping("/for-transferee/{levelId}")
+    public ResponseEntity<List<GradeLevelDTO>> testMe(@PathVariable int levelId){
+        try {
+            return new ResponseEntity<>(gradeLevelServices.preRequisiteOfPreRequisite(levelId), HttpStatus.OK);
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

@@ -71,82 +71,112 @@ window.onclick = function (event) {
     });
   }
 };
-
 function toggleSubMenu(submenuId, event) {
-  event.preventDefault(); // Prevent default anchor behavior
+  event.preventDefault();
 
   let submenu = document.getElementById(submenuId);
   let arrowIconImg =
     submenu.previousElementSibling.querySelector(".arrow-icon img");
   let isOpen = submenu.classList.contains("open");
 
-  // Close all unrelated submenus
+  // Close all unrelated submenus EXCEPT the clicked one and the ones with active items
   document.querySelectorAll(".submenu").forEach((otherSubmenu) => {
-    if (
-      !submenu.contains(otherSubmenu) &&
-      otherSubmenu !== submenu &&
-      !otherSubmenu.contains(submenu)
-    ) {
+    let hasActiveItem = otherSubmenu.querySelector(
+      ".submenu-item.active, .submenu-item.second-active"
+    );
+
+    if (otherSubmenu !== submenu && !hasActiveItem) {
       otherSubmenu.classList.remove("open");
 
       // Reset arrow icons for closed submenus
       let otherArrowIcon =
         otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
       if (otherArrowIcon) {
-        otherArrowIcon.src =
-          //   "/testingLogIn/src/main/resources/static/images/icons/arrow-down.png";
-          // otherArrowIcon.src = "../static/images/icons/arrow-down.png";
-
-          otherArrowIcon.src = "/images/icons/arrow-down.png";
+        otherArrowIcon.src = "/images/icons/arrow-down.png";
       }
     }
   });
 
   // Toggle the clicked submenu
   submenu.classList.toggle("open", !isOpen);
-
   arrowIconImg.src = isOpen
-    ? "/images/icons/arrow-down.png" // Change back to down arrow if closing
-    : "/images/icons/greater-than.png"; // Change to right arrow if opening
+    ? "/images/icons/arrow-down.png"
+    : "/images/icons/greater-than.png";
 
-  let allOpenSubmenus = [...document.querySelectorAll(".submenu.open")].map(
-    (sub) => sub.id
-  );
-  localStorage.setItem("openedSubmenus", JSON.stringify(allOpenSubmenus));
+  // Save submenu state in localStorage
+  let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+  if (!isOpen) {
+    if (!savedSubmenus.includes(submenuId)) {
+      savedSubmenus.push(submenuId);
+    }
+  } else {
+    savedSubmenus = savedSubmenus.filter((id) => id !== submenuId);
+  }
+
+  localStorage.setItem("openedSubmenus", JSON.stringify(savedSubmenus));
 }
 
-function clearSubmenus() {
-  localStorage.removeItem("openedSubmenus"); // Clear saved submenus
-  document
-    .querySelectorAll(".submenu")
-    .forEach((submenu) => submenu.classList.remove("open"));
-  document
-    .querySelectorAll(".arrow-icon img")
-    .forEach((img) => (img.src = "/images/icons/arrow-down.png"));
-}
-
+// Ensure only active submenus stay open on reload
 document.addEventListener("DOMContentLoaded", function () {
     let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-
-    savedSubmenus.forEach(submenuId => {
-        let submenu = document.getElementById(submenuId);
-        if (submenu) {
-            submenu.classList.add("open");
-
-            // Make sure parent menus are also opened
-            let parentMenu = submenu.closest(".submenu");
-            if (parentMenu) {
-                parentMenu.classList.add("open");
-            }
-
-            // Update arrow icon
-            let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-            if (arrowIconImg) {
-                arrowIconImg.src = "/images/icons/greater-than.png";
-            }
+    let updatedSubmenus = [];
+  
+    document.querySelectorAll(".submenu").forEach((submenu) => {
+      // 🔥 Use a timeout to ensure dynamically added classes are detected
+      setTimeout(() => {
+        let hasActiveItem = submenu.querySelector(
+          ".submenu-item.active, .submenu-item.second-active"
+        );
+  
+        if (hasActiveItem) {
+          // Keep active submenus open
+          submenu.classList.add("open");
+  
+          // Ensure parent menus are opened
+          let parentMenu = submenu.closest(".submenu");
+          if (parentMenu) {
+            parentMenu.classList.add("open");
+          }
+  
+          // Update arrow icon
+          let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+          if (arrowIconImg) {
+            arrowIconImg.src = "/images/icons/greater-than.png";
+          }
+  
+          // Add active submenu to localStorage state
+          updatedSubmenus.push(submenu.id);
+  
+        } else if (savedSubmenus.includes(submenu.id)) {
+          // Close inactive saved submenus
+          submenu.classList.remove("open");
+  
+          let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+          if (arrowIconImg) {
+            arrowIconImg.src = "/images/icons/arrow-down.png";
+          }
         }
+  
+        // Update localStorage with only active submenus
+        localStorage.setItem("openedSubmenus", JSON.stringify(updatedSubmenus));
+      }, 0);  // Timeout ensures dynamic classes are detected
     });
-});
+  });
+  
+  
+// ✅ Clear all submenus ONLY when clicking on non-submenu links
+function clearSubmenus() {
+  document.querySelectorAll(".submenu").forEach((submenu) => {
+    submenu.classList.remove("open");
+  });
+
+  document.querySelectorAll(".arrow-icon img").forEach((img) => {
+    img.src = "/images/icons/arrow-down.png";
+  });
+
+  localStorage.removeItem("openedSubmenus"); // Clear saved submenu states
+}
 
 document.addEventListener("DOMContentLoaded", function () {
   // Select all dropdown links inside dropdown-status-content
@@ -456,7 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
     switch (action) {
       case "saveStudentOrTransferee":
         saveStudentOrTransferee();
-        break;  
+        break;
       case "saveSchedule":
         saveSchedule();
         break;
@@ -1388,13 +1418,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 // this is key listener escape for forms
 document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-        const closeButtons = document.querySelectorAll("[data-close-modal]");
-        closeButtons.forEach(button => button.click());
-    }
+  if (event.key === "Escape") {
+    const closeButtons = document.querySelectorAll("[data-close-modal]");
+    closeButtons.forEach((button) => button.click());
+  }
 });
-
-

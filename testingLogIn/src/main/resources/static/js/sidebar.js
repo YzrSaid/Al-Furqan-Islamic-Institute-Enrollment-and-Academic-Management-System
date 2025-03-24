@@ -1,34 +1,7 @@
-document.addEventListener("DOMContentLoaded", function () {
-  let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
 
-  savedSubmenus.forEach((submenuId) => {
-    let submenu = document.getElementById(submenuId);
-    if (submenu) {
-      submenu.classList.add("open");
-
-      // Make sure parent menus are also opened
-      let parentMenu = submenu.closest(".submenu");
-      if (parentMenu) {
-        parentMenu.classList.add("open");
-      }
-
-      // Update arrow icon
-      let arrowIconImg =
-        submenu.previousElementSibling?.querySelector(".arrow-icon img");
-      if (arrowIconImg) {
-        arrowIconImg.src = "/images/icons/greater-than.png";
-      }
-    }
-  });
-});
 
 document.addEventListener("DOMContentLoaded", () => {
   const currentPath = window.location.pathname;
-
-  // Remove all active classes before adding the current one
-  document.querySelectorAll(".sidebar-icons, .submenu-item").forEach((link) => {
-    link.classList.remove("active", "second-active");
-  });
 
   // Highlight main menu link
   document.querySelectorAll(".sidebar-icons").forEach((link) => {

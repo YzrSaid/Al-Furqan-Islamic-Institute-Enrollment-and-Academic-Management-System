@@ -12,8 +12,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
 </head>
-<script th:src="@{/js/script.js}" defer></script>
-<script th:src="@{/js/sidebar.js}" defer></script>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
 
 <body>
     <!-- Sidebar -->
@@ -1228,46 +1228,46 @@
         button2.click();
     }
 
-// < !--document.addEventListener("DOMContentLoaded", function () {
-//         -->
-// < !--document.body.addEventListener("click", function (event) {
-//             -->
-// < !--            if (event.target.closest(".proceedButton")) {
-//                 -->
-// < !--event.preventDefault(); -->
+    // < !--document.addEventListener("DOMContentLoaded", function () {
+    //         -->
+    // < !--document.body.addEventListener("click", function (event) {
+    //             -->
+    // < !--            if (event.target.closest(".proceedButton")) {
+    //                 -->
+    // < !--event.preventDefault(); -->
 
-// < !--enrollmentIdLet = event.target.closest(".proceedButton").getAttribute("data-enrollment-id"); -->
-// < !--console.log("Enrollment ID:", enrollmentIdLet); -->
-// < !--            } -->
-// < !--        }); -->
-// < !--    }); -->
+    // < !--enrollmentIdLet = event.target.closest(".proceedButton").getAttribute("data-enrollment-id"); -->
+    // < !--console.log("Enrollment ID:", enrollmentIdLet); -->
+    // < !--            } -->
+    // < !--        }); -->
+    // < !--    }); -->
 
-        function proceedToEnrolled(enrollmentIdLet) {
-            const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;
-            console.log(`🔄 Sending request to: ${apiUrl}`);
+    function proceedToEnrolled(enrollmentIdLet) {
+        const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;
+        console.log(`🔄 Sending request to: ${apiUrl}`);
 
-            fetch(apiUrl, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" }
-            })
-                .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
-                .then(({ text, status }) => {
-                    console.log(`🔹 API Response (${status}): ${text}`);
+        fetch(apiUrl, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+        })
+            .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
+            .then(({ text, status }) => {
+                console.log(`🔹 API Response (${status}): ${text}`);
 
-                    if (status === 200) {
-                        // <!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
-                        // <!--                    location.reload(); // Reloads the page after successful enrollment-->
-                        goList(currentPageNo, currentPageSize);
-                    } else {
-                        // showErrorModal("❌ Error: " + text);
-                        location.reload();
-                    }
-                })
-                .catch(error => {
+                if (status === 200) {
+                    // <!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
+                    // <!--                    location.reload(); // Reloads the page after successful enrollment-->
+                    goList(currentPageNo, currentPageSize);
+                } else {
                     // showErrorModal("❌ Error: " + text);
                     location.reload();
-                });
-        }
+                }
+            })
+            .catch(error => {
+                // showErrorModal("❌ Error: " + text);
+                location.reload();
+            });
+    }
 
     async function proceedToAssessment(enrollmentIdLet) {
         const gradeLevelId = document.getElementById("levelName").value;

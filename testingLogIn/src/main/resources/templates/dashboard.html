@@ -11,6 +11,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
 </head>
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
@@ -38,7 +40,7 @@
 
 <body>
     <!-- Sidebar -->
-    <div th:replace="~{myfragment :: sidebar}"></div>
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
@@ -119,9 +121,7 @@
                 </a>
             </div>
         </div>
-
     </div>
-    <script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

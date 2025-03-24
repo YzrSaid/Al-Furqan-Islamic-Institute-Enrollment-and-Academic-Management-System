@@ -11,10 +11,35 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
 
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "/images/icons/greater-than.png";
+                }
+            }
+        });
+    });
+</script>
 <body>
     <!-- Sidebar -->
-    <div th:replace="~{myfragment :: sidebar}"></div>
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
@@ -60,7 +85,7 @@
                         <option value="" disabled selected>Sort</option>
                         <option value="StudentId">Student Id</option>
                         <option value="StudentName">Student Name</option>
-                        <option value="GradeLevel" >Enrolling Grade Level</option>
+                        <option value="GradeLevel">Enrolling Grade Level</option>
                     </select>
                 </div>
             </div>
@@ -336,9 +361,7 @@
     <div id="successModal">
         <p id="successModalMessage"></p>
     </div>
-
-
-    <script th:src="@{/js/script.js}"></script>
+   
     <script>
         document.addEventListener("click", async function (event) {
             const addButton = event.target.closest('.add-payment-btn');
@@ -629,9 +652,9 @@
                     const tableBody = document.querySelector("#receipt-table tbody");
                     tableBody.innerHTML = "";
                     let i = 1;
-                    receipt.particulars.forEach(dat =>{
+                    receipt.particulars.forEach(dat => {
                         const row = document.createElement("tr");
-                        row.innerHTML =`
+                        row.innerHTML = `
                             <tr>
                                 <td>${i++}</td>
                                 <td>${dat.feeName}</td>
@@ -640,7 +663,7 @@
                         tableBody.appendChild(row);
                     });
                     const row = document.createElement("tr");
-                        row.innerHTML =`
+                    row.innerHTML = `
                             <tfoot>
                                 <tr>
                                     <td colspan="2">Total Amount Paid:
@@ -650,8 +673,8 @@
                             </tfoot>`;
                     tableBody.appendChild(row);
                     alert(`Page : ${currentPage} with size of ${currentPageSize}`);
-                    getOnPayments(currentPage,currentPageSize);
-                   closeOpen();
+                    getOnPayments(currentPage, currentPageSize);
+                    closeOpen();
                 })
                 .catch(error => {
                     console.error("Error adding payment:", error);
@@ -659,10 +682,10 @@
                 });
         }
 
-        function closeOpen(){
+        function closeOpen() {
             const button1 = document.createElement("button");
             button1.setAttribute("data-close-modal", "addPaymentModal");
-            button1.setAttribute("data-open-modal","receiptModal");
+            button1.setAttribute("data-open-modal", "receiptModal");
             const button2 = document.createElement("button");
             button2.setAttribute("data-close-modal", "listOfPaymentsModal");
             document.body.appendChild(button1);
@@ -717,7 +740,7 @@
                     epv.feeStatus.forEach(datas => {
                         const row = document.createElement("tr");
                         const statusClass = getPaymentStatusClass(datas.status);
-                        row.innerHTML =`
+                        row.innerHTML = `
                             <td>${datas.feeName}</td>
                             <td>${datas.requiredFee}</td>
                             <td>${datas.totalPaid}</td>
@@ -727,7 +750,7 @@
                                     <div class="status ${statusClass}">${datas.status}</div>
                                 </div>
                             </td>`;
-                            tableBody.appendChild(row);
+                        tableBody.appendChild(row);
                     });
                 })
                 .catch(error => console.error("Error fetching sections:", error));
@@ -785,15 +808,15 @@
 
                     if (status === 200) {
                         alert("Show success message without reloading");
-                        getOnPayments(currentPage,currentPageSize);
+                        getOnPayments(currentPage, currentPageSize);
                     } else {
                         showErrorModal("❌ Error: Please try again!");
-                        getOnPayments(currentPage,currentPageSize)
+                        getOnPayments(currentPage, currentPageSize)
                     }
                 })
                 .catch(error => {
                     showErrorModal("❌ Error: Please try again!");
-                    getOnPayments(currentPage,currentPageSize)
+                    getOnPayments(currentPage, currentPageSize)
                 });
         }
 

@@ -14,7 +14,8 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
@@ -61,7 +62,7 @@
 
 <body>
     <!-- Sidebar -->
-    <div th:replace="~{myfragment :: sidebar}"></div>
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
@@ -141,8 +142,6 @@
             </tbody>
         </table>
     </div>
-
-    <!-- Custom JS -->
-    <script th:src="@{/js/script.js}"></script>
 </body>
+
 </html>

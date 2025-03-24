@@ -11,6 +11,8 @@
     <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
@@ -39,7 +41,7 @@
 
 <body>
     <!-- Sidebar -->
-    <div th:replace="~{myfragment :: sidebar}"></div>
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
@@ -204,9 +206,7 @@
                 </div>
             </div>
         </div>
-
     </div>
-    <script th:src="@{/js/script.js}"></script>
 </body>
 <script>
     function getAllSections() {

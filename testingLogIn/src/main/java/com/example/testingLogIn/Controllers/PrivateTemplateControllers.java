@@ -19,12 +19,6 @@ public class PrivateTemplateControllers {
     public String getStudentAccountPersonalProfile() {
         return "student-account/personal-profile";
     }
-
-    @GetMapping("/sidebar")
-    public String getSidebar() {
-        return "fragments/sidebar";
-    }
-
     @GetMapping("student/grades")
     public String getStudentAccountGrades() {
         return "student-account/grades";

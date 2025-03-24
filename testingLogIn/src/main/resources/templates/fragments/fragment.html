@@ -1,85 +1,152 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Sidebar</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
+
+<script>
+    // Clear submenus on page load
+    function clearSubmenus() {
+        localStorage.removeItem("openedSubmenus");  // Clear saved submenus
+        document.querySelectorAll(".submenu").forEach((submenu) => {
+            submenu.classList.remove("open");
+        });
+        document.querySelectorAll(".arrow-icon img").forEach((img) => {
+            img.src = "/images/icons/arrow-down.png";  // Reset arrow icons
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Call clearSubmenus on page load
+        clearSubmenus();
+
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "/images/icons/greater-than.png";
+                }
+            }
+        });
+    });
+</script>
+
 <body>
-<div class="sidebar" id="sidebar" th:fragment="sidebar">
-    <div class="text-center">
-        <div class="school-logo">
-            <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
-        </div> <br>
-        <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
-           th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
-        </p> <br>
-        <div class="welcome-div">
-            <p>
-                Welcome, <span class="account-text" th:text="|${userFirstName} (${userRole})|"></span>
-            </p>
+    <div class="sidebar" id="sidebar" th:fragment="sidebar">
+        <div class="text-center">
+            <div class="school-logo">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+            </div> <br>
+            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+            </p> <br>
+            <div class="welcome-div">
+                <p>
+                    Welcome, <span class="account-text" th:text="|${userFirstName} (${userRole})|"></span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <a href="/home" class="sidebar-icons" onclick="clearSubmenus()" data-path="/home">
+            <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
+        </a>
+
+        <!-- Enrollment -->
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)" data-path="/enrollment">
+            <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="enrollment-submenu">
+            <a href="/enrollment/listing" class="submenu-item" data-path="/enrollment/listing">Listing/Register</a>
+            <a href="/enrollment/assessment" class="submenu-item" data-path="/enrollment/assessment">Assessment</a>
+            <a href="/enrollment/payment" class="submenu-item" data-path="/enrollment/payment">Payment</a>
+            <a href="/enrollment/enrolled" class="submenu-item" data-path="/enrollment/enrolled">Enrolled</a>
+        </div>
+
+        <!-- Transaction -->
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)"
+            data-path="/transaction">
+            <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="transaction-submenu">
+            <a href="/transaction/tuition" class="submenu-item" data-path="/transaction/tuition">Payment
+                Transactions</a>
+            <a href="/transaction/academic-resources" class="submenu-item"
+                data-path="/transaction/academic-resources">Book Distribution</a>
+        </div>
+
+        <!-- Grade Management -->
+        <a href="/grade-management" class="sidebar-icons" onclick="clearSubmenus()" data-path="/grade-management">
+            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
+        </a>
+
+        <!-- Schedule -->
+        <a href="/schedule" class="sidebar-icons" onclick="clearSubmenus()" data-path="/schedule">
+            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
+        </a>
+
+        <!-- Class List -->
+        <a href="/class-list" class="sidebar-icons" onclick="clearSubmenus()" data-path="/class-list">
+            <img th:src="@{/images/icons/persons-in-a-class.png}" alt="Class List Icon"> Class List
+        </a>
+
+        <!-- Maintenance -->
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('maintenance-submenu', event)"
+            data-path="/maintenance">
+            <img th:src="@{/images/icons/maintenance_icon.png}" alt="Maintenance Icon"> Maintenance
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="maintenance-submenu">
+            <a href="/maintenance/school-year" class="submenu-item" data-path="/maintenance/school-year">School Year</a>
+            <a href="/maintenance/grade-level" class="submenu-item" data-path="/maintenance/grade-level">Grade Level</a>
+            <a href="/maintenance/new-subjects" class="submenu-item" data-path="/maintenance/new-subjects">New
+                Subjects</a>
+            <a href="/maintenance/section" class="submenu-item" data-path="/maintenance/section">Section</a>
+            <a href="/maintenance/fees-management" class="submenu-item" data-path="/maintenance/fees-management">Fees
+                Management</a>
+        </div>
+
+        <!-- Reports -->
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('reports-submenu', event)" data-path="/reports">
+            <img th:src="@{/images/icons/reports_icon.png}" alt="Reports Icon"> Reports
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="reports-submenu">
+            <a href="/reports/student" class="submenu-item" data-path="/reports/student">Student Reports</a>
+            <a href="/reports/payment" class="submenu-item" data-path="/reports/payment">Payment Reports</a>
+            <a href="/reports/teacher" class="submenu-item" data-path="/reports/teacher">Teacher Reports</a>
+            <a href="/reports/academic-resources" class="submenu-item" data-path="/reports/academic-resources">Book
+                Distribution</a>
+        </div>
+
+        <!-- Settings -->
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)" data-path="/settings">
+            <img th:src="@{/images/icons/settings.png}" alt="Settings Icon"> Settings
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+        <div class="submenu" id="settings-submenu">
+            <a href="/settings/create-user" class="submenu-item" data-path="/settings/create-user">Create User</a>
         </div>
     </div>
 
-    <!-- Dashboard -->
-    <a href="/home" 
-       th:classappend="${#httpServletRequest.requestURI == '/home' ? 'active' : ''}" 
-       class="sidebar-icons">
-        <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
-    </a>
-
-    <!-- Enrollment -->
-    <a href="#" 
-       th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/enrollment') ? 'active' : ''}" 
-       class="sidebar-icons" onclick="toggleSubMenu('enrollment-submenu', event)">
-        <img th:src="@{/images/icons/enrollment.png}" alt="Enrollment Icon"> Enrollment
-        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="enrollment-submenu" 
-         th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/enrollment') ? 'show' : ''}">
-        <a href="/enrollment/listing" 
-           th:classappend="${#httpServletRequest.requestURI == '/enrollment/listing' ? 'second-active' : ''}">Listing/Register</a>
-        <a href="/enrollment/assessment" 
-           th:classappend="${#httpServletRequest.requestURI == '/enrollment/assessment' ? 'second-active' : ''}">Assessment</a>
-        <a href="/enrollment/payment" 
-           th:classappend="${#httpServletRequest.requestURI == '/enrollment/payment' ? 'second-active' : ''}">Payment</a>
-        <a href="/enrollment/enrolled" 
-           th:classappend="${#httpServletRequest.requestURI == '/enrollment/enrolled' ? 'second-active' : ''}">Enrolled</a>
-    </div>
-
-    <!-- Transaction -->
-    <a href="#" 
-       th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/transaction') ? 'active' : ''}" 
-       class="sidebar-icons" onclick="toggleSubMenu('transaction-submenu', event)">
-        <img th:src="@{/images/icons/transaction_icon.png}" alt="Transaction Icon"> Transaction
-        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="transaction-submenu" 
-         th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/transaction') ? 'show' : ''}">
-        <a href="/transaction/tuition" 
-           th:classappend="${#httpServletRequest.requestURI == '/transaction/tuition' ? 'second-active' : ''}">Payment Transactions</a>
-        <a href="/transaction/academic-resources" 
-           th:classappend="${#httpServletRequest.requestURI == '/transaction/academic-resources' ? 'second-active' : ''}">Book Distribution</a>
-    </div>
-
-    <!-- Grade Management -->
-    <a href="/grade-management" 
-       th:classappend="${#httpServletRequest.requestURI == '/grade-management' ? 'active' : ''}" 
-       class="sidebar-icons">
-        <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grade Management
-    </a>
-
-    <!-- Settings -->
-    <a href="#" 
-       th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/settings') ? 'active' : ''}" 
-       class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-        <img th:src="@{/images/icons/settings.png}" alt="Settings Icon"> Settings 
-        <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
-    </a>
-    <div class="submenu" id="settings-submenu" 
-         th:classappend="${#strings.startsWith(#httpServletRequest.requestURI, '/settings') ? 'show' : ''}">
-        <a href="/settings/create-user" 
-           th:classappend="${#httpServletRequest.requestURI == '/settings/create-user' ? 'second-active' : ''}">Create User</a>
-    </div>
-</div>
+    <script th:src="@{/js/sidebar.js}"></script>
 </body>
+
 </html>

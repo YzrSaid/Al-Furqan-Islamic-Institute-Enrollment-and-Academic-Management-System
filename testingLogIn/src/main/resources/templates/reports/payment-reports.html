@@ -18,27 +18,6 @@
 <script th:src="@{/js/sidebar.js}" defer></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-
-        savedSubmenus.forEach(submenuId => {
-            let submenu = document.getElementById(submenuId);
-            if (submenu) {
-                submenu.classList.add("open");
-
-                // Make sure parent menus are also opened
-                let parentMenu = submenu.closest(".submenu");
-                if (parentMenu) {
-                    parentMenu.classList.add("open");
-                }
-
-                // Update arrow icon
-                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-                if (arrowIconImg) {
-                    arrowIconImg.src = "/images/icons/greater-than.png";
-                }
-            }
-        });
-
         const searchInput = document.querySelector('.search-input');
         const searchButton = document.querySelector('.search-btn');
 

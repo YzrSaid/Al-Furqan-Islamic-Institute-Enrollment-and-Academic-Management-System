@@ -11,31 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-
-        savedSubmenus.forEach(submenuId => {
-            let submenu = document.getElementById(submenuId);
-            if (submenu) {
-                submenu.classList.add("open");
-
-                // Make sure parent menus are also opened
-                let parentMenu = submenu.closest(".submenu");
-                if (parentMenu) {
-                    parentMenu.classList.add("open");
-                }
-
-                // Update arrow icon
-                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-                if (arrowIconImg) {
-                    arrowIconImg.src = "/images/icons/greater-than.png";
-                }
-            }
-        });
-    });
-</script>
-
+<script th:src="@{/js/script.js}"></script>
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -100,10 +76,7 @@
             <p>/</p>
             <p>Personal Profile</p>
         </div> <br>
-       
-
     </div>
-    <script th:src="@{/js/script.js}"></script>
 </body>
 
 </html>

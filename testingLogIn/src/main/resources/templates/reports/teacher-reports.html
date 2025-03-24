@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,30 +15,6 @@
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-
-        savedSubmenus.forEach(submenuId => {
-            let submenu = document.getElementById(submenuId);
-            if (submenu) {
-                submenu.classList.add("open");
-
-                // Make sure parent menus are also opened
-                let parentMenu = submenu.closest(".submenu");
-                if (parentMenu) {
-                    parentMenu.classList.add("open");
-                }
-
-                // Update arrow icon
-                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-                if (arrowIconImg) {
-                    arrowIconImg.src = "/images/icons/greater-than.png";
-                }
-            }
-        });
-    });
-</script>
 
 <body>
     <!-- Sidebar -->

@@ -122,9 +122,31 @@ function clearSubmenus() {
     .forEach((submenu) => submenu.classList.remove("open"));
   document
     .querySelectorAll(".arrow-icon img")
-    // .forEach((img) => (img.src = "../images/icons/arrow-down.png"));
     .forEach((img) => (img.src = "/images/icons/arrow-down.png"));
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+    savedSubmenus.forEach(submenuId => {
+        let submenu = document.getElementById(submenuId);
+        if (submenu) {
+            submenu.classList.add("open");
+
+            // Make sure parent menus are also opened
+            let parentMenu = submenu.closest(".submenu");
+            if (parentMenu) {
+                parentMenu.classList.add("open");
+            }
+
+            // Update arrow icon
+            let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+            if (arrowIconImg) {
+                arrowIconImg.src = "/images/icons/greater-than.png";
+            }
+        }
+    });
+});
 
 document.addEventListener("DOMContentLoaded", function () {
   // Select all dropdown links inside dropdown-status-content
@@ -153,9 +175,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalText = document.getElementById("modalText");
   const confirmButton = document.querySelector(".btn-confirm");
   const cancelButton = document.querySelector(".btn-cancel");
-
-  // Hide modal when page loads
-  //   modal.style.display = "none";
 
   //this is for listing/registration status buttons
   dropdownLinksListing.forEach((link) => {

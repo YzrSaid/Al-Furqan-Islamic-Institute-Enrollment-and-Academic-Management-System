@@ -13,83 +13,6 @@
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-
-        savedSubmenus.forEach(submenuId => {
-            let submenu = document.getElementById(submenuId);
-            if (submenu) {
-                submenu.classList.add("open");
-
-                // Make sure parent menus are also opened
-                let parentMenu = submenu.closest(".submenu");
-                if (parentMenu) {
-                    parentMenu.classList.add("open");
-                }
-
-                // Update arrow icon
-                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-                if (arrowIconImg) {
-                    arrowIconImg.src = "/images/icons/greater-than.png";
-                }
-            }
-        });
-        getCurrentlyEnrolled();
-    });
-    function getCurrentlyEnrolled(pageNo = 1, pageSize = 2) {
-        const searchBy = document.getElementById("search-stud").value;
-        const sortBy = document.getElementById("sort-select").value;
-        fetch(`/enrollment/all/paged/ENROLLED?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch enrolled students");
-                return res.json();
-            })
-            .then(data => {
-                const tableBody = document.querySelector("#realginnas tbody");
-                if (!tableBody) return console.error("Table body not found");
-
-                tableBody.innerHTML = ""; // Clear previous data
-
-                if (!data || !data.content || data.content.length === 0) {
-                    tableBody.innerHTML = "<tr><td colspan='3'>No enrolled students found.</td></tr>";
-                    return;
-                }
-
-                data.content.forEach(rec => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                    <td>${rec.student.studentDisplayId || "N/A"}</td>
-                    <td>${rec.student.firstName} ${rec.student.lastName}</td>
-                    <td>${rec.sectionToEnroll || "N/A"}</td>
-                `;
-                    tableBody.appendChild(row);
-                });
-
-                updateEnrolledPagination(pageNo, pageSize, data.totalPages);
-            })
-            .catch(error => console.error("Error fetching enrolled students:", error));
-    }
-
-    function updateEnrolledPagination(currentPage, pageSize, totalPages) {
-        const paginationContainer = document.querySelector("#pagination");
-        paginationContainer.innerHTML = "";
-
-        if (totalPages <= 1) return;
-
-        for (let i = 1; i <= totalPages; i++) {
-            const button = document.createElement("button");
-            button.innerText = i;
-            button.classList.add("pagination-button");
-            if (i === currentPage) button.classList.add("active");
-            button.addEventListener("click", () => {
-                getCurrentlyEnrolled(i, pageSize);
-            });
-            paginationContainer.appendChild(button);
-        }
-    }
-
-</script>
 
 <body>
     <!-- Sidebar -->
@@ -284,5 +207,81 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "/images/icons/greater-than.png";
+                }
+            }
+        });
+        getCurrentlyEnrolled();
+    });
+    function getCurrentlyEnrolled(pageNo = 1, pageSize = 2) {
+        const searchBy = document.getElementById("search-stud").value;
+        const sortBy = document.getElementById("sort-select").value;
+        fetch(`/enrollment/all/paged/ENROLLED?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch enrolled students");
+                return res.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#realginnas tbody");
+                if (!tableBody) return console.error("Table body not found");
+
+                tableBody.innerHTML = ""; // Clear previous data
+
+                if (!data || !data.content || data.content.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='3'>No enrolled students found.</td></tr>";
+                    return;
+                }
+
+                data.content.forEach(rec => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                    <td>${rec.student.studentDisplayId || "N/A"}</td>
+                    <td>${rec.student.firstName} ${rec.student.lastName}</td>
+                    <td>${rec.sectionToEnroll || "N/A"}</td>
+                `;
+                    tableBody.appendChild(row);
+                });
+
+                updateEnrolledPagination(pageNo, pageSize, data.totalPages);
+            })
+            .catch(error => console.error("Error fetching enrolled students:", error));
+    }
+
+    function updateEnrolledPagination(currentPage, pageSize, totalPages) {
+        const paginationContainer = document.querySelector("#pagination");
+        paginationContainer.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement("button");
+            button.innerText = i;
+            button.classList.add("pagination-button");
+            if (i === currentPage) button.classList.add("active");
+            button.addEventListener("click", () => {
+                getCurrentlyEnrolled(i, pageSize);
+            });
+            paginationContainer.appendChild(button);
+        }
+    }
+</script>
 
 </html>

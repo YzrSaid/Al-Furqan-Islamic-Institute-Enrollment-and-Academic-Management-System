@@ -11,32 +11,8 @@
     <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-
-        savedSubmenus.forEach(submenuId => {
-            let submenu = document.getElementById(submenuId);
-            if (submenu) {
-                submenu.classList.add("open");
-
-                // Make sure parent menus are also opened
-                let parentMenu = submenu.closest(".submenu");
-                if (parentMenu) {
-                    parentMenu.classList.add("open");
-                }
-
-                // Update arrow icon
-                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-                if (arrowIconImg) {
-                    arrowIconImg.src = "/images/icons/greater-than.png";
-                }
-            }
-        });
-        getAllSections();
-    });
-</script>
-
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
 <body>
     <!-- Sidebar -->
     <div th:replace="~{myfragment :: sidebar}"></div>
@@ -206,11 +182,30 @@
                 </div>
             </div>
         </div>
-
     </div>
-    <script th:src="@{/js/script.js}"></script>
 </body>
 <script>
+     document.addEventListener("DOMContentLoaded", function () {
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "/images/icons/greater-than.png";
+                }
+            }
+        });
+        getAllSections();
+    });
     function getAllSections() {
         const sortBy = document.getElementById("sort-select").value;
         const searchBy = document.getElementById("searchBy").value;

@@ -3023,6 +3023,17 @@ td[rowspan] {
   width: 100px;
 }
 
+#transferee-row h6 {
+  font-weight: bold;
+  margin-top: 10px;
+  display: flex;
+}
+#transferee-row {
+  gap: 10px;
+  width: 100px;
+  margin-right: 20px;
+}
+
 .clickable-row {
   cursor: pointer;
   background-color: #f9f9f9;
@@ -3373,3 +3384,37 @@ td[rowspan] {
 .exit-btn:hover {
   background: #e60000 !important;
 }
+.checkbox-transferee-reqs-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two checkboxes per row */
+    gap: 15px;
+    width: 55%;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.checkbox-each {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.checkbox-each:hover {
+    background-color: #1e7e3406;
+}
+
+.checkbox-each label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.checkbox-each input {
+    transform: scale(1.2); 
+    cursor: pointer;
+}
+

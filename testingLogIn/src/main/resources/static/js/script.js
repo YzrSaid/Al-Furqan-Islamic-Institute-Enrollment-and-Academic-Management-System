@@ -1425,3 +1425,26 @@ document.addEventListener("keydown", function (event) {
     closeButtons.forEach((button) => button.click());
   }
 });
+
+
+// these are checkboxes in the transferee requirements
+document.addEventListener("DOMContentLoaded", () => {
+    const checkboxes = document.querySelectorAll('.checkbox-each input[type="checkbox"]');
+    const updateBtn = document.getElementById('updateRequirementsBtn');
+
+    // Initially disable all checkboxes
+    checkboxes.forEach(checkbox => checkbox.disabled = true);
+
+    // Toggle function on button click
+    updateBtn.addEventListener('click', () => {
+        const isDisabled = checkboxes[0].disabled; // Check the current state
+
+        checkboxes.forEach(checkbox => {
+            checkbox.disabled = !isDisabled; // Toggle disabled state
+        });
+
+        // Change button label
+        updateBtn.textContent = isDisabled ? "Save" : "Update";
+    });
+});
+

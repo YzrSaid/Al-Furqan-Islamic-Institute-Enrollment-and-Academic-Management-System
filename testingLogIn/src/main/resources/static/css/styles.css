@@ -791,7 +791,7 @@ th {
   width: 20%;
 }
 
-/* for grade level (maintenance */
+/* for grade level (maintenance) */
 .grade-level-table th:nth-child(1),
 .grade-level-table td:nth-child(1) {
   width: 40%;
@@ -803,6 +803,16 @@ th {
 .grade-level-table th:nth-child(3),
 .grade-level-table td:nth-child(3) {
   width: 15%;
+}
+
+/* for transferee reqs table */
+.transferee-reqs-table th:nth-child(1),
+.transferee-reqs-table td:nth-child(1) {
+  width: 50%;
+}
+.transferee-reqs-table th:nth-child(2),
+.transferee-reqs-table td:nth-child(2) {
+  width: 50%;
 }
 
 /* for old-student table */
@@ -1089,6 +1099,10 @@ table td {
   width: 96.8%;
   margin: 0px 20px;
   margin-bottom: 30px;
+}
+.transferee-reqs-table {
+    width: 40%;
+    margin: 0px 50px;
 }
 
 .status {
@@ -1885,7 +1899,8 @@ input[type="checkbox"] {
 .add-payment-modal h2,
 .view-book-modal h2,
 .receipt-modal h2,
-.add-account-type-modal h2 {
+.add-account-type-modal h2,
+.transferee-req-modal h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -1952,7 +1967,8 @@ input[type="checkbox"] {
 .student-information-modal-content label,
 .view-book-modal-content label,
 .receipt-modal-content label,
-.add-account-type-modal-content label {
+.add-account-type-modal-content label,
+.transferee-req-modal-content  label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -1977,6 +1993,7 @@ input[type="checkbox"] {
 .fees-management-edit-modal-content input,
 .student-information-modal-content input,
 .receipt-payment-modal-content input,
+.transferee-req-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
@@ -2007,7 +2024,8 @@ input[type="checkbox"] {
 .fees-management-modal,
 .fees-management-edit-modal,
 .student-information-modal,
-.add-account-type-modal {
+.add-account-type-modal,
+.transferee-req-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -2026,7 +2044,8 @@ input[type="checkbox"] {
 .fees-management-edit-modal.show,
 .add-grade-level-assessment-modal.show,
 .student-information-modal.show,
-.add-account-type-modal.show {
+.add-account-type-modal.show,
+.transferee-req-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
@@ -2066,6 +2085,7 @@ input[type="checkbox"] {
 
 .grade-level-modal-content,
 .school-year-modal-content,
+.transferee-req-modal-content,
 .add-grade-level-assessment-modal-content {
   background: white !important;
   padding: 30px;
@@ -3385,61 +3405,152 @@ td[rowspan] {
   background: #e60000 !important;
 }
 .checkbox-transferee-reqs-group {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two checkboxes per row */
-    gap: 15px;
-    width: 55%;
-    padding: 20px;
-    border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two checkboxes per row */
+  gap: 15px;
+  width: 55%;
+  padding: 20px;
+  border-radius: 8px;
 }
 
 .checkbox-each {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border-radius: 5px;
-    transition: 0.3s;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  transition: 0.3s;
 }
 
 .checkbox-each:hover {
-    background-color: #1e7e3406;
+  background-color: #1e7e3406;
 }
 
 .checkbox-each label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 16px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .checkbox-each input {
-    transform: scale(1.2); 
-    cursor: pointer;
+  transform: scale(1.2);
+  cursor: pointer;
 }
 
 .distributable-checkbox-container {
-    background-color: #007bff;
-    width: 50%;
-    display: flex;
-    align-items: center;    
-    justify-content: start;  
-    padding: 10px;          
-    box-sizing: border-box;  
+  background-color: #007bff;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .payment-name-row {
-    display: flex;
-    align-items: center;     
-    justify-content: space-between;
-    gap: 15px;                
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
 }
 
 .checkbox-label {
-    display: flex;
-    align-items: center; 
-    gap: 5px;                   
-    font-size: 14px;
-    font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
+/* School Settings Styles */
+/* Main container */
+.settings-main-container {
+ background-color: rgb(240, 240, 240);
+}
+.settings-container {
+    display: flex;             
+    justify-content: space-between;  
+    align-items: flex-start;        
+    gap: 50px;                     
+    padding: 20px;
+    min-height: 200px; /* Consistent height */
+}
+
+/* Logo Section */
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;                
+}
+
+/* Theme Section */
+.theme-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;               
+    flex: 1;                
+}
+
+/* Logo styling */
+.logo-circle, #previewLogo {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 4px solid #fff;
+}
+
+/* Input fields */
+.form-control, #logoUpload {
+    max-width: 300px;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* Color picker */
+.form-control-color {
+    width: 60px;
+    height: 40px;
+    cursor: pointer;
+}
+
+/* Save button wrapper to center it */
+.save-button-wrapper {
+    display: flex;
+    justify-content: center;    
+    align-items: center;     
+    padding: 20px 0;           
+    width: 100%;
+}
+
+/* Button styling */
+.save-settings-btn {
+    width: 150px;    
+    text-align: center;  
+    background-color: #27ae60;
+    color: white;
+}
+.save-settings-btn:hover {
+    background-color: #218838;
+    color: white;
+}
+#add-req-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;                      /* Spacing between icon and text */
+    background-color: transparent;      /* Button color */
+    color: #fff;                    
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-weight: bold;
+}
+#add-req-btn img {
+    height: 30px;
+    width: 30px;
+}

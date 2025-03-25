@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <div class="dashboard-container" id="content">
+        <div class="topbar">
+            <div class="main-topbar">
+                <span class="hamburger" onclick="toggleSidebar()">
+                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
+                </span>
+                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+            </div>
+            <div class="dropdown-logout">
+                <div class="user-icon dropdown-logout-toggle">
+                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
+                        alt="User Icon">
+                    <div id="dropdownUserIcon" class="dropdown-logout-content">
+                        <h6><span th:text="(${userRole})"></span></h6>
+                        <a href="/logout">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-link">
+            <h4>School Settings</h4>
+            <p>Main</p>
+            <p>/</p>
+            <p>Settings</p>
+            <p>/</p>
+            <p>School Settings</p>
+        </div>
+        <br>
+
+        <h6>School User Interface </h6>
+        <!-- School Settings Form -->
+        <div class="settings-main-container mt-4">
+            <form id="schoolSettingsForm" enctype="multipart/form-data" class="settings-container">
+                <!-- School Logo Section -->
+                <div class="logo-container">
+                    <label for="logoUpload" class="form-label"><b>School Logo</b></label>
+                    <div class="logo-wrapper">
+                        <img id="previewLogo" th:src="@{/images/al-furqanlogo.jpg}" alt="Logo Preview"
+                            class="logo-circle">
+                    </div>
+                    <input type="file" class="form-control" id="logoUpload" accept="image/*">
+                </div>
+
+                <!-- Theme Settings Section -->
+                <div class="theme-container">
+                    <label for="colorPicker" class="form-label"><b>Theme Color</b></label>
+                    <input type="color" class="form-control form-control-color" id="colorPicker" value="#007bff"
+                        title="Choose your color">
+                </div>
+
+            </form>
+
+            <!-- Centered Save Button -->
+            <div class="save-button-wrapper">
+                <button type="submit" form="schoolSettingsForm" class="save-settings-btn btn">Save Settings</button>
+            </div>
+        </div> <br> <br>
+
+        <h6>Other Settings</h6>
+        <!-- Table -->
+        <table id="lamesa" class="transferee-reqs-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <!-- Add Transferee Reqs Button -->
+        <div class="add-something-btn-container">
+            <button class="add-something-btn" id="add-req-btn" >
+                <img th:src="@{/images/icons/add-button.png}" data-open-modal="transfereeReqModal" alt="Add Icon" class="add-icon">
+            </button>
+        </div>
+
+         <!-- Modal for adding a transferee req -->
+         <div id="transfereeReqModal" class="transferee-req-modal modal">
+            <div class="transferee-req-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="transfereeReqModal">&times;</span>
+
+                <h2>Add New Transferee Requirement</h2>
+                <form method="post" action="" id="transfereeReqForm">
+                    <label for="reqName">Requirement Name:</label>
+                    <input type="text" id="reqName" name="reqName" required>
+                    <br><br>
+                 
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="addTransfereeReq"
+                            data-message="Are you sure you want to add this requirement for for transferee students?" data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="transfereeReqModal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p id="modalText"></p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div id="successModalOverlay"></div>
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
+    </div>
+
+    <script th:src="@{/js/school-settings.js}"></script>
+</body>
+
+</html>

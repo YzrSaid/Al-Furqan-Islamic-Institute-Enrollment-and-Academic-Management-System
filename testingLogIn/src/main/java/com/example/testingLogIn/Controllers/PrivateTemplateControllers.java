@@ -44,6 +44,12 @@ public class PrivateTemplateControllers {
         return "settings/create-user";
     }
 
+    @GetMapping("settings/school-settings")
+    public String getSchoolSetting() {
+        return "settings/school-settings";
+    }
+
+
     // these are for enrollment pages
 
     @GetMapping("enrollment/listing")

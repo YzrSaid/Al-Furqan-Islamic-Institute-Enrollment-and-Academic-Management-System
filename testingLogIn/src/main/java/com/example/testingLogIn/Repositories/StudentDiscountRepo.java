@@ -1,7 +1,7 @@
 package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
-import com.example.testingLogIn.Models.StudentDiscount;
+import com.example.testingLogIn.AssociativeModels.StudentDiscount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

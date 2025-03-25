@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Models;
 
+import com.example.testingLogIn.AssociativeModels.StudentTransfereeRequirements;
 import com.example.testingLogIn.CustomObjects.Address;
 import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
@@ -7,7 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.*;
 
@@ -64,6 +67,9 @@ public class Student{
     private GradeLevel lastGradeLevelCompleted;
     private String lastMadrasaYearCompleted;
     private String madrasaAddress;
+
+    @OneToMany(mappedBy = "student")
+    private List<StudentTransfereeRequirements> transfereeRequirements;
     
     public StudentDTO DTOmapper(){
         GradeLevel currentLevel = null;
@@ -73,7 +79,6 @@ public class Student{
             currentLevel = Optional.ofNullable(currentGradeSection).map(Section::getLevel).orElse(null);
         return StudentDTO.builder()
                         .studentId(studentId)
-                
                         .studentDisplayId(studentDisplayId)
                         .firstName(firstName)
                         .lastName(lastName)
@@ -97,12 +102,12 @@ public class Student{
                         .isNew(isNew)
                         .isNotDeleted(isNotDeleted)
                         .isScholar(isScholar)
-                
                         .isTransferee(isTransferee)
                         .madrasaName(madrasaName)
                         .lastGradeLevelCompleted(Optional.ofNullable(lastGradeLevelCompleted).map(GradeLevel::getLevelName).orElse(null))
                         .lastMadrasaYearCompleted(lastMadrasaYearCompleted)
                         .madrasaAddress(madrasaAddress)
+                        .transfereeRequirements(transfereeRequirements.stream().filter(StudentTransfereeRequirements::isNotDeleted).map(s-> s.getRequirement().getId()).toList())
                         .build();
     }
 }

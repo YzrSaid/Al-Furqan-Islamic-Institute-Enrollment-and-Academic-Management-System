@@ -3,7 +3,7 @@ package com.example.testingLogIn.Services;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.Models.Discount;
 import com.example.testingLogIn.Models.Student;
-import com.example.testingLogIn.Models.StudentDiscount;
+import com.example.testingLogIn.AssociativeModels.StudentDiscount;
 import com.example.testingLogIn.Repositories.DiscountRepo;
 import com.example.testingLogIn.Repositories.StudentDiscountRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;

@@ -1,6 +1,8 @@
-package com.example.testingLogIn.Models;
+package com.example.testingLogIn.AssociativeModels;
 
 import com.example.testingLogIn.ModelDTO.GradeLevelToRequiredPaymentDTO;
+import com.example.testingLogIn.Models.GradeLevel;
+import com.example.testingLogIn.Models.RequiredFees;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

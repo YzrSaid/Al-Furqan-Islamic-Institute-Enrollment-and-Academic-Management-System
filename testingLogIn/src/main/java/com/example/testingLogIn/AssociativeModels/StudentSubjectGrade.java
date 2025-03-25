@@ -2,9 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.testingLogIn.Models;
+package com.example.testingLogIn.AssociativeModels;
 
 import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
+import com.example.testingLogIn.Models.SchoolYearSemester;
+import com.example.testingLogIn.Models.Section;
+import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.Models.Subject;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,6 +49,8 @@ public class StudentSubjectGrade {
     @JoinColumn(name = "semester")
     private SchoolYearSemester semester;
     private Integer subjectGrade;
+
+    private boolean isDropped;
     
     public StudentSubjectGradeDTO DTOmapper(){
         return StudentSubjectGradeDTO.builder()

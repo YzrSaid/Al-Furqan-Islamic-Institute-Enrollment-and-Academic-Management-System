@@ -3418,3 +3418,28 @@ td[rowspan] {
     cursor: pointer;
 }
 
+.distributable-checkbox-container {
+    background-color: #007bff;
+    width: 50%;
+    display: flex;
+    align-items: center;    
+    justify-content: start;  
+    padding: 10px;          
+    box-sizing: border-box;  
+}
+
+.payment-name-row {
+    display: flex;
+    align-items: center;     
+    justify-content: space-between;
+    gap: 15px;                
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center; 
+    gap: 5px;                   
+    font-size: 14px;
+    font-weight: 500;
+}
+

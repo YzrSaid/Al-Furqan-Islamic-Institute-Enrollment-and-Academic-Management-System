@@ -72,50 +72,48 @@ window.onclick = function (event) {
   }
 };
 function toggleSubMenu(submenuId, event) {
-  event.preventDefault();
-
-  let submenu = document.getElementById(submenuId);
-  let arrowIconImg =
-    submenu.previousElementSibling.querySelector(".arrow-icon img");
-  let isOpen = submenu.classList.contains("open");
-
-  // Close all unrelated submenus EXCEPT the clicked one and the ones with active items
-  document.querySelectorAll(".submenu").forEach((otherSubmenu) => {
-    let hasActiveItem = otherSubmenu.querySelector(
-      ".submenu-item.active, .submenu-item.second-active"
-    );
-
-    if (otherSubmenu !== submenu && !hasActiveItem) {
-      otherSubmenu.classList.remove("open");
-
-      // Reset arrow icons for closed submenus
-      let otherArrowIcon =
-        otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
-      if (otherArrowIcon) {
-        otherArrowIcon.src = "/images/icons/arrow-down.png";
+    event.preventDefault();
+  
+    let submenu = document.getElementById(submenuId);
+    let arrowIconImg = submenu.previousElementSibling.querySelector(".arrow-icon img");
+    let isOpen = submenu.classList.contains("open");
+  
+    // Close all unrelated submenus EXCEPT the clicked one and the ones with active items
+    document.querySelectorAll(".submenu").forEach((otherSubmenu) => {
+      let hasActiveItem = otherSubmenu.querySelector(".submenu-item.active, .submenu-item.second-active");
+  
+      if (otherSubmenu !== submenu && !hasActiveItem) {
+        otherSubmenu.classList.remove("open");
+        otherSubmenu.style.display = "none";  
+  
+        let otherArrowIcon = otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
+        if (otherArrowIcon) {
+          otherArrowIcon.src = "/images/icons/arrow-down.png";
+        }
       }
+    });
+  
+    // Toggle the clicked submenu
+    submenu.classList.toggle("open", !isOpen);
+    submenu.style.display = isOpen ? "none" : "block"; 
+    arrowIconImg.src = isOpen
+      ? "/images/icons/arrow-down.png"
+      : "/images/icons/greater-than.png";
+  
+    // Save submenu state in localStorage
+    let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+  
+    if (!isOpen) {
+      if (!savedSubmenus.includes(submenuId)) {
+        savedSubmenus.push(submenuId);
+      }
+    } else {
+      savedSubmenus = savedSubmenus.filter((id) => id !== submenuId);
     }
-  });
-
-  // Toggle the clicked submenu
-  submenu.classList.toggle("open", !isOpen);
-  arrowIconImg.src = isOpen
-    ? "/images/icons/arrow-down.png"
-    : "/images/icons/greater-than.png";
-
-  // Save submenu state in localStorage
-  let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-
-  if (!isOpen) {
-    if (!savedSubmenus.includes(submenuId)) {
-      savedSubmenus.push(submenuId);
-    }
-  } else {
-    savedSubmenus = savedSubmenus.filter((id) => id !== submenuId);
+  
+    localStorage.setItem("openedSubmenus", JSON.stringify(savedSubmenus));
   }
-
-  localStorage.setItem("openedSubmenus", JSON.stringify(savedSubmenus));
-}
+  
 
 // Ensure only active submenus stay open on reload
 document.addEventListener("DOMContentLoaded", function () {

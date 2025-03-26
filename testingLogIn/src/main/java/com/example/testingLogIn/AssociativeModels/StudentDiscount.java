@@ -1,5 +1,7 @@
-package com.example.testingLogIn.Models;
+package com.example.testingLogIn.AssociativeModels;
 
+import com.example.testingLogIn.Models.Discount;
+import com.example.testingLogIn.Models.Student;
 import jakarta.persistence.*;
 import lombok.*;
 

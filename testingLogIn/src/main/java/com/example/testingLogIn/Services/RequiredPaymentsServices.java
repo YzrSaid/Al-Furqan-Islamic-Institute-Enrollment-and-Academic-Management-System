@@ -3,7 +3,7 @@ package com.example.testingLogIn.Services;
 import com.example.testingLogIn.ModelDTO.GradeLevelToRequiredPaymentDTO;
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
 import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Models.GradeLevelRequiredFees;
+import com.example.testingLogIn.AssociativeModels.GradeLevelRequiredFees;
 import com.example.testingLogIn.Models.RequiredFees;
 import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.RequiredPaymentsRepo;

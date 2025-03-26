@@ -1,5 +1,6 @@
 package com.example.testingLogIn.ModelDTO;
 
+import com.example.testingLogIn.AssociativeModels.StudentTransfereeRequirements;
 import com.example.testingLogIn.CustomObjects.Address;
 import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.Models.GradeLevel;
@@ -7,6 +8,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.*;
 
 @Data
@@ -49,37 +52,5 @@ public class StudentDTO {
     private String lastGradeLevelCompleted;
     private String lastMadrasaYearCompleted;
     private String madrasaAddress;
-
-    @Override
-    public String toString() {
-        return "StudentDTO{" +
-                "studentId=" + studentId +
-                ", studentDisplayId='" + studentDisplayId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", gender=" + gender +
-                ", birthdate=" + birthdate +
-                ", address='" + address + '\'' +
-                ", cellphoneNum='" + cellphoneNum + '\'' +
-                ", birthPlace='" + birthPlace + '\'' +
-                ", balanceAmount=" + balanceAmount +
-                ", currentGradeSection='" + currentGradeSection + '\'' +
-                ", motherName='" + motherName + '\'' +
-                ", motherOccupation='" + motherOccupation + '\'' +
-                ", fatherName='" + fatherName + '\'' +
-                ", fatherOccupation='" + fatherOccupation + '\'' +
-                ", guardianName='" + guardianName + '\'' +
-                ", guardianAddress='" + guardianAddress + '\'' +
-                ", guardianContactNum='" + guardianContactNum + '\'' +
-                ", isNew=" + isNew +
-                ", isScholar=" + isScholar +
-                ", isNotDeleted=" + isNotDeleted +
-                ", isTransferee=" + isTransferee +
-                ", madrasaName='" + madrasaName + '\'' +
-                ", lastGradeLevelCompleted='" + lastGradeLevelCompleted + '\'' +
-                ", lastMadrasaYearCompleted='" + lastMadrasaYearCompleted + '\'' +
-                ", madrasaAddress='" + madrasaAddress + '\'' +
-                '}';
-    }
+    private List<Integer> transfereeRequirements;
 }

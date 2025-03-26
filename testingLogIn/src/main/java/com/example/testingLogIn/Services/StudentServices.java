@@ -10,6 +10,8 @@ import com.example.testingLogIn.Repositories.StudentRepo;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,19 +28,23 @@ public class StudentServices {
     private final StudentRepo studentRepo;
     private final SectionServices sectionServices;
     private final EnrollmentServices enrollmentService;
-    @Autowired
-    private GradeLevelRepo gradeLevelRepo;
+    private final TransferReqServices transReqServices;
+    private final GradeLevelRepo gradeLevelRepo;
 
     @Autowired
-    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices,EnrollmentServices enrollmentService) {
+    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices, EnrollmentServices enrollmentService, TransferReqServices transReqServices, GradeLevelRepo gradeLevelRepo) {
         this.studentRepo = studentRepo;
         this.sectionServices = sectionServices;
         this.enrollmentService = enrollmentService;
+        this.transReqServices = transReqServices;
+        this.gradeLevelRepo = gradeLevelRepo;
     }
 
     public boolean addStudent(StudentDTO student){
-        System.out.println(student.getLastGradeLevelId());
-        GradeLevel gradeLevel = gradeLevelRepo.findById(student.getLastGradeLevelId()).orElse(null);
+        GradeLevel gradeLevel = null;
+        if(student.getLastGradeLevelId() != null)
+            gradeLevel = gradeLevelRepo.findById(student.getLastGradeLevelId()).orElse(null);
+
         String year = LocalDate.now().getYear()+"";
         StringBuilder count = new StringBuilder(studentRepo.findStudentNextId(year) + 1 + "");
         for(int i=count.length() ; i<4 ; i++){
@@ -76,8 +82,10 @@ public class StudentServices {
                                     .lastMadrasaYearCompleted(student.getLastMadrasaYearCompleted())
                                     .madrasaAddress(student.getMadrasaAddress())
                                     .build();
-            studentRepo.save(newStudent);
-            enrollmentService.addStudentToListing(student,null);
+            Student newSavedStudent = studentRepo.save(newStudent);
+            enrollmentService.addStudentToListing(newSavedStudent.getStudentId());
+            if(newSavedStudent.isTransferee())
+                transReqServices.addingStudentRequirements(newSavedStudent.getStudentId(),student.getTransfereeRequirements());
             return true;
         }
     }

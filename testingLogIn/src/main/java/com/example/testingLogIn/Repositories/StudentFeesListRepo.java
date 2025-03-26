@@ -1,7 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
-import com.example.testingLogIn.Models.SchoolYearSemester;
-import com.example.testingLogIn.Models.StudentFeesList;
+import com.example.testingLogIn.AssociativeModels.StudentFeesList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

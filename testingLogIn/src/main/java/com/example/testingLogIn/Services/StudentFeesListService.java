@@ -2,10 +2,8 @@ package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
-import com.example.testingLogIn.ModelDTO.StudentFeesListDTO;
 import com.example.testingLogIn.Models.Enrollment;
-import com.example.testingLogIn.Models.SchoolYearSemester;
-import com.example.testingLogIn.Models.StudentFeesList;
+import com.example.testingLogIn.AssociativeModels.StudentFeesList;
 import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.StudentFeesListRepo;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import com.example.testingLogIn.Models.Enrollment;
-import com.example.testingLogIn.Models.StudentSubjectGrade;
+import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Repositories.SubjectRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;

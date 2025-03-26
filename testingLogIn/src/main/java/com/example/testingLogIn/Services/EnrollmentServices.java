@@ -1,5 +1,7 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.AssociativeModels.GradeLevelRequiredFees;
+import com.example.testingLogIn.AssociativeModels.StudentTransfereeRequirements;
 import com.example.testingLogIn.CountersService.SectionStudentCountServices;
 import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
@@ -9,26 +11,17 @@ import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.*;
 import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
-import com.example.testingLogIn.Repositories.EnrollmentRepo;
-import com.example.testingLogIn.Repositories.GradeLevelRepo;
-import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
-import com.example.testingLogIn.Repositories.PaymentsRecordRepo;
-import com.example.testingLogIn.Repositories.SectionRepo;
-import com.example.testingLogIn.Repositories.StudentRepo;
-import com.example.testingLogIn.Repositories.sySemesterRepo;
+import com.example.testingLogIn.Repositories.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 /**
  *
@@ -48,9 +41,10 @@ public class EnrollmentServices {
     private final DiscountsServices discService;
     private final SectionStudentCountServices sscService;
     private final PaymentRecordService paymentService;
+    private final TransfereeReqRepo transReqRepo;
 
     @Autowired
-    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService) {
+    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, TransfereeReqRepo transReqRepo) {
         this.enrollmentRepo = enrollmentRepo;
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
@@ -63,14 +57,13 @@ public class EnrollmentServices {
         this.discService = discService;
         this.sscService = sscService;
         this.paymentService = paymentService;
+        this.transReqRepo = transReqRepo;
     }
-
-    public boolean addStudentToListing(StudentDTO stud, Integer studentId) {
+    public boolean addStudentToListing(Integer studentId) {
         Student student = null;
-        if (stud != null)
-            student = studentRepo.findByName(stud.getFirstName(), stud.getLastName(),stud.getMiddleName());
-        else
-            student = studentRepo.findById(studentId).orElse(null);
+        if(studentId != null)
+            student =  studentRepo.findById(studentId).orElse(null);
+
         if (student == null || !student.isNotDeleted())
             throw new NullPointerException();
         else if (enrollmentRepo.studentCurrentlyEnrolled(student.getStudentId(),
@@ -189,7 +182,7 @@ public class EnrollmentServices {
     }
 
     public EnrollmentDTOPage getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize,String sort ,String search) {
-        Pageable pageable = null;
+        Pageable pageable;
         if(sort == null || sort.equals(""))
             pageable = PageRequest.of(pageNo-1,pageSize);
         else
@@ -197,15 +190,30 @@ public class EnrollmentServices {
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = sySemRepo.findCurrentActive().getSySemNumber();
-        Page<EnrollmentDTO> enrollments = enrollmentRepo.testing(estatus,sem,search,pageable).map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
-                        enrollmentHandler.getStudent().DTOmapper()));
+        Page<EnrollmentHandler> enrollmentRetrieved = enrollmentRepo.testing(estatus,sem,search,pageable);
+        List<EnrollmentDTO> pageContent = enrollmentRetrieved.getContent().stream().peek(
+                e -> {
+                    Student stud = e.getStudent();
+                    if(stud.isTransferee() && stud.isNew()) {
+                        List<TransfereeRequirements> compiled = stud.getTransfereeRequirements().stream().filter(StudentTransfereeRequirements::isNotDeleted).map(StudentTransfereeRequirements::getRequirement).toList();
+                        for (TransfereeRequirements transfereeRequirements : transReqRepo.findByIsNotDeletedTrue()) {
+                            if (!compiled.contains(transfereeRequirements)) {
+                                stud.setLastGradeLevelCompleted(null);
+                                break;
+                            }
+                        }
+                    }
+                    e.setStudent(stud);
+                }
+        ).map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
+                enrollmentHandler.getStudent().DTOmapper())).toList();
         return EnrollmentDTOPage.builder()
-                .content(enrollments.getContent())
+                .content(pageContent)
                 .pageNo(pageNo)
                 .pageSize(pageSize)
-                .totalPages(enrollments.getTotalPages())
-                .totalElements(enrollments.getTotalElements())
-                .isLast(enrollments.isLast())
+                .totalPages(enrollmentRetrieved.getTotalPages())
+                .totalElements(enrollmentRetrieved.getTotalElements())
+                .isLast(enrollmentRetrieved.isLast())
                 .build();
     }
     private Sort sortBy(String sort){

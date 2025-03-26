@@ -220,7 +220,7 @@ public class ScheduleServices {
         return scheduleRepo.findTeacherSubjectAndSectionCount(teacher.getStaffId());
     }
 
-    public Map<Integer,ScheduleDTO> getSectionsBySubject(int subjectId){
+    public List<ScheduleDTO> getSectionsBySubject(int subjectId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken)
             return null;
@@ -246,6 +246,6 @@ public class ScheduleServices {
             scheduleList.get(key).setToBeGradedCount(toBeGraded);
         }
 
-        return scheduleList;
+        return scheduleList.values().stream().toList();
     }
 }

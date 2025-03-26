@@ -202,7 +202,7 @@
                 const tableBody = document.querySelector("#table-ba-to tbody");
                 tableBody.innerHTML = "";
 
-                Object.entries(data).forEach(([key, value]) => {
+                data.forEach(value => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <tr>

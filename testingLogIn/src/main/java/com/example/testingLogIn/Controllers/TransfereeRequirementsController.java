@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ class StudentRequirementsSubmission{
     private List<Integer> requirementIds;
 }
 @RequestMapping("/trans-req")
+@Controller
 public class TransfereeRequirementsController {
     @Autowired
     private TransferReqServices transferReqServices;
@@ -42,6 +44,7 @@ public class TransfereeRequirementsController {
                 return new ResponseEntity<>("Requirement name already exists",HttpStatus.NOT_ACCEPTABLE);
             return new ResponseEntity<>("New transferee requirement successfully added",HttpStatus.OK);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>("Server conflict",HttpStatus.CONFLICT);
         }
     }
@@ -61,7 +64,7 @@ public class TransfereeRequirementsController {
             return new ResponseEntity<>("Server conflict. Contact Inoori Network",HttpStatus.CONFLICT);
         }
     }
-    @PutMapping("/delete/{requirementId}")
+    @DeleteMapping("/delete/{requirementId}")
     public ResponseEntity<String> deleteRequirement(@PathVariable int requirementId){
         try{
                 transferReqServices.deleteRequirement(requirementId);

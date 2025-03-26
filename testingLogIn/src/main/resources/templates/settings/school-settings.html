@@ -127,20 +127,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Sample Item</td>
-                        <td>
-                            <div class="action-container">
-                                <div class="action">
-                                    <img data-open-modal="" src="/images/icons/compose.png" alt="edit-icon">
-
-                                    <img data-open-modal="confirmationModal" data-action="deleteTransfereeReq"
-                                        data-message="Are you sure you want to delete this grade level?"
-                                        src="/images/icons/bin.png" alt="delete-icon">
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="2">No records</td>
+                </tr>
                 </tbody>
             </table>
         </div> <br>
@@ -160,6 +149,7 @@
 
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="addTransfereeReq"
+                            onclick="addTransfereeReq()"
                             data-message="Are you sure you want to add this requirement for for transferee students?"
                             data-open-modal="confirmationModal">
                             Confirm
@@ -201,5 +191,88 @@
 
     <script th:src="@{/js/school-settings.js}"></script>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTableValues();
+    });
 
+    async function setTableValues(){
+        const tableBody = document.querySelector("#lamesa tbody");
+
+        const response = await fetch("/trans-req/all?isNotDeleted=true");
+        if(!response.ok){
+            alert("Way sulod");
+            return;}
+
+        const result = await response.json();
+        if(result.length === 0) return;
+        tableBody.innerHTML = ``;
+        result.forEach(transReq =>{
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                    <tr>
+                        <td>${transReq.name}</td>
+                        <td>
+                            <div class="action-container">
+                                <div class="action">
+                                    <img data-open-modal="" src="/images/icons/compose.png" alt="edit-icon">
+
+                                    <img data-open-modal="confirmationModal" data-action="deleteTransfereeReq"
+                                        onclick="deleteTransfereeReq(${transReq.id})";
+                                        data-message="Are you sure you want to delete this grade level?"
+                                        src="/images/icons/bin.png" alt="delete-icon">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>`;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function addTransfereeReq(){
+        const reqName = document.getElementById("reqName").value;
+        fetch("/trans-req/add?reqName="+reqName, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(response => {
+            if(!response.ok){
+                alert(response.text());
+                return;
+            }
+            return response.text();
+        })
+        .then(text => {
+            alert(text);
+            setTableValues();
+        })
+        .catch(error => {
+                console.error("🚨 Error calling proceedToPayment API:", error);
+                alert("❌ Error: Unable to proceed with payment.");
+        });
+    }
+
+    function deleteTransfereeReq(reqId){
+        alert("Deleting "+reqId);
+        fetch("/trans-req/delete/"+reqId, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(response => {
+            if(!response.ok){
+                alert("error deleting");
+                return;
+            }
+            return response.text();
+        })
+        .then(text => {
+            alert(text);
+            setTableValues();
+        })
+        .catch(error => {
+                console.error("🚨 Error calling proceedToPayment API:", error);
+                alert("❌ Error: Unable to proceed with payment.");
+        });
+    }
+</script>
 </html>

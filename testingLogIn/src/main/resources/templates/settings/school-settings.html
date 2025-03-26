@@ -46,59 +46,108 @@
             <p>/</p>
             <p>School Settings</p>
         </div>
-        <br>
-
-        <h6>School User Interface </h6>
         <!-- School Settings Form -->
         <div class="settings-main-container mt-4">
-            <form id="schoolSettingsForm" enctype="multipart/form-data" class="settings-container">
-                <!-- School Logo Section -->
-                <div class="logo-container">
-                    <label for="logoUpload" class="form-label"><b>School Logo</b></label>
-                    <div class="logo-wrapper">
-                        <img id="previewLogo" th:src="@{/images/al-furqanlogo.jpg}" alt="Logo Preview"
-                            class="logo-circle">
+            <form id="schoolSettingsForm" enctype="multipart/form-data">
+                <div class="school-settings-container">
+                    <!-- New School Information Section -->
+                    <div class="school-info-container">
+                        <div>
+                            <label for="schoolName" class="form-label"><b>School Name</b></label>
+                            <input type="text" id="schoolName" class="form-control" placeholder="Enter School Name"
+                                required>
+                        </div>
+                        <div>
+                            <label for="schoolAddress" class="form-label"><b>Address</b></label>
+                            <input type="text" id="schoolAddress" class="form-control" placeholder="Enter Address"
+                                required>
+                        </div>
+                        <div class="input-group-half">
+                            <div class="settings-input">
+                                <label for="schoolEmail" class="form-label"><b>Email</b></label>
+                                <input type="email" id="schoolEmail" class="form-control" placeholder="Enter Email"
+                                    required>
+                            </div>
+                            <div class="settings-input">
+                                <label for="schoolContact" class="form-label"><b>Contact Number</b></label>
+                                <input type="tel" id="schoolContact" class="form-control"
+                                    placeholder="Enter Contact Number" required>
+                            </div>
+                        </div>
                     </div>
-                    <input type="file" class="form-control" id="logoUpload" accept="image/*">
-                </div>
+                </div> <br>
 
-                <!-- Theme Settings Section -->
-                <div class="theme-container">
-                    <label for="colorPicker" class="form-label"><b>Theme Color</b></label>
-                    <input type="color" class="form-control form-control-color" id="colorPicker" value="#007bff"
-                        title="Choose your color">
+
+
+                <div class="logo-and-theme-container">
+                    <!-- School Logo Section -->
+                    <div class="logo-container">
+                        <label for="logoUpload" class="form-label"><b>School Logo</b></label>
+                        <div class="logo-wrapper">
+                            <img id="previewLogo" th:src="@{/images/al-furqanlogo.jpg}" alt="Logo Preview"
+                                class="logo-circle">
+                        </div>
+                        <input type="file" class="form-control" id="logoUpload" accept="image/*">
+                    </div>
+
+                    <!-- Theme Settings Section -->
+                    <div class="theme-container">
+                        <label for="colorPicker" class="form-label"><b>Theme Color</b></label>
+                        <input type="color" class="form-control form-control-color" id="colorPicker" value="#007bff"
+                            title="Choose your color">
+                    </div>
                 </div>
 
             </form>
 
             <!-- Centered Save Button -->
             <div class="save-button-wrapper">
-                <button type="submit" form="schoolSettingsForm" class="save-settings-btn btn">Save Settings</button>
+                <button type="submit" form="schoolSettingsForm" class="save-settings-btn btn">Save Changes</button>
             </div>
-        </div> <br> <br>
-
-        <h6>Other Settings</h6>
-        <!-- Table -->
-        <table id="lamesa" class="transferee-reqs-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-
-        <!-- Add Transferee Reqs Button -->
-        <div class="add-something-btn-container">
-            <button class="add-something-btn" id="add-req-btn" >
-                <img th:src="@{/images/icons/add-button.png}" data-open-modal="transfereeReqModal" alt="Add Icon" class="add-icon">
-            </button>
         </div>
+        <br> <br>
 
-         <!-- Modal for adding a transferee req -->
-         <div id="transfereeReqModal" class="transferee-req-modal modal">
+        <h6><strong>Other Settings</strong></h6>
+
+        <!-- Table -->
+        <div class="settings-main-container">
+            <!-- Add Transferee Reqs Button -->
+            <div class="header">
+                <h6><strong>Transferee Requirements</strong></h6>
+                <button id="add-btn">
+                    <img th:src="@{/images/icons/add-button.png}" data-open-modal="transfereeReqModal" alt="Add Icon"
+                        class="add-icon">
+                </button>
+            </div>
+            <table id="lamesa" class="transferee-reqs-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sample Item</td>
+                        <td>
+                            <div class="action-container">
+                                <div class="action">
+                                    <img data-open-modal="" src="/images/icons/compose.png" alt="edit-icon">
+
+                                    <img data-open-modal="confirmationModal" data-action="deleteTransfereeReq"
+                                        data-message="Are you sure you want to delete this grade level?"
+                                        src="/images/icons/bin.png" alt="delete-icon">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> <br>
+
+
+        <!-- Modal for adding a transferee req -->
+        <div id="transfereeReqModal" class="transferee-req-modal modal">
             <div class="transferee-req-modal-content">
                 <!-- Close Button -->
                 <span class="close-modal" data-close-modal="transfereeReqModal">&times;</span>
@@ -108,10 +157,11 @@
                     <label for="reqName">Requirement Name:</label>
                     <input type="text" id="reqName" name="reqName" required>
                     <br><br>
-                 
+
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="addTransfereeReq"
-                            data-message="Are you sure you want to add this requirement for for transferee students?" data-open-modal="confirmationModal">
+                            data-message="Are you sure you want to add this requirement for for transferee students?"
+                            data-open-modal="confirmationModal">
                             Confirm
                         </button>
                         <button type="button" class="btn-cancel" data-close-modal="transfereeReqModal">Cancel</button>
@@ -119,7 +169,7 @@
                 </form>
             </div>
         </div>
-        
+
 
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">

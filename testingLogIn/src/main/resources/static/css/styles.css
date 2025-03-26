@@ -1101,8 +1101,8 @@ table td {
   margin-bottom: 30px;
 }
 .transferee-reqs-table {
-    width: 40%;
-    margin: 0px 50px;
+  background-color: rgb(255, 255, 255);
+  width: 70%;
 }
 
 .status {
@@ -1968,7 +1968,7 @@ input[type="checkbox"] {
 .view-book-modal-content label,
 .receipt-modal-content label,
 .add-account-type-modal-content label,
-.transferee-req-modal-content  label {
+.transferee-req-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -2980,6 +2980,12 @@ td[rowspan] {
   border-radius: 8px;
   background-color: #d2eed3;
 }
+.half-container {
+  padding: 20px 15px;
+  border-radius: 8px;
+  background-color: #d2eed3;
+  width: 50%;
+}
 
 .container-two {
   display: flex;
@@ -3466,91 +3472,140 @@ td[rowspan] {
 /* School Settings Styles */
 /* Main container */
 .settings-main-container {
- background-color: rgb(240, 240, 240);
+  display: flex;
+  width: 70%;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px;
+  background-color: rgb(240, 240, 240);
 }
-.settings-container {
-    display: flex;             
-    justify-content: space-between;  
-    align-items: flex-start;        
-    gap: 50px;                     
-    padding: 20px;
-    min-height: 200px; /* Consistent height */
+.logo-and-theme-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 50px;
+
+  min-height: 200px;
+}
+.school-settings-container {
+  min-height: 200px;
+  display: block;
+}
+
+.school-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* Logo Section */
 .logo-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex: 1;                
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
 }
 
 /* Theme Section */
 .theme-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;               
-    flex: 1;                
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
 }
 
 /* Logo styling */
-.logo-circle, #previewLogo {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 4px solid #fff;
+.logo-circle,
+#previewLogo {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 4px solid #fff;
 }
 
 /* Input fields */
-.form-control, #logoUpload {
-    max-width: 300px;
-    width: 100%;
-    cursor: pointer;
+.form-control,
+#logoUpload {
+  max-width: 750px;
+  width: 100%;
+}
+
+.form-control:focus {
+  box-shadow: none !important;
+  outline: none !important;
+  border: 2px solid #000000;
 }
 
 /* Color picker */
 .form-control-color {
-    width: 60px;
-    height: 40px;
-    cursor: pointer;
+  width: 60px;
+  height: 40px;
 }
 
 /* Save button wrapper to center it */
 .save-button-wrapper {
-    display: flex;
-    justify-content: center;    
-    align-items: center;     
-    padding: 20px 0;           
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  width: 100%;
 }
 
 /* Button styling */
 .save-settings-btn {
-    width: 150px;    
-    text-align: center;  
-    background-color: #27ae60;
-    color: white;
+  width: 150px;
+  text-align: center;
+  background-color: #27ae60;
+  color: white;
 }
 .save-settings-btn:hover {
-    background-color: #218838;
-    color: white;
+  background-color: #218838;
+  color: white;
 }
 #add-req-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;                      /* Spacing between icon and text */
-    background-color: transparent;      /* Button color */
-    color: #fff;                    
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-    font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-weight: bold;
 }
+
 #add-req-btn img {
-    height: 30px;
-    width: 30px;
+  height: 30px;
+  width: 30px;
+}
+
+#add-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  padding: 0px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-weight: bold;
+}
+#add-btn img {
+  height: 30px;
+  width: 30px;
+}
+.settings-input {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+/* this header class can be used when dealing with text + add button in one row */
+.header {
+  width: 40%;
 }

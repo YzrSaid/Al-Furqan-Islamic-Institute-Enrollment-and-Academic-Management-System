@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
+</head>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="topbar">
+            <div class="main-topbar">
+                <span class="hamburger" onclick="toggleSidebar()">
+                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
+                </span>
+
+                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+            </div>
+            <div class="dropdown-logout">
+                <div class="user-icon dropdown-logout-toggle">
+                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
+                        alt="User Icon">
+                    <div id="dropdownUserIcon" class="dropdown-logout-content">
+                        <h6><span th:text="(${userRole})"></span></h6>
+                        <a href="/logout">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-link">
+            <h4>Grade Management</h4>
+            <p>Main</p>
+            <p>/</p>
+            <p>Grade Management Teacher Ako</p>
+        </div>
+
+        <div class="search-div">
+            <!-- Searchbox and sort btn -->
+            <div class="search">
+                <div class="search-container">
+                    <input type="text" placeholder="Search..." class="search-input" />
+                    <button class="search-btn">Search</button>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table id="lamesa" class="grade-management-table">
+            <thead>
+                <tr>
+                    <th>Subject Name</th>
+                    <th>Grade Level</th>
+                    <th>Number of section/s</th> <!--Rename to something that indicates how many sections a teacher is teaching with this subject-->
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Grade 1</td>
+                    <td>Rose</td>
+                    <td>Ma'am Rodriguez</td>
+                    <td>
+                        <div class="dropdown">
+                            <div class="status-container">
+                                <div class="status" id="status-grade-management">20/20</div>
+                            </div>
+                            <!-- <div class="action-container action">
+                                <a href="grade-per-class.html"><img th:src="@{/images/icons/compose.png}"
+                                        alt="edit-icon"></a>
+                            </div> -->
+                            <div class="action-container action">
+                                <a href="/grade-management/class" class="view-per-class"><img
+                                        src="/images/icons/compose.png" alt="edit-icon"></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Modal for status -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p id="modalText"></p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        getSections();
+    });
+
+    function getSections() {
+        fetch("/schedules/test")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch grade levels");
+                return res.json();
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#lamesa tbody");
+                tableBody.innerHTML = "";
+
+                data.forEach(sub => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                                <tr>
+                                    <td>${sub.subject.subjectName}</td>
+                                    <td>${sub.subject.gradeLevel.levelName}</td>
+                                    <td>${sub.count}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <div class="status-container">
+                                                <div class="status" id="status-grade-management"></div>
+                                            </div>
+                                            <!-- <div class="action-container action">
+                                                <a href="grade-per-class.html"><img th:src="@{/images/icons/compose.png}"
+                                                        alt="edit-icon"></a>
+                                            </div> -->
+                                            <div class="action-container action">
+                                                <a href="/grade-management/sections/${sub.subject.subjectNumber}" class="view-per-class"><img src="/images/icons/compose.png"
+                                                        alt="edit-icon"></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                `;
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error:", error));
+    }
+</script>
+
+</html>

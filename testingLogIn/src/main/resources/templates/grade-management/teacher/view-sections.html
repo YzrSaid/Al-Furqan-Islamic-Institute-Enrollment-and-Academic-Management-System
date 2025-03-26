@@ -184,11 +184,14 @@
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        getAllSections();
+        const path = window.location.pathname;
+        const pathParts = path.split('/');
+        const subjectId = pathParts[pathParts.length - 1];
+        getAllSections(subjectId);
     });
 
-    function getAllSections() {
-        fetch(`/section/all?willCountStudent=true`)
+    function getAllSections(subjectId) {
+        fetch(`/schedules/test/${subjectId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -199,17 +202,16 @@
                 const tableBody = document.querySelector("#table-ba-to tbody");
                 tableBody.innerHTML = "";
 
-                data.forEach(rec => {
-                    console.log(rec);
+                Object.entries(data).forEach(([key, value]) => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <tr>
-                            <td>${rec.gradeLevelName}</td>
-                            <td>${rec.sectionName}</td>
-                            <td>${rec.studentEnrolledCount}</td>
+                            <td>${value.sectionName}</td>
+                            <td>${value.sectionAdviser}</td>
+                            <td>${value.gradedCount}/${value.toBeGradedCount}</td>
                             <td>
                                 <div class="action-container">
-                                    <a href="/schedule/sched-board/${rec.number}" class="view-sched">View Schedule</a>
+                                    <a href="/grade-management/subject/${value.sectionId}/${subjectId}" class="view-sched">View Student Grades</a>
                                 </div>
                             </td>
                         </tr>

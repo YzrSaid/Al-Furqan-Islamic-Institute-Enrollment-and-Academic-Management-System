@@ -71,7 +71,8 @@
                     <th>Grade Level</th>
                     <th>Section</th>
                     <th>Adviser</th>
-                    <th>Status</th>
+                    <th>Subjects Count</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -132,11 +133,11 @@
                                     <td>${sec.gradeLevelName}</td>
                                     <td>${sec.sectionName}</td>
                                     <td>${sec.adviserName}</td>
-                                    <td>
+                                    <td>${sec.subSchedCount}<td>
                                         <div class="dropdown">
-                                            <div class="status-container">
-                                                <div class="status" id="status-grade-management">${sec.subSchedCount}</div>
-                                            </div>
+<!--                                            <div class="status-container">-->
+<!--                                                <div class="status" id="status-grade-management">${sec.subSchedCount}</div>-->
+<!--                                            </div>-->
                                             <!-- <div class="action-container action">
                                                 <a href="grade-per-class.html"><img th:src="@{/images/icons/compose.png}"
                                                         alt="edit-icon"></a>

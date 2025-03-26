@@ -16,21 +16,20 @@ import java.util.stream.Collectors;
 public class TransferReqServices {
 
     private final TransfereeReqRepo transfereeReqRepo;
-    private final StudentRepo studentRepo;
     private final StudentTransReqRepo studentTransReqRepo;
+    private final StudentRepo studentRepo;
 
     @Autowired
-    public TransferReqServices(TransfereeReqRepo transfereeReqRepo, StudentRepo studentRepo, StudentTransReqRepo studentTransReqRepo) {
+    public TransferReqServices(TransfereeReqRepo transfereeReqRepo, StudentTransReqRepo studentTransReqRepo, StudentRepo studentRepo) {
         this.transfereeReqRepo = transfereeReqRepo;
-        this.studentRepo = studentRepo;
         this.studentTransReqRepo = studentTransReqRepo;
+        this.studentRepo = studentRepo;
     }
 
     //                  for manipulating transferee requirements
-    public List<TransfereeRequirements> getAllDeletedRequirements(boolean isNotDeleted){
+    public List<TransfereeRequirements> getAllRequirements(boolean isNotDeleted){
         if(isNotDeleted)
             return transfereeReqRepo.findByIsNotDeletedTrue();
-
         return transfereeReqRepo.findByIsNotDeletedFalse();
     }
     public int addNewRequirement(String requirementName){
@@ -52,9 +51,9 @@ public class TransferReqServices {
     }
 
     public boolean updateName(int requirementId,String newName){
-        TransfereeRequirements existingReq = transfereeReqRepo.findUsingName("%"+newName+"%").orElse(null);
+        TransfereeRequirements existingReq = transfereeReqRepo.findUsingName("%"+newName.toLowerCase()+"%").orElse(null);
         TransfereeRequirements toUpdate = transfereeReqRepo.findById(requirementId).orElseThrow(NullPointerException::new);
-        if(existingReq != null || existingReq.getId() != toUpdate.getId())
+        if(existingReq != null && existingReq.getId() != toUpdate.getId())
             return false;
 
         toUpdate.setName(newName);
@@ -63,9 +62,9 @@ public class TransferReqServices {
     }
 
     // for manipulating the requirements complied by the transferee student
-    public boolean addingStudentRequirements(Student student, List<Integer> requirementsId){
-
-        List<StudentTransfereeRequirements> compiledReqs = studentTransReqRepo.findStudentRecords(student.getStudentId());
+    public boolean addingStudentRequirements(int studentId, List<Integer> requirementsId){
+        Student student = studentRepo.findById(studentId).orElseThrow(NullPointerException::new);
+        List<StudentTransfereeRequirements> compiledReqs = studentTransReqRepo.findStudentRecords(studentId);
         Map<Integer, StudentTransfereeRequirements> compiledReqIds = compiledReqs.stream()
                 .collect(Collectors.toMap(
                         rec -> rec.getRequirement().getId(),

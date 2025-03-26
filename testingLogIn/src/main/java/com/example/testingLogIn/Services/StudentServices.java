@@ -85,7 +85,7 @@ public class StudentServices {
             Student newSavedStudent = studentRepo.save(newStudent);
             enrollmentService.addStudentToListing(newSavedStudent.getStudentId());
             if(newSavedStudent.isTransferee())
-                transReqServices.addingStudentRequirements(newSavedStudent,student.getTransfereeRequirements());
+                transReqServices.addingStudentRequirements(newSavedStudent.getStudentId(),student.getTransfereeRequirements());
             return true;
         }
     }

@@ -3,6 +3,7 @@ package com.example.testingLogIn.Services;
 import com.example.testingLogIn.AssociativeModels.GradeLevelRequiredFees;
 import com.example.testingLogIn.AssociativeModels.StudentTransfereeRequirements;
 import com.example.testingLogIn.CountersService.SectionStudentCountServices;
+import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
@@ -58,7 +59,6 @@ public class EnrollmentServices {
         this.paymentService = paymentService;
         this.transReqRepo = transReqRepo;
     }
-
     public boolean addStudentToListing(Integer studentId) {
         Student student = null;
         if(studentId != null)
@@ -182,7 +182,7 @@ public class EnrollmentServices {
     }
 
     public EnrollmentDTOPage getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize,String sort ,String search) {
-        Pageable pageable = null;
+        Pageable pageable;
         if(sort == null || sort.equals(""))
             pageable = PageRequest.of(pageNo-1,pageSize);
         else
@@ -190,29 +190,30 @@ public class EnrollmentServices {
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = sySemRepo.findCurrentActive().getSySemNumber();
-        Page<EnrollmentDTO> enrollments = new PageImpl<>(enrollmentRepo.testing(estatus,sem,search,pageable)
-                                                                .stream().peek(e -> {
-                                                                    Student stud = e.getStudent();
-                                                                    if(stud.isTransferee() && stud.isNew()) {
-                                                                        List<TransfereeRequirements> compiled = stud.getTransfereeRequirements().stream().map(StudentTransfereeRequirements::getRequirement).toList();
-                                                                        for (TransfereeRequirements transfereeRequirements : transReqRepo.findByIsNotDeletedTrue()) {
-                                                                            if (!compiled.contains(transfereeRequirements)) {
-                                                                                stud.setLastGradeLevelCompleted(null);
-                                                                                break;
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                    e.setStudent(stud);
-                                                                }).
-                                                                map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
-                                                                        enrollmentHandler.getStudent().DTOmapper())).collect(Collectors.toList()));
+        Page<EnrollmentHandler> enrollmentRetrieved = enrollmentRepo.testing(estatus,sem,search,pageable);
+        List<EnrollmentDTO> pageContent = enrollmentRetrieved.getContent().stream().peek(
+                e -> {
+                    Student stud = e.getStudent();
+                    if(stud.isTransferee() && stud.isNew()) {
+                        List<TransfereeRequirements> compiled = stud.getTransfereeRequirements().stream().filter(StudentTransfereeRequirements::isNotDeleted).map(StudentTransfereeRequirements::getRequirement).toList();
+                        for (TransfereeRequirements transfereeRequirements : transReqRepo.findByIsNotDeletedTrue()) {
+                            if (!compiled.contains(transfereeRequirements)) {
+                                stud.setLastGradeLevelCompleted(null);
+                                break;
+                            }
+                        }
+                    }
+                    e.setStudent(stud);
+                }
+        ).map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
+                enrollmentHandler.getStudent().DTOmapper())).toList();
         return EnrollmentDTOPage.builder()
-                .content(enrollments.getContent())
+                .content(pageContent)
                 .pageNo(pageNo)
                 .pageSize(pageSize)
-                .totalPages(enrollments.getTotalPages())
-                .totalElements(enrollments.getTotalElements())
-                .isLast(enrollments.isLast())
+                .totalPages(enrollmentRetrieved.getTotalPages())
+                .totalElements(enrollmentRetrieved.getTotalElements())
+                .isLast(enrollmentRetrieved.isLast())
                 .build();
     }
     private Sort sortBy(String sort){

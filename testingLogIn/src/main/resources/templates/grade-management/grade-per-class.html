@@ -71,7 +71,8 @@
                 <tr>
                     <th>Subjects</th>
                     <th>Teacher</th>
-                    <th>Status</th>
+                    <th>Graded/lahat ng dapat i grade</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -146,11 +147,9 @@
                             row.innerHTML = `
                                 <td>${value.subject}</td>
                                     <td>${value.teacherName}</td>
+                                    <td>${value.gradedCount}/${value.toBeGradedCount}</td>
                                     <td>
                                         <div class="dropdown">
-                                            <div class="status-container">
-                                                <div class="status" id="status-grade-management">${value.gradedCount}/${value.toBeGradedCount}</div>
-                                            </div>
                                             <div class="action-container action">
                                                 <a href="/grade-management/subject/${sectionId}/${value.subjectId}" class="view-per-subject"><img src="/images/icons/compose.png"
                                                         alt="edit-icon"></a>

@@ -107,7 +107,11 @@ public class ScheduleController {
     //get the subjects being taught by the teacher
     @GetMapping("/test")
     public ResponseEntity<List<SubjectSectionCount>> testNow(){
-        return new ResponseEntity<>(scheduleService.getTeacherSubjects(),HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(scheduleService.getTeacherSubjects(), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
     //kuhaon ang mga sections nga naay schedule ang kini nga maestra for the specific subject
     @GetMapping("/test/{subjectId}")

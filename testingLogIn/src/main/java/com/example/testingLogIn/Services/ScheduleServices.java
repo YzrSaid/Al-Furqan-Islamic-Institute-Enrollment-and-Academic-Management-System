@@ -227,7 +227,6 @@ public class ScheduleServices {
         UserModel teacher =(UserModel) authentication.getPrincipal();
 
         Integer subjectCount = Optional.ofNullable(scheduleRepo.countTeacherSubjectSched(teacher.getStaffId(),subjectId)).orElse(0);
-        System.out.println(subjectCount);
         if(subjectCount == 0)
             throw new NullPointerException();
 

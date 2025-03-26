@@ -45,16 +45,18 @@ public class Schedule {
     private boolean isNotDeleted;
     public ScheduleDTO mapper(){
         return ScheduleDTO.builder()
-                          .scheduleNumber(scheduleNumber)
-                          .teacherName(teacher.getFirstname()+" "+teacher.getLastname())
-                          .subjectId(subject.getSubjectNumber())
+                            .scheduleNumber(scheduleNumber)
+                            .teacherName(teacher.getFirstname()+" "+teacher.getLastname())
+                            .subjectId(subject.getSubjectNumber())
                             .subject(subject.getSubjectName())
+
                             .sectionId(section.getNumber())
                             .sectionName(section.getSectionName())
-                          .day(day)
-                          .timeStartString(timeStart.format(DateTimeFormatter.ofPattern("hh:mm a")))
-                          .timeEndString(timeEnd.format(DateTimeFormatter.ofPattern("hh:mm a")))
-                          .isNotDeleted(isNotDeleted)
-                          .build();
+                            .sectionAdviser(section.getAdviser().getFullName())
+                            .day(day)
+                            .timeStartString(timeStart.format(DateTimeFormatter.ofPattern("hh:mm a")))
+                            .timeEndString(timeEnd.format(DateTimeFormatter.ofPattern("hh:mm a")))
+                            .isNotDeleted(isNotDeleted)
+                            .build();
     }
 }

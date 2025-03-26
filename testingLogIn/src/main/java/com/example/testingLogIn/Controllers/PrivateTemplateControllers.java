@@ -1,5 +1,8 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.Enums.Role;
+import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,6 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping
 @Controller
 public class PrivateTemplateControllers {
+
+    private final CustomUserDetailsService userDetailsService;
+    @Autowired
+    public PrivateTemplateControllers(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @GetMapping("/h?me")
     public String getDashboard() {
@@ -179,12 +188,23 @@ public class PrivateTemplateControllers {
 
     @GetMapping("/grade-management")
     public String getGradeManagement() {
-        return "/grade-management/grade-management";
+        if(userDetailsService.getCurrentlyLoggedInUser().getRole() == Role.ADMIN)
+            return "/grade-management/grade-management-admin";
+
+        return "/grade-management/teacher/grade-management-teacher";
+    }
+
+    @GetMapping("/grade-management/sections/{subjectId}")
+    public String getGradeManagementSections() {
+        return "/grade-management/teacher/view-sections";
     }
 
     @GetMapping("/grade-management/subject/{sectionId}/{subjectId}")
     public String getGradeManagementPerSubject() {
-        return "/grade-management/grade-per-subject";
+        if(userDetailsService.getCurrentlyLoggedInUser().getRole() == Role.ADMIN)
+            return "/grade-management/grade-per-subject";
+
+        return "/grade-management/teacher/grade-per-subject";
     }
 
     @GetMapping("/grade-management/class/{sectionId}")

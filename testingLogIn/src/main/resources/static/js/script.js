@@ -736,8 +736,8 @@ document.addEventListener("DOMContentLoaded", function () {
       case "deleteFee":
         deleteFee(selectedPaymentName);
         break;
-      case "savePayment":
-        savePayment();
+      case "savePaymentTrans":
+        savePaymentNow();
         break;
       default:
         alert("Unknown action: " + action);

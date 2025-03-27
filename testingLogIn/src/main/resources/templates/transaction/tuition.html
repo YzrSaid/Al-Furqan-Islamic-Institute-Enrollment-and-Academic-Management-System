@@ -194,11 +194,10 @@
                 <table id="table-ni-kharl" class="view-list-of-payments-table">
                     <thead>
                         <tr>
-                            <th>Type</th>
-                            <th>Req. Amount</th>
+                            <th>Particular</th>
+                            <th>Total</th>
                             <th>Amount Paid</th>
-                            <th>Balance</th>
-                            <th>Status</th>
+                            <th>Remaining Balance</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -381,9 +380,8 @@
 
                     <div class="modal-buttons payment-modal-buttons">
                         <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                            data-open-modal="confirmationModal" data-action="savePayment"
-                            data-message="Are you sure you want to save this payment?">Save Payment
-                        </button>
+                            data-open-modal="confirmationModal" data-action="savePaymentTrans"
+                            data-message="Are you sure you want to save this payment?" disabled>Please select a particular</button>
                     </div>
 
                 </div>
@@ -600,7 +598,6 @@
         let gradeLevelId;
         document.addEventListener("click", function (event) {
             const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
-            const paymentBtn = event.target.closest('[data-open-modal="addPaymentModal"]');
             const viewReceiptbtn = event.target.closest('[data-open-modal="receiptModal"]');
             const voidTransaction = event.target.closest('[data-action="voidTransaction"]');
             if (viewListbtn) {
@@ -609,8 +606,6 @@
                 gradeLevelId = viewListbtn.getAttribute("data-level-Id");
                 if (!enrollmentId) return console.error("Enrollment Id Not Found");
                 fetchPayments(enrollmentId);
-            } else if (paymentBtn) {
-                setUpPaymentForm();
             } else if (viewReceiptbtn) {
                 const receiptId = viewReceiptbtn.getAttribute("data-transaction-id");
                 fetchThisPokemon(receiptId);
@@ -620,44 +615,15 @@
                 voidPaymentTransaction(receiptId);
             }
         });
-
-        async function setUpPaymentForm() {
-            paymentAmountInput.max = 0;
-            paymentAmountInput.value = 0.0;
-            let response = await fetch(`/paymentrecord/form/${studentId}?gradeLevelId=${gradeLevelId}`);
-            if (!response.ok) throw new Error("wa nakita");
-            let data = await response.json();
-            const student = data.student;
-
-            const studentname = document.querySelector("#payee-name");
-            const studentDisplayId = document.querySelector("#payee-id");
-            studentname.value = student.firstName + (student.middleName ? ' ' + student.middleName : '') + ' ' + student.lastName;
-            studentDisplayId.value = student.studentDisplayId;
-
-            const paymentContainer = document.querySelector(".payment-container-group");
-            paymentContainer.innerHTML = '';
-            data.feesAndBalance.forEach(par => {
-                const paymentItem = document.createElement("div");
-                paymentItem.classList.add("payment-item");
-                console.log(par);
-                console.log(par.balance);
-                const input = document.createElement("input");
-                input.type = "checkbox";
-                input.name = par.fee.name;
-                input.value = par.fee.id;
-                input.addEventListener("change", (event) => {
-                    handleCheckboxChange(event, par.balance);
-                });
-
-                let label = document.createElement("label");
-                label.textContent = par.fee.name;
-                label.setAttribute("for", par.fee.name);
-
-                paymentItem.appendChild(input);
-                paymentItem.appendChild(label);
-                paymentContainer.appendChild(paymentItem);
-            });
-        }
+        const savePaymentBtn = document.getElementById("save-payment-btn");
+        document.getElementById("payment-amount").addEventListener('keyup', function(event) {
+            savePaymentBtn.textContent= "Save Payment";
+            savePaymentBtn.disabled = false;
+            if(parseFloat(this.value || 0)<=parseFloat(this.min)){
+                savePaymentBtn.textContent = `Minimum of ${this.min} is Required`;
+                savePaymentBtn.disabled = true;
+            }
+        });
 
         function handleCheckboxChange(event, balance) {
             const checkbox = event.target; // The checkbox that was clicked
@@ -671,46 +637,55 @@
                 newMax = currentMax - balance;
             }
             paymentAmountInput.max = newMax;
+            paymentAmountInput.min = (newMax * 0.2);
             if (paymentAmountInput.value > newMax) {
                 paymentAmountInput.value = newMax;
             }
+            if(newMax > 0){
+                savePaymentBtn.textContent = "Enter Amount";
+                savePaymentBtn.disabled = true;
+            }else{
+                savePaymentBtn.textContent = "Please select a particular";
+                savePaymentBtn.disabled = true;
+            }
         }
 
-        function savePayment() {
-            const feesSelectedId = getCheckedPaymentValues();
-            const totalAmount = paymentAmountInput.value;
+        function savePaymentNow() {
+            alert("Paying now");
+<!--            const feesSelectedId = getCheckedPaymentValues();-->
+<!--            const totalAmount = paymentAmountInput.value;-->
 
-            if (totalAmount == 0) {
-                alert("DLi pwde wlay kay ibayad uys");
-                return;
-            } else if (feesSelectedId.length == 0) {
-                alert("Dapat naa ka pilion");
-                return;
-            }
-            const url = `/paymentrecord/add/all/${encodeURIComponent(studentId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(gradeLevelId)}`;
-            const obj = {
-                feesId: feesSelectedId
-            };
+<!--            if (totalAmount == 0) {-->
+<!--                alert("DLi pwde wlay kay ibayad uys");-->
+<!--                return;-->
+<!--            } else if (feesSelectedId.length == 0) {-->
+<!--                alert("Dapat naa ka pilion");-->
+<!--                return;-->
+<!--            }-->
+<!--            const url = `/paymentrecord/add/all/${encodeURIComponent(studentId)}/${encodeURIComponent(totalAmount)}`;-->
+<!--            const obj = {-->
+<!--                feesId: feesSelectedId-->
+<!--            };-->
 
-            fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(obj)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json(); // Parse the response as JSON
-                })
-                .then(receipt => {
-                    const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
-                    viewTheReceipt(decodeURIComponent(receiptJSON));
-                })
-                .catch(error => {
-                    console.error("Error adding payment:", error);
-                    alert("Failed to add payment. Please try again.");
-                });
+<!--            fetch(url, {-->
+<!--                method: "POST",-->
+<!--                headers: { "Content-Type": "application/json" },-->
+<!--                body: JSON.stringify(obj)-->
+<!--            })-->
+<!--                .then(response => {-->
+<!--                    if (!response.ok) {-->
+<!--                        throw new Error(`HTTP error! Status: ${response.status}`);-->
+<!--                    }-->
+<!--                    return response.json(); // Parse the response as JSON-->
+<!--                })-->
+<!--                .then(receipt => {-->
+<!--                    const receiptJSON = encodeURIComponent(JSON.stringify(receipt));-->
+<!--                    viewTheReceipt(decodeURIComponent(receiptJSON));-->
+<!--                })-->
+<!--                .catch(error => {-->
+<!--                    console.error("Error adding payment:", error);-->
+<!--                    alert("Failed to add payment. Please try again.");-->
+<!--                });-->
         }
 
         async function fetchThisPokemon(receiptReference) {
@@ -783,53 +758,6 @@
                 enrollmentIdLet = proceedToEnrolledButton.getAttribute("data-enrollment-id");
             }
         });
-
-
-        function getPaymentStatusClass(status) {
-            status = status.toLowerCase();
-            if (status === "fully paid") {
-                return "paid-status";
-            } else if (status === "unpaid") {
-                return "unpaid-status";
-            } else if (status === "partially paid") {
-                return "partially-paid-status"
-            }
-            return "";
-        }
-
-        var payerId = 0;
-        function fetchPayments(enrollmentId) {
-            fetch(`/enrollment/paymentView/${enrollmentId}`)
-                .then(res => res.json())
-                .then(epv => {
-                    const studentname = document.querySelector("#student-name");
-                    const studentDisplayId = document.querySelector("#student-id");
-                    if (!studentname || !studentId) return console.error("Dropdown for sections not found");
-
-                    studentname.textContent = epv.studentFirstName + (epv.studentMiddleName ? ' ' + epv.studentMiddleName : '') + ' ' + epv.studentLastName;
-
-                    studentDisplayId.textContent = epv.studentDisplayId;
-                    payerId = epv.studentId;
-                    const tableBody = document.querySelector("#table-ni-kharl tbody");
-                    tableBody.innerHTML = "";
-                    epv.feeStatus.forEach(datas => {
-                        const row = document.createElement("tr");
-                        const statusClass = getPaymentStatusClass(datas.status);
-                        row.innerHTML = `
-                            <td>${datas.feeName}</td>
-                            <td>${datas.requiredFee}</td>
-                            <td>${datas.totalPaid}</td>
-                            <td>${datas.balance}</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status ${statusClass}">${datas.status}</div>
-                                </div>
-                            </td>`;
-                        tableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error("Error fetching sections:", error));
-        }
 
         function printThis(feeId) {
             var url = `/paymentrecord/balance/${payerId}?feeId=${feeId}&gradeLevelId=${gradeLevelId}&currentSem=true`;
@@ -908,7 +836,6 @@
             studPageSize = pageSize;
             const orderBy = document.getElementById("view-stud-by-select").value;
             const search = document.getElementById("search-student").value;
-            console.log(orderBy);
             const studentsTable = document.querySelector("#table-ni-martin tbody");
             fetch(`/students/all/s?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${orderBy}`)
                 .then(res => res.json())
@@ -925,7 +852,7 @@
                             <td>
                                 <div class="dropdown">
                                     <div class="action-container action">
-                                        <img th:src="@{/images/icons/eye.png}" data-student-id="${stud.studentId}"
+                                        <img th:src="@{/images/icons/eye.png}" onclick="viewToPaid(${stud.studentId})"
                                         data-open-modal="listOfPaymentsModal"
                                             alt="edit-icon">
 
@@ -936,6 +863,68 @@
                     });
                 })
                 .catch(error => console.error("Error fetching sections:", error));
+        }
+
+        function viewToPaid(studentId) {
+            fetch(`/paymentrecord/form/${studentId}`)
+                .then(res => res.json())
+                .then(payForm => {
+                    document.querySelector("#student-name").textContent = payForm.student.fullName;
+                    document.querySelector("#student-id").textContent = payForm.student.studentDisplayId;
+                    const tableBody = document.querySelector("#table-ni-kharl tbody");
+                    tableBody.innerHTML = ``;
+                    payForm.feesAndBalance.forEach(particular => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${particular.fee.name}</td>
+                            <td>${particular.fee.requiredAmount}</td>
+                            <td>${particular.fee.requiredAmount - particular.balance}</td>
+                            <td>${particular.balance}</td>`;
+                        tableBody.appendChild(row);
+                    });
+                    const row = document.createElement("tr");
+                    row.innerHTML =`
+                            <td colspan="3">Total Remaining balance</td>
+                            <td>${payForm.totalFee}</td>`;
+                    tableBody.appendChild(row);
+
+                    document.getElementById("open-add-payment-modal").onclick = function() {
+                      setUpForm(JSON.stringify(payForm));
+                    };
+                })
+                .catch(error => console.error("Error fetching sections:", error));
+        }
+        function setUpForm(theForm){
+            theForm = JSON.parse(theForm);
+<!--            paymentAmountInput.max = 0;-->
+<!--            paymentAmountInput.value = 0.0;-->
+            const student = theForm.student;
+            document.querySelector("#payee-name").value = student.fullName;
+            document.querySelector("#payee-id").value = student.studentDisplayId;
+            studentId = student.studentId;
+            const paymentContainer = document.querySelector(".payment-container-group");
+            paymentContainer.innerHTML = '';
+            theForm.feesAndBalance.forEach(par => {
+                const paymentItem = document.createElement("div");
+                paymentItem.classList.add("payment-item");
+                console.log(par);
+                console.log(par.balance);
+                const input = document.createElement("input");
+                input.type = "checkbox";
+                input.name = par.fee.name;
+                input.value = par.fee.id;
+                input.addEventListener("change", (event) => {
+                    handleCheckboxChange(event, par.balance);
+                });
+
+                let label = document.createElement("label");
+                label.textContent = par.fee.name;
+                label.setAttribute("for", par.fee.name);
+
+                paymentItem.appendChild(input);
+                paymentItem.appendChild(label);
+                paymentContainer.appendChild(paymentItem);
+            });
         }
     </script>
 </body>

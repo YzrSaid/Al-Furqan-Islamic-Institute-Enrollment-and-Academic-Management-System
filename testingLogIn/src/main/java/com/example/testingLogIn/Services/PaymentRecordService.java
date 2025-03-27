@@ -2,6 +2,7 @@ package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.AssociativeModels.GradeLevelRequiredFees;
 import com.example.testingLogIn.AssociativeModels.StudentFeesList;
+import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
 import com.example.testingLogIn.CustomObjects.FeesAndBalance;
 import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
@@ -82,9 +83,8 @@ public class PaymentRecordService {
         transaction.setSYSem(sem);
         transaction.setTotalAmount(amount);
         transaction.setNotVoided(true);
-        transactionRepo.save(transaction);
-        PaymentTransaction tran = transactionRepo.findById(transaction.getTransactionId()).orElse(null);
-        assert tran != null;
+        PaymentTransaction tran = transactionRepo.save(transaction);
+        System.out.println("Transaction saved");
         tran.setParticulars(new ArrayList<>());
 
         List<MapperObject> toSortByBalance = new ArrayList<>();

@@ -41,22 +41,6 @@ public class EnrollmentController {
             return new ResponseEntity<>("Transaction Failed",HttpStatus.BAD_REQUEST);
         }
     }
-
-//    @PostMapping("/add/listing")
-//    public ResponseEntity<String> addStudentToListing(@RequestBody StudentDTO student){
-//        try{
-//            if(enrollmentService.addStudentToListing(student,null))
-//                return new ResponseEntity<>("Student Successfully Added To Listing",HttpStatus.OK);
-//            else
-//                return new ResponseEntity<>("Student Is Already In Enrollment Process",HttpStatus.CONFLICT);
-//        }catch(NullPointerException npe){
-//            return new ResponseEntity<>("Student Record Not Found",HttpStatus.NOT_FOUND);
-//        }catch(Exception e){
-//            e.printStackTrace();
-//            return new ResponseEntity<>("Transaction Failed",HttpStatus.BAD_REQUEST);
-//        }
-//    }
-
     @GetMapping("/all/paged/{status}")
     public ResponseEntity<EnrollmentDTOPage> getEnrollmentRecordsByStatusPage(@PathVariable String status,
                                                                               @RequestParam(required = false,defaultValue = "1") Integer pageNo,

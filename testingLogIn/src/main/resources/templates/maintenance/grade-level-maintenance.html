@@ -14,6 +14,7 @@
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
@@ -54,6 +55,12 @@
                 <div class="search-container">
                     <input type="text" placeholder="Search..." class="search-input" />
                     <button class="search-btn">Search</button>
+                    <!-- Add Grade Level Button -->
+                    <div class="add-something-btn-container">
+                        <button class="add-something-btn" id="openGradeLevelModal" data-open-modal="gradeLevelModal">Add
+                            Grade
+                            Level</button>
+                    </div>
                 </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
@@ -78,12 +85,6 @@
             <tbody>
             </tbody>
         </table>
-
-        <!-- Add Grade Level Button -->
-        <div class="add-something-btn-container">
-            <button class="add-something-btn" id="openGradeLevelModal" data-open-modal="gradeLevelModal">Add Grade
-                Level</button>
-        </div>
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">

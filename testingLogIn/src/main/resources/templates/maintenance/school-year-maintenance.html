@@ -13,6 +13,7 @@
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
@@ -53,6 +54,13 @@
                 <div class="search-container">
                     <input type="text" placeholder="Search..." class="search-input" />
                     <button class="search-btn">Search</button>
+                    <!-- Add School Year Button -->
+                    <div class="add-something-btn-container">
+                        <button class="add-something-btn" id="openSchoolYearModal" data-open-modal="schoolYearModal">Add
+                            School
+                            Year</button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -71,13 +79,6 @@
             <tbody>
             </tbody>
         </table>
-
-
-        <!-- Add School Year Button -->
-        <div class="add-something-btn-container">
-            <button class="add-something-btn" id="openSchoolYearModal" data-open-modal="schoolYearModal">Add School
-                Year</button>
-        </div>
 
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">

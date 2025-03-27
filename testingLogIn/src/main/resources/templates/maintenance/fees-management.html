@@ -54,6 +54,11 @@
                 <div class="search-container">
                     <input type="text" placeholder="Search..." class="search-input" />
                     <button class="search-btn">Search</button>
+                    <!-- Add Fees Management Button -->
+                    <div class="add-something-btn-container">
+                        <button class="add-something-btn" id="addAFeeButton" data-open-modal="feesManagementModal">Add a
+                            Fee</button>
+                    </div>
                 </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
@@ -80,11 +85,6 @@
             </tbody>
         </table>
 
-        <!-- Add Fees Management Button -->
-        <div class="add-something-btn-container">
-            <button class="add-something-btn" id="addAFeeButton" data-open-modal="feesManagementModal">Add a
-                Fee</button>
-        </div>
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
@@ -124,28 +124,28 @@
                 <form method="post" action="" id="feesManagementForm">
                     <div class="payment-name-row">
                         <label for="paymentName">Payment Name:</label>
-                
+
                         <!-- Checkbox beside the label -->
                         <div class="checkbox-label">
-                            Distributable: <input type="checkbox" id="distributable"> 
+                            Distributable: <input type="checkbox" id="distributable">
                         </div>
                     </div>
-                
+
                     <!-- Input field below -->
                     <input type="text" id="paymentName">
                     <br><br>
-                
+
                     <label for="amount">Amount</label>
-                    <input type="number" id="amount"> 
+                    <input type="number" id="amount">
                     <br><br>
 
-                
+
                     <h6>Grade Levels Required by this Payment:</h6>
-                
+
                     <div class="payment-container">
                         <!-- Grade level checkboxes or inputs go here -->
                     </div>
-                
+
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="addFee"
                             data-message="Are you sure you want to save this Fee?" id="confirmFee"
@@ -155,7 +155,7 @@
                         <button type="button" class="btn-cancel" data-close-modal="feesManagementModal">Cancel</button>
                     </div>
                 </form>
-                
+
             </div>
         </div>
 

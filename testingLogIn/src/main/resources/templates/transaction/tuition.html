@@ -18,7 +18,7 @@
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
-    
+
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
         <div class="topbar">
@@ -55,6 +55,13 @@
                 <div class="search-container">
                     <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
                     <button onclick="getRecords(1)" class="search-btn">Search</button>
+
+                    <!-- Add Payment Button -->
+                    <div class="add-something-btn-container">
+                        <button class="add-something-btn" id="openViewStudentListModal"
+                            data-open-modal="viewStudentListModal">Add
+                            Payment</button>
+                    </div>
                 </div>
                 <div class="sort-container">
                     <select name="sort" onchange="getRecords(1)" id="view-by-select" class="sort-select">
@@ -100,6 +107,79 @@
             </div>
         </div>
 
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
+
+
+        <!-- Modal for view student list -->
+        <div id="viewStudentListModal" class="view-student-list-modal modal">
+            <!-- Close Button -->
+            <span class="close-modal exit-btn" data-close-modal="viewStudentListModal">&times;</span>
+
+            <div class="view-student-list-modal-content">
+                <h2>Student List</h2>
+
+                <div class="search-div">
+                    <!-- Searchbox and sort btn -->
+                    <div class="search">
+                        <div class="search-container">
+                            <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                            <button onclick="getRecords(1)" class="search-btn">Search</button>
+                        </div>
+                        <div class="sort-container">
+                            <select name="sort" onchange="getRecords(1)" id="view-by-select" class="sort-select">
+                                <option value="Transaction" selected>Transaction</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List of Payments Table -->
+                <table id="table-ni-kharl" class="view-list-of-students-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Current Grade Level</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>202501</td>
+                            <td>John Doe</td>
+                            <td>Grade 10</td>
+                            <td>
+                                <div class="dropdown">
+                                    <div class="action-container action">
+                                        <img th:src="@{/images/icons/eye.png}" data-open-modal="listOfPaymentsModal"
+                                            alt="edit-icon">
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
         <!-- Modal for listOfPaymentsModal -->
         <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
             <div class="list-of-payments-modal-content">
@@ -134,8 +214,8 @@
 
                 <!-- Add Payment button -->
                 <div class="action" id="add-payment-btn">
-                    <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
-                        Payment</button>
+                    <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Proceed to
+                        Payment Form</button>
                 </div>
 
             </div>
@@ -432,7 +512,7 @@
             currentPageSize = pageSize;
             const searchBy = document.getElementById("search-stud").value;
             const sortBy = document.getElementById("view-by-select").value;
-            if(sortBy == "Transaction" || sortBy == "Voided"){
+            if (sortBy == "Transaction" || sortBy == "Voided") {
                 document.querySelector("#realginnas thead").innerHTML = `
                     <th>No.</th>
                     <th>Student Name</th>
@@ -440,7 +520,7 @@
                     <th>Transaction Number</th>
                     <th>Amount Paid</th>
                     <th>Action</th>`;
-            }else{
+            } else {
                 document.querySelector("#realginnas thead").innerHTML = `
                     <th>No.</th>
                     <th>Student Name</th>
@@ -538,10 +618,10 @@
                 fetchPayments(enrollmentId);
             } else if (paymentBtn) {
                 setUpPaymentForm();
-            }else if(viewReceiptbtn){
+            } else if (viewReceiptbtn) {
                 const receiptId = viewReceiptbtn.getAttribute("data-transaction-id");
                 fetchThisPokemon(receiptId);
-            }else if(voidTransaction){
+            } else if (voidTransaction) {
                 alert("hahaha na void pa kaw roh");
                 const receiptId = voidTransaction.getAttribute("data-transaction-id");
                 voidPaymentTransaction(receiptId);
@@ -640,38 +720,38 @@
                 });
         }
 
-    async function fetchThisPokemon(receiptReference){
-        const response =  await fetch(`/paymentrecord/testing/${receiptReference}`);
-        if (!response.ok) throw new Error("Failed to fetch required payments");
+        async function fetchThisPokemon(receiptReference) {
+            const response = await fetch(`/paymentrecord/testing/${receiptReference}`);
+            if (!response.ok) throw new Error("Failed to fetch required payments");
 
-        const receipt = await response.json();
-        const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
-        viewTheReceipt(decodeURIComponent(receiptJSON));
-    }
+            const receipt = await response.json();
+            const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
+            viewTheReceipt(decodeURIComponent(receiptJSON));
+        }
 
-    function viewTheReceipt(receipt){
-        receipt = JSON.parse(receipt);
-        document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
-        document.getElementById("receipt-date").value = receipt.date;
-        document.getElementById("receipt-student-name").value = receipt.studentName;
-        document.getElementById("receipt-number").value = receipt.transactionReference;
-        document.getElementById("receipt-number").value = receipt.transactionReference;
+        function viewTheReceipt(receipt) {
+            receipt = JSON.parse(receipt);
+            document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
+            document.getElementById("receipt-date").value = receipt.date;
+            document.getElementById("receipt-student-name").value = receipt.studentName;
+            document.getElementById("receipt-number").value = receipt.transactionReference;
+            document.getElementById("receipt-number").value = receipt.transactionReference;
 
-        const tableBody = document.querySelector("#receipt-table tbody");
-        tableBody.innerHTML = "";
-        let i = 1;
-        receipt.particulars.forEach(dat => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
+            const tableBody = document.querySelector("#receipt-table tbody");
+            tableBody.innerHTML = "";
+            let i = 1;
+            receipt.particulars.forEach(dat => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
                 <tr>
                     <td>${i++}</td>
                     <td>${dat.feeName}</td>
                     <td>${dat.amountPaid}</td>
                 </tr>`;
-            tableBody.appendChild(row);
-        });
-        const row = document.createElement("tr");
-        row.innerHTML = `
+                tableBody.appendChild(row);
+            });
+            const row = document.createElement("tr");
+            row.innerHTML = `
                 <tfoot>
                     <tr>
                         <td colspan="2">Total Amount Paid:
@@ -679,10 +759,10 @@
                         <td>₱ ${receipt.totalAmount}</td>
                     </tr>
                 </tfoot>`;
-        tableBody.appendChild(row);
-        getRecords(currentPage, currentPageSize);
-        closeOpen();
-    }
+            tableBody.appendChild(row);
+            getRecords(currentPage, currentPageSize);
+            closeOpen();
+        }
 
         function closeOpen() {
             const button1 = document.createElement("button");
@@ -797,37 +877,37 @@
             });
         }
 
-    function voidPaymentTransaction(transactionId) {
-        fetch("/paymentrecord/void_payment?transaction=" + transactionId)
-            .then(response => {
-                if (!response.ok) throw new Error("Failed to void payment transaction");
-                return response.text();
-            })
-            .then(text => {
-                alert(text);
-                getRecords(currentPage, currentPageSize); // Refresh the records
-            })
-            .catch(error => console.error("Error voiding payment transaction:", error));
-    }
+        function voidPaymentTransaction(transactionId) {
+            fetch("/paymentrecord/void_payment?transaction=" + transactionId)
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to void payment transaction");
+                    return response.text();
+                })
+                .then(text => {
+                    alert(text);
+                    getRecords(currentPage, currentPageSize); // Refresh the records
+                })
+                .catch(error => console.error("Error voiding payment transaction:", error));
+        }
 
-    function fetchMgaBayarin() {
-        fetch("/payments/all")
-            .then(res => res.json())
-            .then(sections => {
-                const selectTag = document.querySelector("#view-by-select");
-                if (!selectTag) return console.error("Dropdown for sections not found");
+        function fetchMgaBayarin() {
+            fetch("/payments/all")
+                .then(res => res.json())
+                .then(sections => {
+                    const selectTag = document.querySelector("#view-by-select");
+                    if (!selectTag) return console.error("Dropdown for sections not found");
 
-                selectTag.innerHTML = `<option value="Transaction" selected>Transaction</option>
+                    selectTag.innerHTML = `<option value="Transaction" selected>Transaction</option>
                                         <option value="Voided">Voided Transaction</option>`; // Default option
-                sections.forEach(fee => {
-                    const option = document.createElement("option");
-                    option.value = fee.id;
-                    option.textContent = fee.name;
-                    selectTag.appendChild(option);
-                });
-            })
-            .catch(error => console.error("Error fetching sections:", error));
-    }
+                    sections.forEach(fee => {
+                        const option = document.createElement("option");
+                        option.value = fee.id;
+                        option.textContent = fee.name;
+                        selectTag.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error fetching sections:", error));
+        }
     </script>
 </body>
 

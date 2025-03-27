@@ -12,7 +12,7 @@
     <div class="sidebar" id="sidebar" th:fragment="sidebar">
         <div class="text-center">
             <div class="school-logo">
-                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
+                <img th:src="@{/website-logo}" alt="School Logo">
             </div> <br>
             <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
                 th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">

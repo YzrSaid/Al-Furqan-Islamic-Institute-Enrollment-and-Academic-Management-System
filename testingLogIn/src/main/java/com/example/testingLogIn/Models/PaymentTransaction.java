@@ -36,6 +36,7 @@ public class PaymentTransaction {
     @OneToMany(mappedBy = "transaction")
     private List<PaymentRecords> particulars;
 
+    @Builder.Default
     private LocalDate dateReceived = LocalDate.now();
     private double totalAmount;
     private boolean isNotVoided;

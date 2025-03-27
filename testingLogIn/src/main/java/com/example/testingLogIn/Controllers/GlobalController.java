@@ -5,22 +5,45 @@ import com.example.testingLogIn.Services.sySemesterServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.resource.NoResourceFoundException;
 import org.springframework.web.reactive.result.view.RedirectView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+@RequestMapping
+@Controller
 @ControllerAdvice
 public class GlobalController {
+    @Value("${images.external-dir:./external-images}")
+    private String externalImageDir;
 
     @Autowired
     private sySemesterServices semService;
+
+    @GetMapping("/website-logo")
+    public ResponseEntity<byte[]> getDynamicImage() throws IOException {
+        Path imagePath = Paths.get(externalImageDir, "al-furqanlogo.jpg");
+        if (!Files.exists(imagePath)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
+        }
 
     @ModelAttribute("userRole")
     public String getUserRole() {

@@ -127,9 +127,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td colspan="2">No records</td>
-                </tr>
+                    <tr>
+                        <td colspan="2">No records</td>
+                    </tr>
                 </tbody>
             </table>
         </div> <br>
@@ -149,12 +149,33 @@
 
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="addTransfereeReq"
-                            onclick="addTransfereeReq()"
-                            data-message="Are you sure you want to add this requirement for for transferee students?"
+                            data-message="Are you sure you want to add this transferee requirement?"
                             data-open-modal="confirmationModal">
                             Confirm
                         </button>
                         <button type="button" class="btn-cancel" data-close-modal="transfereeReqModal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal for editing the transferee requirement -->
+        <div id="transfereeReqEditModal" class="transferee-req-edit-modal modal">
+            <div class="transferee-req-edit-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="transfereeReqEditModal">&times;</span>
+
+                <h2>Transferee Requirement Information</h2>
+                <form method="post" action="" id="transfereeReqEditForm">
+                    <label for="reqEditName">Requirement Name:</label>
+                    <input type="text" id="reqEditName" name="reqName" required>
+                    <br><br>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" id="editTransfereeReqButton" data-action="editTransfereeReq"
+                            data-message="Are you sure you want to update this fee?">Edit</button>
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="transfereeReqEditModal">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -196,18 +217,19 @@
         setTableValues();
     });
 
-    async function setTableValues(){
+    async function setTableValues() {
         const tableBody = document.querySelector("#lamesa tbody");
 
         const response = await fetch("/trans-req/all?isNotDeleted=true");
-        if(!response.ok){
+        if (!response.ok) {
             alert("Way sulod");
-            return;}
+            return;
+        }
 
         const result = await response.json();
-        if(result.length === 0) return;
+        if (result.length === 0) return;
         tableBody.innerHTML = ``;
-        result.forEach(transReq =>{
+        result.forEach(transReq => {
             const row = document.createElement("tr");
             row.innerHTML = `
                     <tr>
@@ -215,11 +237,10 @@
                         <td>
                             <div class="action-container">
                                 <div class="action">
-                                    <img data-open-modal="" src="/images/icons/compose.png" alt="edit-icon">
+                                    <img data-open-modal="transfereeReqEditModal" src="/images/icons/compose.png" alt="edit-icon">
 
-                                    <img data-open-modal="confirmationModal" data-action="deleteTransfereeReq"
-                                        onclick="deleteTransfereeReq(${transReq.id})";
-                                        data-message="Are you sure you want to delete this grade level?"
+                                    <img data-open-modal="confirmationModal" data-action="deleteTransfereeReq" data-id="${transReq.id}"
+                                        data-message="Are you sure you want to delete this requirement?"
                                         src="/images/icons/bin.png" alt="delete-icon">
                                 </div>
                             </div>
@@ -229,50 +250,64 @@
         });
     }
 
-    function addTransfereeReq(){
+    let selectedTransfereeReqId = null;
+
+    document.addEventListener("click", (event) => {
+        const target = event.target.closest('[data-action="deleteTransfereeReq"]');
+
+        if (target) {
+            selectedTransfereeReqId = target.dataset.id;
+            console.log(selectedTransfereeReqId);
+        }
+    });
+
+    function addTransfereeReq() {
         const reqName = document.getElementById("reqName").value;
-        fetch("/trans-req/add?reqName="+reqName, {
+
+        fetch("/trans-req/add?reqName=" + encodeURIComponent(reqName), {
             method: "POST",
             headers: { "Content-Type": "application/json" }
         })
-        .then(response => {
-            if(!response.ok){
-                alert(response.text());
-                return;
-            }
-            return response.text();
-        })
-        .then(text => {
-            alert(text);
-            setTableValues();
-        })
-        .catch(error => {
-                console.error("🚨 Error calling proceedToPayment API:", error);
-                alert("❌ Error: Unable to proceed with payment.");
-        });
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+                return response.text();
+            })
+            .then(text => {
+                showSuccessModal("✅ Success: Record has been added successfully!");
+                setTableValues();
+            })
+            .catch(error => {
+                showErrorModal("❌ Error: " + error.message);
+            });
     }
 
-    function deleteTransfereeReq(reqId){
-        alert("Deleting "+reqId);
-        fetch("/trans-req/delete/"+reqId, {
+
+    function deleteTransfereeReq(selectedTransfereeReqId) {
+        // alert("Deleting " + selectedTransfereeReqId);
+        fetch("/trans-req/delete/" + selectedTransfereeReqId, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         })
-        .then(response => {
-            if(!response.ok){
-                alert("error deleting");
-                return;
-            }
-            return response.text();
-        })
-        .then(text => {
-            alert(text);
-            setTableValues();
-        })
-        .catch(error => {
-                console.error("🚨 Error calling proceedToPayment API:", error);
-                alert("❌ Error: Unable to proceed with payment.");
-        });
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+                return response.text();
+            })
+            .then(text => {
+                showSuccessModal("✅ Success: Record has been deleted successfully!");
+                setTableValues();
+            })
+            .catch(error => {
+                showErrorModal("❌ Error:" + error);
+            });
     }
 </script>
+
 </html>

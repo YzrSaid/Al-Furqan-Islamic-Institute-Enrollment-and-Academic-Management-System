@@ -1900,7 +1900,8 @@ input[type="checkbox"] {
 .view-book-modal h2,
 .receipt-modal h2,
 .add-account-type-modal h2,
-.transferee-req-modal h2 {
+.transferee-req-modal h2,
+.transferee-req-edit-modal h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -1968,7 +1969,8 @@ input[type="checkbox"] {
 .view-book-modal-content label,
 .receipt-modal-content label,
 .add-account-type-modal-content label,
-.transferee-req-modal-content label {
+.transferee-req-modal-content label,
+.transferee-req-edit-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -1994,6 +1996,7 @@ input[type="checkbox"] {
 .student-information-modal-content input,
 .receipt-payment-modal-content input,
 .transferee-req-modal-content input,
+.transferee-req-edit-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
@@ -2025,7 +2028,8 @@ input[type="checkbox"] {
 .fees-management-edit-modal,
 .student-information-modal,
 .add-account-type-modal,
-.transferee-req-modal {
+.transferee-req-modal,
+.transferee-req-edit-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -2045,7 +2049,8 @@ input[type="checkbox"] {
 .add-grade-level-assessment-modal.show,
 .student-information-modal.show,
 .add-account-type-modal.show,
-.transferee-req-modal.show {
+.transferee-req-modal.show,
+.transferee-req-edit-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
@@ -2086,6 +2091,7 @@ input[type="checkbox"] {
 .grade-level-modal-content,
 .school-year-modal-content,
 .transferee-req-modal-content,
+.transferee-req-edit-modal-content,
 .add-grade-level-assessment-modal-content {
   background: white !important;
   padding: 30px;
@@ -2093,7 +2099,6 @@ input[type="checkbox"] {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
   min-height: 40vh;
-
   text-align: left;
   position: relative;
   z-index: 1001;
@@ -3557,11 +3562,11 @@ td[rowspan] {
 .save-settings-btn {
   width: 150px;
   text-align: center;
-  background-color: #27ae60;
+  background-color: #218838;
   color: white;
 }
 .save-settings-btn:hover {
-  background-color: #218838;
+  background-color: #186328;
   color: white;
 }
 #add-req-btn {

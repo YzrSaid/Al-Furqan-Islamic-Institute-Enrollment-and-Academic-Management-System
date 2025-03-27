@@ -33,7 +33,7 @@ public class TransferReqServices {
         return transfereeReqRepo.findByIsNotDeletedFalse();
     }
     public int addNewRequirement(String requirementName){
-        if(transfereeReqRepo.findUsingName("%"+requirementName+"%").orElse(null) == null){
+        if(transfereeReqRepo.findUsingName("%"+requirementName.toLowerCase()+"%").orElse(null) == null){
             transfereeReqRepo.save(TransfereeRequirements.builder()
                             .name(requirementName)
                             .isNotDeleted(true)

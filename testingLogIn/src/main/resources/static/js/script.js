@@ -72,97 +72,100 @@ window.onclick = function (event) {
   }
 };
 function toggleSubMenu(submenuId, event) {
-    event.preventDefault();
-  
-    let submenu = document.getElementById(submenuId);
-    let arrowIconImg = submenu.previousElementSibling.querySelector(".arrow-icon img");
-    let isOpen = submenu.classList.contains("open");
-  
-    // Close all unrelated submenus EXCEPT the clicked one and the ones with active items
-    document.querySelectorAll(".submenu").forEach((otherSubmenu) => {
-      let hasActiveItem = otherSubmenu.querySelector(".submenu-item.active, .submenu-item.second-active");
-  
-      if (otherSubmenu !== submenu && !hasActiveItem) {
-        otherSubmenu.classList.remove("open");
-        otherSubmenu.style.display = "none";  
-  
-        let otherArrowIcon = otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
-        if (otherArrowIcon) {
-          otherArrowIcon.src = "/images/icons/arrow-down.png";
-        }
+  event.preventDefault();
+
+  let submenu = document.getElementById(submenuId);
+  let arrowIconImg =
+    submenu.previousElementSibling.querySelector(".arrow-icon img");
+  let isOpen = submenu.classList.contains("open");
+
+  // Close all unrelated submenus EXCEPT the clicked one and the ones with active items
+  document.querySelectorAll(".submenu").forEach((otherSubmenu) => {
+    let hasActiveItem = otherSubmenu.querySelector(
+      ".submenu-item.active, .submenu-item.second-active"
+    );
+
+    if (otherSubmenu !== submenu && !hasActiveItem) {
+      otherSubmenu.classList.remove("open");
+      otherSubmenu.style.display = "none";
+
+      let otherArrowIcon =
+        otherSubmenu.previousElementSibling?.querySelector(".arrow-icon img");
+      if (otherArrowIcon) {
+        otherArrowIcon.src = "/images/icons/arrow-down.png";
       }
-    });
-  
-    // Toggle the clicked submenu
-    submenu.classList.toggle("open", !isOpen);
-    submenu.style.display = isOpen ? "none" : "block"; 
-    arrowIconImg.src = isOpen
-      ? "/images/icons/arrow-down.png"
-      : "/images/icons/greater-than.png";
-  
-    // Save submenu state in localStorage
-    let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-  
-    if (!isOpen) {
-      if (!savedSubmenus.includes(submenuId)) {
-        savedSubmenus.push(submenuId);
-      }
-    } else {
-      savedSubmenus = savedSubmenus.filter((id) => id !== submenuId);
     }
-  
-    localStorage.setItem("openedSubmenus", JSON.stringify(savedSubmenus));
+  });
+
+  // Toggle the clicked submenu
+  submenu.classList.toggle("open", !isOpen);
+  submenu.style.display = isOpen ? "none" : "block";
+  arrowIconImg.src = isOpen
+    ? "/images/icons/arrow-down.png"
+    : "/images/icons/greater-than.png";
+
+  // Save submenu state in localStorage
+  let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+  if (!isOpen) {
+    if (!savedSubmenus.includes(submenuId)) {
+      savedSubmenus.push(submenuId);
+    }
+  } else {
+    savedSubmenus = savedSubmenus.filter((id) => id !== submenuId);
   }
-  
+
+  localStorage.setItem("openedSubmenus", JSON.stringify(savedSubmenus));
+}
 
 // Ensure only active submenus stay open on reload
 document.addEventListener("DOMContentLoaded", function () {
-    let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
-    let updatedSubmenus = [];
-  
-    document.querySelectorAll(".submenu").forEach((submenu) => {
-      // 🔥 Use a timeout to ensure dynamically added classes are detected
-      setTimeout(() => {
-        let hasActiveItem = submenu.querySelector(
-          ".submenu-item.active, .submenu-item.second-active"
-        );
-  
-        if (hasActiveItem) {
-          // Keep active submenus open
-          submenu.classList.add("open");
-  
-          // Ensure parent menus are opened
-          let parentMenu = submenu.closest(".submenu");
-          if (parentMenu) {
-            parentMenu.classList.add("open");
-          }
-  
-          // Update arrow icon
-          let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-          if (arrowIconImg) {
-            arrowIconImg.src = "/images/icons/greater-than.png";
-          }
-  
-          // Add active submenu to localStorage state
-          updatedSubmenus.push(submenu.id);
-  
-        } else if (savedSubmenus.includes(submenu.id)) {
-          // Close inactive saved submenus
-          submenu.classList.remove("open");
-  
-          let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
-          if (arrowIconImg) {
-            arrowIconImg.src = "/images/icons/arrow-down.png";
-          }
+  let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+  let updatedSubmenus = [];
+
+  document.querySelectorAll(".submenu").forEach((submenu) => {
+    // 🔥 Use a timeout to ensure dynamically added classes are detected
+    setTimeout(() => {
+      let hasActiveItem = submenu.querySelector(
+        ".submenu-item.active, .submenu-item.second-active"
+      );
+
+      if (hasActiveItem) {
+        // Keep active submenus open
+        submenu.classList.add("open");
+
+        // Ensure parent menus are opened
+        let parentMenu = submenu.closest(".submenu");
+        if (parentMenu) {
+          parentMenu.classList.add("open");
         }
-  
-        // Update localStorage with only active submenus
-        localStorage.setItem("openedSubmenus", JSON.stringify(updatedSubmenus));
-      }, 0);  // Timeout ensures dynamic classes are detected
-    });
+
+        // Update arrow icon
+        let arrowIconImg =
+          submenu.previousElementSibling?.querySelector(".arrow-icon img");
+        if (arrowIconImg) {
+          arrowIconImg.src = "/images/icons/greater-than.png";
+        }
+
+        // Add active submenu to localStorage state
+        updatedSubmenus.push(submenu.id);
+      } else if (savedSubmenus.includes(submenu.id)) {
+        // Close inactive saved submenus
+        submenu.classList.remove("open");
+
+        let arrowIconImg =
+          submenu.previousElementSibling?.querySelector(".arrow-icon img");
+        if (arrowIconImg) {
+          arrowIconImg.src = "/images/icons/arrow-down.png";
+        }
+      }
+
+      // Update localStorage with only active submenus
+      localStorage.setItem("openedSubmenus", JSON.stringify(updatedSubmenus));
+    }, 0); // Timeout ensures dynamic classes are detected
   });
-  
-  
+});
+
 // ✅ Clear all submenus ONLY when clicking on non-submenu links
 function clearSubmenus() {
   document.querySelectorAll(".submenu").forEach((submenu) => {
@@ -489,8 +492,22 @@ document.addEventListener("DOMContentLoaded", function () {
         saveSchedule();
         break;
       case "addNewStudent":
-        alert("Add new student!");
+        closeConfirmationModal();
         break;
+      case "addTransfereeReq":
+        // This is for adding transferee requirement (settings page)
+        if (!validateForm("transfereeReqForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          addTransfereeReq();
+          closeConfirmationModal();
+        }
+        break;
+      case "deleteTransfereeReq":
+        // This is to delete transferee requirement (settings page)
+        deleteTransfereeReq(selectedTransfereeReqId);
+        break;  
       case "addGradeLevel":
         // This case is for adding new grade level
         if (!validateForm("gradeLevelForm")) {
@@ -498,10 +515,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           addGradeLevel();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
         break;
       case "editGradeLevel":
@@ -511,10 +525,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           editGradeLevel();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
         break;
       case "deleteGradeLevel":
@@ -564,10 +575,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           addSection();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
         break;
       case "editSection":
@@ -577,10 +585,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           editSection();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
         break;
       case "deleteSection":
@@ -593,10 +598,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           addSubject();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
 
         break;
@@ -607,10 +609,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           editSubject();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
         break;
       case "deleteSubject":
@@ -645,12 +644,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           if (validateSchoolYear()) {
             addSchoolYear();
-            document
-              .getElementById("confirmationModal")
-              .classList.remove("show");
-            document.getElementById("confirmationModal").style.visibility =
-              "hidden";
-            document.getElementById("confirmationModal").style.opacity = "0";
+            closeConfirmationModal();
           }
         }
         break;
@@ -689,10 +683,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           transfereeAddListing();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
         break;
       case "studAddListing":
@@ -702,10 +693,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           studAddListing();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
         break;
       case "finishSemester":
@@ -728,10 +716,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           addFee();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
         break;
       case "editFee":
@@ -741,10 +726,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         } else {
           editFee();
-          document.getElementById("confirmationModal").classList.remove("show");
-          document.getElementById("confirmationModal").style.visibility =
-            "hidden";
-          document.getElementById("confirmationModal").style.opacity = "0";
+          closeConfirmationModal();
         }
         break;
       case "deleteFee":
@@ -757,6 +739,13 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("Unknown action: " + action);
         return;
     }
+  }
+
+  function closeConfirmationModal() {
+    const modal = document.getElementById("confirmationModal");
+    modal.classList.remove("show");
+    modal.style.visibility = "hidden";
+    modal.style.opacity = "0";
   }
 
   document.addEventListener("click", function (event) {
@@ -1424,25 +1413,25 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-
 // these are checkboxes in the transferee requirements
 document.addEventListener("DOMContentLoaded", () => {
-    const checkboxes = document.querySelectorAll('.checkbox-each input[type="checkbox"]');
-    const updateBtn = document.getElementById('updateRequirementsBtn');
+  const checkboxes = document.querySelectorAll(
+    '.checkbox-each input[type="checkbox"]'
+  );
+  const updateBtn = document.getElementById("updateRequirementsBtn");
 
-    // Initially disable all checkboxes
-    checkboxes.forEach(checkbox => checkbox.disabled = true);
+  // Initially disable all checkboxes
+  checkboxes.forEach((checkbox) => (checkbox.disabled = true));
 
-    // Toggle function on button click
-    updateBtn.addEventListener('click', () => {
-        const isDisabled = checkboxes[0].disabled; // Check the current state
+  // Toggle function on button click
+  updateBtn.addEventListener("click", () => {
+    const isDisabled = checkboxes[0].disabled; // Check the current state
 
-        checkboxes.forEach(checkbox => {
-            checkbox.disabled = !isDisabled; // Toggle disabled state
-        });
-
-        // Change button label
-        updateBtn.textContent = isDisabled ? "Save" : "Update";
+    checkboxes.forEach((checkbox) => {
+      checkbox.disabled = !isDisabled; // Toggle disabled state
     });
-});
 
+    // Change button label
+    updateBtn.textContent = isDisabled ? "Save" : "Update";
+  });
+});

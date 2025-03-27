@@ -58,7 +58,7 @@
 
                     <!-- Add Payment Button -->
                     <div class="add-something-btn-container">
-                        <button class="add-something-btn" id="openViewStudentListModal"
+                        <button class="add-something-btn" onclick="viewStudents()" id="openViewStudentListModal"
                             data-open-modal="viewStudentListModal">Add
                             Payment</button>
                     </div>
@@ -138,41 +138,34 @@
                     <!-- Searchbox and sort btn -->
                     <div class="search">
                         <div class="search-container">
-                            <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                            <button onclick="getRecords(1)" class="search-btn">Search</button>
+                            <input type="text" id="search-student" placeholder="Search..." class="search-input" />
+                            <button onclick="viewStudents(1)" class="search-btn">Search</button>
                         </div>
                         <div class="sort-container">
-                            <select name="sort" onchange="getRecords(1)" id="view-by-select" class="sort-select">
-                                <option value="Transaction" selected>Transaction</option>
+                            <select name="sort" onchange="viewStudents(1)" id="view-stud-by-select" class="sort-select">
+                                <option value="balance" selected>Current Balance</option>
+                                <option value="gradelevel">Grade Level</option>
+                                <option value="studentname">Student Name</option>
+                                <option value="studentid">Student Id</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
                 <!-- List of Payments Table -->
-                <table id="table-ni-kharl" class="view-list-of-students-table">
+                <table id="table-ni-martin" class="view-list-of-students-table">
                     <thead>
                         <tr>
                             <th>Student ID</th>
                             <th>Student Name</th>
-                            <th>Current Grade Level</th>
+                            <th>Grade Level</th>
+                            <th>Balance</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>202501</td>
-                            <td>John Doe</td>
-                            <td>Grade 10</td>
-                            <td>
-                                <div class="dropdown">
-                                    <div class="action-container action">
-                                        <img th:src="@{/images/icons/eye.png}" data-open-modal="listOfPaymentsModal"
-                                            alt="edit-icon">
-
-                                    </div>
-                                </div>
-                            </td>
+                            <td colspan="4">No Student Record</td>
                         </tr>
                     </tbody>
                 </table>
@@ -904,6 +897,42 @@
                         option.value = fee.id;
                         option.textContent = fee.name;
                         selectTag.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error fetching sections:", error));
+        }
+        var studPageNo;
+        var studPageSize;
+        function viewStudents(pageNo = 1, pageSize = 1){
+            studPageNo = pageNo;
+            studPageSize = pageSize;
+            const orderBy = document.getElementById("view-stud-by-select").value;
+            const search = document.getElementById("search-student").value;
+            console.log(orderBy);
+            const studentsTable = document.querySelector("#table-ni-martin tbody");
+            fetch(`/students/all/s?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${orderBy}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.content.length === 0){return;}
+                    studentsTable.innerHTML = ``;
+                    data.content.forEach(stud => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${stud.studentDisplayId}</td>
+                            <td>${stud.fullName}</td>
+                            <td>${stud.currentGradeLevel?.levelName ?? 'None'}</td>
+                            <td>${stud.balanceAmount}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <div class="action-container action">
+                                        <img th:src="@{/images/icons/eye.png}" data-student-id="${stud.studentId}"
+                                        data-open-modal="listOfPaymentsModal"
+                                            alt="edit-icon">
+
+                                    </div>
+                                </div>
+                            </td>`;
+                            studentsTable.appendChild(row);
                     });
                 })
                 .catch(error => console.error("Error fetching sections:", error));

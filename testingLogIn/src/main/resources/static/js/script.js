@@ -485,6 +485,10 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmationModal.style.opacity = "0";
 
     switch (action) {
+
+      case "editTransfereeReq":
+        updateTransfRequirement();
+        break;
       case "saveStudentOrTransferee":
         saveStudentOrTransferee();
         break;

@@ -15,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -199,9 +200,10 @@ public class StudentServices {
                 .build();
     }
 
-    public StudentDTOPage getStudentByNameOrDisplayId(String word, int pageNo, int pageSize){
-        Page<StudentDTO> studentPage = studentRepo.findByStudentDisplayIdOrName(word,PageRequest.of(pageNo-1,pageSize))
-                                                                                .map(Student::DTOmapper);
+    public StudentDTOPage getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize){
+        Pageable pageable = PageRequest.of(pageNo-1,pageSize,orderBy(sortBy));
+        Page<StudentDTO> studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable)
+                                                    .map(Student::DTOmapper);
         return StudentDTOPage.builder()
                             .content(studentPage.getContent())
                             .pageNo(pageNo)
@@ -210,6 +212,17 @@ public class StudentServices {
                             .totalPages(studentPage.getTotalPages())
                             .isLast(studentPage.isLast())
                             .build();
+    }
+
+    private Sort orderBy(String condition){
+        if(condition.equalsIgnoreCase("balance"))
+            return Sort.by(Sort.Order.desc("s.studentBalance"));
+        else if(condition.equalsIgnoreCase("gradelevel"))
+            return Sort.by(Sort.Order.asc("s.currentGradeSection.level.levelName"));
+        else if(condition.equalsIgnoreCase("studentname"))
+            return Sort.by(Sort.Order.asc("s.fullName"));
+        else
+            return Sort.by(Sort.Order.asc("s.studentDisplayId"));
     }
 
 

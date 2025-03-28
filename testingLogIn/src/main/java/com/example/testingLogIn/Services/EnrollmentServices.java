@@ -13,8 +13,6 @@ import com.example.testingLogIn.Models.*;
 import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
 import com.example.testingLogIn.Repositories.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -165,25 +163,15 @@ public class EnrollmentServices {
             CompletableFuture<Void> updateStudent = CompletableFuture.runAsync(() -> studentRepo.save(student));
             CompletableFuture<Void> addStudentGrades = CompletableFuture.runAsync(() -> ssgService.addStudentGrades(enrollmentRecord));
             CompletableFuture<Void> addFeesRecord = CompletableFuture.runAsync(() -> studFeeListService.addFeesRecord(enrollmentRecord));
-            CompletableFuture.allOf(updateStudent,addFeesRecord,addStudentGrades).join();
+            CompletableFuture.allOf(updateStudent,addFeesRecord,addStudentGrades,updateSection).join();
 
             return 2;
         }
     }
 
-    public List<EnrollmentDTO> getAllEnrollment(String status) {
-        EnrollmentStatus enrollmentStatus = getEnrollmentStatus(status);
-        return enrollmentRepo.findRecordsByStatusAndSemester(
-                enrollmentStatus,
-                sySemRepo.findCurrentActive().getSySemNumber())
-                .stream()
-                .map(this::isComplete)
-                .toList();
-    }
-
     public EnrollmentDTOPage getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize,String sort ,String search) {
         Pageable pageable;
-        if(sort == null || sort.equals(""))
+        if(sort == null || sort.trim().isEmpty())
             pageable = PageRequest.of(pageNo-1,pageSize);
         else
             pageable = PageRequest.of(pageNo-1,pageSize,sortBy(sort));
@@ -207,14 +195,7 @@ public class EnrollmentServices {
                 }
         ).map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
                 enrollmentHandler.getStudent().DTOmapper())).toList();
-        return EnrollmentDTOPage.builder()
-                .content(pageContent)
-                .pageNo(pageNo)
-                .pageSize(pageSize)
-                .totalPages(enrollmentRetrieved.getTotalPages())
-                .totalElements(enrollmentRetrieved.getTotalElements())
-                .isLast(enrollmentRetrieved.isLast())
-                .build();
+        return EnrollmentDTOPage.buildMe(enrollmentRetrieved,pageContent);
     }
     private Sort sortBy(String sort){
         if(sort.equalsIgnoreCase("GradeLevel"))
@@ -252,14 +233,7 @@ public class EnrollmentServices {
     public EnrollmentPaymentView getStudentPaymentStatus(int enrollmentId) {
         Enrollment er = enrollmentRepo.findById(enrollmentId).orElse(null);
         assert er != null;
-        EnrollmentPaymentView epv = EnrollmentPaymentView.builder()
-                .studentId(er.getStudent().getStudentId())
-                .studentDisplayId(er.getStudent().getStudentDisplayId())
-                .studentFirstName(er.getStudent().getFirstName())
-                .studentLastName(er.getStudent().getLastName())
-                .studentMiddleName(er.getStudent().getMiddleName())
-                .feeStatus(new ArrayList<>())
-                .build();
+        EnrollmentPaymentView epv = EnrollmentPaymentView.build(er);
 
         List<GradeLevelRequiredFees> gradeFeeList = gradelvlReqFeesRepo
                 .findByGradeLevel(er.getGradeLevelToEnroll().getLevelId());
@@ -308,7 +282,6 @@ public class EnrollmentServices {
         } catch (NullPointerException npe) {
             isComplete = false;
         }
-
         return e.DTOmapper(isComplete);
     }
 }

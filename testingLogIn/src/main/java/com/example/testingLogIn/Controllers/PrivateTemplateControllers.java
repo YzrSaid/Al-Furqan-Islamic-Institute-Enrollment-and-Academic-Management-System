@@ -122,7 +122,7 @@ public class PrivateTemplateControllers {
 
     @GetMapping("/maintenance/new-subjects")
     public String getNewSubjectMaintenance() {
-        return "/maintenance/schedule";
+        return "/maintenance/subjects";
     }
 
     @GetMapping("/maintenance/subjects/{gradeLevelId}")

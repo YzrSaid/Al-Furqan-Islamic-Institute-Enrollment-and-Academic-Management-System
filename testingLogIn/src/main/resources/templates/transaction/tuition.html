@@ -534,6 +534,7 @@
                         tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
                         return;
                     }
+                    console.log(data);
                     data.content.forEach(rec => {
                         let row = document.createElement("tr");
 
@@ -652,40 +653,40 @@
 
         function savePaymentNow() {
             alert("Paying now");
-<!--            const feesSelectedId = getCheckedPaymentValues();-->
-<!--            const totalAmount = paymentAmountInput.value;-->
+// <!--            const feesSelectedId = getCheckedPaymentValues();-->
+// <!--            const totalAmount = paymentAmountInput.value;-->
 
-<!--            if (totalAmount == 0) {-->
-<!--                alert("DLi pwde wlay kay ibayad uys");-->
-<!--                return;-->
-<!--            } else if (feesSelectedId.length == 0) {-->
-<!--                alert("Dapat naa ka pilion");-->
-<!--                return;-->
-<!--            }-->
-<!--            const url = `/paymentrecord/add/all/${encodeURIComponent(studentId)}/${encodeURIComponent(totalAmount)}`;-->
-<!--            const obj = {-->
-<!--                feesId: feesSelectedId-->
-<!--            };-->
+// <!--            if (totalAmount == 0) {-->
+// <!--                alert("DLi pwde wlay kay ibayad uys");-->
+// <!--                return;-->
+// <!--            } else if (feesSelectedId.length == 0) {-->
+// <!--                alert("Dapat naa ka pilion");-->
+// <!--                return;-->
+// <!--            }-->
+// <!--            const url = `/paymentrecord/add/all/${encodeURIComponent(studentId)}/${encodeURIComponent(totalAmount)}`;-->
+// <!--            const obj = {-->
+// <!--                feesId: feesSelectedId-->
+// <!--            };-->
 
-<!--            fetch(url, {-->
-<!--                method: "POST",-->
-<!--                headers: { "Content-Type": "application/json" },-->
-<!--                body: JSON.stringify(obj)-->
-<!--            })-->
-<!--                .then(response => {-->
-<!--                    if (!response.ok) {-->
-<!--                        throw new Error(`HTTP error! Status: ${response.status}`);-->
-<!--                    }-->
-<!--                    return response.json(); // Parse the response as JSON-->
-<!--                })-->
-<!--                .then(receipt => {-->
-<!--                    const receiptJSON = encodeURIComponent(JSON.stringify(receipt));-->
-<!--                    viewTheReceipt(decodeURIComponent(receiptJSON));-->
-<!--                })-->
-<!--                .catch(error => {-->
-<!--                    console.error("Error adding payment:", error);-->
-<!--                    alert("Failed to add payment. Please try again.");-->
-<!--                });-->
+// <!--            fetch(url, {-->
+// <!--                method: "POST",-->
+// <!--                headers: { "Content-Type": "application/json" },-->
+// <!--                body: JSON.stringify(obj)-->
+// <!--            })-->
+// <!--                .then(response => {-->
+// <!--                    if (!response.ok) {-->
+// <!--                        throw new Error(`HTTP error! Status: ${response.status}`);-->
+// <!--                    }-->
+// <!--                    return response.json(); // Parse the response as JSON-->
+// <!--                })-->
+// <!--                .then(receipt => {-->
+// <!--                    const receiptJSON = encodeURIComponent(JSON.stringify(receipt));-->
+// <!--                    viewTheReceipt(decodeURIComponent(receiptJSON));-->
+// <!--                })-->
+// <!--                .catch(error => {-->
+// <!--                    console.error("Error adding payment:", error);-->
+// <!--                    alert("Failed to add payment. Please try again.");-->
+// <!--                });-->
         }
 
         async function fetchThisPokemon(receiptReference) {
@@ -852,7 +853,7 @@
                             <td>
                                 <div class="dropdown">
                                     <div class="action-container action">
-                                        <img th:src="@{/images/icons/eye.png}" onclick="viewToPaid(${stud.studentId})"
+                                        <img src="/images/icons/eye.png" data-student-id="${stud.studentId}"
                                         data-open-modal="listOfPaymentsModal"
                                             alt="edit-icon">
 
@@ -896,8 +897,8 @@
         }
         function setUpForm(theForm){
             theForm = JSON.parse(theForm);
-<!--            paymentAmountInput.max = 0;-->
-<!--            paymentAmountInput.value = 0.0;-->
+// <!--            paymentAmountInput.max = 0;-->
+// <!--            paymentAmountInput.value = 0.0;-->
             const student = theForm.student;
             document.querySelector("#payee-name").value = student.fullName;
             document.querySelector("#payee-id").value = student.studentDisplayId;

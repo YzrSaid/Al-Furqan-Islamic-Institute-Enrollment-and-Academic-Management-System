@@ -485,7 +485,6 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmationModal.style.opacity = "0";
 
     switch (action) {
-
       case "editTransfereeReq":
         updateTransfRequirement();
         break;
@@ -511,7 +510,7 @@ document.addEventListener("DOMContentLoaded", function () {
       case "deleteTransfereeReq":
         // This is to delete transferee requirement (settings page)
         deleteTransfereeReq(selectedTransfereeReqId);
-        break;  
+        break;
       case "addGradeLevel":
         // This case is for adding new grade level
         if (!validateForm("gradeLevelForm")) {
@@ -738,6 +737,16 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "savePaymentTrans":
         savePaymentNow();
+        break;
+      case "savePayment":
+        // This case is for adding payment
+        if (!validateForm("addPaymentModal")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          savePayment();
+          closeConfirmationModal();
+        }
         break;
       default:
         alert("Unknown action: " + action);

@@ -445,6 +445,7 @@
                         tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
                         return;
                     }
+                    console.log(data);
                     data.content.forEach(rec => {
                         let row = document.createElement("tr");
 

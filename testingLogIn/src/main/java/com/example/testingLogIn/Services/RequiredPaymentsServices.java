@@ -34,9 +34,10 @@ public class RequiredPaymentsServices {
     private final DiscountsServices discService;
     private final StudentRepo studentRepo;
     private final StudentFeesListService sfl;
+    private final DistributableServices distributableServices;
 
     @Autowired
-    public RequiredPaymentsServices(RequiredPaymentsRepo reqPaymentsRepo, GradeLevelServices gradeLevelService, GradeLevelRequiredFeeRepo reqFeeGradelvlRepo, EnrollmentRepo enrollmentRepo, sySemesterServices semServices, DiscountsServices discService, StudentRepo studentRepo, StudentFeesListService sfl) {
+    public RequiredPaymentsServices(RequiredPaymentsRepo reqPaymentsRepo, GradeLevelServices gradeLevelService, GradeLevelRequiredFeeRepo reqFeeGradelvlRepo, EnrollmentRepo enrollmentRepo, sySemesterServices semServices, DiscountsServices discService, StudentRepo studentRepo, StudentFeesListService sfl, DistributableServices distributableServices) {
         this.reqPaymentsRepo = reqPaymentsRepo;
         this.gradeLevelService = gradeLevelService;
         this.reqFeeGradelvlRepo = reqFeeGradelvlRepo;
@@ -45,21 +46,20 @@ public class RequiredPaymentsServices {
         this.discService = discService;
         this.studentRepo = studentRepo;
         this.sfl = sfl;
+        this.distributableServices = distributableServices;
     }
-
-
 
     public RequiredFees getRequiredPaymentById(int reqPaymentId){
         return reqPaymentsRepo.findById(reqPaymentId).orElse(null);
     }
     
-    public boolean addNewPayments(RequiredPaymentsDTO paymentsDTO){
+    public int addNewPayments(RequiredPaymentsDTO paymentsDTO){
         boolean doesNameExist = reqPaymentsRepo.findAll().stream()
                                                 .filter(payment -> payment.isNotDeleted() && 
                                                                     payment.getName().equalsIgnoreCase(paymentsDTO.getName()))
                                                 .toList().isEmpty();
         if(!doesNameExist)
-            return false;
+            return 2;
         else{
             RequiredFees reqFee = RequiredFees.builder()
                                             .name(paymentsDTO.getName())
@@ -68,7 +68,7 @@ public class RequiredPaymentsServices {
                                             .build();
             RequiredFees newFee = reqPaymentsRepo.save(reqFee);
             List<GradeLevel> gradeLevels = gradeLevelService.getAllGradeLevels().stream()
-                                                        .filter(gradelvl -> paymentsDTO.getGradeLevelNames().contains(gradelvl.getLevelName()))
+                                                        .filter(gradelvl -> paymentsDTO.getGradeLevelNames().contains(gradelvl.getLevelName()) && gradelvl.isNotDeleted())
                                                         .toList();
 
             gradeLevels.forEach(gradelvl -> reqFeeGradelvlRepo.save(GradeLevelRequiredFees.build(gradelvl,newFee)));
@@ -85,8 +85,13 @@ public class RequiredPaymentsServices {
                         sfl.addFeeRecord(student, newFee, semServices.getCurrentActive(), addToBalance);
                     });
                 });
+
+            if(paymentsDTO.isDistributable()){
+                if(!distributableServices.addNewDistributable(paymentsDTO.getName(),gradeLevels,null))
+                    return 1;
+            }
         }
-        return true;
+        return 0;
     }
 
 

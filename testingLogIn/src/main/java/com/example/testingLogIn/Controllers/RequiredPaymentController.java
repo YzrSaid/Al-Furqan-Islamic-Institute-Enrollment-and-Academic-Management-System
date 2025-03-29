@@ -32,8 +32,11 @@ public class RequiredPaymentController {
     @PostMapping("/add")
     public ResponseEntity<String> addRequiredPayments(@RequestBody RequiredPaymentsDTO reqPayments) {
         try {
-            if (reqPaymentService.addNewPayments(reqPayments))
+            if (reqPaymentService.addNewPayments(reqPayments) == 0)
                 return new ResponseEntity<>("New payment added successfully", HttpStatus.OK);
+            if (reqPaymentService.addNewPayments(reqPayments) == 1)
+                return new ResponseEntity<>("New payment added successfully\n"+
+                        "The Distributable name \"" + reqPayments.getName() + "\" already exists.", HttpStatus.OK);
             else
                 return new ResponseEntity<>("The payment name \"" + reqPayments.getName() + "\" already exists.",
                         HttpStatus.CONFLICT);

@@ -1,6 +1,6 @@
 package com.example.testingLogIn.AssociativeModels;
 
-import com.example.testingLogIn.Models.Distributables;
+import com.example.testingLogIn.Models.Distributable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +17,6 @@ public class DistributablesPerStudent {
 
     @ManyToOne
     @JoinColumn(name = "item",nullable = false)
-    private Distributables item;
+    private Distributable item;
     private boolean isReceived;
 }

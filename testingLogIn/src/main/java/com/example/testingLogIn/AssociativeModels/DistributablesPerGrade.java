@@ -1,6 +1,6 @@
 package com.example.testingLogIn.AssociativeModels;
 
-import com.example.testingLogIn.Models.Distributables;
+import com.example.testingLogIn.Models.Distributable;
 import com.example.testingLogIn.Models.GradeLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,12 +20,18 @@ public class DistributablesPerGrade {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "item")
-    private Distributables item;
+    @JoinColumn(name = "item",nullable = false)
+    private Distributable item;
 
     @ManyToOne
-    @JoinColumn(name = "gradeLevel")
+    @JoinColumn(name = "gradeLevel",nullable = false)
     private GradeLevel gradeLevel;
 
-    private boolean isNotDeleted = true;
+    private boolean isNotDeleted;
+
+    public DistributablesPerGrade(Distributable item, GradeLevel gradeLevel){
+        this.item = item;
+        this.gradeLevel = gradeLevel;
+        isNotDeleted = true;
+    }
 }

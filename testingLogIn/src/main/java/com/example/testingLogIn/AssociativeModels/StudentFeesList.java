@@ -32,4 +32,13 @@ public class StudentFeesList {
     @ManyToOne
     @JoinColumn(name = "sem")
     private SchoolYearSemester sem;
+
+    public static StudentFeesList build(RequiredFees fee, SchoolYearSemester sem, Student student, double discountedAmount){
+        return builder()
+                .fee(fee)
+                .sem(sem)
+                .student(student)
+                .amount(discountedAmount)
+                .build();
+    }
 }

@@ -1,7 +1,9 @@
 package com.example.testingLogIn.CustomObjects;
 
+import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.RequiredFees;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.*;
@@ -41,5 +43,15 @@ public class EnrollmentPaymentView {
                 .balance(requiredAmount-paidAmount)
                 .status(status)
                 .build());
+    }
+
+    public static EnrollmentPaymentView build(Enrollment er){
+        return builder().studentId(er.getStudent().getStudentId())
+                .studentDisplayId(er.getStudent().getStudentDisplayId())
+                .studentFirstName(er.getStudent().getFirstName())
+                .studentLastName(er.getStudent().getLastName())
+                .studentMiddleName(er.getStudent().getMiddleName())
+                .feeStatus(new ArrayList<>())
+                .build();
     }
 }

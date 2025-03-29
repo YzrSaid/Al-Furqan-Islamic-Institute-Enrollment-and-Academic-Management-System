@@ -49,4 +49,12 @@ public class GradeLevelRequiredFees {
                             .isNotDeleted(isNotDeleted)
                             .build();
     }
+
+    public static GradeLevelRequiredFees build(GradeLevel gradeLevel, RequiredFees fee){
+        return builder()
+                .requiredFee(fee)
+                .gradeLevel(gradeLevel)
+                .isNotDeleted(true)
+                .build();
+    }
 }

@@ -4,6 +4,9 @@ import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.AssociativeModels.StudentFeesList;
+import com.example.testingLogIn.Models.RequiredFees;
+import com.example.testingLogIn.Models.SchoolYearSemester;
+import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.StudentFeesListRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +31,13 @@ public class StudentFeesListService {
                 .forEach(reqFee -> {
                     double reqAmount = reqFee.getRequiredFee().getRequiredAmount();
                     double discountedAmount = Math.ceil(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
-                    studFeeRepo.save(StudentFeesList.builder()
-                                    .fee(reqFee.getRequiredFee())
-                                    .sem(e.getSYSemester())
-                                    .student(e.getStudent())
-                                    .amount(discountedAmount)
-                                    .build());
+                    studFeeRepo.save(StudentFeesList.build(reqFee.getRequiredFee(),e.getSYSemester(),e.getStudent(),discountedAmount));
                 });
+    }
+
+    @Async
+    public void addFeeRecord(Student student, RequiredFees fee, SchoolYearSemester sem, double amount){
+        studFeeRepo.save(StudentFeesList.build(fee,sem,student,amount));
     }
 
     public List<RequiredPaymentsDTO> feesList(int studentId,Integer semNumber){

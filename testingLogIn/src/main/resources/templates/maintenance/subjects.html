@@ -73,14 +73,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Grade 1</td>
-                    <td>Malunggay</td>
-                    <td>30</td>
-                    <td>
-                        <div class="action-container">
-                            <a href="/schedules/sched-board" class="view-sched">View Schedule</a>
-                        </div>
-                    </td>
+                    <td colspan="3">No records found</td>
                 </tr>
             </tbody>
         </table>
@@ -183,6 +176,9 @@
     </div>
 </body>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        getAllSections();
+    });
     function getAllSections() {
         console.log('getting the sections');
         fetch("/gradelevel/all")
@@ -193,6 +189,7 @@
                 return response.json(); // Parse the response as JSON
             })
             .then(data => {
+                if(data.length === 0){return;}
                 const tableBody = document.querySelector("#table-ba-to tbody");
                 tableBody.innerHTML = "";
 

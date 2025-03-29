@@ -8,6 +8,7 @@
 </head>
 <script th:src="@{/js/sidebar.js}"></script>
 <script th:src="@{/js/script.js}"></script>
+
 <body>
     <div class="sidebar" id="sidebar" th:fragment="sidebar">
         <div class="text-center">
@@ -98,6 +99,23 @@
                 Distribution</a>
         </div>
 
+        <!-- Account -->
+        <a href="#" class="sidebar-icons" onclick="toggleSubMenu('account-submenu', event)" data-path="/accounts">
+            <img th:src="@{/images/icons/account.png}" alt="Account Icon"> Account
+            <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+        </a>
+
+        <div class="submenu" id="account-submenu">
+            <th:block th:if="${userRole == 'ADMIN'}">
+                <a th:href="@{/accounts/verify-accounts}" class="submenu-item"
+                    data-path="/accounts/verify-accounts">Verify Accounts</a>
+                <a th:href="@{/accounts/manage-accounts}" class="submenu-item"
+                    data-path="/accounts/manage-accounts">Manage Accounts</a>
+            </th:block>
+            <a th:href="@{/accounts/my-account}" class="submenu-item" data-path="/accounts/my-account">My Account</a>
+        </div>
+
+
         <!-- Settings -->
         <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)" data-path="/settings">
             <img th:src="@{/images/icons/settings.png}" alt="Settings Icon"> Settings
@@ -105,7 +123,8 @@
         </a>
         <div class="submenu" id="settings-submenu">
             <a href="/settings/create-user" class="submenu-item" data-path="/settings/create-user">Create User</a>
-            <a href="/settings/school-settings" class="submenu-item" data-path="/settings/school-settings">School Settings</a>
+            <a href="/settings/school-settings" class="submenu-item" data-path="/settings/school-settings">School
+                Settings</a>
         </div>
     </div>
 </body>

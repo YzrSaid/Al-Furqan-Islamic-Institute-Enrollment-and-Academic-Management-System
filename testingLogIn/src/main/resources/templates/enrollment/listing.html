@@ -901,13 +901,13 @@
                             </tr>
                         </thead>
                         <tbody id="receipt-items">
-                            <tr>
+                            <!-- <tr>
                                 <td>1</td>
                                 <td>Tuition Fee</td>
                                 <td>1,000.00</td>
                                 <td>-200.00</td>
                                 <td>800.00</td>
-                            </tr>
+                            </tr> -->
                             <!-- Additional rows will be inserted dynamically if needed -->
                         </tbody>
                     </table>
@@ -1431,7 +1431,7 @@
     var currentPageNo = 0;
     var currentPageSize = 0;
     var currentStat = "";
-    function goList(pageNo = 1, pageSize = 1) {
+    function goList(pageNo = 1, pageSize = 10) {
         const search = document.getElementById("search-stud").value;
         currentStat = document.getElementById("sort-select").value;
         currentPageNo = pageNo;

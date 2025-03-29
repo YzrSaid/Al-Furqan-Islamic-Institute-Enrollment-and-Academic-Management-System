@@ -690,16 +690,16 @@ document.addEventListener("DOMContentLoaded", function () {
           closeConfirmationModal();
         }
         break;
-      case "studAddListing":
-        // This case is for adding new student to the listing/registration
-        if (!validateForm("studentForm")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
-          studAddListing();
-          closeConfirmationModal();
-        }
-        break;
+//      case "studAddListing":
+//        // This case is for adding new student to the listing/registration
+//        if (!validateForm("studentForm")) { to delete soon
+//          showErrorModal("⚠️ Please fill in all required fields!");
+//          return;
+//        } else {
+//          studAddListing();
+//          closeConfirmationModal();
+//        }
+//        break;
       case "finishSemester":
         finishSemester();
         break;
@@ -1396,6 +1396,7 @@ document.addEventListener("DOMContentLoaded", () => {
       transfereeFields.classList.add("show");
 
       // Make transferee fields editable
+      fetchTransRequirements();
       transfereeInputs.forEach((input) => input.removeAttribute("readonly"));
     } else {
       transfereeFields.classList.remove("show");

@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.AssociativeModels.StudentFeesList;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.ModelDTO.GradeLevelToRequiredPaymentDTO;
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
@@ -74,7 +75,7 @@ public class RequiredPaymentsServices {
             if (paymentsDTO.isWillApplyNow())
                 runMe(() -> {
                     List<Student> studentList = new ArrayList<>();
-                    gradeLevels.forEach(gradelvl -> studentList.addAll(enrollmentRepo.countCurrentlyEnrolledToGrade(gradelvl.getLevelId(), semServices.getCurrentActive().getSySemNumber())));
+                    gradeLevels.forEach(gradelvl -> studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradelvl.getLevelId(), semServices.getCurrentActive().getSySemNumber())));
 
                     studentList.forEach(student -> {
                         StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
@@ -120,21 +121,63 @@ public class RequiredPaymentsServices {
                         .map(GradeLevelRequiredFees::DTOmapper)
                         .toList();
     }
-    
+
     public boolean updatePayment(int feeId, RequiredPaymentsDTO updated){
         RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
         assert toUpdate != null;
         toUpdate.setName(updated.getName());
         toUpdate.setRequiredAmount(updated.getRequiredAmount());
         reqPaymentsRepo.save(toUpdate);
+        int currentSemId = semServices.getCurrentActive().getSySemNumber();
 
         List<GradeLevelRequiredFees> affectedRows = reqFeeGradelvlRepo.findByRequiredFee(feeId);
         
         for(GradeLevelRequiredFees payment : affectedRows){
             String toRemoveGrade = payment.getGradeLevel().getLevelName();
-            payment.setNotDeleted(true);
-            if(!updated.getGradeLevelNames().contains(toRemoveGrade))
+            int levelId = payment.getGradeLevel().getLevelId();
+            List<Student> studentList = enrollmentRepo.getCurrentlyEnrolledToGrade(levelId,currentSemId);
+            if(!updated.getGradeLevelNames().contains(toRemoveGrade))//{
                 payment.setNotDeleted(false);
+//                if(updated.isWillApplyNow())
+//                    runMe(()->studentList.forEach(student -> {
+//                        StudentFeesList studFee = sfl.studentFeesList(student.getStudentId(),levelId,currentSemId);
+//                        if(studFee != null){
+//                            student.setStudentBalance(student.getStudentBalance()- studFee.getAmount());
+//                            studFee.setAmount(0.0d);
+//                            sfl.updateFeeRecord(studFee);
+//                            studentRepo.save(student);
+//                        }}));
+//            }else{
+//                if(updated.isWillApplyNow())
+//                    runMe(()->studentList.forEach(student -> {
+//                        StudentFeesList studFee = sfl.studentFeesList(student.getStudentId(),levelId,currentSemId);
+//                        if(studFee != null){
+//                            StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
+//                            double newBalToPay = updated.getRequiredAmount() - Math.ceil((updated.getRequiredAmount()*std.getTotalPercentageDiscount())+ std.getTotalFixedDiscount());
+//                            student.setStudentBalance(student.getStudentBalance() +(newBalToPay - studFee.getAmount()));
+//                            studFee.setAmount(newBalToPay);
+//                            sfl.updateFeeRecord(studFee);
+//                            studentRepo.save(student);
+//                        }}));
+//            }
+            if(updated.isWillApplyNow()){
+                runMe(()->studentList.forEach(student -> {
+                    StudentFeesList studFee = sfl.studentFeesList(student.getStudentId(),levelId,currentSemId);
+                    if(studFee != null){
+                        double newBalToPay;
+                        if(payment.isNotDeleted()){
+                            StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
+                            newBalToPay = updated.getRequiredAmount() - Math.ceil((updated.getRequiredAmount()*std.getTotalPercentageDiscount())+ std.getTotalFixedDiscount());
+                            student.setStudentBalance(student.getStudentBalance() +(newBalToPay - studFee.getAmount()));
+                        }else{
+                            student.setStudentBalance(student.getStudentBalance()- studFee.getAmount());
+                            newBalToPay= 0.0d;
+                        }
+                        studFee.setAmount(newBalToPay);
+                        sfl.updateFeeRecord(studFee);
+                        studentRepo.save(student);
+                    }}));
+            }
             runMe(()->reqFeeGradelvlRepo.save(payment));
             updated.getGradeLevelNames().remove(toRemoveGrade);
         }
@@ -146,8 +189,7 @@ public class RequiredPaymentsServices {
 
                 //if (updated.isWillApplyNow()) will implement tomorrow
                     runMe(() -> {
-                        List<Student> studentList =     enrollmentRepo.countCurrentlyEnrolledToGrade(gradeLevel.getLevelId(),
-                                                        semServices.getCurrentActive().getSySemNumber());
+                        List<Student> studentList =     enrollmentRepo.getCurrentlyEnrolledToGrade(gradeLevel.getLevelId(),currentSemId);
                         studentList.forEach(student -> {
                             StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
                             double addToBalance = toUpdate.getRequiredAmount() - Math.ceil(((toUpdate.getRequiredAmount() * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));

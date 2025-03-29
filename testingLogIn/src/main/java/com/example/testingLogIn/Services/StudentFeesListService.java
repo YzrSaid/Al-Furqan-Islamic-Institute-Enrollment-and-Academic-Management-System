@@ -40,6 +40,11 @@ public class StudentFeesListService {
         studFeeRepo.save(StudentFeesList.build(fee,sem,student,amount));
     }
 
+    @Async
+    public void updateFeeRecord(StudentFeesList studentFeesList){
+        studFeeRepo.save(studentFeesList);
+    }
+
     public List<RequiredPaymentsDTO> feesList(int studentId,Integer semNumber){
         List<StudentFeesList> feesList = studFeeRepo.findBySem(studentId,semNumber);
         List<RequiredPaymentsDTO> reqFeeList = new ArrayList<>();
@@ -48,7 +53,10 @@ public class StudentFeesListService {
                 .name(fee.getFee().getName())
                 .requiredAmount(fee.getFee().getRequiredAmount())
                 .build()));
-
         return reqFeeList;
+    }
+
+    protected StudentFeesList studentFeesList(int studentId,int feeId,int semId){
+        return studFeeRepo.getFeesBySem(studentId,feeId,semId).orElse(null);
     }
 }

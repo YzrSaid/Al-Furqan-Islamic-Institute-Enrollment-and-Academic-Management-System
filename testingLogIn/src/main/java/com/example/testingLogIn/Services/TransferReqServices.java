@@ -72,17 +72,21 @@ public class TransferReqServices {
                 ));
 
         for(Integer i: requirementsId){
-            if(compiledReqIds.containsKey(i))
-                compiledReqIds.remove(i);
+            StudentTransfereeRequirements str;
+            if(compiledReqIds.containsKey(i)){
+                str = compiledReqIds.get(i);
+                str.setNotDeleted(true);
+                compiledReqIds.remove(i);}
             else{
                 TransfereeRequirements req = transfereeReqRepo.findById(i).orElse(null);
                 assert req != null;
-                studentTransReqRepo.save(StudentTransfereeRequirements.builder()
+                str = StudentTransfereeRequirements.builder()
                                 .student(student)
                                 .requirement(req)
                                 .isNotDeleted(true)
-                                .build());
+                                .build();
             }
+            studentTransReqRepo.save(str);
         }
         compiledReqIds.values().iterator().forEachRemaining(
                 rec ->{

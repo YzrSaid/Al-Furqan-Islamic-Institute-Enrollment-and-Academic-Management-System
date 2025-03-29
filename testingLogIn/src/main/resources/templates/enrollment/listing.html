@@ -258,28 +258,8 @@
                     <!-- Transferee Requirements Section -->
                     <div class="transferee-requirements">
                         <h4>Requirements</h4>
-                        <div class="checkbox-transferee-reqs-group">
-                            <div class="checkbox-each">
-                                <label>
-                                    <input type="checkbox" id="requirementForm137"> Form 137
-                                </label>
-                            </div>
-                            <div class="checkbox-each">
-                                <label>
-                                    <input type="checkbox" id="requirementForm137"> Form 137
-                                </label>
-                            </div>
-                            <div class="checkbox-each">
-                                <label>
-                                    <input type="checkbox" id="requirementForm137"> Form 137
-                                </label>
-                            </div>
-                            <div class="checkbox-each">
-                                <label>
-                                    <input type="checkbox" id="requirementForm137"> Form 137
-                                </label>
-                            </div>
-                            
+                        <div id="transReqRecord" class="checkbox-transferee-reqs-group">
+                        <!--naka check na daan ang mga filled-->
                         </div>
 
                         <!-- Update Button -->
@@ -817,6 +797,12 @@
                 <div id="transfereeFields">
                     <h5>For Transferees Only</h5>
 
+                    <div class="transferee-requirements">
+                        <h4>Requirements</h4>
+                        <div id="transfereeReq" class="checkbox-transferee-reqs-group">
+                        <!--Ibutang ang mga transferee requiremetns dri-->
+                        </div>
+
                     <div class="student-form-group">
                         <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
                         <select id="lastGradeLevelIdCompleted">
@@ -837,6 +823,7 @@
                         <input type="text" id="madrasaAddress" readonly style="width: 8px;">
                     </div> <br>
                 </div>
+            </div>
 
                 <div class="modal-buttons">
                     <button type="button" data-action="" class="btn-confirm" id="confirmStudent"
@@ -1369,78 +1356,19 @@
 
         confirmButton.addEventListener('click', () => {
             const isTransferee = document.getElementById("isTransferee").checked;
-            confirmButton.setAttribute("data-action", isTransferee ? "transfereeAddListing" : "studAddListing");
+            confirmButton.setAttribute("data-action", "transfereeAddListing");
 
         });
     });
-
-
-    function studAddListing() {
-        const actionUrl = "/students/add";
-        const method = "POST";
-
-        // Collect input values
-        const birthplace =
-            document.getElementById("studplaceOfBirth")?.value?.trim() ||
-            document.getElementById("studplaceOfBirth")?.value?.trim() ||
-            null;
-
-        const studentData = {
-            scholar: document.getElementById("scholar").checked,
-            firstName: document.getElementById("studentFirstName").value.trim(),
-            lastName: document.getElementById("studentLastName").value.trim(),
-            middleName: document.getElementById("studentMiddleName")?.value?.trim() || null,
-            gender: document.getElementById("studgender").value || null,
-            birthdate: document.getElementById("studbirthdate").value || null,
-            birthPlace: birthplace, // Use the extracted birthPlace variable
-
-            address: {
-                street: document.getElementById("studstreet")?.value?.trim(),
-                barangay: document.getElementById("studbarangay")?.value?.trim(),
-                city: document.getElementById("studcity")?.value?.trim()
-            },
-
-            // Parent's Information
-            fatherName: document.getElementById("studfatherName")?.value?.trim() || null,
-            fatherOccupation: document.getElementById("studfatherOccupation")?.value?.trim() || null,
-            motherName: document.getElementById("studmotherName")?.value?.trim() || null,
-            motherOccupation: document.getElementById("studmotherOccupation")?.value?.trim() || null,
-
-            // Guardian's Information
-            guardianName: document.getElementById("studguardianName")?.value?.trim() || null,
-            guardianOccupation: document.getElementById("studguardianOccupation")?.value?.trim() || null,
-            guardianContactNum: document.getElementById("studguardianContactNumber")?.value?.trim() || null,
-            guardianAddress: document.getElementById("studguardianAddress")?.value?.trim() || null
-        };
-
-        // console.log("Student Data:", studentData);
-
-        fetch(actionUrl, {
-            method: method,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(studentData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => { throw new Error(text); });
-                }
-                return response.text();
-            })
-            .then(text => {
-                // <!--                showSuccessModal("✅ Success: New student has been added successfully!");-->
-                goList(currentPageNo, currentPageSize);
-            })
-            .catch(error => {
-                showErrorModal("❌ Error: Please try again!");
-            });
-    }
 
     function transfereeAddListing() {
         const actionUrl = "/students/add"; // Update with your actual API endpoint
         const method = "POST";
 
+        const selectedTransReq = [];
+        document.querySelectorAll("input[name='transferRequirements']:checked").forEach(checkbox => {
+        selectedTransReq.push(checkbox.value);});
+
         const birthplace =
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
@@ -1454,14 +1382,10 @@
             gender: document.getElementById("studgender").value || null,
             birthdate: document.getElementById("studbirthdate").value || null,
             birthPlace: birthplace, // Use the extracted birthPlace variable
-
-            address: {
+            address : {
                 street: document.getElementById("studstreet")?.value?.trim(),
                 barangay: document.getElementById("studbarangay")?.value?.trim(),
-                city: document.getElementById("studcity")?.value?.trim()
-            },
-
-            // Parent's Information
+                city: document.getElementById("studcity")?.value?.trim()},
             fatherName: document.getElementById("studfatherName")?.value?.trim() || null,
             fatherOccupation: document.getElementById("studfatherOccupation")?.value?.trim() || null,
             motherName: document.getElementById("studmotherName")?.value?.trim() || null,
@@ -1475,10 +1399,9 @@
             lastGradeLevelId: document.getElementById("lastGradeLevelIdCompleted").options[document.getElementById("lastGradeLevelIdCompleted").selectedIndex].value,
             lastMadrasaYearCompleted: document.getElementById("lastMadrasaYearCompleted")?.value?.trim() || null,
             madrasaNameLastAttended: document.getElementById("madrasaNameLastAttended")?.value?.trim() || null,
-            madrasaAddress: document.getElementById("madrasaAddress")?.value?.trim() || null
+            madrasaAddress: document.getElementById("madrasaAddress")?.value?.trim() || null,
+            transfereeRequirements : selectedTransReq
         };
-
-        console.log("Transferee Data:", studentData);
 
         fetch(actionUrl, {
             method: method,
@@ -1501,7 +1424,6 @@
             });
     }
     function changeView() {
-        console.log("Palitan ang table content");
         goList(1, 1);
     }
 
@@ -1748,6 +1670,39 @@
         }
     }
 
+    function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
+    console.log(reqIds);
+    fetch("/trans-req/all")
+        .then(response => response.json())
+        .then(data => {
+            const reqContainer = document.getElementById(divId);
+            reqContainer.innerHTML = "";
+            data.forEach(transReq => {
+                const paymentDiv = document.createElement("div");
+                paymentDiv.classList.add("checkbox-each");
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = `transReq-${transReq.levelId}`;
+                checkbox.name = "transferRequirements";
+                checkbox.value = transReq.id;
+
+                const label = document.createElement("label");
+                label.htmlFor = `transReq-${transReq.idd}`;
+                label.textContent = transReq.name;
+
+                if (reqIds.includes(transReq.id)) {
+                    checkbox.checked = true;
+                }
+
+                paymentDiv.appendChild(checkbox);
+                paymentDiv.appendChild(label);
+                reqContainer.appendChild(paymentDiv);
+            });
+        })
+        .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
     function displayStud(std) {//viewing student info(for ctrl-f)
         const studentProf = JSON.parse(std);
         console.log(studentProf);
@@ -1770,6 +1725,8 @@
         document.getElementById("lastMadrasaYearCompleted").value = studentProf.lastMadrasaYearCompleted;
         document.getElementById("madrasaNameLastAttended").value = studentProf.madrasaName;
         document.getElementById("madrasaAddress").value = studentProf.madrasaAddress;
+        console.log(studentProf.transfereeRequirements);
+        fetchTransRequirements("transReqRecord",studentProf.transfereeRequirements);
     }
 
     function updatePagination(status, currentPage, pageSize, totalPages) {

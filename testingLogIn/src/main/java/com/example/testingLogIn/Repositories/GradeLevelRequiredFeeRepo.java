@@ -15,7 +15,8 @@ import org.springframework.stereotype.Repository;
 public interface GradeLevelRequiredFeeRepo extends JpaRepository<GradeLevelRequiredFees,Integer>{
     
     @Query("SELECT glr FROM GradeLevelRequiredFees glr "+
-           "WHERE glr.requiredFee.id = :feeId")
+           "WHERE glr.isNotDeleted " +
+            "AND glr.requiredFee.id = :feeId")
     List<GradeLevelRequiredFees> findByRequiredFee(@Param("feeId") int feeId);
     
     @Query("SELECT glr FROM GradeLevelRequiredFees glr "+

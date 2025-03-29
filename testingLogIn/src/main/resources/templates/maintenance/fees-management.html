@@ -319,7 +319,9 @@
                 <div class="action-container">
                     <div class="action">
 
-                    <img class="edit-fee" data-id="${payment.id}" data-name="${payment.name}" data-amount="${payment.requiredAmount}" data-grade-levels="${payment.gradeLevelNames.join(',')}" data-open-modal="feesManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon">
+                    <img class="edit-fee" data-id="${payment.id}" data-name="${payment.name}"
+                    data-amount="${payment.requiredAmount}" data-grade-levels="${payment.gradeLevelNames.join(',')}"
+                    data-open-modal="feesManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon">
                     
                         <img data-open-modal="confirmationModal"  data-name="${payment.name}" data-action="deleteFee" 
                                      data-message="Are you sure you want to delete this fee?" 
@@ -379,7 +381,6 @@
         }
     }
 
-    // Function to handle editing the fee
     function editFee() {
         const paymentId = document.getElementById("feesManagementEditModal").dataset.id;
         const paymentName = document.getElementById("paymentNameEdit").value; // Get the updated payment name
@@ -470,7 +471,7 @@
             .then(response => response.json())
             .then(data => {
                 const paymentContainer = document.querySelector(".payment-container");
-                paymentContainer.innerHTML = ""; // Clear previous data
+                paymentContainer.innerHTML = "";
 
                 data.forEach(gradeLevel => {
                     const paymentDiv = document.createElement("div");
@@ -523,10 +524,7 @@
         });
     });
 
-    // This function will populate the grade levels for editing a payment
     function populateGradeLevelsForEdit(gradeLevelNames, isUpdateMode = false) {
-        console.log("yawa");
-
         fetch("/gradelevel/all")
             .then(response => response.json())
             .then(gradeLevels => {

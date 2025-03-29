@@ -75,7 +75,7 @@ public class TransfereeRequirementsController {
             return new ResponseEntity<>("Server conflict. Contact Inoori Network",HttpStatus.CONFLICT);
         }
     }
-    @PostMapping("/add/student-requirents")
+    @PostMapping("/add/student-requirements")
     public ResponseEntity<String> addStudentTransfereeRequirements(@RequestBody StudentRequirementsSubmission submitted){
         if(submitted == null)
             return new ResponseEntity<>("Submitted an invalid information",HttpStatus.NOT_ACCEPTABLE);

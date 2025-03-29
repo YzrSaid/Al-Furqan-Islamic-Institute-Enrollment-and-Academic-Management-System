@@ -81,7 +81,7 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
             "WHERE sem.sySemNumber = :semId " +
             "AND grl.levelId = :gradeId " +
             "AND e.enrollmentStatus = 'ENROLLED'")
-    List<Student> countCurrentlyEnrolledToGrade(@Param("gradeId") int gradeId,
+    List<Student> getCurrentlyEnrolledToGrade(@Param("gradeId") int gradeId,
                                          @Param("semId") int semId);
 
 }

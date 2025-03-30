@@ -177,7 +177,7 @@ public class EnrollmentServices {
             pageable = PageRequest.of(pageNo-1,pageSize,sortBy(sort));
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
-        int sem = sySemRepo.findCurrentActive().getSySemNumber();
+        int sem = Optional.of(sySemRepo.findCurrentActive().getSySemNumber()).orElseThrow(NullPointerException::new);
         Page<EnrollmentHandler> enrollmentRetrieved = enrollmentRepo.testing(estatus,sem,search,pageable);
         List<EnrollmentDTO> pageContent = enrollmentRetrieved.getContent().stream().peek(
                 e -> {

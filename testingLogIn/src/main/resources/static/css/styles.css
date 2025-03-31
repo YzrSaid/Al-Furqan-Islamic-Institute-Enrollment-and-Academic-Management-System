@@ -264,7 +264,7 @@ body {
   font-weight: bold;
 }
 .submenu a.second-active {
-  border-bottom: 2px solid rgb(52, 217, 56);
+  /* border-bottom: 2px solid rgb(52, 217, 56); */
   display: inline-block;
   font-weight: bold;
   padding-bottom: 4.5px;
@@ -275,7 +275,7 @@ body {
   display: none;
   max-height: 0;
   padding-left: 20px;
-  background-color: rgb(198, 239, 199);
+  background-color: rgba(52, 217, 55, 0.3);
   opacity: 0;
 }
 .submenu.show {
@@ -1749,6 +1749,20 @@ input#payment-amount {
 .full-width input {
   width: 72.5% !important;
 }
+.full-width {
+  display: flex;
+}
+.full-width-row {
+  display: flex;
+  width: 100%;
+}
+.full-width-row div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap; 
+  width: 10%;
+}
 .add-payment-modal-content input,
 .add-payment-modal-content select {
   padding: 8px;
@@ -2409,9 +2423,9 @@ input[type="checkbox"] {
 }
 
 /* Green for Active */
-.active {
+/* .active {
   background-color: green;
-}
+} */
 
 /* Red for Inactive */
 .inactive {
@@ -2450,10 +2464,6 @@ input[type="checkbox"] {
 .half-payee {
   display: flex;
   justify-content: space-between;
-}
-
-.full-width {
-  display: flex;
 }
 
 .first-name,
@@ -3574,6 +3584,14 @@ td[rowspan] {
 #previewLogo {
   width: 200px;
   height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 4px solid #fff;
+}
+#previewLogoMini {
+  width: 150px;
+  height: 150px;
   object-fit: cover;
   border-radius: 50%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

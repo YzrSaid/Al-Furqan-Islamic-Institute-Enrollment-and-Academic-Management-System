@@ -13,31 +13,16 @@
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <div class="topbar">
-            <div class="main-topbar">
-                <span class="hamburger" onclick="toggleSidebar()">
-                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
-                </span>
-
-                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
-            </div>
-            <div class="dropdown-logout">
-                <div class="user-icon dropdown-logout-toggle">
-                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
-                        alt="User Icon">
-                    <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span th:text="(${userRole})"></span></h6>
-                        <a href="/logout">Log Out</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Topbar -->
+        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        
         <div class="text-link">
             <h4 id="grade-level-and-section-name">Class List</h4>
             <p>Main</p>
@@ -70,7 +55,9 @@
                 </tr>
             </thead>
             <tbody>
-            <tr><td colspan="3">No Records Found</td></tr>
+                <tr>
+                    <td colspan="3">No Records Found</td>
+                </tr>
             </tbody>
         </table>
 
@@ -178,9 +165,9 @@
         fetchSectionInfo(sectionName);
     });
 
-    async function fetchSectionInfo(sectionName){
+    async function fetchSectionInfo(sectionName) {
         const response = await fetch(`/section?sectionName=${sectionName}`);
-        if(!response.ok){
+        if (!response.ok) {
             alert("Section Invalid.");
             return;
         }
@@ -189,12 +176,12 @@
         setUpTables(result.number);
     }
 
-    function setUpTables(sectionId){
+    function setUpTables(sectionId) {
         fetch(`/section/students/${sectionId}`)
             .then(response => response.json())
             .then(data => {
                 console.log(data.length);
-                if(data.length === 0)return;
+                if (data.length === 0) return;
                 const tableBody = document.querySelector("#table-ba-to tbody");
                 tableBody.innerHTML = ``;
                 data.forEach(stud => {

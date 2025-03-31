@@ -23,24 +23,8 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <div class="topbar">
-            <div class="main-topbar">
-                <span class="hamburger" onclick="toggleSidebar()">
-                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
-                </span>
-                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
-            </div>
-            <div class="dropdown-logout">
-                <div class="user-icon dropdown-logout-toggle">
-                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
-                        alt="User Icon">
-                    <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span th:text="(${userRole})"></span></h6>
-                        <a href="/logout">Log Out</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+       <!-- Topbar -->
+       <div th:replace="~{fragments/fragment :: topbar}"></div>
 
         <div class="text-link">
             <h4>Student Reports</h4>

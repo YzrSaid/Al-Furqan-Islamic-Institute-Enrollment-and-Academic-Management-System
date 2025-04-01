@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <!-- Topbar -->
+        <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+        <div class="text-link">
+            <h4>Maintenance</h4>
+            <p>Main</p>
+            <p>/</p>
+            <p>Maintenance</p>
+            <p>/</p>
+            <p>Scholarship</p>
+        </div>
+
+        <div class="search-div">
+            <!-- Searchbox and sort btn -->
+            <div class="search">
+                <div class="search-container">
+                    <input type="text" placeholder="Search..." class="search-input" />
+                    <button class="search-btn">Search</button>
+                    <!-- Add scholarship discount Button -->
+                    <div class="add-something-btn-container">
+                        <button class="add-something-btn" id="openScholarshipModal"
+                            data-open-modal="scholarshipModal">Add Scholarship Type</button>
+                    </div>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table id="lamesa" class="scholarship-table">
+            <thead>
+                <tr>
+                    <th>Scholarship Type/Name</th>
+                    <th>Amount/Percent</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Academic Excellence Scholarship</td>
+                    <td>50% Off</td>
+                    <td>
+                        <div class="action-container">
+                            <div class="action">
+
+                                <img data-open-modal="scholarshipEditModal" src="/images/icons/compose.png"
+                                    alt="scholarship-edit-icon">
+
+                                <img data-open-modal="confirmationModal" data-action="deleteScholarshipType" data-message="Are you sure you want to delete this scholarship record?" src="/images/icons/bin.png" alt="scholarship-delete-icon">
+
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <!-- Modal for confirmation -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p id="modalText"></p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
+
+        <!-- Modal for adding scholarship type/name -->
+        <div id="scholarshipModal" class="scholarship-modal modal">
+            <div class="scholarship-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="scholarshipModal">&times;</span>
+
+                <h2>Add New Scholarship Type</h2>
+                <form id="scholarshipForm">
+                    <label for="scholarshipName">Scholarship Type/Name:</label>
+                    <input type="text" id="scholarshipName" name="scholarshipName" required>
+                    <br><br>
+
+                    <label for="amount">Amount</label>
+                    <input type="number" id="scholarshipAmount" required>
+
+                    <div class="full-width-row">
+                        <!-- Radio button for fixed amount -->
+                        <div class="radio-label">
+                            Fixed Amount: <input type="radio" id="fixedAmountDiscount" name="amountDiscount">
+                        </div>
+                    </div>
+
+                    <div class="full-width-row">
+                        <!-- Radio button for fixed amount -->
+                        <div class="radio-label">
+                            Percentage: <input type="radio" id="percentageAmountDiscount" name="amountDiscount">
+                        </div>
+                    </div> <br>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="addShcholarshipType"
+                            data-message="Are you sure you want to add this scholarship type/name?"
+                            id="confirmGradeLevel" data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="scholarshipModal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Modal for editing the scholarship type -->
+        <div id="scholarshipEditModal" class="scholarship-edit-modal modal">
+            <div class="scholarship-edit-modal-content">
+                <!-- Close Button -->
+                <span class="close-modal" data-close-modal="scholarshipEditModal">&times;</span>
+
+                <h2>Scholarship Type Information</h2>
+                <form method="" action="" id="scholarshipEditForm">
+                    <label for="scholarshipaNameEdit">Scholarship Type/Name:</label>
+                    <input type="text" id="scholarshipNameEdit" name="scholarshipNameEdit" readonly required>
+                    <br><br>
+
+                    <label for="amount">Amount</label>
+                    <input type="number" id="scholarshipAmountEdit" required>
+
+                    <div class="full-width-row">
+                        <!-- Radio button for fixed amount -->
+                        <div class="radio-label">
+                            Fixed Amount: <input type="radio" id="fixedAmountDiscount" name="amountDiscount">
+                        </div>
+                    </div>
+
+                    <div class="full-width-row">
+                        <!-- Radio button for fixed amount -->
+                        <div class="radio-label">
+                            Percentage: <input type="radio" id="percentageAmountDiscount" name="amountDiscount">
+                        </div>
+                    </div> <br>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="editScholarshipType"
+                            data-message="Are you sure you want to update this scholarship information?"
+                            id="confirmGradeLevelEdit">Edit</button>
+                        <button type="button" class="btn-cancel" data-close-modal="scholarshipEditModal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <script>
+
+    </script>
+</body>
+
+</html>

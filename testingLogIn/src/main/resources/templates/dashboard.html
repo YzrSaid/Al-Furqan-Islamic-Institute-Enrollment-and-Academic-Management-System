@@ -10,6 +10,7 @@
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
@@ -28,59 +29,171 @@
             <p>Main</p>
             <p>/</p>
             <p>Dashboard</p>
-        </div> <br>
+        </div>
 
-        <div class="row card-div">
-            <div class="col-md-3">
-                <a href="/reports/student" class="card-link">
-                    <div class="card p-3 shadow-sm">
-                        <h3 class="card-title" id="num-total-students">100</h3>
-                        <p class="card-label">Total Students</p>
+        <div class="analytics-container">
+            <div class="chart-box">
+                <div class="card-container">
+                    <!-- sort buttons -->
+                    <div class="sort-btns-container">
+                        <div class="sort-year">
+                            <label for="year">Year</label>
+                            <select name="year" id="year-sort">
+                                <option value="" disabled selected>---</option>
+                            </select>
+                        </div>
+                        <div class="sort-grade">
+                            <label for="grade">Grade</label>
+                            <select name="grade" id="grade-sort">
+                                <option value="" disabled selected>---</option>
+                            </select>
+                        </div>
                     </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="/enrollment/enrolled" class="card-link">
-                    <div class="card p-3 shadow-sm">
-                        <h3 class="card-title" id="num-enrolled">95</h3>
-                        <p class="card-label">Enrolled</p>
+                    <div class="card-grid">
+                        <a href="/reports/student" class="card-link">
+                            <div class="card">
+                                <h3 class="card-title" id="num-total-students">100</h3>
+                                <p class="card-label">Total Students</p>
+                            </div>
+                        </a>
+
+                        <a href="/enrollment/enrolled" class="card-link">
+                            <div class="card">
+                                <h3 class="card-title" id="num-enrolled">95</h3>
+                                <p class="card-label">Enrolled</p>
+                            </div>
+                        </a>
+
+                        <a href="/enrollment/listing" class="card-link">
+                            <div class="card">
+                                <h3 class="card-title" id="num-pre-enrolled">24</h3>
+                                <p class="card-label">Pre-Enrolled</p>
+                            </div>
+                        </a>
+
+                        <a href="/reports/teacher" class="card-link">
+                            <div class="card">
+                                <h3 class="card-title" id="num-teachers">21</h3>
+                                <p class="card-label">Teachers</p>
+                            </div>
+                        </a>
+
+                        <a href="/maintenance/section" class="card-link">
+                            <div class="card">
+                                <h3 class="card-title" id="num-sections">5</h3>
+                                <p class="card-label">Sections</p>
+                            </div>
+                        </a>
+
+                        <a href="/accounts/manage-accounts" class="card-link">
+                            <div class="card">
+                                <h3 class="card-title" id="num-users">6</h3>
+                                <p class="card-label">Users</p>
+                            </div>
+                        </a>
                     </div>
-                </a>
+                </div>
             </div>
-            <div class="col-md-3">
-                <a href="/enrollment/listing" class="card-link">
-                    <div class="card p-3 shadow-sm">
-                        <h3 class="card-title" id="num-pre-enrolled">24</h3>
-                        <p class="card-label">Pre-Enrolled</p>
+            <div class="chart-box">
+                <div class="graph-container">
+                    <div class="title">
+                        <h6 id="graphTitle">Enrollment by Gender</h6>
+                        <div class="filter-container">
+                            <label for="filter">Filter:</label>
+                            <select id="filter">
+                                <option value="gender" selected>Gender</option>
+                                <option value="ethnicity">Ethnicity</option>
+                                <option value="age">Age</option>
+                            </select>
+                        </div>
                     </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="/reports/teacher" class="card-link">
-                    <div class="card p-3 shadow-sm">
-                        <h3 class="card-title" id="num-teachers">21</h3>
-                        <p class="card-label">Teachers</p>
+                    <div class="graph">
+                        <canvas id="enrollmentChart"></canvas>
                     </div>
-                </a>
+                </div>
             </div>
-            <div class="col-md-3">
-                <a href="/maintenance/section" class="card-link">
-                    <div class="card p-3 shadow-sm">
-                        <h3 class="card-title" id="num-sections">5</h3>
-                        <p class="card-label">Sections</p>
+
+            <div class="chart-box-full">
+                <div class="bar-graph-container">
+                    <div class="bar-graph">
+                        <canvas id="retentionChart"></canvas>
                     </div>
-                </a>
+                    
+                </div>
             </div>
-            <div class="col-md-3">
-                <a href="/accounts/manage-accounts" class="card-link">
-                    <div class="card p-3 shadow-sm">
-                        <h3 class="card-title" id="num-users">6</h3>
-                        <p class="card-label">Users</p>
-                    </div>
-                </a>
-            </div>
+         
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const enrollmentCanvas = document.getElementById('enrollmentChart').getContext('2d');
+        const retentionCanvas = document.getElementById('retentionChart').getContext('2d');
+        const graphTitle = document.getElementById('graphTitle');
+
+        // Enrollment Chart (Doughnut)
+        const enrollmentChart = new Chart(enrollmentCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Male', 'Female'],
+                datasets: [{
+                    data: [62, 38],
+                    backgroundColor: ['blue', 'red']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'right' }
+                }
+            }
+        });
+
+        // Retention Rates Chart (Bar)
+        const retentionChart = new Chart(retentionCanvas, {
+            type: 'bar',
+            data: {
+                labels: ['2019-2020', '2020-2021', '2021-2022', '2022-2023', '2023-2024', '2024-2025'],
+                datasets: [{
+                    label: 'Retention Rates',
+                    data: [88, 95, 72, 86, 94, 75], // Example retention data
+                    backgroundColor: 'rgba(210, 90, 90, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, max: 100 } },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Update Chart Data Function
+        function updateChartData(filterValue) {
+            let newData = {};
+            let newTitle = '';
+
+            if (filterValue === 'gender') {
+                newData = { labels: ['Male', 'Female'], datasets: [{ data: [62, 38], backgroundColor: ['blue', 'red'] }] };
+                newTitle = 'Enrollment by Gender';
+            } else if (filterValue === 'ethnicity') {
+                newData = { labels: ['Asian', 'Black', 'White'], datasets: [{ data: [40, 35, 25], backgroundColor: ['green', 'purple', 'yellow'] }] };
+                newTitle = 'Enrollment by Ethnicity';
+            } else if (filterValue === 'age') {
+                newData = { labels: ['Under 18', '18-25', '25-40', '40+'], datasets: [{ data: [15, 45, 30, 10], backgroundColor: ['blue', 'orange', 'red', 'gray'] }] };
+                newTitle = 'Enrollment by Age';
+            }
+
+            enrollmentChart.data = newData;
+            enrollmentChart.update();
+            graphTitle.innerText = newTitle;
+        }
+
+        document.getElementById('filter').addEventListener('change', function (e) {
+            updateChartData(e.target.value);
+        });
+    });
+</script>
+
+
 
 </html>

@@ -10,12 +10,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/discounts")
 @Controller
 public class DiscountsController {
 
     @Autowired
     private DiscountsServices discountsServices;
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Discount>> getDiscounts(@RequestParam(defaultValue = "true") boolean isNotDeleted){
+        try{
+            return new ResponseEntity<>(discountsServices.getDiscountsList(isNotDeleted),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
 
     @PostMapping("/add")
     public ResponseEntity<String> addNewDiscount(@RequestBody Discount discount){
@@ -29,7 +40,7 @@ public class DiscountsController {
         }
     }
 
-    @PostMapping("/add/{discountId}")
+    @PostMapping("/add-student-discount/{discountId}")
     public ResponseEntity<String> addStudentDiscount(@PathVariable int discountId,@RequestBody NewStudentDiscounts students){
         try{
             if(discountsServices.addStudentDiscount(discountId,students.getStudentIds()))
@@ -39,6 +50,18 @@ public class DiscountsController {
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @DeleteMapping("/delete/{discountId}")
+    public ResponseEntity<String> deleteDiscount(@PathVariable int discountId){
+        try {
+            discountsServices.deleteDiscount(discountId);
+            return new ResponseEntity<>("Discount deleted successfully", HttpStatus.OK);
+        }catch(NullPointerException npe){
+            return new ResponseEntity<>("Discount not found",HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>("Server conflict",HttpStatus.CONFLICT);
         }
     }
 

@@ -24,6 +24,12 @@ public class DiscountsServices {
         this.studRepo = studRepo;
     }
 
+    public List<Discount> getDiscountsList(boolean isNotDeleted){
+        if(isNotDeleted)
+            return discRepo.findByIsNotDeletedTrue().stream().peek(discount -> discount.setPercentageDiscount(100*discount.getPercentageDiscount())).toList();
+        return discRepo.findByIsNotDeletedFalse();
+    }
+
     public boolean addDiscount(Discount discount){
         if(!discRepo.findDiscountByName(discount.getDiscountName().trim()).isEmpty())
             return false;
@@ -31,6 +37,12 @@ public class DiscountsServices {
         discRepo.save(discount);
 
         return true;
+    }
+
+    public void deleteDiscount(int discountId){
+        Discount discount = discRepo.findById(discountId).orElseThrow(NullPointerException::new);
+        discount.setNotDeleted(false);
+        discRepo.save(discount);
     }
 
     public boolean addStudentDiscount(int discountId, List<Integer> studentIds){

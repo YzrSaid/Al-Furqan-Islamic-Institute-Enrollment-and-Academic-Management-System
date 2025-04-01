@@ -679,6 +679,12 @@ document.addEventListener("DOMContentLoaded", function () {
       case "addListingExisting":
         addListingOldStudent();
         break;
+      case "addShcholarshipType":
+        addNewScholarship();
+        break;
+      case "deleteScholarshipType":
+        deletescholarship();
+        break;
       case "transfereeAddListing":
         // This case is for adding transferee student to the listing/registration
         if (!validateForm("studentForm")) {

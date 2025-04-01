@@ -3437,11 +3437,6 @@ td[rowspan] {
   text-align: center;
 }
 
-.payment-table th {
-  background: #333;
-  color: white;
-}
-
 .total-container {
   text-align: right;
   font-size: 18px;

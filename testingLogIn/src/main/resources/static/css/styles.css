@@ -332,16 +332,108 @@ body {
 .text-center p {
   margin: 15px;
 }
-.card {
-  border-bottom: 5px solid #27ae60;
-  background-color: rgb(246, 246, 246);
-}
-.card-div {
+.analytics-container {
   display: flex;
-  flex-direction: row;
-  column-gap: 80px;
-  row-gap: 30px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 10px;
+  padding: 0px;
+}
+.chart-box {
+  flex: 1;
+}
+.chart-box-full {
+  width: 100%;
+}
+.card-container {
+  padding-top: 20px;
+  background-color: #f6f6f6;
+  width: 100%;
+  height: 340px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
   justify-content: center;
+  align-items: start;
+  padding: 20px;
+  width: 100%;
+  height: 280px;
+  margin: 0 auto;
+}
+.graph-container {
+  /* background-color: #f6f6f6;
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  justify-content: center;
+  align-items: start;
+  padding: 20px;
+  width: 40%;
+  height: 280px;
+  margin: 0 auto; */
+
+  padding-top: 20px;
+  background-color: #f6f6f6;
+  width: 100%;
+  height: 340px;
+  padding: 20px;
+}
+
+.bar-graph-container {
+  width: 100%;
+  margin: auto;
+  padding: 30px;
+  background-color: #f6f6f6;
+}
+.graph {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bar-graph {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#enrollmentChart {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.filter-container {
+  margin-top: 10px;
+}
+.card {
+  height: 100px;
+  width: 180px;
+  text-align: center;
+  border-bottom: 5px solid #27ae60;
+  background-color: rgb(255, 255, 255);
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+.sort-btns-container {
+  display: flex;
+  gap: 50px;
+
+  width: 80%;
+  margin-left: 20px;
+}
+.sort-year,
+.sort-grade {
+  width: 130px;
+  display: flex;
+  flex-direction: column;
 }
 .welcome-card {
   padding: 40px !important;
@@ -363,13 +455,13 @@ body {
   text-align: start;
 }
 .card-title {
-  font-size: 2.5rem;
+  font-size: 1.7rem;
   margin-bottom: 20px;
   font-weight: 800;
   text-align: center;
 }
 .card-label {
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: bold;
   text-align: center;
   color: rgb(30, 30, 30);
@@ -805,6 +897,20 @@ th {
   width: 15%;
 }
 
+/* for scholarshop (maintenance) */
+.scholarship-table th:nth-child(1),
+.scholarship-table td:nth-child(1) {
+  width: 40%;
+}
+.scholarship-table th:nth-child(2),
+.scholarship-table td:nth-child(2) {
+  width: 40%;
+}
+.scholarship-table th:nth-child(3),
+.scholarship-table td:nth-child(3) {
+  width: 15%;
+}
+
 /* for student list table (transaction) */
 .view-list-of-students-table th:nth-child(1),
 .view-list-of-students-table td:nth-child(1) {
@@ -1109,7 +1215,8 @@ table td {
 .acad-resources-table,
 .assessment-table,
 .fees-table,
-.payment-table {
+.payment-table,
+.scholarship-table {
   width: 92.5%;
   margin: 0px 50px;
 }
@@ -1760,7 +1867,7 @@ input#payment-amount {
   display: flex;
   align-items: center;
   gap: 10px;
-  white-space: nowrap; 
+  white-space: nowrap;
   width: 10%;
 }
 .add-payment-modal-content input,
@@ -1939,7 +2046,9 @@ input[type="checkbox"] {
 .add-account-type-modal h2,
 .transferee-req-modal h2,
 .transferee-req-edit-modal h2,
-.view-student-list-modal h2 {
+.view-student-list-modal h2,
+.scholarship-modal h2,
+.scholarship-edit-modal h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -2009,9 +2118,16 @@ input[type="checkbox"] {
 .add-account-type-modal-content label,
 .transferee-req-modal-content label,
 .transferee-req-edit-modal-content label,
-.view-student-list-modal-content label {
+.view-student-list-modal-content label,
+.scholarship-modal-content label,
+.scholarship-edit-modal-content label {
   font-weight: 500;
   font-size: 14px;
+}
+
+.radio-label {
+    font-size: 13px;
+    font-weight: 500;
 }
 
 .student-modal-content input,
@@ -2037,6 +2153,8 @@ input[type="checkbox"] {
 .transferee-req-modal-content input,
 .transferee-req-edit-modal-content input,
 .view-student-list-modal-content input,
+.scholarship-modal-content input,
+.scholarship-edit-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
@@ -2052,7 +2170,8 @@ input[type="checkbox"] {
 .teacher-edit-modal-content select,
 .my-account-edit-modal-content select,
 .add-grade-level-assessment-modal-content select,
-.add-account-type-modal-content select {
+.add-account-type-modal-content select,
+.scholarship-modal-content select {
   width: 100%;
   padding: 8px;
   margin: 5px 0;
@@ -2070,7 +2189,9 @@ input[type="checkbox"] {
 .add-account-type-modal,
 .transferee-req-modal,
 .transferee-req-edit-modal,
-.view-student-list-modal {
+.view-student-list-modal,
+.scholarship-modal,
+.scholarship-edit-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -2092,7 +2213,9 @@ input[type="checkbox"] {
 .add-account-type-modal.show,
 .transferee-req-modal.show,
 .transferee-req-edit-modal.show,
-.view-student-list-modal.show {
+.view-student-list-modal.show,
+.scholarship-modal.show,
+.scholarship-edit-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
@@ -2151,7 +2274,9 @@ input[type="checkbox"] {
 .school-year-modal-content,
 .transferee-req-modal-content,
 .transferee-req-edit-modal-content,
-.add-grade-level-assessment-modal-content {
+.add-grade-level-assessment-modal-content,
+.scholarship-modal-content,
+.scholarship-edit-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 5px;
@@ -2963,13 +3088,12 @@ td[rowspan] {
 }
 
 .card-link .card {
-  transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  transition: transform 0.1s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 .card-link .card:hover {
-  background-color: #f8f9fa;
   cursor: pointer;
-  transform: scale(1.1);
+  transform: scale(1.03);
 }
 
 .small-text p {
@@ -3311,11 +3435,6 @@ td[rowspan] {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: center;
-}
-
-.payment-table th {
-  background: #333;
-  color: white;
 }
 
 .total-container {

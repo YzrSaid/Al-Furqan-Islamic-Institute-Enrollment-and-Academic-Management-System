@@ -10,6 +10,7 @@ import com.example.testingLogIn.Repositories.StudentRepo;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ public class StudentServices {
                                     .firstName(student.getFirstName())
                                     .lastName(student.getLastName())
                                     .middleName(student.getMiddleName())
+                                    .fullName(student.getFirstName()+" "+ Optional.ofNullable(student.getMiddleName()).map(mn -> mn+" ").orElse(" ")+student.getLastName())
                                     .gender(student.getGender())
                                     .birthPlace(student.getBirthPlace())
                                     .birthdate(student.getBirthdate())
@@ -132,6 +134,7 @@ public class StudentServices {
             toUpdate.setFirstName(stud.getFirstName());
             toUpdate.setLastName(stud.getLastName());
             toUpdate.setMiddleName(stud.getMiddleName());
+            toUpdate.setFullName(stud.getFirstName()+" "+ Optional.ofNullable(stud.getMiddleName()).map(mn -> mn+" ").orElse(" ")+stud.getLastName());
             toUpdate.setCellphoneNum(stud.getCellphoneNum());
             toUpdate.setGender(stud.getGender());
             toUpdate.setStreet(stud.getAddress().getStreet());

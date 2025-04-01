@@ -70,4 +70,11 @@ public class DistributableServices {
                         dis.getGradeList().stream().filter(DistributablesPerGrade::isNotDeleted).isParallel())
                 .toList();
     }
+
+    public boolean deleteDistributable(int itemId){
+        Distributable item = distributableRepo.findById(itemId).orElseThrow(NullPointerException::new);
+        item.setNotDeleted(false);
+        distributableRepo.save(item);
+        return true;
+    }
 }

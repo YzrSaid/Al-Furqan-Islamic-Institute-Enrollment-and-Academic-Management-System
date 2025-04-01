@@ -16,7 +16,7 @@
             <span class="hamburger" onclick="toggleSidebar()">
                 <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
             </span>
-            <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+            <span th:text="${schoolName}" class="institute-name"></span>
         </div>
         <div class="dropdown-logout">
             <div class="user-icon dropdown-logout-toggle">

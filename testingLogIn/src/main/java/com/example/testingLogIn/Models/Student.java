@@ -30,8 +30,6 @@ public class Student{
     private String firstName;
     private String lastName;
     private String middleName;
-
-    @Column(name = "full_name", insertable = false, updatable = false)
     private String fullName;
 
     @Enumerated(EnumType.STRING)

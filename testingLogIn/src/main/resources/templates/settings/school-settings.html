@@ -38,23 +38,23 @@
                     <div class="school-info-container">
                         <div>
                             <label for="schoolName" class="form-label"><b>School Name</b></label>
-                            <input type="text" id="schoolName" class="form-control" placeholder="Enter School Name"
+                            <input type="text" th:value="${schoolName}" id="schoolName" class="form-control" placeholder="Enter School Name"
                                 required>
                         </div>
                         <div>
                             <label for="schoolAddress" class="form-label"><b>Address</b></label>
-                            <input type="text" id="schoolAddress" class="form-control" placeholder="Enter Address"
+                            <input type="text" th:value="${schoolAddress}" id="schoolAddress" class="form-control" placeholder="Enter Address"
                                 required>
                         </div>
                         <div class="input-group-half">
                             <div class="settings-input">
                                 <label for="schoolEmail" class="form-label"><b>Email</b></label>
-                                <input type="email" id="schoolEmail" class="form-control" placeholder="Enter Email"
+                                <input type="email" th:value="${schoolEmail}" id="schoolEmail" class="form-control" placeholder="Enter Email"
                                     required>
                             </div>
                             <div class="settings-input">
                                 <label for="schoolContact" class="form-label"><b>Contact Number</b></label>
-                                <input type="tel" id="schoolContact" class="form-control"
+                                <input type="tel" th:value="${schoolNum}" id="schoolContact" class="form-control"
                                     placeholder="Enter Contact Number" required>
                             </div>
                         </div>

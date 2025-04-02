@@ -23,7 +23,7 @@
     <div class="dashboard-container" id="content">
         <!-- Topbar -->
         <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
+
         <div class="text-link">
             <h4>Listing/Register</h4>
             <p>Main</p>
@@ -121,24 +121,23 @@
                             <input type="text" id="student-id">
                         </div> <br>
 
-                        <div style="display: flex; gap: 50px;">
-                            <div class="half-unique" id="stud-type-row">
+                        <div class="other-info-container">
+                            <div class="half-other-info" id="stud-type-row">
                                 <label for="stud-type">Student Type:</label>
                                 <h6 id="stud-type">New</h6>
                             </div>
 
-                            <div class="half-unique" id="scholar-row">
+                            <div class="half-other-info" id="scholar-row">
                                 <label for="type">Scholar:</label>
                                 <h6>YES</h6>
                             </div>
 
-                            <div class="half-unique" id="transferee-row">
+                            <div class="half-other-info" id="transferee-row">
                                 <label for="type">Transferee:</label>
-                                <h6>YES</h6>
+                                <h6>NO</h6>
                             </div>
                         </div>
                     </div>
-
 
                     <div style="display: flex; align-content: center; justify-items: left;">
                         <h2>Personal Information</h2>
@@ -235,41 +234,44 @@
                         <input type="text" id="guardianAddress" style="width: 355px;">
                     </div> <br>
 
-                    <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                        <h2>For Transferees Only</h2>
-                    </div>
-
-                    <!-- Transferee Requirements Section -->
-                    <div class="transferee-requirements">
-                        <h4>Requirements</h4>
-                        <div id="transReqRecord" class="checkbox-transferee-reqs-group">
-                        <!--naka check na daan ang mga filled-->
+                    <div class="transferee-section">
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>For Transferees Only</h2>
                         </div>
 
-                        <!-- Update Button -->
-                        <div style="margin-top: 15px;">
-                            <button type="button" data-action="editGradeLevel"
-                            data-message="Are you sure you want to update this grade level?" id="updateRequirementsBtn" class="btn-confirm">Update</button>
+                        <!-- Transferee Requirements Section -->
+                        <div class="transferee-requirements">
+                            <h4>Requirements</h4>
+                            <div id="transReqRecord" class="checkbox-transferee-reqs-group">
+                                <!--naka check na daan ang mga filled-->
+                            </div>
+
+                            <!-- Update Button -->
+                            <div style="margin-top: 15px;">
+                                <button type="button" data-action="editGradeLevel"
+                                    data-message="Are you sure you want to update this grade level?"
+                                    id="updateRequirementsBtn" class="btn-confirm">Update</button>
+                            </div>
                         </div>
+
+                        <div class="student-form-group">
+                            <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
+                            <input type="text" id="lastGradeLevelCompleted">
+
+                            <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
+                            <input type="text" id="lastMadrasaYearCompleted">
+                        </div> <br>
+
+                        <div class="student-form-group">
+                            <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                            <input type="text" id="madrasaNameLastAttended">
+                        </div> <br>
+
+                        <div class="student-form-group">
+                            <label for="madrasaAddress">Madrasa Address:</label>
+                            <input type="text" id="madrasaAddress">
+                        </div> <br>
                     </div>
-
-                    <div class="student-form-group">
-                        <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                        <input type="text" id="lastGradeLevelCompleted">
-
-                        <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                        <input type="text" id="lastMadrasaYearCompleted">
-                    </div> <br>
-
-                    <div class="student-form-group">
-                        <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                        <input type="text" id="madrasaNameLastAttended">
-                    </div> <br>
-
-                    <div class="student-form-group">
-                        <label for="madrasaAddress">Madrasa Address:</label>
-                        <input type="text" id="madrasaAddress">
-                    </div> <br>
 
                     <div style="display: flex; gap: 365px;">
                         <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
@@ -784,30 +786,30 @@
                     <div class="transferee-requirements">
                         <h4>Requirements</h4>
                         <div id="transfereeReq" class="checkbox-transferee-reqs-group">
-                        <!--Ibutang ang mga transferee requiremetns dri-->
+                            <!--Ibutang ang mga transferee requiremetns dri-->
                         </div>
 
-                    <div class="student-form-group">
-                        <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
-                        <select id="lastGradeLevelIdCompleted">
-                            <option value="">RANDOM</option>
-                        </select>
+                        <div class="student-form-group">
+                            <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
+                            <select id="lastGradeLevelIdCompleted">
+                                <option value="">RANDOM</option>
+                            </select>
 
-                        <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                        <input type="text" id="lastMadrasaYearCompleted" readonly>
-                    </div> <br>
+                            <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
+                            <input type="text" id="lastMadrasaYearCompleted" readonly>
+                        </div> <br>
 
-                    <div class="student-form-group">
-                        <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                        <input type="text" id="madrasaNameLastAttended" readonly>
-                    </div> <br>
+                        <div class="student-form-group">
+                            <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                            <input type="text" id="madrasaNameLastAttended" readonly>
+                        </div> <br>
 
-                    <div class="student-form-group">
-                        <label for="madrasaAddress">Madrasa Address:</label>
-                        <input type="text" id="madrasaAddress" readonly style="width: 8px;">
-                    </div> <br>
+                        <div class="student-form-group">
+                            <label for="madrasaAddress">Madrasa Address:</label>
+                            <input type="text" id="madrasaAddress" readonly style="width: 8px;">
+                        </div> <br>
+                    </div>
                 </div>
-            </div>
 
                 <div class="modal-buttons">
                     <button type="button" data-action="" class="btn-confirm" id="confirmStudent"
@@ -1132,7 +1134,7 @@
             let url = "/gradelevel/successor/" + currentLevelId;
             if ((isStudentNew && !isTransferee) || isLevelIdNull) {
                 url = '/gradelevel/no-pre-requisite';
-            }else if(isTransferee && !isLevelIdNull){
+            } else if (isTransferee && !isLevelIdNull) {
                 url = `/gradelevel/for-transferee/${currentLevelId}`;
             }
             alert(url);
@@ -1351,7 +1353,8 @@
 
         const selectedTransReq = [];
         document.querySelectorAll("input[name='transferRequirements']:checked").forEach(checkbox => {
-        selectedTransReq.push(checkbox.value);});
+            selectedTransReq.push(checkbox.value);
+        });
 
         const birthplace =
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
@@ -1366,10 +1369,11 @@
             gender: document.getElementById("studgender").value || null,
             birthdate: document.getElementById("studbirthdate").value || null,
             birthPlace: birthplace, // Use the extracted birthPlace variable
-            address : {
+            address: {
                 street: document.getElementById("studstreet")?.value?.trim(),
                 barangay: document.getElementById("studbarangay")?.value?.trim(),
-                city: document.getElementById("studcity")?.value?.trim()},
+                city: document.getElementById("studcity")?.value?.trim()
+            },
             fatherName: document.getElementById("studfatherName")?.value?.trim() || null,
             fatherOccupation: document.getElementById("studfatherOccupation")?.value?.trim() || null,
             motherName: document.getElementById("studmotherName")?.value?.trim() || null,
@@ -1384,7 +1388,7 @@
             lastMadrasaYearCompleted: document.getElementById("lastMadrasaYearCompleted")?.value?.trim() || null,
             madrasaNameLastAttended: document.getElementById("madrasaNameLastAttended")?.value?.trim() || null,
             madrasaAddress: document.getElementById("madrasaAddress")?.value?.trim() || null,
-            transfereeRequirements : selectedTransReq
+            transfereeRequirements: selectedTransReq
         };
 
         fetch(actionUrl, {
@@ -1544,8 +1548,8 @@
         const isLevelIdNull = currentLevelId === null || currentLevelId === "null" || currentLevelId === "None";
         if ((isStudentNew && !isTransferee) || isLevelIdNull) {
             url = '/gradelevel/no-pre-requisite';
-        }else if(isTransferee && !isLevelIdNull){
-                url = `/gradelevel/for-transferee/${currentLevelId}`;
+        } else if (isTransferee && !isLevelIdNull) {
+            url = `/gradelevel/for-transferee/${currentLevelId}`;
         }
         const originalOnChange = selectTag.getAttribute("onChange");
         selectTag.removeAttribute("onChange");
@@ -1655,36 +1659,36 @@
     }
 
     function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
-    console.log(reqIds);
-    fetch("/trans-req/all")
-        .then(response => response.json())
-        .then(data => {
-            const reqContainer = document.getElementById(divId);
-            reqContainer.innerHTML = "";
-            data.forEach(transReq => {
-                const paymentDiv = document.createElement("div");
-                paymentDiv.classList.add("checkbox-each");
+        console.log(reqIds);
+        fetch("/trans-req/all")
+            .then(response => response.json())
+            .then(data => {
+                const reqContainer = document.getElementById(divId);
+                reqContainer.innerHTML = "";
+                data.forEach(transReq => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("checkbox-each");
 
-                const checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.id = `transReq-${transReq.levelId}`;
-                checkbox.name = "transferRequirements";
-                checkbox.value = transReq.id;
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `transReq-${transReq.levelId}`;
+                    checkbox.name = "transferRequirements";
+                    checkbox.value = transReq.id;
 
-                const label = document.createElement("label");
-                label.htmlFor = `transReq-${transReq.idd}`;
-                label.textContent = transReq.name;
+                    const label = document.createElement("label");
+                    label.htmlFor = `transReq-${transReq.idd}`;
+                    label.textContent = transReq.name;
 
-                if (reqIds.includes(transReq.id)) {
-                    checkbox.checked = true;
-                }
+                    if (reqIds.includes(transReq.id)) {
+                        checkbox.checked = true;
+                    }
 
-                paymentDiv.appendChild(checkbox);
-                paymentDiv.appendChild(label);
-                reqContainer.appendChild(paymentDiv);
-            });
-        })
-        .catch(error => console.error("Error fetching grade levels:", error));
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    reqContainer.appendChild(paymentDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
     }
 
     function displayStud(std) {//viewing student info(for ctrl-f)
@@ -1710,7 +1714,7 @@
         document.getElementById("madrasaNameLastAttended").value = studentProf.madrasaName;
         document.getElementById("madrasaAddress").value = studentProf.madrasaAddress;
         console.log(studentProf.transfereeRequirements);
-        fetchTransRequirements("transReqRecord",studentProf.transfereeRequirements);
+        fetchTransRequirements("transReqRecord", studentProf.transfereeRequirements);
     }
 
     function updatePagination(status, currentPage, pageSize, totalPages) {
@@ -1769,6 +1773,33 @@
             modal.style.visibility = "visible";
             modal.style.opacity = "1";
             modal.style.pointerEvents = "auto";
+        }
+
+        // Call toggleTransfereeSection only if it's the studentInformationModal
+        if (modalId === "studentInformationModal") {
+            toggleTransfereeSection(modalId);
+        }
+    }
+
+
+    // This will show and hide the transferee section if the student is a transferee or not
+    function toggleTransfereeSection() {
+        const transfereeRow = document.querySelector("#transferee-row h6");
+        const transfereeSections = document.querySelectorAll(".transferee-section");
+
+        if (!transfereeRow) {
+            console.log("❌ Element #transferee-row h6 not found.");
+            return;
+        }
+
+        console.log("✅ Found #transferee-row h6 with text:", transfereeRow.textContent.trim());
+
+        if (transfereeRow.textContent.trim().toUpperCase() === "YES") {
+            console.log("✅ YES detected, showing transferee sections.");
+            transfereeSections.forEach(section => section.style.display = "block");
+        } else {
+            console.log("❌ NO detected, hiding transferee sections.");
+            transfereeSections.forEach(section => section.style.display = "none");
         }
     }
     let payerStudentId;

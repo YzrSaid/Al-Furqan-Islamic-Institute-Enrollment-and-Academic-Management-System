@@ -2126,8 +2126,8 @@ input[type="checkbox"] {
 }
 
 .radio-label {
-    font-size: 13px;
-    font-weight: 500;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .student-modal-content input,
@@ -3135,9 +3135,22 @@ td[rowspan] {
 }
 .half-unique {
   gap: 20px;
-  width: 300px;
+  width: 450px;
   display: flex;
   align-items: center;
+}
+.half-other-info {
+  gap: 20px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+.other-info-container {
+  display: flex;
+  justify-content: right;
+  gap: 30px;
+  width: 920px !important;
 }
 .half-50 {
   width: 300px;
@@ -3146,8 +3159,8 @@ td[rowspan] {
 }
 
 .half-unique label {
-  white-space: nowrap;
-  width: 120px;
+  /* white-space: nowrap; */
+  width: 160px;
 }
 .half-stud-info {
   width: 30%;
@@ -3210,6 +3223,7 @@ td[rowspan] {
   background-color: #218838;
 }
 .header {
+    width: 100% !important;
   display: flex;
   justify-content: space-between;
 }
@@ -3241,7 +3255,6 @@ td[rowspan] {
 #transferee-row {
   gap: 10px;
   width: 100px;
-  margin-right: 20px;
 }
 
 .clickable-row {
@@ -3800,4 +3813,8 @@ td[rowspan] {
 /* this header class can be used when dealing with text + add button in one row */
 .header {
   width: 40%;
+}
+
+.transferee-section {
+  display: none;
 }

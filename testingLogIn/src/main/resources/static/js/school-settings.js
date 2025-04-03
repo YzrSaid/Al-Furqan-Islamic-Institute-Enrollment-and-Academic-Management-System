@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
             schoolEmail: document.getElementById('schoolEmail').value,
             schoolContact: document.getElementById('schoolContact').value,
             themeColor: document.getElementById('colorPicker').value,
+            graduatingLevel : document.getElementById('graduatingLevel').value,
             logoBase64: null
         };
 

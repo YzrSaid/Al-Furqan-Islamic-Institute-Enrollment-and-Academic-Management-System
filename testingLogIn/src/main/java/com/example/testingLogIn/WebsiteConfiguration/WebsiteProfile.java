@@ -12,6 +12,7 @@ import java.util.Base64;
 @AllArgsConstructor
 @Builder
 public class WebsiteProfile {
+    private Integer graduatingLevel;
     private String schoolName;
     private String schoolAddress;
     private String schoolEmail;

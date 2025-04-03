@@ -1,6 +1,8 @@
 package com.example.testingLogIn.WebsiteConfiguration;
 
 import com.example.testingLogIn.Enums.Semester;
+import com.example.testingLogIn.Models.GradeLevel;
+import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Services.sySemesterServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequestMapping
@@ -29,6 +32,8 @@ public class UIController {
     private SchoolProfileRepo schoolProfileRepo;
     @Autowired
     private sySemesterServices semService;
+    @Autowired
+    private GradeLevelRepo gradeLevelRepo;
 
     @PutMapping("/website-config/update")
     public ResponseEntity<String> updateSchoolInterface(@RequestBody WebsiteProfile profile) throws FileNotFoundException {
@@ -38,6 +43,23 @@ public class UIController {
                 SchoolProfile schoolPhoto = schoolProfileRepo.findById("SchoolLogo").orElse(new SchoolProfile("SchoolLogo"));
                 schoolPhoto.setKey_value(newPicBytes);
                 schoolProfileRepo.save(schoolPhoto);
+            }
+            if(profile.getGraduatingLevel() != null){
+                System.out.println(profile.getGraduatingLevel());
+                byte [] gradeLevelByte;
+                try(ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                ObjectOutputStream objectOut = new ObjectOutputStream(byteStream)){
+                    GradeLevel glvl = gradeLevelRepo.findById(profile.getGraduatingLevel()).orElse(null);
+                    assert glvl != null;
+                    System.out.println(glvl.getLevelName());
+                    objectOut.writeObject(glvl);
+                    gradeLevelByte = byteStream.toByteArray();
+                    SchoolProfile schoolGraduatingLevel = schoolProfileRepo.findById("GraduatingLevel").orElse(new SchoolProfile("GraduatingLevel"));
+                    schoolGraduatingLevel.setKey_value(gradeLevelByte);
+                    schoolProfileRepo.save(schoolGraduatingLevel);
+                }catch (IOException ioe){
+                    //do nothing
+                }
             }
 
             SchoolProfile schoolName = schoolProfileRepo.findById("SchoolName").orElse(new SchoolProfile("SchoolName"));
@@ -66,6 +88,22 @@ public class UIController {
                 .body(imageBytes);
     }
 
+    @GetMapping("/graduatingLevel")
+    public ResponseEntity<?> getGraduatingLevel(){
+        try{
+            return new ResponseEntity<>(Objects.requireNonNull(schoolProfileRepo.findById("GraduatingLevel").map(glvl -> {
+                GradeLevel graduatingLevel;
+                try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(glvl.getKey_value()))) {
+                    graduatingLevel = (GradeLevel) ois.readObject();
+                } catch (IOException | ClassNotFoundException e) {
+                    return null;
+                }
+                return graduatingLevel;
+            }).orElseThrow(NullPointerException::new)),HttpStatus.OK);
+        }catch (NullPointerException npe){
+            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
     @ModelAttribute("schoolNum")
     public String getSchoolContact(){
         return schoolProfileRepo.findById("SchoolContactNum").map(name -> new String(name.getKey_value())).orElse("Contact Number Not Set");

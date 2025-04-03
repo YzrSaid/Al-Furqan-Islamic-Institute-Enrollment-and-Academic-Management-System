@@ -42,6 +42,12 @@
                                 required>
                         </div>
                         <div>
+                            <label for="graduatingLevel" class="form-label"><b>Graduating Grade Level</b></label>
+                            <select id="graduatingLevel">
+                                <option value="">NONE</option>
+                            </select>
+                        </div>
+                        <div>
                             <label for="schoolAddress" class="form-label"><b>Address</b></label>
                             <input type="text" th:value="${schoolAddress}" id="schoolAddress" class="form-control" placeholder="Enter Address"
                                 required>
@@ -199,6 +205,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         setTableValues();
+        setGraduatingLevel();
     });
 
     async function setTableValues() {
@@ -293,6 +300,34 @@
             .catch(error => {
                 showErrorModal("❌ Error:" + error);
             });
+    }
+
+    async function setGraduatingLevel(){
+        const levelDropDown = document.getElementById("graduatingLevel");
+        const response = await fetch("/graduatingLevel");
+        var graduatingLevelId = 0;
+        if(response.ok){
+            levelDropDown.innerHTML = ``;
+            const graduatingLevel = await response.json();
+            graduatingLevelId = graduatingLevel.levelId;
+            const option = document.createElement("option");
+            option.value = graduatingLevelId;
+            option.textContent = graduatingLevel.levelName;
+            option.selected = true;
+            levelDropDown.appendChild(option);
+        }
+
+        const res = await fetch("/gradelevel/all");
+        if(res.ok){
+            const gradeLevels = await res.json();
+            gradeLevels.forEach(gradelvl =>{
+                if(gradelvl.levelId != graduatingLevelId){
+                    const option = document.createElement("option");
+                    option.value = gradelvl.levelId;
+                    option.textContent = gradelvl.levelName;
+                    levelDropDown.appendChild(option);}
+            });
+        }
     }
 
     function deleteTransfereeReq() {

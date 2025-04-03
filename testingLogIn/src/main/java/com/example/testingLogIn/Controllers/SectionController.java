@@ -123,6 +123,7 @@ public class SectionController {
     @DeleteMapping("/delete/{sectionNumber}")
     public ResponseEntity<String> deleteSectionRecord(@PathVariable int sectionNumber) {
         try {
+            System.out.println(sectionNumber);
             if (sectionService.deleteSection(sectionNumber))
                 return new ResponseEntity<>("Section Record Deleted Successfully", HttpStatus.OK);
             else

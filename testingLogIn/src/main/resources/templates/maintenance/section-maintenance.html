@@ -320,7 +320,7 @@
                                <img data-open-modal="confirmationModal" 
                                   data-action="deleteSection" 
                                   data-message="Are you sure you want to delete this section?" 
-                                  data-id="${section.sectionName}" 
+                                  data-id="${section.number}"
                                   src="/images/icons/bin.png" 
                                   alt="section-delete-icon">
                             </div>
@@ -368,17 +368,7 @@
         }
 
         if (target.dataset.action === "deleteSection") {
-            const sectionName = target.dataset.id;
-            fetch(`/section/name/${sectionName}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Fetched data:", data);
-                    const schedNum = data.number;
-
-                    selectedSectionId = schedNum;
-
-                    console.log(selectedSectionId);
-                });
+            selectedSectionId = target.dataset.id;
         }
     });
 
@@ -469,7 +459,7 @@
             });
     }
 
-    function deleteSection(selectedSectionId) {
+    function deleteSectionNow() {
         fetch(`/section/delete/${selectedSectionId}`, {
             method: "DELETE",
             headers: {

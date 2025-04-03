@@ -26,7 +26,7 @@ public class GradeLevelServices {
             if (pre == null)
                 throw new NullPointerException();
         }
-        if (getByName(levelName) == null) {
+        if (getByNameNew(levelName) == null ) {
             GradeLevel newGrade = new GradeLevel();
             newGrade.setNotDeleted(true);
             newGrade.setLevelName(levelName);
@@ -125,6 +125,13 @@ public class GradeLevelServices {
             toReturn.add(gradeLevel.mapperDTO());
         }
         return toReturn;
+    }
+
+    public GradeLevel getByNameNew(String levelname) {
+        return gradeLevelRepo.findAll().stream()
+                .filter(gradeLevel -> gradeLevel.isNotDeleted() &&
+                        gradeLevel.getLevelName().equalsIgnoreCase(levelname))
+                .findFirst().orElse(null);
     }
 
     public GradeLevel getByName(String levelname) {

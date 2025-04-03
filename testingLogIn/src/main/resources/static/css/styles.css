@@ -442,6 +442,7 @@ body {
   line-height: 1.8;
 }
 .welcome-card-div {
+    width: 100% !important;
   display: flex;
   flex-direction: row;
   column-gap: 80px;

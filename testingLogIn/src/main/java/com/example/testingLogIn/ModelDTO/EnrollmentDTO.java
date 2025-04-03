@@ -35,6 +35,7 @@ public class EnrollmentDTO {
 
     public EnrollmentDTO(EnrollmentDTO e, StudentDTO student){
         this.enrollmentStatus = EnrollmentStatus.NOT_REGISTERED;
+        this.isNotDeleted = true;
         if(e!=null){
             this.enrollmentId = e.getEnrollmentId();
             this.schoolYear = e.getSchoolYear();

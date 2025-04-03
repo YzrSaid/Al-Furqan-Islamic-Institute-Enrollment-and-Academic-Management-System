@@ -592,7 +592,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         break;
       case "deleteSection":
-        deleteSection(selectedSectionId);
+        deleteSectionNow();
         break;
       case "addSubject":
         // This case is for adding subject level

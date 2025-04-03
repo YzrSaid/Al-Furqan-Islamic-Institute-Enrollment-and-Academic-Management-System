@@ -232,7 +232,10 @@ public class PrivateTemplateControllers {
 
     @GetMapping("/schedule")
     public String getSchedule() {
-        return "/schedule/schedule";
+        if(userDetailsService.getCurrentlyLoggedInUser().getRole() == Role.ADMIN)
+            return "/schedule/schedule";
+
+        return "/schedule/teacherSched/sched-board-teacher";
     }
 
     @GetMapping("/schedule/sched-board/{secNumber}")

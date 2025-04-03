@@ -87,7 +87,6 @@ public class SectionController {
         Map<String, String> response = new HashMap<>();
         try {
             int result = sectionService.addSection(sectionDTO);
-            System.out.println(result);
             switch (result) {
                 case 1:
                     return new ResponseEntity<>("Teacher Information Not Found", HttpStatus.NOT_FOUND);

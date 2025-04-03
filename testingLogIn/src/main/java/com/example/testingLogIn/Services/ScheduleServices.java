@@ -69,6 +69,23 @@ public class ScheduleServices {
                             .map(Schedule::mapper)
                             .collect(Collectors.toList());
     }
+
+    public List<ScheduleDTO> getLoggedInTeacherSched(){
+        UserModel teacher = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            teacher = (UserModel)authentication.getPrincipal();
+        }
+        if(teacher != null)
+            return scheduleRepo.findTeacherchedules(teacher.getStaffId()).stream()
+                    .sorted(Comparator
+                            .comparing(Schedule::getDay)
+                            .thenComparing(Schedule::getTimeStart))
+                    .map(Schedule::mapper)
+                    .collect(Collectors.toList());
+
+        return null;
+    }
     
     public List<ScheduleDTO> getSchedulesBySection(int sectionNum){
         SectionDTO section = sectionService.getSection(sectionNum);

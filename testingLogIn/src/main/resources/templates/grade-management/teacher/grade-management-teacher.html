@@ -22,8 +22,6 @@
     <div class="dashboard-container" id="content">
         <!-- Topbar -->
         <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        </div>
         <div class="text-link">
             <h4>Grade Management</h4>
             <p>Main</p>
@@ -75,6 +73,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -95,27 +94,17 @@
                     console.log(sub);
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                                <tr>
-                                    <td>${sub.subject.subjectName}</td>
-                                    <td>${sub.subject.gradeLevel.levelName}</td>
-                                    <td>${sub.count}</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <div class="status-container">
-                                                <div class="status" id="status-grade-management"></div>
-                                            </div>
-                                            <!-- <div class="action-container action">
-                                                <a href="grade-per-class.html"><img th:src="@{/images/icons/compose.png}"
-                                                        alt="edit-icon"></a>
-                                            </div> -->
-                                            <div class="action-container action">
-                                                <a href="/grade-management/sections/${sub.subject.subjectNumber}" class="view-per-class"><img src="/images/icons/compose.png"
-                                                        alt="edit-icon"></a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                `;
+                        <tr>
+                            <td>${sub.subject.subjectName}</td>
+                            <td>${sub.subject.gradeLevel.levelName}</td>
+                            <td>${sub.count}</td>
+                            <td>
+                                <div class="action-container">
+                                    <a href="/grade-management/sections/${sub.subject.subjectNumber}" class="view-sched">View Sections</a>
+                                </div>
+                            </td>
+                        </tr>
+                        `;
                     tableBody.appendChild(row);
                 });
             })

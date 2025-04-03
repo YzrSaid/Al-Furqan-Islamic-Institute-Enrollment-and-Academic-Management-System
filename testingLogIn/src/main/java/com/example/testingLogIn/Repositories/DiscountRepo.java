@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface DiscountRepo extends JpaRepository<Discount,Integer> {
 
-    @Query("SELECT dc FROM Discount dc WHERE dc.discountName LIKE CONCAT('%',:name,'%')")
+    @Query("SELECT dc FROM Discount dc WHERE dc.isNotDeleted AND dc.discountName LIKE CONCAT('%',:name,'%')")
     List<Discount> findDiscountByName(@Param("name") String name);
 
     List<Discount> findByIsNotDeletedTrue();

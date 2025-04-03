@@ -13,6 +13,8 @@ import com.example.testingLogIn.Models.*;
 import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
 import com.example.testingLogIn.Repositories.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -244,7 +246,7 @@ public class EnrollmentServices {
                     double totalPaid = Optional.ofNullable(payRecRepo.getTotalPaidByStudentForFeeInSemester(er.getStudent().getStudentId(), toPay.getId(), actvSemId)).orElse(0.0);
 
                     double reqAmount = toPay.getRequiredAmount();
-                    double discountedBalance = Math.ceil(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
+                    double discountedBalance = new BigDecimal(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount())).setScale(2, RoundingMode.HALF_UP).doubleValue();
                     String status = totalPaid >= discountedBalance? "Fully Paid":
                                     totalPaid > 0 ?                 "Partially Paid":
                                                                     "Unpaid";

@@ -18,6 +18,7 @@ public class ScheduleDTO {
     private int subjectId;
 
     private int sectionId;
+    private String gradeLevel;
     private String sectionName;
     private String sectionAdviser;
 

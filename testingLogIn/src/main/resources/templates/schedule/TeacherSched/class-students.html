@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <!-- Topbar -->
+        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        
+        <div class="text-link">
+            <h4 id="grade-level-and-section-name">Class List</h4>
+            <p>Main</p>
+            <p>/</p>
+            <p>Class List</p>
+        </div>
+
+        <div class="search-div">
+            <!-- Searchbox and sort btn -->
+            <div class="search">
+                <div class="search-container">
+                    <input type="text" placeholder="Search..." class="search-input" />
+                    <button class="search-btn">Search</button>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table id="table-ba-to" class="verify-accounts-table">
+            <thead>
+                <tr>
+                    <th>Student Id</th>
+                    <th>Student Name</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3">No Records Found</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Modal for confirmation -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p id="modalText"></p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for edit account -->
+        <div class="my-account-container-wrapper">
+            <div id="myAccountEditModal" class="my-account-edit-modal modal">
+                <div class="my-account-edit-modal-content">
+                    <h2>My Account Information</h2>
+                    <form action="" id="myAccountEditForm">
+                        <div class="half-width">
+                            <div class="user-id">
+                                <label for="user-id" id="user-id-label">User ID:</label>
+                                <p id="user-id">0001</p>
+                            </div>
+                        </div> <br>
+                        <div class="half-width">
+                            <div class="email">
+                                <label for="email">Email:</label>
+                                <p id="email">sample@gmail.com</p>
+                            </div>
+                        </div> <br>
+                        <div class="half-width student-form-group">
+                            <div class="first-name">
+                                <label for="first-name">First Name:</label>
+                                <input type="text" id="first-name" value="Batman" readonly>
+                            </div>
+                            <div class="last-name">
+                                <label for="last-name">Last Name:</label>
+                                <input type="text" id="last-name" value="Rizal" readonly>
+                            </div>
+                        </div> <br>
+                        <div class="account-type">
+                            <label for="account-type">Account Type:</label>
+                            <select name="account-type" id="account-type">
+                                <option value="" disabled>Select account type</option>
+                                <option value="ADMIN_Enrollment">Admin - Enrollment</option>
+                                <option value="TEACHER">Teacher</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button type="button" class="btn-confirm" data-action="editMyAccount"
+                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
+                                Edit
+                            </button>
+                            <button type="button" class="btn-cancel"
+                                data-close-modal="myAccountEditModal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for changing password -->
+        <div class="my-account-container-wrapper">
+            <div id="changePasswordModal" class="change-password-modal">
+                <div class="change-password-modal-content">
+                    <h2>Change Password</h2>
+                    <form action="" id="changePasswordForm">
+                        <div class="change-pass-div">
+                            <label for="current-passowrd">Current Password</label>
+                            <input type="password" id="current-passowrd">
+                        </div>
+                        <div class="change-pass-div">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password">
+                        </div>
+                        <div class="change-pass-div">
+                            <ul>
+                                <li>Must be 8 characters</li>
+                                <li>Must contain a special character</li>
+                                <li>Must contain upper and lower case</li>
+                            </ul>
+                        </div>
+                        <div class="change-pass-div">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password">
+                        </div>
+                        <div class="modal-buttons change-pass-buttons">
+                            <button type="button" class="btn-confirm" id="confirmChangePassword"
+                                data-action="change-password">Confirm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+        const pathParts = path.split('/');
+        const sectionName = pathParts[pathParts.length - 1];
+        fetchSectionInfo(sectionName);
+    });
+
+    async function fetchSectionInfo(sectionName) {
+        const response = await fetch(`/section?sectionName=${sectionName}`);
+        if (!response.ok) {
+            alert("Section Invalid.");
+            return;
+        }
+        const result = await response.json();
+        console.log(result);
+        setUpTables(result.number);
+    }
+
+    function setUpTables(sectionId) {
+        fetch(`/section/students/${sectionId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.length);
+                if (data.length === 0) return;
+                const tableBody = document.querySelector("#table-ba-to tbody");
+                tableBody.innerHTML = ``;
+                data.forEach(stud => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${stud.studentDisplayId}</td>
+                        <td>${stud.fullName}</td>
+                        <td>${stud.gender}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error fetching subject data:", error));
+    }
+</script>
+
+</html>

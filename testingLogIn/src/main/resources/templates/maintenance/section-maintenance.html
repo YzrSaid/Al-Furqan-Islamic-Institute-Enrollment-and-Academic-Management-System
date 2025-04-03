@@ -255,17 +255,14 @@
             .then(response => response.json())
             .then(advisers => {
                 const adviserSelect = document.getElementById("adviserEdit");
-                adviserSelect.innerHTML = `<option value="">Select an Adviser</option>`; // Placeholder
-
+                adviserSelect.innerHTML = `<option value="" disabled>Select an Adviser</option>`; // Placeholder
                 let currentAdviserExists = false;
 
                 advisers.forEach(adviser => {
                     console.log(adviser);
-                    console.log('This is the adviser');
-                    let option = document.createElement("option");
-                    option.value = adviser.adviserName;
-                    option.textContent = adviser.adviserName;
-                    console.log('The adviser is ' + adviser.adviserName);
+                    const option = document.createElement("option");
+                    option.value = adviser.fullName;
+                    option.textContent = adviser.fullName;
 
                     if (adviser.adviserName === currentAdviser) {
                         option.selected = true;
@@ -315,7 +312,7 @@
                                <img data-open-modal="sectionEditModal" 
                                   src="/images/icons/compose.png" 
                                   alt="section-edit-icon" 
-                                  data-id="${section.sectionName}">
+                                  data-id="${section.number}">
                                 
                                <img data-open-modal="confirmationModal" 
                                   data-action="deleteSection" 
@@ -338,13 +335,13 @@
     document.addEventListener("click", function (event) {
         const target = event.target;
         if (target.dataset.openModal === "sectionEditModal") {
-            const sectionName = target.dataset.id;
-            if (!sectionName) {
+            const sectionId = target.dataset.id;
+            if (!sectionId) {
                 console.error("Error: sectionId is undefined!");
                 return;
             }
 
-            fetch(`/section/name/${sectionName}`)
+            fetch(`/section/${sectionId}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log("Fetched data:", data);
@@ -420,9 +417,8 @@
         const form = document.getElementById("sectionEditForm");
 
         // Collect input values
-        const adviser = document.getElementById("adviser").value;
+        const adviser = document.getElementById("adviserEdit").value;
 
-        // Validate if a prerequisite is selected
         if (adviser === "") {
             showErrorModal("❌ Error: Please choose an adviser.");
             return;

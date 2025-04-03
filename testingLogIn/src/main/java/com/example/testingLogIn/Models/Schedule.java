@@ -51,6 +51,7 @@ public class Schedule {
                             .subject(subject.getSubjectName())
 
                             .sectionId(section.getNumber())
+                            .gradeLevel(section.getLevel().getLevelName())
                             .sectionName(section.getSectionName())
                             .sectionAdviser(section.getAdviser().getFullName())
                             .day(day)

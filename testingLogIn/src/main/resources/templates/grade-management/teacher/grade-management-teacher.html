@@ -28,7 +28,7 @@
             <h4>Grade Management</h4>
             <p>Main</p>
             <p>/</p>
-            <p>Grade Management Teacher Ako</p>
+            <p>Grade Management</p>
         </div>
 
         <div class="search-div">
@@ -61,24 +61,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Grade 1</td>
-                    <td>Rose</td>
-                    <td>Ma'am Rodriguez</td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status" id="status-grade-management">20/20</div>
-                            </div>
-                            <!-- <div class="action-container action">
-                                <a href="grade-per-class.html"><img th:src="@{/images/icons/compose.png}"
-                                        alt="edit-icon"></a>
-                            </div> -->
-                            <div class="action-container action">
-                                <a href="/grade-management/class" class="view-per-class"><img
-                                        src="/images/icons/compose.png" alt="edit-icon"></a>
-                            </div>
-                        </div>
-                    </td>
+                    <td colspan="4">No Records Found</td>
                 </tr>
             </tbody>
         </table>
@@ -109,6 +92,7 @@
                 tableBody.innerHTML = "";
 
                 data.forEach(sub => {
+                    console.log(sub);
                     const row = document.createElement("tr");
                     row.innerHTML = `
                                 <tr>
@@ -132,7 +116,6 @@
                                     </td>
                                 </tr>
                                 `;
-
                     tableBody.appendChild(row);
                 });
             })

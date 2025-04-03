@@ -44,7 +44,6 @@ class MapperObject{
 public class PaymentRecordService {
     private final PaymentsRecordRepo paymentRepo;
     private final StudentRepo studentRepo;
-    private final RequiredPaymentsRepo reqPaymentsRepo;
     private final sySemesterRepo SYSemRepo;
     private final CustomUserDetailsService userService;
     private final GradeLevelRequiredFeeRepo gradeReqFee;
@@ -62,12 +61,11 @@ public class PaymentRecordService {
     private PagedResourcesAssembler<PaymentRecordDTO> pagedResourcesAssembler;
 
     @Autowired
-    public PaymentRecordService(PaymentsRecordRepo paymentRepo, StudentRepo studentRepo, RequiredPaymentsRepo reqPaymentsRepo,
-                                sySemesterRepo SYSemRepo, CustomUserDetailsService userService, GradeLevelRequiredFeeRepo gradeReqFee,
+    public PaymentRecordService(PaymentsRecordRepo paymentRepo, StudentRepo studentRepo, sySemesterRepo SYSemRepo,
+                                CustomUserDetailsService userService, GradeLevelRequiredFeeRepo gradeReqFee,
                                 StudentFeesListRepo studFeesRepo) {
         this.paymentRepo = paymentRepo;
         this.studentRepo = studentRepo;
-        this.reqPaymentsRepo = reqPaymentsRepo;
         this.SYSemRepo = SYSemRepo;
         this.userService = userService;
         this.gradeReqFee = gradeReqFee;
@@ -84,7 +82,6 @@ public class PaymentRecordService {
         transaction.setTotalAmount(amount);
         transaction.setNotVoided(true);
         PaymentTransaction tran = transactionRepo.save(transaction);
-        System.out.println("Transaction saved");
         tran.setParticulars(new ArrayList<>());
 
         List<MapperObject> toSortByBalance = new ArrayList<>();

@@ -19,6 +19,7 @@ public class RequiredPaymentsDTO {
     private String name;
     private double requiredAmount;
     private boolean isDeleted;
+    private boolean isCurrentlyActive;
     private boolean isDistributable;
     private boolean willApplyNow;
     private List<Integer> gradeLevels;

@@ -23,4 +23,5 @@ public class RequiredFees {
     private String name;
     private double requiredAmount;
     private boolean isNotDeleted;
+    private boolean isCurrentlyActive;
 }

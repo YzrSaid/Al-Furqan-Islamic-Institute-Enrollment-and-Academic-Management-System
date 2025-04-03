@@ -20,5 +20,11 @@ public interface RequiredPaymentsRepo extends JpaRepository<RequiredFees, Intege
            "SET rp.isNotDeleted = false " +
            "WHERE LOWER(rp.name) = LOWER(:paymentName)")
     void deleteRequiredPaymentByName(@Param("paymentName") String paymentName);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE RequiredFees rp " +
+            "SET rp.isCurrentlyActive = true")
+    void setRequiredFeesActive();
     
 }

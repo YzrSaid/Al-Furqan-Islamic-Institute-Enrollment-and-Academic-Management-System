@@ -3,6 +3,8 @@ package com.example.testingLogIn.Services;
 import com.example.testingLogIn.Enums.Semester;
 import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Models.SchoolYearSemester;
+import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
+import com.example.testingLogIn.Repositories.RequiredPaymentsRepo;
 import com.example.testingLogIn.Repositories.SchoolYearRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
 import java.time.LocalDate;
@@ -21,11 +23,13 @@ import org.springframework.stereotype.Service;
 public class sySemesterServices {
     private final sySemesterRepo semesterRepo;
     private final SchoolYearRepo syRepo;
+    private final RequiredPaymentsRepo reqFee;
 
     @Autowired
-    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo) {
+    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo,RequiredPaymentsRepo reqFee) {
         this.semesterRepo = semesterRepo;
         this.syRepo = syRepo;
+        this.reqFee = reqFee;
     }
 
     public void addSemesters(String schoolYearName){
@@ -104,7 +108,7 @@ public class sySemesterServices {
         sem.setActive(false);
         sem.setFinished(true);
         semesterRepo.save(sem);
-        
+        reqFee.setRequiredFeesActive();
         return true;
     }
     

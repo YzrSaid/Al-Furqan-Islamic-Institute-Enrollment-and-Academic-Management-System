@@ -64,6 +64,7 @@ public class RequiredPaymentsServices {
             RequiredFees reqFee = RequiredFees.builder()
                                             .name(paymentsDTO.getName())
                                             .isNotDeleted(true)
+                                            .isCurrentlyActive(paymentsDTO.isWillApplyNow())
                                             .requiredAmount(paymentsDTO.getRequiredAmount())
                                             .build();
             RequiredFees newFee = reqPaymentsRepo.save(reqFee);
@@ -131,6 +132,7 @@ public class RequiredPaymentsServices {
         RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
         assert toUpdate != null;
         toUpdate.setName(updated.getName());
+        toUpdate.setCurrentlyActive(updated.isWillApplyNow());
         toUpdate.setRequiredAmount(updated.getRequiredAmount());
         reqPaymentsRepo.save(toUpdate);
         int currentSemId = semServices.getCurrentActive().getSySemNumber();
@@ -192,7 +194,7 @@ public class RequiredPaymentsServices {
                 GradeLevel gradeLevel = gradeLevelService.getByName(gradeLevelName);
                 reqFeeGradelvlRepo.save(GradeLevelRequiredFees.build(gradeLevel,toUpdate));
 
-                //if (updated.isWillApplyNow()) will implement tomorrow
+                if (updated.isWillApplyNow())
                     runMe(() -> {
                         List<Student> studentList =     enrollmentRepo.getCurrentlyEnrolledToGrade(gradeLevel.getLevelId(),currentSemId);
                         studentList.forEach(student -> {

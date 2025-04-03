@@ -131,6 +131,6 @@ public class GradeLevelServices {
         return gradeLevelRepo.findAll().stream()
                 .filter(gradeLevel -> gradeLevel.isNotDeleted() &&
                         gradeLevel.getLevelName().equalsIgnoreCase(levelname))
-                .findFirst().orElse(null);
+                .findFirst().orElseThrow(NullPointerException::new);
     }
 }

@@ -24,13 +24,11 @@
         <!-- Topbar -->
         <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link">
+        <div class="text-link" id="breadcrumb-container">
             <h4>Create User</h4>
-            <p>Main</p>
+            <a href="/home">Main</a>
             <p>/</p>
-            <p>Settings</p>
-            <p>/</p>
-            <p>Create User</p>
+            <a href="/settings/create-user">Settings - Create User</a>
         </div>
         <div class="create-user-container">
             <div class="form-container">

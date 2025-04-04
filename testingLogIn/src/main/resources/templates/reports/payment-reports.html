@@ -48,13 +48,11 @@
         <!-- Topbar -->
         <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link">
+        <div class="text-link" id="breadcrumb-container">
             <h4>Payment Reports</h4>
-            <p>Main</p>
+            <a href="/home">Main</a>
             <p>/</p>
-            <p>Reports</p>
-            <p>/</p>
-            <p>Payment Reports</p>
+            <a href="/reports/payment">Reports - Payment Reports</a>
         </div>
 
         <div class="search-div">

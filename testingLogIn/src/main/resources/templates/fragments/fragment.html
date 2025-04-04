@@ -16,7 +16,7 @@
             <span class="hamburger" onclick="toggleSidebar()">
                 <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
             </span>
-            <span th:text="${schoolName}" class="institute-name"></span>
+            <span class="institute-name" th:text="${schoolName != null ? schoolName : 'School Name Not Set'}"></span>
         </div>
         <div class="dropdown-logout">
             <div class="user-icon dropdown-logout-toggle">

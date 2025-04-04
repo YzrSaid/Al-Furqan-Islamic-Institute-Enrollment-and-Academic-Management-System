@@ -23,13 +23,11 @@
         <!-- Topbar -->
         <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link">
+        <div class="text-link" id="breadcrumb-container">
             <h4>Subject</h4>
-            <p>Main</p>
+            <a href="/home">Main</a>
             <p>/</p>
-            <p>Maintenance</p>
-            <p>/</p>
-            <p>Subject</p>
+            <a href="/maintenance/new-subjects">Maintenance -  New Subjects</a>
         </div>
 
         <div class="search-div">

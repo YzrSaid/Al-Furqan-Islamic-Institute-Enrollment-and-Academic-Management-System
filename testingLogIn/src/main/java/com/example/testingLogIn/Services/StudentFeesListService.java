@@ -59,4 +59,8 @@ public class StudentFeesListService {
     protected StudentFeesList studentFeesList(int studentId,int feeId,int semId){
         return studFeeRepo.getFeesBySem(studentId,feeId,semId).orElse(null);
     }
+
+    protected List<StudentFeesList> feesList(int feeId,int semId){
+        return studFeeRepo.getFeesBySemAnyStudent(feeId,semId);
+    }
 }

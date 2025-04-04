@@ -53,15 +53,17 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
 
     @Query("SELECT NEW com.example.testingLogIn.CustomObjects.EnrollmentHandler(e,stud) from Student stud " +
             "LEFT JOIN Enrollment e " +
-            "ON e.student.studentId = stud.studentId AND e.SYSemester.sySemNumber = :activeSemNumber "+
-            //"WHERE (e.isNotDeleted = true OR e.student IS NULL) "+
-            "WHERE (:status IS NULL OR (CASE " +
-            "WHEN e.student IS NULL THEN 'NOT_REGISTERED' " +
-            "WHEN e.isNotDeleted = FALSE THEN 'CANCELLED' "+
-            "ELSE e.enrollmentStatus END) = :status) "+
+            "ON e.student.studentId = stud.studentId " +
+            "AND (stud.status = 'OLD' OR stud.status = 'NEW') " +
+            "AND e.SYSemester.sySemNumber = :activeSemNumber "+
+            "WHERE (:status IS NULL OR " +
+                "(CASE " +
+                "WHEN e.student IS NULL THEN 'NOT_REGISTERED' " +
+                "WHEN e.isNotDeleted = FALSE THEN 'CANCELLED' "+
+                "ELSE e.enrollmentStatus END) = :status) "+
             "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%') " +
             "OR stud.studentDisplayId LIKE CONCAT('%',:search,'%'))")
-    Page<EnrollmentHandler> testing(@Param("status")            EnrollmentStatus status,
+    Page<EnrollmentHandler> findStudentsEnrollment(@Param("status")            EnrollmentStatus status,
                                     @Param("activeSemNumber")   int activeSemNumber,
                                     @Param("search")            String search,
                                                                 Pageable pageable);

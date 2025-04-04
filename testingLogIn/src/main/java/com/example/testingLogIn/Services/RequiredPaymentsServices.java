@@ -12,7 +12,6 @@ import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.RequiredPaymentsRepo;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -167,9 +166,9 @@ public class RequiredPaymentsServices {
 //                            studentRepo.save(student);
 //                        }}));
 //            }
-            if(updated.isWillApplyNow()){
+            if(updated.isCurrentlyActive()){
                 runMe(()->studentList.forEach(student -> {
-                    StudentFeesList studFee = sfl.studentFeesList(student.getStudentId(),levelId,currentSemId);
+                    StudentFeesList studFee = sfl.studentFeesList(student.getStudentId(),feeId,currentSemId);
                     if(studFee != null){
                         double newBalToPay;
                         if(payment.isNotDeleted()){
@@ -194,7 +193,7 @@ public class RequiredPaymentsServices {
                 GradeLevel gradeLevel = gradeLevelService.getByName(gradeLevelName);
                 reqFeeGradelvlRepo.save(GradeLevelRequiredFees.build(gradeLevel,toUpdate));
 
-                if (updated.isWillApplyNow())
+                if (updated.isCurrentlyActive())
                     runMe(() -> {
                         List<Student> studentList =     enrollmentRepo.getCurrentlyEnrolledToGrade(gradeLevel.getLevelId(),currentSemId);
                         studentList.forEach(student -> {
@@ -207,13 +206,25 @@ public class RequiredPaymentsServices {
                     });
             }
         }
-        
+
         return true;
     }
-    
-    public boolean deleteRequiredPayment(String requiredPaymentName){
-        reqPaymentsRepo.deleteRequiredPaymentByName(requiredPaymentName);
-        return true;
+
+    public void deleteRequiredPayment(String requiredPaymentName){
+        RequiredFees reqFee = reqPaymentsRepo.findByName("%"+requiredPaymentName.toLowerCase()+"%").orElseThrow(NullPointerException::new);
+        int currentSemId = semServices.getCurrentActive().getSySemNumber();
+        if(reqFee.isCurrentlyActive())
+            runMe(()->
+                    sfl.feesList(reqFee.getId(),currentSemId).forEach(studFee ->{
+                        Student student = studFee.getStudent();
+                        student.setStudentBalance(student.getStudentBalance() - studFee.getAmount());
+                        studFee.setAmount(0.0d);
+                        studentRepo.save(student);
+                        sfl.updateFeeRecord(studFee);
+                    })
+            );
+        reqFee.setNotDeleted(false);
+        reqPaymentsRepo.save(reqFee);
     }
 
     private void runMe(Runnable method){

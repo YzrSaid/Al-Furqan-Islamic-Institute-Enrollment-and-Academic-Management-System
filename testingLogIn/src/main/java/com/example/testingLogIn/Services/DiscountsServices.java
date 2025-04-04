@@ -56,7 +56,6 @@ public class DiscountsServices {
                         .student(student)
                         .isNotDeleted(true)
                         .build());
-                System.out.println("Saved");
             }
         });
         return true;

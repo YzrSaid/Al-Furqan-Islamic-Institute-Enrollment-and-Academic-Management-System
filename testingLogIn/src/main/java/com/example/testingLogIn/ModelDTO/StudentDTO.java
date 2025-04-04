@@ -41,7 +41,8 @@ public class StudentDTO {
     private String guardianName;
     private String guardianAddress;
     private String guardianContactNum;
-    
+
+    private String status;
     private boolean isNew;
     private boolean isScholar;
     private boolean isNotDeleted;

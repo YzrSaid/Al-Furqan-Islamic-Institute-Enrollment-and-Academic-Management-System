@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.Section;
@@ -11,7 +12,6 @@ import com.example.testingLogIn.Repositories.StudentRepo;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -76,6 +76,7 @@ public class StudentServices {
                                     .guardianName(student.getGuardianName())
                                     .guardianAddress(student.getGuardianAddress())
                                     .guardianContactNum(student.getGuardianContactNum())
+                                    .status(StudentStatus.NEW)
                                     .isNew(true)
                                     .isNotDeleted(true)
                                     .isScholar(student.isScholar())

@@ -3,6 +3,7 @@ package com.example.testingLogIn.Models;
 import com.example.testingLogIn.AssociativeModels.StudentTransfereeRequirements;
 import com.example.testingLogIn.CustomObjects.Address;
 import com.example.testingLogIn.Enums.Gender;
+import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -53,7 +54,10 @@ public class Student{
     private String guardianName;
     private String guardianAddress;
     private String guardianContactNum;
-    
+
+    @Enumerated(EnumType.STRING)
+    private StudentStatus status;
+    private LocalDate dataGraduated;
     private boolean isNew;
     private boolean isScholar;
     private boolean isNotDeleted;
@@ -97,7 +101,8 @@ public class Student{
                         .guardianName(guardianName)
                         .guardianAddress(guardianAddress)
                         .guardianContactNum(guardianContactNum)
-                        .isNew(isNew)
+                        .status(status.toString())
+                        .isNew(status == StudentStatus.NEW)
                         .isNotDeleted(isNotDeleted)
                         .isScholar(isScholar)
                         .isTransferee(isTransferee)

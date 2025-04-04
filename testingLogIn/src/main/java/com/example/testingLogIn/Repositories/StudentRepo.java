@@ -5,9 +5,11 @@ import com.example.testingLogIn.Models.Student;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -22,12 +24,12 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
         "AND Lower(s.fullName) LIKE CONCAT('%',:lastName,'%') "+
         "AND Lower(s.fullName) LIKE CONCAT('%',:firstName,'%') "+
         "AND (:middleName IS NULL OR s.fullName LIKE CONCAT('%',:middleName,'%'))")
-boolean existsByNameIgnoreCaseAndNotDeleted(
-    @Param("studentId") Integer studentId,
-    @Param("firstName") String firstName,
-    @Param("lastName") String lastName,
-    @Param("middleName") String middleName
-);
+    boolean existsByNameIgnoreCaseAndNotDeleted(
+        @Param("studentId") Integer studentId,
+        @Param("firstName") String firstName,
+        @Param("lastName") String lastName,
+        @Param("middleName") String middleName
+    );
     List<Student> findByIsNotDeletedTrue();
 
     Page<Student> findByIsNewTrue(Pageable pageable);//will replace the method below soon
@@ -58,8 +60,18 @@ boolean existsByNameIgnoreCaseAndNotDeleted(
             "AND (s.studentDisplayId LIKE CONCAT('%', :searching, '%') " +
             "OR LOWER(s.fullName) LIKE CONCAT('%', :searching, '%'))")
     List<Student> findByStudentDisplayIDOrName(@Param("searching") String searching);
+
+    @Query("SELECT s FROM Student s " +
+            "JOIN s.currentGradeSection.level glvl " +
+            "WHERE glvl.levelId = :levelId")
+    List<Student> findStudentsByCurrentGradeLevel(@Param("levelId") int levelId);
     
     @Query("SELECT COUNT(s) from Student s "+
            "WHERE s.studentDisplayId LIKE %:year%")
     Integer findStudentNextId(@Param("year") String year);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Student stud SET stud.status = 'OLD' WHERE stud.status = 'NEW'")
+    void setNewStudentsToOld();
 }

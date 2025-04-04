@@ -22,7 +22,7 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             "WHERE stud.studentId = :studentId " +
             "AND lvl.levelId = :gradeLevelId " +
             "GROUP BY sem " +
-            "HAVING AVG(sg.subjectGrade) > 74" +
+            "HAVING AVG(sg.subjectGrade) > 49" +
            ") THEN true ELSE false END")
     boolean didStudentPassed(
         @Param("studentId") int studentId,

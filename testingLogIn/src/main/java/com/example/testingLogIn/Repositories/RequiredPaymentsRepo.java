@@ -8,12 +8,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  *
  * @author magno
  */
 @Repository
 public interface RequiredPaymentsRepo extends JpaRepository<RequiredFees, Integer>{
+
+    @Query("SELECT rp FROM RequiredFees rp " +
+            "WHERE LOWER(rp.name) LIKE :paymentName")
+    Optional<RequiredFees> findByName(@Param("paymentName") String paymentName);
+
     @Modifying
     @Transactional
     @Query("UPDATE RequiredFees rp " +

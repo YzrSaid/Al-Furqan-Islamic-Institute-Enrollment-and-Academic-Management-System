@@ -1,18 +1,27 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.Enums.Semester;
+import com.example.testingLogIn.Enums.StudentStatus;
+import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Models.SchoolYearSemester;
-import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
-import com.example.testingLogIn.Repositories.RequiredPaymentsRepo;
-import com.example.testingLogIn.Repositories.SchoolYearRepo;
-import com.example.testingLogIn.Repositories.sySemesterRepo;
+import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.Repositories.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import com.example.testingLogIn.WebsiteConfiguration.SchoolProfile;
+import com.example.testingLogIn.WebsiteConfiguration.SchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 /**
@@ -24,12 +33,18 @@ public class sySemesterServices {
     private final sySemesterRepo semesterRepo;
     private final SchoolYearRepo syRepo;
     private final RequiredPaymentsRepo reqFee;
+    private final StudentRepo studentRepo;
+    private final SchoolProfileRepo schoolProfileRepo;
+    private final StudentSubjectGradeRepo ssgr;
 
     @Autowired
-    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo,RequiredPaymentsRepo reqFee) {
+    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo, RequiredPaymentsRepo reqFee, StudentRepo studentRepo, SchoolProfileRepo schoolProfileRepo, StudentSubjectGradeRepo ssgr) {
         this.semesterRepo = semesterRepo;
         this.syRepo = syRepo;
         this.reqFee = reqFee;
+        this.studentRepo = studentRepo;
+        this.schoolProfileRepo = schoolProfileRepo;
+        this.ssgr = ssgr;
     }
 
     public void addSemesters(String schoolYearName){
@@ -108,7 +123,32 @@ public class sySemesterServices {
         sem.setActive(false);
         sem.setFinished(true);
         semesterRepo.save(sem);
-        reqFee.setRequiredFeesActive();
+
+        ExecutorService dbExecutor = Executors.newFixedThreadPool(4);
+
+        CompletableFuture.runAsync(()->{
+            reqFee.setRequiredFeesActive();
+            studentRepo.setNewStudentsToOld();
+        },dbExecutor).exceptionally(ex -> {
+            System.err.print("Fee/student update failed"+ ex);
+            return null;
+        });
+        GradeLevel graduateLevel = graduatingLevel();
+        if(graduateLevel != null){
+            CompletableFuture.runAsync(()->{
+                List<Student> students = studentRepo.findStudentsByCurrentGradeLevel(graduateLevel.getLevelId());
+                students.forEach(student -> {
+                    if(ssgr.didStudentPassed(student.getStudentId(), graduateLevel.getLevelId())){
+                        student.setStatus(StudentStatus.GRADUATE);
+                        student.setDataGraduated(LocalDate.now());
+                    }
+                });
+                studentRepo.saveAll(students);
+            },dbExecutor).exceptionally(ex -> {
+                System.err.print("Fee/student update failed"+ ex);
+                return null;
+            });;
+        }
         return true;
     }
     
@@ -118,5 +158,19 @@ public class sySemesterServices {
                     sem.setActive(false);
                     semesterRepo.save(sem);
                 });
+    }
+
+    private GradeLevel graduatingLevel() {
+        try{
+            SchoolProfile graduateGradeLevel = schoolProfileRepo.findById("GraduatingLevel").orElseThrow(NullPointerException::new);
+            ByteArrayInputStream bais = new ByteArrayInputStream(graduateGradeLevel.getKey_value());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            GradeLevel toReturn = (GradeLevel) ois.readObject();
+            bais.close();
+            ois.close();
+            return toReturn;
+        } catch (Exception e){
+            return null;
+        }
     }
 }

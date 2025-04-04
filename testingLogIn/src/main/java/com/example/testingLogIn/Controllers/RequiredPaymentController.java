@@ -88,7 +88,9 @@ public class RequiredPaymentController {
         try {
             reqPaymentService.deleteRequiredPayment(paymentName);
             return new ResponseEntity<>("Payment \"" + paymentName + "\" deleted successfully", HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (NullPointerException npe) {
+            return new ResponseEntity<>("Payment \"" + paymentName + "\" was not found", HttpStatus.NOT_FOUND);
+        }catch (Exception e) {
             return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
         }
     }

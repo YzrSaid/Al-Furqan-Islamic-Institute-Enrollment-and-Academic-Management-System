@@ -6,6 +6,7 @@ import com.example.testingLogIn.CountersService.SectionStudentCountServices;
 import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
+import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
@@ -100,7 +101,7 @@ public class EnrollmentServices {
             enrollmentRecord.setGradeLevelToEnroll(gradeLevelToEnroll);
             enrollmentRecord.setRemarks(null);
             boolean isQualified = true;
-            if (!student.isNew() && gradeLevelToEnroll.getPreRequisite() != null) {
+            if (!(student.getStatus() == StudentStatus.NEW) && gradeLevelToEnroll.getPreRequisite() != null) {
                 int nextLevelPreReqId = gradeLevelToEnroll.getPreRequisite().getLevelId();
                 isQualified = ssgService.didStudentPassed(student.getStudentId(),
                         nextLevelPreReqId);
@@ -180,7 +181,7 @@ public class EnrollmentServices {
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = Optional.of(sySemRepo.findCurrentActive().getSySemNumber()).orElseThrow(NullPointerException::new);
-        Page<EnrollmentHandler> enrollmentRetrieved = enrollmentRepo.testing(estatus,sem,search,pageable);
+        Page<EnrollmentHandler> enrollmentRetrieved = enrollmentRepo.findStudentsEnrollment(estatus,sem,search,pageable);
         List<EnrollmentDTO> pageContent = enrollmentRetrieved.getContent().stream().peek(
                 e -> {
                     Student stud = e.getStudent();

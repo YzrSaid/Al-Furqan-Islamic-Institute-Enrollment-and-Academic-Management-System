@@ -14,14 +14,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+        </div>
+
         <div class="sched-board">
             <div class="grade-lev-container">
                 <h4 id="grade-level-and-section-name">Your Schedules</h4>
@@ -59,7 +63,7 @@
             })
             .then(data => {
                 const tableBody = document.querySelector("#paragas-eatery-table tbody");
-                if(data.length === 0){return;}
+                if (data.length === 0) { return; }
                 tableBody.innerHTML = "";
                 data.forEach(rec => {
                     const row = document.createElement("tr");

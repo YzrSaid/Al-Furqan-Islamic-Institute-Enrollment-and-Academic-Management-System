@@ -13,33 +13,36 @@
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link" id="breadcrumb-container">
-            <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/schedule">Maintenance - Schedule</a>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
-                </div>
-                <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                    </select>
+            <div class="text-link" id="breadcrumb-container">
+                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/schedule">Maintenance - Schedule</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="search">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button class="search-btn">Search</button>
+                    </div>
+                    <div class="sort-container">
+                        <select name="sort" id="sort-select" class="sort-select">
+                            <option value="" disabled selected>Sort</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,7 +69,7 @@
                     </td>
                 </tr>
             </tbody>
-        </table>
+        </table> <br> <br>
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">

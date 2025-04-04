@@ -695,16 +695,16 @@ document.addEventListener("DOMContentLoaded", function () {
           closeConfirmationModal();
         }
         break;
-//      case "studAddListing":
-//        // This case is for adding new student to the listing/registration
-//        if (!validateForm("studentForm")) { to delete soon
-//          showErrorModal("⚠️ Please fill in all required fields!");
-//          return;
-//        } else {
-//          studAddListing();
-//          closeConfirmationModal();
-//        }
-//        break;
+      //      case "studAddListing":
+      //        // This case is for adding new student to the listing/registration
+      //        if (!validateForm("studentForm")) { to delete soon
+      //          showErrorModal("⚠️ Please fill in all required fields!");
+      //          return;
+      //        } else {
+      //          studAddListing();
+      //          closeConfirmationModal();
+      //        }
+      //        break;
       case "finishSemester":
         finishSemester();
         break;
@@ -742,7 +742,7 @@ document.addEventListener("DOMContentLoaded", function () {
         deleteFee(selectedPaymentName);
         break;
       case "savePaymentTrans":
-        savePaymentNow();
+        savePaymentTrans();
         break;
       case "savePayment":
         // This case is for adding payment
@@ -1454,4 +1454,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Change button label
     updateBtn.textContent = isDisabled ? "Save" : "Update";
   });
+});
+
+// This is for for the showing and hiding of the shadow of the sticky-header:
+document.addEventListener("DOMContentLoaded", function () {
+  const header = document.querySelector(".sticky-header");
+
+  // Function to check scroll position
+  function updateShadow() {
+    if (window.scrollY > 0) {
+      header.classList.add("with-shadow");
+      header.classList.remove("no-shadow");
+    } else {
+      header.classList.add("no-shadow");
+      header.classList.remove("with-shadow");
+    }
+  }
+
+  // Run on page load
+  updateShadow();
+
+  // Run on scroll
+  window.addEventListener("scroll", updateShadow);
 });

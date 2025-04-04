@@ -312,7 +312,7 @@ body {
 }
 .dashboard-container {
   margin-left: 320px;
-  padding: 20px;
+  /* padding: 20px; */
   transition: margin-left 0.3s;
   min-height: 100vh;
   background-color: rgb(255, 255, 255);
@@ -442,7 +442,7 @@ body {
   line-height: 1.8;
 }
 .welcome-card-div {
-    width: 100% !important;
+  width: 100% !important;
   display: flex;
   flex-direction: row;
   column-gap: 80px;
@@ -522,7 +522,7 @@ body {
   font-size: 20px;
   font-weight: bold;
 }
-.text-link p {
+.text-link a {
   display: inline;
   margin: 0 -5px;
   font-size: 13px;
@@ -762,7 +762,7 @@ select option[value=""] {
 }
 
 .search-div {
-  padding: 20px 40px 0px 50px;
+  padding: 20px 20px 0px 30px;
 }
 table {
   width: 100%;
@@ -3224,7 +3224,7 @@ td[rowspan] {
   background-color: #218838;
 }
 .header {
-    width: 100% !important;
+  width: 100% !important;
   display: flex;
   justify-content: space-between;
 }
@@ -3818,4 +3818,31 @@ td[rowspan] {
 
 .transferee-section {
   display: none;
+}
+
+.table-container {
+  /* max-height: 400px;
+  width: 95%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: none; */
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white; 
+  z-index: 2; 
+  padding: 10px 20px;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* No shadow by default */
+.sticky-header.no-shadow {
+    box-shadow: none;
+}
+
+/* Shadow when scrolling */
+.sticky-header.with-shadow {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
 }

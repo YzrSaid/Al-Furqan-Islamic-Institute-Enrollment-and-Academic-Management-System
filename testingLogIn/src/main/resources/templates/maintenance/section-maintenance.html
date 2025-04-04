@@ -20,35 +20,37 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link" id="breadcrumb-container">
-            <h4>Section</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/maintenance/section">Maintenance - Section</a>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
-                    <!-- add section button -->
-                    <div class="add-something-btn-container">
-                        <button class="add-something-btn" id="openSectionModal" data-open-modal="sectionModal">Add a
-                            Section</button>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Section</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/maintenance/section">Maintenance - Section</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="search">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button class="search-btn">Search</button>
+                        <!-- add section button -->
+                        <div class="add-something-btn-container">
+                            <button class="add-something-btn" id="openSectionModal" data-open-modal="sectionModal">Add a
+                                Section</button>
+                        </div>
                     </div>
-                </div>
-                <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
-                    </select>
+                    <div class="sort-container">
+                        <select name="sort" id="sort-select" class="sort-select">
+                            <option value="" disabled selected>Sort</option>
+                            <option value="patient-number">Patient Number</option>
+                            <option value="patient-name">Patient Name</option>
+                            <option value="patient-sex">Sex</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,7 +68,7 @@
             </thead>
             <tbody>
             </tbody>
-        </table>
+        </table> <br> <br>
 
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">

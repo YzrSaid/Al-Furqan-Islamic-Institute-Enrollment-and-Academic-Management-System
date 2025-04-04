@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,27 +23,29 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-       <!-- Topbar -->
-       <div th:replace="~{fragments/fragment :: topbar}"></div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link" id="breadcrumb-container">
-            <h4>Teacher Reports</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/reports/teacher">Reports - Teacher Reports</a>
-        </div>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Teacher Reports</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/reports/teacher">Reports - Teacher Reports</a>
+            </div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
-                </div>
-                <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                    </select>
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="search">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button class="search-btn">Search</button>
+                    </div>
+                    <div class="sort-container">
+                        <select name="sort" id="sort-select" class="sort-select">
+                            <option value="" disabled selected>Sort</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,7 +78,7 @@
                     </td>
                 </tr>
             </tbody>
-        </table>
+        </table> <br> <br>
     </div>
 </body>
 

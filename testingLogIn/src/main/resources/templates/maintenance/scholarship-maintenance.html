@@ -21,35 +21,37 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link" id="breadcrumb-container">
-            <h4>Maintenance</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/maintenance/scholarship">Maintenance - Scholarship</a>
-        </div>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Maintenance</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/maintenance/scholarship">Maintenance - Scholarship</a>
+            </div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
-                    <!-- Add scholarship discount Button -->
-                    <div class="add-something-btn-container">
-                        <button class="add-something-btn" id="openScholarshipModal"
-                            data-open-modal="scholarshipModal">Add Scholarship Type</button>
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="search">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button class="search-btn">Search</button>
+                        <!-- Add scholarship discount Button -->
+                        <div class="add-something-btn-container">
+                            <button class="add-something-btn" id="openScholarshipModal"
+                                data-open-modal="scholarshipModal">Add Scholarship Type</button>
+                        </div>
                     </div>
-                </div>
-                <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
-                    </select>
+                    <div class="sort-container">
+                        <select name="sort" id="sort-select" class="sort-select">
+                            <option value="" disabled selected>Sort</option>
+                            <option value="patient-number">Patient Number</option>
+                            <option value="patient-name">Patient Name</option>
+                            <option value="patient-sex">Sex</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,7 +70,7 @@
                     <td colspan="3"> No records found</td>
                 </tr>
             </tbody>
-        </table>
+        </table> <br> <br>
 
 
         <!-- Modal for confirmation -->
@@ -118,14 +120,16 @@
                     <div class="full-width-row">
                         <!-- Radio button for fixed amount -->
                         <div class="radio-label">
-                            Fixed Amount: <input value="fixedamount" type="radio" id="fixedAmountDiscount" name="amountDiscount">
+                            Fixed Amount: <input value="fixedamount" type="radio" id="fixedAmountDiscount"
+                                name="amountDiscount">
                         </div>
                     </div>
 
                     <div class="full-width-row">
                         <!-- Radio button for fixed amount -->
                         <div class="radio-label">
-                            Percentage: <input value="percentage" type="radio" id="percentageAmountDiscount" name="amountDiscount">
+                            Percentage: <input value="percentage" type="radio" id="percentageAmountDiscount"
+                                name="amountDiscount">
                         </div>
                     </div> <br>
 
@@ -160,14 +164,16 @@
                     <div class="full-width-row">
                         <!-- Radio button for fixed amount -->
                         <div class="radio-label">
-                            Fixed Amount: <input type="radio" value="fixedamount" id="fixedAmountDiscount" name="amountDiscount">
+                            Fixed Amount: <input type="radio" value="fixedamount" id="fixedAmountDiscount"
+                                name="amountDiscount">
                         </div>
                     </div>
 
                     <div class="full-width-row">
                         <!-- Radio button for fixed amount -->
                         <div class="radio-label">
-                            Percentage: <input type="radio" value="percentage" id="percentageAmountDiscount" name="amountDiscount">
+                            Percentage: <input type="radio" value="percentage" id="percentageAmountDiscount"
+                                name="amountDiscount">
                         </div>
                     </div> <br>
 
@@ -188,83 +194,83 @@
         });
         const radioButtons = document.querySelectorAll('input[type="radio"]')
         radioButtons.forEach(radio => {
-          radio.addEventListener('change', function() {
-            const amountfield = document.getElementById("scholarshipAmount");
-            if (this.checked) {
-              if(this.value === "fixedamount")
-                amountfield.max = 999999;
-              else{
-                amountfield.max=100;
-                if(amountfield.value >100)
-                    amountfield.value = 100;
-              }
-            }
-            amountfield.disabled = false;
-          });
+            radio.addEventListener('change', function () {
+                const amountfield = document.getElementById("scholarshipAmount");
+                if (this.checked) {
+                    if (this.value === "fixedamount")
+                        amountfield.max = 999999;
+                    else {
+                        amountfield.max = 100;
+                        if (amountfield.value > 100)
+                            amountfield.value = 100;
+                    }
+                }
+                amountfield.disabled = false;
+            });
         });
-        function addNewScholarship(){
+        function addNewScholarship() {
             const choice = Array.from(radioButtons).find(radio => radio.checked).value;
             const scholarshipName = document.getElementById("scholarshipName").value;
             const scholarshipDiscount = document.getElementById("scholarshipAmount").value;
 
             const scholarshipData = {
-                discountName : scholarshipName,
-                percentageDiscount : 0,
-                fixedDiscount : 0
+                discountName: scholarshipName,
+                percentageDiscount: 0,
+                fixedDiscount: 0
             }
-            if(choice === "fixedamount")
+            if (choice === "fixedamount")
                 scholarshipData.fixedDiscount = scholarshipDiscount;
             else
                 scholarshipData.percentageDiscount = scholarshipDiscount;
 
-            fetch("/discounts/add",{
+            fetch("/discounts/add", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(scholarshipData)
             })
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text();
-              })
-              .then(data => {
-                showSuccessModal(data);
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    showSuccessModal(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
         var angIDeleteNaDiscount;
         document.addEventListener("click", function (event) {
             const deleteDiscount = event.target.closest('[data-action="deleteScholarshipType"]');
-            if(deleteDiscount){
+            if (deleteDiscount) {
                 angIDeleteNaDiscount = deleteDiscount.getAttribute("data-id");
             }
         });
 
-        function getDiscountsList(){
+        function getDiscountsList() {
             fetch("/discounts/all")
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-              })
-              .then(data => {
-                if(data.size === 0)
-                    return;
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.size === 0)
+                        return;
 
-                const tableBody = document.querySelector("#lamesa tbody");
-                tableBody.innerHTML = ``;
+                    const tableBody = document.querySelector("#lamesa tbody");
+                    tableBody.innerHTML = ``;
 
-                data.forEach(discount => {
-                    console.log(discount);
-                    const discountAmount = discount.fixedDiscount > 0 ? "P"+discount.fixedDiscount : discount.percentageDiscount +"%";
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
+                    data.forEach(discount => {
+                        console.log(discount);
+                        const discountAmount = discount.fixedDiscount > 0 ? "P" + discount.fixedDiscount : discount.percentageDiscount + "%";
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
                         <td>${discount.discountName}</td>
                         <td>${discountAmount}</td>
                         <td>
@@ -281,30 +287,30 @@
                             </div>
                         </td>`;
                         tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle errors here
                 });
-              })
-              .catch(error => {
-                console.error('Error:', error);
-                // Handle errors here
-              });
-            }
+        }
 
-        function deletescholarship(){
-            fetch(`/discounts/delete/${angIDeleteNaDiscount}`,{
+        function deletescholarship() {
+            fetch(`/discounts/delete/${angIDeleteNaDiscount}`, {
                 method: 'DELETE'
             })
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text();
-              })
-              .then(msg => {
-                showSuccessModal(msg);
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(msg => {
+                    showSuccessModal(msg);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
     </script>
 </body>

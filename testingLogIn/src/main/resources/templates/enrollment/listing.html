@@ -21,42 +21,45 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link" id="breadcrumb-container">
-           <h4>Listing</h4>
-            <a href="/home">Main</a> 
-           <p>/</p> 
-           <a href="/enrollment/listing">Enrollment - Listing</a>
-        </div>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Listing</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/enrollment/listing">Enrollment - Listing</a>
+            </div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                    <button onclick="goList(1,1)" class="search-btn">Search</button>
-                </div>
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="search">
+                    <div class="search-container">
+                        <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                        <button onclick="goList(1,1)" class="search-btn">Search</button>
+                    </div>
 
-                <!-- Enrollment Buttons -->
-                <div class="enrollment-buttons">
-                    <button class="new-student" data-open-modal="newStudentModal">NEW STUDENT</button>
-                </div>
+                    <!-- Enrollment Buttons -->
+                    <div class="enrollment-buttons">
+                        <button class="new-student" data-open-modal="newStudentModal">NEW STUDENT</button>
+                    </div>
 
-                <div class="sort-container">
-                    <select title="sort" name="sort" onchange="goList(1,1)" id="sort-select" class="sort-select">
-                        <option value="All" selected>All</option>
-                        <option value="Listing">Listing</option>
-                        <option value="Assessment">Assessment</option>
-                        <option value="Payment">Payment</option>
-                        <option value="Enrolled">Enrolled</option>
-                        <option value="Not_registered">Wala sa listing</option>
-                        <option value="Cancelled">Cancelled</option>
-                    </select>
+                    <div class="sort-container">
+                        <select title="sort" name="sort" onchange="goList(1,1)" id="sort-select" class="sort-select">
+                            <option value="All" selected>All</option>
+                            <option value="Listing">Listing</option>
+                            <option value="Assessment">Assessment</option>
+                            <option value="Payment">Payment</option>
+                            <option value="Enrolled">Enrolled</option>
+                            <option value="Not_registered">Wala sa listing</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Table -->
         <table id="lamesa" class="listing-table">

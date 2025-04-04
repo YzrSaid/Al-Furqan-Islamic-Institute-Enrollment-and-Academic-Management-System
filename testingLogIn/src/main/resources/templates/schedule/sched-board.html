@@ -14,22 +14,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link">
-            <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Maintenance</p>
-            <p>/</p>
-            <p>Schedule</p>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <div class="text-link">
+                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+                <p>Main</p>
+                <p>/</p>
+                <p>Maintenance</p>
+                <p>/</p>
+                <p>Schedule</p>
+            </div>
         </div>
         <div class="sched-board">
             <div class="grade-lev-container">
@@ -75,7 +78,7 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>
+            </table> <br> <br>
 
             <div class="add-row-container">
                 <img id="addRowBtn" th:src="@{/images/icons/add-button.png}" alt="">

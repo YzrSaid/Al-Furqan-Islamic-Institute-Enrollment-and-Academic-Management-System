@@ -20,32 +20,36 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link" id="breadcrumb-container">
-            <h4>School Year</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/maintenance/school-year">Maintenance - School Year</a>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
-                    <!-- Add School Year Button -->
-                    <div class="add-something-btn-container">
-                        <button class="add-something-btn" id="openSchoolYearModal" data-open-modal="schoolYearModal">Add
-                            School
-                            Year</button>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>School Year</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/maintenance/school-year">Maintenance - School Year</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox -->
+                <div class="search">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button class="search-btn">Search</button>
+                        <!-- Add School Year Button -->
+                        <div class="add-something-btn-container">
+                            <button class="add-something-btn" id="openSchoolYearModal"
+                                data-open-modal="schoolYearModal">Add
+                                School
+                                Year</button>
+                        </div>
+
                     </div>
-
                 </div>
             </div>
         </div>
+
 
         <!-- Table -->
         <table class="school-year-table" border="1">
@@ -60,7 +64,7 @@
             </thead>
             <tbody>
             </tbody>
-        </table>
+        </table> <br> <br>
 
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">

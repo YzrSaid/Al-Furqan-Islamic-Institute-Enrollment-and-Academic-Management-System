@@ -1477,3 +1477,120 @@ document.addEventListener("DOMContentLoaded", function () {
   // Run on scroll
   window.addEventListener("scroll", updateShadow);
 });
+
+// Confirm Button Title
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('button, input[type="button"], input[type="submit"]').forEach(function(btn) {
+        const text = btn.value || btn.textContent;
+        if (text && text.includes("Confirm")) {
+            btn.title = "Confirm Button";
+        }
+    });
+});
+
+// Search Button Title 
+document.addEventListener("DOMContentLoaded", function(){
+    document.querySelectorAll('button, input[type="button"], input[type="submit"]').forEach(function(btn){
+      const text = btn.value || btn.textContent;
+      if (text && text.includes("Search")) {
+        btn.title = "Click this to search after typing the info";
+      }
+    }); 
+});
+
+// "Main" Href Link Title
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('a').forEach(function(link) {
+      if (link.textContent.trim() === "Main") {
+          link.title = "Go to Dashboard";
+      }
+  });
+});
+
+// Add Title on each Burger Image Hide Sidebar  
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll('span.hamburger').forEach(function (span) {
+    const img = span.querySelector('img');
+    if (img && img.src.includes("burger_menu_icon.png")) {
+      span.title = "Hide Sidebar"; // Default title when sidebar is expanded
+    }
+  });
+});
+
+function toggleSidebar() {
+  let sidebar = document.getElementById("sidebar");
+  let content = document.getElementById("content");
+
+  const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
+
+  if (isCollapsed) {
+    sidebar.classList.remove("collapsed-sidebar");
+    content.classList.remove("collapsed-content");
+    content.style.marginLeft = "320px";
+  } else {
+    sidebar.classList.add("collapsed-sidebar");
+    content.classList.add("collapsed-content");
+    content.style.marginLeft = "0";
+  }
+
+  // Update all hamburger titles after toggling
+  document.querySelectorAll('span.hamburger').forEach(function (span) {
+    const img = span.querySelector('img');
+    if (img && img.src.includes("burger_menu_icon.png")) {
+      span.title = isCollapsed ? "Hide Sidebar" : "Show Sidebar";
+    }
+  });
+}
+
+// Pagination Title Function
+document.addEventListener("DOMContentLoaded", function () {
+  // Example dynamic data (you can fetch this from an API or calculate it based on your dataset)
+  const totalItems = 95; // Total items (e.g., from a database or API response)
+  const itemsPerPage = 10; // Items per page
+
+  // Calculate total pages dynamically
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  let currentPage = 1; // Assuming initial page is 1
+
+  // Initialize pagination with dynamic titles
+  updatePaginationTitles(currentPage, totalPages);
+
+  // Function to update titles based on current page and total pages
+  function updatePaginationTitles(currentPage, totalPages) {
+      const prevPageBtn = document.getElementById("prevPage");
+      const nextPageBtn = document.getElementById("nextPage");
+
+      // Update 'prevPage' title
+      if (currentPage === 1) {
+          prevPageBtn.disabled = true;
+          prevPageBtn.title = "You're already on the first page.";
+      } else {
+          prevPageBtn.disabled = false;
+          prevPageBtn.title = "Click to show previous page.";
+      }
+
+      // Update 'nextPage' title
+      if (currentPage === totalPages) {
+          nextPageBtn.disabled = true;
+          nextPageBtn.title = "You're already on the last page.";
+      } else {
+          nextPageBtn.disabled = false;
+          nextPageBtn.title = "Click to show next page.";
+      }
+  }
+
+  // Example: Handle page navigation (next/prev) and call the function
+  document.getElementById("prevPage").addEventListener("click", function () {
+      if (currentPage > 1) {
+          currentPage--;
+          updatePaginationTitles(currentPage, totalPages);
+      }
+  });
+
+  document.getElementById("nextPage").addEventListener("click", function () {
+      if (currentPage < totalPages) {
+          currentPage++;
+          updatePaginationTitles(currentPage, totalPages);
+      }
+  });
+});

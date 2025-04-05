@@ -28,7 +28,7 @@
                 <h4>Manage Accounts</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/accounts/manage-accounts">Account - Manage Accounts</a>
+                <a href="/accounts/manage-accounts" title="You're currently in this page.">Account - Manage Accounts</a>
             </div>
 
             <div class="search-div">
@@ -36,14 +36,16 @@
                 <div class="search">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
+                        <button class="search-btn" title="Search Account">Search</button>
                     </div>
                     <div class="sort-container">
                         <select name="sort" id="sort-select" class="sort-select">
                             <option value="" disabled selected>Sort</option>
-                            <option value="patient-number">Patient Number</option>
-                            <option value="patient-name">Patient Name</option>
-                            <option value="patient-sex">Sex</option>
+                            <option value="user-id">User ID</option>
+                            <option value="account-name">Name</option>
+                            <option value="account-email">Email</option>
+                            <option value="account-type">Account Type</option>
+                            <option value="account-status">Status</option>
                         </select>
                     </div>
                 </div>
@@ -70,7 +72,7 @@
             <div class="modal-content">
                 <p id="errorMessage"></p>
                 <div class="modal-buttons">
-                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                    <button class="error-btn-cancel" data-close-modal="errorModal" title="Close">Close</button>
                 </div>
             </div>
         </div>
@@ -88,7 +90,7 @@
             <div class="modal-content">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button id="confirmAction" class="btn-confirm" title="Confirm Button">Confirm</button>
                     <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
@@ -133,11 +135,11 @@
 
                         <div class="modal-buttons">
                             <button type="button" class="btn-confirm" data-action="editMyAccount"
-                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
+                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit" title="Confirm Account Edit">
                                 Edit
                             </button>
                             <button type="button" class="btn-cancel"
-                                data-close-modal="myAccountEditModal">Close</button>
+                                data-close-modal="myAccountEditModal" title="Close Button">Close</button>
                         </div>
                     </form>
                 </div>
@@ -171,7 +173,7 @@
                         </div>
                         <div class="modal-buttons change-pass-buttons">
                             <button type="button" class="btn-confirm" id="confirmChangePassword"
-                                data-action="change-password">Confirm</button>
+                                data-action="change-password" title="Confirm Change Password">Confirm</button>
                         </div>
                     </form>
                 </div>

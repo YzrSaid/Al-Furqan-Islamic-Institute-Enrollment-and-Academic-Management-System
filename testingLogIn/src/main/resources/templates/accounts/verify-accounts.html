@@ -27,7 +27,7 @@
             <h4>Verify Accounts</h4>
             <a href="/home">Main</a>
             <p>/</p>
-            <a href="/accounts/verify-accounts">Accounts - Verify Accounts</a>
+            <a href="/accounts/verify-accounts" title="You're currently in this page.">Accounts - Verify Accounts</a>
         </div>
 
         <div class="search-div">
@@ -35,14 +35,15 @@
             <div class="search">
                 <div class="search-container">
                     <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+                    <button class="search-btn" title="Search Account">Search</button>
                 </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
+                        <option value="user-id">User ID</option>
+                        <option value="account-name">Name</option>
+                        <option value="account-email">Email</option>
+                        <option value="account-status">Status</option>
                     </select>
                 </div>
             </div>
@@ -93,10 +94,10 @@
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="verifyAccount"
                             data-message="Are you sure you want to verify this account?"
-                            data-open-modal="confirmationModal">
+                            data-open-modal="confirmationModal" title="Confirm Button">
                             Confirm
                         </button>
-                        <button type="button" class="btn-cancel" data-close-modal="addAccountTypeModal">Cancel</button>
+                        <button type="button" class="btn-cancel" data-close-modal="addAccountTypeModal" title="Cancel Button">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -107,7 +108,7 @@
             <div class="modal-content">
                 <p id="errorMessage"></p>
                 <div class="modal-buttons">
-                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                    <button class="error-btn-cancel" data-close-modal="errorModal" title="Close Button">Close</button>
                 </div>
             </div>
         </div>
@@ -125,8 +126,8 @@
             <div class="modal-content">
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
+                    <button id="confirmAction" class="btn-confirm" title="Confirm Button">Confirm</button>
+                    <button data-close-modal="confirmationModal" class="btn-cancel" title="Cancel Button">Cancel</button>
                 </div>
             </div>
         </div>

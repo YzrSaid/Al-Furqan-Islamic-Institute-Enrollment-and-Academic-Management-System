@@ -29,7 +29,7 @@
                 <h4>Listing</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/enrollment/listing">Enrollment - Listing</a>
+                <a href="/enrollment/listing" title="You're currently in this page.">Enrollment - Listing</a>
             </div>
 
             <div class="search-div">
@@ -42,7 +42,7 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button class="new-student" data-open-modal="newStudentModal">NEW STUDENT</button>
+                        <button class="new-student" data-open-modal="newStudentModal" title="Add New Student">NEW STUDENT</button>
                     </div>
 
                     <div class="sort-container">
@@ -87,9 +87,9 @@
                             </div>
                             <div class="dropdown-status-content" id="dropdown-listing">
                                 <a href="#" data-action="listingAddGradeLevel"
-                                    data-open-modal="gradeLevelModal">Proceed</a>
+                                    data-open-modal="gradeLevelModal" title="Click to Proceed">Proceed</a>
                                 <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-                                    data-message="Are you sure you want to cancel this registration?">Cancel
+                                    data-message="Are you sure you want to cancel this registration?" title="Clicking this will cancel the registration">Cancel
                                     Registration</a>
                             </div>
                         </div>
@@ -101,9 +101,9 @@
         <!-- Pagination -->
         <div class="pagination-container">
             <div id="pagination" class="pagination">
-                <button id="prevPage" disabled>&laquo;</button>
+                <button id="prevPage" disabled title="Click to show previous page">&laquo;</button>
                 <div id="pageNumbers"></div>
-                <button id="nextPage">&raquo;</button>
+                <button id="nextPage" title="Click to show next page.">&raquo;</button>
             </div>
         </div>
 
@@ -199,30 +199,30 @@
                         <h6>Father's Information</h6>
                         <div class="student-form-group">
                             <label for="fatherName">Name:</label>
-                            <input type="text" id="fatherName">
+                            <input type="text" id="studfatherName">
 
                             <label for="fatherOccupation">Occupation:</label>
-                            <input type="text" id="fatherOccupation">
+                            <input type="text" id="studfatherOccupation">
                         </div> <br>
                     </div>
                     <div>
                         <h6>Mother's Information</h6>
                         <div class="student-form-group">
                             <label for="motherName">Name:</label>
-                            <input type="text" id="motherName">
+                            <input type="text" id="studmotherName">
 
                             <label for="motherOccupation">Occupation:</label>
-                            <input type="text" id="motherOccupation">
+                            <input type="text" id="studmotherOccupation">
                         </div> <br>
                     </div>
 
                     <h6>Guardian's Information</h6>
                     <div class="student-form-group">
                         <label for="guardianName">Name:</label>
-                        <input type="text" id="guardianName">
+                        <input type="text" id="studguardianName">
 
                         <label for="guardianOccupation">Occupation:</label>
-                        <input type="text" id="guardianOccupation">
+                        <input type="text" id="studguardianOccupation">
                     </div> <br>
 
                     <div class="student-form-group">
@@ -1700,10 +1700,10 @@
         document.getElementById("gender").value = studentProf.gender;
         document.getElementById("birthdate").value = studentProf.birthdate;
         document.getElementById("placeOfBirth").value = studentProf.birthPlace;
-        document.getElementById("fatherName").value = studentProf.fatherName;
-        document.getElementById("fatherOccupation").value = studentProf.fatherOccupation;
-        document.getElementById("motherName").value = studentProf.motherName;
-        document.getElementById("motherOccupation").value = studentProf.motherOccupation;
+        document.getElementById("studfatherName").value = studentProf.fatherName;
+        document.getElementById("studfatherOccupation").value = studentProf.fatherOccupation;
+        document.getElementById("studmotherName").value = studentProf.motherName;
+        document.getElementById("studmotherOccupation").value = studentProf.motherOccupation;
         document.getElementById("stud-type").textContent = studentProf.new ? "NEW" : "OLD";
         document.getElementById("street").value = studentProf.address.street;
         document.getElementById("barangay").value = studentProf.address.barangay;

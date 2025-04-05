@@ -27,7 +27,7 @@
             <h4>Account</h4>
             <a href="/home">Main</a>
             <p>/</p>
-            <a href="/accounts/my-account">Account - My Account</a>
+            <a href="/accounts/my-account" title="You're currently in this page.">Account - My Account</a>
         </div>
         <div class="my-account-container-wrapper">
             <div class="my-account-container">
@@ -66,7 +66,7 @@
             </div> -->
             <div class="edit-account-container">
                 <div class="edit-account">
-                    <button class="btn-edit" id="openMyAccountEditModal" data-open-modal="myAccountEditModal">Edit My
+                    <button class="btn-edit" id="openMyAccountEditModal" data-open-modal="myAccountEditModal" title="Edit Account">Edit My
                         Account</button>
                 </div>
             </div>
@@ -76,8 +76,8 @@
             <div class="modal-content">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                    <button id="confirmAction" class="btn-confirm" title="Confirm">Confirm</button>
+                    <button class="btn-cancel" data-close-modal="confirmationModal" title="Cancel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -121,11 +121,11 @@
 
                         <div class="modal-buttons">
                             <button type="button" class="btn-confirm" data-action="editMyAccount"
-                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
+                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit" title="Edit Account">
                                 Edit
                             </button>
                             <button type="button" class="btn-cancel"
-                                data-close-modal="myAccountEditModal">Close</button>
+                                data-close-modal="myAccountEditModal" title="Close">Close</button>
                         </div>
                     </form>
                 </div>
@@ -160,7 +160,7 @@
                         <div class="modal-buttons change-pass-buttons">
                             <button type="button" class="btn-confirm" id="confirmChangePassword"
                                 data-action="changePassword" data-open-modal="confirmationModal"
-                                data-message="Are you sure you want update the password for this account?">Confirm</button>
+                                data-message="Are you sure you want update the password for this account?" title="Confirm Button">Confirm</button>
                         </div>
                     </form>
                 </div>

@@ -29,7 +29,7 @@
                 <h4>Listing</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/enrollment/listing">Enrollment - Listing</a>
+                <a href="/enrollment/listing" title="You're currently in this page.">Enrollment - Listing</a>
             </div>
 
             <div class="search-div">
@@ -42,7 +42,8 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button class="new-student" data-open-modal="newStudentModal">NEW STUDENT</button>
+                        <button class="new-student" data-open-modal="newStudentModal" title="Add New Student">NEW
+                            STUDENT</button>
                     </div>
 
                     <div class="sort-container">
@@ -86,10 +87,11 @@
                                 </button>
                             </div>
                             <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" data-action="listingAddGradeLevel"
-                                    data-open-modal="gradeLevelModal">Proceed</a>
+                                <a href="#" data-action="listingAddGradeLevel" data-open-modal="gradeLevelModal"
+                                    title="Click to Proceed">Proceed</a>
                                 <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-                                    data-message="Are you sure you want to cancel this registration?">Cancel
+                                    data-message="Are you sure you want to cancel this registration?"
+                                    title="Clicking this will cancel the registration">Cancel
                                     Registration</a>
                             </div>
                         </div>
@@ -101,9 +103,9 @@
         <!-- Pagination -->
         <div class="pagination-container">
             <div id="pagination" class="pagination">
-                <button id="prevPage" disabled>&laquo;</button>
+                <button id="prevPage" disabled title="Click to show previous page">&laquo;</button>
                 <div id="pageNumbers"></div>
-                <button id="nextPage">&raquo;</button>
+                <button id="nextPage" title="Click to show next page.">&raquo;</button>
             </div>
         </div>
 
@@ -199,30 +201,30 @@
                         <h6>Father's Information</h6>
                         <div class="student-form-group">
                             <label for="fatherName">Name:</label>
-                            <input type="text" id="fatherName">
+                            <input type="text" id="studfatherName">
 
                             <label for="fatherOccupation">Occupation:</label>
-                            <input type="text" id="fatherOccupation">
+                            <input type="text" id="studfatherOccupation">
                         </div> <br>
                     </div>
                     <div>
                         <h6>Mother's Information</h6>
                         <div class="student-form-group">
                             <label for="motherName">Name:</label>
-                            <input type="text" id="motherName">
+                            <input type="text" id="studmotherName">
 
                             <label for="motherOccupation">Occupation:</label>
-                            <input type="text" id="motherOccupation">
+                            <input type="text" id="studmotherOccupation">
                         </div> <br>
                     </div>
 
                     <h6>Guardian's Information</h6>
                     <div class="student-form-group">
                         <label for="guardianName">Name:</label>
-                        <input type="text" id="guardianName">
+                        <input type="text" id="studguardianName">
 
                         <label for="guardianOccupation">Occupation:</label>
-                        <input type="text" id="guardianOccupation">
+                        <input type="text" id="studguardianOccupation">
                     </div> <br>
 
                     <div class="student-form-group">
@@ -1438,51 +1440,58 @@
                     row.setAttribute("data-enrollment-id", enr.enrollmentId);
                     row.classList.add("clickable-row");
 
+                    // If enrollment is canceled, apply the "enrollment-cancelled" class to the row
+                    if (enr.notDeleted === false) {
+                        row.classList.add("enrollment-cancelled");  // This will make the row red with opacity
+                    }
+
                     const displayStatus = enr.enrollmentStatus === "NOT_REGISTERED" ? "UNREGISTERED" : enr.enrollmentStatus;
 
                     let dropdownContent = `
-                    <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}"
-                    data-open-modal="studentInformationModal" onclick="displayStud(decodeURIComponent('${studentJson}'))"> View Record </a>`
+    <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}"
+    data-open-modal="studentInformationModal" onclick="displayStud(decodeURIComponent('${studentJson}'))"> View Record </a>`
                         + getDropdownContent(enr);
 
-                    const statusClass = getEnrollmentStatusClass(displayStatus);
+                    const statusClass = getEnrollmentStatusClass(displayStatus, enr.notDeleted);
 
                     row.innerHTML = `
-                    <td>${enr.student.studentDisplayId}</td>
-                    <td>${enr.student.firstName} ${enr.student.middleName ? enr.student.middleName + ' ' : ''} ${enr.student.lastName}</td>`;
+    <td>${enr.student.studentDisplayId}</td>
+    <td>${enr.student.firstName} ${enr.student.middleName ? enr.student.middleName + ' ' : ''} ${enr.student.lastName}</td>`;
 
                     if (enr.enrollmentStatus === "ASSESSMENT") {
                         const levelId = enr.student.currentGradeLevel?.levelId ?? null;
                         row.innerHTML += `
-                        <td>
-                            <select onChange="updateGradeLevel(${enr.enrollmentId}, this.options[this.selectedIndex].value)"
-                                    class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" 
-                                    data-isStudent-new="${enr.student.new}" data-current-grade-Id="${levelId}" 
-                                    data-isStudent-transferee="${enr.student.transferee}">
-                                <option>Loading...</option> <!-- Placeholder -->
-                            </select>
-                        </td>`;
+        <td>
+            <select onChange="updateGradeLevel(${enr.enrollmentId}, this.options[this.selectedIndex].value)"
+                    class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" 
+                    data-isStudent-new="${enr.student.new}" data-current-grade-Id="${levelId}" 
+                    data-isStudent-transferee="${enr.student.transferee}">
+                <option>Loading...</option> <!-- Placeholder -->
+            </select>
+        </td>`;
                     } else {
                         row.innerHTML += `<td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
                     }
+
                     const status = enr.notDeleted === false ? "CANCELLED" : enr.enrollmentStatus;
                     row.innerHTML += `
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status ${statusClass}" id="status-registration">${enr.enrollmentStatus} ${enr.notDeleted === false ? "(CANCELLED)" : ""}</div> <!-- Modified display -->
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                            </div>
-                            <div class="dropdown-status-content" id="dropdown-listing">
-                                ${dropdownContent}
-                            </div>
-                        </div>
-                    </td>`;
+    <td>
+        <div class="dropdown">
+            <div class="status-container">
+                <div class="status ${statusClass}" id="status-registration">${enr.enrollmentStatus}</div> <!-- Modified display -->
+                <button class="dropdown-status-btn">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="dropdown-status-content" id="dropdown-listing">
+                ${dropdownContent}
+            </div>
+        </div>
+    </td>`;
 
                     tableBody.appendChild(row);
                 });
+
 
 
                 document.querySelectorAll(".grade-level-dropdown").forEach(selectTag => {
@@ -1501,8 +1510,11 @@
 
 
     // this function is to control the color of the status color
-    function getEnrollmentStatusClass(status) {
+    function getEnrollmentStatusClass(status, isCancelled) {
         status = status.toLowerCase();
+        if (!isCancelled) {
+            return "enrollment-cancelled";
+        }
         switch (status) {
             case "listing":
                 return "listing-status";
@@ -1595,16 +1607,28 @@
             .catch(error => console.error("Error fetching grade levels:", error));
     }
 
-    async function cancelEnrollment(enrollmentToCancel, backToNormal) {//ctrl here
-        let response = await fetch(`/enrollment/cancel/${enrollmentToCancel}?undo=${backToNormal}`);
-        if (!response.ok) throw new Error("wa nakita");
-        alert(await response.text());
-        goList(currentPageNo, currentPageSize);
+    async function cancelEnrollment(enrollmentToCancel, backToNormal) {
+        try {
+            let response = await fetch(`/enrollment/cancel/${enrollmentToCancel}?undo=${backToNormal}`);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                showErrorModal("❌ Error: " + errorText);
+                return;
+            }
+
+            const successText = await response.text();
+            showSuccessModal("✅ Success: " + successText);
+            goList(currentPageNo, currentPageSize);
+        } catch (error) {
+            showErrorModal("❌ Error: " + error.message);
+        }
     }
+
 
     function getDropdownContent(enr) {
         if (enr.notDeleted === false || enr.notDeleted === "false") {
-            return `<a href="#" data-enrollment-id="${enr.enrollmentId}" data-action="undoCancel">Ibalik sa dati T_T</a>`;
+            return `<a href="#" data-enrollment-id="${enr.enrollmentId}" data-action="undoCancel">Undo cancellation</a>`;
         }
         switch (enr.enrollmentStatus) {
             case "LISTING":
@@ -1700,10 +1724,10 @@
         document.getElementById("gender").value = studentProf.gender;
         document.getElementById("birthdate").value = studentProf.birthdate;
         document.getElementById("placeOfBirth").value = studentProf.birthPlace;
-        document.getElementById("fatherName").value = studentProf.fatherName;
-        document.getElementById("fatherOccupation").value = studentProf.fatherOccupation;
-        document.getElementById("motherName").value = studentProf.motherName;
-        document.getElementById("motherOccupation").value = studentProf.motherOccupation;
+        document.getElementById("studfatherName").value = studentProf.fatherName;
+        document.getElementById("studfatherOccupation").value = studentProf.fatherOccupation;
+        document.getElementById("studmotherName").value = studentProf.motherName;
+        document.getElementById("studmotherOccupation").value = studentProf.motherOccupation;
         document.getElementById("stud-type").textContent = studentProf.new ? "NEW" : "OLD";
         document.getElementById("street").value = studentProf.address.street;
         document.getElementById("barangay").value = studentProf.address.barangay;
@@ -1815,7 +1839,6 @@
         const cancelReg = target.closest('[data-action="cancelRegistration"]');
         const undoCancellation = target.closest('[data-action="undoCancel"]');
         if (cancelReg) {
-            alert("Cancelling");
             const enrollmentIdCancel = cancelReg.getAttribute("data-enrollment-id");
             cancelEnrollment(enrollmentIdCancel, false);
         } else if (undoCancellation) {
@@ -1832,7 +1855,6 @@
             }
         }
         else if (paymentBtn) {
-            alert("Will set up payment form");
             setUpPaymentForm();
         }
         else if (paymentList) {

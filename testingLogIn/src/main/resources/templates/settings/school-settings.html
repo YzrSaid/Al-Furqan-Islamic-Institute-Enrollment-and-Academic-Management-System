@@ -19,15 +19,19 @@
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link">
-            <h4>School Settings</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/settings/school-settings">Settings - School Settings</a>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <div class="text-link">
+                <h4>School Settings</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/settings/school-settings" title="You're currently in this page.">Settings - School
+                    Settings</a>
+            </div>
         </div>
+
         <!-- School Settings Form -->
         <div class="settings-main-container mt-4">
             <form id="schoolSettingsForm" enctype="multipart/form-data">
@@ -36,71 +40,86 @@
                     <div class="school-info-container">
                         <div>
                             <label for="schoolName" class="form-label"><b>School Name</b></label>
-                            <input type="text" th:value="${schoolName}" id="schoolName" class="form-control" placeholder="Enter School Name"
-                                required>
-                        </div>
-                        <div>
-                            <label for="graduatingLevel" class="form-label"><b>Graduating Grade Level</b></label>
-                            <select id="graduatingLevel">
-                                <option value="">NONE</option>
-                            </select>
+                            <input type="text" th:value="${schoolName}" id="schoolName" class="form-control"
+                                placeholder="Enter School Name" required disabled>
                         </div>
                         <div>
                             <label for="schoolAddress" class="form-label"><b>Address</b></label>
-                            <input type="text" th:value="${schoolAddress}" id="schoolAddress" class="form-control" placeholder="Enter Address"
-                                required>
+                            <input type="text" th:value="${schoolAddress}" id="schoolAddress" class="form-control"
+                                placeholder="Enter Address" required disabled>
                         </div>
                         <div class="input-group-half">
                             <div class="settings-input">
                                 <label for="schoolEmail" class="form-label"><b>Email</b></label>
-                                <input type="email" th:value="${schoolEmail}" id="schoolEmail" class="form-control" placeholder="Enter Email"
-                                    required>
+                                <input type="email" th:value="${schoolEmail}" id="schoolEmail" class="form-control"
+                                    placeholder="Enter Email" required disabled>
                             </div>
                             <div class="settings-input">
                                 <label for="schoolContact" class="form-label"><b>Contact Number</b></label>
                                 <input type="tel" th:value="${schoolNum}" id="schoolContact" class="form-control"
-                                    placeholder="Enter Contact Number" required>
+                                    placeholder="Enter Contact Number" required disabled>
                             </div>
                         </div>
                     </div>
                 </div> <br>
 
-
-
-                <div class="logo-and-theme-container">
-                    <!-- School Logo Section -->
-                    <div class="logo-container">
-                        <label for="logoUpload" class="form-label"><b>School Logo</b></label>
-                        <div class="logo-wrapper">
-                            <img id="previewLogo" th:src="@{/website-logo}" alt="Logo Preview"
-                                class="logo-circle">
+                <div class="input-group-half">
+                    <div class="settings-input">
+                        <!-- School Logo Section -->
+                        <div class="logo-container">
+                            <label for="logoUpload" class="form-label"><b>School Logo</b></label>
+                            <img id="previewLogo" th:src="@{/website-logo}" alt="Logo Preview" class="logo-circle">
+                            <input type="file" class="form-control" id="logoUpload" accept="image/*" disabled>
                         </div>
-                        <input type="file" class="form-control" id="logoUpload" accept="image/*">
                     </div>
 
+                    <div class="settings-input">
+                        <!-- School Cover Photo -->
+                        <div class="cover-photo-container">
+                            <label for="coverUpload"><b>Cover Photo</b></label>
+                            <div class="logo-wrapper">
+                                <img id="coverPreview" th:src="@{/website-cover}" alt="Cover Photo Preview"
+                                    class="cover-preview">
+                            </div>
+
+                            <input type="file" class="form-control" id="coverUpload" accept="image/*" disabled>
+                        </div>
+                    </div>
+                </div> <br>
+
+                <div class="input-group-half">
                     <!-- Theme Settings Section -->
-                    <div class="theme-container">
-                        <label for="colorPicker" class="form-label"><b>Theme Color</b></label>
-                        <input type="color" class="form-control form-control-color" id="colorPicker" value="#007bff"
-                            title="Choose your color">
+                    <div class="settings-input">
+                        <div class="theme-container">
+                            <label for="colorPicker" class="form-label"><b>Theme Color</b></label>
+                            <input type="color" class="form-control form-control-color" id="colorPicker" value="#007bff"
+                                title="Choose your color" disabled>
+                        </div>
+                    </div>
+
+                    <div class="settings-input">
+                        <label for="graduatingLevel" class="form-label"><b>Graduating Grade Level</b></label>
+                        <select id="graduatingLevel" disabled>
+                            <option value="">NONE</option>
+                        </select>
                     </div>
                 </div>
-
             </form>
 
             <!-- Centered Save Button -->
             <div class="save-button-wrapper">
-                <button type="submit" form="schoolSettingsForm" class="save-settings-btn btn">Save Changes</button>
+                <button type="button" data-action="updateSchoolSettings" data-message="Are you sure you want to update the school settings?" data id="editButton" class="save-settings-btn btn-confirm btn">Edit</button>
             </div>
+        
         </div>
         <br> <br>
 
-        <h6><strong>Other Settings</strong></h6>
+        <h6 style="margin-left: 30px;"><strong>Other Settings</strong></h6>
 
         <!-- Table -->
         <div class="settings-main-container">
             <!-- Add Transferee Reqs Button -->
-            <div class="header">
+            <div class="header-short">
                 <h6><strong>Transferee Requirements</strong></h6>
                 <button id="add-btn">
                     <img th:src="@{/images/icons/add-button.png}" data-open-modal="transfereeReqModal" alt="Add Icon"
@@ -160,7 +179,8 @@
                     <br><br>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="editTransfereeReqButton" data-action="editTransfereeReq"
+                        <button type="button" class="btn-confirm" id="editTransfereeReqButton"
+                            data-action="editTransfereeReq"
                             data-message="Are you sure you want to update this fee?">Edit</button>
                         <button type="button" class="btn-cancel"
                             data-close-modal="transfereeReqEditModal">Cancel</button>
@@ -248,8 +268,8 @@
         }
     });
 
-    function toeditId(selectedId,name){
-        document.getElementById("reqEditName").value=name;
+    function toeditId(selectedId, name) {
+        document.getElementById("reqEditName").value = name;
         selectedTransfereeReqId = selectedId;
     }
 
@@ -276,9 +296,9 @@
             });
     }
 
-    function updateTransfRequirement(){
+    function updateTransfRequirement() {
         const newName = document.getElementById("reqEditName").value;
-<!--        selectedTransfereeReqId-->
+        <!--        selectedTransfereeReqId-->
         fetch(`/trans-req/update/${selectedTransfereeReqId}?newName=${newName}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" }
@@ -300,11 +320,11 @@
             });
     }
 
-    async function setGraduatingLevel(){
+    async function setGraduatingLevel() {
         const levelDropDown = document.getElementById("graduatingLevel");
         const response = await fetch("/graduatingLevel");
         var graduatingLevelId = 0;
-        if(response.ok){
+        if (response.ok) {
             levelDropDown.innerHTML = ``;
             const graduatingLevel = await response.json();
             graduatingLevelId = graduatingLevel.levelId;
@@ -316,14 +336,15 @@
         }
 
         const res = await fetch("/gradelevel/all");
-        if(res.ok){
+        if (res.ok) {
             const gradeLevels = await res.json();
-            gradeLevels.forEach(gradelvl =>{
-                if(gradelvl.levelId != graduatingLevelId){
+            gradeLevels.forEach(gradelvl => {
+                if (gradelvl.levelId != graduatingLevelId) {
                     const option = document.createElement("option");
                     option.value = gradelvl.levelId;
                     option.textContent = gradelvl.levelName;
-                    levelDropDown.appendChild(option);}
+                    levelDropDown.appendChild(option);
+                }
             });
         }
     }
@@ -349,6 +370,7 @@
                 showErrorModal("❌ Error:" + error);
             });
     }
+   
 </script>
 
 </html>

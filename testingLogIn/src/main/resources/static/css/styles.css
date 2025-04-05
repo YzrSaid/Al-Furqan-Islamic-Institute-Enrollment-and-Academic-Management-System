@@ -339,19 +339,54 @@ body {
   flex-wrap: wrap;
   width: 100%;
   gap: 10px;
-  padding: 0px;
+  padding: 0 20px;
 }
 .chart-box {
   flex: 1;
 }
-.chart-box-full {
-  width: 100%;
+
+.chart-box-bar {
+  width: 55%;
 }
+
+.chart-box-recent {
+  width: 44%;
+}
+
 .card-container {
-  padding-top: 20px;
   background-color: #f6f6f6;
   width: 100%;
-  height: 340px;
+  height: 320px;
+  padding: 15px 0;
+}
+
+.title-row {
+  display: flex;
+  gap: 30px;
+  width: 84%;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.graph-container {
+  background-color: #f6f6f6;
+  padding-top: 20px;
+  width: 100%;
+  height: 320px;
+  padding: 20px;
+}
+.bar-graph {
+  height: 250px !important;
+}
+.bar-graph-container {
+  background-color: #f6f6f6;
+  padding-top: 20px;
+  width: 100%;
+  height: 360px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 .card-grid {
   display: grid;
@@ -364,32 +399,7 @@ body {
   height: 280px;
   margin: 0 auto;
 }
-.graph-container {
-  /* background-color: #f6f6f6;
-  display: flex;
-  flex-direction: column;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  justify-content: center;
-  align-items: start;
-  padding: 20px;
-  width: 40%;
-  height: 280px;
-  margin: 0 auto; */
 
-  padding-top: 20px;
-  background-color: #f6f6f6;
-  width: 100%;
-  height: 340px;
-  padding: 20px;
-}
-
-.bar-graph-container {
-  width: 100%;
-  margin: auto;
-  padding: 30px;
-  background-color: #f6f6f6;
-}
 .graph {
   width: 100%;
   height: 300px;
@@ -401,6 +411,7 @@ body {
   width: 100%;
   height: 300px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -411,8 +422,19 @@ body {
 }
 
 .filter-container {
-  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 50%;
 }
+.filter-container-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 40%;
+  margin-left: auto;
+}
+
 .card {
   height: 100px;
   width: 180px;
@@ -424,14 +446,12 @@ body {
 }
 .sort-btns-container {
   display: flex;
-  gap: 50px;
-
-  width: 80%;
-  margin-left: 20px;
+  width: 60%;
 }
 .sort-year,
-.sort-grade {
-  width: 130px;
+.sort-grade,
+.sort-semester {
+  width: 140px;
   display: flex;
   flex-direction: column;
 }
@@ -1220,6 +1240,10 @@ table td {
 .scholarship-table {
   width: 92.5%;
   margin: 0px 50px;
+}
+
+.recent-transaction-table-mini {
+
 }
 
 .view-list-of-students-table {
@@ -2180,6 +2204,13 @@ input[type="checkbox"] {
   border-radius: 5px;
   font-size: 14px;
 }
+.analytics-container select {
+  width: 90%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
 /* grade level modal and school year modal*/
 .grade-level-modal,
 .add-grade-level-assessment-modal,
@@ -2907,7 +2938,7 @@ input[type="checkbox"] {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Prevents content overflow */
+    overflow-x: hidden; /* Prevents content overflow */
   }
 
   /* ✅ Make the table fit better */
@@ -3831,18 +3862,33 @@ td[rowspan] {
 .sticky-header {
   position: sticky;
   top: 0;
-  background-color: white; 
-  z-index: 2; 
+  background-color: white;
+  z-index: 2;
   padding: 10px 20px;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.1);
 }
 
 /* No shadow by default */
 .sticky-header.no-shadow {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 /* Shadow when scrolling */
 .sticky-header.with-shadow {
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.extra-menu-container {
+  width: 300px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.extra-menu-container div {
+  display: flex;
+  flex-direction: column;
+}
+.extra-menu-container div:nth-child(2) {
+  margin-top: 20px;
 }

@@ -21,31 +21,39 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link">
-            <h4>Dashboard</h4>
+            <div class="text-link">
+                <h4>Dashboard</h4>
+            </div>
         </div>
 
         <div class="analytics-container">
+            <!-- sort buttons -->
+            <div class="sort-btns-container">
+                <div class="sort-year">
+                    <label for="year">Year</label>
+                    <select name="year" id="year-sort">
+                        <option value="" disabled selected>---</option>
+                    </select>
+                </div>
+                <div class="sort-semester">
+                    <label for="semester">Semester</label>
+                    <select name="semester" id="semester-sort">
+                        <option value="" disabled selected>---</option>
+                    </select>
+                </div>
+                <div class="sort-grade">
+                    <label for="grade">Grade</label>
+                    <select name="grade" id="grade-sort">
+                        <option value="" disabled selected>---</option>
+                    </select>
+                </div>
+            </div>
             <div class="chart-box">
                 <div class="card-container">
-                    <!-- sort buttons -->
-                    <div class="sort-btns-container">
-                        <div class="sort-year">
-                            <label for="year">Year</label>
-                            <select name="year" id="year-sort">
-                                <option value="" disabled selected>---</option>
-                            </select>
-                        </div>
-                        <div class="sort-grade">
-                            <label for="grade">Grade</label>
-                            <select name="grade" id="grade-sort">
-                                <option value="" disabled selected>---</option>
-                            </select>
-                        </div>
-                    </div>
                     <div class="card-grid">
                         <a href="/reports/student" class="card-link">
                             <div class="card">
@@ -110,16 +118,80 @@
                 </div>
             </div>
 
-            <div class="chart-box-full">
+            <div class="chart-box-recent">
                 <div class="bar-graph-container">
+                    <div class="title-row">
+                        <h6 id="recentTransactionTitle">Recent Transactions</h6>
+                    </div> <br>
+
+                    <div class="recent-transactions-container">
+                        <!-- Table -->
+                        <table id="realginnas" class="mini-table">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Student Name</th>
+                                    <th>Date Paid</th>
+                                    <th>Transaction Number</th>
+                                    <th>Amount Paid</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Juan Dela Cruz</td>
+                                    <td>2025-04-01</td>
+                                    <td>TXN-001234</td>
+                                    <td>₱1,500.00</td>
+                                    <td><button class="btn">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Maria Santos</td>
+                                    <td>2025-04-02</td>
+                                    <td>TXN-001235</td>
+                                    <td>₱2,000.00</td>
+                                    <td><button class="btn">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Carlos Garcia</td>
+                                    <td>2025-04-03</td>
+                                    <td>TXN-001236</td>
+                                    <td>₱1,800.00</td>
+                                    <td><button class="btn">View</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br><br>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-box-bar">
+                <div class="bar-graph-container">
+                    <div class="title-row">
+                        <h6 id="barGraphTitle">Retention Rates</h6>
+                        <div class="filter-container-bar">
+                            <label for="sort">Filter:</label>
+                            <select name="sort" id="sort-bar-graph">
+                                <option value="retention-rates" selected>Retention</option>
+                                <option value="completion-rates">Completion</option>
+                                <option value="drop-rates">Drop</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="bar-graph">
                         <canvas id="retentionChart"></canvas>
                     </div>
-                    
                 </div>
             </div>
-         
-        </div>
+
+
+        </div> <br>
     </div>
 </body>
 <script>
@@ -140,6 +212,14 @@
             },
             options: {
                 responsive: true,
+                layout: {
+                    padding: {
+                        top: 0,
+                        right: 20,
+                        bottom: 50,
+                        left: 0
+                    }
+                },
                 plugins: {
                     legend: { display: true, position: 'right' }
                 }

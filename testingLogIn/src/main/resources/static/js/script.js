@@ -454,6 +454,73 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  const editButton = document.getElementById("editButton");
+  const inputs = document.querySelectorAll(
+    "#schoolSettingsForm input, #schoolSettingsForm select, #schoolSettingsForm textarea"
+  );
+  const confirmActionButton = document.getElementById("confirmAction");
+  const cancelActionButton = document.querySelector(".btn-close-confirm");
+
+  // Initially set the mode to "edit"
+  editButton.setAttribute("data-mode", "edit");
+
+  // Toggle the Edit/Update mode when the button is clicked
+  editButton.addEventListener("click", function () {
+    const currentMode = editButton.getAttribute("data-mode");
+
+    if (currentMode === "edit") {
+      // Enable inputs for editing
+      inputs.forEach((input) => {
+        if (input.tagName === "SELECT") {
+          input.disabled = false; // Enable select fields
+        } else {
+          input.readOnly = false; // Enable text fields
+          input.disabled = false;
+        }
+      });
+
+      // Change button text and set data-mode to "update"
+      editButton.textContent = "Update";
+      editButton.setAttribute("data-mode", "update");
+    } else if (currentMode === "update") {
+      // Set message for the confirmation modal
+      const message = "Are you sure you want to update the school settings?";
+      document.getElementById("modalText").textContent = message;
+
+      const action = this.getAttribute("data-action") || ""; // Get action
+
+      document.getElementById("modalText").textContent = message;
+      document
+        .getElementById("confirmAction")
+        .setAttribute("data-confirm-action", action); // Store action
+
+      // Show the confirmation modal
+      toggleModal("confirmationModal", true);
+    }
+  });
+
+  // Handle the update action when the user confirms in the modal
+  confirmActionButton.addEventListener("click", function () {
+    editButton.textContent = "Edit"; // Reset button text to "Edit"
+    editButton.setAttribute("data-mode", "edit"); // Reset the mode to "edit"
+
+    // Disable inputs again after updating
+    inputs.forEach((input) => {
+      input.disabled = true;
+      input.readOnly = true;
+    });
+  });
+
+  // Handle the cancel action when the user cancels in the modal
+  cancelActionButton.addEventListener("click", function () {
+    // Close the confirmation modal without doing anything
+    toggleModal("confirmationModal", false);
+
+    // Keep inputs enabled if they were already in "edit" mode (no reset)
+    editButton.textContent = "Edit";
+    editButton.setAttribute("data-mode", "edit");
+  });
+
   // Event listener to enable inputs when reopening the modal
   document.addEventListener("click", function (event) {
     const target = event.target;
@@ -485,6 +552,16 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmationModal.style.opacity = "0";
 
     switch (action) {
+      case "updateSchoolSettings":
+         // This is for updating/editing the school settings
+         if (!validateForm("schoolSettingsForm")) {
+            showErrorModal("⚠️ Please fill in all required fields!");
+            return;
+          } else {
+            updateSchoolSettings();
+            closeConfirmationModal();
+          }
+          break;
       case "editTransfereeReq":
         updateTransfRequirement();
         break;
@@ -1479,38 +1556,42 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Confirm Button Title
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('button, input[type="button"], input[type="submit"]').forEach(function(btn) {
-        const text = btn.value || btn.textContent;
-        if (text && text.includes("Confirm")) {
-            btn.title = "Confirm Button";
-        }
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .querySelectorAll('button, input[type="button"], input[type="submit"]')
+    .forEach(function (btn) {
+      const text = btn.value || btn.textContent;
+      if (text && text.includes("Confirm")) {
+        btn.title = "Confirm Button";
+      }
     });
 });
 
-// Search Button Title 
-document.addEventListener("DOMContentLoaded", function(){
-    document.querySelectorAll('button, input[type="button"], input[type="submit"]').forEach(function(btn){
+// Search Button Title
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .querySelectorAll('button, input[type="button"], input[type="submit"]')
+    .forEach(function (btn) {
       const text = btn.value || btn.textContent;
       if (text && text.includes("Search")) {
         btn.title = "Click this to search after typing the info";
       }
-    }); 
+    });
 });
 
 // "Main" Href Link Title
-document.addEventListener("DOMContentLoaded", function() {
-  document.querySelectorAll('a').forEach(function(link) {
-      if (link.textContent.trim() === "Main") {
-          link.title = "Go to Dashboard";
-      }
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("a").forEach(function (link) {
+    if (link.textContent.trim() === "Main") {
+      link.title = "Go to Dashboard";
+    }
   });
 });
 
-// Add Title on each Burger Image Hide Sidebar  
+// Add Title on each Burger Image Hide Sidebar
 document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll('span.hamburger').forEach(function (span) {
-    const img = span.querySelector('img');
+  document.querySelectorAll("span.hamburger").forEach(function (span) {
+    const img = span.querySelector("img");
     if (img && img.src.includes("burger_menu_icon.png")) {
       span.title = "Hide Sidebar"; // Default title when sidebar is expanded
     }
@@ -1534,8 +1615,8 @@ function toggleSidebar() {
   }
 
   // Update all hamburger titles after toggling
-  document.querySelectorAll('span.hamburger').forEach(function (span) {
-    const img = span.querySelector('img');
+  document.querySelectorAll("span.hamburger").forEach(function (span) {
+    const img = span.querySelector("img");
     if (img && img.src.includes("burger_menu_icon.png")) {
       span.title = isCollapsed ? "Hide Sidebar" : "Show Sidebar";
     }
@@ -1557,40 +1638,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to update titles based on current page and total pages
   function updatePaginationTitles(currentPage, totalPages) {
-      const prevPageBtn = document.getElementById("prevPage");
-      const nextPageBtn = document.getElementById("nextPage");
+    const prevPageBtn = document.getElementById("prevPage");
+    const nextPageBtn = document.getElementById("nextPage");
 
-      // Update 'prevPage' title
-      if (currentPage === 1) {
-          prevPageBtn.disabled = true;
-          prevPageBtn.title = "You're already on the first page.";
-      } else {
-          prevPageBtn.disabled = false;
-          prevPageBtn.title = "Click to show previous page.";
-      }
+    // Update 'prevPage' title
+    if (currentPage === 1) {
+      prevPageBtn.disabled = true;
+      prevPageBtn.title = "You're already on the first page.";
+    } else {
+      prevPageBtn.disabled = false;
+      prevPageBtn.title = "Click to show previous page.";
+    }
 
-      // Update 'nextPage' title
-      if (currentPage === totalPages) {
-          nextPageBtn.disabled = true;
-          nextPageBtn.title = "You're already on the last page.";
-      } else {
-          nextPageBtn.disabled = false;
-          nextPageBtn.title = "Click to show next page.";
-      }
+    // Update 'nextPage' title
+    if (currentPage === totalPages) {
+      nextPageBtn.disabled = true;
+      nextPageBtn.title = "You're already on the last page.";
+    } else {
+      nextPageBtn.disabled = false;
+      nextPageBtn.title = "Click to show next page.";
+    }
   }
 
   // Example: Handle page navigation (next/prev) and call the function
   document.getElementById("prevPage").addEventListener("click", function () {
-      if (currentPage > 1) {
-          currentPage--;
-          updatePaginationTitles(currentPage, totalPages);
-      }
+    if (currentPage > 1) {
+      currentPage--;
+      updatePaginationTitles(currentPage, totalPages);
+    }
   });
 
   document.getElementById("nextPage").addEventListener("click", function () {
-      if (currentPage < totalPages) {
-          currentPage++;
-          updatePaginationTitles(currentPage, totalPages);
-      }
+    if (currentPage < totalPages) {
+      currentPage++;
+      updatePaginationTitles(currentPage, totalPages);
+    }
   });
 });

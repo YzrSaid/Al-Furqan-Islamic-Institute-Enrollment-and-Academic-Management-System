@@ -392,12 +392,16 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
-  justify-content: center;
-  align-items: start;
   padding: 20px;
   width: 100%;
-  height: 280px;
   margin: 0 auto;
+}
+
+.card-row-center {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
 }
 
 .graph {
@@ -477,7 +481,6 @@ body {
 }
 .card-title {
   font-size: 1.7rem;
-  margin-bottom: 20px;
   font-weight: 800;
   text-align: center;
 }
@@ -1243,7 +1246,6 @@ table td {
 }
 
 .recent-transaction-table-mini {
-
 }
 
 .view-list-of-students-table {
@@ -1281,7 +1283,7 @@ table td {
 .assessment-status,
 .payment-status,
 .enrolled-status,
-.enrollment-deleted,
+.enrollment-cancelled,
 .not-registered-status {
   font-weight: bolder;
   font-size: 15px;
@@ -1301,8 +1303,13 @@ table td {
 .not-registered-status {
   color: black;
 }
-.enrollment-deleted {
-  color: rgb(255, 0, 0);
+/* Apply to the whole row (tr) when it's canceled */
+.enrollment-cancelled {
+  color: rgb(122, 5, 5);
+}
+
+.enrollment-cancelled td {
+  background-color: rgba(255, 0, 0, 0.068);
 }
 
 .paid-status,
@@ -2200,7 +2207,8 @@ input[type="checkbox"] {
 .my-account-edit-modal-content select,
 .add-grade-level-assessment-modal-content select,
 .add-account-type-modal-content select,
-.scholarship-modal-content select {
+.scholarship-modal-content select,
+.settings-input select {
   width: 100%;
   padding: 8px;
   margin: 5px 0;
@@ -2569,8 +2577,7 @@ input[type="checkbox"] {
   align-items: end;
   margin: 40px 50px 0px 0px;
 }
-.btn-container #saveBtn {
-}
+
 .btn-container #clearBtn {
   background-color: #dc3545;
 }
@@ -3294,12 +3301,7 @@ td[rowspan] {
 }
 
 .clickable-row {
-  cursor: pointer;
   background-color: #f9f9f9;
-}
-
-.clickable-row:hover {
-  background-color: #27ae5f1e;
 }
 
 .clickable-row .non-clickable {
@@ -3710,9 +3712,10 @@ td[rowspan] {
   flex-direction: column;
   gap: 20px;
   padding: 30px;
+  margin-left: 30px;
   background-color: rgb(240, 240, 240);
 }
-.logo-and-theme-container {
+.logo-and-cover-container {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -3729,6 +3732,11 @@ td[rowspan] {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+#schoolName,
+#schoolAddress {
+  width: 100%;
 }
 
 /* Logo Section */
@@ -3765,12 +3773,21 @@ td[rowspan] {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 4px solid #fff;
 }
+.logo-wrapper {
+  margin: 19px 0;
+}
+.cover-preview {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 4px solid #fff;
+}
 
 /* Input fields */
 .form-control,
 #logoUpload {
-  max-width: 750px;
-  width: 100%;
+  max-width: 100%;
 }
 
 .form-control:focus {
@@ -3847,8 +3864,10 @@ td[rowspan] {
   flex-direction: column;
 }
 /* this header class can be used when dealing with text + add button in one row */
-.header {
+.header-short {
   width: 40%;
+  display: flex;
+  align-items: center;
 }
 
 .transferee-section {
@@ -3895,4 +3914,28 @@ td[rowspan] {
 }
 .extra-menu-container div:nth-child(2) {
   margin-top: 20px;
+}
+
+#schoolSettingsForm input:disabled,
+#schoolSettingsForm select:disabled,
+#schoolSettingsForm input[readonly],
+#schoolSettingsForm select[readonly] {
+  background-color: rgba(255, 255, 255, 0.532);
+  color: #333;
+  cursor: not-allowed;
+}
+
+/* Custom styles for the button */
+.save-settings-btn {
+    background-color: #218838 !important; 
+    color: white !important;
+    border: none !important; 
+    transition: background-color 0.3s ease; 
+}
+
+
+/* Remove the white background when the button is active or pressed */
+.save-settings-btn:active {
+   background-color: #218838;
+    border: none !important; 
 }

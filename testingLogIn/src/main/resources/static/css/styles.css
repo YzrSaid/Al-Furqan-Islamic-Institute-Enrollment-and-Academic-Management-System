@@ -1281,6 +1281,7 @@ table td {
 .assessment-status,
 .payment-status,
 .enrolled-status,
+.enrollment-deleted,
 .not-registered-status {
   font-weight: bolder;
   font-size: 15px;
@@ -1299,6 +1300,9 @@ table td {
 }
 .not-registered-status {
   color: black;
+}
+.enrollment-deleted {
+  color: rgb(255, 0, 0);
 }
 
 .paid-status,

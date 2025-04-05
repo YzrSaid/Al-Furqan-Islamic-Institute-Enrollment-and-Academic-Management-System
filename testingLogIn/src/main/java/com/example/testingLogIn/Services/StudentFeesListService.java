@@ -9,6 +9,7 @@ import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.StudentFeesListRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -35,14 +36,22 @@ public class StudentFeesListService {
                 });
     }
 
+    @Transactional
     @Async
     public void addFeeRecord(Student student, RequiredFees fee, SchoolYearSemester sem, double amount){
         studFeeRepo.save(StudentFeesList.build(fee,sem,student,amount));
     }
 
+    @Transactional
     @Async
-    public void updateFeeRecord(StudentFeesList studentFeesList){
-        studFeeRepo.save(studentFeesList);
+    public void addFeeRecordList(List<StudentFeesList> studentFeesLists){
+        studFeeRepo.saveAll(studentFeesLists);
+    }
+
+    @Transactional
+    @Async
+    public void updateFeeRecord(List<StudentFeesList> studentFeesList){
+        studFeeRepo.saveAll(studentFeesList);
     }
 
     public List<RequiredPaymentsDTO> feesList(int studentId,Integer semNumber){

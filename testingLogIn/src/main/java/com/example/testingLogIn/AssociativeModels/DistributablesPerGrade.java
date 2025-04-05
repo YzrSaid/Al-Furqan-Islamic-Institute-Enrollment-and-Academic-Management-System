@@ -2,6 +2,7 @@ package com.example.testingLogIn.AssociativeModels;
 
 import com.example.testingLogIn.Models.Distributable;
 import com.example.testingLogIn.Models.GradeLevel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class DistributablesPerGrade {
 
     @ManyToOne
     @JoinColumn(name = "item",nullable = false)
+    @JsonIgnore
     private Distributable item;
 
     @ManyToOne

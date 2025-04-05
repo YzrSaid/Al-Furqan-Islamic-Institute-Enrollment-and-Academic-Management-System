@@ -76,10 +76,13 @@ public class SectionController {
     }
     @GetMapping("")
     public ResponseEntity<SectionDTO> getSectionByNameDTO(@RequestParam String sectionName) {
-        if(sectionName == null)
+        try {
+            if (sectionName == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(sectionService.getSectionByNameDTO(sectionName.toLowerCase()), HttpStatus.OK);
+        }catch (NullPointerException npe){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(sectionService.getSectionByNameDTO(sectionName.toLowerCase()), HttpStatus.OK);
+        }
     }
 
     @PostMapping("/add")

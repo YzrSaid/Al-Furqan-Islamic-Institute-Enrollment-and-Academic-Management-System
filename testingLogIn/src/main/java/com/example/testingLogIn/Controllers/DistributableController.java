@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.ModelDTO.DistributableDTO;
 import com.example.testingLogIn.Models.Distributable;
 import com.example.testingLogIn.Services.DistributableServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,56 @@ public class DistributableController {
     private DistributableServices distributableServices;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Distributable>> getDistributable(@RequestParam(defaultValue = "true") boolean isNotDeleted){
+    public ResponseEntity<List<DistributableDTO>> getDistributable(@RequestParam(defaultValue = "true") boolean isNotDeleted){
         try{
             return new ResponseEntity<>(distributableServices.getAllDistributable(isNotDeleted),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/{itemId}")
+    public ResponseEntity<DistributableDTO> getDistributable(@PathVariable("itemId") int itemId){
+        try{
+            return new ResponseEntity<>(distributableServices.getByid(itemId),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<String> addNewDistributable(@RequestBody DistributableDTO newDistributable){
+        try{
+            if(distributableServices.addNewDistributable(null,null,null,newDistributable))
+                return new ResponseEntity<>("New distributable successfully added",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Distributable item already exists",HttpStatus.NOT_ACCEPTABLE);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateDistributable(@RequestBody DistributableDTO newDistributable){
+        try{
+            if(distributableServices.updateDistributable(newDistributable))
+                return new ResponseEntity<>("Distributable edited successfully",HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Distributable item already exists",HttpStatus.NOT_ACCEPTABLE);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @DeleteMapping("/delete/{itemId}")
+    public ResponseEntity<String> deleteDistributable(@PathVariable("itemId") int itemId){
+        try{
+            distributableServices.deleteDistributable(itemId);
+            return new ResponseEntity<>("Distributable edited successfully",HttpStatus.OK);
+        }catch(NullPointerException npe){
+            return new ResponseEntity<>("Distributable not found",HttpStatus.NOT_FOUND);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

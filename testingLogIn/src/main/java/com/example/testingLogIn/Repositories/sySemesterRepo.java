@@ -15,5 +15,5 @@ public interface sySemesterRepo extends JpaRepository<SchoolYearSemester,Integer
     @Query("SELECT sem from SchoolYearSemester sem "+
            "WHERE sem.isNotDeleted = true "+
            "AND sem.isActive = true")
-    public SchoolYearSemester findCurrentActive();
+    SchoolYearSemester findCurrentActive();
 }

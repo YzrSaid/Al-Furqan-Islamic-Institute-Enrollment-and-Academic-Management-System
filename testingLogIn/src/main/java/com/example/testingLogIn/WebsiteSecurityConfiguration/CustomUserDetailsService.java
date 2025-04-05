@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +22,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepo userRepo;
+
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
 
     public boolean restrictUser(int id) {
         try {
@@ -109,17 +114,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserModel AccountRegToUserModel(AccountRegister accountRegister) {
+        String fullname = accountRegister.getFirstname()+" "+ Optional.ofNullable(accountRegister.getMiddlename()).map(s-> s+" ").orElse("") + accountRegister.getLastname();
         return UserModel.builder()
                 .isNotRestricted(true)
                 .isNotDeleted(true)
                 .firstname(accountRegister.getFirstname())
                 .lastname(accountRegister.getLastname())
+                .middlename(accountRegister.getMiddlename())
+                .fullName(fullname)
                 .role(accountRegister.getRole())
                 .address(accountRegister.getAddress())
                 .birthdate(accountRegister.getBirthdate())
                 .gender(accountRegister.getGender())
                 .username(accountRegister.getUsername())
-                .password(accountRegister.getPassword())
+                .password(encoder.encode(accountRegister.getPassword()))
                 .build();
     } 
 }

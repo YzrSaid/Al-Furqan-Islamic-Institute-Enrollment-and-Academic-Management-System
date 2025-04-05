@@ -160,7 +160,7 @@ public class SectionServices {
     }
     
     public SectionDTO getSectionByNameDTO(String sectionName){
-        return getSectionByName(sectionName).toSectionDTO();
+         return Optional.ofNullable(getSectionByName(sectionName)).map(Section::toSectionDTO).orElseThrow(NullPointerException::new);
     }
     
     public Section getSectionByName(String sectionName){

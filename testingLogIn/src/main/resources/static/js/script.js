@@ -738,6 +738,15 @@ document.addEventListener("DOMContentLoaded", function () {
           closeConfirmationModal();
         }
         break;
+      case "editDistributable":
+        if (!validateForm("distributableManagementEditModal")) {
+              showErrorModal("⚠️ Please fill in all required fields!");
+              return;
+            } else {
+              editDistributable();
+              closeConfirmationModal();
+            }
+        break;
       case "deleteFee":
         deleteFee(selectedPaymentName);
         break;

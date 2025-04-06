@@ -92,6 +92,7 @@ public class RequiredPaymentController {
         } catch (NullPointerException npe) {
             return new ResponseEntity<>("Payment \"" + paymentName + "\" was not found", HttpStatus.NOT_FOUND);
         }catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
         }
     }

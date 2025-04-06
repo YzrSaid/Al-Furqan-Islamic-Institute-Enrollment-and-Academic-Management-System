@@ -1001,9 +1001,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const message = target.getAttribute("data-message") || "";
       const action = target.getAttribute("data-action") || "";
 
-      //   document
-      //     .getElementById("confirmAction")
-      //     .setAttribute("data-confirm-action", action);
+     document
+       .getElementById("confirmAction")
+       .setAttribute("data-confirm-action", action);
 
       // Check if the clicked button is the saveBtn
       if (target === saveBtn) {

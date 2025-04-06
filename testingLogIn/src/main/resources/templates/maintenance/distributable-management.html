@@ -106,12 +106,7 @@
                 <h2>Add New Fee</h2>
                 <form method="post" action="" id="feesManagementForm">
                     <div class="payment-name-row">
-                        <label for="paymentName">Payment Name:</label>
-
-                        <!-- Checkbox beside the label -->
-                        <div class="checkbox-label">
-                            Distributable: <input type="checkbox" id="distributable">
-                        </div>
+                        <label for="paymentName">Item Name:</label>
                     </div>
 
                     <!-- Input field below -->
@@ -126,12 +121,9 @@
                     <div class="full-width-row">
                         <!-- Checkbox beside the label -->
                         <div>
-                            Apply this fee to current semester: <input type="checkbox" id="applyThisSem">
+                            Distribute this item to current semester: <input type="checkbox" id="applyThisSem">
                         </div>
                     </div>
-
-
-
 
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="addFee"
@@ -159,6 +151,12 @@
                     <!-- This container will be used for editing payments -->
                     <div class="payment-container-edit">
                         <!-- Dynamically populated checkboxes will go here -->
+                    </div>
+                    <div class="full-width-row">
+                        <!-- Checkbox beside the label -->
+                        <div>
+                            Distribute this item to current semester: <input type="checkbox" id="applyThisSemEdit">
+                        </div>
                     </div>
 
                     <div class="modal-buttons">
@@ -243,6 +241,7 @@
 
                     <img class="edit-fee" data-id="${distributable.itemId}" data-name="${distributable.itemName}"
                     data-grade-levels="${distributable.gradeLevelList.map(gl => `${gl.levelName}`).join(",")}"
+                    data-is-active = "${distributable.currentlyActive}"
                     data-open-modal="distributableManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon">
                     
                         <img data-open-modal="confirmationModal"  data-name="${distributable.itemId}" data-action="deleteFee"
@@ -275,7 +274,7 @@
 
         const requestData = {
             itemName: paymentName,
-            isCurrentlyActive:document.getElementById("applyThisSem").checked ,
+            currentlyActive:document.getElementById("applyThisSem").checked,
             gradeLevelIds: selectedGradeLevels
         };
         console.log(requestData);
@@ -301,7 +300,7 @@
     function editDistributable() {
         const paymentId = document.getElementById("distributableManagementEditModal").dataset.id;
         const paymentName = document.getElementById("paymentNameEdit").value; // Get the updated payment name
-
+        const isCurrentlyActiveChecked = document.getElementById("applyThisSemEdit").checked;
         // Get the selected grade levels
         const selectedGradeLevels = [];
         document.querySelectorAll("input[name='gradeLevels']:checked").forEach(checkbox => {
@@ -312,7 +311,8 @@
         const updatedFeeData = {
             itemId: paymentId,
             itemName: paymentName,
-            gradeLevelIds: selectedGradeLevels
+            gradeLevelIds: selectedGradeLevels,
+            currentlyActive : isCurrentlyActiveChecked
         };
         console.log(updatedFeeData);
         fetch("/distributable/update", {
@@ -413,8 +413,9 @@
 
                 // Store the ID in the form
                 document.getElementById("distributableManagementEditModal").dataset.id = selectedPaymentId;
+                const isChecked = target.getAttribute("data-is-active") === true || target.getAttribute("data-is-active") === "true";
+                document.getElementById("applyThisSemEdit").checked = isChecked;
 
-                // Populate the grade levels checkboxes
                 populateGradeLevelsForEdit(gradeLevelNames);
             }
         });

@@ -43,68 +43,41 @@ public class DistributableServices {
     public DistributableDTO getByid(int itemId){
         return distributableRepo.findById(itemId).map(Distributable::DTOmapper).orElse(null);
     }
-                                        //this is null if adding from distributable     this is null if I am adding from the payment maintenance
-    public boolean addNewDistributable(String itemName, List<GradeLevel> gradeLevels, Boolean isCurrentlyActive, DistributableDTO item) {
-        itemName = Optional.ofNullable(item).map(DistributableDTO::getItemName).orElse(itemName);
-        if(getByName(itemName) != null)
+    public boolean addNewDistributable(DistributableDTO item) {
+        assert item != null;
+        if(getByName(item.getItemName()) != null)
             return false;
 
-        Distributable newDistributable;
-        if (item != null) {
-            newDistributable = new Distributable(
+        Distributable newDistributable = new Distributable(
                     item.getItemName(),
-                    item.isCurrentlyActive() // Assuming this returns primitive boolean
+                    item.isCurrentlyActive()
             );
-        } else {
-            newDistributable = new Distributable(
-                    itemName,
-                    isCurrentlyActive
-            );
-        }
 
         // Save and return result
         distributableRepo.save(newDistributable);
 
         Distributable newItem = distributableRepo.save(newDistributable);
-        Runnable gradeLevelDistributable;
         SchoolYearSemester currentSem = semesterServices.getCurrentActive();
         List<DistributablesPerStudent> studentDistributables = new ArrayList<>();
         int currentSemId = Optional.ofNullable(currentSem).map(SchoolYearSemester::getSySemNumber).orElse(0);
         List<Student> studentList = new ArrayList<>();
 
-        if(gradeLevels != null) {
-            gradeLevelDistributable = () -> {
-                List<DistributablesPerGrade> gradeLevelDistributable1 = new ArrayList<>();
-                gradeLevels.forEach(gradeLevel ->{
-                        gradeLevelDistributable1.add(new DistributablesPerGrade(newItem, gradeLevel));
-                        if(currentSemId != 0)
-                            studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradeLevel.getLevelId(),currentSemId));});
-                gradesDistributableRepo.saveAll(gradeLevelDistributable1);
-                if(newItem.isCurrentlyActive() && currentSemId != 0 && !studentList.isEmpty()){
-                    studentList.forEach(student ->
-                            studentDistributables.add(DistributablesPerStudent.build(newItem,student,currentSem)));
-                    disStudRepo.saveAll(studentDistributables);
-                }
-            };
-        }
-        else{
-            assert item != null;
-            gradeLevelDistributable = () -> {
-                gradeLevelRepo.findAll().stream()
-                .filter(gradeLevel -> gradeLevel.isNotDeleted() &&
-                    item.getGradeLevelIds().contains(gradeLevel.getLevelId())
-                ).forEach(gradeLevel -> {
-                    gradesDistributableRepo.save(new DistributablesPerGrade(newItem,gradeLevel));
-                    if(currentSemId != 0)
-                        studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradeLevel.getLevelId(),currentSemId));
-                });
-                if(newItem.isCurrentlyActive() && currentSemId != 0 && !studentList.isEmpty()){
-                    studentList.forEach(student ->
-                            studentDistributables.add(DistributablesPerStudent.build(newItem,student,currentSem)));
-                    disStudRepo.saveAll(studentDistributables);
-                }
-            };
-        }
+        Runnable gradeLevelDistributable = () -> {
+            gradeLevelRepo.findAll().stream()
+            .filter(gradeLevel -> gradeLevel.isNotDeleted() &&
+                item.getGradeLevelIds().contains(gradeLevel.getLevelId())
+            ).forEach(gradeLevel -> {
+                gradesDistributableRepo.save(new DistributablesPerGrade(newItem,gradeLevel));
+                if(currentSemId != 0)
+                    studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradeLevel.getLevelId(),currentSemId));
+            });
+            if(newItem.isCurrentlyActive() && currentSemId != 0 && !studentList.isEmpty()){
+                System.out.println("Will add students");
+                studentList.forEach(student ->
+                        studentDistributables.add(DistributablesPerStudent.build(newItem,student,currentSem)));
+                disStudRepo.saveAll(studentDistributables);
+            }
+        };
         runAsync(gradeLevelDistributable);
         return true;
     }
@@ -126,6 +99,10 @@ public class DistributableServices {
                 gradeDis.setNotDeleted(true);
                 if(!updatedItem.getGradeLevelIds().contains(gradeDis.getGradeLevel().getLevelId()))
                     gradeDis.setNotDeleted(false);
+
+                if(!toUpdate.isCurrentlyActive() && updatedItem.isCurrentlyActive()){
+                    studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradeDis.getGradeLevel().getLevelId(),currentSemId));
+                }
                 updatedItem.getGradeLevelIds().remove((Integer)gradeDis.getGradeLevel().getLevelId());
             });
             gradesDistributableRepo.saveAll(gradeExistingDistributable);
@@ -134,7 +111,7 @@ public class DistributableServices {
                 gradeLevelRepo.findById(levelId).ifPresent(gradeLevel -> newGradesDistributable.add(new DistributablesPerGrade(toUpdate, gradeLevel)));}
 
             Iterable<DistributablesPerGrade> toIterate = gradesDistributableRepo.saveAll(newGradesDistributable);
-            if(toUpdate.isCurrentlyActive()){
+            if(updatedItem.isCurrentlyActive()){
                 List<DistributablesPerStudent> studentDistributable = new ArrayList<>();
                 toIterate.forEach(gradelvl ->
                         studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradelvl.getGradeLevel().getLevelId(),currentSemId)));
@@ -147,6 +124,8 @@ public class DistributableServices {
         };
         CompletableFuture<Void> runThis = CompletableFuture.runAsync(updateGradeDistributables);
         CompletableFuture.allOf(runThis).join();
+        toUpdate.setCurrentlyActive(updatedItem.isCurrentlyActive());
+        distributableRepo.save(toUpdate);
         return true;
     }
 

@@ -333,8 +333,8 @@
     async function addFee() {
         const paymentName = document.getElementById("paymentName").value.trim();
         const amount = document.getElementById("amount").value.trim();
-
-        console.log(paymentName, amount);
+        const willApplyThisSem = document.getElementById("applyThisSem").checked;
+        const isDistributable = document.getElementById("distributable").checked;
 
         if (!paymentName || !amount) {
             alert("Please fill in all fields.");
@@ -352,7 +352,9 @@
         const requestData = {
             name: paymentName,
             requiredAmount: parseFloat(amount),
-            gradeLevelNames: selectedGradeLevels
+            gradeLevelNames: selectedGradeLevels,
+            distributable : isDistributable,
+            willApplyNow : willApplyThisSem
         };
         console.log(requestData);
 
@@ -368,7 +370,7 @@
             const responseData = await response.text();
 
             if (response.ok) {
-                showSuccessModal("✅ Success: New payment has been added successfully!");
+                showSuccessModal(responseData);
             }
         } catch (error) {
             showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);

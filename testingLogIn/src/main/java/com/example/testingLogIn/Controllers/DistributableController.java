@@ -36,8 +36,9 @@ public class DistributableController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addNewDistributable(@RequestBody DistributableDTO newDistributable){
+        System.out.println(newDistributable);
         try{
-            if(distributableServices.addNewDistributable(null,null,null,newDistributable))
+            if(distributableServices.addNewDistributable(newDistributable))
                 return new ResponseEntity<>("New distributable successfully added",HttpStatus.OK);
             else
                 return new ResponseEntity<>("Distributable item already exists",HttpStatus.NOT_ACCEPTABLE);

@@ -2,6 +2,7 @@ package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.AssociativeModels.StudentFeesList;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
+import com.example.testingLogIn.ModelDTO.DistributableDTO;
 import com.example.testingLogIn.ModelDTO.GradeLevelToRequiredPaymentDTO;
 import com.example.testingLogIn.ModelDTO.RequiredPaymentsDTO;
 import com.example.testingLogIn.Models.GradeLevel;
@@ -83,7 +84,6 @@ public class RequiredPaymentsServices {
                         StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
                         double addToBalance = newFee.getRequiredAmount() - Math.ceil(((newFee.getRequiredAmount() * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
                         student.setStudentBalance(student.getStudentBalance() + addToBalance);
-                        //sfl.addFeeRecord(student, newFee, currentSem, addToBalance);
                         studentFeesListList.add(StudentFeesList.build(newFee,currentSem,student,addToBalance));
                     });
                     if(!studentList.isEmpty())
@@ -94,7 +94,12 @@ public class RequiredPaymentsServices {
 
             if(paymentsDTO.isDistributable()){
                 try{
-                    if(!distributableServices.addNewDistributable(paymentsDTO.getName(),gradeLevels,paymentsDTO.isWillApplyNow(),null));
+                    if(!distributableServices.addNewDistributable(DistributableDTO.builder()
+                                    .gradeLevelIds(gradeLevels.stream().map(GradeLevel::getLevelId).toList())
+                                    .itemName(paymentsDTO.getName())
+                                    .isCurrentlyActive(paymentsDTO.isWillApplyNow())
+                            .build()));
+
                 }catch (NullPointerException npe) {}
                 return 1;
             }

@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 @Builder
 public class DistributableDTO {
-
     private int itemId;
     private String itemName;
     private List<GradeLevel> gradeLevelList;

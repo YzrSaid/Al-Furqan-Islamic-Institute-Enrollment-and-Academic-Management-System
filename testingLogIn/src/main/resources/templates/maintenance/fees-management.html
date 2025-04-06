@@ -317,8 +317,8 @@
                     data-amount="${payment.requiredAmount}" data-grade-levels="${payment.gradeLevelNames.join(',')}"
                     data-open-modal="feesManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon">
                     
-                        <img data-open-modal="confirmationModal"  data-name="${payment.name}" data-action="deleteFee" 
-                                     data-message="Are you sure you want to delete this fee?" 
+                        <img data-open-modal="confirmationModal"  data-name="${payment.id}" data-action="deleteFee"
+                                     data-message="Are you sure you want to delete thidis fee?"
                                      src="/images/icons/bin.png" alt="grade-level-delete-icon">
                         
                         </div>
@@ -388,7 +388,6 @@
             selectedGradeLevels.push(checkbox.value); // Add the selected grade level to the array
         });
 
-        // Prepare the data to send in the request
         const updatedFeeData = {
             id: paymentId,
             name: paymentName,

@@ -3,44 +3,45 @@ package com.example.testingLogIn.Services;
 import com.example.testingLogIn.AssociativeModels.DistributablesPerGrade;
 import com.example.testingLogIn.AssociativeModels.DistributablesPerStudent;
 import com.example.testingLogIn.ModelDTO.DistributableDTO;
-import com.example.testingLogIn.Models.Distributable;
-import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Models.SchoolYearSemester;
-import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.Models.*;
+import com.example.testingLogIn.PagedResponse.StudentDistributablePage;
 import com.example.testingLogIn.Repositories.*;
-import io.netty.util.concurrent.CompleteFuture;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static java.util.concurrent.CompletableFuture.runAsync;
 
 @Service
 public class DistributableServices {
 
+    private final DistributableRepo distributableRepo;
+    private final GradesDistributableRepo gradesDistributableRepo;
+    private final GradeLevelRepo gradeLevelRepo;
+    private final EnrollmentRepo enrollmentRepo;
+    private final sySemesterServices semesterServices;
+    private final DistributablePerStudentRepo disStudRepo;
+
     @Autowired
-    private DistributableRepo distributableRepo;
-    @Autowired
-    private GradesDistributableRepo gradesDistributableRepo;
-    @Autowired
-    private GradeLevelRepo gradeLevelRepo;
-    @Autowired
-    private EnrollmentRepo enrollmentRepo;
-    @Autowired
-    private sySemesterServices semesterServices;
-    @Autowired
-    private DistributablePerStudent disStudRepo;
+    public DistributableServices(DistributableRepo distributableRepo, GradesDistributableRepo gradesDistributableRepo, GradeLevelRepo gradeLevelRepo, EnrollmentRepo enrollmentRepo, sySemesterServices semesterServices, DistributablePerStudentRepo disStudRepo) {
+        this.distributableRepo = distributableRepo;
+        this.gradesDistributableRepo = gradesDistributableRepo;
+        this.gradeLevelRepo = gradeLevelRepo;
+        this.enrollmentRepo = enrollmentRepo;
+        this.semesterServices = semesterServices;
+        this.disStudRepo = disStudRepo;
+    }
 
     public Distributable getByName(String distributableName){
         return distributableRepo.findByName(NonModelServices.forLikeOperator(distributableName)).orElse(null);
     }
-    public DistributableDTO getByid(int itemId){
+    public DistributableDTO getById(int itemId){
         return distributableRepo.findById(itemId).map(Distributable::DTOmapper).orElse(null);
     }
     public boolean addNewDistributable(DistributableDTO item) {
@@ -60,21 +61,22 @@ public class DistributableServices {
         SchoolYearSemester currentSem = semesterServices.getCurrentActive();
         List<DistributablesPerStudent> studentDistributables = new ArrayList<>();
         int currentSemId = Optional.ofNullable(currentSem).map(SchoolYearSemester::getSySemNumber).orElse(0);
-        List<Student> studentList = new ArrayList<>();
+        Map<DistributablesPerGrade,List<Student>> studentList = new HashMap<>();
 
         Runnable gradeLevelDistributable = () -> {
             gradeLevelRepo.findAll().stream()
             .filter(gradeLevel -> gradeLevel.isNotDeleted() &&
                 item.getGradeLevelIds().contains(gradeLevel.getLevelId())
             ).forEach(gradeLevel -> {
-                gradesDistributableRepo.save(new DistributablesPerGrade(newItem,gradeLevel));
-                if(currentSemId != 0)
-                    studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradeLevel.getLevelId(),currentSemId));
+                DistributablesPerGrade gradeDispo = gradesDistributableRepo.save(new DistributablesPerGrade(newItem,gradeLevel));
+                if(newItem.isCurrentlyActive() && currentSemId != 0)
+                    studentList.put(gradeDispo,enrollmentRepo.getCurrentlyEnrolledToGrade(gradeLevel.getLevelId(),currentSemId));
             });
             if(newItem.isCurrentlyActive() && currentSemId != 0 && !studentList.isEmpty()){
-                System.out.println("Will add students");
-                studentList.forEach(student ->
-                        studentDistributables.add(DistributablesPerStudent.build(newItem,student,currentSem)));
+                for(DistributablesPerGrade itemPerGrade : studentList.keySet())
+                    studentList.get(itemPerGrade).forEach(student ->
+                            studentDistributables.add(DistributablesPerStudent.build(itemPerGrade,student,currentSem)));
+
                 disStudRepo.saveAll(studentDistributables);
             }
         };
@@ -88,7 +90,7 @@ public class DistributableServices {
         if(existingItem != null && existingItem.getItemId() != toUpdate.getItemId())
             return false;
 
-        List<Student> studentList = new ArrayList<>();
+        Map<DistributablesPerGrade,List<Student>> studentList = new HashMap<>();
         toUpdate.setItemName(updatedItem.getItemName());
         SchoolYearSemester currentSem = semesterServices.getCurrentActive();
         int currentSemId = Optional.ofNullable(currentSem).map(SchoolYearSemester::getSySemNumber).orElse(0);
@@ -101,7 +103,7 @@ public class DistributableServices {
                     gradeDis.setNotDeleted(false);
 
                 if(!toUpdate.isCurrentlyActive() && updatedItem.isCurrentlyActive()){
-                    studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradeDis.getGradeLevel().getLevelId(),currentSemId));
+                    studentList.put(gradeDis,enrollmentRepo.getCurrentlyEnrolledToGrade(gradeDis.getGradeLevel().getLevelId(),currentSemId));
                 }
                 updatedItem.getGradeLevelIds().remove((Integer)gradeDis.getGradeLevel().getLevelId());
             });
@@ -114,11 +116,12 @@ public class DistributableServices {
             if(updatedItem.isCurrentlyActive()){
                 List<DistributablesPerStudent> studentDistributable = new ArrayList<>();
                 toIterate.forEach(gradelvl ->
-                        studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradelvl.getGradeLevel().getLevelId(),currentSemId)));
+                        studentList.put(gradelvl,enrollmentRepo.getCurrentlyEnrolledToGrade(gradelvl.getGradeLevel().getLevelId(),currentSemId)));
 
-                studentList.forEach(student -> {
-                    studentDistributable.add(DistributablesPerStudent.build(toUpdate,student,currentSem));
-                });
+                for(DistributablesPerGrade gradeDis : studentList.keySet())
+                    studentList.get(gradeDis).forEach(student -> {
+                        studentDistributable.add(DistributablesPerStudent.build(gradeDis,student,currentSem));
+                    });
                 disStudRepo.saveAll(studentDistributable);
             }
         };
@@ -143,5 +146,24 @@ public class DistributableServices {
         item.setNotDeleted(false);
         distributableRepo.save(item);
         return true;
+    }
+
+    // for distributing student learning materials
+    public void setStudentItemToReceive(Enrollment enrollment){
+        gradesDistributableRepo.findByDistributableByGradeLevel(enrollment.getGradeLevelToEnroll().getLevelId())
+                .forEach(gradeDis -> disStudRepo.save(DistributablesPerStudent.build(gradeDis,enrollment.getStudent(),enrollment.getSYSemester())));
+    }
+
+    public StudentDistributablePage getStudentDistributable(int pageNo, int pageSize, String student, String viewBy){
+        Pageable pageRequest = PageRequest.of(pageNo-1,pageSize);
+        Page<DistributablesPerStudent> studentPage = disStudRepo.getStudentDistPage(pageRequest);
+        return StudentDistributablePage.builder()
+                .content(studentPage.getContent().stream().map(DistributablesPerStudent::DTOmapper).collect(Collectors.toList()))
+                .pageNo(studentPage.getNumber())
+                .pageSize(studentPage.getSize())
+                .totalElements(studentPage.getTotalPages())
+                .totalPages(studentPage.getTotalPages())
+                .isLast(studentPage.isLast())
+                .build();
     }
 }

@@ -1,7 +1,9 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.ModelDTO.DistributableDTO;
+import com.example.testingLogIn.ModelDTO.DistributablePerStudentDTO;
 import com.example.testingLogIn.Models.Distributable;
+import com.example.testingLogIn.PagedResponse.StudentDistributablePage;
 import com.example.testingLogIn.Services.DistributableServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +30,7 @@ public class DistributableController {
     @GetMapping("/{itemId}")
     public ResponseEntity<DistributableDTO> getDistributable(@PathVariable("itemId") int itemId){
         try{
-            return new ResponseEntity<>(distributableServices.getByid(itemId),HttpStatus.OK);
+            return new ResponseEntity<>(distributableServices.getById(itemId),HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -68,6 +70,16 @@ public class DistributableController {
             return new ResponseEntity<>("Distributable edited successfully",HttpStatus.OK);
         }catch(NullPointerException npe){
             return new ResponseEntity<>("Distributable not found",HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/student-distribution/all")
+    public ResponseEntity<StudentDistributablePage> getStudentDistributions(@RequestParam(defaultValue = "1") int pageNo,
+                                                                            @RequestParam(defaultValue = "10") int pageSize){
+        try {
+            return new ResponseEntity<>(distributableServices.getStudentDistributable(pageNo, pageSize, null, null), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

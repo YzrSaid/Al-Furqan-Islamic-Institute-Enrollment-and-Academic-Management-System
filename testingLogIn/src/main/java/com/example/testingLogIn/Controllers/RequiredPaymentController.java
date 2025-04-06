@@ -84,13 +84,13 @@ public class RequiredPaymentController {
         }
     }
 
-    @DeleteMapping("/delete/{paymentName}")
-    public ResponseEntity<String> deleteRequiredPayment(@PathVariable String paymentName) {
+    @DeleteMapping("/delete/{feeId}")
+    public ResponseEntity<String> deleteRequiredPayment(@PathVariable int feeId) {
         try {
-            reqPaymentService.deleteRequiredPayment(paymentName);
-            return new ResponseEntity<>("Payment \"" + paymentName + "\" deleted successfully", HttpStatus.OK);
+            reqPaymentService.deleteRequiredPayment(feeId);
+            return new ResponseEntity<>("Payment deleted successfully", HttpStatus.OK);
         } catch (NullPointerException npe) {
-            return new ResponseEntity<>("Payment \"" + paymentName + "\" was not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Payment was not found", HttpStatus.NOT_FOUND);
         }catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);

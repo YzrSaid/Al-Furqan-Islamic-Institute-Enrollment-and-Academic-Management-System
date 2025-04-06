@@ -43,9 +43,10 @@ public class EnrollmentServices {
     private final SectionStudentCountServices sscService;
     private final PaymentRecordService paymentService;
     private final TransfereeReqRepo transReqRepo;
+    private final DistributableServices distributableServices;
 
     @Autowired
-    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, TransfereeReqRepo transReqRepo) {
+    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, TransfereeReqRepo transReqRepo, DistributableServices distributableServices) {
         this.enrollmentRepo = enrollmentRepo;
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
@@ -59,7 +60,9 @@ public class EnrollmentServices {
         this.sscService = sscService;
         this.paymentService = paymentService;
         this.transReqRepo = transReqRepo;
+        this.distributableServices = distributableServices;
     }
+
     public boolean addStudentToListing(Integer studentId) {
         Student student = null;
         if(studentId != null)
@@ -166,7 +169,8 @@ public class EnrollmentServices {
             CompletableFuture<Void> updateStudent = CompletableFuture.runAsync(() -> studentRepo.save(student));
             CompletableFuture<Void> addStudentGrades = CompletableFuture.runAsync(() -> ssgService.addStudentGrades(enrollmentRecord));
             CompletableFuture<Void> addFeesRecord = CompletableFuture.runAsync(() -> studFeeListService.addFeesRecord(enrollmentRecord));
-            CompletableFuture.allOf(updateStudent,addFeesRecord,addStudentGrades,updateSection).join();
+            CompletableFuture<Void> setItemToReceive = CompletableFuture.runAsync(() -> distributableServices.setStudentItemToReceive(enrollmentRecord));
+            CompletableFuture.allOf(updateStudent,addFeesRecord,addStudentGrades,setItemToReceive,updateSection).join();
 
             return 2;
         }

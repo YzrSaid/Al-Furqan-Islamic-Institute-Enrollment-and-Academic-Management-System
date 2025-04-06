@@ -233,8 +233,8 @@ public class RequiredPaymentsServices {
         return true;
     }
 
-    public void deleteRequiredPayment(String requiredPaymentName){
-        RequiredFees reqFee = reqPaymentsRepo.findByName("%"+requiredPaymentName.toLowerCase()+"%").orElseThrow(NullPointerException::new);
+    public void deleteRequiredPayment(int feeId){
+        RequiredFees reqFee = reqPaymentsRepo.findById(feeId).orElseThrow(NullPointerException::new);
         int currentSemId = semServices.getCurrentActive().getSySemNumber();
         if(reqFee.isCurrentlyActive())
             runMe(()->{

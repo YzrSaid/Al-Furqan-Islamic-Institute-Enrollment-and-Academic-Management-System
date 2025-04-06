@@ -1,5 +1,6 @@
 package com.example.testingLogIn.AssociativeModels;
 
+import com.example.testingLogIn.ModelDTO.DistributablePerStudentDTO;
 import com.example.testingLogIn.Models.Distributable;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
@@ -25,7 +26,8 @@ public class DistributablesPerStudent {
 
     @ManyToOne
     @JoinColumn(name = "item", nullable = false)
-    private Distributable item;
+    private DistributablesPerGrade item;
+
     private boolean isReceived;
     private LocalDate dateReceived;
 
@@ -33,13 +35,24 @@ public class DistributablesPerStudent {
     @JoinColumn(name = "semester", nullable = false)
     private SchoolYearSemester sem;
 
-    public static DistributablesPerStudent build(Distributable item,Student student, SchoolYearSemester sem){
+    public static DistributablesPerStudent build(DistributablesPerGrade item,Student student, SchoolYearSemester sem){
         return builder()
                 .item(item)
                 .student(student)
                 .sem(sem)
                 .dateReceived(null)
                 .isReceived(false)
+                .build();
+    }
+
+    public DistributablePerStudentDTO DTOmapper(){
+        return DistributablePerStudentDTO.builder()
+                .distId(distributionId)
+                .student(student.DTOmapper())
+                .gradeLevel(item.getGradeLevel())
+                .dateReceived(dateReceived)
+                .isReceived(isReceived)
+                .itemName(item.getItem().getItemName())
                 .build();
     }
 }

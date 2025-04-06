@@ -141,7 +141,6 @@ async function updateSchoolSettings() {
     .then((text) => {
       // Show success modal when the update is successful
       showSuccessModal(`✅ Success: ${text}`);
-      window.location.reload(); // Reload page after success
     })
     .catch((error) => {
       console.error("🚨 Error:", error);

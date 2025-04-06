@@ -13,6 +13,7 @@
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
@@ -21,7 +22,7 @@
     <div class="dashboard-container" id="content">
         <!-- Topbar -->
         <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
+
         <div class="text-link" id="breadcrumb-container">
             <h4>Payment</h4>
             <a href="/home">Main</a>
@@ -317,7 +318,7 @@
     <div id="successModal">
         <p id="successModalMessage"></p>
     </div>
-   
+
     <script>
         document.addEventListener("click", async function (event) {
             const addButton = event.target.closest('.add-payment-btn');
@@ -454,23 +455,24 @@
                             <td>${rec.student.fullName}</td>
                             <td>${sectionToEnroll}</td>
                             <td>
-                                <div class="dropdown">
-                                    <div class="status-container">
-                                        <button class="dropdown-status-btn">
-                                            <i class="fas fa-chevron-down"></i>
-                                        </button>
-                                    </div>
-                                    <div class="dropdown-status-content" id="dropdown-listing">
-                                        <a href="#" class="action" data-open-modal="listOfPaymentsModal"
-                                           data-student-id="${rec.student.studentId}"
-                                           data-level-id="${rec.gradeLevelToEnrollId}"
-                                           data-enrollment-id="${rec.enrollmentId}">
-                                            View List of Payments
-                                        </a>
-                                        ${proceedBtn}
-                                    </div>
+                            <div class="dropdown">
+                                <div class="status-container">
+                                <button class="dropdown-status-btn">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
                                 </div>
+                                <div class="dropdown-status-content" id="dropdown-listing">
+                                <a href="#" class="action" data-open-modal="listOfPaymentsModal"
+                                    data-student-id="${rec.student.studentId}"
+                                    data-level-id="${rec.gradeLevelToEnrollId}"
+                                    data-enrollment-id="${rec.enrollmentId}">
+                                    View List of Payments
+                                </a>
+                                ${proceedBtn}
+                                </div>
+                            </div>
                             </td>
+
                         `;
                         <!--receiptModal
                         listOfPaymentsModal-->

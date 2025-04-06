@@ -264,7 +264,7 @@ body {
   font-weight: bold;
 }
 .submenu a.second-active {
-  /* border-bottom: 2px solid rgb(52, 217, 56); */
+  border-bottom: 2px solid rgb(52, 217, 56);
   display: inline-block;
   font-weight: bold;
   padding-bottom: 4.5px;
@@ -1476,6 +1476,15 @@ table td {
   background-color: transparent;
 }
 
+.dropdown-print-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
 /* Dropdown items */
 .dropdown-status-content a {
   display: block;
@@ -1490,9 +1499,10 @@ table td {
 }
 
 /* Show dropdown on hover */
-.dropdown:hover .dropdown-status-content {
+/* .dropdown:hover .dropdown-status-content {
   display: block;
-}
+} */
+
 
 /* modal design */
 .modal {
@@ -1966,11 +1976,6 @@ input[type="checkbox"] {
   accent-color: #218838;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 .checkbox input {
   display: flex;
   width: 15px;
@@ -2092,7 +2097,8 @@ input[type="checkbox"] {
   margin-top: 10px;
 }
 
-.student-information-modal h2 {
+.student-information-modal h2,
+.student-information-container h2 {
   font-size: 18px;
   font-weight: 600;
   text-align: center;
@@ -2100,14 +2106,16 @@ input[type="checkbox"] {
   margin-top: 10px;
 }
 
-.student-information-modal h1 {
+.student-information-modal h1,
+.student-information-container h1 {
   font-size: 32px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 30px;
   margin-top: 10px;
 }
-.student-information-modal h3 {
+.student-information-modal h3,
+.student-information-container h3 {
   font-size: 32px;
   font-weight: bold;
   text-align: center;
@@ -2149,6 +2157,7 @@ input[type="checkbox"] {
 .fees-management-modal-content label,
 .fees-management-edit-modal-content label,
 .student-information-modal-content label,
+.student-information-container-content label,
 .view-book-modal-content label,
 .receipt-modal-content label,
 .add-account-type-modal-content label,
@@ -2191,6 +2200,7 @@ input[type="checkbox"] {
 .view-student-list-modal-content input,
 .scholarship-modal-content input,
 .scholarship-edit-modal-content input,
+.student-information-container-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
@@ -2280,6 +2290,16 @@ input[type="checkbox"] {
   text-align: left;
   position: relative;
   z-index: 1001;
+}
+
+.student-information-container-content {
+  background: #f6f6f6 !important;
+  margin-left: 30px;
+  padding: 30px;
+  border-radius: 5px;
+  width: 1100px;
+  text-align: left;
+  position: relative;
 }
 
 /* student list view modal (transaction page) */
@@ -3269,7 +3289,18 @@ td[rowspan] {
   width: 100% !important;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
+.header-stud-info {
+  width: 20% !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-stud-info h2 {
+  margin: 0;
+}
+
 #stud-type-row h6 {
   font-weight: bold;
   margin-top: 10px;
@@ -3360,13 +3391,28 @@ td[rowspan] {
 }
 
 /* Styles for successModal */
+/* #successModal {
+  font-size: 15px;
+  display: none;
+  position: fixed;
+  bottom: 20px; 
+  right: 20px; 
+  background: #218838;
+  color: #ffffff;
+  font-weight: bold;
+  padding: 30px 50px;
+  border-radius: 7px;
+  text-align: center;
+  z-index: 10000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+} */
+
 #successModal {
   font-size: 15px;
   display: none;
   position: fixed;
-  top: 0%;
-  left: 50%;
-  transform: translate(-50%, 0);
+  bottom: 20px; /* changed from top */
+  right: 20px; /* move to lower-right */
   background: #218838;
   color: #ffffff;
   font-weight: bold;
@@ -3374,6 +3420,9 @@ td[rowspan] {
   border-radius: 7px;
   text-align: center;
   z-index: 10000;
+  justify-content: center;
+  align-items: center;
+  word-wrap: break-word;
 }
 
 /* styles for close modal (x) button */
@@ -3927,15 +3976,14 @@ td[rowspan] {
 
 /* Custom styles for the button */
 .save-settings-btn {
-    background-color: #218838 !important; 
-    color: white !important;
-    border: none !important; 
-    transition: background-color 0.3s ease; 
+  background-color: #218838 !important;
+  color: white !important;
+  border: none !important;
+  transition: background-color 0.3s ease;
 }
-
 
 /* Remove the white background when the button is active or pressed */
 .save-settings-btn:active {
-   background-color: #218838;
-    border: none !important; 
+  background-color: #218838;
+  border: none !important;
 }

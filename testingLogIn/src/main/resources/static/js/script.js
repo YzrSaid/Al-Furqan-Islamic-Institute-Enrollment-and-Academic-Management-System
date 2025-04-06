@@ -49,6 +49,8 @@ function toggleSidebar() {
 function toggleDropdown(id) {
   const dropdownMenu = document.getElementById(id);
 
+  if (!dropdownMenu) return;
+
   // Close all other dropdowns before toggling the clicked one
   document.querySelectorAll(".dropdown-content").forEach((dropdown) => {
     if (dropdown.id !== id) {
@@ -454,72 +456,81 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  const editButton = document.getElementById("editButton");
-  const inputs = document.querySelectorAll(
-    "#schoolSettingsForm input, #schoolSettingsForm select, #schoolSettingsForm textarea"
-  );
-  const confirmActionButton = document.getElementById("confirmAction");
-  const cancelActionButton = document.querySelector(".btn-close-confirm");
+  document.body.addEventListener("click", function (event) {
+    const editButton = event.target.closest("#editButton");
+    const confirmActionButton = event.target.closest("#confirmAction");
 
-  // Initially set the mode to "edit"
-  editButton.setAttribute("data-mode", "edit");
+    const inputs = document.querySelectorAll(
+      "#schoolSettingsForm input, #schoolSettingsForm select, #schoolSettingsForm textarea"
+    );
 
-  // Toggle the Edit/Update mode when the button is clicked
-  editButton.addEventListener("click", function () {
-    const currentMode = editButton.getAttribute("data-mode");
+    if (editButton) {
+      let currentMode = editButton.getAttribute("data-mode") || "edit";
 
-    if (currentMode === "edit") {
-      // Enable inputs for editing
-      inputs.forEach((input) => {
-        if (input.tagName === "SELECT") {
-          input.disabled = false; // Enable select fields
-        } else {
-          input.readOnly = false; // Enable text fields
-          input.disabled = false;
+      if (currentMode === "edit") {
+        inputs.forEach((input) => {
+          if (input.tagName === "SELECT") {
+            input.disabled = false;
+          } else {
+            input.readOnly = false;
+            input.disabled = false;
+          }
+        });
+
+        editButton.textContent = "Update";
+        editButton.setAttribute("data-mode", "update");
+      } else if (currentMode === "update") {
+        const message = "Are you sure you want to update the school settings?";
+        const modalText = document.getElementById("modalText");
+        const action = editButton.getAttribute("data-action") || "";
+
+        if (modalText) modalText.textContent = message;
+
+        const confirmAction = document.getElementById("confirmAction");
+        if (confirmAction) {
+          confirmAction.setAttribute("data-confirm-action", action);
         }
-      });
 
-      // Change button text and set data-mode to "update"
-      editButton.textContent = "Update";
-      editButton.setAttribute("data-mode", "update");
-    } else if (currentMode === "update") {
-      // Set message for the confirmation modal
-      const message = "Are you sure you want to update the school settings?";
-      document.getElementById("modalText").textContent = message;
+        if (typeof toggleModal === "function") {
+          toggleModal("confirmationModal", true);
+        }
+      }
+    }
 
-      const action = this.getAttribute("data-action") || ""; // Get action
+    if (confirmActionButton) {
+      const action = confirmActionButton.getAttribute("data-confirm-action");
 
-      document.getElementById("modalText").textContent = message;
-      document
-        .getElementById("confirmAction")
-        .setAttribute("data-confirm-action", action); // Store action
+      if (action === "updateSchoolSettings") {
+        // Reset button text and mode
+        const editBtn = document.getElementById("editButton");
+        if (editBtn) {
+          editBtn.textContent = "Edit";
+          editBtn.setAttribute("data-mode", "edit");
+        }
 
-      // Show the confirmation modal
-      toggleModal("confirmationModal", true);
+        // Disable inputs
+        inputs.forEach((input) => {
+          input.disabled = true;
+          input.readOnly = true;
+        });
+
+        // Hide modal if needed
+        if (typeof toggleModal === "function") {
+          toggleModal("confirmationModal", false);
+        }
+      }
     }
   });
 
-  // Handle the update action when the user confirms in the modal
-  confirmActionButton.addEventListener("click", function () {
-    editButton.textContent = "Edit"; // Reset button text to "Edit"
-    editButton.setAttribute("data-mode", "edit"); // Reset the mode to "edit"
-
-    // Disable inputs again after updating
-    inputs.forEach((input) => {
-      input.disabled = true;
-      input.readOnly = true;
-    });
-  });
-
   // Handle the cancel action when the user cancels in the modal
-  cancelActionButton.addEventListener("click", function () {
-    // Close the confirmation modal without doing anything
-    toggleModal("confirmationModal", false);
+  //   cancelActionButton.addEventListener("click", function () {
+  //     // Close the confirmation modal without doing anything
+  //     toggleModal("confirmationModal", false);
 
-    // Keep inputs enabled if they were already in "edit" mode (no reset)
-    editButton.textContent = "Edit";
-    editButton.setAttribute("data-mode", "edit");
-  });
+  //     // Keep inputs enabled if they were already in "edit" mode (no reset)
+  //     editButton.textContent = "Edit";
+  //     editButton.setAttribute("data-mode", "edit");
+  //   });
 
   // Event listener to enable inputs when reopening the modal
   document.addEventListener("click", function (event) {
@@ -553,15 +564,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     switch (action) {
       case "updateSchoolSettings":
-         // This is for updating/editing the school settings
-         if (!validateForm("schoolSettingsForm")) {
-            showErrorModal("⚠️ Please fill in all required fields!");
-            return;
-          } else {
-            updateSchoolSettings();
-            closeConfirmationModal();
-          }
-          break;
+        // This is for updating/editing the school settings
+        if (!validateForm("schoolSettingsForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          updateSchoolSettings();
+          closeConfirmationModal();
+        }
+        break;
       case "editTransfereeReq":
         updateTransfRequirement();
         break;
@@ -912,8 +923,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (modal && modalMessage && overlay) {
       modalMessage.innerHTML = message;
-      modal.style.display = "block";
-      overlay.style.display = "block";
+
+      // Add display and flex alignment only when showing
+      modal.style.display = "flex";
+      modal.style.flexDirection = "column";
+      modal.style.justifyContent = "center";
+      modal.style.alignItems = "center";
+
+      overlay.style.display = "flex";
 
       setTimeout(() => {
         modal.style.display = "none";
@@ -926,7 +943,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           location.reload();
         }
-      }, 1500);
+      }, 1500); // 1.5 seconds
     } else {
       showErrorModal(
         `⚠️ Oops! Something went wrong. Please refresh or try again.`
@@ -984,9 +1001,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const message = target.getAttribute("data-message") || "";
       const action = target.getAttribute("data-action") || "";
 
-      document
-        .getElementById("confirmAction")
-        .setAttribute("data-confirm-action", action);
+      //   document
+      //     .getElementById("confirmAction")
+      //     .setAttribute("data-confirm-action", action);
 
       // Check if the clicked button is the saveBtn
       if (target === saveBtn) {
@@ -1196,6 +1213,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const addRowBtn = document.getElementById("addRowBtn");
   const saveBtn = document.getElementById("saveBtn");
   const clearBtn = document.getElementById("clearBtn");
+
+  if (!tableBody || !addRowBtn || !saveBtn || !clearBtn) return;
 
   let firstClick = true; // Track first click on "Add"
   let draggedRow = null; // For drag-and-drop functionality
@@ -1428,7 +1447,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const confirmActionButton = document.getElementById("confirmAction");
 
   // Hide the print button initially
-  printButton.style.display = "none";
+  if (printButton) {
+    printButton.style.display = "none";
+  }
 
   // Function to handle confirmed save action
   window.confirmSave = function () {
@@ -1447,21 +1468,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const passwordField = document.getElementById("password");
   const toggleIcon = document.getElementById("togglePassword");
 
-  if (!passwordField || !toggleIcon) {
-    console.error("Password field or toggle icon not found!");
-    return;
-  }
+  // Exit early if elements are not on the current page
+  if (!passwordField || !toggleIcon) return;
 
   toggleIcon.addEventListener("click", function () {
-    if (passwordField.type === "password") {
-      passwordField.type = "text";
-      toggleIcon.src = "/images/icons/eye.png";
-      toggleIcon.alt = "Hide Password";
-    } else {
-      passwordField.type = "password";
-      toggleIcon.src = "/images/icons/hidden-pass.png";
-      toggleIcon.alt = "Show Password";
-    }
+    const isPassword = passwordField.type === "password";
+    passwordField.type = isPassword ? "text" : "password";
+    toggleIcon.src = isPassword
+      ? "/images/icons/eye.png"
+      : "/images/icons/hidden-pass.png";
+    toggleIcon.alt = isPassword ? "Hide Password" : "Show Password";
   });
 });
 
@@ -1488,6 +1504,9 @@ function clearForm() {
 document.addEventListener("DOMContentLoaded", () => {
   const transfereeCheckbox = document.getElementById("isTransferee");
   const transfereeFields = document.getElementById("transfereeFields");
+
+  if (!transfereeCheckbox || !transfereeFields || !transfereeInputs) return;
+
   const transfereeInputs = transfereeFields.querySelectorAll("input");
 
   // Toggle visibility and readonly state
@@ -1634,23 +1653,20 @@ function toggleSidebar() {
 
 // Pagination Title Function
 document.addEventListener("DOMContentLoaded", function () {
-  // Example dynamic data (you can fetch this from an API or calculate it based on your dataset)
-  const totalItems = 95; // Total items (e.g., from a database or API response)
-  const itemsPerPage = 10; // Items per page
+  const prevPageBtn = document.getElementById("prevPage");
+  const nextPageBtn = document.getElementById("nextPage");
 
-  // Calculate total pages dynamically
+  // ✅ Only run pagination logic if both buttons exist
+  if (!prevPageBtn || !nextPageBtn) return;
+
+  const totalItems = 95; // Can be dynamic
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  let currentPage = 1; // Assuming initial page is 1
+  let currentPage = 1;
 
-  // Initialize pagination with dynamic titles
   updatePaginationTitles(currentPage, totalPages);
 
-  // Function to update titles based on current page and total pages
   function updatePaginationTitles(currentPage, totalPages) {
-    const prevPageBtn = document.getElementById("prevPage");
-    const nextPageBtn = document.getElementById("nextPage");
-
-    // Update 'prevPage' title
     if (currentPage === 1) {
       prevPageBtn.disabled = true;
       prevPageBtn.title = "You're already on the first page.";
@@ -1659,7 +1675,6 @@ document.addEventListener("DOMContentLoaded", function () {
       prevPageBtn.title = "Click to show previous page.";
     }
 
-    // Update 'nextPage' title
     if (currentPage === totalPages) {
       nextPageBtn.disabled = true;
       nextPageBtn.title = "You're already on the last page.";
@@ -1669,18 +1684,182 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Example: Handle page navigation (next/prev) and call the function
-  document.getElementById("prevPage").addEventListener("click", function () {
+  prevPageBtn.addEventListener("click", function () {
     if (currentPage > 1) {
       currentPage--;
       updatePaginationTitles(currentPage, totalPages);
     }
   });
 
-  document.getElementById("nextPage").addEventListener("click", function () {
+  nextPageBtn.addEventListener("click", function () {
     if (currentPage < totalPages) {
       currentPage++;
       updatePaginationTitles(currentPage, totalPages);
     }
   });
 });
+// Function to toggle dropdown visibility
+// function toggleDropdown() {
+//     const dropdownContent = document.querySelector(".dropdown-status-content");
+  
+//     // null check
+//     if (!dropdownContent) return;
+  
+//     // Toggle the visibility of the dropdown
+//     dropdownContent.style.display =
+//       dropdownContent.style.display === "block" ? "none" : "block";
+//   }
+  
+//   // Close the dropdown if clicked outside
+//   document.addEventListener("click", function (event) {
+//     const dropdownContent = document.querySelector(".dropdown-status-content");
+//     const dropdownButton = document.querySelector(".dropdown-print-btn");
+  
+//     // Check if the clicked target is outside the dropdown or the button
+//     if (
+//       dropdownContent &&
+//       dropdownButton &&
+//       !dropdownContent.contains(event.target) &&
+//       !dropdownButton.contains(event.target)
+//     ) {
+//       dropdownContent.style.display = "none";
+//     }
+//   });
+
+
+// Function to toggle dropdown visibility
+// function toggleDropdown(event) {
+//     event.stopPropagation(); // Prevent click from propagating to the document
+  
+//     const dropdownContent = document.querySelector(".dropdown-status-content");
+  
+//     // Null check for dropdown content
+//     if (!dropdownContent) return;
+  
+//     // Toggle the visibility of the dropdown
+//     dropdownContent.style.display =
+//       dropdownContent.style.display === "block" ? "none" : "block";
+//   }
+  
+//   // Close the dropdown if clicked outside
+//   document.addEventListener("click", function (event) {
+//     const dropdownContent = document.querySelector(".dropdown-status-content");
+//     const dropdownButton = document.querySelector(".dropdown-print-btn");
+  
+//     // Check if the clicked target is outside the dropdown or the button
+//     if (
+//       dropdownContent &&
+//       dropdownButton &&
+//       !dropdownContent.contains(event.target) &&
+//       !dropdownButton.contains(event.target)
+//     ) {
+//       dropdownContent.style.display = "none"; // Close the dropdown if clicked outside
+//     }
+//   });
+
+
+// Function to toggle dropdown visibility
+// document.addEventListener("DOMContentLoaded", function() {
+//     // Function to toggle dropdown visibility
+//     function toggleDropdown(event) {
+//         event.stopPropagation(); // Prevent click from propagating to document
+
+//         const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-status-content');
+
+//         // Null check for dropdown content
+//         if (!dropdownContent) return;
+
+//         // Toggle the visibility of the dropdown
+//         dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+//     }
+
+//     // Close the dropdown if clicked outside
+//     document.addEventListener("click", function (event) {
+//         const dropdownContents = document.querySelectorAll(".dropdown-status-content");
+//         const dropdownButtons = document.querySelectorAll(".dropdown-status-btn");
+
+//         dropdownContents.forEach((dropdownContent) => {
+//             dropdownButtons.forEach((dropdownButton) => {
+//                 // If the click target is outside the dropdown or the button, close the dropdown
+//                 if (
+//                     !dropdownContent.contains(event.target) &&
+//                     !dropdownButton.contains(event.target)
+//                 ) {
+//                     dropdownContent.style.display = "none";
+//                 }
+//             });
+//         });
+//     });
+
+//     // Delegate click event to the parent of all dropdown buttons to toggle dropdown content visibility
+//     document.querySelector("body").addEventListener("click", function(event) {
+//         const targetButton = event.target.closest(".dropdown-status-btn");
+//         if (targetButton) {
+//             toggleDropdown(event);
+//         }
+//     });
+// });
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Function to toggle dropdown visibility
+    function toggleDropdown(event) {
+      event.stopPropagation(); // Prevent click from propagating to document
+  
+      const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-status-content');
+  
+      // Null check for dropdown content
+      if (!dropdownContent) return;
+  
+      // Toggle the visibility of the dropdown
+      dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+    }
+  
+    // Close the dropdown if clicked outside
+    document.addEventListener("click", function (event) {
+      const dropdownContents = document.querySelectorAll(".dropdown-status-content");
+      const dropdownButtons = document.querySelectorAll(".dropdown-status-btn, .dropdown-print-btn");
+  
+      dropdownContents.forEach((dropdownContent) => {
+        dropdownButtons.forEach((dropdownButton) => {
+          // If the click target is outside the dropdown or the button, close the dropdown
+          if (
+            !dropdownContent.contains(event.target) &&
+            !dropdownButton.contains(event.target)
+          ) {
+            dropdownContent.style.display = "none";
+          }
+        });
+      });
+    });
+  
+    // Delegate click event to the parent of all dropdown buttons to toggle dropdown content visibility
+    document.body.addEventListener("click", function (event) {
+      const targetButton = event.target.closest(".dropdown-print-btn");
+      const targetStatusButton = event.target.closest(".dropdown-status-btn");
+  
+      // If the print dropdown button is clicked, toggle it
+      if (targetButton) {
+        toggleDropdown(event);
+      }
+  
+      // If the status dropdown button is clicked in goList, toggle it
+      else if (targetStatusButton) {
+        toggleDropdown(event);
+      }
+    });
+  });
+  
+
+
+
+
+  
+
+  
+  
+  
+  
+  
+  
+
+  

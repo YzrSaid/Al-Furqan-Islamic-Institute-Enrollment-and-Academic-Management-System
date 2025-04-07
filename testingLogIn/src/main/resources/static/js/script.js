@@ -851,6 +851,9 @@ document.addEventListener("DOMContentLoaded", function () {
           closeConfirmationModal();
         }
         break;
+      case "itemDistributed":
+        confirmDistribution();
+        break;
       default:
         alert("Unknown action: " + action);
         return;

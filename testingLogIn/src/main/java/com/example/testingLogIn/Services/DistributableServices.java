@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -154,9 +155,10 @@ public class DistributableServices {
                 .forEach(gradeDis -> disStudRepo.save(DistributablesPerStudent.build(gradeDis,enrollment.getStudent(),enrollment.getSYSemester())));
     }
 
-    public StudentDistributablePage getStudentDistributable(int pageNo, int pageSize, String student, String viewBy){
+    public StudentDistributablePage getStudentDistributable(int pageNo, int pageSize, String student, Boolean isClaimed){
+        student = "%"+student.toLowerCase()+"%";
         Pageable pageRequest = PageRequest.of(pageNo-1,pageSize);
-        Page<DistributablesPerStudent> studentPage = disStudRepo.getStudentDistPage(pageRequest);
+        Page<DistributablesPerStudent> studentPage = disStudRepo.getStudentDistPage(student,isClaimed,pageRequest);
         return StudentDistributablePage.builder()
                 .content(studentPage.getContent().stream().map(DistributablesPerStudent::DTOmapper).collect(Collectors.toList()))
                 .pageNo(studentPage.getNumber())
@@ -165,5 +167,12 @@ public class DistributableServices {
                 .totalPages(studentPage.getTotalPages())
                 .isLast(studentPage.isLast())
                 .build();
+    }
+
+    public void itemDistributed(int distributionId){
+        DistributablesPerStudent studentItem = disStudRepo.findById(distributionId).orElseThrow(NullPointerException::new);
+        studentItem.setReceived(true);
+        studentItem.setDateReceived(LocalDate.now());
+        disStudRepo.save(studentItem);
     }
 }

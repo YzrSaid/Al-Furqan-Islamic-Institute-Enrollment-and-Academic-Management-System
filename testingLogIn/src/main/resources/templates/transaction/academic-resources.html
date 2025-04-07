@@ -36,12 +36,19 @@
                 <!-- Searchbox and sort btn -->
                 <div class="search">
                     <div class="search-container">
-                        <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
+                        <input type="text" id="search" placeholder="Search..." class="search-input" />
+                        <button onclick="setUpTables()" class="search-btn">Search</button>
                     </div>
                     <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
+                        <select name="sort" id="view-type" onchange="setUpTables()" class="sort-select">
+                            <option value="All" selected>View All</option>
+                            <option value="true">Claimed</option>
+                            <option value="false">Not Claimed</option>
+                        </select>
+                    </div>
+                    <div class="sort-container">
+                        <select name="sort" id="item-type" class="sort-select">
+                            <option value="0" disabled selected>All Item</option>
                         </select>
                     </div>
                 </div>
@@ -53,7 +60,7 @@
             <thead>
                 <tr>
                     <th>Student</th>
-                    <th>Grade Level</th>
+                    <th onclick="iAmClicked()">Grade Level</th>
                     <th>Item</th>
                     <th>Status</th>
                     <th>Date Received</th>
@@ -78,71 +85,128 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             setUpTables();
+            setUpItems();
         });
 
-async function setUpTables() {
-    try {
-        const response = await fetch("/distributable/student-distribution/all");
+        async function setUpTables() {
+            try {
+                const item = document.getElementById("item-type").value;
+                const claimed = document.getElementById("view-type").value;
+                const search = document.getElementById("search").value;
+                const response = await fetch(`/distributable/student-distribution/all?isClaimed=${claimed}&student=${search}&itemType=${item}`);
 
-        if (!response.ok) {
-            console.error("Failed to fetch data:", response.status);
-            return;
+                if (!response.ok) {
+                    console.error("Failed to fetch data:", response.status);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log("Fetched data:", data);
+
+                const tableBody = document.querySelector("#table-ko tbody");
+                if (!tableBody) {
+                    console.error("Table body not found");
+                    return;
+                }
+
+                // Clear existing rows
+                tableBody.innerHTML = '';
+
+                if (!data.content || data.content.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
+                    return;
+                }
+
+                // Create document fragment for better performance
+                const fragment = document.createDocumentFragment();
+
+                data.content.forEach(studDis => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${studDis.student?.fullName || 'N/A'}</td>
+                        <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
+                        <td>${studDis.itemName || 'N/A'}</td>
+                        <td>${studDis.received ? "Claimed" : "Not Claimed"}</td>
+                        <td>${studDis.dateReceived || "N/A"}</td>
+                        <td>
+                            <div class="dropdown">
+                                <div class="action-container action">
+                                    <button data-open-modal="confirmationModal" class="add-something-btn"
+                                        data-action="itemDistributed"
+                                        data-message="Confirm item is distributed to the student"
+                                        data-item-id="${studDis.distId}">
+                                        Distribute
+                                    </button>
+                                </div>
+                            </div>
+                        </td>`;
+                    fragment.appendChild(row);
+                });
+
+                tableBody.appendChild(fragment);
+
+            } catch (error) {
+                console.error("Error setting up tables:", error);
+                // Optional: Show user-friendly error message in UI
+                const tableBody = document.querySelector("#table-ko tbody");
+                if (tableBody) {
+                    tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
+                }
+            }
         }
 
-        const data = await response.json();
-        console.log("Fetched data:", data);
-
-        const tableBody = document.querySelector("#table-ko tbody");
-        if (!tableBody) {
-            console.error("Table body not found");
-            return;
+        function iAmClicked(){
+            alert("I am clicked");
         }
 
-        // Clear existing rows
-        tableBody.innerHTML = '';
-
-        if (!data.content || data.content.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
-            return;
+        function setUpItems(){
+            const itemsCombo = document.getElementById("item-type");
+            fetch("/distributable/all")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                data.forEach(item => {
+                    console.log(item);
+                    const opt = document.createElement("option");
+                    opt.value = item.itemId;
+                    opt.textContent = item.itemName;
+                    itemsCombo.appendChild(opt);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching payments:", error);
+            });
         }
 
-        // Create document fragment for better performance
-        const fragment = document.createDocumentFragment();
-
-        data.content.forEach(studDis => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${studDis.student?.fullName || 'N/A'}</td>
-                <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
-                <td>${studDis.itemName || 'N/A'}</td>
-                <td>${studDis.isReceived ? "Claimed" : "Not Claimed"}</td>
-                <td>${studDis.dateReceived || "N/A"}</td>
-                <td>
-                    <div class="dropdown">
-                        <div class="action-container action">
-                            <button class="add-something-btn"
-                                data-open-modal="addPaymentModal"
-                                data-student-id="${studDis.student?.id || ''}"
-                                data-item-id="${studDis.itemId || ''}">
-                                Distribute
-                            </button>
-                        </div>
-                    </div>
-                </td>`;
-            fragment.appendChild(row);
-        });
-
-        tableBody.appendChild(fragment);
-
-    } catch (error) {
-        console.error("Error setting up tables:", error);
-        // Optional: Show user-friendly error message in UI
-        const tableBody = document.querySelector("#table-ko tbody");
-        if (tableBody) {
-            tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
+        function confirmDistribution(){
+            fetch(`/distributable/student-distribution/received/${selectedDistId}`,{
+                    method: 'PUT'})
+                .then(response => {
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                return response.text();
+              })
+              .then(msg => {
+                showSuccessModal(msg);
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
         }
-    }
-}
+
+        var selectedDistId;
+        document.body.addEventListener("click", function (event) {
+        const target = event.target.closest("[data-open-modal='confirmationModal']");
+
+        if (target) {
+            selectedDistId = target.getAttribute("data-item-id"); // Get the ID
+        }
+    });
     </script>
 </body>
 

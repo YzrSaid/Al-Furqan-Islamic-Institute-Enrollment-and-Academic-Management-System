@@ -318,7 +318,7 @@
                     data-open-modal="feesManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon">
                     
                         <img data-open-modal="confirmationModal"  data-name="${payment.id}" data-action="deleteFee"
-                                     data-message="Are you sure you want to delete thidis fee?"
+                                     data-message="Are you sure you want to delete this fee?"
                                      src="/images/icons/bin.png" alt="grade-level-delete-icon">
                         
                         </div>
@@ -427,7 +427,7 @@
 
     // Add event delegation to listen for delete button clicks
     document.querySelector("#lamesa tbody").addEventListener("click", function (event) {
-        // Check if the clicked element is a delete button (image with data-action="deleteFee")
+
         if (event.target && event.target.getAttribute("data-action") === "deleteFee") {
             // Capture the payment name from the data-name attribute
             selectedPaymentName = event.target.getAttribute("data-name");

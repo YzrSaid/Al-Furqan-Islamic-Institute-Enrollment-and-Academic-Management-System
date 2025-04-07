@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DistributablePerStudentRepo extends JpaRepository<DistributablesPerStudent,Integer> {
-    @Query("SELECT d FROM DistributablesPerStudent d")
-    Page<DistributablesPerStudent> getStudentDistPage(Pageable pageable);
+    @Query("SELECT d FROM DistributablesPerStudent d " +
+            "JOIN d.student stud " +
+            "WHERE (:isClaimed IS NULL OR d.isReceived = :isClaimed) " +
+            "AND LOWER(stud.fullName) LIKE :student")
+    Page<DistributablesPerStudent> getStudentDistPage(String student,Boolean isClaimed,Pageable pageable);
 }

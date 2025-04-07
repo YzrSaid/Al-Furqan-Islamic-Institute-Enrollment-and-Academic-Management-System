@@ -77,11 +77,28 @@ public class DistributableController {
 
     @GetMapping("/student-distribution/all")
     public ResponseEntity<StudentDistributablePage> getStudentDistributions(@RequestParam(defaultValue = "1") int pageNo,
-                                                                            @RequestParam(defaultValue = "10") int pageSize){
+                                                                            @RequestParam(defaultValue = "10") int pageSize,
+                                                                            @RequestParam(defaultValue = "") String student,
+                                                                            @RequestParam Integer itemType,
+                                                                            @RequestParam String isClaimed){
         try {
-            return new ResponseEntity<>(distributableServices.getStudentDistributable(pageNo, pageSize, null, null), HttpStatus.OK);
+            itemType = itemType.equals(0) ? null : itemType;
+            Boolean claimed = isClaimed.equalsIgnoreCase("All") ? null : Boolean.parseBoolean(isClaimed);
+            return new ResponseEntity<>(distributableServices.getStudentDistributable(pageNo, pageSize, student, claimed), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @PutMapping("/student-distribution/received/{distId}")
+    public ResponseEntity<String> getStudentDistributions(@PathVariable int distId){
+        try {
+            distributableServices.itemDistributed(distId);
+            return new ResponseEntity<>("Item distributed successfully",HttpStatus.OK);
+        }catch (NullPointerException e){
+            return new ResponseEntity<>("Distribution record not found",HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>("Server Conflict. Contact Dev",HttpStatus.CONFLICT);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.MultipleDistributedItems;
 import com.example.testingLogIn.ModelDTO.DistributableDTO;
 import com.example.testingLogIn.ModelDTO.DistributablePerStudentDTO;
 import com.example.testingLogIn.Models.Distributable;
@@ -80,11 +81,12 @@ public class DistributableController {
                                                                             @RequestParam(defaultValue = "10") int pageSize,
                                                                             @RequestParam(defaultValue = "") String student,
                                                                             @RequestParam Integer itemType,
-                                                                            @RequestParam String isClaimed){
+                                                                            @RequestParam String isClaimed,
+                                                                            @RequestParam String sortBy){
         try {
             itemType = itemType.equals(0) ? null : itemType;
             Boolean claimed = isClaimed.equalsIgnoreCase("All") ? null : Boolean.parseBoolean(isClaimed);
-            return new ResponseEntity<>(distributableServices.getStudentDistributable(pageNo, pageSize, student, claimed), HttpStatus.OK);
+            return new ResponseEntity<>(distributableServices.getStudentDistributable(pageNo, pageSize, student, claimed,itemType, sortBy), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -94,6 +96,18 @@ public class DistributableController {
     public ResponseEntity<String> getStudentDistributions(@PathVariable int distId){
         try {
             distributableServices.itemDistributed(distId);
+            return new ResponseEntity<>("Item distributed successfully",HttpStatus.OK);
+        }catch (NullPointerException e){
+            return new ResponseEntity<>("Distribution record not found",HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>("Server Conflict. Contact Dev",HttpStatus.CONFLICT);
+        }
+    }
+
+    @PutMapping("/student-distribution/received/multiple")
+    public ResponseEntity<String> distributeMultiple(@RequestBody MultipleDistributedItems selectedItem){
+        try {
+            distributableServices.multipleItemDistributed(selectedItem.getDistIdLists());
             return new ResponseEntity<>("Item distributed successfully",HttpStatus.OK);
         }catch (NullPointerException e){
             return new ResponseEntity<>("Distribution record not found",HttpStatus.NOT_FOUND);

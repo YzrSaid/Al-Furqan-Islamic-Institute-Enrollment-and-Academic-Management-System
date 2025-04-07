@@ -12,6 +12,7 @@ public interface DistributablePerStudentRepo extends JpaRepository<Distributable
     @Query("SELECT d FROM DistributablesPerStudent d " +
             "JOIN d.student stud " +
             "WHERE (:isClaimed IS NULL OR d.isReceived = :isClaimed) " +
+            "AND (:itemId IS NULL OR d.item.item.itemId = :itemId) " +
             "AND LOWER(stud.fullName) LIKE :student")
-    Page<DistributablesPerStudent> getStudentDistPage(String student,Boolean isClaimed,Pageable pageable);
+    Page<DistributablesPerStudent> getStudentDistPage(String student,Boolean isClaimed,Integer itemId,Pageable pageable);
 }

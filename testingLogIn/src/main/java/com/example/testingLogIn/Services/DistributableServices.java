@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -155,10 +156,17 @@ public class DistributableServices {
                 .forEach(gradeDis -> disStudRepo.save(DistributablesPerStudent.build(gradeDis,enrollment.getStudent(),enrollment.getSYSemester())));
     }
 
-    public StudentDistributablePage getStudentDistributable(int pageNo, int pageSize, String student, Boolean isClaimed){
+    public StudentDistributablePage getStudentDistributable(int pageNo, int pageSize, String student, Boolean isClaimed, Integer item, String sortByGrade){
         student = "%"+student.toLowerCase()+"%";
-        Pageable pageRequest = PageRequest.of(pageNo-1,pageSize);
-        Page<DistributablesPerStudent> studentPage = disStudRepo.getStudentDistPage(student,isClaimed,pageRequest);
+        Pageable pageRequest;
+        if(sortByGrade.equalsIgnoreCase("none"))
+            pageRequest = PageRequest.of(pageNo-1,pageSize);
+        else
+            pageRequest = sortByGrade.equalsIgnoreCase("asc") ?
+                    PageRequest.of(pageNo-1, pageSize, Sort.by(Sort.Order.asc("d.item.gradeLevel"))) :
+                    PageRequest.of(pageNo-1, pageSize, Sort.by(Sort.Order.desc("d.item.gradeLevel")));
+
+        Page<DistributablesPerStudent> studentPage = disStudRepo.getStudentDistPage(student,isClaimed,item,pageRequest);
         return StudentDistributablePage.builder()
                 .content(studentPage.getContent().stream().map(DistributablesPerStudent::DTOmapper).collect(Collectors.toList()))
                 .pageNo(studentPage.getNumber())
@@ -174,5 +182,16 @@ public class DistributableServices {
         studentItem.setReceived(true);
         studentItem.setDateReceived(LocalDate.now());
         disStudRepo.save(studentItem);
+    }
+    public void multipleItemDistributed(List<Integer> distributionIds){
+        CompletableFuture.runAsync(()->{
+            List<DistributablesPerStudent> studentDistributions = new ArrayList<>();
+            distributionIds.forEach(distributionId ->{
+                DistributablesPerStudent studentItem = disStudRepo.findById(distributionId).orElseThrow(NullPointerException::new);
+                studentItem.setReceived(true);
+                studentItem.setDateReceived(LocalDate.now());
+                studentDistributions.add(studentItem);
+            });
+            disStudRepo.saveAll(studentDistributions);});
     }
 }

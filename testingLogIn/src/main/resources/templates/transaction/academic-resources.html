@@ -39,6 +39,9 @@
                         <input type="text" id="search" placeholder="Search..." class="search-input" />
                         <button onclick="setUpTables()" class="search-btn">Search</button>
                     </div>
+                    <div class="search-container">
+                        <button id="select-multiple" onclick="selectMultipleItem()">Select Multiple</button>
+                    </div>
                     <div class="sort-container">
                         <select name="sort" id="view-type" onchange="setUpTables()" class="sort-select">
                             <option value="All" selected>View All</option>
@@ -47,8 +50,8 @@
                         </select>
                     </div>
                     <div class="sort-container">
-                        <select name="sort" id="item-type" class="sort-select">
-                            <option value="0" disabled selected>All Item</option>
+                        <select name="sort" id="item-type" onchange="setUpTables()" class="sort-select">
+                            <option value="0" selected>All Item</option>
                         </select>
                     </div>
                 </div>
@@ -71,6 +74,7 @@
                 <tr><td colspan="6">No records found</td></tr>
             </tbody>
         </table> <br> <br>
+        <button onclick="sendMultiple()">Confirm</button>
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
@@ -88,13 +92,16 @@
             setUpItems();
         });
 
+        var sortByGrade;
+        var flag = 1;
         async function setUpTables() {
             try {
+                console.log(selectMultiple);
+                sortByGrade = !sortByGrade ? "none" : sortByGrade;
                 const item = document.getElementById("item-type").value;
                 const claimed = document.getElementById("view-type").value;
                 const search = document.getElementById("search").value;
-                const response = await fetch(`/distributable/student-distribution/all?isClaimed=${claimed}&student=${search}&itemType=${item}`);
-
+                const response = await fetch(`/distributable/student-distribution/all?isClaimed=${claimed}&student=${search}&itemType=${item}&sortBy=${sortByGrade}`);
                 if (!response.ok) {
                     console.error("Failed to fetch data:", response.status);
                     return;
@@ -126,20 +133,27 @@
                         <td>${studDis.student?.fullName || 'N/A'}</td>
                         <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
                         <td>${studDis.itemName || 'N/A'}</td>
+                        ${(claimed === "All" || claimed === "true") ?`
                         <td>${studDis.received ? "Claimed" : "Not Claimed"}</td>
-                        <td>${studDis.dateReceived || "N/A"}</td>
+                        <td>${studDis.dateReceived || "N/A"}</td>` : ``}
+                        ${(claimed !== "true") ?`
                         <td>
                             <div class="dropdown">
                                 <div class="action-container action">
-                                    <button data-open-modal="confirmationModal" class="add-something-btn"
+                                ${ selectMultiple && !studDis.received ?`
+                                <input type="checkbox" value=${studDis.distId}>` :
+                                !studDis.received ?`
+                                <button
+                                    ${studDis.received ? `style="background-color: #e0e0e0; color: #a0a0a0; cursor: not-allowed;" disabled` : ``}
+                                        data-open-modal="confirmationModal" class="add-something-btn"
                                         data-action="itemDistributed"
                                         data-message="Confirm item is distributed to the student"
                                         data-item-id="${studDis.distId}">
-                                        Distribute
-                                    </button>
+                                        ${studDis.received ? "Distributed" : "Distribute"}
+                                    </button>` : `<h5>Received</h5>`}
                                 </div>
                             </div>
-                        </td>`;
+                        </td>`:``}`;
                     fragment.appendChild(row);
                 });
 
@@ -155,9 +169,45 @@
             }
         }
 
+        document.getElementById("view-type").addEventListener('change', (event) => {
+              const selectedValue = event.target.value;
+              const selectedText = event.target.options[event.target.selectedIndex].text;
+              const tableBody = document.querySelector("#table-ko thead");
+              if(selectedValue === "false"){
+                    tableBody.innerHTML =`
+                    <th>Student</th>
+                    <th onclick="iAmClicked()">Grade Level</th>
+                    <th>Item</th>
+                    <th>Action</th>`;
+              }else{
+                    tableBody.innerHTML =`
+                    <th>Student</th>
+                    <th onclick="iAmClicked()">Grade Level</th>
+                    <th>Item</th>
+                    <th>Status</th>
+                    <th>Date Received</th>
+                    ${(selectedValue === "All") ? `<th>Action</th>`:``}`;
+            }
+            });
+
         function iAmClicked(){
-            alert("I am clicked");
+            sortByGrade = "desc";
+            if(flag++ % 2 == 0){
+                sortByGrade = "asc";
+            }
+            setUpTables();
         }
+        var selectMultiple = false;
+        document.getElementById("select-multiple").addEventListener('click', function() {
+          const label = this.textContent;
+          if(label === "Select Multiple"){
+            selectMultiple = true;
+            this.textContent = "Cancel";
+          }else{
+            selectMultiple = false;
+            this.textContent = "Select Multiple";}
+            setUpTables();
+        });
 
         function setUpItems(){
             const itemsCombo = document.getElementById("item-type");
@@ -182,6 +232,29 @@
             });
         }
 
+        function sendMultiple(){
+            const selectedItems = Array.from(document.querySelectorAll(".action-container input[type='checkbox']:checked"))
+            .map(checkbox => checkbox.value);
+
+            fetch('/distributable/student-distribution/received/multiple', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                distIdLists: selectedItems
+              }),
+            })
+              .then(response => response.text())
+              .then(text => {
+              setUpTables();
+                showSuccessModal(text);
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+        }
+
         function confirmDistribution(){
             fetch(`/distributable/student-distribution/received/${selectedDistId}`,{
                     method: 'PUT'})
@@ -192,6 +265,7 @@
                 return response.text();
               })
               .then(msg => {
+              setUpTables();
                 showSuccessModal(msg);
               })
               .catch(error => {

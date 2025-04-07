@@ -1564,6 +1564,20 @@ table td {
   justify-content: space-around;
   align-items: center;
 }
+.report-main-btns {
+  display: flex;
+  width: 20%;
+  margin-right: 50px;
+  justify-self: end;
+  justify-content: space-between;
+  align-items: center;
+}
+.report-main-btns button {
+  padding: 5px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
 .print-button {
   display: flex;
   justify-content: space-around;
@@ -1596,11 +1610,29 @@ table td {
   border-radius: 5px;
 }
 
-.btn-confirm {
-  background-color: #28a745;
+.btn-confirm,
+.btn-cancel,
+.btn-gray,
+.btn-neutral {
   color: white;
   min-width: 100px;
   font-weight: 500;
+}
+
+.btn-confirm {
+  background-color: #28a745;
+}
+
+.btn-cancel {
+  background-color: #dc3545;
+}
+
+.btn-gray {
+  background-color: #6c757d;
+}
+
+.btn-neutral {
+  background-color: #cedd2d;
 }
 
 #save-payment-btn {
@@ -1609,12 +1641,6 @@ table td {
   border-radius: 12px;
 }
 
-.btn-cancel {
-  background-color: #dc3545;
-  color: white;
-  width: 100px;
-  font-weight: 500;
-}
 #transaction-record-btn {
   background-color: #28a745;
   color: white;
@@ -1797,7 +1823,23 @@ table td {
   transform-origin: center;
 }
 
-.receipt-modal-content > * {
+.grade-print-modal-content {
+  background: white !important;
+  padding: 20px 0;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 650px;
+  height: 95vh;
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  transform-origin: center;
+}
+
+.receipt-modal-content > *,
+.grade-print-modal-content > * {
   transform: scale(0.8);
 }
 
@@ -2101,6 +2143,7 @@ input[type="checkbox"] {
 .add-payment-modal h2,
 .view-book-modal h2,
 .receipt-modal h2,
+.grade-print-modal h2,
 .add-account-type-modal h2,
 .transferee-req-modal h2,
 .transferee-req-edit-modal h2,
@@ -2177,6 +2220,7 @@ input[type="checkbox"] {
 .student-information-container-content label,
 .view-book-modal-content label,
 .receipt-modal-content label,
+.grade-print-modal-content label,
 .add-account-type-modal-content label,
 .transferee-req-modal-content label,
 .transferee-req-edit-modal-content label,
@@ -2262,7 +2306,8 @@ input[type="checkbox"] {
 .transferee-req-edit-modal,
 .view-student-list-modal,
 .scholarship-modal,
-.scholarship-edit-modal {
+.scholarship-edit-modal,
+.grade-print-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -2286,7 +2331,8 @@ input[type="checkbox"] {
 .transferee-req-edit-modal.show,
 .view-student-list-modal.show,
 .scholarship-modal.show,
-.scholarship-edit-modal.show {
+.scholarship-edit-modal.show,
+.grade-print-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
@@ -2974,8 +3020,8 @@ input[type="checkbox"] {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    transform: scale(1.5); /* Slight scaling to fit */
-    transform-origin: center; /* Keeps it centered */
+    transform: scale(1.5);
+    transform-origin: center;
     padding: 20px;
   }
 
@@ -3004,11 +3050,12 @@ input[type="checkbox"] {
   }
 
   /* Improve input aesthetics */
-  .receipt-modal-content input {
+  .receipt-modal-content input,
+  .grade-print-modal-content input {
     border: none !important;
     outline: none !important;
     background: transparent;
-    font-size: 14px; /* Match input font size */
+    font-size: 16px;
   }
 
   /* Improve aesthetics of "Received by" section */
@@ -3019,7 +3066,8 @@ input[type="checkbox"] {
   .collector-info-container {
     margin-top: 40px;
   }
-  .receipt-modal-content {
+  .receipt-modal-content,
+  .grade-print-modal-content {
     width: 100%;
     padding: 40px;
     border: none !important;
@@ -3470,9 +3518,23 @@ td[rowspan] {
   align-items: center;
 }
 
+.header-container-print {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
 .left-header {
   display: flex;
   align-items: left;
+  flex-direction: column;
+}
+
+.middle-header {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  text-align: center;
   flex-direction: column;
 }
 
@@ -3512,6 +3574,15 @@ td[rowspan] {
   font-size: 14px;
 }
 
+.school-info-print h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.school-info-print p {
+  margin: 0;
+  font-size: 15px;
+}
+
 .right-header h2 {
   margin: 0;
   font-size: 24px;
@@ -3523,6 +3594,12 @@ td[rowspan] {
   flex-wrap: wrap;
   gap: 20px;
   margin-bottom: 20px;
+}
+
+.student-info-container-printable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .half-width {
@@ -3641,6 +3718,17 @@ td[rowspan] {
   border-radius: 5px;
   box-sizing: border-box;
 }
+.print-inputs {
+  flex: 1;
+  min-width: 150px;
+  max-width: 200px;
+  height: 38px;
+  padding: 8px 12px;
+  border: none !important;
+  outline: none !important;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
 
 /* ✅ Specific fix for date input */
 .payment-student-info-row input[type="date"] {
@@ -3673,10 +3761,6 @@ td[rowspan] {
 
 .receipt-table tfoot tr td:last-child {
   padding-right: 20px;
-}
-
-#receipt-student-info input {
-  font-size: 16px;
 }
 
 .student-information-modal .close-modal {
@@ -4010,4 +4094,40 @@ td[rowspan] {
 .save-settings-btn:active {
   background-color: #218838;
   border: none !important;
+}
+
+/* this is for report printing */
+.grade-form {
+  width: fit-content;
+  margin: auto;
+}
+
+.grade-form th,
+td {
+  border: 0.1px solid #00000070;
+  font-size: 14px;
+}
+
+.stud-info-section th,
+td {
+  text-align: start !important;
+}
+
+.grade-row td,
+.grade-header th {
+  border: none;
+  text-align: start !important;
+  font-size: 14px;
+  background-color: transparent;
+  color: #000;
+}
+/* .grade-row {
+  text-align: center !important;
+} */
+.grade-header th {
+  font-weight: bold;
+}
+
+.printable-footer {
+    margin-top: -40px;
 }

@@ -84,20 +84,104 @@
                             <div class="action">
                                 <!-- Eye Icon for Viewing a Student -->
                                 <a href="/reports/student/ReynoldPerkins" class="view-student">
-                                    <img 
-                                      th:src="@{/images/icons/eye.png}" 
-                                      class="view-icon" 
-                                      data-path="/reports/student/ReynoldPerkins" 
-                                      alt="view-icon">
-                                  </a>
-                                  
+                                    <img th:src="@{/images/icons/eye.png}" class="view-icon"
+                                        data-path="/reports/student/ReynoldPerkins" alt="view-icon">
+                                </a>
+
                             </div>
-                        </div>                        
+                        </div>
                     </td>
                 </tr>
             </tbody>
         </table> <br> <br>
 
+        <!-- Grade Report Template Modal -->
+        <div id="receiptModal" class="receipt-modal modal">
+            <div class="printable-area">
+                <div class="receipt-modal-content">
+                    <span class="close-modal no-print" data-close-modal="receiptModal">&times;</span>
+
+                    <!-- Receipt Header -->
+                    <div class="header-container-payment">
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                            <div class="school-info">
+                                <h3>AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
+                                <p>Talabaan, Zamboanga City</p>
+                                <p>Phone #: 09358268263</p>
+                            </div>
+                        </div>
+
+                        <div class="right-header">
+                            <div class="receipt-box">
+                                <h2>RECEIPT</h2>
+                            </div>
+                            <p>Semester & SY: <strong>1ST SEM | 2021-2022</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+
+                    <!-- Student Info -->
+                    <div class="payment-student-info-container" id="receipt-student-info">
+                        <div class="payment-student-info-row">
+                            <label for="receipt-student-id">Student ID:</label>
+                            <input type="text" id="receipt-student-id" placeholder="">
+                        </div>
+
+                        <div class="payment-student-info-row">
+                            <label for="receipt-date">Date:</label>
+                            <input type="date" id="receipt-date">
+                        </div>
+
+                        <div class="payment-student-info-row">
+                            <label for="receipt-student-name">Student Name:</label>
+                            <input type="text" id="receipt-student-name" placeholder="">
+                        </div>
+
+                        <div class="payment-student-info-row">
+                            <label for="receipt-number">Receipt Number:</label>
+                            <input type="text" id="receipt-number" placeholder="">
+                        </div>
+                    </div>
+
+
+                    <!-- Payment Table -->
+                    <div id="receipt-table" class="receipt-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ITEM #</th>
+                                    <th>DESCRIPTION</th>
+                                    <th>AMOUNT</th>
+                                </tr>
+                            </thead>
+                            <tbody id="receipt-items">
+                                <tr>
+                                    <td>1</td>
+                                    <td>Tuition Fee</td>
+                                    <td>800.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Collected By Section -->
+                    <div id="staff-receiver" class="collector-info-container">
+                        <h6>Received/Collected By:</h6>
+                        <div class="collector-name-container">
+                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        </div>
+                    </div>
+
+                    <!-- Print Button -->
+                    <div class="print-button">
+                        <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Modal for student information -->
         <div id="studentInformationModal" class="student-information-modal modal">

@@ -1397,6 +1397,23 @@ table td {
   justify-content: center;
   transition: transform 0.1s ease-in-out;
 }
+.action-non-scallable img {
+  width: 20px;
+  height: 20px;
+}
+.action-non-scallable button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+.action-non-scallable button:hover {
+  background-color: #edf4ed;
+}
+.action-non-scallable img:hover {
+  cursor: pointer;
+}
 .action img:hover {
   transform: scale(1.3);
 }
@@ -1476,7 +1493,8 @@ table td {
   background-color: transparent;
 }
 
-.dropdown-print-btn {
+.dropdown-print-btn,
+.dropdown-edit-btn {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1502,7 +1520,6 @@ table td {
 /* .dropdown:hover .dropdown-status-content {
   display: block;
 } */
-
 
 /* modal design */
 .modal {
@@ -3291,13 +3308,20 @@ td[rowspan] {
   justify-content: space-between;
   align-items: center;
 }
-.header-stud-info {
+.header-stud-info-half {
   width: 20% !important;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.header-stud-info h2 {
+.header-stud-info-full {
+  width: 45% !important;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.header-stud-info-full h2,
+.header-stud-info-half h2 {
   margin: 0;
 }
 

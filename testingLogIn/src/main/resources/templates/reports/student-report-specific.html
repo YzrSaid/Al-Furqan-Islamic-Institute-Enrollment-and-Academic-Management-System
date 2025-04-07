@@ -200,13 +200,56 @@
                         </div> <br>
                     </div>
 
-                    <div style="display: flex; gap: 365px;">
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                    <div style="display: flex; width: 100%; gap: 100px;">
+                        <div class="header-stud-info-full">
                             <h2>Financial Information</h2>
+                            <div class="action-non-scallable">
+                                <div class="dropdown">
+                                    <button type="button" class="dropdown-edit-btn">
+                                        <img th:src="@{/images/icons/compose.png}" alt="edit-icon">
+                                    </button>
+                                   
+                                    <div class="status-container">
+                                        <button type="button" class="dropdown-print-btn"
+                                            onclick="toggleDropdown(event)">
+                                            Print
+                                            <img src="/images/icons/printing-icon.png" alt="">
+                                        </button>
+                                    </div>
+
+                                    <div class="dropdown-status-content" id="dropdown-print-options">
+                                        <a href="#">All</a>
+                                        <a href="#">Semester 1</a>
+                                        <a href="#">Semester 2</a>
+                                        <a href="#">School Year 2023-2024</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                        <div class="header-stud-info-full">
                             <h2>Book Distribution</h2>
+                            <div class="action-non-scallable">
+                                <div class="dropdown">
+                                    <button type="button" class="dropdown-edit-btn">
+                                        <img th:src="@{/images/icons/compose.png}" alt="edit-icon">
+                                    </button>
+                                    <div class="status-container">
+                                        <button type="button" class="dropdown-print-btn"
+                                            onclick="toggleDropdown(event)">
+                                            Print
+                                            <img src="/images/icons/printing-icon.png" alt="">
+                                        </button>
+                                    </div>
+
+                                    <div class="dropdown-status-content" id="dropdown-print-options">
+                                        <a href="#">All</a>
+                                        <a href="#">Semester 1</a>
+                                        <a href="#">Semester 2</a>
+                                        <a href="#">School Year 2023-2024</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -277,7 +320,7 @@
                     </div> <br>
 
                     <div>
-                        <div class="header-stud-info">
+                        <div class="header-stud-info-half">
                             <h2>Grades</h2>
                             <div class="action">
                                 <div class="dropdown">
@@ -298,11 +341,7 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
-
-
                     </div>
 
                     <div class="container-two">

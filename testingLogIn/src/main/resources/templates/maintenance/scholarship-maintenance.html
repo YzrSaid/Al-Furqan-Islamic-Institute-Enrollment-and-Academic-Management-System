@@ -224,7 +224,7 @@
             if (choice === "fixedamount")
                 scholarshipData.fixedDiscount = scholarshipDiscount;
             else
-                scholarshipData.percentageDiscount = scholarshipDiscount/100;
+                scholarshipData.percentageDiscount = scholarshipDiscount / 100;
 
             fetch("/discounts/add", {
                 method: 'POST',

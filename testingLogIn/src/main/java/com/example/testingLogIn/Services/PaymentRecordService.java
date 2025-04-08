@@ -163,7 +163,7 @@ public class PaymentRecordService {
             for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
                 double paidAmount = Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber())).orElse(0.0d);
                 double initialAmount = reqFee.getRequiredFee().getRequiredAmount();
-                double discountedAmount = Math.ceil(initialAmount - ((initialAmount*std.getTotalPercentageDiscount())-std.getTotalFixedDiscount()));
+                double discountedAmount = NonModelServices.adjustDecimal(initialAmount - ((initialAmount*std.getTotalPercentageDiscount())-std.getTotalFixedDiscount()));
                 double remainingBalance = discountedAmount - paidAmount;
                 if(remainingBalance>0){
                     studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(reqFee.getRequiredFee(),remainingBalance));
@@ -174,7 +174,7 @@ public class PaymentRecordService {
                 if (!feesBalance.containsValue(sfl.getFee())) {
                     double totalPaidAmount = paymentRepo.totalPaidForSpecificFee(studentId, sfl.getFee().getId(), null);//(studentId,feeId,null)
                     double totalFeeBalance = studFeesRepo.totalPerFeesByStudent(studentId, sfl.getFee().getId());
-                    double remainingBalance = Math.ceil(totalFeeBalance - totalPaidAmount);
+                    double remainingBalance = NonModelServices.adjustDecimal(totalFeeBalance - totalPaidAmount);
                     if (remainingBalance > 0) {
                         totalBalance += remainingBalance;
                         studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance));

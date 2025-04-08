@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.MultipleInteger;
 import com.example.testingLogIn.CustomObjects.NewStudentDiscounts;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.Models.Discount;
@@ -41,9 +42,9 @@ public class DiscountsController {
     }
 
     @PostMapping("/add-student-discount/{discountId}")
-    public ResponseEntity<String> addStudentDiscount(@PathVariable int discountId,@RequestBody NewStudentDiscounts students){
+    public ResponseEntity<String> addStudentDiscount(@PathVariable int discountId,@RequestBody MultipleInteger students){
         try{
-            if(discountsServices.addStudentDiscount(discountId,students.getStudentIds()))
+            if(discountsServices.addStudentDiscount(discountId,students.getIds()))
                 return new ResponseEntity<>("Student Discounts Added Successfully",HttpStatus.OK);
             else
                 return new ResponseEntity<>("Discount Name Already Exist",HttpStatus.IM_USED);

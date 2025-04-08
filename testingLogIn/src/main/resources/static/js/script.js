@@ -1508,10 +1508,9 @@ function clearForm() {
 document.addEventListener("DOMContentLoaded", () => {
   const transfereeCheckbox = document.getElementById("isTransferee");
   const transfereeFields = document.getElementById("transfereeFields");
-
+  const transfereeInputs = transfereeFields.querySelectorAll("input");
   if (!transfereeCheckbox || !transfereeFields || !transfereeInputs) return;
 
-  const transfereeInputs = transfereeFields.querySelectorAll("input");
 
   // Toggle visibility and readonly state
   transfereeCheckbox.addEventListener("change", () => {

@@ -12,6 +12,7 @@ import com.example.testingLogIn.Repositories.StudentRepo;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,14 +33,16 @@ public class StudentServices {
     private final EnrollmentServices enrollmentService;
     private final TransferReqServices transReqServices;
     private final GradeLevelRepo gradeLevelRepo;
+    private final DiscountsServices discountsServices;
 
     @Autowired
-    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices, EnrollmentServices enrollmentService, TransferReqServices transReqServices, GradeLevelRepo gradeLevelRepo) {
+    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices, EnrollmentServices enrollmentService, TransferReqServices transReqServices, GradeLevelRepo gradeLevelRepo, DiscountsServices discountsServices) {
         this.studentRepo = studentRepo;
         this.sectionServices = sectionServices;
         this.enrollmentService = enrollmentService;
         this.transReqServices = transReqServices;
         this.gradeLevelRepo = gradeLevelRepo;
+        this.discountsServices = discountsServices;
     }
 
     public boolean addStudent(StudentDTO student){
@@ -88,8 +91,10 @@ public class StudentServices {
                                     .build();
             Student newSavedStudent = studentRepo.save(newStudent);
             enrollmentService.addStudentToListing(newSavedStudent.getStudentId());
+            if(!student.getDiscountsAvailed().isEmpty())
+                CompletableFuture.runAsync(() -> discountsServices.addStudentDiscounts(newSavedStudent.getStudentId(),student.getDiscountsAvailed()));
             if(newSavedStudent.isTransferee())
-                transReqServices.addingStudentRequirements(newSavedStudent.getStudentId(),student.getTransfereeRequirements());
+                CompletableFuture.runAsync(() ->transReqServices.addingStudentRequirements(newSavedStudent.getStudentId(),student.getTransfereeRequirements()));
             return true;
         }
     }

@@ -242,7 +242,7 @@
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                distIdLists: selectedItems
+                ids: selectedItems
               }),
             })
               .then(response => response.text())

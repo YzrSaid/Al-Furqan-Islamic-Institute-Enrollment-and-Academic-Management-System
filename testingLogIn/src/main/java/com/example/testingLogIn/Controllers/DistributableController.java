@@ -1,9 +1,7 @@
 package com.example.testingLogIn.Controllers;
 
-import com.example.testingLogIn.CustomObjects.MultipleDistributedItems;
+import com.example.testingLogIn.CustomObjects.MultipleInteger;
 import com.example.testingLogIn.ModelDTO.DistributableDTO;
-import com.example.testingLogIn.ModelDTO.DistributablePerStudentDTO;
-import com.example.testingLogIn.Models.Distributable;
 import com.example.testingLogIn.PagedResponse.StudentDistributablePage;
 import com.example.testingLogIn.Services.DistributableServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,9 +103,9 @@ public class DistributableController {
     }
 
     @PutMapping("/student-distribution/received/multiple")
-    public ResponseEntity<String> distributeMultiple(@RequestBody MultipleDistributedItems selectedItem){
+    public ResponseEntity<String> distributeMultiple(@RequestBody MultipleInteger selectedItem){
         try {
-            distributableServices.multipleItemDistributed(selectedItem.getDistIdLists());
+            distributableServices.multipleItemDistributed(selectedItem.getIds());
             return new ResponseEntity<>("Item distributed successfully",HttpStatus.OK);
         }catch (NullPointerException e){
             return new ResponseEntity<>("Distribution record not found",HttpStatus.NOT_FOUND);

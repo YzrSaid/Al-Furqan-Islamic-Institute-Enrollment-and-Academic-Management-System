@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Models;
 
+import com.example.testingLogIn.AssociativeModels.StudentDiscount;
 import com.example.testingLogIn.AssociativeModels.StudentTransfereeRequirements;
 import com.example.testingLogIn.CustomObjects.Address;
 import com.example.testingLogIn.Enums.Gender;
@@ -72,6 +73,9 @@ public class Student{
 
     @OneToMany(mappedBy = "student")
     private List<StudentTransfereeRequirements> transfereeRequirements;
+
+    @OneToMany(mappedBy = "student")
+    private List<StudentDiscount> discounts;
     
     public StudentDTO DTOmapper(){
         GradeLevel currentLevel = null;
@@ -111,6 +115,7 @@ public class Student{
                         .lastMadrasaYearCompleted(lastMadrasaYearCompleted)
                         .madrasaAddress(madrasaAddress)
                         .transfereeRequirements(transfereeRequirements.stream().filter(StudentTransfereeRequirements::isNotDeleted).map(s-> s.getRequirement().getId()).toList())
+                        .discountsAvailed(discounts.stream().filter(StudentDiscount::isNotDeleted).map(sd -> sd.getDiscount().getDiscountId()).toList())
                         .build();
     }
 }

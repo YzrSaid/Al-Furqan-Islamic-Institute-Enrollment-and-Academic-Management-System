@@ -82,7 +82,7 @@ public class RequiredPaymentsServices {
                     gradeLevels.forEach(gradelvl -> studentList.addAll(enrollmentRepo.getCurrentlyEnrolledToGrade(gradelvl.getLevelId(), currentSem.getSySemNumber())));
                     studentList.forEach(student -> {
                         StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
-                        double addToBalance = newFee.getRequiredAmount() - Math.ceil(((newFee.getRequiredAmount() * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
+                        double addToBalance = newFee.getRequiredAmount() - NonModelServices.adjustDecimal(((newFee.getRequiredAmount() * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
                         student.setStudentBalance(student.getStudentBalance() + addToBalance);
                         studentFeesListList.add(StudentFeesList.build(newFee,currentSem,student,addToBalance));
                     });
@@ -144,7 +144,6 @@ public class RequiredPaymentsServices {
         RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
         assert toUpdate != null;
         toUpdate.setName(updated.getName());
-        toUpdate.setCurrentlyActive(updated.isWillApplyNow());
         toUpdate.setRequiredAmount(updated.getRequiredAmount());
         reqPaymentsRepo.save(toUpdate);
         int currentSemId = semServices.getCurrentActive().getSySemNumber();
@@ -155,53 +154,32 @@ public class RequiredPaymentsServices {
             String toRemoveGrade = payment.getGradeLevel().getLevelName();
             int levelId = payment.getGradeLevel().getLevelId();
             List<Student> studentList = enrollmentRepo.getCurrentlyEnrolledToGrade(levelId,currentSemId);
+            payment.setNotDeleted(true);
             if(!updated.getGradeLevelNames().contains(toRemoveGrade))//{
                 payment.setNotDeleted(false);
-//                if(updated.isWillApplyNow())
-//                    runMe(()->studentList.forEach(student -> {
-//                        StudentFeesList studFee = sfl.studentFeesList(student.getStudentId(),levelId,currentSemId);
-//                        if(studFee != null){
-//                            student.setStudentBalance(student.getStudentBalance()- studFee.getAmount());
-//                            studFee.setAmount(0.0d);
-//                            sfl.updateFeeRecord(studFee);
-//                            studentRepo.save(student);
-//                        }}));
-//            }else{
-//                if(updated.isWillApplyNow())
-//                    runMe(()->studentList.forEach(student -> {
-//                        StudentFeesList studFee = sfl.studentFeesList(student.getStudentId(),levelId,currentSemId);
-//                        if(studFee != null){
-//                            StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
-//                            double newBalToPay = updated.getRequiredAmount() - Math.ceil((updated.getRequiredAmount()*std.getTotalPercentageDiscount())+ std.getTotalFixedDiscount());
-//                            student.setStudentBalance(student.getStudentBalance() +(newBalToPay - studFee.getAmount()));
-//                            studFee.setAmount(newBalToPay);
-//                            sfl.updateFeeRecord(studFee);
-//                            studentRepo.save(student);
-//                        }}));
-//            }
-            if(updated.isCurrentlyActive()){
+            if(toUpdate.isCurrentlyActive()){
                 List<StudentFeesList> updatedStudFee = new ArrayList<>();
-                runMe(()->studentList.forEach(student -> {
+                runMe(()-> {
+                    studentList.forEach(student -> {
                     StudentFeesList studFee = sfl.studentFeesList(student.getStudentId(),feeId,currentSemId);
                     if(studFee != null){
                         double newBalToPay;
                         if(payment.isNotDeleted()){
                             StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
-                            newBalToPay = updated.getRequiredAmount() - Math.ceil((updated.getRequiredAmount()*std.getTotalPercentageDiscount())+ std.getTotalFixedDiscount());
+                            newBalToPay = updated.getRequiredAmount() - NonModelServices.adjustDecimal((updated.getRequiredAmount()*std.getTotalPercentageDiscount())+ std.getTotalFixedDiscount());
                             student.setStudentBalance(student.getStudentBalance() +(newBalToPay - studFee.getAmount()));
                         }else{
                             student.setStudentBalance(student.getStudentBalance()- studFee.getAmount());
                             newBalToPay= 0.0d;
                         }
                         studFee.setAmount(newBalToPay);
-//                        sfl.updateFeeRecord(studFee);
                         updatedStudFee.add(studFee);
-//                        studentRepo.save(student);
-                    }}));
+                    }
+                });
                 if(!updatedStudFee.isEmpty())
                     sfl.updateFeeRecord(updatedStudFee);
                 if(!studentList.isEmpty())
-                    studentRepo.saveAll(studentList);
+                    studentRepo.saveAll(studentList);});
             }
             runMe(()->reqFeeGradelvlRepo.save(payment));
             updated.getGradeLevelNames().remove(toRemoveGrade);
@@ -218,7 +196,7 @@ public class RequiredPaymentsServices {
                         List<StudentFeesList> newStudentFeesList = new ArrayList<>();
                         studentList.forEach(student -> {
                             StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
-                            double addToBalance = toUpdate.getRequiredAmount() - Math.ceil(((toUpdate.getRequiredAmount() * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
+                            double addToBalance = toUpdate.getRequiredAmount() - NonModelServices.adjustDecimal(((toUpdate.getRequiredAmount() * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
                             student.setStudentBalance(student.getStudentBalance() + addToBalance);
                             newStudentFeesList.add(StudentFeesList.build(toUpdate,currentSem,student,addToBalance));
                         });
@@ -229,7 +207,6 @@ public class RequiredPaymentsServices {
                     });
             }
         }
-
         return true;
     }
 

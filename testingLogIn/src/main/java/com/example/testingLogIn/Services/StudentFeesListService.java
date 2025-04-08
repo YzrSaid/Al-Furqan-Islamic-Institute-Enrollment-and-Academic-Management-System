@@ -31,7 +31,7 @@ public class StudentFeesListService {
         gradeReqFeeRepo.findByGradeLevel(e.getGradeLevelToEnroll().getLevelId())
                 .forEach(reqFee -> {
                     double reqAmount = reqFee.getRequiredFee().getRequiredAmount();
-                    double discountedAmount = Math.ceil(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
+                    double discountedAmount = NonModelServices.adjustDecimal(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
                     studFeeRepo.save(StudentFeesList.build(reqFee.getRequiredFee(),e.getSYSemester(),e.getStudent(),discountedAmount));
                 });
     }

@@ -54,4 +54,5 @@ public class StudentDTO {
     private String lastMadrasaYearCompleted;
     private String madrasaAddress;
     private List<Integer> transfereeRequirements;
+    private List<Integer> discountsAvailed;
 }

@@ -159,7 +159,7 @@ public class EnrollmentServices {
             double toAdd= Optional.ofNullable(gradelvlReqFeesRepo
                     .findTotalAmountByGradeLevel(enrollmentRecord.getGradeLevelToEnroll().getLevelId())).orElse(0.0) ;
 
-            toAdd = toAdd - Math.ceil(((toAdd*std.getTotalPercentageDiscount())+std.getTotalFixedDiscount()));
+            toAdd = toAdd - NonModelServices.adjustDecimal((toAdd*std.getTotalPercentageDiscount())+std.getTotalFixedDiscount());
             double newBalance=student.getStudentBalance() + toAdd;
             student.setStudentBalance(newBalance);
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
@@ -251,7 +251,7 @@ public class EnrollmentServices {
                     double totalPaid = Optional.ofNullable(payRecRepo.getTotalPaidByStudentForFeeInSemester(er.getStudent().getStudentId(), toPay.getId(), actvSemId)).orElse(0.0);
 
                     double reqAmount = toPay.getRequiredAmount();
-                    double discountedBalance = new BigDecimal(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount())).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                    double discountedBalance = NonModelServices.adjustDecimal(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
                     String status = totalPaid >= discountedBalance? "Fully Paid":
                                     totalPaid > 0 ?                 "Partially Paid":
                                                                     "Unpaid";

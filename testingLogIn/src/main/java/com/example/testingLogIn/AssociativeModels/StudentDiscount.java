@@ -27,4 +27,10 @@ public class StudentDiscount {
     private Discount discount;
 
     private boolean isNotDeleted;
+
+    public StudentDiscount(Student student, Discount discount){
+        isNotDeleted = true;
+        this.student = student;
+        this.discount = discount;
+    }
 }

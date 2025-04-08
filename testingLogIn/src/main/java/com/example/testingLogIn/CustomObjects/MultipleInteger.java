@@ -9,6 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MultipleDistributedItems {
-    private List<Integer> distIdLists;
+public class MultipleInteger {
+    private List<Integer> ids;
 }

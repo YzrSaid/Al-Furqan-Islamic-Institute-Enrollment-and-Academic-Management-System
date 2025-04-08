@@ -42,7 +42,7 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button class="new-student" data-open-modal="newStudentModal" title="Add New Student">NEW
+                        <button class="new-student" onclick="fetchDiscounts()" data-open-modal="newStudentModal" title="Add New Student">NEW
                             STUDENT</button>
                     </div>
 
@@ -780,6 +780,11 @@
                     <input type="text" id="studguardianAddress">
                 </div> <br>
 
+                <h4>Discounts</h4>
+                <div id="studDiscounts" class="checkbox-transferee-reqs-group">
+                    <!--naka check na daan ang mga filled-->
+                </div>
+
                 <!-- Transferee Fields -->
                 <div id="transfereeFields">
                     <h5>For Transferees Only</h5>
@@ -1356,6 +1361,10 @@
         document.querySelectorAll("input[name='transferRequirements']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
+        const selectedDiscounts = [];
+        document.querySelectorAll("input[name='studDiscounts']:checked").forEach(checkbox => {
+            selectedDiscounts.push(checkbox.value);
+        });
 
         const birthplace =
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
@@ -1389,7 +1398,8 @@
             lastMadrasaYearCompleted: document.getElementById("lastMadrasaYearCompleted")?.value?.trim() || null,
             madrasaNameLastAttended: document.getElementById("madrasaNameLastAttended")?.value?.trim() || null,
             madrasaAddress: document.getElementById("madrasaAddress")?.value?.trim() || null,
-            transfereeRequirements: selectedTransReq
+            transfereeRequirements: selectedTransReq,
+            discountsAvailed : selectedDiscounts
         };
 
         fetch(actionUrl, {
@@ -1679,8 +1689,39 @@
         }
     }
 
+    function fetchDiscounts(){
+        fetch("/discounts/all")
+            .then(response => response.json())
+            .then(data => {
+                const discContainer = document.getElementById("studDiscounts");
+                discContainer.innerHTML = "";
+                data.forEach(disc => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("checkbox-each");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `disc-${disc.discountId}`;
+                    checkbox.name = "studDiscounts";
+                    checkbox.value = disc.discountId;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `disc-${disc.discountId}`;
+                    label.textContent = disc.discountName;
+
+<!--                    if (reqIds.includes(disc.id)) {-->
+<!--                        checkbox.checked = true;-->
+<!--                    }-->
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    discContainer.appendChild(paymentDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
     function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
-        console.log(reqIds);
         fetch("/trans-req/all")
             .then(response => response.json())
             .then(data => {
@@ -1712,7 +1753,7 @@
             .catch(error => console.error("Error fetching grade levels:", error));
     }
 
-    function displayStud(std) {//viewing student info(for ctrl-f)
+    function displayStud(std) {
         const studentProf = JSON.parse(std);
         console.log(studentProf);
         document.getElementById("student-id").value = studentProf.studentDisplayId;
@@ -1734,7 +1775,6 @@
         document.getElementById("lastMadrasaYearCompleted").value = studentProf.lastMadrasaYearCompleted;
         document.getElementById("madrasaNameLastAttended").value = studentProf.madrasaName;
         document.getElementById("madrasaAddress").value = studentProf.madrasaAddress;
-        console.log(studentProf.transfereeRequirements);
         fetchTransRequirements("transReqRecord", studentProf.transfereeRequirements);
     }
 

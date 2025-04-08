@@ -43,6 +43,12 @@
                             <button class="add-something-btn" id="openScholarshipModal"
                                 data-open-modal="scholarshipModal">Add Scholarship Type</button>
                         </div>
+
+                        <!-- View record button -->
+                        <div class="add-something-btn-container">
+                            <a href="/maintenance/scholarship/view-records" class="add-something-btn">View Record</a>
+                        </div>
+
                     </div>
                     <div class="sort-container">
                         <select name="sort" id="sort-select" class="sort-select">
@@ -221,7 +227,7 @@
             if (choice === "fixedamount")
                 scholarshipData.fixedDiscount = scholarshipDiscount;
             else
-                scholarshipData.percentageDiscount = scholarshipDiscount/100;
+                scholarshipData.percentageDiscount = scholarshipDiscount / 100;
 
             fetch("/discounts/add", {
                 method: 'POST',

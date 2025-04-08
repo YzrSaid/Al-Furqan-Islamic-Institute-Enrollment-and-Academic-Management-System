@@ -4129,5 +4129,22 @@ td {
 }
 
 .printable-footer {
-    margin-top: -40px;
+  margin-top: -40px;
+}
+
+th {
+    position: relative;
+}
+
+.sort-icon {
+  position: absolute;
+  right: 30px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  width: 18px;
+  height: 18px;
+}
+
+.sort-icon:hover {
+    cursor: pointer;
 }

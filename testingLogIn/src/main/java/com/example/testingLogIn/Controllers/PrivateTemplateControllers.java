@@ -145,7 +145,7 @@ public class PrivateTemplateControllers {
         return "/maintenance/scholarship-maintenance";
     }
 
-
+    
     // these are for reports pages
 
     @GetMapping("/reports/academic-resources")

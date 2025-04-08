@@ -14,7 +14,6 @@ public interface GradesDistributableRepo extends CrudRepository<DistributablesPe
 
     @Query("SELECT dpg FROM DistributablesPerGrade dpg " +
             "WHERE dpg.item.isCurrentlyActive " +
-            "AND dpg.gradeLevel.levelId = :itemId " +
             "AND dpg.isNotDeleted")
     List<DistributablesPerGrade> findByDistributableByGradeLevel(@Param("levelId") int levelId);
 }

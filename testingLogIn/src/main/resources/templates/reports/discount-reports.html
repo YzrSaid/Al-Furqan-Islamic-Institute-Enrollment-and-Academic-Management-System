@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
+    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+
+<body>
+<!-- Sidebar -->
+<div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+<!-- Topbar with Hamburger & User Icon -->
+<div class="dashboard-container" id="content">
+    <div class="sticky-header">
+        <!-- Topbar -->
+        <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+        <div class="text-link">
+            <h4>Book Distribution</h4>
+            <a href="/home">Main</a>
+            <p>/</p>
+            <a href="/transaction/academic-resources" title="You're currently in this page.">Transaction - Book Distribution</a>
+        </div>
+
+        <div class="search-div">
+            <!-- Searchbox and sort btn -->
+            <div class="search">
+                <div class="search-container">
+                    <input type="text" id="search" placeholder="Search..." class="search-input" />
+                    <button onclick="setTableContent()" class="search-btn">Search</button>
+                </div>
+                <div class="search-container">
+                    <button id="select-multiple">Remove Selected</button>
+                </div>
+                <div id="isWithDiscount" class="sort-container">
+                    <select name="sort" id="view-type" class="sort-select">
+                        <option value="true" selected>With Discount</option>
+                        <option value="false">Without Discount</option>
+                    </select>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="item-type" class="sort-select">
+                        <option value="0" selected>All</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <table id="table-ko" class="payment-report-table">
+        <thead>
+        <tr>
+            <th>Student</th>
+            <th>Grade Level</th>
+            <th>Discount</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td colspan="3">No records found</td></tr>
+        </tbody>
+    </table> <br> <br>
+    <!-- Modal for confirmation -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <p id="modalText"></p>
+            <div class="modal-buttons">
+                <button id="confirmAction" class="btn-confirm">Confirm</button>
+                <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setItemChoices();
+        setTableContent();
+        viewBy.hidden = true;
+    });
+
+    const addRemoveBtn = document.getElementById("select-multiple");
+    addRemoveBtn.addEventListener('click', (event) => {
+        var url;
+        if(addRemoveBtn.textContent === "Remove Selected"){
+            url = "/discounts/remove-student-discounts";
+        }else{
+            url=`/discounts/add-student-discounts/${document.getElementById("item-type").value}`;
+        }
+        const selectedItems = Array.from(document.querySelectorAll(".action-container input[type='checkbox']:checked"))
+                .map(checkbox => checkbox.value);
+        fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ids: selectedItems
+          }),
+        })
+          .then(response => response.text())
+          .then(text => {
+            alert(text);
+            setTableContent();
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+    });
+
+    const viewBy = document.querySelector('#isWithDiscount');
+    viewBy.addEventListener('change', (event) => {
+      const selectedValue = event.target.value;
+      if(selectedValue === "true"){
+        addRemoveBtn.textContent = "Remove Selected";
+      }else{
+        addRemoveBtn.textContent = "Add Selected";
+      }
+      setTableContent();
+    });
+
+    document.getElementById("item-type").addEventListener('change', (event) => {
+      const selectedValue = event.target.value;
+      if(selectedValue === "0"){
+        viewBy.hidden = true;
+        document.getElementById("view-type").selectedIndex = 0;
+        addRemoveBtn.textContent = "Remove Selected";
+        changeHeader(true);
+      }else{
+        viewBy.hidden = false;
+        changeHeader(false);
+      }
+      setTableContent();
+    });
+
+    function changeHeader(forAll){
+        console.log(forAll);
+        const tableHeader = document.querySelector("#table-ko thead");
+        if(forAll){
+            tableHeader.innerHTML =`
+                <tr>
+                    <th>Student</th>
+                    <th>Grade Level</th>
+                    <th>Discount</th>
+                    <th>Select</th>
+                </tr>`;
+        }else{
+            tableHeader.innerHTML =`
+                <tr>
+                    <th>Student</th>
+                    <th>Grade Level</th>
+                    <th>Select</th>
+                </tr>`;
+        }
+    }
+
+    function setItemChoices(){
+        const itemChoices = document.getElementById("item-type");
+        fetch("/discounts/all")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.size === 0)
+                    return;
+
+                data.forEach(discount => {
+                    const option = document.createElement("option");
+                    option.value = discount.discountId;
+                    option.textContent = discount.discountName;
+                    itemChoices.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle errors here
+            });
+    }
+
+    async function setTableContent() {
+    try {
+        const search = document.getElementById("search").value.trim();
+        console.log(search);
+        const isAvailed = document.getElementById("view-type").value === "true" ? true : false;;
+        const discId = document.getElementById("item-type").value;
+        const response = await fetch(`/discounts/records?discountId=${discId}&isAvailed=${isAvailed}&search=${search}`);
+        if (!response.ok) {
+            console.error("Failed to fetch data:", response.status);
+            return;
+        }
+        const data = await response.json();
+
+        const tableBody = document.querySelector("#table-ko tbody");
+        if (!tableBody) {
+            console.error("Table body not found");
+            return;
+        }
+
+        tableBody.innerHTML = '';
+
+        if (!data.content || data.content.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+
+        data.content.forEach(studDis => {
+            const checkBoxVal = studDis.notDeleted ? studDis.connectionId : studDis.studentId;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${studDis.studentName}</td>
+                <td>${studDis.gradeLevel}</td>
+                ${discId === "0" ? `<td>${studDis.discountName}</td>`:``}
+                <td>
+                    <div class="dropdown">
+                        <div class="action-container action">
+                        <input type="checkbox" value=${checkBoxVal}>
+                        </div>
+                    </div>
+                </td>`;
+            fragment.appendChild(row);
+        });
+
+        tableBody.appendChild(fragment);
+
+        } catch (error) {
+            console.error("Error setting up tables:", error);
+            // Optional: Show user-friendly error message in UI
+            const tableBody = document.querySelector("#table-ko tbody");
+            if (tableBody) {
+                tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
+            }
+        }
+    }
+</script>
+</body>
+
+</html>

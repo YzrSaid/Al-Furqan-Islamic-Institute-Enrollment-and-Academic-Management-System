@@ -1,11 +1,14 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.AssociativeModels.StudentDiscount;
 import com.example.testingLogIn.CustomObjects.MultipleInteger;
 import com.example.testingLogIn.CustomObjects.NewStudentDiscounts;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.Models.Discount;
+import com.example.testingLogIn.PagedResponse.PagedResponse;
 import com.example.testingLogIn.Services.DiscountsServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -41,18 +44,18 @@ public class DiscountsController {
         }
     }
 
-    @PostMapping("/add-student-discount/{discountId}")
-    public ResponseEntity<String> addStudentDiscount(@PathVariable int discountId,@RequestBody MultipleInteger students){
-        try{
-            if(discountsServices.addStudentDiscount(discountId,students.getIds()))
-                return new ResponseEntity<>("Student Discounts Added Successfully",HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Discount Name Already Exist",HttpStatus.IM_USED);
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-    }
+//    @PostMapping("/add-student-discount/{discountId}")
+//    public ResponseEntity<String> addStudentDiscount(@PathVariable int discountId,@RequestBody MultipleInteger students){
+//        try{
+//            if(discountsServices.addStudentDiscount(discountId,students.getIds()))
+//                return new ResponseEntity<>("Student Discounts Added Successfully",HttpStatus.OK);
+//            else
+//                return new ResponseEntity<>("Discount Name Already Exist",HttpStatus.IM_USED);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return new ResponseEntity<>(HttpStatus.CONFLICT);
+//        }
+//    }
 
     @DeleteMapping("/delete/{discountId}")
     public ResponseEntity<String> deleteDiscount(@PathVariable int discountId){
@@ -72,6 +75,43 @@ public class DiscountsController {
             return new ResponseEntity<>(discountsServices.getStudentTotalDiscount(studentId),HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/records")
+    public ResponseEntity<PagedResponse> getStudentDiscounts(   @RequestParam(defaultValue = "1", required = false) int pageNo,
+                                                                @RequestParam(defaultValue = "10", required = false) int pageSize,
+                                                                @RequestParam(defaultValue = "true",required = false) boolean isAvailed,
+                                                                @RequestParam(defaultValue = "", required = false) String search,
+                                                                @RequestParam(defaultValue = "0", required = false) Integer discountId){
+        try{
+            discountId = discountId.equals(0) ? null : discountId;
+            return new ResponseEntity<>(discountsServices.getDiscountRecords(pageNo, pageSize, discountId, search, isAvailed),HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @PutMapping("/add-student-discounts/{discountId}")
+    public ResponseEntity<String> addStudentsDiscount(@PathVariable int discountId,
+                                                      @RequestBody MultipleInteger studentIds){
+        try{
+            discountsServices.addStudentDiscount(discountId,studentIds.getIds());
+            return new ResponseEntity<>("Discounts successfully added to student records",HttpStatus.OK);
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    @PutMapping("/remove-student-discounts")
+    public ResponseEntity<String> removeStudentsDiscount(@RequestBody MultipleInteger connectionIds){
+        try{
+            discountsServices.removeStudentDiscounts(connectionIds.getIds());
+            return new ResponseEntity<>("Discounts successfully removed from students",HttpStatus.OK);
+        }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

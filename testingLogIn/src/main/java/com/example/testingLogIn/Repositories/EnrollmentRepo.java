@@ -63,10 +63,10 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
                 "ELSE e.enrollmentStatus END) = :status) "+
             "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%') " +
             "OR stud.studentDisplayId LIKE CONCAT('%',:search,'%'))")
-    Page<EnrollmentHandler> findStudentsEnrollment(@Param("status")            EnrollmentStatus status,
-                                    @Param("activeSemNumber")   int activeSemNumber,
-                                    @Param("search")            String search,
-                                                                Pageable pageable);
+    Page<EnrollmentHandler> findStudentsEnrollment(@Param("status") EnrollmentStatus status,
+                                        @Param("activeSemNumber")   int activeSemNumber,
+                                        @Param("search")            String search,
+                                                                    Pageable pageable);
 
     @Query("SELECT e.student FROM Enrollment e " +
             "JOIN e.SYSemester sem " +

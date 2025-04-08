@@ -183,6 +183,11 @@ public class PrivateTemplateControllers {
         return "/reports/teacher-reports";
     }
 
+    @GetMapping("/reports/discount")
+    public String getDiscountReports() {
+        return "/reports/discount-reports";
+    }
+
     // these are for accounts pages
 
     @GetMapping("/accounts/verify-accounts")

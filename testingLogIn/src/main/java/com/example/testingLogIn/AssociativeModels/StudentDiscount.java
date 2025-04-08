@@ -1,9 +1,12 @@
 package com.example.testingLogIn.AssociativeModels;
 
+import com.example.testingLogIn.ModelDTO.StudentDiscountDTO;
 import com.example.testingLogIn.Models.Discount;
 import com.example.testingLogIn.Models.Student;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -15,7 +18,7 @@ import lombok.*;
 public class StudentDiscount {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int connectionId;
 
     @ManyToOne

@@ -1,7 +1,10 @@
 package com.example.testingLogIn.Repositories;
 
+import com.example.testingLogIn.CustomObjects.StudentDiscountHandler;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.AssociativeModels.StudentDiscount;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,22 +17,33 @@ public interface StudentDiscountRepo extends JpaRepository<StudentDiscount,Integ
     @Query("SELECT NEW com.example.testingLogIn.CustomObjects.StudentTotalDiscount(SUM(sd.discount.percentageDiscount),SUM(sd.discount.fixedDiscount)) "+
            "FROM StudentDiscount sd "+
             "JOIN sd.student stud "+
-           "WHERE sd.discount.isNotDeleted = TRUE "+
-           "AND sd.isNotDeleted = TRUE "+
+           "WHERE sd.discount.isNotDeleted "+
+           "AND sd.isNotDeleted "+
            "AND stud.studentId = :studentId")
     Optional<StudentTotalDiscount> getStudentTotalDiscount(@Param("studentId") int studentId);
 
     @Query("SELECT sd FROM StudentDiscount sd " +
             "JOIN sd.student stud "+
-            "WHERE sd.discount.isNotDeleted = TRUE "+
-            "AND sd.isNotDeleted = TRUE " +
+            "WHERE sd.discount.isNotDeleted "+
             "AND sd.discount.discountId = :discountId "+
             "AND stud.studentId = :studentId")
-    List<StudentDiscountRepo> findStudentDiscountRecord(@Param("studentId") int studentId, @Param("discountId") int discountId);
+    Optional<StudentDiscount> findStudentDiscountRecord(@Param("studentId") int studentId, @Param("discountId") int discountId);
 
     @Query("SELECT studDisc FROM StudentDiscount studDisc " +
             "JOIN studDisc.student stud " +
             "JOIN studDisc.discount disc " +
             "WHERE stud.studentId = :studentId")
     List<StudentDiscount> findByStudent(@Param("studentId") int studentId);
+
+    @Query("SELECT NEW com.example.testingLogIn.CustomObjects.StudentDiscountHandler(sd,stud) " +
+            "FROM StudentDiscount sd " +
+            "RIGHT JOIN Student stud ON sd.student.studentId = stud.studentId " +
+            "AND (:discountId IS NULL OR sd.discount.discountId = :discountId) " +
+            "WHERE LOWER(stud.fullName) LIKE :search " +
+            "AND (CASE WHEN sd.connectionId IS NULL THEN FALSE " +
+                    "ELSE sd.isNotDeleted END) = :didAvailed")
+    Page<StudentDiscountHandler> findRecords(@Param("discountId")  Integer discountId,
+                                                                    boolean didAvailed,
+                                                                    String search,
+                                                                    Pageable pageable);
 }

@@ -234,7 +234,7 @@
 
         function sendMultiple(){
             const selectedItems = Array.from(document.querySelectorAll(".action-container input[type='checkbox']:checked"))
-            .map(checkbox => checkbox.value);
+                .map(checkbox => checkbox.value);
 
             fetch('/distributable/student-distribution/received/multiple', {
               method: 'PUT',

@@ -183,7 +183,7 @@ public class PrivateTemplateControllers {
         return "/reports/teacher-reports";
     }
 
-    @GetMapping("/reports/discount")
+    @GetMapping("/reports/scholarship")
     public String getDiscountReports() {
         return "/reports/discount-reports";
     }

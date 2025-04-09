@@ -55,7 +55,7 @@
         </div>
 
         <!-- Table -->
-        <table id="realginnas" class="payment-table">
+        <table id="realginnas" class="payment-table main-table">
             <thead>
                 <tr>
                     <th>No.</th>
@@ -136,7 +136,7 @@
                 </div>
 
                 <!-- List of Payments Table -->
-                <table id="table-ni-martin" class="view-list-of-students-table">
+                <table id="table-ni-martin" class="view-list-of-students-table main-table">
                     <thead>
                         <tr>
                             <th>Student ID</th>
@@ -174,7 +174,7 @@
                 </div> <br>
 
                 <!-- List of Payments Table -->
-                <table id="table-ni-kharl" class="view-list-of-payments-table">
+                <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
                     <thead>
                         <tr>
                             <th>Particular</th>
@@ -247,7 +247,7 @@
 
 
                     <!-- Payment Table -->
-                    <div id="receipt-table" class="receipt-table">
+                    <div id="receipt-table" class="receipt-table main-table">
                         <table>
                             <thead>
                                 <tr>
@@ -836,7 +836,7 @@
                         <td>
                             <div class="dropdown">
                                 <div class="action-container action">
-                                    <img th:src="@{/images/icons/eye.png}" onclick="viewToPaid(${stud.studentId})"
+                                    <img src="/images/icons/eye.png" onclick="viewToPaid(${stud.studentId})"
                                     data-open-modal="listOfPaymentsModal"
                                         alt="edit-icon">
 

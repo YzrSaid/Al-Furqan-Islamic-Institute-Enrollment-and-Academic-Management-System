@@ -20,36 +20,39 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link" id="breadcrumb-container">
-            <h4>Payment</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/enrollment/payment" title="You're currently in this page.">Enrollment - Payment</a>
-        </div>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Payment</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/enrollment/payment" title="You're currently in this page.">Enrollment - Payment</a>
+            </div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                    <button onclick="getOnPayments()" class="search-btn">Search</button>
-                </div>
-                <div class="sort-container">
-                    <select name="sort" onchange="getOnPayments()" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="StudentId">Student Id</option>
-                        <option value="StudentName">Student Name</option>
-                        <option value="GradeLevel">Enrolling Grade Level</option>
-                    </select>
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="search">
+                    <div class="search-container">
+                        <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                        <button onclick="getOnPayments()" class="search-btn">Search</button>
+                    </div>
+                    <div class="sort-container">
+                        <select name="sort" onchange="getOnPayments()" id="sort-select" class="sort-select">
+                            <option value="" disabled selected>Sort</option>
+                            <option value="StudentId">Student Id</option>
+                            <option value="StudentName">Student Name</option>
+                            <option value="GradeLevel">Enrolling Grade Level</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
 
+
         <!-- Table -->
-        <table id="realginnas" class="payment-table">
+        <table id="realginnas" class="payment-table main-table">
             <thead>
                 <tr>
                     <th>Student ID</th>

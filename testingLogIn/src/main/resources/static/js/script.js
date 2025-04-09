@@ -919,31 +919,31 @@ document.addEventListener("DOMContentLoaded", function () {
       alert(`⚠️ ${message}`);
     }
   };
-  window.showSuccessModal = function (message) {
+  window.showSuccessModal = function (message, reload = true) {
     const modal = document.getElementById("successModal");
     const modalMessage = document.getElementById("successModalMessage");
     const overlay = document.getElementById("successModalOverlay");
-
+  
     if (modal && modalMessage && overlay) {
       modalMessage.innerHTML = message;
-
-      // Add display and flex alignment only when showing
+  
       modal.style.display = "flex";
       modal.style.flexDirection = "column";
       modal.style.justifyContent = "center";
       modal.style.alignItems = "center";
-
+  
       overlay.style.display = "flex";
-
+  
       setTimeout(() => {
         modal.style.display = "none";
         overlay.style.display = "none";
+  
         if (
           message ===
           "✅ Account has been created successfully! This record will be sent for approval."
         ) {
           window.location.href = "/login";
-        } else {
+        } else if (reload) {
           location.reload();
         }
       }, 1500); // 1.5 seconds
@@ -953,6 +953,7 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     }
   };
+  
 
   document.querySelectorAll("[data-close-modal]").forEach((btn) => {
     btn.addEventListener("click", function () {

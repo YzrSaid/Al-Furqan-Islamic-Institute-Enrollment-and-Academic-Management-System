@@ -787,20 +787,20 @@ select option[value=""] {
 .search-div {
   padding: 20px 20px 0px 30px;
 }
-table {
+.main-table table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th,
-td {
+.main-table th,
+.main-table td {
   border: 1px solid #ddd;
   padding: 10px;
-  text-align: left;
+  text-align: center;
   font-weight: 500;
   font-size: 16px;
 }
-th {
+.main-table th {
   text-align: center;
   background-color: rgb(87, 88, 89);
   color: white;
@@ -1614,8 +1614,15 @@ table td {
 .btn-cancel,
 .btn-gray,
 .btn-neutral {
-  color: white;
   min-width: 100px;
+  font-weight: 500;
+
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 9px 15px;
+  cursor: pointer;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -4109,7 +4116,7 @@ td {
 }
 
 .stud-info-section th,
-td {
+.start-info-session td {
   text-align: start !important;
 }
 

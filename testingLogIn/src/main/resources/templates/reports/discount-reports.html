@@ -37,10 +37,8 @@
             <div class="search">
                 <div class="search-container">
                     <input type="text" id="search" placeholder="Search..." class="search-input" />
-                    <button onclick="setTableContent()" class="search-btn">Search</button>
-                </div>
-                <div class="search-container">
-                    <button id="select-multiple">Remove Selected</button>
+                    <button  type="button" onclick="setTableContent()" class="search-btn">Search</button>
+                    <button type="button" class="btn-cancel" id="select-multiple">Remove Selected</button>
                 </div>
                 <div id="isWithDiscount" class="sort-container">
                     <select name="sort" id="view-type" class="sort-select">
@@ -58,10 +56,10 @@
     </div>
 
     <!-- Table -->
-    <table id="table-ko" class="payment-report-table">
+    <table id="table-ko" class="payment-report-table main-table">
         <thead>
         <tr>
-            <th>Student</th>
+            <th>Student Name</th>
             <th>Grade Level</th>
             <th>Discount</th>
             <th>Action</th>
@@ -123,8 +121,12 @@
       const selectedValue = event.target.value;
       if(selectedValue === "true"){
         addRemoveBtn.textContent = "Remove Selected";
+        addRemoveBtn.classList.add("btn-cancel");
+        addRemoveBtn.classList.remove("btn-confirm");
       }else{
         addRemoveBtn.textContent = "Add Selected";
+        addRemoveBtn.classList.add("btn-confirm");
+        addRemoveBtn.classList.remove("btn-cancel");
       }
       setTableContent();
     });

@@ -13,6 +13,7 @@
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
@@ -20,36 +21,37 @@
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
         <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link" id="breadcrumb-container">
-            <h4>Assessment</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/enrollment/assessment" title="You're currently in this page.">Enrollment - Assessment</a>
-        </div>
-        
+        <div class="sticky-header">
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                    <button onclick="getAssessments()" class="search-btn">Search</button>
-                </div>
-                <div class="sort-container">
-                    <label for="sort-select">Order By</label>
-                    <select name="sort" onchange="getAssessments()" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="StudentId">Student Id</option>
-                        <option value="StudentName">Student Name</option>
-                        <option value="GradeLevel">Enrolling Grade Level</option>
-                    </select>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Assessment</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/enrollment/assessment" title="You're currently in this page.">Enrollment - Assessment</a>
+            </div>
+
+            <div class="search-div">
+                <div class="search">
+                    <div class="search-container">
+                        <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                        <button onclick="getAssessments()" class="search-btn">Search</button>
+                    </div>
+                    <div class="sort-container">
+                        <label for="sort-select">Order By</label>
+                        <select name="sort" onchange="getAssessments()" id="sort-select" class="sort-select">
+                            <option value="" disabled selected>Sort</option>
+                            <option value="StudentId">Student Id</option>
+                            <option value="StudentName">Student Name</option>
+                            <option value="GradeLevel">Enrolling Grade Level</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Table -->
-        <table id="lamesa" class="assessment-table">
+        <table id="lamesa" class="assessment-table main-table">
             <thead>
                 <tr>
                     <th>Student ID</th>
@@ -153,7 +155,7 @@
                 </div> <br>
 
                 <!-- Grades Table -->
-                <table id="lamesaa" class="view-grades-table">
+                <table id="lamesaa" class="view-grades-table main-table">
                     <thead>
                         <tr>
                             <th>Subject ID</th>
@@ -243,7 +245,7 @@
         const isLevelIdNull = currentLevelId === null || currentLevelId === "null" || currentLevelId === "None";
         if ((isStudentNew && !isTransferee) || isLevelIdNull) {
             url = '/gradelevel/no-pre-requisite';
-        }else if(isTransferee && !isLevelIdNull){
+        } else if (isTransferee && !isLevelIdNull) {
             url = `/gradelevel/for-transferee/${currentLevelId}`;
         }
         const originalOnChange = selectTag.getAttribute("onChange");

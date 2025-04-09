@@ -135,8 +135,8 @@
                             </div>
 
                             <div class="half-other-info" id="transferee-row">
-                                <label for="type">Transferee:</label>
-                                <h6>NO</h6>
+                                <label for="transferee">Transferee:</label>
+                                <h6 id="transferee">YES</h6>
                             </div>
                         </div>
                     </div>
@@ -252,7 +252,7 @@
                             <div style="margin-top: 15px;">
                                 <button type="button" data-action="editGradeLevel"
                                     data-message="Are you sure you want to update this grade level?"
-                                    id="updateRequirementsBtn" class="btn-confirm">Update</button>
+                                    onclick="updateRequirements()" class="btn-confirm">Update</button>
                             </div>
                         </div>
 
@@ -727,8 +727,8 @@
                         </button>
 
                         <!-- Popover lives right below the button now -->
-                        <div popover id="my-popover" class="styled-popover">
-                            <h6>Scholarship Type</h6>
+                        <div popover id="my-popover" name="add-discount" class="styled-popover">
+                            <h6>Scholarships:</h6>
                         </div>
                     </div>
 
@@ -790,11 +790,6 @@
                     <input type="text" id="studguardianAddress">
                 </div> <br>
 
-                <h4>Discounts</h4>
-                <div id="studDiscounts" class="checkbox-transferee-reqs-group">
-                    <!--naka check na daan ang mga filled-->
-                </div>
-
                 <!-- Transferee Fields -->
                 <div id="transfereeFields">
                     <h5>For Transferees Only</h5>
@@ -811,18 +806,18 @@
                                 <option value="">RANDOM</option>
                             </select>
 
-                            <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                            <input type="text" id="lastMadrasaYearCompleted" readonly>
+                            <label for="studlastMadrasaYearCompleted">Last Madrasa Year Completed</label>
+                            <input type="text" id="studlastMadrasaYearCompleted" readonly>
                         </div> <br>
 
                         <div class="student-form-group">
-                            <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                            <input type="text" id="madrasaNameLastAttended" readonly>
+                            <label for="studmadrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                            <input type="text" id="studmadrasaNameLastAttended" readonly>
                         </div> <br>
 
                         <div class="student-form-group">
-                            <label for="madrasaAddress">Madrasa Address:</label>
-                            <input type="text" id="madrasaAddress" readonly style="width: 8px;">
+                            <label for="studmadrasaAddress">Madrasa Address:</label>
+                            <input type="text" id="studmadrasaAddress" readonly style="width: 8px;">
                         </div> <br>
                     </div>
                 </div>
@@ -1417,9 +1412,9 @@
             guardianAddress: document.getElementById("studguardianAddress")?.value?.trim() || null,
             transferee: document.getElementById("isTransferee").checked,
             lastGradeLevelId: document.getElementById("lastGradeLevelIdCompleted").options[document.getElementById("lastGradeLevelIdCompleted").selectedIndex].value,
-            lastMadrasaYearCompleted: document.getElementById("lastMadrasaYearCompleted")?.value?.trim() || null,
-            madrasaNameLastAttended: document.getElementById("madrasaNameLastAttended")?.value?.trim() || null,
-            madrasaAddress: document.getElementById("madrasaAddress")?.value?.trim() || null,
+            lastMadrasaYearCompleted: document.getElementById("studlastMadrasaYearCompleted")?.value?.trim() || null,
+            madrasaNameLastAttended: document.getElementById("studmadrasaNameLastAttended")?.value?.trim() || null,
+            madrasaAddress: document.getElementById("studmadrasaAddress")?.value?.trim() || null,
             transfereeRequirements: selectedTransReq,
             discountsAvailed: selectedDiscounts
         };
@@ -1467,12 +1462,9 @@
                 tableBody.innerHTML = "";
 
                 data.content.forEach(enr => {
-                    const studentJson = encodeURIComponent(JSON.stringify(enr.student));
                     const row = document.createElement("tr");
                     row.setAttribute("data-enrollment-id", enr.enrollmentId);
                     row.classList.add("clickable-row");
-
-                    // If enrollment is canceled, apply the "enrollment-cancelled" class to the row
                     if (enr.notDeleted === false) {
                         row.classList.add("enrollment-cancelled");  // This will make the row red with opacity
                     }
@@ -1481,7 +1473,7 @@
 
                     let dropdownContent = `
                     <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}"
-                    data-open-modal="studentInformationModal" onclick="displayStud(decodeURIComponent('${studentJson}'))"> View Record </a>` +
+                    data-open-modal="studentInformationModal" onclick="displayStud(${enr.student.studentId})"> View Record </a>` +
                         getDropdownContent(enr);
 
                     const statusClass = getEnrollmentStatusClass(displayStatus, enr.notDeleted);
@@ -1711,12 +1703,11 @@
         }
     }
 
-    function fetchDiscounts() {
+    function fetchDiscounts(name = "add-discount",discIds = []) {
         fetch("/discounts/all")
             .then(response => response.json())
             .then(data => {
-                const discContainer = document.getElementById("studDiscounts");
-                discContainer.innerHTML = "";
+                popover.innerHTML = "<h6>Scholarship Type</h6>";
                 data.forEach(disc => {
                     const paymentDiv = document.createElement("div");
                     paymentDiv.classList.add("checkbox-each");
@@ -1731,14 +1722,12 @@
                     label.htmlFor = `disc-${disc.discountId}`;
                     label.textContent = disc.discountName;
 
-                    // < !--                    if (reqIds.includes(disc.id)) {
-                    //                         -->
-                    // < !--checkbox.checked = true; -->
-                    // < !--                    } -->
+                    if (discIds.includes(disc.discountId)) {
+                        checkbox.checked = true;}
 
                     paymentDiv.appendChild(checkbox);
                     paymentDiv.appendChild(label);
-                    discContainer.appendChild(paymentDiv);
+                    popover.appendChild(paymentDiv);
                 });
             })
             .catch(error => console.error("Error fetching grade levels:", error));
@@ -1776,9 +1765,14 @@
             .catch(error => console.error("Error fetching grade levels:", error));
     }
 
-    function displayStud(std) {
-        const studentProf = JSON.parse(std);
-        console.log(studentProf);
+    var toUpdateRecStudent;
+    async function displayStud(studentId) {
+        const response = await fetch(`/students/find-student/${studentId}`);
+        if(!response.ok){return;}
+        const studentProf = await response.json();
+        toUpdateRecStudent = studentId;
+        document.getElementById("stud-type").textContent = studentProf.status;
+        document.getElementById("transferee").textContent = (studentProf.transferee === "true" || studentProf.transferee) ? "YES" : "NO";
         document.getElementById("student-id").value = studentProf.studentDisplayId;
         document.getElementById("firstName").value = studentProf.firstName;
         document.getElementById("middleName").value = studentProf.middleName;
@@ -1790,7 +1784,6 @@
         document.getElementById("studfatherOccupation").value = studentProf.fatherOccupation;
         document.getElementById("studmotherName").value = studentProf.motherName;
         document.getElementById("studmotherOccupation").value = studentProf.motherOccupation;
-        document.getElementById("stud-type").textContent = studentProf.new ? "NEW" : "OLD";
         document.getElementById("street").value = studentProf.address.street;
         document.getElementById("barangay").value = studentProf.address.barangay;
         document.getElementById("city").value = studentProf.address.city;
@@ -1799,6 +1792,37 @@
         document.getElementById("madrasaNameLastAttended").value = studentProf.madrasaName;
         document.getElementById("madrasaAddress").value = studentProf.madrasaAddress;
         fetchTransRequirements("transReqRecord", studentProf.transfereeRequirements);
+        fetchDiscounts(studentProf.discountsAvailed);
+    }
+
+    function updateRequirements(){
+        const selectedTransReq = [];
+        document.querySelectorAll("#transReqRecord input[name='transferRequirements']:checked").forEach(checkbox => {
+            selectedTransReq.push(checkbox.value);
+        });
+        fetch(`/trans-req/add/student-requirements/${toUpdateRecStudent}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ids: selectedTransReq
+            }),
+        })
+        .then(response => {
+            return response.text().then(message => {
+                if (response.ok) {
+                    alert("Na update rapud baya");
+                    displayStud(toUpdateRecStudent);
+                    goList();
+                } else {
+                    showErrorModal(message); // Show the error message if the response is not ok
+                }
+            });
+        })
+        .catch(error => {
+            showErrorModal(error.message || "An unexpected error occurred."); // Show an error modal in case of failure
+        });
     }
 
     function updatePagination(status, currentPage, pageSize, totalPages) {

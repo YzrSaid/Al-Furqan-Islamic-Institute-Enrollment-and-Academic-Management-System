@@ -79,8 +79,15 @@ public class Student{
     
     public StudentDTO DTOmapper(){
         GradeLevel currentLevel = null;
-        if(isNew && isTransferee)
+        if(isNew && isTransferee){
             currentLevel = lastGradeLevelCompleted;
+            for(StudentTransfereeRequirements req : transfereeRequirements){
+                if(!req.isNotDeleted()){
+                    currentLevel = null;
+                    break;
+                }
+            }
+        }
         else
             currentLevel = Optional.ofNullable(currentGradeSection).map(Section::getLevel).orElse(null);
         return StudentDTO.builder()

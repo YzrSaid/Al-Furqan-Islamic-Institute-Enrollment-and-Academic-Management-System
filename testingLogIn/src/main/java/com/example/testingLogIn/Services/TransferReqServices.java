@@ -64,36 +64,12 @@ public class TransferReqServices {
     // for manipulating the requirements complied by the transferee student
     public boolean addingStudentRequirements(int studentId, List<Integer> requirementsId){
         Student student = studentRepo.findById(studentId).orElseThrow(NullPointerException::new);
-        List<StudentTransfereeRequirements> compiledReqs = studentTransReqRepo.findStudentRecords(studentId);
-        Map<Integer, StudentTransfereeRequirements> compiledReqIds = compiledReqs.stream()
-                .collect(Collectors.toMap(
-                        rec -> rec.getRequirement().getId(),
-                        rec -> rec
-                ));
-
-        for(Integer i: requirementsId){
-            StudentTransfereeRequirements str;
-            if(compiledReqIds.containsKey(i)){
-                str = compiledReqIds.get(i);
-                str.setNotDeleted(true);
-                compiledReqIds.remove(i);}
-            else{
-                TransfereeRequirements req = transfereeReqRepo.findById(i).orElse(null);
-                assert req != null;
-                str = StudentTransfereeRequirements.builder()
-                                .student(student)
-                                .requirement(req)
-                                .isNotDeleted(true)
-                                .build();
-            }
-            studentTransReqRepo.save(str);
-        }
-        compiledReqIds.values().iterator().forEachRemaining(
-                rec ->{
-                    rec.setNotDeleted(false);
-                    studentTransReqRepo.save(rec);
-                }
-        );
+        List<TransfereeRequirements> transfereeRequirements = transfereeReqRepo.findByIsNotDeletedTrue();
+        transfereeRequirements.forEach(requirement ->{
+            StudentTransfereeRequirements studReq = studentTransReqRepo.findStudentRecord(studentId,requirement.getId()).orElse(new StudentTransfereeRequirements(student,requirement));
+            studReq.setNotDeleted(requirementsId.contains(requirement.getId()));
+            studentTransReqRepo.save(studReq);
+        });
         return true;
     }
 

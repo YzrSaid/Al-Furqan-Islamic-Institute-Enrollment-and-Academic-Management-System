@@ -186,21 +186,7 @@ public class EnrollmentServices {
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = Optional.of(sySemRepo.findCurrentActive().getSySemNumber()).orElseThrow(NullPointerException::new);
         Page<EnrollmentHandler> enrollmentRetrieved = enrollmentRepo.findStudentsEnrollment(estatus,sem,search,pageable);
-        List<EnrollmentDTO> pageContent = enrollmentRetrieved.getContent().stream().peek(
-                e -> {
-                    Student stud = e.getStudent();
-                    if(stud.isTransferee() && stud.isNew()) {
-                        List<TransfereeRequirements> compiled = stud.getTransfereeRequirements().stream().filter(StudentTransfereeRequirements::isNotDeleted).map(StudentTransfereeRequirements::getRequirement).toList();
-                        for (TransfereeRequirements transfereeRequirements : transReqRepo.findByIsNotDeletedTrue()) {
-                            if (!compiled.contains(transfereeRequirements)) {
-                                stud.setLastGradeLevelCompleted(null);
-                                break;
-                            }
-                        }
-                    }
-                    e.setStudent(stud);
-                }
-        ).map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
+        List<EnrollmentDTO> pageContent = enrollmentRetrieved.getContent().stream().map(enrollmentHandler -> new EnrollmentDTO(isComplete(enrollmentHandler.getEnrollment()),
                 enrollmentHandler.getStudent().DTOmapper())).toList();
         return EnrollmentDTOPage.buildMe(enrollmentRetrieved,pageContent);
     }

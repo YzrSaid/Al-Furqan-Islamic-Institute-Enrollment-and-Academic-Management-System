@@ -123,18 +123,16 @@ public class StudentServices {
                             .toList();
     }
     
-    public Student getStudent(int studentId){
-        return studentRepo.findById(studentId).orElse(null);
+    public StudentDTO getStudent(int studentId){
+        return studentRepo.findById(studentId).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
     }
     
     public boolean updateStudent(StudentDTO stud){
         String sectionName = stud.getCurrentGradeSection().substring(stud.getCurrentGradeSection().indexOf("-")+1);
         GradeLevel gradeLevel = gradeLevelRepo.findById(stud.getLastGradeLevelId()).orElse(null);
         Section section = sectionServices.getSectionByName(sectionName);
-        Student toUpdate = getStudent(stud.getStudentId());
-        if(toUpdate == null)
-            throw new NullPointerException();                    //checks if a student with not the same ID has the same name
-        else if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(stud.getStudentId(),stud.getFirstName(),stud.getLastName(),stud.getMiddleName()))
+        Student toUpdate = studentRepo.findById(stud.getStudentId()).orElseThrow(NullPointerException::new);
+        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(stud.getStudentId(),stud.getFirstName(),stud.getLastName(),stud.getMiddleName()))//checks if a student with not the same ID has the same name
             return false;
         else{
             toUpdate.setFirstName(stud.getFirstName());

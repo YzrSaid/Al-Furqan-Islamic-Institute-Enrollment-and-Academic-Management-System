@@ -28,6 +28,17 @@ public class StudentController {
         return new ResponseEntity<>(studentService.getAllStudent(),HttpStatus.OK);
     }
 
+    @GetMapping("/find-student/{studentId}")
+    public ResponseEntity<StudentDTO> getStudent(@PathVariable int studentId){
+        try {
+            return new ResponseEntity<>(studentService.getStudent(studentId), HttpStatus.OK);
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
     @GetMapping("/{status}")
     public ResponseEntity<List<StudentDTO>> getAllStudents(@PathVariable String status){
         if(status.equalsIgnoreCase("new"))

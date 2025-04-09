@@ -12,6 +12,7 @@
     "axe/forms": "off",
     "axe/name-role-value": "off",
     "meta-viewport": "off",
-    "no-inline-styles": "off"
+    "no-inline-styles": "off",
+    "compat-api/html": "off"
   }
 }

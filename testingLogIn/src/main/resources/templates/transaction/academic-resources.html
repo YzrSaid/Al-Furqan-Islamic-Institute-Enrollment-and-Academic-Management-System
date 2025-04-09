@@ -40,7 +40,7 @@
                         <button onclick="setUpTables()" class="search-btn">Search</button>
                     </div>
                     <div class="search-container">
-                        <button id="select-multiple" onclick="selectMultipleItem()">Select Multiple</button>
+                        <button id="select-multiple" onclick="sendMultiple()">Distribute Selected</button>
                     </div>
                     <div class="sort-container">
                         <select name="sort" id="view-type" onchange="setUpTables()" class="sort-select">
@@ -74,7 +74,6 @@
                 <tr><td colspan="6">No records found</td></tr>
             </tbody>
         </table> <br> <br>
-        <button onclick="sendMultiple()">Confirm</button>
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
@@ -96,7 +95,6 @@
         var flag = 1;
         async function setUpTables() {
             try {
-                console.log(selectMultiple);
                 sortByGrade = !sortByGrade ? "none" : sortByGrade;
                 const item = document.getElementById("item-type").value;
                 const claimed = document.getElementById("view-type").value;
@@ -140,17 +138,9 @@
                         <td>
                             <div class="dropdown">
                                 <div class="action-container action">
-                                ${ selectMultiple && !studDis.received ?`
-                                <input type="checkbox" value=${studDis.distId}>` :
-                                !studDis.received ?`
-                                <button
-                                    ${studDis.received ? `style="background-color: #e0e0e0; color: #a0a0a0; cursor: not-allowed;" disabled` : ``}
-                                        data-open-modal="confirmationModal" class="add-something-btn"
-                                        data-action="itemDistributed"
-                                        data-message="Confirm item is distributed to the student"
-                                        data-item-id="${studDis.distId}">
-                                        ${studDis.received ? "Distributed" : "Distribute"}
-                                    </button>` : `<h5>Received</h5>`}
+                                ${ !studDis.received ?`
+                                <input type="checkbox" value=${studDis.distId}>`
+                                 : `<h5>Received</h5>`}
                                 </div>
                             </div>
                         </td>`:``}`;
@@ -197,17 +187,6 @@
             }
             setUpTables();
         }
-        var selectMultiple = false;
-        document.getElementById("select-multiple").addEventListener('click', function() {
-          const label = this.textContent;
-          if(label === "Select Multiple"){
-            selectMultiple = true;
-            this.textContent = "Cancel";
-          }else{
-            selectMultiple = false;
-            this.textContent = "Select Multiple";}
-            setUpTables();
-        });
 
         function setUpItems(){
             const itemsCombo = document.getElementById("item-type");
@@ -254,33 +233,6 @@
                 console.error('Error:', error);
               });
         }
-
-        function confirmDistribution(){
-            fetch(`/distributable/student-distribution/received/${selectedDistId}`,{
-                    method: 'PUT'})
-                .then(response => {
-                if (!response.ok) {
-                  throw new Error('Network response was not ok');
-                }
-                return response.text();
-              })
-              .then(msg => {
-              setUpTables();
-                showSuccessModal(msg);
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
-        }
-
-        var selectedDistId;
-        document.body.addEventListener("click", function (event) {
-        const target = event.target.closest("[data-open-modal='confirmationModal']");
-
-        if (target) {
-            selectedDistId = target.getAttribute("data-item-id"); // Get the ID
-        }
-    });
     </script>
 </body>
 

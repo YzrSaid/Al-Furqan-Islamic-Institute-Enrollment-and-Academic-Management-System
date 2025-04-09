@@ -29,7 +29,8 @@
                 <h4>Book Distribution</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/transaction/academic-resources" title="You're currently in this page.">Transaction - Book Distribution</a>
+                <a href="/transaction/academic-resources" title="You're currently in this page.">Transaction - Book
+                    Distribution</a>
             </div>
 
             <div class="search-div">
@@ -38,7 +39,6 @@
                     <div class="search-container">
                         <input type="text" id="search" placeholder="Search..." class="search-input" />
                         <button type="button" onclick="setUpTables()" class="search-btn">Search</button>
-                        <button type="button" id="select-multiple" class="btn-confirm"  onclick="sendMultiple()">Distribute Selected</button>
                     </div>
                     <div class="sort-container">
                         <select name="sort" id="view-type" onchange="setUpTables()" class="sort-select">
@@ -50,6 +50,13 @@
                         <select name="sort" id="item-type" onchange="setUpTables()" class="sort-select">
                             <option value="0" selected>All Item</option>
                         </select>
+                        <button type="button" id="select-multiple" class="btn-neutral">Select Multiple</button>
+
+                        <button type="button" id="select" style="display: none;"><img
+                                src="/images/icons/square-empty.png" alt="square-icon"></button>
+                        <button type="button" id="confirm-btn" style="display: none;"><img onclick="sendMultiple()"
+                                src="/images/icons/check.png" alt=""></button>
+
                     </div>
                 </div>
             </div>
@@ -59,8 +66,8 @@
         <table id="table-ko" class="payment-report-table main-table">
             <thead>
                 <tr>
-                    <th>Student</th>
-                    <th onclick="iAmClicked()">Grade Level <img src="/images/icons/sort.png" alt="Sort Icon" class="sort-icon"></th>
+                    <th>Student Name</th>
+                    <th onclick="iAmClicked()">Grade Level</th>
                     <th>Item</th>
                     <th>Status</th>
                     <th>Date Received</th>
@@ -68,9 +75,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr><td colspan="6">No records found</td></tr>
+                <tr>
+                    <td colspan="6">No records found</td>
+                </tr>
             </tbody>
         </table> <br> <br>
+
+        <div class="cancelBtnDiv">
+            <button type="button" id="btn-cancel" class="btn-cancel" style="display: none;">Cancel</button>
+        </div>
+
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content">
@@ -92,6 +106,7 @@
         var flag = 1;
         async function setUpTables() {
             try {
+                console.log(selectMultiple);
                 sortByGrade = !sortByGrade ? "none" : sortByGrade;
                 const item = document.getElementById("item-type").value;
                 const claimed = document.getElementById("view-type").value;
@@ -128,19 +143,27 @@
                         <td>${studDis.student?.fullName || 'N/A'}</td>
                         <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
                         <td>${studDis.itemName || 'N/A'}</td>
-                        ${(claimed === "All" || claimed === "true") ?`
+                        ${(claimed === "All" || claimed === "true") ? `
                         <td>${studDis.received ? "Claimed" : "Not Claimed"}</td>
                         <td>${studDis.dateReceived || "N/A"}</td>` : ``}
-                        ${(claimed !== "true") ?`
+                        ${(claimed !== "true") ? `
                         <td>
                             <div class="dropdown">
                                 <div class="action-container action">
-                                ${ !studDis.received ?`
-                                <input type="checkbox" value=${studDis.distId}>`
-                                 : `<h5>Received</h5>`}
+                                ${selectMultiple && !studDis.received ? `
+                                <input type="checkbox" value=${studDis.distId}>` :
+                                !studDis.received ? `
+                                <button
+                                    ${studDis.received ? `style="background-color: #e0e0e0; color: #a0a0a0; cursor: not-allowed;" disabled` : ``}
+                                        data-open-modal="confirmationModal" class="add-something-btn"
+                                        data-action="itemDistributed"
+                                        data-message="Confirm item is distributed to the student"
+                                        data-item-id="${studDis.distId}">
+                                        ${studDis.received ? "Distributed" : "Distribute"}
+                                    </button>` : `<h6>Received</h6>`}
                                 </div>
                             </div>
-                        </td>`:``}`;
+                        </td>`: ``}`;
                     fragment.appendChild(row);
                 });
 
@@ -157,79 +180,154 @@
         }
 
         document.getElementById("view-type").addEventListener('change', (event) => {
-              const selectedValue = event.target.value;
-              const selectedText = event.target.options[event.target.selectedIndex].text;
-              const tableBody = document.querySelector("#table-ko thead");
-              if(selectedValue === "false"){
-                    tableBody.innerHTML =`
+            const selectedValue = event.target.value;
+            const selectedText = event.target.options[event.target.selectedIndex].text;
+            const tableBody = document.querySelector("#table-ko thead");
+            if (selectedValue === "false") {
+                tableBody.innerHTML = `
                     <th>Student</th>
                     <th onclick="iAmClicked()">Grade Level</th>
                     <th>Item</th>
                     <th>Action</th>`;
-              }else{
-                    tableBody.innerHTML =`
+            } else {
+                tableBody.innerHTML = `
                     <th>Student</th>
                     <th onclick="iAmClicked()">Grade Level</th>
                     <th>Item</th>
                     <th>Status</th>
                     <th>Date Received</th>
-                    ${(selectedValue === "All") ? `<th>Action</th>`:``}`;
+                    ${(selectedValue === "All") ? `<th>Action</th>` : ``}`;
             }
-            });
+        });
 
-        function iAmClicked(){
+        function iAmClicked() {
             sortByGrade = "desc";
-            if(flag++ % 2 == 0){
+            if (flag++ % 2 == 0) {
                 sortByGrade = "asc";
             }
             setUpTables();
         }
+        var selectMultiple = false;
 
-        function setUpItems(){
+        document.getElementById("select-multiple").addEventListener('click', function () {
+            const btn = this;
+            const confirmBtn = document.getElementById("confirm-btn");
+            const label = btn.textContent.trim();
+            const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
+            const btnCancel = document.getElementById("btn-cancel");
+            const selectCheckbox = document.getElementById("select");
+
+
+            if (label === "Select Multiple") {
+                selectMultiple = true;
+                btn.classList.remove("btn-neutral");
+                btn.style.display = "none";
+                btn.innerHTML = crossIcon;
+                selectCheckbox.style.display = "inline-block";
+                confirmBtn.style.display = "inline-block";
+                btnCancel.style.display = "inline-block";
+
+            } else {
+                btn.classList.add("btn-neutral");
+                btn.textContent = "Select Multiple";
+                confirmBtn.style.display = "none";
+                selectCheckbox.style.display = "none";
+                btnCancel.style.display = "none";
+            }
+            setUpTables();
+        });
+
+        document.getElementById("btn-cancel").addEventListener('click', function () {
+            const selectMultipleBtn = document.getElementById("select-multiple");
+            const confirmBtn = document.getElementById("confirm-btn");
+            const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
+            const btnCancel = document.getElementById("btn-cancel");
+            const selectCheckbox = document.getElementById("select");
+
+            selectMultiple = false;
+            confirmBtn.style.display = "none";
+            selectMultipleBtn.style.display = "inline-block"
+            selectMultipleBtn.classList.add("btn-neutral");
+            selectMultipleBtn.textContent = "Select Multiple";
+            selectCheckbox.style.display = "none";
+            btnCancel.style.display = "none";
+            setUpTables();
+        });
+
+
+        function setUpItems() {
             const itemsCombo = document.getElementById("item-type");
             fetch("/distributable/all")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                data.forEach(item => {
-                    console.log(item);
-                    const opt = document.createElement("option");
-                    opt.value = item.itemId;
-                    opt.textContent = item.itemName;
-                    itemsCombo.appendChild(opt);
+                .then(response => {
+                    if (!reponse.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    data.forEach(item => {
+                        console.log(item);
+                        const opt = document.createElement("option");
+                        opt.value = item.itemId;
+                        opt.textContent = item.itemName;
+                        itemsCombo.appendChild(opt);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching payments:", error);
                 });
-            })
-            .catch(error => {
-                console.error("Error fetching payments:", error);
-            });
         }
 
-        function sendMultiple(){
+        function sendMultiple() {
             const selectedItems = Array.from(document.querySelectorAll(".action-container input[type='checkbox']:checked"))
                 .map(checkbox => checkbox.value);
 
             fetch('/distributable/student-distribution/received/multiple', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                ids: selectedItems
-              }),
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    distIdLists: selectedItems
+                }),
             })
-              .then(response => response.text())
-              .then(text => {
-              setUpTables();
-                showSuccessModal(text);
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
+                .then(response => response.text())
+                .then(text => {
+                    setUpTables();
+                    showSuccessModal(text);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
+
+        function confirmDistribution() {
+            fetch(`/distributable/student-distribution/received/${selectedDistId}`, {
+                method: 'PUT'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(msg => {
+                    setUpTables();
+                    showSuccessModal(msg);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        var selectedDistId;
+        document.body.addEventListener("click", function (event) {
+            const target = event.target.closest("[data-open-modal='confirmationModal']");
+
+            if (target) {
+                selectedDistId = target.getAttribute("data-item-id"); // Get the ID
+            }
+        });
     </script>
 </body>
 

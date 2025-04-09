@@ -25,10 +25,10 @@
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
             <div class="text-link">
-                <h4>Fees Management</h4>
+                <h4>Distributable Management</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/maintenance/fees-management">Maintenance - Fees Management</a>
+                <a href="/maintenance/distributable-management">Maintenance - Distributable Management</a>
             </div>
 
             <div class="search-div">
@@ -56,10 +56,10 @@
         </div>
 
         <!-- Table -->
-        <table id="lamesa" class="fees-table">
+        <table id="lamesa" class="distributable-table main-table">
             <thead>
                 <tr>
-                    <th>Item</th>
+                    <th>Item Name</th>
                     <th>Grade Level</th>
                     <th>Action</th>
                 </tr>
@@ -124,9 +124,6 @@
                             Distribute this item to current semester: <input type="checkbox" id="applyThisSem">
                         </div>
                     </div>
-
-
-                    
 
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="addFee"

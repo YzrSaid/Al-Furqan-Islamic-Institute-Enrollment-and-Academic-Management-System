@@ -1100,6 +1100,20 @@ select option[value=""] {
   width: 12%;
 }
 
+/* for distributable table (maintenance) */
+.distributable-table th:nth-child(1),
+.distributable-table td:nth-child(1) {
+  width: 20%;
+}
+.distributable-table th:nth-child(2),
+.distributable-table td:nth-child(2) {
+  width: 30%;
+}
+.distributable-table th:nth-child(3),
+.distributable-table td:nth-child(3) {
+  width: 15%;
+}
+
 /* for teacher table (maintenance) */
 .teacher-table th:nth-child(1),
 .teacher-table td:nth-child(1) {
@@ -1240,7 +1254,8 @@ table td {
 .assessment-table,
 .fees-table,
 .payment-table,
-.scholarship-table {
+.scholarship-table,
+.distributable-table {
   width: 92.5%;
   margin: 0px 50px;
 }
@@ -4140,18 +4155,46 @@ td {
 }
 
 th {
-    position: relative;
+  position: relative;
 }
 
 .sort-icon {
   position: absolute;
-  right: 30px; 
-  top: 50%; 
-  transform: translateY(-50%); 
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 18px;
   height: 18px;
 }
 
 .sort-icon:hover {
-    cursor: pointer;
+  cursor: pointer;
+}
+
+#select-multiple img,
+#select img {
+  width: 15px;
+  height: 15px;
+}
+
+#confirm-btn img,
+#select-multiple img {
+  width: 25px;
+  height: 25px;
+}
+#select,
+#confirm-btn {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+#select {
+    margin: 0 5px;
+}
+
+.cancelBtnDiv {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }

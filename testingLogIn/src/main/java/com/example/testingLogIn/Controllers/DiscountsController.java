@@ -94,6 +94,19 @@ public class DiscountsController {
         }
     }
 
+    @PutMapping("/add-student-discount/{discountId}/{studentId}")
+    public ResponseEntity<String> addStudentsDiscount(@PathVariable int discountId,
+                                                      @PathVariable int studentId){
+        try{
+            discountsServices.addStudentDiscounts(discountId,List.of(studentId));
+            return new ResponseEntity<>("Discounts successfully added to student records",HttpStatus.OK);
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
     @PutMapping("/add-student-discounts/{discountId}")
     public ResponseEntity<String> addStudentsDiscount(@PathVariable int discountId,
                                                       @RequestBody MultipleInteger studentIds){
@@ -106,10 +119,23 @@ public class DiscountsController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
+
+    @PutMapping("/remove-student-discount/{discId}")
+    public ResponseEntity<String> removeStudentDiscount(@PathVariable int discId){
+        try{
+            discountsServices.removeStudentDiscount(discId);
+            return new ResponseEntity<>("Discount successfully removed from student",HttpStatus.OK);
+        }catch (NullPointerException e){
+            return new ResponseEntity<>("Student discount record not found",HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
     @PutMapping("/remove-student-discounts")
     public ResponseEntity<String> removeStudentsDiscount(@RequestBody MultipleInteger connectionIds){
         try{
-            discountsServices.removeStudentDiscounts(connectionIds.getIds());
+            discountsServices.removeStudentsDiscount(connectionIds.getIds());
             return new ResponseEntity<>("Discounts successfully removed from students",HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);

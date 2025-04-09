@@ -184,7 +184,6 @@ public class DistributableServices {
         disStudRepo.save(studentItem);
     }
     public void multipleItemDistributed(List<Integer> distributionIds){
-        CompletableFuture.runAsync(()->{
             List<DistributablesPerStudent> studentDistributions = new ArrayList<>();
             distributionIds.forEach(distributionId ->{
                 DistributablesPerStudent studentItem = disStudRepo.findById(distributionId).orElseThrow(NullPointerException::new);
@@ -192,6 +191,6 @@ public class DistributableServices {
                 studentItem.setDateReceived(LocalDate.now());
                 studentDistributions.add(studentItem);
             });
-            disStudRepo.saveAll(studentDistributions);});
+            disStudRepo.saveAll(studentDistributions);
     }
 }

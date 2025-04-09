@@ -835,12 +835,12 @@ document.addEventListener("DOMContentLoaded", function () {
           closeConfirmationModal();
         }
         break;
-      case "deleteFee":
-        deleteFee(selectedPaymentName);
-        break;
-      case "savePaymentTrans":
-        savePaymentTrans();
-        break;
+//      case "deleteFee":
+//        deleteFee(selectedPaymentName);
+//        break;
+//      case "savePaymentTrans":
+//        savePaymentTrans();
+//        break;
       case "savePayment":
         // This case is for adding payment
         if (!validateForm("addPaymentModal")) {
@@ -853,6 +853,10 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "itemDistributed":
         confirmDistribution();
+        break;
+      case "addStudDisc":
+        break;
+      case "deleteStudDisc":
         break;
       default:
         alert("Unknown action: " + action);

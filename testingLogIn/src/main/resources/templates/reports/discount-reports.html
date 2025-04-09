@@ -49,7 +49,11 @@
                     <select name="sort" id="item-type" class="sort-select">
                         <option value="0" selected>All</option>
                     </select>
-                    <button type="button" class="btn-confirm" id="select-multiple">Select Multiple</button>
+                    <button type="button" id="select-multiple" class="btn-neutral">Select Multiple</button>
+
+                    <input type="checkbox" id="select" style="display: none;">
+                    <button type="button" id="confirm-btn" style="display: none;"><img onclick="sendMultiple()"
+                                                                                       src="/images/icons/check.png" alt=""></button>
                 </div>
             </div>
         </div>
@@ -69,6 +73,9 @@
         <tr><td colspan="3">No records found</td></tr>
         </tbody>
     </table> <br> <br>
+    <div class="cancelBtnDiv">
+        <button type="button" onclick="resetDisplay()" id="btn-cancel" class="btn-cancel" style="display: none;">Cancel</button>
+    </div>
     <!-- Modal for confirmation -->
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
@@ -86,35 +93,40 @@
         setTableContent();
         viewBy.hidden = true;
     });
+    var selectMultiple = false;
 
-    const addRemoveBtn = document.getElementById("select-multiple");
-    addRemoveBtn.addEventListener('click', (event) => {
-        var url;
-        if(addRemoveBtn.textContent === "Remove Selected"){
-            url = "/discounts/remove-student-discounts";
-        }else{
-            url=`/discounts/add-student-discounts/${document.getElementById("item-type").value}`;
-        }
-        const selectedItems = Array.from(document.querySelectorAll(".action-container input[type='checkbox']:checked"))
-                .map(checkbox => checkbox.value);
-        fetch(url, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ids: selectedItems
-          }),
-        })
-          .then(response => response.text())
-          .then(text => {
-            alert(text);
-            setTableContent();
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-    });
+            document.getElementById("select-multiple").addEventListener('click', function () {
+            const btn = this;
+            const confirmBtn = document.getElementById("confirm-btn");
+            const label = btn.textContent.trim();
+            const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
+            const btnCancel = document.getElementById("btn-cancel");
+            const selectCheckbox = document.getElementById("select");
+
+
+            if (label === "Select Multiple") {
+                selectMultiple = true;
+                btn.classList.remove("btn-neutral");
+                btn.style.display = "none";
+                btn.innerHTML = crossIcon;
+                selectCheckbox.style.display = "inline-block";
+                confirmBtn.style.display = "inline-block";
+                btnCancel.style.display = "inline-block";
+
+            } else {
+                btn.classList.add("btn-neutral");
+                btn.textContent = "Select Multiple";
+                confirmBtn.style.display = "none";
+                selectCheckbox.style.display = "none";
+                btnCancel.style.display = "none";
+            }
+            setUpTables();
+        });
+
+    function selectMultipleCheck(){
+        selectMultiple = true;
+        setTableContent();
+    }
 
     const viewBy = document.querySelector('#isWithDiscount');
     viewBy.addEventListener('change', (event) => {
@@ -130,10 +142,10 @@
       }
       setTableContent();
     });
-
+    var selectedItem;
     document.getElementById("item-type").addEventListener('change', (event) => {
-      const selectedValue = event.target.value;
-      if(selectedValue === "0"){
+      selectedItem = event.target.value;
+      if(selectedItem === "0"){
         viewBy.hidden = true;
         document.getElementById("view-type").selectedIndex = 0;
         addRemoveBtn.textContent = "Remove Selected";
@@ -195,7 +207,6 @@
     async function setTableContent() {
     try {
         const search = document.getElementById("search").value.trim();
-        console.log(search);
         const isAvailed = document.getElementById("view-type").value === "true" ? true : false;;
         const discId = document.getElementById("item-type").value;
         const response = await fetch(`/discounts/records?discountId=${discId}&isAvailed=${isAvailed}&search=${search}`);
@@ -222,6 +233,7 @@
 
         data.content.forEach(studDis => {
             const checkBoxVal = studDis.notDeleted ? studDis.connectionId : studDis.studentId;
+            const dataAction = studDis.notDeleted ? "deleteDiscount" : "addDiscount";
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${studDis.studentName}</td>
@@ -229,9 +241,13 @@
                 ${discId === "0" ? `<td>${studDis.discountName}</td>`:``}
                 <td>
                     <div class="dropdown">
+                    ${ selectMultiple ? `
                         <div class="action-container action">
                         <input type="checkbox" value=${checkBoxVal}>
-                        </div>
+                        </div>` : `
+                        <button
+                            data-action="${dataAction}" data-value="${checkBoxVal}">
+                        ${studDis.notDeleted ? "Remove Discount" : "Add Discount"}</button>`}
                     </div>
                 </td>`;
             fragment.appendChild(row);
@@ -247,6 +263,33 @@
                 tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
             }
         }
+    }
+
+    document.querySelector("#table-ko tbody").addEventListener("click", function (event) {
+        if (event.target && event.target.getAttribute("data-action") === "deleteDiscount") {
+            const val = event.target.getAttribute("data-value");
+            removeDiscount(val);
+        }if (event.target &&  event.target.getAttribute("data-action") === "addDiscount") {
+            const val = event.target.getAttribute("data-value");
+            addDiscount(val);
+        }
+    });
+
+    function removeDiscount(value){
+        fetch(`/discounts/remove-student-discount/${value}`, {
+            method: 'PUT'
+            })
+          .then(response => response.text())
+          .then(text => {
+            alert(text);
+            setTableContent();
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+    }
+    function addDiscount(value){
+        alert("Add "+value+"/"+selectedItem);
     }
 </script>
 </body>

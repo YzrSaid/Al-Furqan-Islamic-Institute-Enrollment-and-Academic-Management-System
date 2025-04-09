@@ -79,12 +79,11 @@ public class DistributableController {
                                                                             @RequestParam(defaultValue = "10") int pageSize,
                                                                             @RequestParam(defaultValue = "") String student,
                                                                             @RequestParam Integer itemType,
-                                                                            @RequestParam String isClaimed,
+                                                                            @RequestParam boolean isClaimed,
                                                                             @RequestParam String sortBy){
         try {
             itemType = itemType.equals(0) ? null : itemType;
-            Boolean claimed = isClaimed.equalsIgnoreCase("All") ? null : Boolean.parseBoolean(isClaimed);
-            return new ResponseEntity<>(distributableServices.getStudentDistributable(pageNo, pageSize, student, claimed,itemType, sortBy), HttpStatus.OK);
+            return new ResponseEntity<>(distributableServices.getStudentDistributable(pageNo, pageSize, student, isClaimed,itemType, sortBy), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

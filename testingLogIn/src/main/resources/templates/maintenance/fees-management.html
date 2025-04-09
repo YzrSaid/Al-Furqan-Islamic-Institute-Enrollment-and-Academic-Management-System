@@ -427,9 +427,7 @@
 
     // Add event delegation to listen for delete button clicks
     document.querySelector("#lamesa tbody").addEventListener("click", function (event) {
-
         if (event.target && event.target.getAttribute("data-action") === "deleteFee") {
-            // Capture the payment name from the data-name attribute
             selectedPaymentName = event.target.getAttribute("data-name");
             console.log(selectedPaymentName);
         }

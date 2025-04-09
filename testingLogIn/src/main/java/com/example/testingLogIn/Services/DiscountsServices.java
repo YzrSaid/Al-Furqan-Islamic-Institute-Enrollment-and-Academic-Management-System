@@ -127,7 +127,7 @@ public class DiscountsServices {
                 .build();
     }
 
-    public boolean removeStudentDiscounts(List<Integer> connectionIds){
+    public void removeStudentsDiscount(List<Integer> connectionIds){
         connectionIds.forEach(conId ->{
             studDiscRepo.findById(conId).ifPresent(studentDiscount -> {
                 studentDiscount.setNotDeleted(false);
@@ -135,28 +135,42 @@ public class DiscountsServices {
                 updateStudentFees(studentDiscount.getStudent());
             });
         });
-        return true;
     }
 
-    private void updateStudentFees(Student student){
+    public void removeStudentDiscount(int discId){
+        StudentDiscount studentDiscount = studDiscRepo.findById(discId).orElseThrow(NullPointerException::new);
+        studentDiscount.setNotDeleted(false);
+        studDiscRepo.save(studentDiscount);
+        updateStudentFees(studentDiscount.getStudent());
+    }
+
+    public void removeStudentDiscounts(int studentId){
+        List<Integer> connectionIds = studDiscRepo.findByStudentNotDeleted(studentId).stream().map(StudentDiscount::getConnectionId).toList();
+        removeStudentsDiscount(connectionIds);
+    }
+
+    private void updateStudentFees(Student student) {
         int currentSemId = sem.getCurrentActive().getSySemNumber();
         StudentTotalDiscount studDiscount = studDiscRepo.getStudentTotalDiscount(student.getStudentId()).orElse(null);
-        if(studDiscount != null){
-            double percentDisc = studDiscount.getTotalPercentageDiscount();
-            double fixedDisc = studDiscount.getTotalFixedDiscount();
-            double toAddStudentBalance = 0;
-             List<StudentFeesList> studentFeesLists = sfl.getFeesBySemAndStudent(student.getStudentId(),currentSemId);
-             if(!studentFeesLists.isEmpty()) {
-                 for (StudentFeesList studFee : studentFeesLists) {
-                     double feeAmount = studFee.getFee().getRequiredAmount();
-                     double newBalance = feeAmount - NonModelServices.adjustDecimal((feeAmount * percentDisc) + fixedDisc);
-                     toAddStudentBalance += studFee.getAmount() - newBalance;
-                     studFee.setAmount(newBalance);
-                     sfl.save(studFee);
-                 }
-                 student.setStudentBalance(student.getStudentBalance() + toAddStudentBalance);
-                 studRepo.save(student);
-             }
+        if (studDiscount != null) {
+            CompletableFuture.runAsync(() -> {
+                double percentDisc = studDiscount.getTotalPercentageDiscount();
+                double fixedDisc = studDiscount.getTotalFixedDiscount();
+                double toAddStudentBalance = 0;
+                List<StudentFeesList> studentFeesLists = sfl.getFeesBySemAndStudent(student.getStudentId(), currentSemId);
+                if (!studentFeesLists.isEmpty()) {
+                    for (StudentFeesList studFee : studentFeesLists) {
+                        double feeAmount = studFee.getFee().getRequiredAmount();
+                        double newBalance = feeAmount - NonModelServices.adjustDecimal((feeAmount * percentDisc) + fixedDisc);
+                        toAddStudentBalance += studFee.getAmount() - newBalance;
+                        studFee.setAmount(newBalance);
+                        sfl.save(studFee);
+                    }
+                    student.setScholar(!studDiscRepo.findByStudentNotDeleted(student.getStudentId()).isEmpty());
+                    student.setStudentBalance(student.getStudentBalance() + toAddStudentBalance);
+                    studRepo.save(student);
+                }
+            });
         }
     }
 }

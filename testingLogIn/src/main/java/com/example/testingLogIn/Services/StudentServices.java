@@ -164,8 +164,9 @@ public class StudentServices {
             toUpdate.setMadrasaAddress(stud.getMadrasaAddress());
             toUpdate.setLastGradeLevelCompleted(gradeLevel);
             toUpdate.setLastMadrasaYearCompleted(stud.getLastGradeLevelCompleted());
-            
             studentRepo.save(toUpdate);
+            if(!toUpdate.isScholar())
+                CompletableFuture.runAsync(() -> discountsServices.removeStudentDiscounts(toUpdate.getStudentId()));
             return true;
         }
     }

@@ -41,19 +41,17 @@
                         <button type="button" onclick="setUpTables()" class="search-btn">Search</button>
                     </div>
                     <div class="sort-container">
-                        <select name="sort" id="view-type" onchange="setUpTables()" class="sort-select">
-                            <option value="All" selected>View All</option>
-                            <option value="true">Claimed</option>
+                        <select name="sort" id="view-type" onchange="changeHeader()" class="sort-select">
+                            <option value="true" selected>Claimed</option>
                             <option value="false">Not Claimed</option>
                         </select>
 
-                        <select name="sort" id="item-type" onchange="setUpTables()" class="sort-select">
+                        <select name="sort" id="item-type" onchange="changeHeader()" class="sort-select">
                             <option value="0" selected>All Item</option>
                         </select>
                         <button type="button" id="select-multiple" class="btn-neutral">Select Multiple</button>
 
-                        <button type="button" id="select" style="display: none;"><img
-                                src="/images/icons/square-empty.png" alt="square-icon"></button>
+                        <input type="checkbox" id="select" style="display: none;">
                         <button type="button" id="confirm-btn" style="display: none;"><img onclick="sendMultiple()"
                                 src="/images/icons/check.png" alt=""></button>
 
@@ -68,7 +66,7 @@
                 <tr>
                     <th>Student Name</th>
                     <th onclick="iAmClicked()">Grade Level</th>
-                    <th>Item</th>
+                    <th id="itemHeader">Item</th>
                     <th>Status</th>
                     <th>Date Received</th>
                     <th>Action</th>
@@ -82,7 +80,7 @@
         </table> <br> <br>
 
         <div class="cancelBtnDiv">
-            <button type="button" id="btn-cancel" class="btn-cancel" style="display: none;">Cancel</button>
+            <button type="button" onclick="resetDisplay()" id="btn-cancel" class="btn-cancel" style="display: none;">Cancel</button>
         </div>
 
         <!-- Modal for confirmation -->
@@ -98,18 +96,17 @@
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            setUpTables();
             setUpItems();
+            changeHeader();
         });
 
         var sortByGrade;
         var flag = 1;
         async function setUpTables() {
             try {
-                console.log(selectMultiple);
                 sortByGrade = !sortByGrade ? "none" : sortByGrade;
                 const item = document.getElementById("item-type").value;
-                const claimed = document.getElementById("view-type").value;
+                const claimed = document.getElementById("view-type").value === "true";
                 const search = document.getElementById("search").value;
                 const response = await fetch(`/distributable/student-distribution/all?isClaimed=${claimed}&student=${search}&itemType=${item}&sortBy=${sortByGrade}`);
                 if (!response.ok) {
@@ -142,11 +139,11 @@
                     row.innerHTML = `
                         <td>${studDis.student?.fullName || 'N/A'}</td>
                         <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
-                        <td>${studDis.itemName || 'N/A'}</td>
-                        ${(claimed === "All" || claimed === "true") ? `
-                        <td>${studDis.received ? "Claimed" : "Not Claimed"}</td>
+                        ${ item === "0" ? `
+                        <td>${studDis.itemName || 'N/A'}</td>`:``}
+                        ${ claimed ? `
                         <td>${studDis.dateReceived || "N/A"}</td>` : ``}
-                        ${(claimed !== "true") ? `
+                        ${(!claimed) ? `
                         <td>
                             <div class="dropdown">
                                 <div class="action-container action">
@@ -179,26 +176,38 @@
             }
         }
 
-        document.getElementById("view-type").addEventListener('change', (event) => {
-            const selectedValue = event.target.value;
-            const selectedText = event.target.options[event.target.selectedIndex].text;
+        document.getElementById("select").addEventListener('change', (event) => {
+            const checkedCheckboxes = Array.from(document.querySelectorAll(".action-container input[type='checkbox']"));
+            if(event.target.checked){
+                checkedCheckboxes.forEach(checkbox => {
+                  checkbox.checked = true;
+                });
+            }else{
+                checkedCheckboxes.forEach(checkbox => {
+                  checkbox.checked = false;
+                });
+            }
+        });
+
+        function changeHeader(){
+            const allType = document.getElementById("item-type").value === "0";
+            const isClaimed = document.getElementById("view-type").value === "true";
             const tableBody = document.querySelector("#table-ko thead");
-            if (selectedValue === "false") {
+            if (!isClaimed) {
                 tableBody.innerHTML = `
                     <th>Student</th>
                     <th onclick="iAmClicked()">Grade Level</th>
-                    <th>Item</th>
+                    ${ allType ? `<th>Item</th>` : ''}
                     <th>Action</th>`;
             } else {
                 tableBody.innerHTML = `
                     <th>Student</th>
                     <th onclick="iAmClicked()">Grade Level</th>
-                    <th>Item</th>
-                    <th>Status</th>
-                    <th>Date Received</th>
-                    ${(selectedValue === "All") ? `<th>Action</th>` : ``}`;
+                    ${ allType ? `<th>Item</th>` : ''}
+                    <th>Date Received</th>`;
             }
-        });
+            setUpTables();
+        }
 
         function iAmClicked() {
             sortByGrade = "desc";
@@ -237,7 +246,7 @@
             setUpTables();
         });
 
-        document.getElementById("btn-cancel").addEventListener('click', function () {
+        function resetDisplay(){
             const selectMultipleBtn = document.getElementById("select-multiple");
             const confirmBtn = document.getElementById("confirm-btn");
             const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
@@ -245,6 +254,7 @@
             const selectCheckbox = document.getElementById("select");
 
             selectMultiple = false;
+            selectCheckbox.checked = false;
             confirmBtn.style.display = "none";
             selectMultipleBtn.style.display = "inline-block"
             selectMultipleBtn.classList.add("btn-neutral");
@@ -252,14 +262,13 @@
             selectCheckbox.style.display = "none";
             btnCancel.style.display = "none";
             setUpTables();
-        });
-
+        }
 
         function setUpItems() {
             const itemsCombo = document.getElementById("item-type");
             fetch("/distributable/all")
                 .then(response => {
-                    if (!reponse.ok) {
+                    if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
                     }
                     return response.json();
@@ -288,13 +297,19 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    distIdLists: selectedItems
+                    ids: selectedItems
                 }),
             })
-                .then(response => response.text())
-                .then(text => {
+                .then(response =>{
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    console.log("OKAY ANG RESPONSE");
+                    return response.text();})
+                .then(msg => {
                     setUpTables();
-                    showSuccessModal(text);
+                    resetDisplay();
+                    showSuccessModal("Na distribute na",false);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -305,19 +320,19 @@
             fetch(`/distributable/student-distribution/received/${selectedDistId}`, {
                 method: 'PUT'
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(msg => {
-                    setUpTables();
-                    showSuccessModal(msg);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(msg => {
+                setUpTables();
+                showSuccessModal(msg);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
 
         var selectedDistId;

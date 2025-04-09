@@ -35,6 +35,13 @@ public interface StudentDiscountRepo extends JpaRepository<StudentDiscount,Integ
             "WHERE stud.studentId = :studentId")
     List<StudentDiscount> findByStudent(@Param("studentId") int studentId);
 
+    @Query("SELECT studDisc FROM StudentDiscount studDisc " +
+            "JOIN studDisc.student stud " +
+            "JOIN studDisc.discount disc " +
+            "WHERE stud.studentId = :studentId " +
+            "AND studDisc.isNotDeleted")
+    List<StudentDiscount> findByStudentNotDeleted(@Param("studentId") int studentId);
+
     @Query("SELECT NEW com.example.testingLogIn.CustomObjects.StudentDiscountHandler(sd,stud) " +
             "FROM StudentDiscount sd " +
             "RIGHT JOIN Student stud ON sd.student.studentId = stud.studentId " +

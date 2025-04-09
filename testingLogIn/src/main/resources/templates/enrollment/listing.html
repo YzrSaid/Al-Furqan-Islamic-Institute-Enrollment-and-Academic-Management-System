@@ -42,7 +42,8 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button class="new-student" onclick="fetchDiscounts()" data-open-modal="newStudentModal" title="Add New Student">NEW
+                        <button class="new-student" onclick="fetchDiscounts()" data-open-modal="newStudentModal"
+                            title="Add New Student">NEW
                             STUDENT</button>
                     </div>
 
@@ -721,12 +722,21 @@
                     <div class="checkbox">
                         <label for="scholar">Scholar:</label>
                         <input type="checkbox" id="scholar">
+
+                        <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png" popovertarget="my-popover" alt="dropdown-icon">
+                        </button>
+
+                        <!-- Popover lives right below the button now -->
+                        <div popover id="my-popover" class="styled-popover">
+                            <h6>Scholarship Type</h6>
+                        </div>
                     </div>
 
                     <div class="checkbox">
                         <label for="isTransferee">Transferee:</label>
                         <input type="checkbox" id="isTransferee">
                     </div>
+
                 </div> <br>
 
                 <div class="student-form-group">
@@ -1020,6 +1030,18 @@
 </body>
 
 <script>
+
+    // this is for the popover for the scholar
+    const dropdownScholarBtn = document.getElementById("dropdown-scholar");
+    const popover = document.getElementById("my-popover");
+
+    dropdownScholarBtn.addEventListener("click", function () {
+        if (popover.matches(":popover-open")) {
+            popover.hidePopover();
+        } else {
+            popover.showPopover();
+        }
+    });
 
     function proceedToPayment(enrollmentIdLet, sectionNumberLet) {
         sectionNumberLet = document.querySelector("#section").value;
@@ -1399,7 +1421,7 @@
             madrasaNameLastAttended: document.getElementById("madrasaNameLastAttended")?.value?.trim() || null,
             madrasaAddress: document.getElementById("madrasaAddress")?.value?.trim() || null,
             transfereeRequirements: selectedTransReq,
-            discountsAvailed : selectedDiscounts
+            discountsAvailed: selectedDiscounts
         };
 
         fetch(actionUrl, {
@@ -1689,7 +1711,7 @@
         }
     }
 
-    function fetchDiscounts(){
+    function fetchDiscounts() {
         fetch("/discounts/all")
             .then(response => response.json())
             .then(data => {
@@ -1709,9 +1731,10 @@
                     label.htmlFor = `disc-${disc.discountId}`;
                     label.textContent = disc.discountName;
 
-<!--                    if (reqIds.includes(disc.id)) {-->
-<!--                        checkbox.checked = true;-->
-<!--                    }-->
+                    // < !--                    if (reqIds.includes(disc.id)) {
+                    //                         -->
+                    // < !--checkbox.checked = true; -->
+                    // < !--                    } -->
 
                     paymentDiv.appendChild(checkbox);
                     paymentDiv.appendChild(label);

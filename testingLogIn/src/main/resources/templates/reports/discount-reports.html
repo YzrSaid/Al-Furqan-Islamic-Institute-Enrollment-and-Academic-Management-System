@@ -39,7 +39,7 @@
                     <input type="text" id="search" placeholder="Search..." class="search-input" />
                     <button  type="button" onclick="setTableContent()" class="search-btn">Search</button>
                 </div>
-                <div id="isWithDiscount" class="sort-container">
+                <div class="sort-container">
                     <select name="sort" id="view-type" class="sort-select">
                         <option value="true" selected>With Discount</option>
                         <option value="false">Without Discount</option>
@@ -94,52 +94,93 @@
         viewBy.hidden = true;
     });
     var selectMultiple = false;
+    document.getElementById("select-multiple").addEventListener('click', function () {
+    const btn = this;
+    const confirmBtn = document.getElementById("confirm-btn");
+    const label = btn.textContent.trim();
+    const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
+    const btnCancel = document.getElementById("btn-cancel");
+    const selectCheckbox = document.getElementById("select");
 
-            document.getElementById("select-multiple").addEventListener('click', function () {
-            const btn = this;
-            const confirmBtn = document.getElementById("confirm-btn");
-            const label = btn.textContent.trim();
-            const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
-            const btnCancel = document.getElementById("btn-cancel");
-            const selectCheckbox = document.getElementById("select");
+    btn.classList.remove("btn-neutral");
+    btn.style.display = "none";
+    btn.innerHTML = crossIcon;
+    selectCheckbox.style.display = "inline-block";
+    confirmBtn.style.display = "inline-block";
+    btnCancel.style.display = "inline-block";
 
+    selectMultiple = true;
+    setTableContent();
+});
 
-            if (label === "Select Multiple") {
-                selectMultiple = true;
-                btn.classList.remove("btn-neutral");
-                btn.style.display = "none";
-                btn.innerHTML = crossIcon;
-                selectCheckbox.style.display = "inline-block";
-                confirmBtn.style.display = "inline-block";
-                btnCancel.style.display = "inline-block";
+    document.getElementById("confirm-btn").addEventListener('click', function () {
+        var url;
+        if(viewBy.value === "false"){
+            url = `/discounts/add-student-discounts/${selectedItem}`;
+            alert(url);}
+        else{
+            url = `/discounts/remove-student-discounts`;
+            alert(url);}
 
-            } else {
-                btn.classList.add("btn-neutral");
-                btn.textContent = "Select Multiple";
-                confirmBtn.style.display = "none";
-                selectCheckbox.style.display = "none";
-                btnCancel.style.display = "none";
-            }
-            setUpTables();
-        });
+        const selectedItems = Array.from(document.querySelectorAll(".action-container input[type='checkbox']:checked"))
+                .map(checkbox => checkbox.value);
+        fetch(url, {
+            method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ids: selectedItems
+                }),
+            })
+          .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();})
+          .then(text => {
+            alert(text);
+            resetDisplay();
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+    });
 
-    function selectMultipleCheck(){
-        selectMultiple = true;
+    document.getElementById("select").addEventListener('change', (event) => {
+        const checkedCheckboxes = Array.from(document.querySelectorAll(".action-container input[type='checkbox']"));
+        if(event.target.checked){
+            checkedCheckboxes.forEach(checkbox => {
+              checkbox.checked = true;
+            });
+        }else{
+            checkedCheckboxes.forEach(checkbox => {
+              checkbox.checked = false;
+            });
+        }
+    });
+
+    function resetDisplay(){
+        const selectMultipleBtn = document.getElementById("select-multiple");
+        const confirmBtn = document.getElementById("confirm-btn");
+        const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
+        const btnCancel = document.getElementById("btn-cancel");
+        const selectCheckbox = document.getElementById("select");
+
+        selectMultiple = false;
+        selectCheckbox.checked = false;
+        confirmBtn.style.display = "none";
+        selectMultipleBtn.style.display = "inline-block"
+        selectMultipleBtn.classList.add("btn-neutral");
+        selectMultipleBtn.textContent = "Select Multiple";
+        selectCheckbox.style.display = "none";
+        btnCancel.style.display = "none";
         setTableContent();
     }
 
-    const viewBy = document.querySelector('#isWithDiscount');
+    const viewBy = document.querySelector('#view-type');
     viewBy.addEventListener('change', (event) => {
-      const selectedValue = event.target.value;
-      if(selectedValue === "true"){
-        addRemoveBtn.textContent = "Remove Selected";
-        addRemoveBtn.classList.add("btn-cancel");
-        addRemoveBtn.classList.remove("btn-confirm");
-      }else{
-        addRemoveBtn.textContent = "Add Selected";
-        addRemoveBtn.classList.add("btn-confirm");
-        addRemoveBtn.classList.remove("btn-cancel");
-      }
+      document.getElementById("select").checked = false;
       setTableContent();
     });
     var selectedItem;
@@ -148,17 +189,16 @@
       if(selectedItem === "0"){
         viewBy.hidden = true;
         document.getElementById("view-type").selectedIndex = 0;
-        addRemoveBtn.textContent = "Remove Selected";
         changeHeader(true);
       }else{
         viewBy.hidden = false;
         changeHeader(false);
       }
+      document.getElementById("select").checked = false;
       setTableContent();
     });
 
     function changeHeader(forAll){
-        console.log(forAll);
         const tableHeader = document.querySelector("#table-ko thead");
         if(forAll){
             tableHeader.innerHTML =`
@@ -207,8 +247,8 @@
     async function setTableContent() {
     try {
         const search = document.getElementById("search").value.trim();
-        const isAvailed = document.getElementById("view-type").value === "true" ? true : false;;
         const discId = document.getElementById("item-type").value;
+        const isAvailed = discId === "0" ? true : document.getElementById("view-type").value === "true" ? true : false;
         const response = await fetch(`/discounts/records?discountId=${discId}&isAvailed=${isAvailed}&search=${search}`);
         if (!response.ok) {
             console.error("Failed to fetch data:", response.status);
@@ -276,20 +316,23 @@
     });
 
     function removeDiscount(value){
-        fetch(`/discounts/remove-student-discount/${value}`, {
-            method: 'PUT'
-            })
-          .then(response => response.text())
-          .then(text => {
-            alert(text);
-            setTableContent();
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
+        myPutMethod(`/discounts/remove-student-discount/${value}`);
     }
     function addDiscount(value){
-        alert("Add "+value+"/"+selectedItem);
+        myPutMethod(`/discounts/add-student-discount/${selectedItem}/${value}`);
+    }
+    function myPutMethod(url){
+        fetch(url, {
+            method: 'PUT'
+            })
+        .then(response => response.text())
+        .then(text => {
+            alert(text);
+            setTableContent();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 </script>
 </body>

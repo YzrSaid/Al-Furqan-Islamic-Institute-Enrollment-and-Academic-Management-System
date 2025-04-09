@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/discounts")
@@ -98,11 +99,14 @@ public class DiscountsController {
     public ResponseEntity<String> addStudentsDiscount(@PathVariable int discountId,
                                                       @PathVariable int studentId){
         try{
-            discountsServices.addStudentDiscounts(discountId,List.of(studentId));
+            List<Integer> discIds = new ArrayList<>();
+            discIds.add(discountId);
+            discountsServices.addStudentDiscounts(studentId,discIds);
             return new ResponseEntity<>("Discounts successfully added to student records",HttpStatus.OK);
         }catch (NullPointerException npe){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

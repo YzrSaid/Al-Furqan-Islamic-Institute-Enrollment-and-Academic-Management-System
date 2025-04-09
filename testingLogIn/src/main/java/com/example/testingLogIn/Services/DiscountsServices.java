@@ -92,7 +92,7 @@ public class DiscountsServices {
                 studentDiscount.setNotDeleted(true);
                 if(!discounts.contains(studentDiscount.getDiscount().getDiscountId()))
                     studentDiscount.setNotDeleted(true);
-                discounts.remove(studentDiscount.getDiscount().getDiscountId());
+                discounts.remove(Integer.valueOf(studentDiscount.getDiscount().getDiscountId()));
                 studentDiscounts.add(studentDiscount);
             });
         discounts.forEach(discId ->{

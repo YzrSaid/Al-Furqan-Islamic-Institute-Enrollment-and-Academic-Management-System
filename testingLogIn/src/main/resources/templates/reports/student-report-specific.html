@@ -593,5 +593,12 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+        const wordArray = (path.split("/"));
+        const studentName = ((wordArray[wordArray.length-1]));
+    });
+</script>
 
 </html>

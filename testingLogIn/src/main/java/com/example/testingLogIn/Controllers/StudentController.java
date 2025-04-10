@@ -22,12 +22,20 @@ public class StudentController {
     
     @Autowired
     private StudentServices studentService;
-    //WILL BE REMOVED AND CHANGED BY PAGINATION
-    @GetMapping("/all")
-    public ResponseEntity<List<StudentDTO>> getAllStudents(){
-        return new ResponseEntity<>(studentService.getAllStudent(),HttpStatus.OK);
-    }
 
+    @GetMapping("/all")//soon convert to
+    public ResponseEntity<StudentDTOPage> getStudentByDisplayId(
+            @RequestParam(required = false,defaultValue = "") String q,
+            @RequestParam(required = false,defaultValue = "") String sortBy,
+            @RequestParam(required = false,defaultValue = "1") int pageNo,
+            @RequestParam(required = false, defaultValue = "10") int pageSize){
+        try{
+            return new ResponseEntity<>(studentService.getStudentByNameOrDisplayId(q,sortBy,pageNo,pageSize),HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
     @GetMapping("/find-student/{studentId}")
     public ResponseEntity<StudentDTO> getStudent(@PathVariable int studentId){
         try {
@@ -99,20 +107,6 @@ public class StudentController {
         try{
             return new ResponseEntity<>(studentService.getStudentPage(type,condition,page,size),HttpStatus.OK);
         }catch(Exception e){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-    }
-
-    @GetMapping("/all/s")//soon convert to
-    public ResponseEntity<StudentDTOPage> getStudentByDisplayId(
-                                                           @RequestParam(required = false,defaultValue = "") String q,
-                                                           @RequestParam(required = false,defaultValue = "") String sortBy,
-                                                           @RequestParam(required = false,defaultValue = "1") int pageNo,
-                                                           @RequestParam(required = false, defaultValue = "10") int pageSize){
-        try{
-            return new ResponseEntity<>(studentService.getStudentByNameOrDisplayId(q,sortBy,pageNo,pageSize),HttpStatus.OK);
-        }catch(Exception e){
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

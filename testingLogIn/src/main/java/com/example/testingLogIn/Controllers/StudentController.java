@@ -36,6 +36,19 @@ public class StudentController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
+
+    @GetMapping("/find-student/name/{studentName}")
+    public ResponseEntity<StudentDTO> getStudentByName(@PathVariable String studentName){
+        try {
+            return new ResponseEntity<>(studentService.getStudentBtName(studentName), HttpStatus.OK);
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
     @GetMapping("/find-student/{studentId}")
     public ResponseEntity<StudentDTO> getStudent(@PathVariable int studentId){
         try {

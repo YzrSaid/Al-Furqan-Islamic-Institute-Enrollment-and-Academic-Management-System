@@ -1,8 +1,10 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.ModelDTO.StudentGradesPerSem;
 import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Repositories.SubjectRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
@@ -95,22 +97,20 @@ public class StudentSubjectGradeServices {
         return subjectStudGrades;
     }
     
-    public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesBySemester(int studentId){
-        List<StudentSubjectGrade> gradesList = ssgRepo.getGradesByStudent(studentId);
+    public List<StudentGradesPerSem> getStudentGradesBySemester(int studentId){
+        List<SchoolYearSemester> semAttended = ssgRepo.getStudentSemAttended(studentId);
+        List<StudentGradesPerSem> studentGrades = new ArrayList<>();
 
-        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap<>();
-        
-        gradesList
-                .forEach(studGrade -> {
-                    String gradeLevelAndSectionSem = studGrade.getSection().getLevel().getLevelName()+" - "+
-                            studGrade.getSection().getSectionName()+" : "+
-                            studGrade.getSemester().getSchoolYear().getSchoolYear()+"-"+studGrade.getSemester().getSem()+ " sem";
-                    if(!subjectStudGrades.containsKey(gradeLevelAndSectionSem))
-                        subjectStudGrades.put(gradeLevelAndSectionSem, new ArrayList<StudentSubjectGradeDTO>());
-                    subjectStudGrades.get(gradeLevelAndSectionSem).add(studGrade.DTOmapper());
-                });
-        
-        return subjectStudGrades;
+        for(SchoolYearSemester sem : semAttended){
+            StudentGradesPerSem semGrade = new StudentGradesPerSem();
+            semGrade.setSectionSemester(sem.toString());
+            semGrade.setGrades(ssgRepo.getGradesByStudent(studentId,sem.getSySemNumber())
+                    .stream().map(StudentSubjectGrade::DTOmapper).toList());
+            semGrade.setGradeSection(semGrade.getGrades().getFirst().getGradeAndSection());
+            studentGrades.add(semGrade);
+        }
+
+        return studentGrades;
     }
     
     public boolean updateStudentGrade(StudentSubjectGradeDTO studGrade){

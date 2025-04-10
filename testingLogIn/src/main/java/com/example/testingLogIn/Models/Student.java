@@ -55,6 +55,7 @@ public class Student{
     private String guardianName;
     private String guardianAddress;
     private String guardianContactNum;
+    private String guardianOccupation;
 
     @Enumerated(EnumType.STRING)
     private StudentStatus status;

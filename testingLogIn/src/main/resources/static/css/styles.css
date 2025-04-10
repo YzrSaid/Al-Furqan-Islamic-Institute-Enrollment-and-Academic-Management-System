@@ -1260,6 +1260,11 @@ table td {
   margin: 0px 50px;
 }
 
+.mini-table {
+    width: 100%;
+}
+
+
 .recent-transaction-table-mini {
 }
 
@@ -2852,6 +2857,10 @@ input[type="checkbox"] {
   width: 40px;
 }
 
+.average-remarks {
+    font-weight: bold;
+}
+
 #view-grade-average {
   display: flex;
   align-items: center;
@@ -3336,14 +3345,15 @@ td[rowspan] {
 
 .container-two {
   display: flex;
+  gap: 20px;
   justify-content: space-between;
 }
 
 .column-main {
-  width: 45%;
+  width: 50%;
   border-radius: 8px;
   padding: 20px;
-  background-color: #d2eed341;
+  background-color: #cbe9cc;
 }
 #madrasaNameLastAttended,
 #madrasaAddress {
@@ -3367,6 +3377,33 @@ td[rowspan] {
   text-align: center;
   background-color: rgb(87, 88, 89);
   color: white;
+}
+.grade-table-header {
+    display: flex;
+    flex-direction: column; /* Make the header a column */
+    align-items: flex-start; /* Align items to the start of the column */
+    width: 100%;
+    gap: 10px;
+}
+
+.grade-table-header > div {
+    display: flex; 
+    width: 100%; 
+    gap: 15px;
+    align-items: center;
+}
+
+.grade-table-header h6 {
+    font-size: 14px;
+    margin: 0;
+}
+.grade-table-header label {
+    font-size: 14px;
+    font-weight: bold;
+}
+.mini-table h6 {
+    font-size: 4px;
+    background-color: #007bff;
 }
 
 #status-type {
@@ -4221,4 +4258,16 @@ th {
   min-width: 200px;
   z-index: 1000;
   transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+#grades-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Consistent spacing between columns */
+}
+
+#grades-container > div {
+  flex: 0 0 calc(50% - 10px);
+  box-sizing: border-box;
 }

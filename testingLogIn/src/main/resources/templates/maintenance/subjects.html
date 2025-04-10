@@ -48,7 +48,7 @@
         </div>
 
         <!-- Table -->
-        <table id="table-ba-to" class="verify-accounts-table">
+        <table id="table-ba-to" class="verify-accounts-table main-table">
             <thead>
                 <tr>
                     <th>Grade Level</th>
@@ -187,7 +187,7 @@
                             <td>${rec.subjectsCount}</td>
                             <td>
                                 <div class="action-container">
-                                    <a href="/maintenance/subjects/${rec.levelName}" class="view-sched">View Subjects</a>
+                                    <a href="/maintenance/subjects/${rec.levelName}" data-path="/maintenance/subjects/${rec.levelName}" class="view-sched">View Subjects</a>
                                 </div>
                             </td>
                         </tr>

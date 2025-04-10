@@ -21,14 +21,10 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
     @Query("SELECT COUNT(s) > 0 FROM Student s " +
         "WHERE s.isNotDeleted = true "+
         "AND (:studentId IS NULL OR s.studentId != :studentId) "+
-        "AND Lower(s.fullName) LIKE CONCAT('%',:lastName,'%') "+
-        "AND Lower(s.fullName) LIKE CONCAT('%',:firstName,'%') "+
-        "AND (:middleName IS NULL OR s.fullName LIKE CONCAT('%',:middleName,'%'))")
+        "AND Lower(s.fullName) = :fullName")
     boolean existsByNameIgnoreCaseAndNotDeleted(
         @Param("studentId") Integer studentId,
-        @Param("firstName") String firstName,
-        @Param("lastName") String lastName,
-        @Param("middleName") String middleName
+                            String fullName
     );
 
     @Query("SELECT stud FROM Student stud WHERE LOWER(stud.fullName) LIKE :fullName")

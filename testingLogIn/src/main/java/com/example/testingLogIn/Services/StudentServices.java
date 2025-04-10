@@ -51,6 +51,7 @@ public class StudentServices {
     }
 
     public boolean addStudent(StudentDTO student){
+        String fullName = student.getFirstName()+" "+ Optional.ofNullable(student.getMiddleName()).map(mn -> mn+" ").orElse(" ")+student.getLastName();
         GradeLevel gradeLevel = null;
         if(student.getLastGradeLevelId() != null)
             gradeLevel = gradeLevelRepo.findById(student.getLastGradeLevelId()).orElse(null);
@@ -60,7 +61,7 @@ public class StudentServices {
         for(int i=count.length() ; i<4 ; i++){
             count.insert(0, "0");
         }
-        if(doesStudentNameExist(student))
+        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(null,fullName))
             return false;
         else{
             Student newStudent = Student.builder()
@@ -130,17 +131,18 @@ public class StudentServices {
     }
     
     public boolean updateStudent(StudentDTO stud){
+        String fullName = stud.getFirstName()+" "+ Optional.ofNullable(stud.getMiddleName()).map(mn -> mn+" ").orElse(" ")+stud.getLastName();
         String sectionName = stud.getCurrentGradeSection().substring(stud.getCurrentGradeSection().indexOf("-")+1);
         GradeLevel gradeLevel = gradeLevelRepo.findById(stud.getLastGradeLevelId()).orElse(null);
         Section section = sectionServices.getSectionByName(sectionName);
         Student toUpdate = studentRepo.findById(stud.getStudentId()).orElseThrow(NullPointerException::new);
-        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(stud.getStudentId(),stud.getFirstName(),stud.getLastName(),stud.getMiddleName()))//checks if a student with not the same ID has the same name
+        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(stud.getStudentId(),fullName.toLowerCase()))//checks if a student with not the same ID has the same name
             return false;
         else{
             toUpdate.setFirstName(stud.getFirstName());
             toUpdate.setLastName(stud.getLastName());
             toUpdate.setMiddleName(stud.getMiddleName());
-            toUpdate.setFullName(stud.getFirstName()+" "+ Optional.ofNullable(stud.getMiddleName()).map(mn -> mn+" ").orElse(" ")+stud.getLastName());
+            toUpdate.setFullName(fullName);
             toUpdate.setCellphoneNum(stud.getCellphoneNum());
             toUpdate.setGender(stud.getGender());
             toUpdate.setStreet(stud.getAddress().getStreet());
@@ -180,14 +182,6 @@ public class StudentServices {
             return true;
         }
         return false;
-    }
-    
-    private boolean doesStudentNameExist(StudentDTO student){
-        return studentRepo.existsByNameIgnoreCaseAndNotDeleted(
-                null,
-                student.getFirstName(),
-                student.getLastName(),
-                student.getMiddleName());
     }
 
     public StudentDTOPage getStudentPage(String studentType, String condition, int pageNo, int pageSize){

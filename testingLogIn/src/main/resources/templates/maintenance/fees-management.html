@@ -203,6 +203,11 @@
                     <div class="payment-container-edit">
                         <!-- Dynamically populated checkboxes will go here -->
                     </div>
+                    <div class="full-width-row">
+                        <div>
+                            Apply this fee to current semester: <input type="checkbox" id="applyThisSemEdit">
+                        </div>
+                    </div>
 
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" id="editFeeButton" data-action="editFee"
@@ -380,6 +385,7 @@
         const paymentId = document.getElementById("feesManagementEditModal").dataset.id;
         const paymentName = document.getElementById("paymentNameEdit").value; // Get the updated payment name
         const requiredAmount = document.getElementById("amountEdit").value; // Get the updated amount
+        const willApplyThisSem = document.getElementById("applyThisSemEdit").checked;
 
         // Get the selected grade levels
         const selectedGradeLevels = [];
@@ -391,7 +397,8 @@
             id: paymentId,
             name: paymentName,
             requiredAmount: requiredAmount,
-            gradeLevelNames: selectedGradeLevels
+            gradeLevelNames: selectedGradeLevels,
+            willApplyNow : willApplyThisSem
         };
 
         console.log(updatedFeeData);

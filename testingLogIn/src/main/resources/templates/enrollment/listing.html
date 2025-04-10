@@ -202,30 +202,30 @@
                         <h6>Father's Information</h6>
                         <div class="student-form-group">
                             <label for="fatherName">Name:</label>
-                            <input type="text" id="studfatherName">
+                            <input type="text" id="fatherName">
 
                             <label for="fatherOccupation">Occupation:</label>
-                            <input type="text" id="studfatherOccupation">
+                            <input type="text" id="fatherOccupation">
                         </div> <br>
                     </div>
                     <div>
                         <h6>Mother's Information</h6>
                         <div class="student-form-group">
                             <label for="motherName">Name:</label>
-                            <input type="text" id="studmotherName">
+                            <input type="text" id="motherName">
 
                             <label for="motherOccupation">Occupation:</label>
-                            <input type="text" id="studmotherOccupation">
+                            <input type="text" id="motherOccupation">
                         </div> <br>
                     </div>
 
                     <h6>Guardian's Information</h6>
                     <div class="student-form-group">
                         <label for="guardianName">Name:</label>
-                        <input type="text" id="studguardianName">
+                        <input type="text" id="guardianName">
 
                         <label for="guardianOccupation">Occupation:</label>
-                        <input type="text" id="studguardianOccupation">
+                        <input type="text" id="guardianOccupation">
                     </div> <br>
 
                     <div class="student-form-group">
@@ -1780,13 +1780,20 @@
         document.getElementById("gender").value = studentProf.gender;
         document.getElementById("birthdate").value = studentProf.birthdate;
         document.getElementById("placeOfBirth").value = studentProf.birthPlace;
-        document.getElementById("studfatherName").value = studentProf.fatherName;
-        document.getElementById("studfatherOccupation").value = studentProf.fatherOccupation;
-        document.getElementById("studmotherName").value = studentProf.motherName;
-        document.getElementById("studmotherOccupation").value = studentProf.motherOccupation;
         document.getElementById("street").value = studentProf.address.street;
         document.getElementById("barangay").value = studentProf.address.barangay;
         document.getElementById("city").value = studentProf.address.city;
+
+        document.getElementById("fatherName").value = studentProf.fatherName;
+        document.getElementById("fatherOccupation").value = studentProf.fatherOccupation;
+        document.getElementById("motherName").value = studentProf.motherName;
+        document.getElementById("motherOccupation").value = studentProf.motherOccupation;
+        document.getElementById("guardianName").value = studentProf.guardianName;
+        document.getElementById("guardianOccupation").value = studentProf.fatherOccupation;
+        document.getElementById("guardianContactNumber").value = studentProf.guardianContactNum;
+        document.getElementById("guardianAddress").value = studentProf.guardianAddress;
+
+
         document.getElementById("lastGradeLevelCompleted").value = studentProf.currentGradeLevel ? studentProf.currentGradeLevel.levelName : 'None';
         document.getElementById("lastMadrasaYearCompleted").value = studentProf.lastMadrasaYearCompleted;
         document.getElementById("madrasaNameLastAttended").value = studentProf.madrasaName;

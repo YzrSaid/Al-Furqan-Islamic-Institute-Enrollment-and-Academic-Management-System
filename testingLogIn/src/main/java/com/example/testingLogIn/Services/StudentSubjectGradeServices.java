@@ -106,7 +106,7 @@ public class StudentSubjectGradeServices {
                             studGrade.getSection().getSectionName()+" : "+
                             studGrade.getSemester().getSchoolYear().getSchoolYear()+"-"+studGrade.getSemester().getSem()+ " sem";
                     if(!subjectStudGrades.containsKey(gradeLevelAndSectionSem))
-                        subjectStudGrades.put(gradeLevelAndSectionSem, new ArrayList<StudentSubjectGradeDTO>());
+                        subjectStudGrades.put(gradeLevelAndSectionSem, new ArrayList<>());
                     subjectStudGrades.get(gradeLevelAndSectionSem).add(studGrade.DTOmapper());
                 });
         

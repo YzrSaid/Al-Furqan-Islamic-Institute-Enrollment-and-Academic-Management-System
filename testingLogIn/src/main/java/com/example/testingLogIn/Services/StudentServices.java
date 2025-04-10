@@ -77,6 +77,7 @@ public class StudentServices {
                                     .barangay(student.getAddress().getBarangay())
                                     .city(student.getAddress().getCity())
                                     .studentBalance(0)
+
                                     .motherName(student.getMotherName())
                                     .motherOccupation(student.getMotherOccupation())
                                     .fatherName(student.getFatherName())
@@ -84,6 +85,8 @@ public class StudentServices {
                                     .guardianName(student.getGuardianName())
                                     .guardianAddress(student.getGuardianAddress())
                                     .guardianContactNum(student.getGuardianContactNum())
+                                    .guardianOccupation(student.getGuardianOccupation())
+
                                     .status(StudentStatus.NEW)
                                     .isNew(true)
                                     .isNotDeleted(true)
@@ -154,6 +157,7 @@ public class StudentServices {
             toUpdate.setGuardianName(stud.getGuardianName());
             toUpdate.setGuardianAddress(stud.getGuardianAddress());
             toUpdate.setGuardianContactNum(stud.getGuardianContactNum());
+            toUpdate.setGuardianOccupation(stud.getGuardianOccupation());
             
             toUpdate.setScholar(stud.isScholar());
             toUpdate.setTransferee(stud.isTransferee());

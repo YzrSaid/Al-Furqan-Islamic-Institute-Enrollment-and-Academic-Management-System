@@ -143,30 +143,30 @@
                         <h6>Father's Information</h6>
                         <div class="student-form-group">
                             <label for="fatherName">Name:</label>
-                            <input type="text" id="studfatherName">
+                            <input type="text" id="fatherName">
 
                             <label for="fatherOccupation">Occupation:</label>
-                            <input type="text" id="studfatherOccupation">
+                            <input type="text" id="fatherOccupation">
                         </div> <br>
                     </div>
                     <div>
                         <h6>Mother's Information</h6>
                         <div class="student-form-group">
                             <label for="motherName">Name:</label>
-                            <input type="text" id="studmotherName">
+                            <input type="text" id="motherName">
 
                             <label for="motherOccupation">Occupation:</label>
-                            <input type="text" id="studmotherOccupation">
+                            <input type="text" id="motherOccupation">
                         </div> <br>
                     </div>
 
                     <h6>Guardian's Information</h6>
                     <div class="student-form-group">
                         <label for="guardianName">Name:</label>
-                        <input type="text" id="studguardianName">
+                        <input type="text" id="guardianName">
 
                         <label for="guardianOccupation">Occupation:</label>
-                        <input type="text" id="studguardianOccupation">
+                        <input type="text" id="guardianOccupation">
                     </div> <br>
 
                     <div class="student-form-group">
@@ -358,94 +358,44 @@
                         </div>
                     </div>
 
-                    <div class="container-two">
+                    <div id="grades-container" class="container-two">
                         <div class="column-main">
                             <div class="table-container">
                                 <div style="display: flex; justify-content: space-between;">
                                     <div style="display: flex; gap: 8px;">
                                         <label>School Year:</label>
-                                        <h6 id="sy">2025-2026</h6>
-                                    </div>
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>Semester:</label>
-                                        <h6 id="sem">1st Semester</h6>
+                                        <h6 id="sy">"Grade 1 - Hagunoy : 2026-2027-First sem"</h6>
                                     </div>
                                 </div>
                                 <table class="mini-table" id="grades-table">
                                     <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                            <th>Remarks</th>
-                                        </tr>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Grade</th>
+                                        <th>Remarks</th>
+                                    </tr>
                                     </thead>
 
                                     <tbody>
-                                        <tr>
-                                            <td>English</td>
-                                            <td>78</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="grade-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <tr>
+                                        <td>English</td>
+                                        <td>78</td>
+                                        <td>
+                                            <div class="status-container">
+                                                <div class="status" id="grade-remarks">Pass</div>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                        <tr id="average-row">
-                                            <td>Average</td>
-                                            <td>90</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="average-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="column-main">
-                            <div class="table-container">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>School Year:</label>
-                                        <h6 id="sy">2025-2026</h6>
-                                    </div>
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>Semester:</label>
-                                        <h6 id="sem">1st Semester</h6>
-                                    </div>
-                                </div>
-                                <table class="mini-table" id="grades-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                            <th>Remarks</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <td>English</td>
-                                            <td>78</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="grade-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr id="average-row">
-                                            <td>Average</td>
-                                            <td>90</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="average-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <tr id="average-row">
+                                        <td>Average</td>
+                                        <td>90</td>
+                                        <td>
+                                            <div class="status-container">
+                                                <div class="status" id="average-remarks">Pass</div>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -606,13 +556,66 @@
         document.getElementById("gender").value = student.gender;
         document.getElementById("birthdate").value = student.birthdate;
         document.getElementById("placeOfBirth").value = student.birthPlace;
-        document.getElementById("studfatherName").value = student.fatherName;
-        document.getElementById("studfatherOccupation").value = student.fatherOccupation;
-        document.getElementById("studmotherName").value = student.motherName;
-        document.getElementById("studmotherOccupation").value = student.motherOccupation;
+
+        document.getElementById("fatherName").value = student.fatherName;
+        document.getElementById("fatherOccupation").value = student.fatherOccupation;
+        document.getElementById("motherName").value = student.motherName;
+        document.getElementById("motherOccupation").value = student.motherOccupation;
+        document.getElementById("guardianName").value = student.guardianName;
+        document.getElementById("guardianOccupation").value = student.fatherOccupation;
+        document.getElementById("guardianContactNumber").value = student.guardianContactNum;
+        document.getElementById("guardianAddress").value = student.guardianAddress;
+
         document.getElementById("street").value = student.address.street;
         document.getElementById("barangay").value = student.address.barangay;
         document.getElementById("city").value = student.address.city;
+        document.getElementById("lastGradeLevelCompleted").value = student.currentGradeLevel ? student.currentGradeLevel.levelName : 'None';
+        document.getElementById("lastMadrasaYearCompleted").value = student.lastMadrasaYearCompleted;
+        document.getElementById("madrasaNameLastAttended").value = student.madrasaName;
+        document.getElementById("madrasaAddress").value = student.madrasaAddress;
+        fetchTransRequirements("transReqRecord", student.transfereeRequirements);
+
+        setStudentGrades(student.studentId);
+    }
+
+    async function setStudentGrades(studentId){
+        const response = await fetch(`/student-grades/student/${studentId}`);
+        if(!response.ok){return;}
+        const grades = await response.json();
+
+        console.log(grades);
+    }
+
+    function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
+        fetch("/trans-req/all")
+            .then(response => response.json())
+            .then(data => {
+                const reqContainer = document.getElementById(divId);
+                reqContainer.innerHTML = "";
+                data.forEach(transReq => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("checkbox-each");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `transReq-${transReq.levelId}`;
+                    checkbox.name = "transferRequirements";
+                    checkbox.value = transReq.id;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `transReq-${transReq.idd}`;
+                    label.textContent = transReq.name;
+
+                    if (reqIds.includes(transReq.id)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    reqContainer.appendChild(paymentDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
     }
 </script>
 

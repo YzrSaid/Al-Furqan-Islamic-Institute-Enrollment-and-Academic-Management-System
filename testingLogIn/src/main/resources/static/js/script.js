@@ -835,12 +835,12 @@ document.addEventListener("DOMContentLoaded", function () {
           closeConfirmationModal();
         }
         break;
-//      case "deleteFee":
-//        deleteFee(selectedPaymentName);
-//        break;
-//      case "savePaymentTrans":
-//        savePaymentTrans();
-//        break;
+      //      case "deleteFee":
+      //        deleteFee(selectedPaymentName);
+      //        break;
+      //      case "savePaymentTrans":
+      //        savePaymentTrans();
+      //        break;
       case "savePayment":
         // This case is for adding payment
         if (!validateForm("addPaymentModal")) {
@@ -927,21 +927,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const modal = document.getElementById("successModal");
     const modalMessage = document.getElementById("successModalMessage");
     const overlay = document.getElementById("successModalOverlay");
-  
+
     if (modal && modalMessage && overlay) {
       modalMessage.innerHTML = message;
-  
+
       modal.style.display = "flex";
       modal.style.flexDirection = "column";
       modal.style.justifyContent = "center";
       modal.style.alignItems = "center";
-  
+
       overlay.style.display = "flex";
-  
+
       setTimeout(() => {
         modal.style.display = "none";
         overlay.style.display = "none";
-  
+
         if (
           message ===
           "✅ Account has been created successfully! This record will be sent for approval."
@@ -957,7 +957,6 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     }
   };
-  
 
   document.querySelectorAll("[data-close-modal]").forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -1008,7 +1007,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const modalId = target.getAttribute("data-open-modal");
       const message = target.getAttribute("data-message") || "";
       const action = target.getAttribute("data-action") || "";
-      
+
       document
         .getElementById("confirmAction")
         .setAttribute("data-confirm-action", action);
@@ -1516,7 +1515,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const transfereeInputs = transfereeFields.querySelectorAll("input");
   if (!transfereeCheckbox || !transfereeFields || !transfereeInputs) return;
 
-
   // Toggle visibility and readonly state
   transfereeCheckbox.addEventListener("change", () => {
     if (transfereeCheckbox.checked) {
@@ -1862,22 +1860,46 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-
 //  This code is for scroling in the sidebar issue
 document.addEventListener("DOMContentLoaded", function () {
-    const sidebar = document.querySelector(".sidebar");
+  const modal = document.querySelector(".sidebar");
 
-    sidebar.addEventListener("wheel", function (e) {
-        const atTop = sidebar.scrollTop === 0;
-        const atBottom = Math.abs(sidebar.scrollHeight - sidebar.scrollTop - sidebar.clientHeight) < 1;
+  sidebar.addEventListener(
+    "wheel",
+    function (e) {
+      const atTop = sidebar.scrollTop === 0;
+      const atBottom =
+        Math.abs(
+          sidebar.scrollHeight - sidebar.scrollTop - sidebar.clientHeight
+        ) < 1;
 
-
-        if (
-            (e.deltaY < 0 && atTop) || // scrolling up at top
-            (e.deltaY > 0 && atBottom) // scrolling down at bottom
-        ) {
-            e.preventDefault(); // prevent scroll bubbling
-        }
-    }, { passive: false }); // passive: false is important to allow preventDefault()
+      if (
+        (e.deltaY < 0 && atTop) || // scrolling up at top
+        (e.deltaY > 0 && atBottom) // scrolling down at bottom
+      ) {
+        e.preventDefault(); // prevent scroll bubbling
+      }
+    },
+    { passive: false }
+  ); // passive: false is important to allow preventDefault()
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+  const scrollableElements = document.querySelectorAll(".scroll-lock");
+
+  scrollableElements.forEach((el) => {
+    el.addEventListener(
+      "wheel",
+      function (e) {
+        const atTop = el.scrollTop === 0;
+        const atBottom =
+          Math.abs(el.scrollHeight - el.scrollTop - el.clientHeight) < 1;
+
+        if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
+          e.preventDefault();
+        }
+      },
+      { passive: false }
+    );
+  });
+});

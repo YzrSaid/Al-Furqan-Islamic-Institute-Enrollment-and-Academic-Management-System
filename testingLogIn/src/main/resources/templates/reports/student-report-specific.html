@@ -358,9 +358,11 @@
                         </div>
                     </div>
 
-                    <div id="grades-container" class="container-two">
+
+                    <div id="grades-container">
 
                     </div>
+
             </div>
             </form>
         </div>
@@ -498,14 +500,14 @@
     document.addEventListener("DOMContentLoaded", function () {
         const path = window.location.pathname;
         const wordArray = (path.split("/"));
-        const studentName = ((wordArray[wordArray.length-1]));
+        const studentName = ((wordArray[wordArray.length - 1]));
         findStudent(studentName);
     });
 
-    async function findStudent(studentName){
+    async function findStudent(studentName) {
         const response = await fetch(`/students/find-student/name/${studentName}`);
-        if(!response.ok){alert("student record no found");}
-        const student =await response.json();
+        if (!response.ok) { alert("student record no found"); }
+        const student = await response.json();
 
         document.getElementById("stud-type").textContent = student.status;
         document.getElementById("transferee").textContent = (student.transferee === "true" || student.transferee) ? "YES" : "NO";
@@ -537,73 +539,95 @@
 
         setStudentGrades(student.studentId);
     }
-
-    async function setStudentGrades(studentId){
+    async function setStudentGrades(studentId) {
         const response = await fetch(`/student-grades/student/${studentId}`);
-        if(!response.ok){return;}
+        if (!response.ok) { return; }
         const grades = await response.json();
 
         const gradesview = document.getElementById("grades-container");
-        grades.forEach(sem => {
-            var gradesRow =``;
-            var totalGrade=0;
-            var count = 0;
-            sem.grades.forEach(grade =>{
-                totalGrade+=grade.subjectGrade;
-                count++;
-                gradesRow +=`
-                <tr>
-                    <td>${grade.subjectName}</td>
-                    <td>${grade.subjectGrade ? grade.subjectGrade : "N/A"}</td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="grade-remarks">${grade.subjectGrade > 49 ? "PASS" :  "FAILED"}</div>
-                        </div>
-                    </td>
-                </tr>`;
-            });
-            var average = totalGrade/count;
-            const row = document.createElement("div");
-            row.innerHTML = `
-                <div class="column-main">
-                <div class="table-container">
-                    <div style="display: flex; justify-content: space-between;">
-                        <div style="display: flex; gap: 8px;">
-                            <label>School Year:</label>
-                            <h6 id="sy">${sem.sectionSemester}</h6>
-                        </div>
-                        <div style="display: flex; gap: 8px;">
-                            <label>Level:</label>
-                            <h6>${sem.gradeSection}</h6>
-                        </div>
-                    </div>
-                    <table class="mini-table" id="grades-table">
-                        <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>Grade</th>
-                            <th>Remarks</th>
-                        </tr>
-                        </thead>
 
-                        <tbody>
-                        ${gradesRow}
-                        <tr id="average-row">
-                            <td>Average</td>
-                            <td>${average}</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status" id="average-remarks">${average > 49 ? "PASSED" : "FAILED"}</div>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+        grades.forEach(sem => {
+            let gradesRow = '';
+            let totalGrade = 0;
+            let count = 0;
+
+            // Loop through subjects and grades
+            sem.grades.forEach(grade => {
+                totalGrade += grade.subjectGrade;
+                count++;
+                gradesRow += `
+    <tr>
+      <td>${grade.subjectName}</td>
+      <td>${grade.subjectGrade ? grade.subjectGrade : "N/A"}</td>
+      <td>
+        <div class="status-container">
+          <div class="status" id="grade-remarks">  ${!grade.subjectGrade || grade.subjectGrade === "N/A" ? "" : grade.subjectGrade > 49 ? "PASS" : "FAILED"}</div>
+        </div>
+      </td>
+    </tr>`;
+            });
+
+            // Calculate average grade
+            const average = totalGrade / count;
+
+            // Use ternary operator to modify the semester text
+            const semesterFormatted = sem.sectionSemester.includes("First semester")
+                ? sem.sectionSemester.replace("First semester", "1st Sem")
+                : sem.sectionSemester.includes("Second semester")
+                    ? sem.sectionSemester.replace("Second semester", "2nd Sem")
+                    : sem.sectionSemester; // Keep the original if neither match
+
+            // Create a new div to hold the grade table
+            const row = document.createElement("div");
+            row.classList.add("column-main");
+
+            row.innerHTML = `
+  <div class="table-container">
+    <div style="display: flex; justify-content: space-between;">
+      <div class="grade-table-header">
+            <div>
+                <label>SY & Sem:</label>
+                <h6 id="sy">${semesterFormatted}</h6> <!-- Display the full School Year with formatted semester -->
+            </div>
+            <div>
+                <label>Level:</label>
+                <h6>${sem.gradeSection}</h6> <!-- Display Level -->
                 </div>
-            </div>`;
+      </div>
+    </div> <br>
+    <table class="mini-table" id="grades-table">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Grade</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${gradesRow}
+        <tr id="average-row">
+            <td>Average</td>
+        <td>${average}</td>
+        <td>
+            <div class="status-container">
+                <div class="status">
+                    <div class="average-remarks"> ${average === "N/A" ? "" : (average > 49 ? "PASSED" : "FAILED")}</div>
+                </div>
+            </div>
+        </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>`;
+
+            // Append this row to the grades container
             gradesview.appendChild(row);
         });
+
     }
+
+
 
     function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
         fetch("/trans-req/all")

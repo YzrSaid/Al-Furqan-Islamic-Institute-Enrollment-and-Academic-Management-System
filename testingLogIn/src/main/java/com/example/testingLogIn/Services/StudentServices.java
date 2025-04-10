@@ -45,6 +45,11 @@ public class StudentServices {
         this.discountsServices = discountsServices;
     }
 
+    public StudentDTO getStudentBtName(String studentName){
+        studentName = NonModelServices.forLikeOperator(studentName);
+        return studentRepo.findByName(studentName).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
+    }
+
     public boolean addStudent(StudentDTO student){
         GradeLevel gradeLevel = null;
         if(student.getLastGradeLevelId() != null)
@@ -97,12 +102,6 @@ public class StudentServices {
                 CompletableFuture.runAsync(() ->transReqServices.addingStudentRequirements(newSavedStudent.getStudentId(),student.getTransfereeRequirements()));
             return true;
         }
-    }
-    
-    public List<StudentDTO> getAllStudent(){
-        return studentRepo.findByIsNotDeletedTrue().stream()
-                            .map(Student::DTOmapper)
-                            .toList();
     }
     
     public List<StudentDTO> getNewStudents(){

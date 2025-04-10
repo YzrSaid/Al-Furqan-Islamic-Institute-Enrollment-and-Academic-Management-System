@@ -77,7 +77,7 @@
 
                             <div class="half-other-info" id="transferee-row">
                                 <label for="type">Transferee:</label>
-                                <h6>NO</h6>
+                                <h6 id="transferee">YES</h6>
                             </div>
                         </div>
                     </div>
@@ -598,7 +598,31 @@
         const path = window.location.pathname;
         const wordArray = (path.split("/"));
         const studentName = ((wordArray[wordArray.length-1]));
+        findStudent(studentName);
     });
+
+    async function findStudent(studentName){
+        const response = await fetch(`/students/find-student/name/${studentName}`);
+        if(!response.ok){alert("student record no found");}
+        const student =await response.json();
+
+        document.getElementById("stud-type").textContent = student.status;
+        document.getElementById("transferee").textContent = (student.transferee === "true" || student.transferee) ? "YES" : "NO";
+        document.getElementById("student-id").value = student.studentDisplayId;
+        document.getElementById("firstName").value = student.firstName;
+        document.getElementById("middleName").value = student.middleName;
+        document.getElementById("lastName").value = student.lastName;
+        document.getElementById("gender").value = student.gender;
+        document.getElementById("birthdate").value = student.birthdate;
+        document.getElementById("placeOfBirth").value = student.birthPlace;
+        document.getElementById("studfatherName").value = student.fatherName;
+        document.getElementById("studfatherOccupation").value = student.fatherOccupation;
+        document.getElementById("studmotherName").value = student.motherName;
+        document.getElementById("studmotherOccupation").value = student.motherOccupation;
+        document.getElementById("street").value = student.address.street;
+        document.getElementById("barangay").value = student.address.barangay;
+        document.getElementById("city").value = student.address.city;
+    }
 </script>
 
 </html>

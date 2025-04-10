@@ -30,7 +30,9 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
         @Param("lastName") String lastName,
         @Param("middleName") String middleName
     );
-    List<Student> findByIsNotDeletedTrue();
+
+    @Query("SELECT stud FROM Student stud WHERE LOWER(stud.fullName) LIKE :fullName")
+    Optional<Student> findByName(String fullName);
 
     Page<Student> findByIsNewTrue(Pageable pageable);//will replace the method below soon
     List<Student> findByIsNotDeletedTrueAndIsNewTrue();

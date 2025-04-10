@@ -359,47 +359,7 @@
                     </div>
 
                     <div id="grades-container" class="container-two">
-                        <div class="column-main">
-                            <div class="table-container">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>School Year:</label>
-                                        <h6 id="sy">"Grade 1 - Hagunoy : 2026-2027-First sem"</h6>
-                                    </div>
-                                </div>
-                                <table class="mini-table" id="grades-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Subject</th>
-                                        <th>Grade</th>
-                                        <th>Remarks</th>
-                                    </tr>
-                                    </thead>
 
-                                    <tbody>
-                                    <tr>
-                                        <td>English</td>
-                                        <td>78</td>
-                                        <td>
-                                            <div class="status-container">
-                                                <div class="status" id="grade-remarks">Pass</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr id="average-row">
-                                        <td>Average</td>
-                                        <td>90</td>
-                                        <td>
-                                            <div class="status-container">
-                                                <div class="status" id="average-remarks">Pass</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                     </div>
             </div>
             </form>
@@ -583,7 +543,66 @@
         if(!response.ok){return;}
         const grades = await response.json();
 
-        console.log(grades);
+        const gradesview = document.getElementById("grades-container");
+        grades.forEach(sem => {
+            var gradesRow =``;
+            var totalGrade=0;
+            var count = 0;
+            sem.grades.forEach(grade =>{
+                totalGrade+=grade.subjectGrade;
+                count++;
+                gradesRow +=`
+                <tr>
+                    <td>${grade.subjectName}</td>
+                    <td>${grade.subjectGrade ? grade.subjectGrade : "N/A"}</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status" id="grade-remarks">${grade.subjectGrade > 49 ? "PASS" :  "FAILED"}</div>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            var average = totalGrade/count;
+            const row = document.createElement("div");
+            row.innerHTML = `
+                <div class="column-main">
+                <div class="table-container">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div style="display: flex; gap: 8px;">
+                            <label>School Year:</label>
+                            <h6 id="sy">${sem.sectionSemester}</h6>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <label>Level:</label>
+                            <h6>${sem.gradeSection}</h6>
+                        </div>
+                    </div>
+                    <table class="mini-table" id="grades-table">
+                        <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                            <th>Remarks</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        ${gradesRow}
+                        <tr id="average-row">
+                            <td>Average</td>
+                            <td>${average}</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status" id="average-remarks">${average > 49 ? "PASSED" : "FAILED"}</div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>`;
+            gradesview.appendChild(row);
+        });
     }
 
     function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {

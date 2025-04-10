@@ -2,6 +2,8 @@ package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
 import java.util.List;
+
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,8 +41,15 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
 
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
             "JOIN sg.student s "+
-            "WHERE s.studentId = :studentId")
-    List<StudentSubjectGrade> getGradesByStudent(@Param("studentId") int studentId);
+            "WHERE s.studentId = :studentId " +
+            "AND sg.semester.sySemNumber = :sem")
+    List<StudentSubjectGrade> getGradesByStudent(@Param("studentId") int studentId, int sem);
+
+    @Query("SELECT sg.semester FROM StudentSubjectGrade sg "+
+            "JOIN sg.student s "+
+            "WHERE s.studentId = :studentId " +
+            "GROUP BY sg.semester")
+    List<SchoolYearSemester> getStudentSemAttended(int studentId);
 
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
             "JOIN sg.section sec "+

@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.ModelDTO.StudentGradesPerSem;
 import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import com.example.testingLogIn.Services.StudentSubjectGradeServices;
 
@@ -56,7 +57,7 @@ public class StudentSubjectGradeController {
     }
     
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<Map<String,List<StudentSubjectGradeDTO>>> getStudentGrades(@PathVariable int studentId){
+    public ResponseEntity<List<StudentGradesPerSem>> getStudentGrades(@PathVariable int studentId){
         try{
             return new ResponseEntity<>(ssgService.getStudentGradesBySemester(studentId),HttpStatus.OK);
         }catch(Exception e){

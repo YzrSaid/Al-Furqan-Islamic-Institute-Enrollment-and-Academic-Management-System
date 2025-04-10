@@ -30,7 +30,7 @@ public class GradeLevelControllers {
         }
     }
 
-    @GetMapping("")     //result is either string or a GradeLevelObject
+    @GetMapping("")
     public ResponseEntity<?> getByName(@RequestParam String name){
         try{
             return new ResponseEntity<>(gradeLevelServices.getByName(name),HttpStatus.OK);

@@ -89,9 +89,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (coverFile) {
       form.append("cover", coverFile);
     }
-  
+
+  console.log("Sending now");
     fetch("/website-config/update", {
-      method: "PUT",
+      method: "POST",
       body: form,
     })
       .then((response) => {

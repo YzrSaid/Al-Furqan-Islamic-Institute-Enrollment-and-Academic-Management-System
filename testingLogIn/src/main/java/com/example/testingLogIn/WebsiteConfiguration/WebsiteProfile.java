@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.Base64;
 
 @Data
@@ -18,5 +20,6 @@ public class WebsiteProfile {
     private String schoolEmail;
     private String schoolContact;
     private String themeColor;
-    private String logoBase64;
+    private MultipartFile logo;
+    private MultipartFile cover;
 }

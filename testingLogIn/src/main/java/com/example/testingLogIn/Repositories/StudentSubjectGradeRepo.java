@@ -21,7 +21,8 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             "JOIN sg.student stud "+
             "JOIN sg.section.level lvl "+
             "JOIN sg.semester sem "+
-            "WHERE stud.studentId = :studentId " +
+            "WHERE sg.isNotDeleted " +
+            "AND stud.studentId = :studentId " +
             "AND lvl.levelId = :gradeLevelId " +
             "GROUP BY sem " +
             "HAVING AVG(sg.subjectGrade) > 49" +
@@ -33,7 +34,8 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
             "JOIN sg.section sec "+
             "JOIN sg.semester s "+
-            "WHERE sec.number = :sectionId "+
+            "WHERE sg.isNotDeleted " +
+            "AND sec.number = :sectionId "+
             "AND s.sySemNumber = :semId")
     List<StudentSubjectGrade> getSectionGradesByCurrentSem(
             @Param("sectionId") int sectionId,
@@ -41,13 +43,15 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
 
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
             "JOIN sg.student s "+
-            "WHERE s.studentId = :studentId " +
+            "WHERE sg.isNotDeleted " +
+            "AND s.studentId = :studentId " +
             "AND sg.semester.sySemNumber = :sem")
     List<StudentSubjectGrade> getGradesByStudent(@Param("studentId") int studentId, int sem);
 
     @Query("SELECT sg.semester FROM StudentSubjectGrade sg "+
             "JOIN sg.student s "+
-            "WHERE s.studentId = :studentId " +
+            "WHERE sg.isNotDeleted " +
+            "AND s.studentId = :studentId " +
             "GROUP BY sg.semester")
     List<SchoolYearSemester> getStudentSemAttended(int studentId);
 
@@ -55,13 +59,15 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             "JOIN sg.section sec "+
             "JOIN sg.student s "+
             "JOIN sg.semester sem "+
-            "WHERE s.studentId = :studentId "+
+            "WHERE sg.isNotDeleted " +
+            "AND s.studentId = :studentId "+
             "AND sec.level.levelId = :levelId " +
             "ORDER BY sem DESC")
     List<StudentSubjectGrade> getGradesByStudentGradeLevel(@Param("studentId") int studentId,@Param("levelId") int levelid);
     
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
-            "WHERE sg.section.number = :sectionId "+
+            "WHERE sg.isNotDeleted "+
+            "AND sg.section.number = :sectionId " +
             "AND sg.subject.subjectNumber = :subjectId "+
             "AND sg.semester.sySemNumber = :semId")
     List<StudentSubjectGrade> getGradesBySectionSubjectSem(
@@ -70,7 +76,8 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             @Param("semId") int semId);
 
     @Query("SELECT COUNT(sg) FROM StudentSubjectGrade sg " +
-            "WHERE sg.subjectGrade IS NOT NULL " +
+            "WHERE sg.isNotDeleted " +
+            "AND sg.subjectGrade IS NOT NULL " +
             "AND sg.semester.sySemNumber = :semId "+
             "AND sg.section.number = :sectionId "+
             "AND sg.subject.subjectNumber = :subjectId")
@@ -78,4 +85,11 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             @Param("sectionId") int sectionId,
             @Param("subjectId") int subjectId,
             @Param("semId") int semId);
+
+    @Query("SELECT sub FROM StudentSubjectGrade sub " +
+            "JOIN sub.subject subj " +
+            "JOIN sub.semester sem " +
+            "WHERE subj.subjectNumber = :subjectId " +
+            "AND sem.sySemNumber = :semId")
+    List<StudentSubjectGrade> findBySemAndSubject(int subjectId, int semId);
 }

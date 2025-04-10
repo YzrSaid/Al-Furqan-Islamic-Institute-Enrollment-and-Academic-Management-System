@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,23 +34,41 @@ public class UIController {
     @Autowired
     private GradeLevelRepo gradeLevelRepo;
 
-    @PutMapping("/website-config/update")
-    public ResponseEntity<String> updateSchoolInterface(@RequestBody WebsiteProfile profile) throws FileNotFoundException {
+    @PostMapping("/website-config/update")
+    public ResponseEntity<String> updateSchoolInterface(@ModelAttribute WebsiteProfile profile) throws FileNotFoundException {
         try{
-            byte[] newPicBytes = Optional.ofNullable(profile.getLogoBase64()).map(b -> Base64.getDecoder().decode(profile.getLogoBase64())).orElse(null);
-            if(newPicBytes != null){
-                SchoolProfile schoolPhoto = schoolProfileRepo.findById("SchoolLogo").orElse(new SchoolProfile("SchoolLogo"));
-                schoolPhoto.setKey_value(newPicBytes);
+                byte[] newLogo = Optional.ofNullable(profile.getLogo()).map(logo -> {
+                    try {
+                        return logo.getBytes();
+                    } catch (IOException e) {
+                        return new byte[0];
+                    }
+                }).orElse(new byte[0]);
+                if(newLogo.length > 0){
+                    SchoolProfile schoolPhoto = schoolProfileRepo.findById("SchoolLogo").orElse(new SchoolProfile("SchoolLogo"));
+                    schoolPhoto.setKey_value(newLogo);
+                    schoolProfileRepo.save(schoolPhoto);
+                }
+
+            byte[] newCover = Optional.ofNullable(profile.getCover()).map(cover -> {
+                try {
+                    return cover.getBytes();
+                } catch (IOException e) {
+                    return new byte[0];
+                }
+            }).orElse(new byte[0]);
+            if(newCover.length > 0){
+                SchoolProfile schoolPhoto = schoolProfileRepo.findById("SchoolCover").orElse(new SchoolProfile("SchoolCover"));
+                schoolPhoto.setKey_value(newCover);
                 schoolProfileRepo.save(schoolPhoto);
             }
+
             if(profile.getGraduatingLevel() != null){
-                System.out.println(profile.getGraduatingLevel());
                 byte [] gradeLevelByte;
                 try(ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
                 ObjectOutputStream objectOut = new ObjectOutputStream(byteStream)){
                     GradeLevel glvl = gradeLevelRepo.findById(profile.getGraduatingLevel()).orElse(null);
                     assert glvl != null;
-                    System.out.println(glvl.getLevelName());
                     objectOut.writeObject(glvl);
                     gradeLevelByte = byteStream.toByteArray();
                     SchoolProfile schoolGraduatingLevel = schoolProfileRepo.findById("GraduatingLevel").orElse(new SchoolProfile("GraduatingLevel"));
@@ -81,8 +98,16 @@ public class UIController {
     }
 
     @GetMapping("/website-logo")
-    public ResponseEntity<byte[]> getDynamicImage() throws IOException {
-        byte[] imageBytes = schoolProfileRepo.findById("SchoolLogo").map(SchoolProfile::getKey_value).orElse(null);
+    public ResponseEntity<byte[]> getSchoolLogo() throws IOException {
+        byte[] imageBytes = schoolProfileRepo.findById("SchoolLogo").map(SchoolProfile::getKey_value).orElse(new byte[0]);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
+    }
+
+    @GetMapping("/website-cover")
+    public ResponseEntity<byte[]> getSchoolCover() throws IOException {
+        byte[] imageBytes = schoolProfileRepo.findById("SchoolCover").map(SchoolProfile::getKey_value).orElse(new byte[0]);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(imageBytes);

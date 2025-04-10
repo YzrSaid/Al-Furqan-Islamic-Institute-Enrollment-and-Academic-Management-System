@@ -1,14 +1,20 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.ModelDTO.SubjectDTO;
-import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Models.Section;
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Subject;
+import com.example.testingLogIn.Repositories.EnrollmentRepo;
+import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Repositories.SubjectRepo;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,12 +27,17 @@ public class SubjectServices {
     private final SubjectRepo subjectRepo;
     private final GradeLevelServices gradeLevelService;
     private final SectionServices sectionService;
+    private final EnrollmentRepo enrollmentRepo;
+    private final StudentSubjectGradeRepo ssgRepo;
+    private final sySemesterServices semServices;
 
-    @Autowired
-    public SubjectServices(SubjectRepo subjectRepo, GradeLevelServices gradeLevelService, SectionServices sectionService) {
+    public SubjectServices(SubjectRepo subjectRepo, GradeLevelServices gradeLevelService, SectionServices sectionService, EnrollmentRepo enrollmentRepo, StudentSubjectGradeRepo ssgRepo, sySemesterServices semServices) {
         this.subjectRepo = subjectRepo;
         this.gradeLevelService = gradeLevelService;
         this.sectionService = sectionService;
+        this.enrollmentRepo = enrollmentRepo;
+        this.ssgRepo = ssgRepo;
+        this.semServices = semServices;
     }
 
     public List<SubjectDTO> getSubjectByGrade(String gradeLevel){
@@ -66,17 +77,39 @@ public class SubjectServices {
                           .collect(Collectors.toList());
     }
             
-    public boolean addNewSubject(int levelId,String subjectName){
-        if(gradeLevelService.getGradeLevel(levelId) == null)
-            throw new NullPointerException("Grade Level Not Found");
+    public boolean addNewSubject(int levelId,String subjectName, boolean applyNow){
+        Optional.ofNullable(gradeLevelService.getGradeLevel(levelId)).orElseThrow(NullPointerException::new);
         
         if(!doesSubjectNameExist(levelId,subjectName)){
             Subject sub=new Subject();
             sub.setNotDeleted(true);
             sub.setGradeLevel(gradeLevelService.getGradeLevel(levelId));
             sub.setSubjectName(subjectName);
-            
+            sub.setCurrentlyActive(applyNow);
             subjectRepo.save(sub);
+
+            if(sub.isCurrentlyActive()){
+                SchoolYearSemester sem = semServices.getCurrentActive();
+                if(sem != null){
+                    int semId = sem.getSySemNumber();
+                    CompletableFuture.runAsync(()->{
+                        List<StudentSubjectGrade> studentGrades = new ArrayList<>();
+                        enrollmentRepo.getCurrentlyEnrolledToGrade(levelId,semId)
+                                .forEach(student ->{
+                                    studentGrades.add(StudentSubjectGrade.builder()
+                                                    .student(student)
+                                                    .section(student.getCurrentGradeSection())
+                                                    .subject(sub)
+                                                    .isNotDeleted(true)
+                                                    .subjectGrade(null)
+                                                    .isDropped(false)
+                                                    .semester(sem)
+                                            .build());
+                                });
+                        ssgRepo.saveAll(studentGrades);
+                    });
+                }
+            }
             
             return true;
         }else
@@ -92,30 +125,60 @@ public class SubjectServices {
     }
     
     public boolean updateSubjectDescription(SubjectDTO subject){
-        
-        Subject updatedSub = subjectRepo.findAll().stream()
-                                        .filter(sub -> sub.isNotDeleted() && 
-                                                sub.getSubjectNumber() == subject.getSubjectNumber())
-                                        .findFirst().orElse(null);
-        if(updatedSub != null){
+        Subject updatedSub = subjectRepo.findById(subject.getSubjectNumber()).orElseThrow(NullPointerException::new);
+        List<Subject> existing = subjectRepo.findByNameNotEqualId(subject.getSubjectName().toLowerCase(), subject.getSubjectNumber());
+        if(existing.isEmpty()){
+            boolean isNotActiveBefore = !updatedSub.isCurrentlyActive();
             updatedSub.setGradeLevel(gradeLevelService.getByName(subject.getGradeLevel()));
             updatedSub.setSubjectName(subject.getSubjectName());
+            updatedSub.setCurrentlyActive(subject.isWillApplyNow());
             subjectRepo.save(updatedSub);
+
+            if(isNotActiveBefore && subject.isWillApplyNow()){
+                SchoolYearSemester sem = semServices.getCurrentActive();
+                if(sem != null){
+                    int semId = sem.getSySemNumber();
+                    CompletableFuture.runAsync(()->{
+                        List<StudentSubjectGrade> studentGrades = new ArrayList<>();
+                        enrollmentRepo.getCurrentlyEnrolledToGrade(updatedSub.getGradeLevel().getLevelId(),semId)
+                                .forEach(student ->{
+                                    studentGrades.add(StudentSubjectGrade.builder()
+                                            .student(student)
+                                            .section(student.getCurrentGradeSection())
+                                            .subject(updatedSub)
+                                            .isNotDeleted(true)
+                                            .subjectGrade(null)
+                                            .isDropped(false)
+                                            .semester(sem)
+                                            .build());
+                                });
+                        ssgRepo.saveAll(studentGrades);
+                    });
+                }
+            }
             return true;
         }
-        
         return false;
     }
     
-    public boolean deleteSubject(int subjectNumber){
-        Subject todelete = subjectRepo.findById(subjectNumber).orElse(null);
-        
-        if(todelete != null){
-            todelete.setNotDeleted(false);
-            subjectRepo.save(todelete);
-            return true;
-        }else
-            return false;
+    public void deleteSubject(int subjectNumber){
+        Subject todelete = subjectRepo.findById(subjectNumber).orElseThrow(NullPointerException::new);
+        todelete.setNotDeleted(false);
+        subjectRepo.save(todelete);
+
+        if(todelete.isCurrentlyActive()){
+            SchoolYearSemester sem = semServices.getCurrentActive();
+            if(sem != null){
+                CompletableFuture.runAsync(()->{
+                    int semId = sem.getSySemNumber();
+                    List<StudentSubjectGrade> studentSubjectGrades = ssgRepo.findBySemAndSubject(todelete.getSubjectNumber(),semId);
+                    studentSubjectGrades.forEach(studGrade -> {
+                        studGrade.setNotDeleted(false);
+                    });
+                    ssgRepo.saveAll(studentSubjectGrades);
+                });
+            }
+        }
     }
      
     private SubjectDTO SubjectToSubjectDTO(Subject subject){

@@ -52,6 +52,8 @@ public class StudentSubjectGradeServices {
                                                             .subject(subject)
                                                             .section(enrollment.getSectionToEnroll())
                                                             .semester(enrollment.getSYSemester())
+                                                            .isNotDeleted(true)
+                                                            .isDropped(false)
                                                             .subjectGrade(null)
                                                             .build();
                         ssgRepo.save(studSubGrade);

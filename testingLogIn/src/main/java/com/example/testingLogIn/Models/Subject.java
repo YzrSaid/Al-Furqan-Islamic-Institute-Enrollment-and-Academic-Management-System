@@ -22,6 +22,7 @@ public class Subject {
     private GradeLevel gradeLevel;
     private String subjectName;
     private boolean isNotDeleted;
+    private boolean isCurrentlyActive;
     
     public SubjectDTO mapper(){
         return SubjectDTO.builder()
@@ -29,6 +30,7 @@ public class Subject {
                           .gradeLevel(gradeLevel.getLevelName())
                           .subjectName(subjectName)
                           .isNotDeleted(isNotDeleted)
+                          .willApplyNow(isCurrentlyActive)
                           .build();
     }
 }

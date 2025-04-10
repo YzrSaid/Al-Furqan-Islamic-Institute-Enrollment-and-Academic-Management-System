@@ -42,11 +42,10 @@ public class EnrollmentServices {
     private final DiscountsServices discService;
     private final SectionStudentCountServices sscService;
     private final PaymentRecordService paymentService;
-    private final TransfereeReqRepo transReqRepo;
     private final DistributableServices distributableServices;
 
     @Autowired
-    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, TransfereeReqRepo transReqRepo, DistributableServices distributableServices) {
+    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService,  DistributableServices distributableServices) {
         this.enrollmentRepo = enrollmentRepo;
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
@@ -59,7 +58,6 @@ public class EnrollmentServices {
         this.discService = discService;
         this.sscService = sscService;
         this.paymentService = paymentService;
-        this.transReqRepo = transReqRepo;
         this.distributableServices = distributableServices;
     }
 

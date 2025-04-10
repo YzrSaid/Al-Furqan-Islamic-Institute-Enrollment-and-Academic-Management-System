@@ -49,7 +49,7 @@ public class StudentSubjectGrade {
     @JoinColumn(name = "semester")
     private SchoolYearSemester semester;
     private Integer subjectGrade;
-
+    private boolean isNotDeleted;
     private boolean isDropped;
     
     public StudentSubjectGradeDTO DTOmapper(){

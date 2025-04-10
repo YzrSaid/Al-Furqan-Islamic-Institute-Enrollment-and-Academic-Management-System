@@ -4130,9 +4130,10 @@ td {
   font-size: 14px;
 }
 
-.stud-info-section th,
+.stud-info-section td,
 .start-info-session td {
   text-align: start !important;
+  padding: 12px;
 }
 
 .grade-row td,
@@ -4140,9 +4141,11 @@ td {
   border: none;
   text-align: start !important;
   font-size: 14px;
+  padding: 12px;
   background-color: transparent;
   color: #000;
 }
+
 /* .grade-row {
   text-align: center !important;
 } */
@@ -4207,8 +4210,8 @@ th {
 
 .styled-popover {
   position: absolute;
-  top: 45%; 
-  left: 60%; 
+  top: 45%;
+  left: 60%;
   padding: 1rem;
   border-radius: 8px;
   background-color: #ffffff;

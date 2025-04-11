@@ -131,8 +131,29 @@
 
                             <div class="half-other-info" id="scholar-row">
                                 <label for="type">Scholar:</label>
-                                <h6>YES</h6>
+                                <h6>Yes</h6>
                             </div>
+
+                            <!-- <div class="checkbox">
+                                <label for="scholar">Scholar:</label>
+                                <h6>Yes</h6>
+
+                                <input type="checkbox" id="scholar">
+
+                                <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png"
+                                        popovertarget="my-popover" alt="dropdown-icon">
+                                </button>
+                              
+                                <div popover id="my-popover" name="add-discount" class="styled-popover">
+                                    <h6>Scholarships:</h6>
+                                </div>
+
+                                <div class="action-container">
+                                    <div class="action">
+                                        <img src="/images/icons/compose.png" alt="edit-btn">
+                                    </div>
+                                </div>
+                            </div> -->
 
                             <div class="half-other-info" id="transferee-row">
                                 <label for="transferee">Transferee:</label>
@@ -236,6 +257,27 @@
                         <input type="text" id="guardianAddress">
                     </div> <br>
 
+                    <div class="scholar-section">
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>For Scholars Only</h2>
+                        </div>
+
+                        <!-- Transferee Requirements Section -->
+                        <div class="scholar-discount">
+                            <h4>Scholarship Type</h4>
+                            <div id="scholarDiscountRecord" class="checkbox-scholar-discounts-group">
+                                <!--naka check na daan ang mga filled-->
+                            </div>
+
+                            <!-- Update Button -->
+                            <div style="margin-top: 15px;">
+                                <button type="button" data-action="editGradeLevel"
+                                    data-message="Are you sure you want to update the scholar discounts?"
+                                    onclick="updateRequirements()" class="btn-confirm">Update</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="transferee-section">
                         <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
                             <h2>For Transferees Only</h2>
@@ -251,7 +293,7 @@
                             <!-- Update Button -->
                             <div style="margin-top: 15px;">
                                 <button type="button" data-action="editGradeLevel"
-                                    data-message="Are you sure you want to update this grade level?"
+                                    data-message="Are you sure you want to update the transferee requirements?"
                                     onclick="updateRequirements()" class="btn-confirm">Update</button>
                             </div>
                         </div>
@@ -273,182 +315,6 @@
                             <label for="madrasaAddress">Madrasa Address:</label>
                             <input type="text" id="madrasaAddress">
                         </div> <br>
-                    </div>
-
-                    <div style="display: flex; gap: 365px;">
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                            <h2>Financial Information</h2>
-                        </div>
-
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                            <h2>Book Distribution</h2>
-                        </div>
-                    </div>
-
-                    <div class="container-two">
-                        <div class="column-main">
-                            <p>Recent Transactions</p>
-                            <div class="table-container">
-                                <table class="mini-table" id="payment-table main-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Book</td>
-                                            <td><span>P</span>2,000</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="status-payments">Unpaid</div>
-                                                </div>
-                                            </td>
-                                            <td>February 12, 2025</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin: 0px;">
-                                <div style="display: flex; gap: 10px;">
-                                    <h6>Balance:</h6>
-                                    <h6>1, 000</h6>
-                                </div>
-                                <button id="transaction-record-btn">View Record</button>
-                            </div>
-
-                        </div>
-
-                        <div class="column-main">
-                            <p>Recent Distributions</p>
-                            <div class="table-container">
-                                <table class="mini-table" id="distribution-table main-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Grade Level</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Grade 1</td>
-                                            <td>February 12, 2025</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="status-distribution">Completed</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div> <br>
-
-                    <div>
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                            <h2>Grades</h2>
-                        </div>
-                    </div>
-
-                    <div class="container-two">
-                        <div class="column-main">
-                            <div class="table-container">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>School Year:</label>
-                                        <h6 id="sy">2025-2026</h6>
-                                    </div>
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>Semester:</label>
-                                        <h6 id="sem">1st Semester</h6>
-                                    </div>
-                                </div>
-                                <table class="mini-table" id="grades-table main-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                            <th>Remarks</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <td>English</td>
-                                            <td>78</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="grade-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr id="average-row">
-                                            <td>Average</td>
-                                            <td>90</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="average-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="column-main">
-                            <div class="table-container">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>School Year:</label>
-                                        <h6 id="sy">2025-2026</h6>
-                                    </div>
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>Semester:</label>
-                                        <h6 id="sem">1st Semester</h6>
-                                    </div>
-                                </div>
-                                <table class="mini-table" id="grades-table main-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                            <th>Remarks</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <td>English</td>
-                                            <td>78</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="grade-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr id="average-row">
-                                            <td>Average</td>
-                                            <td>90</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="average-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="modal-buttons">
@@ -723,7 +589,8 @@
                         <label for="scholar">Scholar:</label>
                         <input type="checkbox" id="scholar">
 
-                        <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png" popovertarget="my-popover" alt="dropdown-icon">
+                        <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png"
+                                popovertarget="my-popover" alt="dropdown-icon">
                         </button>
 
                         <!-- Popover lives right below the button now -->
@@ -770,7 +637,7 @@
                     <input type="text" id="studmotherName" required>
 
                     <label for="studmotherOccupation">Occupation:</label>
-                    <input type="text" id="studmotherOccupation"  class="input-occupation">
+                    <input type="text" id="studmotherOccupation" class="input-occupation">
                 </div> <br>
 
                 <h6>Guardian's Information</h6>
@@ -779,7 +646,7 @@
                     <input type="text" id="studguardianName">
 
                     <label for="studguardianOccupation">Occupation:</label>
-                    <input type="text" id="studguardianOccupation"  class="input-occupation">
+                    <input type="text" id="studguardianOccupation" class="input-occupation">
                 </div> <br>
 
                 <div class="student-form-group">
@@ -1504,7 +1371,7 @@
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
-                                <div class="status ${statusClass}" id="status-registration">${enr.enrollmentStatus}</div>
+                               <div class="status ${statusClass}" id="status-registration">${displayStatus}</div>
                                 <button class="dropdown-status-btn">
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
@@ -1705,7 +1572,7 @@
         }
     }
 
-    function fetchDiscounts(name = "add-discount",discIds = []) {
+    function fetchDiscounts(name = "add-discount", discIds = []) {
         fetch("/discounts/all")
             .then(response => response.json())
             .then(data => {
@@ -1725,7 +1592,8 @@
                     label.textContent = disc.discountName;
 
                     if (discIds.includes(disc.discountId)) {
-                        checkbox.checked = true;}
+                        checkbox.checked = true;
+                    }
 
                     paymentDiv.appendChild(checkbox);
                     paymentDiv.appendChild(label);
@@ -1770,7 +1638,7 @@
     var toUpdateRecStudent;
     async function displayStud(studentId) {
         const response = await fetch(`/students/find-student/${studentId}`);
-        if(!response.ok){return;}
+        if (!response.ok) { return; }
         const studentProf = await response.json();
         toUpdateRecStudent = studentId;
         document.getElementById("stud-type").textContent = studentProf.status;
@@ -1802,9 +1670,11 @@
         document.getElementById("madrasaAddress").value = studentProf.madrasaAddress;
         fetchTransRequirements("transReqRecord", studentProf.transfereeRequirements);
         fetchDiscounts(studentProf.discountsAvailed);
+
+        toggleTransfereeSection();
     }
 
-    function updateRequirements(){
+    function updateRequirements() {
         const selectedTransReq = [];
         document.querySelectorAll("#transReqRecord input[name='transferRequirements']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
@@ -1818,20 +1688,20 @@
                 ids: selectedTransReq
             }),
         })
-        .then(response => {
-            return response.text().then(message => {
-                if (response.ok) {
-                    alert("Na update rapud baya");
-                    displayStud(toUpdateRecStudent);
-                    goList();
-                } else {
-                    showErrorModal(message); // Show the error message if the response is not ok
-                }
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        alert("Na update rapud baya");
+                        displayStud(toUpdateRecStudent);
+                        goList();
+                    } else {
+                        showErrorModal(message); // Show the error message if the response is not ok
+                    }
+                });
+            })
+            .catch(error => {
+                showErrorModal(error.message || "An unexpected error occurred."); // Show an error modal in case of failure
             });
-        })
-        .catch(error => {
-            showErrorModal(error.message || "An unexpected error occurred."); // Show an error modal in case of failure
-        });
     }
 
     function updatePagination(status, currentPage, pageSize, totalPages) {
@@ -1890,11 +1760,6 @@
             modal.style.visibility = "visible";
             modal.style.opacity = "1";
             modal.style.pointerEvents = "auto";
-        }
-
-        // Call toggleTransfereeSection only if it's the studentInformationModal
-        if (modalId === "studentInformationModal") {
-            toggleTransfereeSection(modalId);
         }
     }
 

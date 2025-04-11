@@ -45,16 +45,24 @@ body {
 #school-logo {
   height: 150px;
   width: 150px;
+  border-radius: 50%;
 }
 
 #left-login-block {
   background-color: rgb(101, 224, 104);
   width: 60%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
 }
+
 #left-login-block img {
-  opacity: 30%;
+  opacity: 0.3;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
+
 #login-form {
   margin-top: 5%;
   display: flex;
@@ -1261,9 +1269,8 @@ table td {
 }
 
 .mini-table {
-    width: 100%;
+  width: 100%;
 }
-
 
 .recent-transaction-table-mini {
 }
@@ -1757,13 +1764,26 @@ table td {
 .half-stud-info-small input {
   width: 120px;
 }
-#transfereemotherOccupation,
-#transfereefatherOccupation,
-#transfereeguardianOccupation,
-#studmotherOccupation,
-#studfatherOccupation,
-#studguardianOccupation {
-  width: 520px;
+
+.input-occupation {
+    width: 520px;
+    background-color: #007bff;
+}
+
+.student-form-group #guardianOccupation,
+.student-form-group #motherOccupation,
+.student-form-group #fatherOccupation {
+    width: 520px;
+}
+
+
+#transfereemotherName,
+#transfereefatherName,
+#transfereeguardianName,
+#studmotherName,
+#studfatherName,
+#studguardianName {
+  width: 700px;
 }
 
 .eighty {
@@ -1773,8 +1793,9 @@ table td {
 #transfereefatherAddress,
 #transfereemotherAddress,
 #transfereeguardianAddress,
-#studguardianAddress {
-  width: 335px;
+#studguardianAddress,
+#guardianAddress {
+  width: 420px;
 }
 
 #madrasaNameLastAttended,
@@ -1785,22 +1806,16 @@ table td {
 #transfereefatherContactNumber,
 #transfereemotherContactNumber,
 #transfereeguardianContactNumber,
-#studguardianContactNumber {
-  width: 360px;
+#studguardianContactNumber,
+#guardianContactNumber {
+  width: 300px;
 }
 
 .student-form-group .place-of-birth {
   width: 850px;
 }
 
-#transfereemotherName,
-#transfereefatherName,
-#transfereeguardianName,
-#studmotherName,
-#studfatherName,
-#studguardianName {
-  width: 700px;
-}
+
 
 .student-form-group #studstreet,
 .student-form-group #studbarangay,
@@ -2595,7 +2610,14 @@ input[type="checkbox"] {
   display: flex;
   gap: 20px;
 }
-.student-form-group input {
+.student-form-group #firstName,
+.student-form-group #lastName,
+.student-form-group #middleName,
+.student-form-group #street,
+.student-form-group #city,
+.student-form-group #barangay,
+.student-form-group #lastGradeLevelCompleted,
+.student-form-group #lastMadrasaYearCompleted {
   width: 200px;
 }
 
@@ -2858,7 +2880,7 @@ input[type="checkbox"] {
 }
 
 .average-remarks {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 #view-grade-average {
@@ -3379,31 +3401,31 @@ td[rowspan] {
   color: white;
 }
 .grade-table-header {
-    display: flex;
-    flex-direction: column; /* Make the header a column */
-    align-items: flex-start; /* Align items to the start of the column */
-    width: 100%;
-    gap: 10px;
+  display: flex;
+  flex-direction: column; /* Make the header a column */
+  align-items: flex-start; /* Align items to the start of the column */
+  width: 100%;
+  gap: 10px;
 }
 
 .grade-table-header > div {
-    display: flex; 
-    width: 100%; 
-    gap: 15px;
-    align-items: center;
+  display: flex;
+  width: 100%;
+  gap: 15px;
+  align-items: center;
 }
 
 .grade-table-header h6 {
-    font-size: 14px;
-    margin: 0;
+  font-size: 14px;
+  margin: 0;
 }
 .grade-table-header label {
-    font-size: 14px;
-    font-weight: bold;
+  font-size: 14px;
+  font-weight: bold;
 }
 .mini-table h6 {
-    font-size: 4px;
-    background-color: #007bff;
+  font-size: 4px;
+  background-color: #007bff;
 }
 
 #status-type {

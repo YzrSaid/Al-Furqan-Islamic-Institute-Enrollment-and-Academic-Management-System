@@ -498,28 +498,36 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (confirmActionButton) {
-      const action = confirmActionButton.getAttribute("data-confirm-action");
-
-      if (action === "updateSchoolSettings") {
-        // Reset button text and mode
-        const editBtn = document.getElementById("editButton");
-        if (editBtn) {
-          editBtn.textContent = "Edit";
-          editBtn.setAttribute("data-mode", "edit");
+        const action = confirmActionButton.getAttribute("data-confirm-action");
+      
+        if (action === "updateSchoolSettings") {
+          // ✅ Validate first
+          if (!validateForm("schoolSettingsForm")) {
+            showErrorModal("⚠️ Please fill in all required fields!");
+            return;
+          }
+      
+          // ✅ If passed, update settings
+          updateSchoolSettings();
+      
+          // ✅ Now do UI stuff
+          const editBtn = document.getElementById("editButton");
+          if (editBtn) {
+            editBtn.textContent = "Edit";
+            editBtn.setAttribute("data-mode", "edit");
+          }
+      
+          inputs.forEach((input) => {
+            input.disabled = true;
+            input.readOnly = true;
+          });
+      
+          // ✅ Hide modal
+          if (typeof toggleModal === "function") {
+            toggleModal("confirmationModal", false);
+          }
         }
-
-        // Disable inputs
-        inputs.forEach((input) => {
-          input.disabled = true;
-          input.readOnly = true;
-        });
-
-        // Hide modal if needed
-        if (typeof toggleModal === "function") {
-          toggleModal("confirmationModal", false);
-        }
-      }
-    }
+      }      
   });
 
   // Handle the cancel action when the user cancels in the modal
@@ -565,13 +573,8 @@ document.addEventListener("DOMContentLoaded", function () {
     switch (action) {
       case "updateSchoolSettings":
         // This is for updating/editing the school settings
-        if (!validateForm("schoolSettingsForm")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
           updateSchoolSettings();
           closeConfirmationModal();
-        }
         break;
       case "editTransfereeReq":
         updateTransfRequirement();
@@ -1084,7 +1087,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Handle Confirm Action in Confirmation Modal
     if (target.id === "confirmAction") {
       const action = target.getAttribute("data-confirm-action");
-      alert(action);
       handleConfirmAction(action, event);
 
       // Only close confirmation modal if validation passes

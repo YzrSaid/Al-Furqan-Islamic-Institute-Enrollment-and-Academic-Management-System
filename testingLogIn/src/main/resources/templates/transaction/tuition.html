@@ -129,7 +129,7 @@
                                 <option value="balance" selected>Current Balance</option>
                                 <option value="gradelevel">Grade Level</option>
                                 <option value="studentname">Student Name</option>
-                                <option value="studentid">Student Id</option>
+<!--                                <option value="status">Status</option>-->
                             </select>
                         </div>
                     </div>
@@ -814,11 +814,13 @@
         var studPageSize;
         function viewStudents(pageNo = 1, pageSize = 1) {
             studPageNo = pageNo;
-            studPageSize = pageSize;
+            studPageSize = 10;
             const orderBy = document.getElementById("view-stud-by-select").value;
             const search = document.getElementById("search-student").value;
             const studentsTable = document.querySelector("#table-ni-martin tbody");
-            fetch(`/students/all/s?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${orderBy}`)
+            var url = `/students/all?q=${search}&pageNo=${pageNo}&pageSize=10&sortBy=${orderBy}`;
+            console.log(url);
+            fetch(url)
                 .then(res => res.json())
                 .then(data => {
                     if (data.content.length === 0) { return; }

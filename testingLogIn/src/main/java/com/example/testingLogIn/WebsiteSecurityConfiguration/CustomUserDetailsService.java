@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepo userRepo;
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
 
     public boolean restrictUser(int id) {
         try {

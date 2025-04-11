@@ -91,6 +91,7 @@ public class Student{
         }
         else
             currentLevel = Optional.ofNullable(currentGradeSection).map(Section::getLevel).orElse(null);
+
         return StudentDTO.builder()
                         .studentId(studentId)
                         .studentDisplayId(studentDisplayId)

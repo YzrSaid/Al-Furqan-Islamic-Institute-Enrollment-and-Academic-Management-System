@@ -25,6 +25,7 @@ public class StudentFeesListService {
     private GradeLevelRequiredFeeRepo gradeReqFeeRepo;
     @Autowired
     private DiscountsServices discService;;
+
     @Async
     public void addFeesRecord(Enrollment e){
         StudentTotalDiscount std = discService.getStudentTotalDiscount(e.getStudent().getStudentId());
@@ -32,6 +33,7 @@ public class StudentFeesListService {
                 .forEach(reqFee -> {
                     double reqAmount = reqFee.getRequiredFee().getRequiredAmount();
                     double discountedAmount = NonModelServices.adjustDecimal(reqAmount - ((reqAmount*std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
+                    discountedAmount = NonModelServices.zeroIfLess(discountedAmount);
                     studFeeRepo.save(StudentFeesList.build(reqFee.getRequiredFee(),e.getSYSemester(),e.getStudent(),discountedAmount));
                 });
     }

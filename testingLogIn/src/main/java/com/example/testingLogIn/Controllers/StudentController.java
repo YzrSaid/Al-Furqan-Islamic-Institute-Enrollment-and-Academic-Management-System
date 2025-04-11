@@ -23,7 +23,7 @@ public class StudentController {
     @Autowired
     private StudentServices studentService;
 
-    @GetMapping("/all")//soon convert to
+    @GetMapping("/all")
     public ResponseEntity<StudentDTOPage> getStudentByDisplayId(
             @RequestParam(required = false,defaultValue = "") String q,
             @RequestParam(required = false,defaultValue = "") String sortBy,
@@ -111,17 +111,4 @@ public class StudentController {
             return new ResponseEntity<>("Transaction Failed",HttpStatus.CONFLICT);
         }
     }
-
-    @GetMapping("/all/{type}")
-    public ResponseEntity<StudentDTOPage> getStudentByPage(@PathVariable String type, //soon convert to param
-                                                           @RequestParam(required = false,defaultValue = "asc") String condition,
-                                                           @RequestParam(required = false,defaultValue = "1") int page,
-                                                           @RequestParam(required = false, defaultValue = "10") int size){
-        try{
-            return new ResponseEntity<>(studentService.getStudentPage(type,condition,page,size),HttpStatus.OK);
-        }catch(Exception e){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-    }
-    
 }

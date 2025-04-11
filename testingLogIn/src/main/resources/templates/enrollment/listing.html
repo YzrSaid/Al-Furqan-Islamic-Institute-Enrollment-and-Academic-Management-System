@@ -136,7 +136,7 @@
 
                             <div class="half-other-info" id="transferee-row">
                                 <label for="transferee">Transferee:</label>
-                                <h6 id="transferee">YES</h6>
+                                <h6 id="transferee"></h6>
                             </div>
                         </div>
                     </div>
@@ -1119,30 +1119,32 @@
         fetch(`/enrollment/paymentView/${enrollmentId}`)
             .then(res => res.json())
             .then(epv => {
-                console.log('The object is', epv);
                 const studentname = document.querySelector("#student-name");
                 const studentId = document.querySelector("#student-id-list");
                 if (!studentname || !studentId) return console.error("Dropdown for sections not found");
 
-                studentname.textContent = epv.studentFirstName + (epv.studentMiddleName ? ' ' + epv.studentMiddleName : '') + ' ' + epv.studentLastName;
-                studentId.textContent = epv.studentDisplayId;
-                payerId = epv.studentId;
+                studentname.textContent = epv.student.fullName;
 
+                studentId.textContent = epv.student.studentDisplayId;
+                payerId = epv.student.studentId;
                 const tableBody = document.querySelector("#table-ni-kharl tbody");
                 tableBody.innerHTML = "";
-                epv.feeStatus.forEach(datas => {
+                epv.feesAndBalance.forEach(datas => {
+                    var status = datas.totalPaid < datas.totalRequired && datas.totalPaid === 0 ? "Unpaid" :
+                                 datas.totalPaid > 0 && datas.totalPaid < datas.totalRequired ? "Partially Paid" :
+                                                                                                "Fully Paid";
                     const row = document.createElement("tr");
-                    const statusClass = getPaymentStatusClass(datas.status);
+                    const statusClass = getPaymentStatusClass(status);
                     row.innerHTML = `
-                            <td>${datas.feeName}</td>
-                            <td>${datas.requiredFee}</td>
-                            <td>${datas.totalPaid}</td>
-                            <td>${datas.balance}</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status ${statusClass}">${datas.status}</div>
-                                </div>
-                            </td>`;
+                        <td>${datas.fee.name}</td>
+                        <td>${datas.totalRequired}</td>
+                        <td>${datas.totalPaid}</td>
+                        <td>${datas.balance}</td>
+                        <td>
+                            <div class="status-container">
+                                <div class="status ${statusClass}">${status}</div>
+                            </div>
+                        </td>`;
                     tableBody.appendChild(row);
                 });
             })

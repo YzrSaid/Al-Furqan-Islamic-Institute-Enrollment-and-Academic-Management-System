@@ -692,23 +692,26 @@
                     const studentDisplayId = document.querySelector("#student-id");
                     if (!studentname || !studentId) return console.error("Dropdown for sections not found");
 
-                    studentname.textContent = epv.studentFirstName + (epv.studentMiddleName ? ' ' + epv.studentMiddleName : '') + ' ' + epv.studentLastName;
+                    studentname.textContent = epv.student.fullName;
 
-                    studentDisplayId.textContent = epv.studentDisplayId;
-                    payerId = epv.studentId;
+                    studentDisplayId.textContent = epv.student.studentDisplayId;
+                    payerId = epv.student.studentId;
                     const tableBody = document.querySelector("#table-ni-kharl tbody");
                     tableBody.innerHTML = "";
-                    epv.feeStatus.forEach(datas => {
+                    epv.feesAndBalance.forEach(datas => {
+                        var status = datas.totalPaid < datas.totalRequired && datas.totalPaid === 0 ? "Unpaid" :
+                                     datas.totalPaid > 0 && datas.totalPaid < datas.totalRequired ? "Partially Paid" :
+                                                                                                    "Fully Paid";
                         const row = document.createElement("tr");
-                        const statusClass = getPaymentStatusClass(datas.status);
+                        const statusClass = getPaymentStatusClass(status);
                         row.innerHTML = `
-                            <td>${datas.feeName}</td>
-                            <td>${datas.requiredFee}</td>
+                            <td>${datas.fee.name}</td>
+                            <td>${datas.totalRequired}</td>
                             <td>${datas.totalPaid}</td>
                             <td>${datas.balance}</td>
                             <td>
                                 <div class="status-container">
-                                    <div class="status ${statusClass}">${datas.status}</div>
+                                    <div class="status ${statusClass}">${status}</div>
                                 </div>
                             </td>`;
                         tableBody.appendChild(row);

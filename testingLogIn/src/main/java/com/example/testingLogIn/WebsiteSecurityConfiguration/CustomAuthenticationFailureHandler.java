@@ -39,10 +39,10 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         } else if(exception instanceof AccountStatusException){
             errorMessage = exception.getMessage();
         }else {
-            errorMessage = "Authentication failed: " + exception.getMessage();
+            errorMessage = exception.getMessage();
         }
 
         response.setContentType("application/json");
-        response.getWriter().write("{\"error\": \"" + errorMessage + "\"}");
+        response.getWriter().write(errorMessage);
     }
 }

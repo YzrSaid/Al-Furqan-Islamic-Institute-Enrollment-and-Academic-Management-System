@@ -1810,18 +1810,24 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to toggle dropdown visibility
   function toggleDropdown(event) {
     event.stopPropagation(); // Prevent click from propagating to document
-
+  
     const dropdownContent = event.target
       .closest(".dropdown")
       .querySelector(".dropdown-status-content");
-
-    // Null check for dropdown content
+  
     if (!dropdownContent) return;
-
-    // Toggle the visibility of the dropdown
-    dropdownContent.style.display =
-      dropdownContent.style.display === "block" ? "none" : "block";
+  
+    // Close all other dropdowns first
+    document.querySelectorAll(".dropdown-status-content").forEach((dropdown) => {
+      if (dropdown !== dropdownContent) {
+        dropdown.classList.remove("show");
+      }
+    });
+  
+    // Toggle the class instead of directly setting style
+    dropdownContent.classList.toggle("show");
   }
+  
 
   // Close the dropdown if clicked outside
   document.addEventListener("click", function (event) {
@@ -1905,3 +1911,27 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   });
 });
+
+document.querySelectorAll('.dropdown-print-btn').forEach(button => {
+    button.addEventListener('click', (event) => {
+        const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-status-content');
+        const dropdownButton = event.target;
+        const rect = dropdownButton.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        // Calculate the available space below the button
+        const spaceBelow = windowHeight - rect.bottom;
+
+        // If there's not enough space below, position the dropdown above
+        if (spaceBelow < dropdownContent.offsetHeight) {
+            dropdownContent.classList.add('above'); // Position above
+        } else {
+            dropdownContent.classList.remove('above'); // Default position below
+        }
+
+        // Toggle the dropdown visibility
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        dropdownContent.style.opacity = dropdownContent.style.opacity === '1' ? '0' : '1';
+    });
+});;
+  

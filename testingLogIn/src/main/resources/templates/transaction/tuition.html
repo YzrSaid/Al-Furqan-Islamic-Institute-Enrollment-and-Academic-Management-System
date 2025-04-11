@@ -158,7 +158,7 @@
 
         <!-- Modal for listOfPaymentsModal -->
         <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
-            <div class="list-of-payments-modal-content scroll-lock>
+            <div class="list-of-payments-modal-content scroll-lock">
                 <!-- Close Button -->
                 <span class="close-modal" data-close-modal="listOfPaymentsModal">&times;</span>
 
@@ -633,7 +633,6 @@
         }
 
         function savePaymentTrans() {
-            alert("paying now");
             const feesSelectedId = getCheckedPaymentValues();
             const totalAmount = paymentAmountInput.value;
 
@@ -649,27 +648,25 @@
             const obj = {
                 feesId: feesSelectedId
             };
-
             fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(obj)
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json(); // Parse the response as JSON
-                })
-                .then(receipt => {
-                    const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
-                    viewTheReceipt(decodeURIComponent(receiptJSON));
-                })
-                .catch(error => {
-                    console.error("Error adding payment:", error);
-                    alert("Failed to add payment. Please try again.");
-                });
-
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(receipt => {
+                const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
+                viewTheReceipt(decodeURIComponent(receiptJSON));
+            })
+            .catch(error => {
+                console.error("Error adding payment:", error);
+                alert("Failed to add payment. Please try again.");
+            });
         }
 
         async function fetchThisPokemon(receiptReference) {

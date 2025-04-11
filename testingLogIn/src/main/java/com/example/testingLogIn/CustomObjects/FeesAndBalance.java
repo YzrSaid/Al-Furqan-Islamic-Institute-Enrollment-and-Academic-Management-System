@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 public class FeesAndBalance{
     private RequiredFees fee;
     private double balance;
+    private double totalPaid;
+    private double totalRequired;
 }

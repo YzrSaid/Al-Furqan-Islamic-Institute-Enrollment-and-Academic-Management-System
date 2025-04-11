@@ -841,9 +841,9 @@ document.addEventListener("DOMContentLoaded", function () {
       //      case "deleteFee":
       //        deleteFee(selectedPaymentName);
       //        break;
-      //      case "savePaymentTrans":
-      //        savePaymentTrans();
-      //        break;
+      case "savePaymentTrans":
+        savePaymentTrans();
+        break;
       case "savePayment":
         // This case is for adding payment
         if (!validateForm("addPaymentModal")) {

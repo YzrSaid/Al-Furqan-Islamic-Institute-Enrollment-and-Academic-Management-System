@@ -338,9 +338,8 @@
         var selectedDistId;
         document.body.addEventListener("click", function (event) {
             const target = event.target.closest("[data-open-modal='confirmationModal']");
-
             if (target) {
-                selectedDistId = target.getAttribute("data-item-id"); // Get the ID
+                selectedDistId = target.getAttribute("data-item-id");
             }
         });
     </script>

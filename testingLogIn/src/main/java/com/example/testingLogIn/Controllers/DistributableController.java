@@ -85,6 +85,7 @@ public class DistributableController {
             itemType = itemType.equals(0) ? null : itemType;
             return new ResponseEntity<>(distributableServices.getStudentDistributable(pageNo, pageSize, student, isClaimed,itemType, sortBy), HttpStatus.OK);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

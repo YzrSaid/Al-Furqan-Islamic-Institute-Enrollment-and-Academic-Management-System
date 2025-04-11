@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -92,4 +94,11 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             "WHERE subj.subjectNumber = :subjectId " +
             "AND sem.sySemNumber = :semId")
     List<StudentSubjectGrade> findBySemAndSubject(int subjectId, int semId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE StudentSubjectGrade sg SET sg.isNotDeleted = false " +
+            "WHERE sg.subject.subjectNumber = :subjectId " +
+            "AND sg.semester.sySemNumber = :semId")
+    void deleteStudentSubjectGrade(int subjectId, int semId);
 }

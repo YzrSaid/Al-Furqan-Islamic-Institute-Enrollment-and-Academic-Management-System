@@ -166,18 +166,18 @@ public class PaymentRecordService {
                 double discountedAmount = NonModelServices.adjustDecimal(initialAmount - ((initialAmount*std.getTotalPercentageDiscount())-std.getTotalFixedDiscount()));
                 double remainingBalance = discountedAmount - paidAmount;
                 if(remainingBalance>0){
-                    studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(reqFee.getRequiredFee(),remainingBalance));
+                    studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(reqFee.getRequiredFee(),remainingBalance,paidAmount,discountedAmount));
                     totalBalance+=remainingBalance;}
             }
         }else{//For all time debt
             for(StudentFeesList sfl : studFeesRepo.findBySem(studentId,null)) {
                 if (!feesBalance.containsValue(sfl.getFee())) {
-                    double totalPaidAmount = paymentRepo.totalPaidForSpecificFee(studentId, sfl.getFee().getId(), null);//(studentId,feeId,null)
+                    double totalPaidAmount = Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, sfl.getFee().getId(), null)).orElse(0.0);//(studentId,feeId,null)
                     double totalFeeBalance = studFeesRepo.totalPerFeesByStudent(studentId, sfl.getFee().getId());
                     double remainingBalance = NonModelServices.adjustDecimal(totalFeeBalance - totalPaidAmount);
                     if (remainingBalance > 0) {
                         totalBalance += remainingBalance;
-                        studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance));
+                        studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance,totalPaidAmount,totalFeeBalance));
                     }
                 }
             }

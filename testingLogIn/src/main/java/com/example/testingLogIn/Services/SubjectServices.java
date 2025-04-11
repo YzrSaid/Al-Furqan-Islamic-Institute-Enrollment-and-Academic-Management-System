@@ -43,8 +43,8 @@ public class SubjectServices {
     public List<SubjectDTO> getSubjectByGrade(String gradeLevel){
         return subjectRepo.findAll().stream()
                           .filter(subject ->subject.getGradeLevel().isNotDeleted() && 
-                                            subject.getGradeLevel().getLevelName().toLowerCase()
-                                                   .equals(gradeLevel.toLowerCase()) &&
+                                            subject.getGradeLevel().getLevelName()
+                                                   .equalsIgnoreCase(gradeLevel) &&
                                              subject.isNotDeleted())
                           .map(Subject::mapper)
                           .collect(Collectors.toList());
@@ -165,18 +165,11 @@ public class SubjectServices {
         Subject todelete = subjectRepo.findById(subjectNumber).orElseThrow(NullPointerException::new);
         todelete.setNotDeleted(false);
         subjectRepo.save(todelete);
-
         if(todelete.isCurrentlyActive()){
             SchoolYearSemester sem = semServices.getCurrentActive();
             if(sem != null){
-                CompletableFuture.runAsync(()->{
-                    int semId = sem.getSySemNumber();
-                    List<StudentSubjectGrade> studentSubjectGrades = ssgRepo.findBySemAndSubject(todelete.getSubjectNumber(),semId);
-                    studentSubjectGrades.forEach(studGrade -> {
-                        studGrade.setNotDeleted(false);
-                    });
-                    ssgRepo.saveAll(studentSubjectGrades);
-                });
+                int semId = sem.getSySemNumber();
+                CompletableFuture.runAsync(()->ssgRepo.deleteStudentSubjectGrade(todelete.getSubjectNumber(),semId));
             }
         }
     }

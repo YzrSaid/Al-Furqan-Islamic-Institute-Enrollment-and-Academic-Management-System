@@ -36,15 +36,17 @@ public class sySemesterServices {
     private final StudentRepo studentRepo;
     private final SchoolProfileRepo schoolProfileRepo;
     private final StudentSubjectGradeRepo ssgr;
+    private final SubjectRepo subjectRepo;
 
     @Autowired
-    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo, RequiredPaymentsRepo reqFee, StudentRepo studentRepo, SchoolProfileRepo schoolProfileRepo, StudentSubjectGradeRepo ssgr) {
+    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo, RequiredPaymentsRepo reqFee, StudentRepo studentRepo, SchoolProfileRepo schoolProfileRepo, StudentSubjectGradeRepo ssgr, SubjectRepo subjectRepo) {
         this.semesterRepo = semesterRepo;
         this.syRepo = syRepo;
         this.reqFee = reqFee;
         this.studentRepo = studentRepo;
         this.schoolProfileRepo = schoolProfileRepo;
         this.ssgr = ssgr;
+        this.subjectRepo = subjectRepo;
     }
 
     public void addSemesters(String schoolYearName){
@@ -100,6 +102,17 @@ public class sySemesterServices {
         sem.setEnrollmentDeadline(LocalDate.now().plusDays(30));
         sem.setActive(true);
         semesterRepo.save(sem);
+
+        ExecutorService dbExecutor = Executors.newFixedThreadPool(4);
+
+        CompletableFuture.runAsync(()->{
+            reqFee.setRequiredFeesActive();
+            subjectRepo.activeAll();
+            studentRepo.setNewStudentsToOld();
+        },dbExecutor).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
         
         return true;
     }
@@ -126,13 +139,6 @@ public class sySemesterServices {
 
         ExecutorService dbExecutor = Executors.newFixedThreadPool(4);
 
-        CompletableFuture.runAsync(()->{
-            reqFee.setRequiredFeesActive();
-            studentRepo.setNewStudentsToOld();
-        },dbExecutor).exceptionally(ex -> {
-            System.err.print("Fee/student update failed"+ ex);
-            return null;
-        });
         GradeLevel graduateLevel = graduatingLevel();
         if(graduateLevel != null){
             CompletableFuture.runAsync(()->{
@@ -145,7 +151,6 @@ public class sySemesterServices {
                 });
                 studentRepo.saveAll(students);
             },dbExecutor).exceptionally(ex -> {
-                System.err.print("Fee/student update failed"+ ex);
                 return null;
             });;
         }

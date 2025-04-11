@@ -228,7 +228,7 @@
 
                     <div style="display: flex; width: 100%; gap: 100px;">
                         <div class="header-stud-info-full">
-                            <h2>Financial Information</h2>
+                            <h2>Balance Information</h2>
                             <div class="action-non-scallable">
                                 <div class="dropdown">
                                     <button type="button" class="dropdown-edit-btn">
@@ -251,7 +251,7 @@
                         </div>
 
                         <div class="header-stud-info-full">
-                            <h2>Book Distribution</h2>
+                            <h2>Resources Distribution</h2>
                             <div class="action-non-scallable">
                                 <div class="dropdown">
                                     <button type="button" class="dropdown-edit-btn">
@@ -278,15 +278,16 @@
 
                     <div class="container-two">
                         <div class="column-main">
-                            <p>Recent Transactions</p>
+                            <p>Remaining Balance</p>
                             <div class="table-container">
                                 <table class="mini-table" id="payment-table">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Amount</th>
+                                            <th>Req. Amount</th>
+                                            <th>Paid</th>
                                             <th>Status</th>
-                                            <th>Date</th>
+                                            <th>Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -308,22 +309,22 @@
                                 style="display: flex; justify-content: space-between; align-items: center; margin: 0px;">
                                 <div style="display: flex; gap: 10px;">
                                     <h6>Balance:</h6>
-                                    <h6>1, 000</h6>
+                                    <h6 id="total-balance">1, 000</h6>
                                 </div>
-                                <button id="transaction-record-btn">View Record</button>
+                                <button id="transaction-record-btn">View Transactions</button>
                             </div>
 
                         </div>
 
                         <div class="column-main">
-                            <p>Recent Distributions</p>
+                            <p>Unclaimed Resources</p>
                             <div class="table-container">
                                 <table class="mini-table" id="distribution-table">
                                     <thead>
                                         <tr>
+                                            <th>Item</th>
                                             <th>Grade Level</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -502,6 +503,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </body>
 <script>
@@ -511,7 +513,7 @@
         const studentName = ((wordArray[wordArray.length - 1]));
         findStudent(studentName);
     });
-
+    var studentId;
     async function findStudent(studentName) {
         const response = await fetch(`/students/find-student/name/${studentName}`);
         if (!response.ok) { alert("student record no found"); }
@@ -545,9 +547,12 @@
         document.getElementById("madrasaAddress").value = student.madrasaAddress;
         fetchTransRequirements("transReqRecord", student.transfereeRequirements);
 
-        setStudentGrades(student.studentId);
+        studentId = student.studentId;
+        fetchRemainingFees();
+        setStudentGrades();
+        setUpDistribution(student.fullName)
     }
-    async function setStudentGrades(studentId) {
+    async function setStudentGrades() {
         const response = await fetch(`/student-grades/student/${studentId}`);
         if (!response.ok) { return; }
         const grades = await response.json();
@@ -555,24 +560,27 @@
         const gradesview = document.getElementById("grades-container");
 
         grades.forEach(sem => {
+            var allFilled = true;
             let gradesRow = '';
             let totalGrade = 0;
             let count = 0;
 
             // Loop through subjects and grades
             sem.grades.forEach(grade => {
+                if(allFilled){
+                    allFilled = grade.subjectGrade;}
                 totalGrade += grade.subjectGrade;
                 count++;
                 gradesRow += `
-    <tr>
-      <td>${grade.subjectName}</td>
-      <td>${grade.subjectGrade ? grade.subjectGrade : "N/A"}</td>
-      <td>
-        <div class="status-container">
-          <div class="status" id="grade-remarks">  ${!grade.subjectGrade || grade.subjectGrade === "N/A" ? "" : grade.subjectGrade > 49 ? "PASS" : "FAILED"}</div>
-        </div>
-      </td>
-    </tr>`;
+            <tr>
+              <td>${grade.subjectName}</td>
+              <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
+              <td>
+                <div class="status-container">
+                  <div class="status" id="grade-remarks">  ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}</div>
+                </div>
+              </td>
+            </tr>`;
             });
 
             // Calculate average grade
@@ -590,44 +598,44 @@
             row.classList.add("column-main");
 
             row.innerHTML = `
-  <div class="table-container">
-    <div style="display: flex; justify-content: space-between;">
-      <div class="grade-table-header">
-            <div>
-                <label>SY & Sem:</label>
-                <h6 id="sy">${semesterFormatted}</h6> <!-- Display the full School Year with formatted semester -->
-            </div>
-            <div>
-                <label>Level:</label>
-                <h6>${sem.gradeSection}</h6> <!-- Display Level -->
-                </div>
-      </div>
-    </div> <br>
-    <table class="mini-table" id="grades-table">
-      <thead>
-        <tr>
-          <th>Subject</th>
-          <th>Grade</th>
-          <th>Remarks</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${gradesRow}
-        <tr id="average-row">
-            <td>Average</td>
-        <td>${average}</td>
-        <td>
-            <div class="status-container">
-                <div class="status">
-                    <div class="average-remarks"> ${average === "N/A" ? "" : (average > 49 ? "PASSED" : "FAILED")}</div>
-                </div>
-            </div>
-        </td>
+                  <div class="table-container">
+                    <div style="display: flex; justify-content: space-between;">
+                      <div class="grade-table-header">
+                            <div>
+                                <label>SY & Sem:</label>
+                                <h6 id="sy">${semesterFormatted}</h6> <!-- Display the full School Year with formatted semester -->
+                            </div>
+                            <div>
+                                <label>Level:</label>
+                                <h6>${sem.gradeSection}</h6> <!-- Display Level -->
+                                </div>
+                      </div>
+                    </div> <br>
+                    <table class="mini-table" id="grades-table">
+                      <thead>
+                        <tr>
+                          <th>Subject</th>
+                          <th>Grade</th>
+                          <th>Remarks</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${gradesRow}
+                        <tr id="average-row">
+                            <td>Average</td>
+                        <td>${allFilled ? average : ""}</td>
+                        <td>
+                            <div class="status-container">
+                                <div class="status">
+                                    <div class="average-remarks"> ${average === "N/A" || !allFilled ? "" : (average > 49 ? "PASSED" : "FAILED")}</div>
+                                </div>
+                            </div>
+                        </td>
 
-        </tr>
-      </tbody>
-    </table>
-  </div>`;
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>`;
 
             // Append this row to the grades container
             gradesview.appendChild(row);
@@ -635,7 +643,116 @@
 
     }
 
+        async function setUpDistribution(fullName) {
+        try {
+            const claimed = false;
+            const response = await fetch(`/distributable/student-distribution/all?isClaimed=false&student=${fullName}&itemType=0&sortBy=none`);
+            if (!response.ok) {
+                console.error("Failed to fetch data:", response.status);
+                return;
+            }
 
+            const data = await response.json();
+
+            const tableBody = document.querySelector("#distribution-table tbody");
+            if (!tableBody) {
+                console.error("Table body not found");
+                return;
+            }
+
+            // Clear existing rows
+            tableBody.innerHTML = '';
+
+            if (!data.content || data.content.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="3">No records found</td></tr>`;
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+
+            data.content.forEach(studDis => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${studDis.itemName || 'N/A'}</td>
+                    <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
+                    <td>
+                        <div class="dropdown">
+                            <div class="action-container action">
+                                <button
+                                    data-open-modal="confirmationModal" class="add-something-btn"
+                                    data-action="itemDistributed"
+                                    data-message="Confirm item is distributed to the student"
+                                    data-item-id="${studDis.distId}">Distribute
+                                </button>
+                            </div>
+                        </div>
+                    </td>`;
+                fragment.appendChild(row);
+            });
+
+            tableBody.appendChild(fragment);
+
+        } catch (error) {
+            const tableBody = document.querySelector("#table-ko tbody");
+            if (tableBody) {
+                tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
+            }
+        }
+    }
+
+    function confirmDistribution() {
+        fetch(`/distributable/student-distribution/received/${selectedDistId}`, {
+            method: 'PUT'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(msg => {
+            showSuccessModal(msg);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    var selectedDistId;
+    document.body.addEventListener("click", function (event) {
+        const target = event.target.closest("[data-open-modal='confirmationModal']");
+        if (target) {
+            selectedDistId = target.getAttribute("data-item-id");
+        }
+    });
+
+    async function fetchRemainingFees(){
+        console.log(`/paymentrecord/form/${studentId}`);
+        const feesTable = document.querySelector("#payment-table tbody");
+        const response = await fetch(`/paymentrecord/form/${studentId}`);
+        if(!response.ok){return;}
+
+        const remainingFees = await response.json();
+
+        feesTable.innerHTML = `<tr><td colspan="3">No records found</td></tr>`;
+        if(remainingFees.feesAndBalance.length === 0){return;}
+        feesTable.innerHTML = ``;
+        document.getElementById("total-balance").textContent = `P${remainingFees.totalFee}`;
+        remainingFees.feesAndBalance.forEach(data => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${data.fee.name}</td>
+                <td>${data.totalRequired}</td>
+                <td>${data.totalPaid}</td>
+                <td>
+                    <div class="status-container">
+                        <div class="status" id="status-payments">${data.totalPaid > 0 ? "Partially Paid" : "Not Paid"}</div>
+                    </div>
+                </td>
+                <td><span>P</span>${data.balance}</td>`;
+            feesTable.appendChild(row);
+        });
+    }
 
     function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
         fetch("/trans-req/all")

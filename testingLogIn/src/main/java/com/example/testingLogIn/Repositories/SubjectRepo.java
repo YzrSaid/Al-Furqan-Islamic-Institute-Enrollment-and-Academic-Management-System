@@ -6,7 +6,9 @@ package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.Models.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +23,9 @@ public interface SubjectRepo extends JpaRepository<Subject, Integer>{
             "AND LOWER(sub.subjectName) = :newSubName " +
             "AND sub.subjectNumber != :subId")
     List<Subject> findByNameNotEqualId(String newSubName, int subId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Subject sub SET sub.isCurrentlyActive = TRUE")
+    void activeAll();
 }

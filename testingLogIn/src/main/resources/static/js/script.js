@@ -498,36 +498,36 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (confirmActionButton) {
-        const action = confirmActionButton.getAttribute("data-confirm-action");
-      
-        if (action === "updateSchoolSettings") {
-          // ✅ Validate first
-          if (!validateForm("schoolSettingsForm")) {
-            showErrorModal("⚠️ Please fill in all required fields!");
-            return;
-          }
-      
-          // ✅ If passed, update settings
-          updateSchoolSettings();
-      
-          // ✅ Now do UI stuff
-          const editBtn = document.getElementById("editButton");
-          if (editBtn) {
-            editBtn.textContent = "Edit";
-            editBtn.setAttribute("data-mode", "edit");
-          }
-      
-          inputs.forEach((input) => {
-            input.disabled = true;
-            input.readOnly = true;
-          });
-      
-          // ✅ Hide modal
-          if (typeof toggleModal === "function") {
-            toggleModal("confirmationModal", false);
-          }
+      const action = confirmActionButton.getAttribute("data-confirm-action");
+
+      if (action === "updateSchoolSettings") {
+        // ✅ Validate first
+        if (!validateForm("schoolSettingsForm")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
         }
-      }      
+
+        // ✅ If passed, update settings
+        updateSchoolSettings();
+
+        // ✅ Now do UI stuff
+        const editBtn = document.getElementById("editButton");
+        if (editBtn) {
+          editBtn.textContent = "Edit";
+          editBtn.setAttribute("data-mode", "edit");
+        }
+
+        inputs.forEach((input) => {
+          input.disabled = true;
+          input.readOnly = true;
+        });
+
+        // ✅ Hide modal
+        if (typeof toggleModal === "function") {
+          toggleModal("confirmationModal", false);
+        }
+      }
+    }
   });
 
   // Handle the cancel action when the user cancels in the modal
@@ -573,8 +573,8 @@ document.addEventListener("DOMContentLoaded", function () {
     switch (action) {
       case "updateSchoolSettings":
         // This is for updating/editing the school settings
-          updateSchoolSettings();
-          closeConfirmationModal();
+        //   updateSchoolSettings();
+        closeConfirmationModal();
         break;
       case "editTransfereeReq":
         updateTransfRequirement();
@@ -1450,21 +1450,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  const printButton = document.querySelector(
-    ".no-print[onclick='printReceipt()']"
-  );
+  const printButton = document.querySelector(".print-btn");
   const saveButton = document.getElementById("save-payment-btn");
-  const confirmActionButton = document.getElementById("confirmAction");
 
-  // Hide the print button initially
-  if (printButton) {
-    printButton.style.display = "none";
-  }
-
-  // Function to handle confirmed save action
+  // ✅ Only hide Save button, no need to touch print button
   window.confirmSave = function () {
-    saveButton.style.display = "none"; // Hide Save button
-    printButton.style.display = "inline-block"; // Show Print button
+    if (saveButton) saveButton.style.display = "none";
+    if (printButton) {
+      printButton.style.display = "inline-block"; // Make sure it shows up
+      printButton.textContent = "PRINT RECEIPT"; // Just in case
+    }
   };
 });
 
@@ -1706,163 +1701,49 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-// Function to toggle dropdown visibility
-// function toggleDropdown() {
-//     const dropdownContent = document.querySelector(".dropdown-status-content");
-
-//     // null check
-//     if (!dropdownContent) return;
-
-//     // Toggle the visibility of the dropdown
-//     dropdownContent.style.display =
-//       dropdownContent.style.display === "block" ? "none" : "block";
-//   }
-
-//   // Close the dropdown if clicked outside
-//   document.addEventListener("click", function (event) {
-//     const dropdownContent = document.querySelector(".dropdown-status-content");
-//     const dropdownButton = document.querySelector(".dropdown-print-btn");
-
-//     // Check if the clicked target is outside the dropdown or the button
-//     if (
-//       dropdownContent &&
-//       dropdownButton &&
-//       !dropdownContent.contains(event.target) &&
-//       !dropdownButton.contains(event.target)
-//     ) {
-//       dropdownContent.style.display = "none";
-//     }
-//   });
-
-// Function to toggle dropdown visibility
-// function toggleDropdown(event) {
-//     event.stopPropagation(); // Prevent click from propagating to the document
-
-//     const dropdownContent = document.querySelector(".dropdown-status-content");
-
-//     // Null check for dropdown content
-//     if (!dropdownContent) return;
-
-//     // Toggle the visibility of the dropdown
-//     dropdownContent.style.display =
-//       dropdownContent.style.display === "block" ? "none" : "block";
-//   }
-
-//   // Close the dropdown if clicked outside
-//   document.addEventListener("click", function (event) {
-//     const dropdownContent = document.querySelector(".dropdown-status-content");
-//     const dropdownButton = document.querySelector(".dropdown-print-btn");
-
-//     // Check if the clicked target is outside the dropdown or the button
-//     if (
-//       dropdownContent &&
-//       dropdownButton &&
-//       !dropdownContent.contains(event.target) &&
-//       !dropdownButton.contains(event.target)
-//     ) {
-//       dropdownContent.style.display = "none"; // Close the dropdown if clicked outside
-//     }
-//   });
-
-// Function to toggle dropdown visibility
-// document.addEventListener("DOMContentLoaded", function() {
-//     // Function to toggle dropdown visibility
-//     function toggleDropdown(event) {
-//         event.stopPropagation(); // Prevent click from propagating to document
-
-//         const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-status-content');
-
-//         // Null check for dropdown content
-//         if (!dropdownContent) return;
-
-//         // Toggle the visibility of the dropdown
-//         dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
-//     }
-
-//     // Close the dropdown if clicked outside
-//     document.addEventListener("click", function (event) {
-//         const dropdownContents = document.querySelectorAll(".dropdown-status-content");
-//         const dropdownButtons = document.querySelectorAll(".dropdown-status-btn");
-
-//         dropdownContents.forEach((dropdownContent) => {
-//             dropdownButtons.forEach((dropdownButton) => {
-//                 // If the click target is outside the dropdown or the button, close the dropdown
-//                 if (
-//                     !dropdownContent.contains(event.target) &&
-//                     !dropdownButton.contains(event.target)
-//                 ) {
-//                     dropdownContent.style.display = "none";
-//                 }
-//             });
-//         });
-//     });
-
-//     // Delegate click event to the parent of all dropdown buttons to toggle dropdown content visibility
-//     document.querySelector("body").addEventListener("click", function(event) {
-//         const targetButton = event.target.closest(".dropdown-status-btn");
-//         if (targetButton) {
-//             toggleDropdown(event);
-//         }
-//     });
-// });
 
 document.addEventListener("DOMContentLoaded", function () {
   // Function to toggle dropdown visibility
   function toggleDropdown(event) {
     event.stopPropagation(); // Prevent click from propagating to document
-  
-    const dropdownContent = event.target
-      .closest(".dropdown")
-      .querySelector(".dropdown-status-content");
-  
+
+    const dropdown = event.target.closest(".dropdown");
+    if (!dropdown) return;
+
+    const dropdownContent = dropdown.querySelector(".dropdown-status-content");
     if (!dropdownContent) return;
-  
-    // Close all other dropdowns first
-    document.querySelectorAll(".dropdown-status-content").forEach((dropdown) => {
-      if (dropdown !== dropdownContent) {
-        dropdown.classList.remove("show");
+
+    // First, close all other dropdowns
+    document.querySelectorAll(".dropdown-status-content").forEach((content) => {
+      if (content !== dropdownContent) {
+        content.style.display = "none";
       }
     });
-  
-    // Toggle the class instead of directly setting style
-    dropdownContent.classList.toggle("show");
+
+    // Then toggle the one you clicked
+    dropdownContent.style.display =
+      dropdownContent.style.display === "block" ? "none" : "block";
   }
-  
 
   // Close the dropdown if clicked outside
   document.addEventListener("click", function (event) {
     const dropdownContents = document.querySelectorAll(
       ".dropdown-status-content"
     );
-    const dropdownButtons = document.querySelectorAll(
-      ".dropdown-status-btn, .dropdown-print-btn"
-    );
 
     dropdownContents.forEach((dropdownContent) => {
-      dropdownButtons.forEach((dropdownButton) => {
-        // If the click target is outside the dropdown or the button, close the dropdown
-        if (
-          !dropdownContent.contains(event.target) &&
-          !dropdownButton.contains(event.target)
-        ) {
-          dropdownContent.style.display = "none";
-        }
-      });
+      if (!dropdownContent.contains(event.target)) {
+        dropdownContent.style.display = "none";
+      }
     });
   });
 
-  // Delegate click event to the parent of all dropdown buttons to toggle dropdown content visibility
+  // Delegate click event to the parent of all dropdown buttons
   document.body.addEventListener("click", function (event) {
     const targetButton = event.target.closest(".dropdown-print-btn");
     const targetStatusButton = event.target.closest(".dropdown-status-btn");
 
-    // If the print dropdown button is clicked, toggle it
-    if (targetButton) {
-      toggleDropdown(event);
-    }
-
-    // If the status dropdown button is clicked in goList, toggle it
-    else if (targetStatusButton) {
+    if (targetButton || targetStatusButton) {
       toggleDropdown(event);
     }
   });
@@ -1912,26 +1793,25 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-document.querySelectorAll('.dropdown-print-btn').forEach(button => {
-    button.addEventListener('click', (event) => {
-        const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-status-content');
-        const dropdownButton = event.target;
-        const rect = dropdownButton.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
+// document.querySelectorAll('.dropdown-print-btn').forEach(button => {
+//     button.addEventListener('click', (event) => {
+//         const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-status-content');
+//         const dropdownButton = event.target;
+//         const rect = dropdownButton.getBoundingClientRect();
+//         const windowHeight = window.innerHeight;
 
-        // Calculate the available space below the button
-        const spaceBelow = windowHeight - rect.bottom;
+//         // Calculate the available space below the button
+//         const spaceBelow = windowHeight - rect.bottom;
 
-        // If there's not enough space below, position the dropdown above
-        if (spaceBelow < dropdownContent.offsetHeight) {
-            dropdownContent.classList.add('above'); // Position above
-        } else {
-            dropdownContent.classList.remove('above'); // Default position below
-        }
+//         // If there's not enough space below, position the dropdown above
+//         if (spaceBelow < dropdownContent.offsetHeight) {
+//             dropdownContent.classList.add('above'); // Position above
+//         } else {
+//             dropdownContent.classList.remove('above'); // Default position below
+//         }
 
-        // Toggle the dropdown visibility
-        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-        dropdownContent.style.opacity = dropdownContent.style.opacity === '1' ? '0' : '1';
-    });
-});;
-  
+//         // Toggle the dropdown visibility
+//         dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+//         dropdownContent.style.opacity = dropdownContent.style.opacity === '1' ? '0' : '1';
+//     });
+// });;

@@ -391,9 +391,10 @@
                         </div>
                         <div class="middle-header">
                             <div class="school-info-print">
-                                <h3>AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
-                                <p>Talabaan, Zamboanga City</p>
-                                <p>Phone #: 09358268263</p>
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
                                 <h3 class="report-type"><strong>Grade Form</strong></h3>
                             </div>
                         </div>
@@ -498,7 +499,7 @@
 
                     <!-- Print Button -->
                     <div class="modal-buttons">
-                        <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                        <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
                     </div>
                 </div>
             </div>

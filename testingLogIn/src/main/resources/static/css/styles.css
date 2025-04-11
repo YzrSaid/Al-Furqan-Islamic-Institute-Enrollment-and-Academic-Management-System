@@ -1477,7 +1477,6 @@ table td {
   padding: 5px;
 }
 .dropdown {
-    position: relative;
   display: flex;
   gap: 20px;
   align-items: center;
@@ -1509,10 +1508,8 @@ table td {
   background-color: white;
   min-width: 150px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  overflow-y: scroll;
-  height: 150px;
-  z-index: 10;
+  border-radius: 5px;   
+  z-index: 1;
   font-size: 13px;
 }
 
@@ -3072,7 +3069,8 @@ input[type="checkbox"] {
   /* Hide unwanted elements */
   .no-print,
   .close-modal,
-  .print-button {
+  .print-button,
+  .print-btn {
     display: none !important;
   }
 
@@ -3100,6 +3098,10 @@ input[type="checkbox"] {
     margin: 0;
     padding: 0;
     overflow-x: hidden; /* Prevents content overflow */
+  }
+
+  .table {
+    page-break-inside: auto; /* Allow the table to break across pages */    
   }
 
   /* ✅ Make the table fit better */
@@ -3626,6 +3628,7 @@ td[rowspan] {
 }
 
 .middle-header {
+    width: 50%;
   justify-self: center;
   display: flex;
   align-items: center;

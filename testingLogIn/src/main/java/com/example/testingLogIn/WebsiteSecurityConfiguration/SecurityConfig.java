@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .formLogin(form -> form.loginPage("/login").permitAll()
                         .defaultSuccessUrl("/home", true)
                         .failureHandler(customAuthenticationFailureHandler))  // Custom login page
-                //.httpBasic(Customizer.withDefaults())  // Enable basic authentication (for Postman)
+                .httpBasic(Customizer.withDefaults())  // Enable basic authentication (for Postman)
                 .logout(c -> c.invalidateHttpSession(true))
                 .build();
     }

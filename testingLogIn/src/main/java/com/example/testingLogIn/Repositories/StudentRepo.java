@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
+import com.example.testingLogIn.CustomObjects.StudentHandler;
 import com.example.testingLogIn.Models.Student;
 
 import java.util.List;
@@ -37,9 +38,24 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
 
     @Query("SELECT s FROM Student s " +
             "WHERE s.isNotDeleted = true " +
-            "AND (s.studentDisplayId LIKE CONCAT('%', :search, '%') " +
-            "OR s.fullName LIKE CONCAT('%', :search, '%')) ")
+            "AND (s.studentDisplayId LIKE :search " +
+            "OR LOWER(s.fullName) LIKE :search)")
     Page<Student> findByStudentDisplayIdOrName(@Param("search")String searching, Pageable pageable);
+
+    @Query("""
+    SELECT s FROM Student s
+    LEFT JOIN FETCH s.currentGradeSection gs
+    LEFT JOIN FETCH gs.level l 
+    WHERE s.studentDisplayId LIKE :search 
+    OR LOWER(s.fullName) LIKE :search
+    ORDER BY 
+        CASE 
+            WHEN gs IS NULL THEN 2 
+            ELSE 1 
+        END,
+        l.levelName ASC NULLS LAST
+    """)
+    Page<Student> findByStudentHandlerDisplayIdOrName(@Param("search")String searching, Pageable pageable);
 
     List<Student> findByIsNotDeletedTrueAndIsTransfereeTrue();
     

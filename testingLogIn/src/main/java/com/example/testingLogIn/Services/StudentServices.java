@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.StudentHandler;
 import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.GradeLevel;
@@ -185,9 +186,17 @@ public class StudentServices {
     }
 
     public StudentDTOPage getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize){
+        word = NonModelServices.forLikeOperator(word);
         Pageable pageable = PageRequest.of(pageNo-1,pageSize,orderBy(sortBy));
-        Page<StudentDTO> studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable)
-                                                    .map(Student::DTOmapper);
+        Page<StudentDTO> studentPage;
+
+        if(sortBy.equalsIgnoreCase("gradelevel"))
+            studentPage = studentRepo.findByStudentHandlerDisplayIdOrName(word,pageable)
+                    .map(Student::DTOmapper);
+        else
+            studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable)
+                    .map(Student::DTOmapper);
+
         return StudentDTOPage.builder()
                             .content(studentPage.getContent())
                             .pageNo(pageNo)
@@ -208,6 +217,5 @@ public class StudentServices {
         else
             return Sort.by(Sort.Order.asc("s.status"));
     }
-
 
 }

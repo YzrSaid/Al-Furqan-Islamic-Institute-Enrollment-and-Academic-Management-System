@@ -83,6 +83,7 @@ public class RequiredPaymentsServices {
                     studentList.forEach(student -> {
                         StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
                         double addToBalance = newFee.getRequiredAmount() - NonModelServices.adjustDecimal(((newFee.getRequiredAmount() * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
+                        addToBalance = NonModelServices.zeroIfLess(addToBalance);
                         student.setStudentBalance(student.getStudentBalance() + addToBalance);
                         studentFeesListList.add(StudentFeesList.build(newFee,currentSem,student,addToBalance));
                     });
@@ -171,6 +172,7 @@ public class RequiredPaymentsServices {
                         if(payment.isNotDeleted()){
                             StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
                             newBalToPay = updated.getRequiredAmount() - NonModelServices.adjustDecimal((updated.getRequiredAmount()*std.getTotalPercentageDiscount())+ std.getTotalFixedDiscount());
+                            newBalToPay = NonModelServices.zeroIfLess(newBalToPay);
                             student.setStudentBalance(student.getStudentBalance() +(newBalToPay - studFee.getAmount()));
                         }else{
                             student.setStudentBalance(student.getStudentBalance()- studFee.getAmount());
@@ -190,6 +192,7 @@ public class RequiredPaymentsServices {
                     studentList.forEach(student -> {
                         StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
                         double addToBalance = toUpdate.getRequiredAmount() - NonModelServices.adjustDecimal(((toUpdate.getRequiredAmount() * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
+                        addToBalance = NonModelServices.zeroIfLess(addToBalance);
                         student.setStudentBalance(student.getStudentBalance() + addToBalance);
                         newStudentFeesList.add(StudentFeesList.build(toUpdate,currentSem,student,addToBalance));
                     });
@@ -214,6 +217,7 @@ public class RequiredPaymentsServices {
                         studentList.forEach(student -> {
                             StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
                             double addToBalance = toUpdate.getRequiredAmount() - NonModelServices.adjustDecimal(((toUpdate.getRequiredAmount() * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount()));
+                            addToBalance = NonModelServices.zeroIfLess(addToBalance);
                             student.setStudentBalance(student.getStudentBalance() + addToBalance);
                             newStudentFeesList.add(StudentFeesList.build(toUpdate,currentSem,student,addToBalance));
                         });

@@ -32,65 +32,44 @@
             </div>
 
             <div class="search-div">
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button onclick="getAssessments()" class="search-btn">Search</button>
+                        <button type="button" onclick="getAssessments()" class="search-btn">Search</button>
                     </div>
-                    <div class="sort-container">
-                        <label for="sort-select">Order By</label>
-                        <select name="sort" onchange="getAssessments()" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="StudentId">Student Id</option>
-                            <option value="StudentName">Student Name</option>
-                            <option value="GradeLevel">Enrolling Grade Level</option>
-                        </select>
-                    </div>
+
+                </div>
+
+                <div class="sort-container">
+                    <label for="sort-select">Order By</label>
+                    <select name="sort" onchange="getAssessments()" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="StudentId">Student Id</option>
+                        <option value="StudentName">Student Name</option>
+                        <option value="GradeLevel">Enrolling Grade Level</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="lamesa" class="assessment-table main-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Enrolling to</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="student-type">New</div>
-                        </div>
-                    </td>
-                    <td id="eligibility">Qualified</td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status" id="status-assessment">Complete</div>
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                            </div>
-                            <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" class="action" data-open-modal="viewGradesModal">View Grades</a>
-                                <a href="#" data-open-modal="addGradeLevelAssessmentModal">Proceed</a>
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-                                    data-message="Are you sure you want to cancel this registration?">Cancel
-                                    Registration</a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="lamesa" class="assessment-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Enrolling to</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
 
         <!-- Pagination -->
         <div class="pagination-container">
@@ -155,38 +134,7 @@
                 </div> <br>
 
                 <!-- Grades Table -->
-                <table id="lamesaa" class="view-grades-table main-table">
-                    <thead>
-                        <tr>
-                            <th>Subject ID</th>
-                            <th>Subject</th>
-                            <th>Grade</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr>
-                            <td>001</td>
-                            <td>English</td>
-                            <td>78</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status" id="grade-remarks">Pass</div>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr id="average-row">
-                            <td colspan="2">Average</td>
-                            <td>90</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status" id="average-remarks">Pass</div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                 <div id="preRequisite-grades"></div>
                 <div class="close-button" id="view-grades-close-btn">
                     <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
                         id="close-button">Close</button>
@@ -217,8 +165,9 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         getAssessments();
+        preRequisiteGradesDiv = document.getElementById("preRequisite-grades");
     });
-
+    var preRequisiteGradesDiv;
     function fetchSections(gradeLevel) {
         fetch(`/section/gradeLevel/${gradeLevel}`)
             .then(res => res.json())
@@ -448,8 +397,6 @@
             const preRequisiteId = target.getAttribute("data-prerequisite");
             document.getElementById("student-name").textContent = target.getAttribute("data-stud-name");
             document.getElementById("student-id").textContent = target.getAttribute("data-displayId")
-            const tableBody = document.querySelector("#lamesaa tbody");
-            tableBody.innerHTML = `<td colspan="4">No Records Found</td>`;;
             if (!studentId) {
                 console.error(
                     "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
@@ -457,45 +404,50 @@
                 return;
             }
 
-
             fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
                 .then((response) => response.json())
                 .then((data) => {
-
                     const studentGradesMap = new Map(Object.entries(data.content));
+                    preRequisiteGradesDiv.innerHTML = ``;
                     if (studentGradesMap.size === 0) {
-                        alert("Returning");
                         return;
                     }
-                    tableBody.innerHTML = ``;;
                     studentGradesMap.forEach((values, key) => {
-                        const keyRow = document.createElement("tr");
-                        keyRow.innerHTML = `<td colspan="3"><strong>${key}</strong></td>`;
-                        tableBody.appendChild(keyRow);
                         let gradeTotal = 0;
                         let gradeCount = 0;
-
+                        var gradesRow=``;
                         values.forEach((grade) => {
                             gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
                             gradeCount++;
-
-                            const gradeRow = document.createElement("tr");
-                            gradeRow.innerHTML = `
+                            gradesRow += `
+                            <tr>
                                 <td>${grade.subjectName}</td>
                                 <td>${grade.subjectName}</td>
-                                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>`;
-                            tableBody.appendChild(gradeRow);
+                                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
+                            </tr>`;
                         });
-                        const avg = gradeCount > 0 ? gradeTotal / gradeCount : 0; // Avoid division by 0
+                        var avg = gradeTotal/gradeCount;
+                        var grade_new_table = document.createElement("div");
+                        grade_new_table.innerHTML = `
+                                <h5>${key}</h5>
+                                <table class="view-grades-table main-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject ID</th>
+                                            <th>Subject</th>
+                                            <th>Grade</th>
+                                        </tr>
+                                    </thead>
 
-                        // Create the average row (this should be done outside the loop)
-                        const averageRow = document.createElement("tr");
-                        averageRow.id = "average-row";
-                        averageRow.innerHTML = `
-                                <td colspan="2">Average</td>
-                                <td>${avg.toFixed(2)}</td>`;
-                        // Append the average row after all grade rows have been appended
-                        tableBody.appendChild(averageRow);
+                                    <tbody>
+                                        ${gradesRow}
+                                        <tr>
+                                            <td colspan="2">Average</td>
+                                            <td>${avg.toFixed(2)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>`;
+                                preRequisiteGradesDiv.appendChild(grade_new_table);
                     });
                 })
                 .catch((error) => console.error("Error fetching grade level:", error));

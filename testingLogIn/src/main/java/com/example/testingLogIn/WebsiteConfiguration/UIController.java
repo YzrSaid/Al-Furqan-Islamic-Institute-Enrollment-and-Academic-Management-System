@@ -155,7 +155,6 @@ public class UIController {
         if (auth != null && auth.getPrincipal() instanceof UserModel user) {
             return user.getRole().toString();
         }
-
         return "GUEST";
     }
 

@@ -517,7 +517,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0px;
+  padding: 10px 0;
 }
 .main-topbar {
   display: flex;
@@ -546,6 +546,7 @@ body {
 .collapsed-content {
   margin-left: 0 !important;
 }
+
 .institute-name {
   font-size: 20px;
   font-weight: 900;
@@ -554,10 +555,15 @@ body {
   text-transform: uppercase;
   letter-spacing: 2px;
 }
+.table-wrapper {
+  margin: 0 15px;
+}
 .text-link {
   display: flex;
   gap: 30px;
-  padding: 10px 0px;
+  padding: 15px 0;
+  align-items: center;
+  width: 100%;
 }
 .text-link h4 {
   font-size: 20px;
@@ -565,9 +571,12 @@ body {
 }
 .text-link a {
   display: inline;
-  margin: 0 -5px;
+  margin: 0;
   font-size: 13px;
   font-weight: 500;
+}
+.text-link p {
+  margin: 0;
 }
 
 .text-link a {
@@ -715,8 +724,6 @@ body {
   justify-content: center;
   display: flex;
   gap: 40px;
-  padding: 10px 0px;
-  margin-left: -260px;
 }
 .enrollment-buttons :hover {
   cursor: pointer;
@@ -742,11 +749,10 @@ body {
 }
 
 /* Style the main container */
-.search {
+.left-section {
   display: flex;
-  justify-content: space-between;
-  gap: 58px;
-  margin-bottom: 20px;
+  align-items: center;
+  gap: 20px;
 }
 
 /* Style the search container */
@@ -758,6 +764,7 @@ body {
 /* Style the sort container */
 .sort-container {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   gap: 10px;
 }
@@ -803,8 +810,16 @@ select option[value=""] {
 }
 
 .search-div {
-  padding: 20px 20px 0px 30px;
+  width: 100%;
+  /* background-color: #007bff;
+  padding: 0 33px; */
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  margin-bottom: 20px;
+  justify-content: space-between;
 }
+
 .main-table table {
   width: 100%;
   border-collapse: collapse;
@@ -1274,8 +1289,7 @@ table td {
 .payment-table,
 .scholarship-table,
 .distributable-table {
-  width: 92.5%;
-  margin: 0px 50px;
+  width: 100%;
 }
 
 .mini-table {
@@ -1518,14 +1532,14 @@ table td {
   background-color: white;
   min-width: 150px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;   
+  border-radius: 5px;
   z-index: 1;
   font-size: 13px;
 }
 
 .dropdown-status-content.show {
-    display: block;
-  }
+  display: block;
+}
 
 .dropdown-status-btn {
   outline: none;
@@ -1613,8 +1627,8 @@ table td {
   align-items: center;
 }
 .report-main-btns-right {
-    display: flex;
-    gap: 10px; 
+  display: flex;
+  gap: 10px;
 }
 .report-main-btns button {
   padding: 5px 15px;
@@ -1741,10 +1755,6 @@ table td {
   opacity: 1;
   transition-delay: 0s;
 }
-.student-modal-content {
-  overflow-y: scroll;
-}
-
 .teacher-modal-content,
 .teacher-edit-modal-content {
   background: white !important;
@@ -1759,6 +1769,7 @@ table td {
 }
 
 .student-modal-content {
+  overflow-y: auto;
   background: white !important;
   padding: 30px;
   border-radius: 5px;
@@ -1782,24 +1793,24 @@ table td {
   width: 120px;
 }
 
-.input-occupation {
-    width: 520px;
-    background-color: #007bff;
+#guardianOccupation,
+#motherOccupation,
+#fatherOccupation,
+#studguardianOccupation,
+#studmotherOccupation,
+#studfatherOccupation {
+  width: 520px;
 }
-
-.student-form-group #guardianOccupation,
-.student-form-group #motherOccupation,
-.student-form-group #fatherOccupation {
-    width: 520px;
-}
-
 
 #transfereemotherName,
 #transfereefatherName,
 #transfereeguardianName,
 #studmotherName,
 #studfatherName,
-#studguardianName {
+#studguardianName,
+#motherName,
+#fatherName,
+#guardianName {
   width: 700px;
 }
 
@@ -1831,8 +1842,6 @@ table td {
 .student-form-group .place-of-birth {
   width: 850px;
 }
-
-
 
 .student-form-group #studstreet,
 .student-form-group #studbarangay,
@@ -2100,10 +2109,45 @@ input[type="checkbox"] {
   height: 15px;
 }
 .checkbox {
-  margin-left: 33px;
-  width: 110px;
+  min-width: 100px;
   align-items: center;
   display: flex;
+}
+.checkbox-container {
+  justify-content: space-between;
+  min-width: 290px;
+  padding-left: 20px;
+  display: flex;
+}
+.checkbox-container-popover {
+  padding: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+.checkbox-container-popover {
+  padding: 0;
+}
+
+.checkbox-each {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  border-radius: 8px;
+}
+
+.checkbox-container-popover label {
+  margin-left: -30px;
+  padding: 0;
+}
+
+.checkbox-container-popover input[type="checkbox"] {
+  transform: scale(0.8);
+  cursor: pointer;
+  margin-right: -25px;
+  margin-left: -55px;
 }
 
 .student-modal-content,
@@ -2226,7 +2270,7 @@ input[type="checkbox"] {
 }
 
 .student-information-container {
-    padding-bottom: 30px;
+  padding-bottom: 30px;
 }
 
 .student-information-modal h1,
@@ -2409,15 +2453,12 @@ input[type="checkbox"] {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 1100px;
   height: 95vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
-  /* max-height: 70vh; */
-
   text-align: left;
-  position: relative;
+  position: relative; /* Critical for absolute positioning of popover */
   z-index: 1001;
 }
-
 .student-information-container-content {
   background: #f6f6f6 !important;
   margin-left: 30px;
@@ -2637,6 +2678,10 @@ input[type="checkbox"] {
 .student-form-group #street,
 .student-form-group #city,
 .student-form-group #barangay,
+#studentFirstName,
+#studbirthdate,
+#studentLastName,
+#studentMiddleName,
 .student-form-group #lastGradeLevelCompleted,
 .student-form-group #lastMadrasaYearCompleted {
   width: 200px;
@@ -3112,7 +3157,7 @@ input[type="checkbox"] {
   }
 
   .table {
-    page-break-inside: auto; /* Allow the table to break across pages */    
+    page-break-inside: auto; /* Allow the table to break across pages */
   }
 
   /* ✅ Make the table fit better */
@@ -3639,7 +3684,7 @@ td[rowspan] {
 }
 
 .middle-header {
-    width: 50%;
+  width: 50%;
   justify-self: center;
   display: flex;
   align-items: center;
@@ -3923,9 +3968,9 @@ td[rowspan] {
 .checkbox-each {
   display: flex;
   align-items: center;
-  padding: 10px;
-  border-radius: 5px;
-  transition: 0.3s;
+  padding: 6px 12px;
+  border-radius: 10px;
+  margin-bottom: 8px;
 }
 
 .checkbox-each:hover {
@@ -3941,7 +3986,7 @@ td[rowspan] {
 }
 
 .checkbox-each input {
-  transform: scale(1.2);
+  transform: scale(0.8);
   cursor: pointer;
 }
 
@@ -4153,7 +4198,8 @@ td[rowspan] {
   top: 0;
   background-color: white;
   z-index: 2;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
+  padding: 10px 1rem;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.1);
 }
 
@@ -4297,8 +4343,6 @@ th {
 
 .styled-popover {
   position: absolute;
-  top: 45%;
-  left: 60%;
   padding: 1rem;
   border-radius: 8px;
   background-color: #ffffff;
@@ -4306,8 +4350,27 @@ th {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   border: 1px solid #ddd;
   min-width: 200px;
-  z-index: 1000;
-  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  z-index: 1002; /* Above modal content */
+  transition: opacity 0.2s ease-in-out;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: none !important;
+}
+
+.checkbox,
+.checkbox-container-popover {
+  position: static;
+  overflow: visible;
+  transform: none;
+}
+
+.styled-popover h6 {
+  text-align: center;
+}
+
+.styled-popover label {
+  font-size: 12px;
 }
 
 #grades-container {

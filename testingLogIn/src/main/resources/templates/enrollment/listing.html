@@ -34,72 +34,49 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button onclick="goList(1,1)" class="search-btn">Search</button>
+                        <button type="button" onclick="goList(1,1)" class="search-btn">Search</button>
                     </div>
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button class="new-student" onclick="fetchDiscounts()" data-open-modal="newStudentModal"
+                        <button type="button" class="new-student" onclick="fetchDiscounts()" data-open-modal="newStudentModal"
                             title="Add New Student">NEW
                             STUDENT</button>
                     </div>
+                </div>
 
-                    <div class="sort-container">
-                        <select title="sort" name="sort" onchange="goList(1,1)" id="sort-select" class="sort-select">
-                            <option value="All" selected>All</option>
-                            <option value="Listing">Listing</option>
-                            <option value="Assessment">Assessment</option>
-                            <option value="Payment">Payment</option>
-                            <option value="Enrolled">Enrolled</option>
-                            <option value="Not_registered">Wala sa listing</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                    </div>
+                <div class="sort-container">
+                    <select title="sort" name="sort" onchange="goList(1,1)" id="sort-select" class="sort-select">
+                        <option value="All" selected>All</option>
+                        <option value="Listing">Listing</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Payment">Payment</option>
+                        <option value="Enrolled">Enrolled</option>
+                        <option value="Not_registered">Wala sa listing</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-
-        <!-- Table -->
-        <table id="lamesa" class="listing-table main-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Enrolling to</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status" id="status-registration"></div>
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i> <!-- Icon is the button -->
-                                </button>
-                            </div>
-                            <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" data-action="listingAddGradeLevel" data-open-modal="gradeLevelModal"
-                                    title="Click to Proceed">Proceed</a>
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-                                    data-message="Are you sure you want to cancel this registration?"
-                                    title="Clicking this will cancel the registration">Cancel
-                                    Registration</a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="lamesa" class="listing-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Enrolling to</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
         <div class="pagination-container">
@@ -498,38 +475,7 @@
             </div> <br>
 
             <!-- Grades Table -->
-            <table id="lamesaa" class="view-grades-table main-table">
-                <thead>
-                    <tr>
-                        <th>Subject ID</th>
-                        <th>Subject</th>
-                        <th>Grade</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td>001</td>
-                        <td>English</td>
-                        <td>78</td>
-                        <td>
-                            <div class="status-container">
-                                <div class="status" id="grade-remarks">Pass</div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr id="average-row">
-                        <td colspan="2">Average</td>
-                        <td>90</td>
-                        <td>
-                            <div class="status-container">
-                                <div class="status" id="average-remarks">Pass</div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div id="preRequisite-grades"></div>
 
             <!-- <div class="half-width" id="view-grade-average">
                 <label for="grade-average">Final Average:</label>
@@ -567,11 +513,12 @@
                     <label for="studentFirstName">First Name:</label>
                     <input type="text" name="firstname" id="studentFirstName" required>
 
+                    <label for="studentMiddleName">Middle Name:</label>
+                    <input type="text" name="middlename" id="studentMiddleName" placeholder="Optional">
+
                     <label for="studentLastName">Last Name:</label>
                     <input type="text" name="lastname" id="studentLastName" required>
 
-                    <label for="studentMiddleName">Middle Name:</label>
-                    <input type="text" name="middlename" id="studentMiddleName" placeholder="Optional">
                 </div> <br>
 
                 <div class="student-form-group">
@@ -585,23 +532,25 @@
                     <label for="birthdate">Birthdate:</label>
                     <input type="date" id="studbirthdate" required>
 
-                    <div class="checkbox">
-                        <label for="scholar">Scholar:</label>
-                        <input type="checkbox" id="scholar">
+                    <div class="checkbox-container">
+                        <div class="checkbox">
+                            <label for="scholar">Scholar:</label>
+                            <input type="checkbox" id="scholar">
 
-                        <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png"
-                                popovertarget="my-popover" alt="dropdown-icon">
-                        </button>
+                            <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png"
+                                    popovertarget="my-popover" alt="dropdown-icon">
+                            </button>
 
-                        <!-- Popover lives right below the button now -->
-                        <div popover id="my-popover" name="add-discount" class="styled-popover">
-                            <h6>Scholarships:</h6>
+                            <!-- Popover lives right below the button now -->
+                            <div popover id="my-popover" name="add-discount" class="styled-popover">
+                                <h6>Scholarships:</h6>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="checkbox">
-                        <label for="isTransferee">Transferee:</label>
-                        <input type="checkbox" id="isTransferee">
+                        <div class="checkbox">
+                            <label for="isTransferee">Transferee:</label>
+                            <input type="checkbox" id="isTransferee">
+                        </div>
                     </div>
 
                 </div> <br>
@@ -628,7 +577,7 @@
                     <input type="text" name="fatherName" id="studfatherName" required>
 
                     <label for="studfatherOccupation">Occupation:</label>
-                    <input type="text" id="studfatherOccupation" class="input-occupation">
+                    <input type="text" id="studfatherOccupation">
                 </div> <br>
 
                 <h6>Mother's Information</h6>
@@ -637,7 +586,7 @@
                     <input type="text" id="studmotherName" required>
 
                     <label for="studmotherOccupation">Occupation:</label>
-                    <input type="text" id="studmotherOccupation" class="input-occupation">
+                    <input type="text" id="studmotherOccupation">
                 </div> <br>
 
                 <h6>Guardian's Information</h6>
@@ -646,7 +595,7 @@
                     <input type="text" id="studguardianName">
 
                     <label for="studguardianOccupation">Occupation:</label>
-                    <input type="text" id="studguardianOccupation" class="input-occupation">
+                    <input type="text" id="studguardianOccupation">
                 </div> <br>
 
                 <div class="student-form-group">
@@ -953,8 +902,9 @@
         });
         goList();
         fetchGradeLevelsForm();
+        preRequisiteGradesDiv = document.getElementById("preRequisite-grades");
     });
-
+    var preRequisiteGradesDiv;
     async function fetchGradeLevelsForm() {
         const gradeLevels = document.getElementById("lastGradeLevelIdCompleted");
         const response = await fetch("/gradelevel/all");
@@ -986,30 +936,32 @@
         fetch(`/enrollment/paymentView/${enrollmentId}`)
             .then(res => res.json())
             .then(epv => {
-                console.log('The object is', epv);
                 const studentname = document.querySelector("#student-name");
                 const studentId = document.querySelector("#student-id-list");
                 if (!studentname || !studentId) return console.error("Dropdown for sections not found");
 
-                studentname.textContent = epv.studentFirstName + (epv.studentMiddleName ? ' ' + epv.studentMiddleName : '') + ' ' + epv.studentLastName;
-                studentId.textContent = epv.studentDisplayId;
-                payerId = epv.studentId;
+                studentname.textContent = epv.student.fullName;
 
+                studentId.textContent = epv.student.studentDisplayId;
+                payerId = epv.student.studentId;
                 const tableBody = document.querySelector("#table-ni-kharl tbody");
                 tableBody.innerHTML = "";
-                epv.feeStatus.forEach(datas => {
+                epv.feesAndBalance.forEach(datas => {
+                    var status = datas.totalPaid < datas.totalRequired && datas.totalPaid === 0 ? "Unpaid" :
+                        datas.totalPaid > 0 && datas.totalPaid < datas.totalRequired ? "Partially Paid" :
+                            "Fully Paid";
                     const row = document.createElement("tr");
-                    const statusClass = getPaymentStatusClass(datas.status);
+                    const statusClass = getPaymentStatusClass(status);
                     row.innerHTML = `
-                            <td>${datas.feeName}</td>
-                            <td>${datas.requiredFee}</td>
-                            <td>${datas.totalPaid}</td>
-                            <td>${datas.balance}</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status ${statusClass}">${datas.status}</div>
-                                </div>
-                            </td>`;
+                        <td>${datas.fee.name}</td>
+                        <td>${datas.totalRequired}</td>
+                        <td>${datas.totalPaid}</td>
+                        <td>${datas.balance}</td>
+                        <td>
+                            <div class="status-container">
+                                <div class="status ${statusClass}">${status}</div>
+                            </div>
+                        </td>`;
                     tableBody.appendChild(row);
                 });
             })
@@ -1575,6 +1527,11 @@
             .then(response => response.json())
             .then(data => {
                 popover.innerHTML = "<h6>Scholarship Type</h6>";
+
+                // Create wrapper div with your custom class
+                const discountWrapper = document.createElement("div");
+                discountWrapper.classList.add("checkbox-container-popover");
+
                 data.forEach(disc => {
                     const paymentDiv = document.createElement("div");
                     paymentDiv.classList.add("checkbox-each");
@@ -1595,8 +1552,11 @@
 
                     paymentDiv.appendChild(checkbox);
                     paymentDiv.appendChild(label);
-                    popover.appendChild(paymentDiv);
+                    discountWrapper.appendChild(paymentDiv);
                 });
+
+                // Append the container to the popover
+                popover.appendChild(discountWrapper);
             })
             .catch(error => console.error("Error fetching grade levels:", error));
     }
@@ -1924,8 +1884,6 @@
         const preRequisiteId = target.getAttribute("data-prerequisite");
         document.getElementById("student-grade-name").textContent = target.getAttribute("data-stud-name");
         document.getElementById("student-grade-id").textContent = target.getAttribute("data-displayId");
-        const tableBody = document.querySelector("#lamesaa tbody");
-        tableBody.innerHTML = `<td colspan="4">No Records Found</td>`;
         if (preRequisiteId === "null") {
             return;
         }
@@ -1941,42 +1899,48 @@
             .then((response) => response.json())
             .then((data) => {
                 const studentGradesMap = new Map(Object.entries(data.content));
+                preRequisiteGradesDiv.innerHTML = ``;
                 if (studentGradesMap.size === 0) {
                     return;
                 }
-                tableBody.innerHTML = "";
                 studentGradesMap.forEach((values, key) => {
-                    const keyRow = document.createElement("tr");
-                    keyRow.innerHTML = `<td colspan="3"><strong>${key}</strong></td>`;
-                    tableBody.appendChild(keyRow);
-                    let gradeTotal = 0;
-                    let gradeCount = 0;
-                    values.forEach((grade) => {
-                        gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
-                        gradeCount++;
+                        let gradeTotal = 0;
+                        let gradeCount = 0;
+                        var gradesRow=``;
+                        values.forEach((grade) => {
+                            gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
+                            gradeCount++;
+                            gradesRow += `
+                            <tr>
+                                <td>${grade.subjectName}</td>
+                                <td>${grade.subjectName}</td>
+                                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
+                            </tr>`;
+                        });
+                        var avg = gradeTotal/gradeCount;
+                        var grade_new_table = document.createElement("div");
+                        grade_new_table.innerHTML = `
+                                <h5>${key}</h5>
+                                <table class="view-grades-table main-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject ID</th>
+                                            <th>Subject</th>
+                                            <th>Grade</th>
+                                        </tr>
+                                    </thead>
 
-                        const gradeRow = document.createElement("tr");
-                        gradeRow.innerHTML = `
-                            <td>${grade.subjectName}</td>
-                            <td>${grade.subjectName}</td>
-                            <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
-                        `;
-                        tableBody.appendChild(gradeRow);
+                                    <tbody>
+                                        ${gradesRow}
+                                        <tr>
+                                            <td colspan="2">Average</td>
+                                            <td>${avg.toFixed(2)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>`;
+                                preRequisiteGradesDiv.appendChild(grade_new_table);
                     });
-
-                    // Calculate the average grade after the loop is finished
-                    const avg = gradeCount > 0 ? gradeTotal / gradeCount : 0; // Avoid division by 0
-
-                    // Create the average row (this should be done outside the loop)
-                    const averageRow = document.createElement("tr");
-                    averageRow.id = "average-row";
-                    averageRow.innerHTML = `
-                            <td colspan="2">Average</td>
-                            <td>${avg.toFixed(2)}</td>`;
-                    // Append the average row after all grade rows have been appended
-                    tableBody.appendChild(averageRow);
-                });
-            })
+                })
             .catch((error) => console.error("Error fetching grade level:", error));
     }
 

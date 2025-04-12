@@ -3,6 +3,7 @@ package com.example.testingLogIn.Repositories;
 import com.example.testingLogIn.CustomObjects.StudentDiscountHandler;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.AssociativeModels.StudentDiscount;
+import com.example.testingLogIn.Models.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,6 +35,17 @@ public interface StudentDiscountRepo extends JpaRepository<StudentDiscount,Integ
             "JOIN studDisc.discount disc " +
             "WHERE stud.studentId = :studentId")
     List<StudentDiscount> findByStudent(@Param("studentId") int studentId);
+
+    @Query("""
+            SELECT s 
+            FROM StudentDiscount sd
+            INNER JOIN Student s ON s.studentId = sd.student.studentId
+            INNER JOIN Enrollment e ON e.student.studentId = s.studentId
+            WHERE sd.discount.discountId = :discId
+            AND e.enrollmentStatus = 'ENROLLED'
+            AND e.SYSemester.sySemNumber = :semester
+            """)
+    List<Student> findStudentByDiscount(int discId,int semester);
 
     @Query("SELECT studDisc FROM StudentDiscount studDisc " +
             "JOIN studDisc.student stud " +

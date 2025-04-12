@@ -309,7 +309,7 @@
                                 style="display: flex; justify-content: space-between; align-items: center; margin: 0px;">
                                 <div style="display: flex; gap: 10px;">
                                     <h6>Balance:</h6>
-                                    <h6 id="total-balance">1, 000</h6>
+                                    <h6 id="total-balance">P0</h6>
                                 </div>
                                 <button id="transaction-record-btn">View Transactions</button>
                             </div>
@@ -566,7 +566,6 @@
             let totalGrade = 0;
             let count = 0;
 
-            // Loop through subjects and grades
             sem.grades.forEach(grade => {
                 if(allFilled){
                     allFilled = grade.subjectGrade;}
@@ -735,7 +734,7 @@
 
         const remainingFees = await response.json();
 
-        feesTable.innerHTML = `<tr><td colspan="3">No records found</td></tr>`;
+        feesTable.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
         if(remainingFees.feesAndBalance.length === 0){return;}
         feesTable.innerHTML = ``;
         document.getElementById("total-balance").textContent = `P${remainingFees.totalFee}`;

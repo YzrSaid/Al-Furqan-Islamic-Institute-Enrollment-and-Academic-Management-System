@@ -5,6 +5,7 @@ import com.example.testingLogIn.CustomObjects.StudentDiscountHandler;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.ModelDTO.StudentDiscountDTO;
 import com.example.testingLogIn.Models.Discount;
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.AssociativeModels.StudentDiscount;
 import com.example.testingLogIn.PagedResponse.PagedResponse;
@@ -59,6 +60,13 @@ public class DiscountsServices {
         Discount discount = discRepo.findById(discountId).orElseThrow(NullPointerException::new);
         discount.setNotDeleted(false);
         discRepo.save(discount);
+
+        CompletableFuture.runAsync(()->{
+            SchoolYearSemester actvSem = sem.getCurrentActive();
+            int currentSem = actvSem.getSySemNumber();
+            for(Student student : studDiscRepo.findStudentByDiscount(discountId, currentSem)){
+                updateStudentFees(student);}
+        });
     }
 
     public boolean addStudentDiscount(int discountId, List<Integer> studentIds){
@@ -107,8 +115,7 @@ public class DiscountsServices {
     }
 
     public StudentTotalDiscount getStudentTotalDiscount(int studentId){
-        StudentTotalDiscount std= studDiscRepo.getStudentTotalDiscount(studentId).orElse(new StudentTotalDiscount(null,null));
-        return std;
+        return studDiscRepo.getStudentTotalDiscount(studentId).orElse(new StudentTotalDiscount(null,null));
     }
 
     public PagedResponse getDiscountRecords(int pageNo, int pageSize, Integer discountId,String search, boolean didAvailed){

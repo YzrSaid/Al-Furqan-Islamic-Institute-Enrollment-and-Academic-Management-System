@@ -11,4 +11,8 @@ public class NonModelServices {
     public static double adjustDecimal(double value){
         return new BigDecimal(value).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
+
+    public static double zeroIfLess(double value){
+        return value < 0 ? 0.0d : value;
+    }
 }

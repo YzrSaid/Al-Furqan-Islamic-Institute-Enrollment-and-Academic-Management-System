@@ -14,7 +14,7 @@
     </div>
     <div id="right-login-block">
         <img th:src="@{/website-logo}" alt="school-logo" id="school-logo"> <br> <br>
-        <h3>Al-Furqan Islamic Institute Inc.</h3>
+        <h3 th:text="${schoolName}"></h3>
 
         <!-- Display error message if it exists -->
         <div th:if="${param.error}" class="error-message">
@@ -68,7 +68,7 @@ document.getElementById('login-form').addEventListener('submit', function (event
     })
     .catch(error => {
         console.error('Error:', error);
-        alert("Login failed. Please check your credentials.");
+        alert(error.message);
     });
 });
 

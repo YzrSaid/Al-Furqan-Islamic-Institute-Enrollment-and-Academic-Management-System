@@ -28,12 +28,13 @@
                 <h4>Payment Transactions</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/transaction/tuition" title="You're currently in this page.">Transaction - Payment Transactions</a>
+                <a href="/transaction/tuition" title="You're currently in this page.">Transaction - Payment
+                    Transactions</a>
             </div>
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
                         <button onclick="getRecords(1)" class="search-btn">Search</button>
@@ -45,30 +46,34 @@
                                 Payment</button>
                         </div>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" onchange="getRecords(1)" id="view-by-select" class="sort-select">
-                            <option value="Transaction" selected>Transaction</option>
-                        </select>
-                    </div>
+                </div>
+
+                <div class="sort-container">
+                    <select name="sort" onchange="getRecords(1)" id="view-by-select" class="sort-select">
+                        <option value="Transaction" selected>Transaction</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="realginnas" class="payment-table main-table">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Student Name</th>
-                    <th>Date Paid</th>
-                    <th>Transaction Number</th>
-                    <th>Amount Paid</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table> <br> <br>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="realginnas" class="payment-table main-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Student Name</th>
+                        <th>Date Paid</th>
+                        <th>Transaction Number</th>
+                        <th>Amount Paid</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> <br> <br>
+        </div>
+
 
         <!-- Pagination -->
         <div class="pagination-container">
@@ -129,7 +134,7 @@
                                 <option value="balance" selected>Current Balance</option>
                                 <option value="gradelevel">Grade Level</option>
                                 <option value="studentname">Student Name</option>
-                                <option value="studentid">Student Id</option>
+                                <!--                                <option value="status">Status</option>-->
                             </select>
                         </div>
                     </div>
@@ -653,20 +658,20 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(obj)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json(); // Parse the response as JSON
-            })
-            .then(receipt => {
-                const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
-                viewTheReceipt(decodeURIComponent(receiptJSON));
-            })
-            .catch(error => {
-                console.error("Error adding payment:", error);
-                alert("Failed to add payment. Please try again.");
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json(); // Parse the response as JSON
+                })
+                .then(receipt => {
+                    const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
+                    viewTheReceipt(decodeURIComponent(receiptJSON));
+                })
+                .catch(error => {
+                    console.error("Error adding payment:", error);
+                    alert("Failed to add payment. Please try again.");
+                });
         }
 
         async function fetchThisPokemon(receiptReference) {
@@ -814,11 +819,13 @@
         var studPageSize;
         function viewStudents(pageNo = 1, pageSize = 1) {
             studPageNo = pageNo;
-            studPageSize = pageSize;
+            studPageSize = 10;
             const orderBy = document.getElementById("view-stud-by-select").value;
             const search = document.getElementById("search-student").value;
             const studentsTable = document.querySelector("#table-ni-martin tbody");
-            fetch(`/students/all/s?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${orderBy}`)
+            var url = `/students/all?q=${search}&pageNo=${pageNo}&pageSize=10&sortBy=${orderBy}`;
+            console.log(url);
+            fetch(url)
                 .then(res => res.json())
                 .then(data => {
                     if (data.content.length === 0) { return; }

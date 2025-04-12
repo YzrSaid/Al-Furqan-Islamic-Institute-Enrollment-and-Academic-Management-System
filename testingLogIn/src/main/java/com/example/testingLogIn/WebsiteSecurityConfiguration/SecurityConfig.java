@@ -31,8 +31,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers("/css/**", "/website-logo", "/website-cover", "/images/**","/js/*","/signing","/dynamic-image",
-                                                    "/register/add","/ipaddress").permitAll();
+                    req.requestMatchers("/css/**", "/website-logo", "/website-cover",
+                                        "/images/**","/js/*","/signing","/register/add").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .formLogin(form -> form.loginPage("/login").permitAll()

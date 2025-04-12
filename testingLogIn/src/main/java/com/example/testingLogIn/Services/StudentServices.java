@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.StudentHandler;
 import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.GradeLevel;
@@ -184,31 +185,18 @@ public class StudentServices {
         return false;
     }
 
-    public StudentDTOPage getStudentPage(String studentType, String condition, int pageNo, int pageSize){
-        Sort sort = condition.equalsIgnoreCase("asc") ?
-                Sort.by(Sort.Order.asc("studentDisplayId")) :
-                Sort.by(Sort.Order.desc("studentDisplayId"));
-
-        Page<StudentDTO> studentPage = null;
-        if(studentType.equalsIgnoreCase("new"))
-            studentPage = studentRepo.findByIsNewTrue(PageRequest.of(pageNo-1,pageSize,sort)).map(Student::DTOmapper);
-        else
-            studentPage = studentRepo.findByIsNewFalse(PageRequest.of(pageNo-1,pageSize,sort)).map(Student::DTOmapper);
-
-        return StudentDTOPage.builder()
-                .content(studentPage.getContent())
-                .pageNo(pageNo)
-                .pageSize(pageSize)
-                .totalElements(studentPage.getTotalElements())
-                .totalPages(studentPage.getTotalPages())
-                .isLast(studentPage.isLast())
-                .build();
-    }
-
     public StudentDTOPage getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize){
+        word = NonModelServices.forLikeOperator(word);
         Pageable pageable = PageRequest.of(pageNo-1,pageSize,orderBy(sortBy));
-        Page<StudentDTO> studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable)
-                                                    .map(Student::DTOmapper);
+        Page<StudentDTO> studentPage;
+
+        if(sortBy.equalsIgnoreCase("gradelevel"))
+            studentPage = studentRepo.findByStudentHandlerDisplayIdOrName(word,pageable)
+                    .map(Student::DTOmapper);
+        else
+            studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable)
+                    .map(Student::DTOmapper);
+
         return StudentDTOPage.builder()
                             .content(studentPage.getContent())
                             .pageNo(pageNo)
@@ -227,8 +215,7 @@ public class StudentServices {
         else if(condition.equalsIgnoreCase("studentname"))
             return Sort.by(Sort.Order.asc("s.fullName"));
         else
-            return Sort.by(Sort.Order.asc("s.studentDisplayId"));
+            return Sort.by(Sort.Order.asc("s.status"));
     }
-
 
 }

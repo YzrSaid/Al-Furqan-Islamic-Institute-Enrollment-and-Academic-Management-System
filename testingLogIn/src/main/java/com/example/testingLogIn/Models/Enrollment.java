@@ -76,5 +76,26 @@ public class Enrollment {
                             .isNotDeleted(isNotDeleted)
                             .build();
     }
+
+    public EnrollmentDTO DTOmapper(){
+        Integer preReqId = gradeLevelToEnroll == null ? null : gradeLevelToEnroll.getPreRequisite() == null ?
+                null :gradeLevelToEnroll.getPreRequisite().getLevelId();
+        return EnrollmentDTO.builder()
+                .enrollmentId(enrollmentId)
+                .student(student.DTOmapper())
+                .schoolYear(SYSemester.getSchoolYear().getSchoolYear())
+                .semester(SYSemester.getSem())
+                .preRequisiteId(preReqId)
+                .gradeLevelToEnrollId(Optional.ofNullable(gradeLevelToEnroll).map(GradeLevel::getLevelId).orElse(null))
+                .gradeLevelToEnroll(Optional.ofNullable(gradeLevelToEnroll).map(GradeLevel::getLevelName).orElse(null))
+                .sectionToEnroll(Optional.ofNullable(sectionToEnroll).map(sec -> sec.getLevel().getLevelName()+"-"+sec.getSectionName()).orElse(null))
+                .enrollmentStatus(enrollmentStatus)
+                .studentMiddleName(student.getMiddleName())
+                .remarks(remarks)
+                .studentMiddleName(student.getMiddleName())
+                .isQualified(isQualified)
+                .isNotDeleted(isNotDeleted)
+                .build();
+    }
     
 }

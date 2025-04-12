@@ -1513,21 +1513,25 @@ document.addEventListener("click", function (event) {
 });
 
 function clearForm() {
-    document
-      .querySelectorAll(".modal input, .modal select, .modal textarea")
-      .forEach((element) => {
-        // Only clear if the field is not disabled
-        if (!element.readOnly) {
-            console.log("deleting");
-          if (element.type === "checkbox" || element.type === "radio") {
-            element.checked = false; // Uncheck checkboxes/radios
-          } else {
-            element.value = ""; // Clear text inputs, dropdowns & textareas
-          }
+  document
+    .querySelectorAll(".modal input, .modal select, .modal textarea")
+    .forEach((element) => {
+      // Only clear if NOT disabled, NOT readonly, and doesn't have data-preserve
+      if (
+        !element.isDisabled &&
+        !element.readOnly &&
+        !element.hasAttribute("data-preserve")
+      ) {
+        if (element.type === "checkbox" || element.type === "radio") {
+          element.checked = false;
+        } else {
+          element.value = "";
         }
-      });
-  }
-  
+      }
+    });
+}
+
+
 // this is for the checkbox in new student modal form
 document.addEventListener("DOMContentLoaded", () => {
   const transfereeCheckbox = document.getElementById("isTransferee");
@@ -2089,4 +2093,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-

@@ -222,12 +222,12 @@ body {
 
 .input-row {
   display: flex;
-  gap: 1rem; 
+  gap: 1rem;
   width: 100%;
 }
 
 .input-group {
-  flex: 1; 
+  flex: 1;
 }
 
 .account-type-div select,
@@ -574,6 +574,7 @@ body {
   width: 100%;
 }
 .text-link h4 {
+  margin: 0;
   font-size: 20px;
   font-weight: bold;
 }
@@ -1296,7 +1297,8 @@ table td {
 .fees-table,
 .payment-table,
 .scholarship-table,
-.distributable-table {
+.distributable-table,
+.view-list-of-students-table {
   width: 100%;
 }
 
@@ -1304,13 +1306,6 @@ table td {
   width: 100%;
 }
 
-.recent-transaction-table-mini {
-}
-
-.view-list-of-students-table {
-  width: 89%;
-  margin: 0px 50px;
-}
 .sched-table {
   width: 96.8%;
   margin: 0px 20px;
@@ -1621,9 +1616,12 @@ table td {
 }
 
 .modal-buttons {
-  margin-top: 35px;
+  text-align: center;
+  margin-top: 30px;
   display: flex;
-  justify-content: space-around;
+  width: 55%;
+  justify-content: space-between;
+  justify-self: end;
   align-items: center;
 }
 .report-main-btns {
@@ -1640,6 +1638,20 @@ table td {
 }
 .report-main-btns button {
   padding: 5px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.back-btn {
+  display: flex;
+  justify-self: end;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-btn button {
+  background-color: transparent;
   border: none;
   cursor: pointer;
   border-radius: 5px;
@@ -1681,15 +1693,14 @@ table td {
 .btn-gray,
 .btn-neutral {
   min-width: 100px;
-  font-weight: 500;
+  font-weight: 600;
 
   color: white;
   border: none;
   border-radius: 5px;
   padding: 9px 15px;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
 }
 .btn-neutral:hover {
   background-color: #b0bf0b;
@@ -2032,9 +2043,10 @@ input#payment-amount {
   padding: 15px;
   border-radius: 8px;
   width: 100%;
-  min-height: 150px;
+  height: 180px;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
 }
 
 .full-width input {
@@ -2405,6 +2417,7 @@ input[type="checkbox"] {
   border-radius: 5px;
   font-size: 14px;
 }
+
 .analytics-container select {
   width: 90%;
   padding: 8px;
@@ -2487,9 +2500,8 @@ input[type="checkbox"] {
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 900px;
-  height: 80vh;
+  height: 90vh;
   overflow-y: scroll;
-  overflow-x: hidden;
   /* max-height: 70vh; */
 
   text-align: left;
@@ -2504,9 +2516,8 @@ input[type="checkbox"] {
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
-  min-height: 40vh;
-  /* max-height: 70vh; */
-
+  height: 78vh;
+  overflow-y: auto;
   text-align: left;
   position: relative;
   z-index: 1001;
@@ -2734,11 +2745,10 @@ input[type="checkbox"] {
 #subjectName {
   width: 30.5%;
 }
-#studentForm h6 {
-  font-weight: bold;
-  font-size: 15px;
-}
+
 #teacherForm h6,
+#studentForm h6,
+#feesManagementForm h6,
 #teacherEditForm h6 {
   font-weight: bold;
   font-size: 15px;
@@ -3822,11 +3832,6 @@ td[rowspan] {
   font-style: italic;
 }
 
-.modal-buttons {
-  text-align: center;
-  margin-top: 20px;
-}
-
 .print-btn {
   background: #28a745;
   color: white;
@@ -3939,7 +3944,7 @@ td[rowspan] {
 }
 
 .view-student-list-modal .close-modal {
-  top: 55px !important;
+  top: 25px !important;
   right: 300px !important;
 }
 

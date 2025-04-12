@@ -37,12 +37,12 @@
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button onclick="getRecords(1)" class="search-btn">Search</button>
+                        <button type="button" onclick="getRecords(1)" class="search-btn">Search</button>
 
                         <!-- Add Payment Button -->
                         <div class="add-something-btn-container">
-                            <button class="add-something-btn" onclick="viewStudents()" id="openViewStudentListModal"
-                                data-open-modal="viewStudentListModal">Add
+                            <button type="button" class="add-something-btn" onclick="viewStudents()"
+                                id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add
                                 Payment</button>
                         </div>
                     </div>
@@ -124,21 +124,21 @@
 
                 <div class="search-div">
                     <!-- Searchbox and sort btn -->
-                    <div class="search">
+                    <div class="left-section">
                         <div class="search-container">
                             <input type="text" id="search-student" placeholder="Search..." class="search-input" />
-                            <button onclick="viewStudents(1)" class="search-btn">Search</button>
-                        </div>
-                        <div class="sort-container">
-                            <select name="sort" onchange="viewStudents(1)" id="view-stud-by-select" class="sort-select">
-                                <option value="balance" selected>Current Balance</option>
-                                <option value="gradelevel">Grade Level</option>
-                                <option value="studentname">Student Name</option>
-                                <!--                                <option value="status">Status</option>-->
-                            </select>
+                            <button type="button" onclick="viewStudents(1)" class="search-btn">Search</button>
                         </div>
                     </div>
+                    <div class="sort-container">
+                        <select name="sort" onchange="viewStudents(1)" id="view-stud-by-select" class="sort-select">
+                            <option value="balance" selected>Current Balance</option>
+                            <option value="gradelevel">Grade Level</option>
+                            <option value="studentname">Student Name</option>
+                        </select>
+                    </div>
                 </div>
+
 
                 <!-- List of Payments Table -->
                 <table id="table-ni-martin" class="view-list-of-students-table main-table">

@@ -28,7 +28,8 @@
                 <h4>Fees Management</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/maintenance/fees-management" title="You're currently in this page.">Maintenance - Fees Management</a>
+                <a href="/maintenance/fees-management" title="You're currently in this page.">Maintenance - Fees
+                    Management</a>
             </div>
 
             <div class="search-div">
@@ -40,11 +41,11 @@
                     </div>
                     <!-- Add Fees Management Button -->
                     <div class="add-something-btn-container">
-                        <button class="add-something-btn" id="addAFeeButton"
-                            data-open-modal="feesManagementModal" title="Click to Add a Fee">Add a
+                        <button class="add-something-btn" id="addAFeeButton" data-open-modal="feesManagementModal"
+                            title="Click to Add a Fee">Add a
                             Fee</button>
                     </div>
-                    
+
                 </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
@@ -58,20 +59,20 @@
         </div>
 
         <!-- Table -->
-         <div class="table-wrapper">
-        <table id="lamesa" class="fees-table main-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Amount</th>
-                    <th>Grade Level</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table> <br> <br>
-    </div>
+        <div class="table-wrapper">
+            <table id="lamesa" class="fees-table main-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Grade Level</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> <br> <br>
+        </div>
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
@@ -111,11 +112,6 @@
                 <form method="post" action="" id="feesManagementForm">
                     <div class="payment-name-row">
                         <label for="paymentName">Payment Name:</label>
-
-                        <!-- Checkbox beside the label -->
-                        <div class="checkbox-label">
-                            Distributable: <input type="checkbox" id="distributable">
-                        </div>
                     </div>
 
                     <!-- Input field below -->
@@ -124,30 +120,36 @@
 
                     <label for="amount">Amount</label>
                     <input type="number" id="amount">
-                    <br><br>
+                    <br> 
 
+                    <div class="full-width-row">
+                        <div>
+                            <!-- Checkbox beside the label -->
+                            <label for="label">Distributable</label><input type="checkbox" id="distributable">
+                        </div>
+
+                    </div>
+
+                    <div class="full-width-row">
+                        <div>
+                            <label for="label">Apply this fee to current semester:</label><input type="checkbox"
+                                id="applyThisSem">
+                        </div>
+                    </div> <br>
 
                     <h6>Grade Levels Required by this Payment:</h6>
                     <div class="payment-container">
                         <!-- Grade level checkboxes or inputs go here -->
-                    </div> <br>
-
-                    <div class="full-width-row">
-                        <div>
-                            Apply this fee to current semester: <input type="checkbox" id="applyThisSem">
-                        </div>
                     </div>
 
-
-
-
                     <div class="modal-buttons">
+                        <button type="button" class="btn-cancel" data-close-modal="feesManagementModal">Cancel</button>
                         <button type="button" class="btn-confirm" data-action="addFee"
                             data-message="Are you sure you want to save this Fee?" id="confirmFee"
                             data-open-modal="confirmationModal">
                             Confirm
                         </button>
-                        <button type="button" class="btn-cancel" data-close-modal="feesManagementModal">Cancel</button>
+                        
                     </div>
                 </form>
 
@@ -359,8 +361,8 @@
             name: paymentName,
             requiredAmount: parseFloat(amount),
             gradeLevelNames: selectedGradeLevels,
-            distributable : isDistributable,
-            willApplyNow : willApplyThisSem
+            distributable: isDistributable,
+            willApplyNow: willApplyThisSem
         };
         console.log(requestData);
 
@@ -400,7 +402,7 @@
             name: paymentName,
             requiredAmount: requiredAmount,
             gradeLevelNames: selectedGradeLevels,
-            willApplyNow : willApplyThisSem
+            willApplyNow: willApplyThisSem
         };
 
         console.log(updatedFeeData);

@@ -25,86 +25,80 @@
             <!-- Topbar -->
         <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link" id="breadcrumb-container">
-            <h4>Create User</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/settings/create-user" title="You're currently in this page.">Settings - Create User</a>
-        </div>
-        </div>
-        
-        <div class="create-user-container">
-            <div class="form-container">
-                <form action="/user/register" method="post" id="signup-form-large">
-                    <div class="input-group-half">
-                        <div class="input-group">
-                            <input class="input-group-input" type="text" name="firstname" id="firstname" placeholder=""
-                                required>
-                            <label class="input-group-label" for="firstname">First Name</label>
-                        </div>
-                        <div class="input-group">
-                            <input class="input-group-input" type="text" name="lastname" id="lastname" placeholder="">
-                            <label class="input-group-label" for="lastname">Last Name</label>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <input class="input-group-input" type="email" name="username" id="email" placeholder=""
-                            required>
-                        <label class="input-group-label" for="email">Email</label>
-                    </div>
-                    <div class="input-group-half">
-                        <div class="input-group">
-                            <div class="account-type-div">
-                                <label class="normal-label" for="gender">Gender</label>
-                                <select name="gender" id="gender">
-                                    <option value="">Choose a gender</option>
-                                    <option value="MALE">Male</option>
-                                    <option value="FEMALE">Female</option>
-                                </select>
-                            </div>
-                        </div>
+        <div id="create-user">
+    <!-- Header Section (Logo and Title) -->
+    <div id="signup-header" style="text-align: center; margin-bottom: 20px;">
+        <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo" id="school-logo" style="max-width: 120px; height: auto;"> <br> <br>
+        <h3 th:text="${schoolName}" style="text-transform: uppercase;">School Name Placeholder</h3>
 
-                        <div class="input-group">
-                            <div class="account-type-div">
-                                <label class="normal-label" for="account-type">Account Type</label>
-                                <select name="role" id="account-type">
-                                    <option value="" disabled selected>Choose</option>
-                                    <!-- <option value="ADMIN">Admin</option> -->
-                                    <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
-                                    <option value="TEACHER">Teacher</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <div class="account-type-div">
-                            <label class="normal-label" for="address">Birthdate</label>
-                            <input type="date" id="birthdate" name="birthdate" required>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <input class="input-group-input" type="text" name="address" id="address" placeholder=""
-                            required>
-                        <label class="input-group-label" for="address">Address</label>
-                    </div>
+    </div>
 
-                    <div class="input-group">
-                        <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber"
-                            placeholder="" required>
-                        <label class="input-group-label" for="contactNumber">Contact Number</label>
-                    </div>
-                    <div class="input-group">
-                        <input class="input-group-input" type="password" name="password" id="password" required
-                            placeholder=" ">
-                        <label class="input-group-label" for="password">Password</label>
-                        <img th:src="@{/images/icons/hidden-pass.png}" alt="Show Password" class="toggle-password"
-                            id="togglePassword">
-                    </div>
-
-                    <button type="submit" id="login-btn">Sign Up</button>
-                </form>
+    <!-- Form Section -->
+    <form action="/user/register" method="post" id="signup-form">
+        <label class="normal-label" for="name">Full Name</label>
+        <div class="input-group-half">
+            <div class="input-group">
+                <input class="input-group-input" type="text" name="firstname" id="firstname"
+                       placeholder="First Name" required>
+            </div>
+            <div class="input-group">
+                <input class="input-group-input" type="text" name="lastname" id="lastname"
+                       placeholder="Last Name">
+            </div>
+            <div class="input-group">
+                <input class="input-group-input" type="text" name="middlename" id="middlnamee"
+                       placeholder="Optional">
             </div>
         </div>
+
+        <div class="input-group">
+            <input class="input-group-input" type="email" name="username" id="email" placeholder="" required>
+            <label class="input-group-label" for="email">Email</label>
+        </div>
+
+        <div class="input-group">
+            <div class="account-type-div">
+                <label class="normal-label" for="gender">Gender</label>
+                <select name="gender" id="gender" required>
+                    <option value="">Choose a gender</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="account-type-div">
+                <label class="normal-label" for="address">Birthdate</label>
+                <input type="date" id="birthdate" name="birthdate" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <input class="input-group-input" type="text" name="address" id="address" placeholder="" required>
+            <label class="input-group-label" for="address">Address</label>
+        </div>
+
+        <div class="input-group">
+            <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber" placeholder=""
+                   required>
+            <label class="input-group-label" for="contactNumber">Contact Number</label>
+        </div>
+
+        <div class="input-group">
+            <input class="input-group-input" type="password" name="password" id="password" required placeholder=" ">
+            <label class="input-group-label" for="password">Password</label>
+            <img th:src="@{/images/icons/hidden-pass.png}" alt="Show Password" class="toggle-password"
+                 id="togglePassword">
+        </div>
+
+        <button type="submit" id="login-btn">Sign Up</button>
+    </form>
+
+    <!-- Sign-in Link Section -->
+    <h4 id="signup-link">Already have an account? <a onclick="proceed('login')">Log in here.</a></h4>
+</div>
+
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">

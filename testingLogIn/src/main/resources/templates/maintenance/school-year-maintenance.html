@@ -33,25 +33,27 @@
 
             <div class="search-div">
                 <!-- Searchbox -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
                         <button class="search-btn">Search</button>
-                        <!-- Add School Year Button -->
-                        <div class="add-something-btn-container">
-                            <button class="add-something-btn" id="openSchoolYearModal"
-                                data-open-modal="schoolYearModal">Add
-                                School
-                                Year</button>
-                        </div>
-
+                     
                     </div>
+                       <!-- Add School Year Button -->
+                       <div class="add-something-btn-container">
+                        <button class="add-something-btn" id="openSchoolYearModal"
+                            data-open-modal="schoolYearModal" title="Click to Add School Year">Add
+                            School
+                            Year</button>
+                    </div>
+
                 </div>
             </div>
         </div>
 
 
         <!-- Table -->
+         <div class="table-wrapper">
         <table class="school-year-table main-table" border="1">
             <thead>
                 <tr>
@@ -65,7 +67,7 @@
             <tbody>
             </tbody>
         </table> <br> <br>
-
+    </div>
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">
@@ -278,7 +280,7 @@
                             <div class="status-container">
                                 <div class="status">${sem.active ? "ACTIVE" : "INACTIVE"}</div>
                                 <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i>
+                                    <i class="fas fa-chevron-down" title="Click for Action"></i>
                                 </button>
                             </div>
                             <div class="dropdown-status-content">

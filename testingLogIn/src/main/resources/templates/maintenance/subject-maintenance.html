@@ -33,7 +33,7 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
                         <button class="search-btn">Search</button>
@@ -43,19 +43,21 @@
                                 Subject</button>
                         </div>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="patient-number">Patient Number</option>
-                            <option value="patient-name">Patient Name</option>
-                            <option value="patient-sex">Sex</option>
-                        </select>
-                    </div>
+                    
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- Table -->
+         <div class="table-wrapper">
         <table class="subject-table main-table">
             <thead>
                 <tr>
@@ -67,7 +69,7 @@
             <tbody>
             </tbody>
         </table> <br> <br>
-
+    </div>
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">
@@ -235,7 +237,7 @@
                             <div class="action">
                                 <img data-open-modal="subjectEditModal"
                                      src="/images/icons/compose.png"
-                                     alt="subject-edit-icon"
+                                     alt="subject-edit-icon" title="Click to Edit Subject"
                                      data-id="${subject.subjectName}">
 
                                 <img data-open-modal="confirmationModal"
@@ -243,7 +245,7 @@
                                      data-message="Are you sure you want to delete this subject?"
                                      data-id="${subject.subjectName}"
                                      src="/images/icons/bin.png"
-                                     alt="subject-delete-icon">
+                                     alt="subject-delete-icon" title="Click to Delete Subject">
                             </div>
                         </div>
                     </td>

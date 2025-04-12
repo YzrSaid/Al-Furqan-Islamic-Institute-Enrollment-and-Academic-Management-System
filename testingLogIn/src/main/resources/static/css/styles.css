@@ -1691,6 +1691,9 @@ table td {
   font-size: 13px;
   font-weight: 500;
 }
+.btn-neutral:hover {
+  background-color: #b0bf0b;
+}
 
 .btn-confirm {
   background-color: #28a745;

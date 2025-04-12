@@ -33,21 +33,23 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
                         <button class="search-btn">Search</button>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                        </select>
-                    </div>
+                    
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- Table -->
+         <div class="table-wrapper">
         <table id="table-ba-to" class="verify-accounts-table main-table">
             <thead>
                 <tr>
@@ -62,7 +64,7 @@
                 </tr>
             </tbody>
         </table> <br> <br>
-
+    </div>
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">
@@ -187,7 +189,7 @@
                             <td>${rec.subjectsCount}</td>
                             <td>
                                 <div class="action-container">
-                                    <a href="/maintenance/subjects/${rec.levelName}" data-path="/maintenance/subjects/${rec.levelName}" class="view-sched">View Subjects</a>
+                                    <a href="/maintenance/subjects/${rec.levelName}" data-path="/maintenance/subjects/${rec.levelName}" class="view-sched" title="Click to View Subjects Details">View Subjects</a>
                                 </div>
                             </td>
                         </tr>

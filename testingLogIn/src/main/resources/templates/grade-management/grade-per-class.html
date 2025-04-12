@@ -13,31 +13,36 @@
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div id="sectionName" class="text-link">
-            <h4>Grade 1 - Rose</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <p>Grade Management</p>
-            <p>/</p>
-            <p id="grade-and-section">Grade 1 - Rose</p>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+            <div id="sectionName" class="text-link">
+                <h4>Grade 1 - Rose</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <p>Grade Management</p>
+                <p>/</p>
+                <p id="grade-and-section">Grade 1 - Rose</p>
+            </div>
+
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+                    </div>
                 </div>
+
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
@@ -49,19 +54,22 @@
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="fine-dining-restaurant-table" class="grade-per-class-table main-table">
-            <thead>
-                <tr>
-                    <th>Subjects</th>
-                    <th>Teacher</th>
-                    <th>Graded Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="fine-dining-restaurant-table" class="grade-per-class-table main-table">
+                <thead>
+                    <tr>
+                        <th>Subjects</th>
+                        <th>Teacher</th>
+                        <th>Graded/lahat ng dapat i grade</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {

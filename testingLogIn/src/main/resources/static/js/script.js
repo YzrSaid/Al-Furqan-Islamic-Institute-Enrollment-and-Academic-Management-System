@@ -33,15 +33,45 @@ document.addEventListener("DOMContentLoaded", function () {
 function toggleSidebar() {
   let sidebar = document.getElementById("sidebar");
   let content = document.getElementById("content");
+  let stickyHeader = document.querySelector(".sticky-header");
+  let table = document.querySelector(".table-wrapper");
+  let searchDiv = document.querySelector(".search-div");
+  let topBar = document.querySelector(".topbar");
+  let textLink = document.querySelector(".text-link");
 
   if (sidebar.classList.contains("collapsed-sidebar")) {
+    // open header
     sidebar.classList.remove("collapsed-sidebar");
     content.classList.remove("collapsed-content");
     content.style.marginLeft = "320px";
+
+    // stickyHeader.style.padding = "10px 20px";
+    stickyHeader.style.padding = "10px 1rem";
+    searchDiv.style.width = "100%";
+    searchDiv.style.padding = "0";
+    searchDiv.style.margin = "0 0 20px 0";
+    table.style.padding = "0";
+
+    textLink.style.width = "100%";
+    textLink.style.padding = "15px 0"
+
+    topBar.style.padding = "10px 0";
   } else {
+    // close header
     sidebar.classList.add("collapsed-sidebar");
     content.classList.add("collapsed-content");
     content.style.marginLeft = "0";
+
+    stickyHeader.style.padding = "10px 3.125rem";
+    searchDiv.style.width = "100%";
+    searchDiv.style.padding = "0 0px";
+    searchDiv.style.margin = "0 10px 20px 10px";
+    table.style.padding = "0 35px";
+
+    textLink.style.width = "100%";
+    textLink.style.padding = "15px 0"
+
+    topBar.style.padding = "10px 0.1rem";
   }
 }
 
@@ -422,11 +452,17 @@ document.addEventListener("DOMContentLoaded", function () {
       modal.style.visibility = "visible";
       modal.style.opacity = "1";
       modal.style.pointerEvents = "auto"; // Enable interaction
+
+      // Disable page scroll
+      document.body.style.overflow = "hidden";
     } else {
       modal.classList.remove("show");
       modal.style.visibility = "hidden";
       modal.style.opacity = "0";
       modal.style.pointerEvents = "none"; // Ensure it doesn't block clicks
+
+      // Enable page scroll
+      document.body.style.overflow = "auto";
     }
 
     // If it's a confirmation modal, update the text
@@ -1629,30 +1665,30 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-function toggleSidebar() {
-  let sidebar = document.getElementById("sidebar");
-  let content = document.getElementById("content");
+// function toggleSidebar() {
+//   let sidebar = document.getElementById("sidebar");
+//   let content = document.getElementById("content");
 
-  const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
+//   const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
 
-  if (isCollapsed) {
-    sidebar.classList.remove("collapsed-sidebar");
-    content.classList.remove("collapsed-content");
-    content.style.marginLeft = "320px";
-  } else {
-    sidebar.classList.add("collapsed-sidebar");
-    content.classList.add("collapsed-content");
-    content.style.marginLeft = "0";
-  }
+//   if (isCollapsed) {
+//     sidebar.classList.remove("collapsed-sidebar");
+//     content.classList.remove("collapsed-content");
+//     content.style.marginLeft = "320px";
+//   } else {
+//     sidebar.classList.add("collapsed-sidebar");
+//     content.classList.add("collapsed-content");
+//     content.style.marginLeft = "0";
+//   }
 
-  // Update all hamburger titles after toggling
-  document.querySelectorAll("span.hamburger").forEach(function (span) {
-    const img = span.querySelector("img");
-    if (img && img.src.includes("burger_menu_icon.png")) {
-      span.title = isCollapsed ? "Hide Sidebar" : "Show Sidebar";
-    }
-  });
-}
+//   // Update all hamburger titles after toggling
+//   document.querySelectorAll("span.hamburger").forEach(function (span) {
+//     const img = span.querySelector("img");
+//     if (img && img.src.includes("burger_menu_icon.png")) {
+//       span.title = isCollapsed ? "Hide Sidebar" : "Show Sidebar";
+//     }
+//   });
+// }
 
 // Pagination Title Function
 document.addEventListener("DOMContentLoaded", function () {
@@ -1702,6 +1738,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// This is for the dropdown buttons (to open, hide, and clicking outisde will close the dropdown)
 document.addEventListener("DOMContentLoaded", function () {
   // Function to toggle dropdown visibility
   function toggleDropdown(event) {
@@ -1815,3 +1852,233 @@ document.addEventListener("DOMContentLoaded", function () {
 //         dropdownContent.style.opacity = dropdownContent.style.opacity === '1' ? '0' : '1';
 //     });
 // });;
+
+// // This is for the popover so clicking it will open and clicking it again will close the popover
+// document.addEventListener("DOMContentLoaded", function () {
+//   const button = document.getElementById("dropdown-scholar");
+//   const popover = document.getElementById("my-popover");
+
+//   // Toggle popover visibility when button is clicked
+//   button.addEventListener("click", function (event) {
+//     // Prevent the event from propagating to the document click listener
+//     event.stopPropagation();
+
+//     if (popover.style.visibility === "visible") {
+//       // Hide the popover
+//       popover.style.visibility = "hidden";
+//       popover.style.opacity = "0";
+//       popover.style.pointerEvents = "none"; // Disable interaction
+//     } else {
+//       // Show the popover
+//       popover.style.visibility = "visible";
+//       popover.style.opacity = "1";
+//       popover.style.pointerEvents = "auto"; // Enable interaction
+//     }
+//   });
+
+//   // Close the popover when clicking anywhere outside the popover or button
+//   document.addEventListener("click", function () {
+//     if (popover.style.visibility === "visible") {
+//       // Hide the popover if it's visible
+//       popover.style.visibility = "hidden";
+//       popover.style.opacity = "0";
+//       popover.style.pointerEvents = "none"; // Disable interaction
+//     }
+//   });
+// });
+// document.addEventListener("DOMContentLoaded", function () {
+//     const button = document.getElementById("dropdown-scholar");
+//     const popover = document.getElementById("my-popover");
+//     const modalContent = document.querySelector(".student-modal-content");
+
+//     // Validate elements
+//     if (!button || !popover || !modalContent) {
+//       console.error("Missing elements:", { button, popover, modalContent });
+//       return;
+//     }
+
+//     function positionPopover() {
+//       // Use offsetTop for reliability
+//       const buttonTop = button.offsetTop;
+//       const buttonLeft = button.offsetLeft;
+//       const buttonHeight = button.offsetHeight;
+//       const scrollTop = modalContent.scrollTop;
+
+//       // Position below button, adjust for scroll
+//       const top = buttonTop + buttonHeight + 5 - scrollTop;
+//       const left = buttonLeft;
+
+//       // Apply position
+//       popover.style.top = `${top}px`;
+//       popover.style.left = `${left}px`;
+
+//       // Force render (helps with browser repaint issues)
+//       popover.style.display = "none";
+//       popover.offsetHeight; // Trigger reflow
+//       popover.style.display = "";
+
+//       // Debug log
+//       console.log("Popover positioned:", {
+//         top,
+//         left,
+//         scrollTop,
+//         buttonTop,
+//         computedTop: popover.style.top,
+//       });
+//     }
+
+//     button.addEventListener("click", function (e) {
+//       e.stopPropagation();
+//       const isVisible = popover.style.visibility === "visible";
+//       if (isVisible) {
+//         popover.style.visibility = "hidden";
+//         popover.style.opacity = "0";
+//         popover.style.pointerEvents = "none";
+//       } else {
+//         positionPopover();
+//         popover.style.visibility = "visible";
+//         popover.style.opacity = "1";
+//         popover.style.pointerEvents = "auto";
+//       }
+//     });
+
+//     // Handle modal scroll
+//     modalContent.addEventListener("scroll", () => {
+//       console.log("Modal scroll, scrollTop:", modalContent.scrollTop);
+//       if (popover.style.visibility === "visible") {
+//         positionPopover();
+//       }
+//     }, { passive: true });
+
+//     // Handle window scroll (for outside modal)
+//     window.addEventListener("scroll", () => {
+//       if (popover.style.visibility === "visible") {
+//         positionPopover();
+//       }
+//     });
+
+//     // Close popover on outside click
+//     document.addEventListener("click", (e) => {
+//       if (
+//         popover.style.visibility === "visible" &&
+//         !popover.contains(e.target) &&
+//         !button.contains(e.target)
+//       ) {
+//         popover.style.visibility = "hidden";
+//         popover.style.opacity = "0";
+//         popover.style.pointerEvents = "none";
+//       }
+//     });
+//   });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const button = document.getElementById("dropdown-scholar");
+  const popover = document.getElementById("my-popover");
+  const modalContent = document.querySelector(".student-modal-content");
+
+  // Validate elements
+  if (!button || !popover || !modalContent) {
+    console.error("Missing elements:", { button, popover, modalContent });
+    return;
+  }
+
+  function positionPopover() {
+    // Get button position and dimensions
+    const buttonTop = button.offsetTop;
+    const buttonLeft = button.offsetLeft;
+    const buttonHeight = button.offsetHeight;
+    const scrollTop = modalContent.scrollTop;
+
+    // Get modal and popover dimensions
+    const modalHeight = modalContent.clientHeight;
+    const popoverHeight = popover.offsetHeight || 100; // Fallback if not rendered
+
+    // Calculate ideal top position (below button)
+    let top = buttonTop + buttonHeight + 5 - scrollTop;
+    let position = "below";
+
+    // Check if placing below would exceed the modal's bottom
+    if (top + popoverHeight > modalHeight) {
+      top = buttonTop - popoverHeight - 5 - scrollTop;
+      position = "above";
+    }
+
+    // Boundary check: hide popover if it would go above the modal's top
+    if (top < 0) {
+      popover.style.visibility = "hidden";
+      popover.style.opacity = "0";
+      position = "hidden-top";
+    } else {
+      // Ensure popover is visible if within bounds
+      if (popover.style.visibility !== "visible") {
+        popover.style.visibility = "visible";
+        popover.style.opacity = "1";
+      }
+      popover.style.pointerEvents = "auto";
+    }
+
+    // Apply position
+    popover.style.top = `${top}px`;
+    popover.style.left = `${buttonLeft}px`;
+
+    // Debug log
+    console.log("Popover positioned:", {
+      top,
+      left: buttonLeft,
+      scrollTop,
+      buttonTop,
+      modalHeight,
+      popoverHeight,
+      position,
+    });
+  }
+
+  button.addEventListener("click", function (e) {
+    e.stopPropagation();
+    const isVisible =
+      popover.style.visibility === "visible" || popover.style.visibility === "";
+    if (isVisible) {
+      popover.style.visibility = "hidden";
+      popover.style.opacity = "0";
+      popover.style.pointerEvents = "none";
+    } else {
+      positionPopover();
+      // Initial show (will be adjusted by positionPopover)
+      popover.style.visibility = "visible";
+      popover.style.opacity = "1";
+      popover.style.pointerEvents = "auto";
+    }
+  });
+
+  // Handle modal scroll
+  modalContent.addEventListener(
+    "scroll",
+    () => {
+      console.log("Modal scroll, scrollTop:", modalContent.scrollTop);
+      if (popover.style.visibility !== "hidden" || top >= 0) {
+        positionPopover();
+      }
+    },
+    { passive: true }
+  );
+
+  // Handle window scroll (for outside modal)
+  window.addEventListener("scroll", () => {
+    if (popover.style.visibility !== "hidden" || top >= 0) {
+      positionPopover();
+    }
+  });
+
+  // Close popover on outside click
+  document.addEventListener("click", (e) => {
+    if (
+      popover.style.visibility === "visible" &&
+      !popover.contains(e.target) &&
+      !button.contains(e.target)
+    ) {
+      popover.style.visibility = "hidden";
+      popover.style.opacity = "0";
+      popover.style.pointerEvents = "none";
+    }
+  });
+});

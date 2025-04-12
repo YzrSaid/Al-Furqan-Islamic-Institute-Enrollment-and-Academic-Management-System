@@ -13,6 +13,7 @@
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
@@ -21,7 +22,7 @@
     <div class="dashboard-container" id="content">
         <!-- Topbar -->
         <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
+
         <div id="theTextLink" class="text-link">
             <h4>Science</h4>
             <p>Main</p>
@@ -35,58 +36,62 @@
 
         <div class="search-div">
             <!-- Searchbox and sort btn -->
-            <div class="search">
+            <div class="left-section">
                 <div class="search-container">
                     <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+                    <button type="button" class="search-btn">Search</button>
                 </div>
-                <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
-                    </select>
-                </div>
+            </div>
+            <div class="sort-container">
+                <select name="sort" id="sort-select" class="sort-select">
+                    <option value="" disabled selected>Sort</option>
+                    <option value="patient-number">Patient Number</option>
+                    <option value="patient-name">Patient Name</option>
+                    <option value="patient-sex">Sex</option>
+                </select>
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="restaurant-table" class="grade-per-subject-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Grade</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Science</td>
-                    <td>Raven Timpanco</td>
-                    <td><input type="text" name="student-grade" id="student-grade" readonly></td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="action-container action">
-                                <a href=""><img src="/images/icons/add-button.png" alt="add-icon"></a>
-                            </div>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="restaurant-table" class="grade-per-subject-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Grade</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr>
+                        <td>Science</td>
+                        <td>Raven Timpanco</td>
+                        <td><input type="text" name="student-grade" id="student-grade" readonly></td>
+                        <td>
+                            <div class="dropdown">
+                                <div class="action-container action">
+                                    <a href=""><img src="/images/icons/add-button.png" alt="add-icon"></a>
+                                </div>
 
-                            <div class="action-container action">
-                                <a href=""><img src="/images/icons/compose.png" alt="edit-icon"></a>
-                            </div>
+                                <div class="action-container action">
+                                    <a href=""><img src="/images/icons/compose.png" alt="edit-icon"></a>
+                                </div>
 
-                            <div class="action-container action">
-                                <a href=""><img src="/images/icons/bin.png" alt="delete-icon"></a>
+                                <div class="action-container action">
+                                    <a href=""><img src="/images/icons/bin.png" alt="delete-icon"></a>
+                                </div>
+                                <div class="action-container action">
+                                    <a href=""><img src="/images/icons/check.png" alt="save-icon"></a>
+                                </div>
                             </div>
-                            <div class="action-container action">
-                                <a href=""><img src="/images/icons/check.png" alt="save-icon"></a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        </td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+
+
         <!-- Save Button -->
         <!-- <div class="add-something-btn-container">
             <button class="add-something-btn" id="save-grade-btn" data-open-modal="confirmationModal">Save Grade</button>

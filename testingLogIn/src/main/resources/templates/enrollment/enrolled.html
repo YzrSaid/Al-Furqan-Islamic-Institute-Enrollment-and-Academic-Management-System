@@ -33,19 +33,20 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button onclick="getCurrentlyEnrolled()" class="search-btn">Search</button>
+                        <button type="button" onclick="getCurrentlyEnrolled()" class="search-btn">Search</button>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" onchange="getCurrentlyEnrolled()" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="StudentId">Student Id</option>
-                            <option value="StudentName">Student Name</option>
-                            <option value="GradeLevel">Enrolling Grade Level</option>
-                        </select>
-                    </div>
+                </div>
+
+                <div class="sort-container">
+                    <select name="sort" onchange="getCurrentlyEnrolled()" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="StudentId">Student Id</option>
+                        <option value="StudentName">Student Name</option>
+                        <option value="GradeLevel">Enrolling Grade Level</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -69,37 +70,21 @@
             <p id="successModalMessage"></p>
         </div>
 
-        <!-- Table -->
-        <table id="realginnas" class="listing-table main-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Enrolled Grade Level & Section</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="student-type">New</div>
-                        </div>
-                    </td>
-                    <td id="eligibility">Qualified</td>
-                    <td>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="realginnas" class="listing-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Enrolled Grade Level & Section</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
-                        <div class="status-container">
-                            <div class="status" id="status-enrolled">Enrolled</div>
-
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
 
         <!-- Pagination -->
         <div class="pagination-container">

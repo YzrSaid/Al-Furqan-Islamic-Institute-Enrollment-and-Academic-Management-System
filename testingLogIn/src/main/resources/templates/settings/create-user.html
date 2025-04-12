@@ -29,8 +29,7 @@
     <!-- Header Section (Logo and Title) -->
     <div id="signup-header" style="text-align: center; margin-bottom: 20px;">
         <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo" id="school-logo" style="max-width: 120px; height: auto;"> <br> <br>
-        <h3 th:text="${schoolName}" style="text-transform: uppercase;">School Name Placeholder</h3>
-
+        <h3 th:text="${schoolName}" style="text-transform: uppercase; font-weight: bold;">School Name Placeholder</h3>
     </div>
 
     <!-- Form Section -->
@@ -56,23 +55,26 @@
             <label class="input-group-label" for="email">Email</label>
         </div>
 
-        <div class="input-group">
-            <div class="account-type-div">
-                <label class="normal-label" for="gender">Gender</label>
-                <select name="gender" id="gender" required>
-                    <option value="">Choose a gender</option>
-                    <option value="MALE">Male</option>
-                    <option value="FEMALE">Female</option>
-                </select>
+        <div class="input-row">
+            <div class="input-group">
+                <div class="account-type-div">
+                    <label class="normal-label" for="gender">Gender</label>
+                    <select name="gender" id="gender" required>
+                        <option value="">Choose a gender</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                    </select>
+                </div>
+            </div>
+        
+            <div class="input-group">
+                <div class="account-type-div">
+                    <label class="normal-label" for="birthdate">Birthdate</label>
+                    <input type="date" id="birthdate" name="birthdate" required>
+                </div>
             </div>
         </div>
-
-        <div class="input-group">
-            <div class="account-type-div">
-                <label class="normal-label" for="address">Birthdate</label>
-                <input type="date" id="birthdate" name="birthdate" required>
-            </div>
-        </div>
+        
 
         <div class="input-group">
             <input class="input-group-input" type="text" name="address" id="address" placeholder="" required>

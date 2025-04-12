@@ -209,25 +209,27 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 10px;
+  width: 100%; /* changed from 50% */
+}
+
+.input-row {
+  display: flex;
+  gap: 1rem; 
   width: 100%;
 }
-.account-type-div select {
-  width: 100%;
-  padding: 10px 10px;
-  border-radius: 4px;
-  border: 1px solid #333;
-  outline: none;
-  font-size: 13px;
-  background: transparent;
+
+.input-group {
+  flex: 1; 
 }
+
+.account-type-div select,
 .account-type-div input {
-  width: 100%;
+  width: 100%; /* let it stretch naturally */
   padding: 10px 10px;
   border-radius: 4px;
   border: 1px solid #333;
   outline: none;
   font-size: 13px;
-  width: 306px;
   background: transparent;
 }
 

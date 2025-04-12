@@ -1792,6 +1792,26 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   });
 });
+document.addEventListener('DOMContentLoaded', function () {
+  const toggle = document.getElementById('togglePassword');
+  const passwordField = document.getElementById('password');
+  let isVisible = false;
+
+  toggle.addEventListener('click', function () {
+    isVisible = !isVisible;
+
+    // Toggle password visibility
+    passwordField.type = isVisible ? 'text' : 'password';
+
+    // Change image and title based on state
+    toggle.src = isVisible 
+    ? "/images/icons/eye.png"
+    : "/images/icons/hidden-pass.png";
+
+    toggle.title = isVisible ? 'Hide Password' : 'Show Password';
+    toggle.alt = isVisible ? 'Hide Password' : 'Show Password'; // optional for accessibility
+  });
+});
 
 // document.querySelectorAll('.dropdown-print-btn').forEach(button => {
 //     button.addEventListener('click', (event) => {

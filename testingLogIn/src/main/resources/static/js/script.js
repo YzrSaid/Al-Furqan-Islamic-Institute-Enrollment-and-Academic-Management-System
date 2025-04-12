@@ -2093,3 +2093,47 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+//This is for Modal Buttons (Cancel and Confirm)
+document.addEventListener("DOMContentLoaded", function () {
+  const modalButtonsContainers = document.querySelectorAll(".modal-buttons");
+
+  modalButtonsContainers.forEach(container => {
+    const cancelBtn = container.querySelector(".btn-cancel, .btn-close-confirm, .error-btn-cancel");
+    const confirmBtn = container.querySelector(".btn-confirm");
+
+    const parentModal = container.closest(".modal");
+    const isConfirmation = parentModal && parentModal.id === "confirmationModal";
+    const isErrorModal = parentModal && parentModal.id === "errorModal";
+
+    // Apply base styles
+    container.style.display = "flex";
+    container.style.flexWrap = "wrap";
+    container.style.width = "100%";
+    container.style.marginTop = "1rem";
+
+    // Alignment logic
+    if (isErrorModal) {
+      container.style.justifyContent = "center"; // Center the Close button in error modal
+    } else {
+      container.style.justifyContent = isConfirmation ? "center" : "flex-end"; // Confirmation: center, others: right-align
+    }
+
+    // Gap logic
+    const updateGap = () => {
+      if (isConfirmation) {
+        container.style.columnGap = window.innerWidth <= 480 ? "32px" : "40px"; // Large gap for confirmation
+      } else {
+        container.style.columnGap = window.innerWidth <= 480 ? "16px" : "24px"; // Standard gap for others
+      }
+    };
+    updateGap();
+    window.addEventListener("resize", updateGap);
+
+    // Button reordering: Cancel on the left, Confirm on the right (if both buttons exist)
+    if (!isErrorModal && cancelBtn && confirmBtn && cancelBtn.nextElementSibling !== confirmBtn) {
+      container.insertBefore(cancelBtn, confirmBtn);
+    }
+  });
+});
+
+

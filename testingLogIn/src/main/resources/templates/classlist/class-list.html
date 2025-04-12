@@ -33,50 +33,53 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="searchBy" placeholder="Search..." class="search-input" />
-                        <button onclick="getAllSections()" class="search-btn">Search</button>
-                    </div>
-                    <div class="sort-container">
-                        <select name="sort" onchange="getAllSections()" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="GRADE_LEVEL">Grade Level</option>
-                            <option value="ENROLLED_COUNT">Enrolled Students</option>
-                            <option value="SECTION_NAME">Section Name</option>
-                        </select>
+                        <button type="button" onclick="getAllSections()" class="search-btn">Search</button>
                     </div>
                 </div>
+
+                <div class="sort-container">
+                    <select name="sort" onchange="getAllSections()" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="GRADE_LEVEL">Grade Level</option>
+                        <option value="ENROLLED_COUNT">Enrolled Students</option>
+                        <option value="SECTION_NAME">Section Name</option>
+                    </select>
+                </div>
             </div>
-    
+
         </div>
 
 
-       
-        <!-- Table -->
-        <table id="table-ba-to" class="verify-accounts-table main-table">
-            <thead>
-                <tr>
-                    <th>Grade Level</th>
-                    <th>Section</th>
-                    <th>Adviser</th>
-                    <th>Number of Students</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Grade 1</td>
-                    <td>Malunggay</td>
-                    <td>30</td>
-                    <td>
-                        <div class="action-container">
-                            <a href="/schedules/sched-board" class="view-sched">View Class List</a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="table-ba-to" class="verify-accounts-table main-table">
+                <thead>
+                    <tr>
+                        <th>Grade Level</th>
+                        <th>Section</th>
+                        <th>Adviser</th>
+                        <th>Number of Students</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Grade 1</td>
+                        <td>Malunggay</td>
+                        <td>30</td>
+                        <td>
+                            <div class="action-container">
+                                <a href="/schedules/sched-board" class="view-sched">View Class List</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
@@ -176,27 +179,27 @@
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-// <!--        savedSubmenus.forEach(submenuId => {-->
-// < !--let submenu = document.getElementById(submenuId); -->
-// < !--            if (submenu) {
-//             -->
-// < !--submenu.classList.add("open"); -->
+        // <!--        savedSubmenus.forEach(submenuId => {-->
+        // < !--let submenu = document.getElementById(submenuId); -->
+        // < !--            if (submenu) {
+        //             -->
+        // < !--submenu.classList.add("open"); -->
 
-// < !--                // Make sure parent menus are also opened-->
-// < !--let parentMenu = submenu.closest(".submenu"); -->
-// < !--                if (parentMenu) {
-//                 -->
-// < !--parentMenu.classList.add("open"); -->
-// < !--                } -->
+        // < !--                // Make sure parent menus are also opened-->
+        // < !--let parentMenu = submenu.closest(".submenu"); -->
+        // < !--                if (parentMenu) {
+        //                 -->
+        // < !--parentMenu.classList.add("open"); -->
+        // < !--                } -->
 
-// < !--                // Update arrow icon-->
-// < !--let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img"); -->
-// < !--                if (arrowIconImg) {
-//                 -->
-// < !--arrowIconImg.src = "/images/icons/greater-than.png"; -->
-// < !--                } -->
-// < !--            } -->
-// < !--        }); -->
+        // < !--                // Update arrow icon-->
+        // < !--let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img"); -->
+        // < !--                if (arrowIconImg) {
+        //                 -->
+        // < !--arrowIconImg.src = "/images/icons/greater-than.png"; -->
+        // < !--                } -->
+        // < !--            } -->
+        // < !--        }); -->
         getAllSections();
     });
     function getAllSections() {

@@ -35,6 +35,10 @@ function toggleSidebar() {
   let content = document.getElementById("content");
   let stickyHeader = document.querySelector(".sticky-header");
   let table = document.querySelector(".table-wrapper");
+
+  // This will be used incase a page has no table and has board instead
+  let schedBoard = document.querySelector(".sched-board");
+
   let searchDiv = document.querySelector(".search-div");
   let topBar = document.querySelector(".topbar");
   let textLink = document.querySelector(".text-link");
@@ -52,8 +56,10 @@ function toggleSidebar() {
     searchDiv.style.margin = "0 0 20px 0";
     table.style.padding = "0";
 
+    // schedBoard.style.padding = "200px";
+
     textLink.style.width = "100%";
-    textLink.style.padding = "15px 0"
+    textLink.style.padding = "15px 0";
 
     topBar.style.padding = "10px 0";
   } else {
@@ -69,7 +75,7 @@ function toggleSidebar() {
     table.style.padding = "0 35px";
 
     textLink.style.width = "100%";
-    textLink.style.padding = "15px 0"
+    textLink.style.padding = "15px 0";
 
     topBar.style.padding = "10px 0.1rem";
   }
@@ -428,7 +434,7 @@ window.enableFormInputs = function () {
   });
 };
 // Function to disable inputs and checkboxes after they are populated
-window.disableFormInputs = function () {
+window.disableFormInput = function () {
   // Disable all inputs, selects, checkboxes, and radio buttons
   document.querySelectorAll("input, select").forEach((input) => {
     if (input.tagName === "SELECT") {
@@ -476,13 +482,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (modalId.includes("Edit")) {
+      console.log("yawa");
       const confirmBtn = modal.querySelector(".btn-confirm");
       const cancelBtn = modal.querySelector(".btn-cancel");
       const inputs = modal.querySelectorAll("input, textarea, select");
 
-      // Disable form inputs, select elements, checkboxes, and radio buttons
-      document.querySelectorAll("input, select").forEach((input) => {
-        disableFormInputs();
+      // Only disable inputs inside the current modal
+      inputs.forEach((input) => {
+        input.disabled = true;
       });
 
       // Set initial button states
@@ -563,30 +570,6 @@ document.addEventListener("DOMContentLoaded", function () {
           toggleModal("confirmationModal", false);
         }
       }
-    }
-  });
-
-  // Handle the cancel action when the user cancels in the modal
-  //   cancelActionButton.addEventListener("click", function () {
-  //     // Close the confirmation modal without doing anything
-  //     toggleModal("confirmationModal", false);
-
-  //     // Keep inputs enabled if they were already in "edit" mode (no reset)
-  //     editButton.textContent = "Edit";
-  //     editButton.setAttribute("data-mode", "edit");
-  //   });
-
-  // Event listener to enable inputs when reopening the modal
-  document.addEventListener("click", function (event) {
-    const target = event.target;
-
-    // Correct condition to detect close button or modal close trigger
-    if (
-      target.classList.contains("btn-cancel") ||
-      target.closest("[data-close-modal]")
-    ) {
-      // Re-enable inputs inside the modal when reopened
-      enableFormInputs();
     }
   });
 
@@ -1530,17 +1513,21 @@ document.addEventListener("click", function (event) {
 });
 
 function clearForm() {
-  document
-    .querySelectorAll(".modal input, .modal select, .modal textarea")
-    .forEach((element) => {
-      if (element.type === "checkbox" || element.type === "radio") {
-        element.checked = false; // Uncheck checkboxes/radios
-      } else {
-        element.value = ""; // Clear text inputs, dropdowns & textareas
-      }
-    });
-}
-
+    document
+      .querySelectorAll(".modal input, .modal select, .modal textarea")
+      .forEach((element) => {
+        // Only clear if the field is not disabled
+        if (!element.readOnly) {
+            console.log("deleting");
+          if (element.type === "checkbox" || element.type === "radio") {
+            element.checked = false; // Uncheck checkboxes/radios
+          } else {
+            element.value = ""; // Clear text inputs, dropdowns & textareas
+          }
+        }
+      });
+  }
+  
 // this is for the checkbox in new student modal form
 document.addEventListener("DOMContentLoaded", () => {
   const transfereeCheckbox = document.getElementById("isTransferee");
@@ -1829,24 +1816,24 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   });
 });
-document.addEventListener('DOMContentLoaded', function () {
-  const toggle = document.getElementById('togglePassword');
-  const passwordField = document.getElementById('password');
+document.addEventListener("DOMContentLoaded", function () {
+  const toggle = document.getElementById("togglePassword");
+  const passwordField = document.getElementById("password");
   let isVisible = false;
 
-  toggle.addEventListener('click', function () {
+  toggle.addEventListener("click", function () {
     isVisible = !isVisible;
 
     // Toggle password visibility
-    passwordField.type = isVisible ? 'text' : 'password';
+    passwordField.type = isVisible ? "text" : "password";
 
     // Change image and title based on state
-    toggle.src = isVisible 
-    ? "/images/icons/eye.png"
-    : "/images/icons/hidden-pass.png";
+    toggle.src = isVisible
+      ? "/images/icons/eye.png"
+      : "/images/icons/hidden-pass.png";
 
-    toggle.title = isVisible ? 'Hide Password' : 'Show Password';
-    toggle.alt = isVisible ? 'Hide Password' : 'Show Password'; // optional for accessibility
+    toggle.title = isVisible ? "Hide Password" : "Show Password";
+    toggle.alt = isVisible ? "Hide Password" : "Show Password"; // optional for accessibility
   });
 });
 

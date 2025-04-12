@@ -2907,7 +2907,7 @@ input[type="checkbox"] {
   background-color: #218838;
 }
 .sched-board {
-  margin: auto;
+  margin: 0 15px;
   border: 1.5px solid rgba(30, 30, 30, 0.2);
 }
 .grade-lev-container {

@@ -14,7 +14,7 @@
     </div>
     <div id="right-login-block">
         <img th:src="@{/website-logo}" alt="school-logo" id="school-logo"> <br> <br>
-        <h3 th:text="${schoolName}"></h3>
+        <h3 th:text="${schoolName}" style="text-transform:uppercase;"></h3>
 
         <!-- Display error message if it exists -->
         <div th:if="${param.error}" class="error-message">

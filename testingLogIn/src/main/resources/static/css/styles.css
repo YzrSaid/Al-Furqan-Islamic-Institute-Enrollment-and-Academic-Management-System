@@ -74,6 +74,13 @@ body {
   display: flex;
   flex-direction: column;
   width: 50%;
+  margin-left: 0%;
+}
+#create-user-form {
+  margin-top: 5%;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
   margin-left: 25%;
 }
 #signup-form-large {
@@ -168,6 +175,7 @@ body {
   color: rgb(30, 30, 30);
   text-align: center;
   font-weight: 500;
+  margin-left: 0;
 }
 #signup-link a {
   font-weight: 600;

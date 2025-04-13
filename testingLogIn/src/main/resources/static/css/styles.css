@@ -217,7 +217,7 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 10px;
-  width: 100%; /* changed from 50% */
+  width: 100%;
 }
 
 .input-row {
@@ -232,7 +232,7 @@ body {
 
 .account-type-div select,
 .account-type-div input {
-  width: 100%; /* let it stretch naturally */
+  width: 100%;
   padding: 10px 10px;
   border-radius: 4px;
   border: 1px solid #333;
@@ -1625,9 +1625,8 @@ table td {
 }
 .report-main-btns {
   display: flex;
-  width: 95%;
-  margin-right: 50px;
-  justify-self: end;
+  width: 100%;
+  padding: 0 15px;
   justify-content: space-between;
   align-items: center;
 }
@@ -1727,19 +1726,6 @@ table td {
   border-radius: 12px;
 }
 
-#transaction-record-btn {
-  background-color: #28a745;
-  color: white;
-  width: 150px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  padding: 8px 22px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
 .btn-close-confirm {
   background-color: #dc3545;
   color: white;
@@ -1795,9 +1781,10 @@ table td {
   padding: 30px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  min-width: 1050px;
+  min-width: 1100px;
   min-height: 80vh;
   text-align: left;
+  overflow-x: hidden;
   position: relative;
   z-index: 1001;
 }
@@ -1838,31 +1825,45 @@ table td {
 .eighty {
   width: 84.5%;
 }
-
-#transfereefatherAddress,
-#transfereemotherAddress,
-#transfereeguardianAddress,
-#studguardianAddress,
-#guardianAddress {
-  width: 420px;
-}
-
 #madrasaNameLastAttended,
-#madrasaAddress {
-  width: 717px;
+#madrasaAddress,
+#studmadrasaAddress,
+#studmadrasaNameLastAttended {
+  width: 750px;
 }
 
-#transfereefatherContactNumber,
-#transfereemotherContactNumber,
-#transfereeguardianContactNumber,
-#studguardianContactNumber,
-#guardianContactNumber {
-  width: 300px;
+/* student report */
+.student-information-container-content #guardianAddress {
+  width: 510px;
 }
 
+/* student add and student view record 
+- may stud (newStudentModal)
+- walang stud (informationStudentModal)                                    
+*/
+
+.student-information-container-content #guardianContactNumber {
+  width: 320px;
+}
+
+.student-modal-content #studguardianAddress,
+.student-information-modal-content #guardianAddress {
+  width: 485px;
+}
+
+.student-modal-content #studguardianContactNumber,
+.student-information-modal-content #guardianContactNumber {
+  width: 280px;
+}
+
+/* this is place of birth for add */
 .student-form-group .place-of-birth {
-  width: 850px;
+  width: 900px;
 }
+/* this is place of birth for view */
+/* .place-of-birth-view {
+    width: 338px;
+} */
 
 .student-form-group #studstreet,
 .student-form-group #studbarangay,
@@ -1870,7 +1871,7 @@ table td {
 .student-form-group #transfereestreet,
 .student-form-group #transfereebarangay,
 .student-form-group #transfereecity {
-  width: 300px;
+  width: 320px;
 }
 
 .my-account-edit-modal,
@@ -2127,18 +2128,16 @@ input[type="checkbox"] {
 
 .checkbox input {
   display: flex;
-  width: 15px;
-  height: 15px;
 }
 .checkbox {
   min-width: 100px;
   align-items: center;
   display: flex;
+  gap: 10px;
 }
 .checkbox-container {
   justify-content: space-between;
   min-width: 290px;
-  padding-left: 20px;
   display: flex;
 }
 .checkbox-container-popover {
@@ -2283,7 +2282,9 @@ input[type="checkbox"] {
 }
 
 .student-information-modal h2,
-.student-information-container h2 {
+.student-information-container h2,
+.student-modal h2 {
+  color: #186328;
   font-size: 18px;
   font-weight: 600;
   text-align: center;
@@ -2293,10 +2294,13 @@ input[type="checkbox"] {
 
 .student-information-container {
   padding-bottom: 30px;
+  display: flex;
+  justify-content: center;
 }
 
 .student-information-modal h1,
-.student-information-container h1 {
+.student-information-container h1,
+.student-modal h1 {
   font-size: 32px;
   font-weight: bold;
   text-align: center;
@@ -2311,15 +2315,6 @@ input[type="checkbox"] {
   margin-bottom: 30px;
   margin-top: 10px;
 }
-
-.student-modal-content h2 {
-  font-size: 30px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 30px;
-  margin-top: 10px;
-}
-
 .student-modal-content h5 {
   font-size: 20px;
   font-weight: bold;
@@ -2479,15 +2474,14 @@ input[type="checkbox"] {
   overflow-y: auto;
   overflow-x: hidden;
   text-align: left;
-  position: relative; /* Critical for absolute positioning of popover */
+  position: relative;
   z-index: 1001;
 }
 .student-information-container-content {
   background: #f6f6f6 !important;
-  margin-left: 30px;
   padding: 30px;
   border-radius: 5px;
-  width: 1100px;
+  width: 1140px;
   text-align: left;
   position: relative;
 }
@@ -2703,27 +2697,28 @@ input[type="checkbox"] {
 #studbirthdate,
 #studentLastName,
 #studentMiddleName,
-.student-form-group #lastGradeLevelCompleted,
-.student-form-group #lastMadrasaYearCompleted {
+#studgender,
+#lastGradeLevelCompleted,
+#lastGradeLevelIdCompleted,
+.student-form-group #lastMadrasaYearCompleted,
+#studlastMadrasaYearCompleted {
   width: 200px;
+}
+
+#studgender {
+  margin-left: 15px;
+}
+
+.fullName > div {
+  display: flex;
+  align-items: center;
+  gap: 40px;
 }
 
 .form-group .subject-form-group {
   margin-bottom: 20px;
 }
 
-.student-form-group select {
-  font-size: 13px;
-  width: 200px;
-  margin-left: 20px;
-}
-#subjectForm select {
-  font-size: 13px;
-}
-#birthdate {
-  font-size: 14px;
-  width: 100%;
-}
 #gradeLevelOld,
 #gradeLevelNew {
   width: 23.7%;
@@ -3402,6 +3397,14 @@ td[rowspan] {
 .column2:nth-child(2) {
   gap: 20px;
 }
+.student-form-group #gender,
+.column2 #gender {
+  width: 80px;
+}
+.student-form-group #birthdate,
+.column2 #birthdate {
+  width: 120px;
+}
 
 .half {
   width: 65%;
@@ -3412,9 +3415,12 @@ td[rowspan] {
   display: flex;
   align-items: center;
 }
+#student-id {
+  width: 200px;
+}
 .half-other-info {
   gap: 20px;
-  width: 30px;
+  min-width: 30px;
   display: flex;
   align-items: center;
   justify-content: end;
@@ -3429,11 +3435,6 @@ td[rowspan] {
   width: 300px;
   display: flex;
   align-items: center;
-}
-
-.half-unique label {
-  /* white-space: nowrap; */
-  width: 160px;
 }
 .half-stud-info {
   width: 30%;
@@ -3467,11 +3468,8 @@ td[rowspan] {
   width: 50%;
   border-radius: 8px;
   padding: 20px;
+  font-weight: 600;
   background-color: #cbe9cc;
-}
-#madrasaNameLastAttended,
-#madrasaAddress {
-  width: 750px !important;
 }
 .table-container {
   padding: 0px 0px 20px 0px;
@@ -3523,6 +3521,14 @@ td[rowspan] {
 #status-type {
   background-color: #218838;
 }
+.report-header {
+  display: flex;
+  justify-content: space-between;
+}
+.report-header-item {
+  display: flex;
+  width: 49%;
+}
 .header {
   width: 100% !important;
   display: flex;
@@ -3530,7 +3536,7 @@ td[rowspan] {
   align-items: center;
 }
 .header-stud-info-half {
-  width: 20% !important;
+  width: 15%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -3553,7 +3559,7 @@ td[rowspan] {
 }
 #stud-type-row {
   gap: 10px;
-  width: 150px;
+  min-width: 150px;
 }
 
 #scholar-row h6 {
@@ -3939,7 +3945,7 @@ td[rowspan] {
 
 .student-modal .close-modal {
   top: 22px !important;
-  right: 225px !important;
+  right: 205px !important;
 }
 
 .view-student-list-modal .close-modal {
@@ -3972,12 +3978,10 @@ td[rowspan] {
   background: #e60000 !important;
 }
 .checkbox-transferee-reqs-group {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two checkboxes per row */
-  gap: 15px;
-  width: 55%;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
   border-radius: 8px;
+  row-gap: 15px;
 }
 
 .checkbox-each {
@@ -4333,14 +4337,16 @@ th {
   width: 25px;
   height: 25px;
 }
-#dropdown-scholar img {
+#dropdown-scholar img,
+#dropdown-transferee img {
   width: 15px;
   height: 15px;
 }
 
 #select,
 #confirm-btn,
-#dropdown-scholar {
+#dropdown-scholar,
+#dropdown-transferee {
   border: none;
   outline: none;
   background-color: transparent;
@@ -4360,12 +4366,12 @@ th {
   position: absolute;
   padding: 1rem;
   border-radius: 8px;
-  background-color: #ffffff;
+  background-color: white !important;
   color: #333;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   border: 1px solid #ddd;
   min-width: 200px;
-  z-index: 1002; /* Above modal content */
+  z-index: 1002;
   transition: opacity 0.2s ease-in-out;
   visibility: hidden;
   opacity: 0;
@@ -4388,14 +4394,54 @@ th {
   font-size: 12px;
 }
 
-#grades-container {
+.grades-container {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Consistent spacing between columns */
+  gap: 20px;
 }
 
-#grades-container > div {
+.grades-container > div {
   flex: 0 0 calc(50% - 10px);
   box-sizing: border-box;
+}
+
+.no-records-message {
+  background-color: #cbe9cc;
+  border-radius: 8px;
+  text-align: center;
+  padding: 20px;
+}
+.no-records-message p {
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.input-wrapper input.input-error {
+  border: 2px solid red !important;
+  /* padding-right: 30px; */
+}
+
+input.input-error,
+select.input-error {
+  border: 2px solid red !important;
+  padding-right: 2em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='40' height='40'%3E%3Ccircle cx='12' cy='12' r='10' fill='red' /%3E%3Ctext x='50%' y='50%' text-anchor='middle' dy='0.35em' font-size='20' fill='white'%3E!%3C/text%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85em center;
+  background-size: 1.3em 1.3em;
+}
+
+input + p,
+select + p {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  display: none;
 }

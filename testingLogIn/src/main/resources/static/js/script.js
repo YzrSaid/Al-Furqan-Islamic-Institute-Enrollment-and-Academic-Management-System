@@ -34,6 +34,10 @@ function toggleSidebar() {
   let sidebar = document.getElementById("sidebar");
   let content = document.getElementById("content");
   let stickyHeader = document.querySelector(".sticky-header");
+
+  // this is for the report-main-btns (reports)
+  let reportBtnsDiv = document.querySelector(".report-main-btns");
+
   let table = document.querySelector(".table-wrapper");
 
   // This will be used incase a page has no table and has board instead
@@ -48,6 +52,9 @@ function toggleSidebar() {
     sidebar.classList.remove("collapsed-sidebar");
     content.classList.remove("collapsed-content");
     content.style.marginLeft = "320px";
+
+    // report-main-btns
+    reportBtnsDiv.style.padding = "0 15px";
 
     // stickyHeader.style.padding = "10px 20px";
     stickyHeader.style.padding = "10px 1rem";
@@ -67,6 +74,9 @@ function toggleSidebar() {
     sidebar.classList.add("collapsed-sidebar");
     content.classList.add("collapsed-content");
     content.style.marginLeft = "0";
+
+    // report-main-btns
+    reportBtnsDiv.style.padding = "0 8.8rem";
 
     stickyHeader.style.padding = "10px 3.125rem";
     searchDiv.style.width = "100%";
@@ -990,6 +1000,8 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.style.visibility = "hidden";
         modal.style.opacity = "0";
         modal.style.pointerEvents = "none";
+        resetValidationErrors();
+        clearForm();
       }
     });
   });
@@ -1505,12 +1517,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// Listen for clicks on the cancel button inside the modal
-document.addEventListener("click", function (event) {
-  if (event.target.classList.contains("btn-cancel")) {
-    clearForm();
-  }
-});
 
 function clearForm() {
   document
@@ -1530,7 +1536,6 @@ function clearForm() {
       }
     });
 }
-
 
 // this is for the checkbox in new student modal form
 document.addEventListener("DOMContentLoaded", () => {
@@ -1983,126 +1988,146 @@ document.addEventListener("DOMContentLoaded", function () {
 //   });
 
 document.addEventListener("DOMContentLoaded", function () {
-  const button = document.getElementById("dropdown-scholar");
-  const popover = document.getElementById("my-popover");
-  const modalContent = document.querySelector(".student-modal-content");
+  const buttons = [
+    { buttonId: "dropdown-scholar", popoverId: "scholar-popover" },
+    { buttonId: "dropdown-transferee", popoverId: "transferee-popover" },
+  ];
 
-  // Validate elements
-  if (!button || !popover || !modalContent) {
-    console.error("Missing elements:", { button, popover, modalContent });
+  // Validate modal and popovers
+  if (!document.querySelector(".student-modal-content")) {
     return;
   }
 
-  function positionPopover() {
+  // Initialize both popovers to hidden on page load
+  buttons.forEach(({ popoverId }) => {
+    const popover = document.getElementById(popoverId);
+    if (popover) {
+      popover.style.visibility = "hidden";
+      popover.style.opacity = "0";
+      popover.style.pointerEvents = "none";
+    }
+  });
+
+  // Offset to move popovers lower and right
+  const popoverOffset = -5; // Adjust this value to move the popover down more
+  const popoverLeftOffset = 10; // Adjust this value to move the popover to the left of the button
+
+  function closePopover(popover) {
+    if (popover) {
+      popover.style.visibility = "hidden";
+      popover.style.opacity = "0";
+      popover.style.pointerEvents = "none";
+    }
+  }
+
+  function togglePopover(button, popover) {
+    const isVisible =
+      popover.style.visibility === "visible" || popover.style.visibility === "";
+
+    // Close all other popovers first
+    buttons.forEach(({ popoverId }) => {
+      const otherPopover = document.getElementById(popoverId);
+      if (otherPopover !== popover) {
+        closePopover(otherPopover);
+      }
+    });
+
+    // Then toggle the current one
+    if (isVisible) {
+      closePopover(popover);
+    } else {
+      openPopover(popover);
+      positionPopover(button, popover);
+    }
+  }
+
+  function openPopover(popover) {
+    popover.style.visibility = "visible";
+    popover.style.opacity = "1";
+    popover.style.pointerEvents = "auto";
+  }
+
+  function positionPopover(button, popover) {
     // Get button position and dimensions
     const buttonTop = button.offsetTop;
     const buttonLeft = button.offsetLeft;
     const buttonHeight = button.offsetHeight;
-    const scrollTop = modalContent.scrollTop;
 
     // Get modal and popover dimensions
+    const modalContent = document.querySelector(".student-modal-content");
     const modalHeight = modalContent.clientHeight;
     const popoverHeight = popover.offsetHeight || 100; // Fallback if not rendered
+    const popoverWidth = popover.offsetWidth || 200; // Assuming width is calculated after render, fallback to 200px
 
     // Calculate ideal top position (below button)
-    let top = buttonTop + buttonHeight + 5 - scrollTop;
+    let top = buttonTop + buttonHeight + 5 + popoverOffset;
     let position = "below";
 
     // Check if placing below would exceed the modal's bottom
     if (top + popoverHeight > modalHeight) {
-      top = buttonTop - popoverHeight - 5 - scrollTop;
+      top = buttonTop - popoverHeight - 5; // Place it above if it exceeds
       position = "above";
     }
 
     // Boundary check: hide popover if it would go above the modal's top
     if (top < 0) {
-      popover.style.visibility = "hidden";
-      popover.style.opacity = "0";
+      closePopover(popover);
       position = "hidden-top";
     } else {
       // Ensure popover is visible if within bounds
       if (popover.style.visibility !== "visible") {
-        popover.style.visibility = "visible";
-        popover.style.opacity = "1";
+        openPopover(popover);
       }
       popover.style.pointerEvents = "auto";
     }
 
-    // Apply position
+    // Adjust position to be to the left of the button
     popover.style.top = `${top}px`;
-    popover.style.left = `${buttonLeft}px`;
-
-    // Debug log
-    console.log("Popover positioned:", {
-      top,
-      left: buttonLeft,
-      scrollTop,
-      buttonTop,
-      modalHeight,
-      popoverHeight,
-      position,
-    });
+    popover.style.left = `${buttonLeft - popoverWidth + popoverLeftOffset}px`; // Adjust left to move to the left of the button
   }
 
-  button.addEventListener("click", function (e) {
-    e.stopPropagation();
-    const isVisible =
-      popover.style.visibility === "visible" || popover.style.visibility === "";
-    if (isVisible) {
-      popover.style.visibility = "hidden";
-      popover.style.opacity = "0";
-      popover.style.pointerEvents = "none";
-    } else {
-      positionPopover();
-      // Initial show (will be adjusted by positionPopover)
-      popover.style.visibility = "visible";
-      popover.style.opacity = "1";
-      popover.style.pointerEvents = "auto";
-    }
-  });
+  // Open popover when any button is clicked
+  buttons.forEach(({ buttonId, popoverId }) => {
+    const button = document.getElementById(buttonId);
+    const popover = document.getElementById(popoverId);
 
-  // Handle modal scroll
-  modalContent.addEventListener(
-    "scroll",
-    () => {
-      console.log("Modal scroll, scrollTop:", modalContent.scrollTop);
-      if (popover.style.visibility !== "hidden" || top >= 0) {
-        positionPopover();
-      }
-    },
-    { passive: true }
-  );
+    if (!button || !popover) return;
 
-  // Handle window scroll (for outside modal)
-  window.addEventListener("scroll", () => {
-    if (popover.style.visibility !== "hidden" || top >= 0) {
-      positionPopover();
-    }
+    button.addEventListener("click", function (e) {
+      e.stopPropagation();
+      togglePopover(button, popover);
+    });
   });
 
   // Close popover on outside click
   document.addEventListener("click", (e) => {
-    if (
-      popover.style.visibility === "visible" &&
-      !popover.contains(e.target) &&
-      !button.contains(e.target)
-    ) {
-      popover.style.visibility = "hidden";
-      popover.style.opacity = "0";
-      popover.style.pointerEvents = "none";
-    }
+    buttons.forEach(({ popoverId, buttonId }) => {
+      const popover = document.getElementById(popoverId);
+      const button = document.getElementById(buttonId);
+      if (
+        popover.style.visibility === "visible" &&
+        !popover.contains(e.target) &&
+        !button.contains(e.target)
+      ) {
+        closePopover(popover);
+      }
+    });
   });
 });
+
 //This is for Modal Buttons (Cancel and Confirm)
 document.addEventListener("DOMContentLoaded", function () {
   const modalButtonsContainers = document.querySelectorAll(".modal-buttons");
 
-  modalButtonsContainers.forEach(container => {
-    const cancelBtn = container.querySelector(".btn-cancel, .btn-close-confirm, .error-btn-cancel");
+  modalButtonsContainers.forEach((container) => {
+    const cancelBtn = container.querySelector(
+      ".btn-cancel, .btn-close-confirm, .error-btn-cancel"
+    );
     const confirmBtn = container.querySelector(".btn-confirm");
 
     const parentModal = container.closest(".modal");
-    const isConfirmation = parentModal && parentModal.id === "confirmationModal";
+    const isConfirmation =
+      parentModal && parentModal.id === "confirmationModal";
     const isErrorModal = parentModal && parentModal.id === "errorModal";
 
     // Apply base styles
@@ -2113,27 +2138,95 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Alignment logic
     if (isErrorModal) {
-      container.style.justifyContent = "center"; // Center the Close button in error modal
+      container.style.justifyContent = "center";
     } else {
-      container.style.justifyContent = isConfirmation ? "center" : "flex-end"; // Confirmation: center, others: right-align
+      container.style.justifyContent = isConfirmation ? "center" : "flex-end";
     }
 
     // Gap logic
     const updateGap = () => {
       if (isConfirmation) {
-        container.style.columnGap = window.innerWidth <= 480 ? "32px" : "40px"; // Large gap for confirmation
+        container.style.columnGap = window.innerWidth <= 480 ? "32px" : "40px";
       } else {
-        container.style.columnGap = window.innerWidth <= 480 ? "16px" : "24px"; // Standard gap for others
+        container.style.columnGap = window.innerWidth <= 480 ? "16px" : "24px";
       }
     };
     updateGap();
     window.addEventListener("resize", updateGap);
 
     // Button reordering: Cancel on the left, Confirm on the right (if both buttons exist)
-    if (!isErrorModal && cancelBtn && confirmBtn && cancelBtn.nextElementSibling !== confirmBtn) {
+    if (
+      !isErrorModal &&
+      cancelBtn &&
+      confirmBtn &&
+      cancelBtn.nextElementSibling !== confirmBtn
+    ) {
       container.insertBefore(cancelBtn, confirmBtn);
     }
   });
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const requiredInputs = document.querySelectorAll(
+    ".modal input[required], .modal select[required]"
+  );
 
+  requiredInputs.forEach((input) => {
+    // Listen for blur (when the user leaves the field)
+    input.addEventListener("blur", () => {
+      validateField(input);
+    });
+
+    // Listen for change in select or input fields (when the user selects a value or types)
+    input.addEventListener("input", () => {
+      validateField(input);
+    });
+
+    // Listen for focus (to remove the error when the field is focused again)
+    input.addEventListener("focus", () => {
+      input.classList.remove("input-error");
+      const wrapper = input.closest(".input-wrapper");
+      wrapper?.classList.remove("input-error");
+      input.removeAttribute("title");
+    });
+  });
+
+  // Validate function for input and select
+  function validateField(input) {
+    const wrapper = input.closest(".input-wrapper");
+
+    if (input.tagName === "SELECT" && input.value === "") {
+      input.classList.add("input-error");
+      wrapper?.classList.add("input-error");
+      input.setAttribute("title", "This field is required");
+    } else if (input.value.trim() === "") {
+      input.classList.add("input-error");
+      wrapper?.classList.add("input-error");
+      input.setAttribute("title", "This field is required");
+    } else {
+      input.classList.remove("input-error");
+      wrapper?.classList.remove("input-error");
+      input.removeAttribute("title");
+    }
+  }
+
+  // Form submission validation for all required fields
+  document.getElementById("confirmStudent").addEventListener("click", () => {
+    requiredInputs.forEach((input) => {
+      validateField(input);
+    });
+  });
+});
+
+function resetValidationErrors() {
+  const requiredInputs = document.querySelectorAll(
+    ".modal input[required], .modal select[required]"
+  );
+
+  requiredInputs.forEach((input) => {
+    input.classList.remove("input-error");
+    const wrapper = input.closest(".input-wrapper");
+    wrapper?.classList.remove("input-error");
+    input.removeAttribute("title");
+  });
+}

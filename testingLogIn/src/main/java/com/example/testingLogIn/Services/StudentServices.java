@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +52,7 @@ public class StudentServices {
         return studentRepo.findByName(studentName).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
     }
 
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean addStudent(StudentDTO student){
         String fullName = student.getFirstName()+" "+ Optional.ofNullable(student.getMiddleName()).map(mn -> mn+" ").orElse(" ")+student.getLastName();
         GradeLevel gradeLevel = null;
@@ -130,7 +132,7 @@ public class StudentServices {
     public StudentDTO getStudent(int studentId){
         return studentRepo.findById(studentId).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
     }
-    
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean updateStudent(StudentDTO stud){
         String fullName = stud.getFirstName()+" "+ Optional.ofNullable(stud.getMiddleName()).map(mn -> mn+" ").orElse(" ")+stud.getLastName();
         String sectionName = stud.getCurrentGradeSection().substring(stud.getCurrentGradeSection().indexOf("-")+1);

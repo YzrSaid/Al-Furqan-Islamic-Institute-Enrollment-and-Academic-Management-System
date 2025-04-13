@@ -121,7 +121,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .firstname(accountRegister.getFirstname())
                 .lastname(accountRegister.getLastname())
                 .middlename(accountRegister.getMiddlename())
-                .fullName(fullname)
+                //.fullName(fullname)
                 .role(accountRegister.getRole())
                 .address(accountRegister.getAddress())
                 .birthdate(accountRegister.getBirthdate())

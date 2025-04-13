@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -212,6 +213,7 @@ public class PaymentRecordService {
         return transactionRepo.findById(referenceId).map(PaymentTransaction::DTOmapper).orElse(null);
     }
 
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean voidThePayment(String transactionId){
         PaymentTransaction transaction = transactionRepo.findById(transactionId).orElseThrow(NullPointerException::new);
         Student stud = transaction.getStudent();
@@ -226,7 +228,7 @@ public class PaymentRecordService {
         int transactionCount = Optional.ofNullable(transactionRepo.countTotalTransactions()).orElse(0);
         LocalDate currentDate = LocalDate.now();
         String transactionId = String.valueOf(   currentDate.getYear()+""+
-                                                currentDate.getMonthValue()+""+
+                                                currentDate.getMonthValue()+
                                                 currentDate.getDayOfWeek().toString().charAt(0)+
                                                 transactionCount);
         return PaymentTransaction.builder()

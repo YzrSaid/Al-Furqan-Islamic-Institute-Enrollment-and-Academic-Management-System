@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.example.testingLogIn.Repositories.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 /**
@@ -53,7 +54,8 @@ public class RequiredPaymentsServices {
     public RequiredFees getRequiredPaymentById(int reqPaymentId){
         return reqPaymentsRepo.findById(reqPaymentId).orElse(null);
     }
-    
+
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public int addNewPayments(RequiredPaymentsDTO paymentsDTO) throws Exception {
         boolean doesNameExist = reqPaymentsRepo.findAll().stream()
                                                 .filter(payment -> payment.isNotDeleted() && 
@@ -141,6 +143,7 @@ public class RequiredPaymentsServices {
                         .toList();
     }
 
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean updatePayment(int feeId, RequiredPaymentsDTO updated){
         RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
         assert toUpdate != null;
@@ -231,6 +234,7 @@ public class RequiredPaymentsServices {
         return true;
     }
 
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public void deleteRequiredPayment(int feeId){
         RequiredFees reqFee = reqPaymentsRepo.findById(feeId).orElseThrow(NullPointerException::new);
         int currentSemId = semServices.getCurrentActive().getSySemNumber();

@@ -14,6 +14,7 @@ import com.example.testingLogIn.Repositories.StudentDiscountRepo;
 import com.example.testingLogIn.Repositories.StudentFeesListRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +57,7 @@ public class DiscountsServices {
         return true;
     }
 
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public void deleteDiscount(int discountId){
         Discount discount = discRepo.findById(discountId).orElseThrow(NullPointerException::new);
         discount.setNotDeleted(false);
@@ -69,6 +71,7 @@ public class DiscountsServices {
         });
     }
 
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean addStudentDiscount(int discountId, List<Integer> studentIds){
         Discount discount = discRepo.findById(discountId).orElse(null);
         assert discount != null;
@@ -91,6 +94,7 @@ public class DiscountsServices {
     }
 
     //para mag update ng student info
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean addStudentDiscounts(Integer studentId, List<Integer> discounts){
         Student student = studRepo.findById(studentId).orElseThrow(NullPointerException::new);
         List<StudentDiscount> studentDiscounts = new ArrayList<>();
@@ -134,6 +138,7 @@ public class DiscountsServices {
                 .build();
     }
 
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public void removeStudentsDiscount(List<Integer> connectionIds){
         connectionIds.forEach(conId ->{
             studDiscRepo.findById(conId).ifPresent(studentDiscount -> {
@@ -144,6 +149,7 @@ public class DiscountsServices {
         });
     }
 
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public void removeStudentDiscount(int discId){
         StudentDiscount studentDiscount = studDiscRepo.findById(discId).orElseThrow(NullPointerException::new);
         studentDiscount.setNotDeleted(false);

@@ -7,6 +7,7 @@ import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import java.util.ArrayList;
 import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -81,6 +82,7 @@ public class GradeLevelServices {
                 .findFirst().orElse(null);
     }
 
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean updateGradeLevel(GradeLevelDTO gradeLevel) {
         String preReqWord = gradeLevel.getPreRequisite();
         GradeLevel newPreRequisite = preReqWord.equalsIgnoreCase("NONE") ? null

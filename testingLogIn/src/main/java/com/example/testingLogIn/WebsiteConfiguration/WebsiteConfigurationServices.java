@@ -6,6 +6,7 @@ import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Services.sySemesterServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +33,8 @@ public class WebsiteConfigurationServices {
     @Autowired
     private GradeLevelRepo gradeLevelRepo;
 
+    @CacheEvict(value = {"schoolAddress","schoolEmail","schoolName","schoolNum",
+                        "graduatingLevel","website-cover","website-logo"})
     public boolean updateSchoolInterface(WebsiteProfile profile) {
         try{
             byte[] newLogo = Optional.ofNullable(profile.getLogo()).map(logo -> {

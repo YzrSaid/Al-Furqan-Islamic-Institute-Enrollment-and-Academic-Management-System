@@ -34,7 +34,6 @@ public class EnrollmentServices {
     private final GradeLevelRepo gradeLevelRepo;
     private final StudentSubjectGradeServices ssgService;
     private final GradeLevelRequiredFeeRepo gradelvlReqFeesRepo;
-    private final PaymentsRecordRepo payRecRepo;
     private final StudentFeesListService studFeeListService;
     private final DiscountsServices discService;
     private final SectionStudentCountServices sscService;
@@ -43,7 +42,7 @@ public class EnrollmentServices {
     private final PaymentRecordService paymentRecordService;
 
     @Autowired
-    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, PaymentsRecordRepo payRecRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, DistributableServices distributableServices, PaymentRecordService paymentRecordService) {
+    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo,  StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, DistributableServices distributableServices, PaymentRecordService paymentRecordService) {
         this.enrollmentRepo = enrollmentRepo;
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
@@ -51,7 +50,6 @@ public class EnrollmentServices {
         this.gradeLevelRepo = gradeLevelRepo;
         this.ssgService = ssgService;
         this.gradelvlReqFeesRepo = gradelvlReqFeesRepo;
-        this.payRecRepo = payRecRepo;
         this.studFeeListService = studFeeListService;
         this.discService = discService;
         this.sscService = sscService;

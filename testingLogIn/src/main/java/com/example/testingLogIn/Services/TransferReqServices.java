@@ -7,6 +7,7 @@ import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.StudentTransReqRepo;
 import com.example.testingLogIn.Repositories.TransfereeReqRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -62,6 +63,7 @@ public class TransferReqServices {
     }
 
     // for manipulating the requirements complied by the transferee student
+    @CacheEvict(value = "enrollmentPage")
     public boolean addingStudentRequirements(int studentId, List<Integer> requirementsId){
         Student student = studentRepo.findById(studentId).orElseThrow(NullPointerException::new);
         List<TransfereeRequirements> transfereeRequirements = transfereeReqRepo.findByIsNotDeletedTrue();

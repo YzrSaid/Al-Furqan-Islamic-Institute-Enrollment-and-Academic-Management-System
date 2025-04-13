@@ -33,15 +33,51 @@ document.addEventListener("DOMContentLoaded", function () {
 function toggleSidebar() {
   let sidebar = document.getElementById("sidebar");
   let content = document.getElementById("content");
+  let stickyHeader = document.querySelector(".sticky-header");
+  let table = document.querySelector(".table-wrapper");
+
+  // This will be used incase a page has no table and has board instead
+  let schedBoard = document.querySelector(".sched-board");
+
+  let searchDiv = document.querySelector(".search-div");
+  let topBar = document.querySelector(".topbar");
+  let textLink = document.querySelector(".text-link");
 
   if (sidebar.classList.contains("collapsed-sidebar")) {
+    // open header
     sidebar.classList.remove("collapsed-sidebar");
     content.classList.remove("collapsed-content");
     content.style.marginLeft = "320px";
+
+    // stickyHeader.style.padding = "10px 20px";
+    stickyHeader.style.padding = "10px 1rem";
+    searchDiv.style.width = "100%";
+    searchDiv.style.padding = "0";
+    searchDiv.style.margin = "0 0 20px 0";
+    table.style.padding = "0";
+
+    // schedBoard.style.padding = "200px";
+
+    textLink.style.width = "100%";
+    textLink.style.padding = "15px 0";
+
+    topBar.style.padding = "10px 0";
   } else {
+    // close header
     sidebar.classList.add("collapsed-sidebar");
     content.classList.add("collapsed-content");
     content.style.marginLeft = "0";
+
+    stickyHeader.style.padding = "10px 3.125rem";
+    searchDiv.style.width = "100%";
+    searchDiv.style.padding = "0 0px";
+    searchDiv.style.margin = "0 10px 20px 10px";
+    table.style.padding = "0 35px";
+
+    textLink.style.width = "100%";
+    textLink.style.padding = "15px 0";
+
+    topBar.style.padding = "10px 0.1rem";
   }
 }
 
@@ -398,7 +434,7 @@ window.enableFormInputs = function () {
   });
 };
 // Function to disable inputs and checkboxes after they are populated
-window.disableFormInputs = function () {
+window.disableFormInput = function () {
   // Disable all inputs, selects, checkboxes, and radio buttons
   document.querySelectorAll("input, select").forEach((input) => {
     if (input.tagName === "SELECT") {
@@ -422,11 +458,17 @@ document.addEventListener("DOMContentLoaded", function () {
       modal.style.visibility = "visible";
       modal.style.opacity = "1";
       modal.style.pointerEvents = "auto"; // Enable interaction
+
+      // Disable page scroll
+      document.body.style.overflow = "hidden";
     } else {
       modal.classList.remove("show");
       modal.style.visibility = "hidden";
       modal.style.opacity = "0";
       modal.style.pointerEvents = "none"; // Ensure it doesn't block clicks
+
+      // Enable page scroll
+      document.body.style.overflow = "auto";
     }
 
     // If it's a confirmation modal, update the text
@@ -440,13 +482,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (modalId.includes("Edit")) {
+      console.log("yawa");
       const confirmBtn = modal.querySelector(".btn-confirm");
       const cancelBtn = modal.querySelector(".btn-cancel");
       const inputs = modal.querySelectorAll("input, textarea, select");
 
-      // Disable form inputs, select elements, checkboxes, and radio buttons
-      document.querySelectorAll("input, select").forEach((input) => {
-        disableFormInputs();
+      // Only disable inputs inside the current modal
+      inputs.forEach((input) => {
+        input.disabled = true;
       });
 
       // Set initial button states
@@ -527,30 +570,6 @@ document.addEventListener("DOMContentLoaded", function () {
           toggleModal("confirmationModal", false);
         }
       }
-    }
-  });
-
-  // Handle the cancel action when the user cancels in the modal
-  //   cancelActionButton.addEventListener("click", function () {
-  //     // Close the confirmation modal without doing anything
-  //     toggleModal("confirmationModal", false);
-
-  //     // Keep inputs enabled if they were already in "edit" mode (no reset)
-  //     editButton.textContent = "Edit";
-  //     editButton.setAttribute("data-mode", "edit");
-  //   });
-
-  // Event listener to enable inputs when reopening the modal
-  document.addEventListener("click", function (event) {
-    const target = event.target;
-
-    // Correct condition to detect close button or modal close trigger
-    if (
-      target.classList.contains("btn-cancel") ||
-      target.closest("[data-close-modal]")
-    ) {
-      // Re-enable inputs inside the modal when reopened
-      enableFormInputs();
     }
   });
 
@@ -1497,13 +1516,21 @@ function clearForm() {
   document
     .querySelectorAll(".modal input, .modal select, .modal textarea")
     .forEach((element) => {
-      if (element.type === "checkbox" || element.type === "radio") {
-        element.checked = false; // Uncheck checkboxes/radios
-      } else {
-        element.value = ""; // Clear text inputs, dropdowns & textareas
+      // Only clear if NOT disabled, NOT readonly, and doesn't have data-preserve
+      if (
+        !element.isDisabled &&
+        !element.readOnly &&
+        !element.hasAttribute("data-preserve")
+      ) {
+        if (element.type === "checkbox" || element.type === "radio") {
+          element.checked = false;
+        } else {
+          element.value = "";
+        }
       }
     });
 }
+
 
 // this is for the checkbox in new student modal form
 document.addEventListener("DOMContentLoaded", () => {
@@ -1629,30 +1656,30 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-function toggleSidebar() {
-  let sidebar = document.getElementById("sidebar");
-  let content = document.getElementById("content");
+// function toggleSidebar() {
+//   let sidebar = document.getElementById("sidebar");
+//   let content = document.getElementById("content");
 
-  const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
+//   const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
 
-  if (isCollapsed) {
-    sidebar.classList.remove("collapsed-sidebar");
-    content.classList.remove("collapsed-content");
-    content.style.marginLeft = "320px";
-  } else {
-    sidebar.classList.add("collapsed-sidebar");
-    content.classList.add("collapsed-content");
-    content.style.marginLeft = "0";
-  }
+//   if (isCollapsed) {
+//     sidebar.classList.remove("collapsed-sidebar");
+//     content.classList.remove("collapsed-content");
+//     content.style.marginLeft = "320px";
+//   } else {
+//     sidebar.classList.add("collapsed-sidebar");
+//     content.classList.add("collapsed-content");
+//     content.style.marginLeft = "0";
+//   }
 
-  // Update all hamburger titles after toggling
-  document.querySelectorAll("span.hamburger").forEach(function (span) {
-    const img = span.querySelector("img");
-    if (img && img.src.includes("burger_menu_icon.png")) {
-      span.title = isCollapsed ? "Hide Sidebar" : "Show Sidebar";
-    }
-  });
-}
+//   // Update all hamburger titles after toggling
+//   document.querySelectorAll("span.hamburger").forEach(function (span) {
+//     const img = span.querySelector("img");
+//     if (img && img.src.includes("burger_menu_icon.png")) {
+//       span.title = isCollapsed ? "Hide Sidebar" : "Show Sidebar";
+//     }
+//   });
+// }
 
 // Pagination Title Function
 document.addEventListener("DOMContentLoaded", function () {
@@ -1702,6 +1729,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// This is for the dropdown buttons (to open, hide, and clicking outisde will close the dropdown)
 document.addEventListener("DOMContentLoaded", function () {
   // Function to toggle dropdown visibility
   function toggleDropdown(event) {
@@ -1792,6 +1820,26 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   });
 });
+document.addEventListener("DOMContentLoaded", function () {
+  const toggle = document.getElementById("togglePassword");
+  const passwordField = document.getElementById("password");
+  let isVisible = false;
+
+  toggle.addEventListener("click", function () {
+    isVisible = !isVisible;
+
+    // Toggle password visibility
+    passwordField.type = isVisible ? "text" : "password";
+
+    // Change image and title based on state
+    toggle.src = isVisible
+      ? "/images/icons/eye.png"
+      : "/images/icons/hidden-pass.png";
+
+    toggle.title = isVisible ? "Hide Password" : "Show Password";
+    toggle.alt = isVisible ? "Hide Password" : "Show Password"; // optional for accessibility
+  });
+});
 
 // document.querySelectorAll('.dropdown-print-btn').forEach(button => {
 //     button.addEventListener('click', (event) => {
@@ -1815,3 +1863,277 @@ document.addEventListener("DOMContentLoaded", function () {
 //         dropdownContent.style.opacity = dropdownContent.style.opacity === '1' ? '0' : '1';
 //     });
 // });;
+
+// // This is for the popover so clicking it will open and clicking it again will close the popover
+// document.addEventListener("DOMContentLoaded", function () {
+//   const button = document.getElementById("dropdown-scholar");
+//   const popover = document.getElementById("my-popover");
+
+//   // Toggle popover visibility when button is clicked
+//   button.addEventListener("click", function (event) {
+//     // Prevent the event from propagating to the document click listener
+//     event.stopPropagation();
+
+//     if (popover.style.visibility === "visible") {
+//       // Hide the popover
+//       popover.style.visibility = "hidden";
+//       popover.style.opacity = "0";
+//       popover.style.pointerEvents = "none"; // Disable interaction
+//     } else {
+//       // Show the popover
+//       popover.style.visibility = "visible";
+//       popover.style.opacity = "1";
+//       popover.style.pointerEvents = "auto"; // Enable interaction
+//     }
+//   });
+
+//   // Close the popover when clicking anywhere outside the popover or button
+//   document.addEventListener("click", function () {
+//     if (popover.style.visibility === "visible") {
+//       // Hide the popover if it's visible
+//       popover.style.visibility = "hidden";
+//       popover.style.opacity = "0";
+//       popover.style.pointerEvents = "none"; // Disable interaction
+//     }
+//   });
+// });
+// document.addEventListener("DOMContentLoaded", function () {
+//     const button = document.getElementById("dropdown-scholar");
+//     const popover = document.getElementById("my-popover");
+//     const modalContent = document.querySelector(".student-modal-content");
+
+//     // Validate elements
+//     if (!button || !popover || !modalContent) {
+//       console.error("Missing elements:", { button, popover, modalContent });
+//       return;
+//     }
+
+//     function positionPopover() {
+//       // Use offsetTop for reliability
+//       const buttonTop = button.offsetTop;
+//       const buttonLeft = button.offsetLeft;
+//       const buttonHeight = button.offsetHeight;
+//       const scrollTop = modalContent.scrollTop;
+
+//       // Position below button, adjust for scroll
+//       const top = buttonTop + buttonHeight + 5 - scrollTop;
+//       const left = buttonLeft;
+
+//       // Apply position
+//       popover.style.top = `${top}px`;
+//       popover.style.left = `${left}px`;
+
+//       // Force render (helps with browser repaint issues)
+//       popover.style.display = "none";
+//       popover.offsetHeight; // Trigger reflow
+//       popover.style.display = "";
+
+//       // Debug log
+//       console.log("Popover positioned:", {
+//         top,
+//         left,
+//         scrollTop,
+//         buttonTop,
+//         computedTop: popover.style.top,
+//       });
+//     }
+
+//     button.addEventListener("click", function (e) {
+//       e.stopPropagation();
+//       const isVisible = popover.style.visibility === "visible";
+//       if (isVisible) {
+//         popover.style.visibility = "hidden";
+//         popover.style.opacity = "0";
+//         popover.style.pointerEvents = "none";
+//       } else {
+//         positionPopover();
+//         popover.style.visibility = "visible";
+//         popover.style.opacity = "1";
+//         popover.style.pointerEvents = "auto";
+//       }
+//     });
+
+//     // Handle modal scroll
+//     modalContent.addEventListener("scroll", () => {
+//       console.log("Modal scroll, scrollTop:", modalContent.scrollTop);
+//       if (popover.style.visibility === "visible") {
+//         positionPopover();
+//       }
+//     }, { passive: true });
+
+//     // Handle window scroll (for outside modal)
+//     window.addEventListener("scroll", () => {
+//       if (popover.style.visibility === "visible") {
+//         positionPopover();
+//       }
+//     });
+
+//     // Close popover on outside click
+//     document.addEventListener("click", (e) => {
+//       if (
+//         popover.style.visibility === "visible" &&
+//         !popover.contains(e.target) &&
+//         !button.contains(e.target)
+//       ) {
+//         popover.style.visibility = "hidden";
+//         popover.style.opacity = "0";
+//         popover.style.pointerEvents = "none";
+//       }
+//     });
+//   });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const button = document.getElementById("dropdown-scholar");
+  const popover = document.getElementById("my-popover");
+  const modalContent = document.querySelector(".student-modal-content");
+
+  // Validate elements
+  if (!button || !popover || !modalContent) {
+    console.error("Missing elements:", { button, popover, modalContent });
+    return;
+  }
+
+  function positionPopover() {
+    // Get button position and dimensions
+    const buttonTop = button.offsetTop;
+    const buttonLeft = button.offsetLeft;
+    const buttonHeight = button.offsetHeight;
+    const scrollTop = modalContent.scrollTop;
+
+    // Get modal and popover dimensions
+    const modalHeight = modalContent.clientHeight;
+    const popoverHeight = popover.offsetHeight || 100; // Fallback if not rendered
+
+    // Calculate ideal top position (below button)
+    let top = buttonTop + buttonHeight + 5 - scrollTop;
+    let position = "below";
+
+    // Check if placing below would exceed the modal's bottom
+    if (top + popoverHeight > modalHeight) {
+      top = buttonTop - popoverHeight - 5 - scrollTop;
+      position = "above";
+    }
+
+    // Boundary check: hide popover if it would go above the modal's top
+    if (top < 0) {
+      popover.style.visibility = "hidden";
+      popover.style.opacity = "0";
+      position = "hidden-top";
+    } else {
+      // Ensure popover is visible if within bounds
+      if (popover.style.visibility !== "visible") {
+        popover.style.visibility = "visible";
+        popover.style.opacity = "1";
+      }
+      popover.style.pointerEvents = "auto";
+    }
+
+    // Apply position
+    popover.style.top = `${top}px`;
+    popover.style.left = `${buttonLeft}px`;
+
+    // Debug log
+    console.log("Popover positioned:", {
+      top,
+      left: buttonLeft,
+      scrollTop,
+      buttonTop,
+      modalHeight,
+      popoverHeight,
+      position,
+    });
+  }
+
+  button.addEventListener("click", function (e) {
+    e.stopPropagation();
+    const isVisible =
+      popover.style.visibility === "visible" || popover.style.visibility === "";
+    if (isVisible) {
+      popover.style.visibility = "hidden";
+      popover.style.opacity = "0";
+      popover.style.pointerEvents = "none";
+    } else {
+      positionPopover();
+      // Initial show (will be adjusted by positionPopover)
+      popover.style.visibility = "visible";
+      popover.style.opacity = "1";
+      popover.style.pointerEvents = "auto";
+    }
+  });
+
+  // Handle modal scroll
+  modalContent.addEventListener(
+    "scroll",
+    () => {
+      console.log("Modal scroll, scrollTop:", modalContent.scrollTop);
+      if (popover.style.visibility !== "hidden" || top >= 0) {
+        positionPopover();
+      }
+    },
+    { passive: true }
+  );
+
+  // Handle window scroll (for outside modal)
+  window.addEventListener("scroll", () => {
+    if (popover.style.visibility !== "hidden" || top >= 0) {
+      positionPopover();
+    }
+  });
+
+  // Close popover on outside click
+  document.addEventListener("click", (e) => {
+    if (
+      popover.style.visibility === "visible" &&
+      !popover.contains(e.target) &&
+      !button.contains(e.target)
+    ) {
+      popover.style.visibility = "hidden";
+      popover.style.opacity = "0";
+      popover.style.pointerEvents = "none";
+    }
+  });
+});
+//This is for Modal Buttons (Cancel and Confirm)
+document.addEventListener("DOMContentLoaded", function () {
+  const modalButtonsContainers = document.querySelectorAll(".modal-buttons");
+
+  modalButtonsContainers.forEach(container => {
+    const cancelBtn = container.querySelector(".btn-cancel, .btn-close-confirm, .error-btn-cancel");
+    const confirmBtn = container.querySelector(".btn-confirm");
+
+    const parentModal = container.closest(".modal");
+    const isConfirmation = parentModal && parentModal.id === "confirmationModal";
+    const isErrorModal = parentModal && parentModal.id === "errorModal";
+
+    // Apply base styles
+    container.style.display = "flex";
+    container.style.flexWrap = "wrap";
+    container.style.width = "100%";
+    container.style.marginTop = "1rem";
+
+    // Alignment logic
+    if (isErrorModal) {
+      container.style.justifyContent = "center"; // Center the Close button in error modal
+    } else {
+      container.style.justifyContent = isConfirmation ? "center" : "flex-end"; // Confirmation: center, others: right-align
+    }
+
+    // Gap logic
+    const updateGap = () => {
+      if (isConfirmation) {
+        container.style.columnGap = window.innerWidth <= 480 ? "32px" : "40px"; // Large gap for confirmation
+      } else {
+        container.style.columnGap = window.innerWidth <= 480 ? "16px" : "24px"; // Standard gap for others
+      }
+    };
+    updateGap();
+    window.addEventListener("resize", updateGap);
+
+    // Button reordering: Cancel on the left, Confirm on the right (if both buttons exist)
+    if (!isErrorModal && cancelBtn && confirmBtn && cancelBtn.nextElementSibling !== confirmBtn) {
+      container.insertBefore(cancelBtn, confirmBtn);
+    }
+  });
+});
+
+

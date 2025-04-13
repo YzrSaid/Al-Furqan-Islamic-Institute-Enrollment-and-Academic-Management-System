@@ -33,29 +33,31 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
                         <button class="search-btn">Search</button>
                         <!-- add section button -->
                         <div class="add-something-btn-container">
-                            <button class="add-something-btn" id="openSectionModal" data-open-modal="sectionModal">Add a
+                            <button class="add-something-btn" id="openSectionModal" data-open-modal="sectionModal" title="Click to Add a Section">Add a
                                 Section</button>
                         </div>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="patient-number">Patient Number</option>
-                            <option value="patient-name">Patient Name</option>
-                            <option value="patient-sex">Sex</option>
-                        </select>
-                    </div>
+                    
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- Table -->
+         <div class="table-wrapper">
         <table class="section-table main-table">
             <thead>
                 <tr>
@@ -69,7 +71,7 @@
             <tbody>
             </tbody>
         </table> <br> <br>
-
+    </div>
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">
@@ -109,7 +111,7 @@
                 <form method="post" id="sectionForm">
                     <div>
                         <label for="gradeLevel">Grade Level:</label>
-                        <select name="gradeLevel" id="gradeLevel" required>
+                        <select name="gradeLevel" id="gradeLevel"  required>
                             <option value="" disabled selected>Select Grade Level</option>
                         </select>
                     </div>
@@ -311,7 +313,7 @@
                             <div class="action">
                                <img data-open-modal="sectionEditModal" 
                                   src="/images/icons/compose.png" 
-                                  alt="section-edit-icon" 
+                                  alt="section-edit-icon" title="Click to Edit Section" 
                                   data-id="${section.number}">
                                 
                                <img data-open-modal="confirmationModal" 
@@ -319,7 +321,7 @@
                                   data-message="Are you sure you want to delete this section?" 
                                   data-id="${section.number}"
                                   src="/images/icons/bin.png" 
-                                  alt="section-delete-icon">
+                                  alt="section-delete-icon" title="Click to Delete Section">
                             </div>
                         </div>
                     </td>

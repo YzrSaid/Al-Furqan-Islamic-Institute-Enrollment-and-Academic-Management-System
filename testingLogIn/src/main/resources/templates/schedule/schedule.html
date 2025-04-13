@@ -25,7 +25,7 @@
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
             <div class="text-link" id="breadcrumb-container">
-                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+                <h4>Schedule</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
                 <a href="/schedule" title="You're currently in this page.">Maintenance - Schedule</a>
@@ -33,43 +33,48 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
+                        <button type="button" class="search-btn">Search</button>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                        </select>
-                    </div>
+                </div>
+
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="table-ba-to" class="verify-accounts-table main-table">
-            <thead>
-                <tr>
-                    <th>Grade Level</th>
-                    <th>Section</th>
-                    <th>Students</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Grade 1</td>
-                    <td>Malunggay</td>
-                    <td>30</td>
-                    <td>
-                        <div class="action-container">
-                            <a href="/schedules/sched-board" class="view-sched">View Schedule</a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table> <br> <br>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="table-ba-to" class="verify-accounts-table main-table">
+                <thead>
+                    <tr>
+                        <th>Grade Level</th>
+                        <th>Section</th>
+                        <th>Students</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr>
+                        <td>Grade 1</td>
+                        <td>Malunggay</td>
+                        <td>30</td>
+                        <td>
+                            <div class="action-container">
+                                <a href="/schedules/sched-board" class="view-sched">View Schedule</a>
+                            </div>
+                        </td>
+                    </tr> -->
+                </tbody>
+            </table> <br> <br>
+        </div>
+
+
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">

@@ -34,72 +34,49 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button onclick="goList(1,1)" class="search-btn">Search</button>
+                        <button type="button" onclick="goList(1,1)" class="search-btn">Search</button>
                     </div>
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button class="new-student" onclick="fetchDiscounts()" data-open-modal="newStudentModal"
+                        <button type="button" class="new-student" onclick="fetchDiscounts()" data-open-modal="newStudentModal"
                             title="Add New Student">NEW
                             STUDENT</button>
                     </div>
+                </div>
 
-                    <div class="sort-container">
-                        <select title="sort" name="sort" onchange="goList(1,1)" id="sort-select" class="sort-select">
-                            <option value="All" selected>All</option>
-                            <option value="Listing">Listing</option>
-                            <option value="Assessment">Assessment</option>
-                            <option value="Payment">Payment</option>
-                            <option value="Enrolled">Enrolled</option>
-                            <option value="Not_registered">Wala sa listing</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                    </div>
+                <div class="sort-container">
+                    <select title="sort" name="sort" onchange="goList(1,1)" id="sort-select" class="sort-select">
+                        <option value="All" selected>All</option>
+                        <option value="Listing">Listing</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Payment">Payment</option>
+                        <option value="Enrolled">Enrolled</option>
+                        <option value="Not_registered">Wala sa listing</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-
-        <!-- Table -->
-        <table id="lamesa" class="listing-table main-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Enrolling to</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status" id="status-registration"></div>
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i> <!-- Icon is the button -->
-                                </button>
-                            </div>
-                            <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" data-action="listingAddGradeLevel" data-open-modal="gradeLevelModal"
-                                    title="Click to Proceed">Proceed</a>
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-                                    data-message="Are you sure you want to cancel this registration?"
-                                    title="Clicking this will cancel the registration">Cancel
-                                    Registration</a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="lamesa" class="listing-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Enrolling to</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
         <div class="pagination-container">
@@ -536,11 +513,12 @@
                     <label for="studentFirstName">First Name:</label>
                     <input type="text" name="firstname" id="studentFirstName" required>
 
+                    <label for="studentMiddleName">Middle Name:</label>
+                    <input type="text" name="middlename" id="studentMiddleName" placeholder="Optional">
+
                     <label for="studentLastName">Last Name:</label>
                     <input type="text" name="lastname" id="studentLastName" required>
 
-                    <label for="studentMiddleName">Middle Name:</label>
-                    <input type="text" name="middlename" id="studentMiddleName" placeholder="Optional">
                 </div> <br>
 
                 <div class="student-form-group">
@@ -554,23 +532,25 @@
                     <label for="birthdate">Birthdate:</label>
                     <input type="date" id="studbirthdate" required>
 
-                    <div class="checkbox">
-                        <label for="scholar">Scholar:</label>
-                        <input type="checkbox" id="scholar">
+                    <div class="checkbox-container">
+                        <div class="checkbox">
+                            <label for="scholar">Scholar:</label>
+                            <input type="checkbox" id="scholar">
 
-                        <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png"
-                                popovertarget="my-popover" alt="dropdown-icon">
-                        </button>
+                            <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png"
+                                    popovertarget="my-popover" alt="dropdown-icon">
+                            </button>
 
-                        <!-- Popover lives right below the button now -->
-                        <div popover id="my-popover" name="add-discount" class="styled-popover">
-                            <h6>Scholarships:</h6>
+                            <!-- Popover lives right below the button now -->
+                            <div popover id="my-popover" name="add-discount" class="styled-popover">
+                                <h6>Scholarships:</h6>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="checkbox">
-                        <label for="isTransferee">Transferee:</label>
-                        <input type="checkbox" id="isTransferee">
+                        <div class="checkbox">
+                            <label for="isTransferee">Transferee:</label>
+                            <input type="checkbox" id="isTransferee">
+                        </div>
                     </div>
 
                 </div> <br>
@@ -597,7 +577,7 @@
                     <input type="text" name="fatherName" id="studfatherName" required>
 
                     <label for="studfatherOccupation">Occupation:</label>
-                    <input type="text" id="studfatherOccupation" class="input-occupation">
+                    <input type="text" id="studfatherOccupation">
                 </div> <br>
 
                 <h6>Mother's Information</h6>
@@ -606,7 +586,7 @@
                     <input type="text" id="studmotherName" required>
 
                     <label for="studmotherOccupation">Occupation:</label>
-                    <input type="text" id="studmotherOccupation" class="input-occupation">
+                    <input type="text" id="studmotherOccupation">
                 </div> <br>
 
                 <h6>Guardian's Information</h6>
@@ -615,7 +595,7 @@
                     <input type="text" id="studguardianName">
 
                     <label for="studguardianOccupation">Occupation:</label>
-                    <input type="text" id="studguardianOccupation" class="input-occupation">
+                    <input type="text" id="studguardianOccupation">
                 </div> <br>
 
                 <div class="student-form-group">
@@ -968,8 +948,8 @@
                 tableBody.innerHTML = "";
                 epv.feesAndBalance.forEach(datas => {
                     var status = datas.totalPaid < datas.totalRequired && datas.totalPaid === 0 ? "Unpaid" :
-                                 datas.totalPaid > 0 && datas.totalPaid < datas.totalRequired ? "Partially Paid" :
-                                                                                                "Fully Paid";
+                        datas.totalPaid > 0 && datas.totalPaid < datas.totalRequired ? "Partially Paid" :
+                            "Fully Paid";
                     const row = document.createElement("tr");
                     const statusClass = getPaymentStatusClass(status);
                     row.innerHTML = `
@@ -1547,6 +1527,11 @@
             .then(response => response.json())
             .then(data => {
                 popover.innerHTML = "<h6>Scholarship Type</h6>";
+
+                // Create wrapper div with your custom class
+                const discountWrapper = document.createElement("div");
+                discountWrapper.classList.add("checkbox-container-popover");
+
                 data.forEach(disc => {
                     const paymentDiv = document.createElement("div");
                     paymentDiv.classList.add("checkbox-each");
@@ -1567,8 +1552,11 @@
 
                     paymentDiv.appendChild(checkbox);
                     paymentDiv.appendChild(label);
-                    popover.appendChild(paymentDiv);
+                    discountWrapper.appendChild(paymentDiv);
                 });
+
+                // Append the container to the popover
+                popover.appendChild(discountWrapper);
             })
             .catch(error => console.error("Error fetching grade levels:", error));
     }

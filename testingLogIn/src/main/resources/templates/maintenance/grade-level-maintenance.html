@@ -34,7 +34,7 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
                         <button class="search-btn">Search</button>
@@ -46,20 +46,22 @@
                                 Level</button>
                         </div>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="patient-number">Patient Number</option>
-                            <option value="patient-name">Patient Name</option>
-                            <option value="patient-sex">Sex</option>
-                        </select>
-                    </div>
+                    
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
                 </div>
             </div>
         </div>
 
 
         <!-- Table -->
+         <div class="table-wrapper">
         <table id="lamesa" class="grade-level-table main-table">
             <thead>
                 <tr>
@@ -71,7 +73,7 @@
             <tbody>
             </tbody>
         </table> <br> <br>
-
+    </div>
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
@@ -115,7 +117,7 @@
                     <br><br>
 
                     <label for="pre-req">Pre-Requisite Grade Level</label>
-                    <select name="pre-req" id="pre-req-grade-level">
+                    <select name="pre-req" id="pre-req-grade-level" data-preserve>
                         <option value="NONE" disabled>Choose a pre-requisite</option>
                         <option value="NONE">None</option>
                     </select>
@@ -308,7 +310,7 @@
             <div class="action">
                 <img data-open-modal="gradeLevelEditModal" 
                      src="/images/icons/compose.png" 
-                     alt="grade-level-edit-icon" 
+                     alt="grade-level-edit-icon" title="Click to Edit Grade Level" 
                      data-id="${grade.levelId}" 
                      data-prereq="${grade.preRequisite || 'NONE'}">
                 
@@ -318,7 +320,7 @@
                      data-id="${grade.levelId}" 
                      data-prereq="${grade.preRequisite || 'NONE'}"
                      src="/images/icons/bin.png" 
-                     alt="grade-level-delete-icon">
+                     alt="grade-level-delete-icon" title="Click to Delete Grade Level">
             </div>
         </div>
     </td>

@@ -32,65 +32,44 @@
             </div>
 
             <div class="search-div">
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button onclick="getAssessments()" class="search-btn">Search</button>
+                        <button type="button" onclick="getAssessments()" class="search-btn">Search</button>
                     </div>
-                    <div class="sort-container">
-                        <label for="sort-select">Order By</label>
-                        <select name="sort" onchange="getAssessments()" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="StudentId">Student Id</option>
-                            <option value="StudentName">Student Name</option>
-                            <option value="GradeLevel">Enrolling Grade Level</option>
-                        </select>
-                    </div>
+
+                </div>
+
+                <div class="sort-container">
+                    <label for="sort-select">Order By</label>
+                    <select name="sort" onchange="getAssessments()" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="StudentId">Student Id</option>
+                        <option value="StudentName">Student Name</option>
+                        <option value="GradeLevel">Enrolling Grade Level</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="lamesa" class="assessment-table main-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Enrolling to</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="student-type">New</div>
-                        </div>
-                    </td>
-                    <td id="eligibility">Qualified</td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status" id="status-assessment">Complete</div>
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                            </div>
-                            <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" class="action" data-open-modal="viewGradesModal">View Grades</a>
-                                <a href="#" data-open-modal="addGradeLevelAssessmentModal">Proceed</a>
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-                                    data-message="Are you sure you want to cancel this registration?">Cancel
-                                    Registration</a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="lamesa" class="assessment-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Enrolling to</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
 
         <!-- Pagination -->
         <div class="pagination-container">

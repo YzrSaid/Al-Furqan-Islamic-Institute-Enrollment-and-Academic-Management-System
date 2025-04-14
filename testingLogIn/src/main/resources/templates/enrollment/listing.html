@@ -43,8 +43,7 @@
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
                         <button type="button" class="new-student" onclick="fetchDiscounts()"
-                            data-open-modal="newStudentModal" title="Add New Student">NEW
-                            STUDENT</button>
+                            data-open-modal="newStudentModal" title="Add New Student">NEW STUDENT</button>
                     </div>
                 </div>
 
@@ -1551,6 +1550,7 @@
 
     function fetchDiscounts(name = "add-discount", discIds = []) {
         const popover = document.getElementById("scholar-popover");
+        popover.innerHTML =``;
         fetch("/discounts/all")
             .then(response => response.json())
             .then(data => {

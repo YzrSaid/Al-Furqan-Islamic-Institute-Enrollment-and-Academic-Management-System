@@ -41,9 +41,14 @@
 
                         <!-- Add Payment Button -->
                         <div class="add-something-btn-container">
-                            <button type="button" class="add-something-btn" onclick="viewStudents()"
+                            <button type="button" class="btn-confirm" onclick="viewStudents()"
                                 id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add
                                 Payment</button>
+
+                            <!-- Print Button -->
+                            <button type="button" data-open-modal="allTransactionsPrintModal" class="print-btn">
+                                <i class="fas fa-print"></i>
+                            </button> 
                         </div>
                     </div>
                 </div>
@@ -55,6 +60,140 @@
                 </div>
             </div>
         </div>
+
+          <!-- Grade Print Modal -->
+          <div id="allTransactionsPrintModal" class="all-transactions-print-modal modal">
+            <div class="printable-area">
+                <div class="all-transactions-print-modal-content scroll-lock">
+                    <!-- Close Button -->
+                    <span class="close-modal" data-close-modal="allTransactionsPrintModal">&times;</span>
+
+                    <!-- Report Header -->
+                    <div class="header-container-print">
+
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        </div>
+                        <div class="middle-header">
+                            <div class="school-info-print">
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
+                                <h3 class="report-type"><strong>Grade Form</strong></h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+                    <!-- Student Info -->
+                    <table border="1" cellspacing="0" cellpadding="6"
+                        style="width: 100%; margin-top: -30px; font-family: Arial, sans-serif; border-collapse: collapse;">
+                        <!-- Student Info Section -->
+                        <tr class="stud-info-section">
+                            <td colspan="6">
+                                <div class="student-info-container-printable">
+                                    <div class="payment-student-info-row">
+                                        <label for="receipt-student-id">Student ID:</label>
+                                        <input type="text" class="print-inputs" id="receipt-student-id"
+                                            placeholder="">
+                                    </div>
+
+                                    <div class="payment-student-info-row">
+                                        <label for="receipt-date">Date:</label>
+                                        <input type="date" class="print-inputs" id="receipt-date">
+                                    </div>
+
+                                    <div class="payment-student-info-row">
+                                        <label for="receipt-student-name">Student Name:</label>
+                                        <input type="text" class="print-inputs" id="receipt-student-name"
+                                            placeholder="">
+                                    </div>
+
+                                    <div class="payment-student-info-row">
+                                        <label for="sy-and-sem">SY & Sem:</label>
+                                        <input type="text" class="print-inputs" id="current-sy-and-sem"
+                                            placeholder="">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Grade Table Header -->
+                        <tr class="grade-header">
+                            <th>Subject</th>
+                            <th>1st Sem</th>
+                            <th>2nd Sem</th>
+                            <th>Final</th>
+                            <th>Remarks</th>
+                        </tr>
+
+                        <!-- Grade Table Rows (No inner borders) -->
+                        <tr class="grade-row">
+                            <td>READING AND WRITING</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr class="grade-row">
+                            <td>PAGBASA AT PAGSUSURI NG IBAT IBANG TEKSTO TUNGO SA P</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr class="grade-row">
+                            <td>21ST CENTURY LITERATURE FROM THE PHILIPPINES AND THE W</td>
+                            <td>78</td>
+                            <td>77</td>
+                            <td>77.5</td>
+                            <td>Passed</td>
+                        </tr>
+                        <tr class="grade-row">
+                            <td>HOUSEKEEPING</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr class="grade-row">
+                            <td>STATISTICS AND PROBABILITY</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr class="grade-row">
+                            <td>PHYSICAL EDUCATION AND HEALTH</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr class="grade-row">
+                            <td>PHYSICAL SCIENCE</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                    </table>
+
+                    <div class="printable-footer">
+                        Date Printed: <strong>4/1/2020</strong>
+                    </div>
+             
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel"
+                        data-close-modal="allTransactionsPrintModal">Close</button>
+
+                        <button type="button" onclick="printReceipt()" class="print-btn">Print Record</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
 
         <div class="table-wrapper">
             <!-- Table -->
@@ -74,13 +213,19 @@
             </table> <br> <br>
         </div>
 
-
         <!-- Pagination -->
         <div class="pagination-container">
-            <div id="pagination" class="pagination">
-                <button id="prevPage" disabled>&laquo;</button>
-                <div id="pageNumbers"></div>
-                <button id="nextPage">&raquo;</button>
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
             </div>
         </div>
 

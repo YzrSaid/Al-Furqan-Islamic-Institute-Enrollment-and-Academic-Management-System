@@ -2,13 +2,10 @@ package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.AssociativeModels.GradeLevelRequiredFees;
 import com.example.testingLogIn.CountersService.SectionStudentCountServices;
-import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
-import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
-import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
+import com.example.testingLogIn.CustomObjects.*;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
-import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.*;
 import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
@@ -256,7 +253,13 @@ public class EnrollmentServices {
         if(e == null)
             return null;
         StudentPaymentForm toPay = paymentService.getStudentPaymentForm(e.getStudent().getStudentId(), e.getGradeLevelToEnroll().getLevelId());
-        boolean isComplete = toPay.getFeesAndBalance().isEmpty();
+        boolean isComplete = true;
+        for(FeesAndBalance fee : toPay.getFeesAndBalance()){
+            if(fee.getTotalPaid() == 0){
+                isComplete = false;
+                break;
+            }
+        }
         return e.DTOmapper(isComplete);
     }
 }

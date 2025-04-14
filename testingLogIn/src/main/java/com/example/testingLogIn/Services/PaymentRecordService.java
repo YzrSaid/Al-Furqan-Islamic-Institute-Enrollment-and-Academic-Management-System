@@ -9,6 +9,7 @@ import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
 import com.example.testingLogIn.ModelDTO.PaymentTransactionDTO;
 import com.example.testingLogIn.Models.*;
+import com.example.testingLogIn.PagedResponse.PagedResponse;
 import com.example.testingLogIn.PagedResponse.PaymentTransactionDTOPage;
 import com.example.testingLogIn.Repositories.*;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
@@ -188,7 +189,7 @@ public class PaymentRecordService {
         return studentPaymentForm;
     }
 
-    public PaymentTransactionDTOPage getTransactions(int pageNo, int pageSize,String type,String search){
+    public PagedResponse getTransactions(int pageNo, int pageSize,String type,String search){
         Pageable pageable = PageRequest.of(pageNo-1,pageSize);
         Page<?> transactionPage = null;
 
@@ -199,10 +200,10 @@ public class PaymentRecordService {
         else
             transactionPage = paymentRepo.getRecordsByFee(Integer.parseInt(type),pageable).map(PaymentRecords::DTOmapper);
 
-        return PaymentTransactionDTOPage.builder()
+        return PagedResponse.builder()
                 .content(transactionPage.getContent())
                 .totalPages(transactionPage.getTotalPages())
-                .totalElements(transactionPage.getNumberOfElements())
+                .totalElements(transactionPage.getTotalElements())
                 .pageSize(transactionPage.getSize())
                 .pageNo(transactionPage.getNumber())
                 .isLast(transactionPage.isLast())

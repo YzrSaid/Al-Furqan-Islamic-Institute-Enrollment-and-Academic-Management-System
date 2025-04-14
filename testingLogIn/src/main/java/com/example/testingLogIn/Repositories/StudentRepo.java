@@ -37,17 +37,19 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
     List<Student> findByIsNotDeletedTrueAndIsNewFalse();
 
     @Query("SELECT s FROM Student s " +
-            "WHERE s.isNotDeleted = true " +
+            "WHERE (:isFullyPaid IS NULL OR s.studentBalance > 0) " +
+            "AND s.isNotDeleted = true " +
             "AND (s.studentDisplayId LIKE :search " +
             "OR LOWER(s.fullName) LIKE :search)")
-    Page<Student> findByStudentDisplayIdOrName(@Param("search")String searching, Pageable pageable);
+    Page<Student> findByStudentDisplayIdOrName(@Param("search")String searching, Pageable pageable, Boolean isFullyPaid);
 
     @Query("""
     SELECT s FROM Student s
     LEFT JOIN FETCH s.currentGradeSection gs
     LEFT JOIN FETCH gs.level l 
-    WHERE s.studentDisplayId LIKE :search 
-    OR LOWER(s.fullName) LIKE :search
+    WHERE (:isFullPaid IS NULL OR s.studentBalance > 0)
+    AND (s.studentDisplayId LIKE :search 
+    OR LOWER(s.fullName) LIKE :search)
     ORDER BY 
         CASE 
             WHEN gs IS NULL THEN 2 
@@ -55,7 +57,7 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
         END,
         l.levelName ASC NULLS LAST
     """)
-    Page<Student> findByStudentHandlerDisplayIdOrName(@Param("search")String searching, Pageable pageable);
+    Page<Student> findByStudentHandlerDisplayIdOrName(@Param("search")String searching, Pageable pageable, Boolean isFullPaid);
 
     List<Student> findByIsNotDeletedTrueAndIsTransfereeTrue();
     

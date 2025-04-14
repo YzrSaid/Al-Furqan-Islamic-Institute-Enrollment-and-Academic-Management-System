@@ -187,23 +187,23 @@ public class StudentServices {
         return false;
     }
 
-    public StudentDTOPage getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize){
+    public StudentDTOPage getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize, Boolean isFullyPaid){
         word = NonModelServices.forLikeOperator(word);
         Pageable pageable = PageRequest.of(pageNo-1,pageSize,orderBy(sortBy));
         Page<StudentDTO> studentPage;
 
         if(sortBy.equalsIgnoreCase("gradelevel"))
-            studentPage = studentRepo.findByStudentHandlerDisplayIdOrName(word,pageable)
+            studentPage = studentRepo.findByStudentHandlerDisplayIdOrName(word,pageable,isFullyPaid)
                     .map(Student::DTOmapper);
         else
-            studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable)
+            studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable,isFullyPaid)
                     .map(Student::DTOmapper);
 
         return StudentDTOPage.builder()
                             .content(studentPage.getContent())
                             .pageNo(pageNo)
                             .pageSize(pageSize)
-                            .totalElements(studentPage.getNumberOfElements())
+                            .totalElements(studentPage.getTotalElements())
                             .totalPages(studentPage.getTotalPages())
                             .isLast(studentPage.isLast())
                             .build();

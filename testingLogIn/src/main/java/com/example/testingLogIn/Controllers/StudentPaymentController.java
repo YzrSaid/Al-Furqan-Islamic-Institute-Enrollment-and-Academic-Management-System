@@ -5,6 +5,7 @@ import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
 import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
 import com.example.testingLogIn.ModelDTO.PaymentTransactionDTO;
 import com.example.testingLogIn.Models.PaymentTransaction;
+import com.example.testingLogIn.PagedResponse.PagedResponse;
 import com.example.testingLogIn.PagedResponse.PaymentTransactionDTOPage;
 import com.example.testingLogIn.Repositories.PaymentTransactionRepo;
 import com.example.testingLogIn.Services.PaymentRecordService;
@@ -65,10 +66,10 @@ public class StudentPaymentController{
     }
 
     @GetMapping("/transactions/all")
-    public ResponseEntity<PaymentTransactionDTOPage> getAllTransactions(@RequestParam(required = false) Integer pageNum,
-                                                                        @RequestParam(required = false,defaultValue = "10") Integer pageSize,
-                                                                        @RequestParam(required = false,defaultValue = "Transaction") String particular,
-                                                                        @RequestParam(required = false,defaultValue = "") String q){
+    public ResponseEntity<PagedResponse> getAllTransactions(@RequestParam(required = false) Integer pageNum,
+                                                            @RequestParam(required = false,defaultValue = "10") Integer pageSize,
+                                                            @RequestParam(required = false,defaultValue = "Transaction") String particular,
+                                                            @RequestParam(required = false,defaultValue = "") String q){
         try {
             return new ResponseEntity<>(paymentService.getTransactions(pageNum, pageSize, particular, q), HttpStatus.OK);
         }catch(Exception e){

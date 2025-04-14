@@ -298,7 +298,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="4">No Student Record</td>
+                            <td colspan="5">No Student Record</td>
                         </tr>
                     </tbody>
                 </table>
@@ -629,10 +629,10 @@
         });
 
         let currentPage;
-        let currentPageSize;
-        function getRecords(pageNo = 1, pageSize = 1) {
+        var totalItems=0;
+        function getRecords(pageNo = 1) {
             currentPage = pageNo;
-            currentPageSize = pageSize;
+            pageSize = parseInt(document.getElementById("pageSizeSelector").value);
             const searchBy = document.getElementById("search-stud").value;
             const sortBy = document.getElementById("view-by-select").value;
             if (sortBy == "Transaction" || sortBy == "Voided") {
@@ -702,29 +702,61 @@
                         listOfPaymentsModal-->
                         tableBody.appendChild(row);
                     });
-                    console.log(pageNo);
-                    updatePaymentPagination(pageNo, pageSize, data.totalPages);
+                    totalItems = data.totalElements || 0;
+                    const totalPages = data.totalPages || 1;
+                    updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
         }
 
-        function updatePaymentPagination(currentPage, pageSize, totalPages) {
-            const paginationContainer = document.querySelector("#pagination");
-            paginationContainer.innerHTML = ``;
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
 
-            if (totalPages <= 1) return;
+        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById("pageInput").value = currentPage;
+        document.getElementById("pageInput").min = 1;
+        document.getElementById("pageInput").max = totalPages;
+        document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-            for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement("button");
-                button.innerText = i;
-                button.classList.add("pagination-button");
-                if (i === currentPage) button.classList.add("active");
-                button.addEventListener("click", () => {
-                    getRecords(i, pageSize);
-                });
-                paginationContainer.appendChild(button);
-            }
+        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+    }
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            getRecords(currentPage);
         }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < document.getElementById("pageInput").max) {
+            currentPage++;
+            console.log("Navigating to page:", currentPage);
+            getRecords(currentPage);
+        } else {
+            console.log("Cannot navigate to next page");
+        }
+    });
+
+    document.getElementById("pageInput").addEventListener("change", (e) => {
+        const totalPages = parseInt(document.getElementById("pageInput").max);
+        let page = parseInt(e.target.value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            getRecords(currentPage);
+        } else {
+            e.target.value = currentPage;
+        }
+    });
+
+    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        console.log("pageSizeSelector changed", { value: e.target.value });
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        getRecords(currentPage);
+    });
 
         let studentId;
         let gradeLevelId;
@@ -960,15 +992,15 @@
                 })
                 .catch(error => console.error("Error fetching sections:", error));
         }
-        var studPageNo;
-        var studPageSize;
-        function viewStudents(pageNo = 1, pageSize = 1) {
+        var studPageNo = 0;
+        var totalItems = 0;
+        function viewStudents(pageNo = 1) {
             studPageNo = pageNo;
-            studPageSize = 10;
+            var pageSize = parseInt(document.getElementById("pageSizeSelector").value);
             const orderBy = document.getElementById("view-stud-by-select").value;
             const search = document.getElementById("search-student").value;
             const studentsTable = document.querySelector("#table-ni-martin tbody");
-            var url = `/students/all?q=${search}&pageNo=${pageNo}&pageSize=10&sortBy=${orderBy}`;
+            var url = `/students/all?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${orderBy}&fullyPaid=true`;
             console.log(url);
             fetch(url)
                 .then(res => res.json())
@@ -994,6 +1026,10 @@
                         </td>`;
                         studentsTable.appendChild(row);
                     });
+
+                    totalItems = data.totalElements || 0;
+                    const totalPages = data.totalPages || 1;
+                    updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching sections:", error));
         }
@@ -1027,6 +1063,57 @@
                 })
                 .catch(error => console.error("Error fetching sections:", error));
         }
+
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+        console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
+
+        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById("pageInput").value = currentPage;
+        document.getElementById("pageInput").min = 1;
+        document.getElementById("pageInput").max = totalPages;
+        document.getElementById("totalPages").textContent = `of ${totalPages}`;
+
+        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+    }
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            viewStudents(currentPage);
+        }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < document.getElementById("pageInput").max) {
+            currentPage++;
+            console.log("Navigating to page:", currentPage);
+            viewStudents(currentPage);
+        } else {
+            console.log("Cannot navigate to next page");
+        }
+    });
+
+    document.getElementById("pageInput").addEventListener("change", (e) => {
+        const totalPages = parseInt(document.getElementById("pageInput").max);
+        let page = parseInt(e.target.value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            viewStudents(currentPage);
+        } else {
+            e.target.value = currentPage;
+        }
+    });
+
+    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        console.log("pageSizeSelector changed", { value: e.target.value });
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        viewStudents(currentPage);
+    });
+
         function setUpForm(theForm) {
             theForm = JSON.parse(theForm);
 

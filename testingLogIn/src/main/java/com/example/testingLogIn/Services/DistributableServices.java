@@ -4,6 +4,7 @@ import com.example.testingLogIn.AssociativeModels.DistributablesPerGrade;
 import com.example.testingLogIn.AssociativeModels.DistributablesPerStudent;
 import com.example.testingLogIn.ModelDTO.DistributableDTO;
 import com.example.testingLogIn.Models.*;
+import com.example.testingLogIn.PagedResponse.PagedResponse;
 import com.example.testingLogIn.PagedResponse.StudentDistributablePage;
 import com.example.testingLogIn.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,7 +157,7 @@ public class DistributableServices {
                 .forEach(gradeDis -> disStudRepo.save(DistributablesPerStudent.build(gradeDis,enrollment.getStudent(),enrollment.getSYSemester())));
     }
 
-    public StudentDistributablePage getStudentDistributable(int pageNo, int pageSize, String student, Boolean isClaimed, Integer item, String sortByGrade){
+    public PagedResponse getStudentDistributable(int pageNo, int pageSize, String student, Boolean isClaimed, Integer item, String sortByGrade){
         student = "%"+student.toLowerCase()+"%";
         Pageable pageRequest;
         if(sortByGrade.equalsIgnoreCase("none"))
@@ -167,11 +168,11 @@ public class DistributableServices {
                     PageRequest.of(pageNo-1, pageSize, Sort.by(Sort.Order.desc("d.item.gradeLevel")));
 
         Page<DistributablesPerStudent> studentPage = disStudRepo.getStudentDistPage(student,isClaimed,item,pageRequest);
-        return StudentDistributablePage.builder()
+        return PagedResponse.builder()
                 .content(studentPage.getContent().stream().map(DistributablesPerStudent::DTOmapper).collect(Collectors.toList()))
                 .pageNo(studentPage.getNumber())
                 .pageSize(studentPage.getSize())
-                .totalElements(studentPage.getTotalPages())
+                .totalElements(studentPage.getNumberOfElements())
                 .totalPages(studentPage.getTotalPages())
                 .isLast(studentPage.isLast())
                 .build();

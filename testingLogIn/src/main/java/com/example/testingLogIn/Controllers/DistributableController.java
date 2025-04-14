@@ -2,6 +2,7 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.CustomObjects.MultipleInteger;
 import com.example.testingLogIn.ModelDTO.DistributableDTO;
+import com.example.testingLogIn.PagedResponse.PagedResponse;
 import com.example.testingLogIn.PagedResponse.StudentDistributablePage;
 import com.example.testingLogIn.Services.DistributableServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,12 +76,12 @@ public class DistributableController {
     }
 
     @GetMapping("/student-distribution/all")
-    public ResponseEntity<StudentDistributablePage> getStudentDistributions(@RequestParam(defaultValue = "1") int pageNo,
-                                                                            @RequestParam(defaultValue = "10") int pageSize,
-                                                                            @RequestParam(defaultValue = "") String student,
-                                                                            @RequestParam Integer itemType,
-                                                                            @RequestParam boolean isClaimed,
-                                                                            @RequestParam String sortBy){
+    public ResponseEntity<PagedResponse> getStudentDistributions(@RequestParam(defaultValue = "1") int pageNo,
+                                                                 @RequestParam(defaultValue = "10") int pageSize,
+                                                                 @RequestParam(defaultValue = "") String student,
+                                                                 @RequestParam Integer itemType,
+                                                                 @RequestParam boolean isClaimed,
+                                                                 @RequestParam String sortBy){
         try {
             itemType = itemType.equals(0) ? null : itemType;
             return new ResponseEntity<>(distributableServices.getStudentDistributable(pageNo, pageSize, student, isClaimed,itemType, sortBy), HttpStatus.OK);

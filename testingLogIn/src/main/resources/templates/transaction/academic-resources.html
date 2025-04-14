@@ -130,13 +130,17 @@
 
         var sortByGrade;
         var flag = 1;
-        async function setUpTables() {
+        var totalItems = 0;
+        var currentPage = 0;
+        async function setUpTables(pageNo=1) {
             try {
+                currentPage = pageNo;
+                var pageSize = parseInt(document.getElementById("pageSizeSelector").value);
                 sortByGrade = !sortByGrade ? "none" : sortByGrade;
                 const item = document.getElementById("item-type").value;
                 const claimed = document.getElementById("view-type").value === "true";
                 const search = document.getElementById("search").value;
-                const response = await fetch(`/distributable/student-distribution/all?isClaimed=${claimed}&student=${search}&itemType=${item}&sortBy=${sortByGrade}`);
+                const response = await fetch(`/distributable/student-distribution/all?pageNo=${pageNo}&pageSize=${pageSize}&isClaimed=${claimed}&student=${search}&itemType=${item}&sortBy=${sortByGrade}`);
                 if (!response.ok) {
                     console.error("Failed to fetch data:", response.status);
                     return;
@@ -191,9 +195,11 @@
                         </td>`: ``}`;
                     fragment.appendChild(row);
                 });
-
                 tableBody.appendChild(fragment);
 
+                totalItems = data.totalElements || 0;
+                const totalPages = data.totalPages || 1;
+                updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
             } catch (error) {
                 console.error("Error setting up tables:", error);
                 // Optional: Show user-friendly error message in UI
@@ -203,6 +209,55 @@
                 }
             }
         }
+
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
+
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
+
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+        }
+
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                getAssessments(currentPage);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                console.log("Navigating to page:", currentPage);
+                getAssessments(currentPage);
+            } else {
+                console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                getAssessments(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            getAssessments(currentPage);
+        });
 
         document.getElementById("select").addEventListener('change', (event) => {
             const checkedCheckboxes = Array.from(document.querySelectorAll(".action-container input[type='checkbox']"));

@@ -9,7 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
 
 </head>
 <script th:src="@{/js/script.js}"></script>
@@ -37,7 +36,7 @@
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button type="button" onclick="goList(1,1)" class="search-btn">Search</button>
+                        <button type="button" onclick="goList()" class="search-btn">Search</button>
                     </div>
 
                     <!-- Enrollment Buttons -->
@@ -48,7 +47,7 @@
                 </div>
 
                 <div class="sort-container">
-                    <select title="sort" name="sort" onchange="goList(1,1)" id="sort-select" class="sort-select">
+                    <select title="sort" name="sort" onchange="goList()" id="sort-select" class="sort-select">
                         <option value="All" selected>All</option>
                         <option value="Listing">Listing</option>
                         <option value="Assessment">Assessment</option>
@@ -910,9 +909,8 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-                    // <!--                    showSuccessModal("✅ Success: New student has been added successfully!");-->
-                    // <!--                    location.reload(); // Reloads the page-->
-                    goList(currentPageNo, currentPageSize);
+                    showSuccessModal("✅ Success: New student has been added successfully!",false);
+                    goList(currentPage);
                 } else {
                     showErrorModal("❌ Error:" + text);
                 }
@@ -1016,7 +1014,6 @@
             } else if (isTransferee && !isLevelIdNull) {
                 url = `/gradelevel/for-transferee/${currentLevelId}`;
             }
-            alert(url);
             const response = await fetch(url);
             if (!response.ok) throw new Error("Failed to fetch grade levels");
             const data = await response.json();
@@ -1048,10 +1045,10 @@
         const feesSelectedId = getCheckedPaymentValues();
         const totalAmount = paymentAmountInput.value;
         if (totalAmount == 0) {
-            alert("DLi pwde wlay kay ibayad uys");
+            showErrorModal("Ammount cannot be P0");
             return;
         } else if (feesSelectedId.length == 0) {
-            alert("Dapat naa ka pilion");
+            showErrorModal("Choose a particular");
             return;
         }
         const url = `/paymentrecord/add/all/${encodeURIComponent(payerStudentId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(payLevelToEnrollId)}`;
@@ -1100,12 +1097,11 @@
                             </tr>
                         </tfoot>`;
                 tableBody.appendChild(row);
-                goList(currentPageNo, currentPageSize);
+                goList(currentPage);
                 closeOpen();
             })
             .catch(error => {
-                console.error("Error adding payment:", error);
-                alert("Failed to add payment. Please try again.");
+                showErrorModal("Failed to add payment transaction. Please try again.");
             });
     }
 
@@ -1148,9 +1144,9 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-                    // <!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
-                    // <!--                    location.reload(); // Reloads the page after successful enrollment-->
-                    goList(currentPageNo, currentPageSize);
+                    showSuccessModal("✅ Success: Student successfully enrolled!",false);
+                    location.reload();
+                    goList(currentPage);
                 } else {
                     // showErrorModal("❌ Error: " + text);
                     location.reload();
@@ -1179,7 +1175,8 @@
             const result = await response.text();
 
             if (response.ok) {
-                goList(currentPageNo, currentPageSize);
+                showSuccessModal(result,false);
+                goList(currentPage);
             } else {
                 showErrorModal("❌ Error: Transaction failed. Please try again!");
             }
@@ -1189,7 +1186,6 @@
     }
 
     function addExistingStudent(studentId) {
-        alert(studentId);
         fetch('/enrollment/add/student/' + studentId, {
             method: 'POST',
             headers: {
@@ -1199,9 +1195,8 @@
             .then(response => {
                 return response.text().then(message => {
                     if (response.ok) {
-                        goList(currentPageNo, currentPageSize);
-                        // <!--                        showSuccessModal(message);-->
-                        // <!--                        window.location.reload(); // Reload the page-->
+                        goList(currentPage);
+                        showSuccessModal(message,false);
                     } else {
                         showErrorModal(message);
                     }
@@ -1296,18 +1291,18 @@
             });
     }
     function changeView() {
-        goList(1, 1);
+        goList(1);
     }
 
     var currentStat = "";
-    var currentPageNo = 0;
-    var currentPageSize = 0;
+    var currentPage = 0;
+    let totalItems = 0;
     var currentStat = "";
-    function goList(pageNo = 1, pageSize = 10) {
+    function goList(pageNo = 1) {
         const search = document.getElementById("search-stud").value;
         currentStat = document.getElementById("sort-select").value;
-        currentPageNo = pageNo;
-        currentPageSize = pageSize;
+        currentPage = pageNo;
+        const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
         fetch(`/enrollment/all/paged/${currentStat}?pageNo=${pageNo}&pageSize=${pageSize}&search=${search}`)
             .then(res => {
                 if (!res.ok) throw new Error("Failed to fetch enrollment records");
@@ -1381,11 +1376,12 @@
                     fetchGradeLevels(selectedGrade, selectTag, isStudentNew, currentLevelId, isTransferee);
                 });
 
-                updatePagination(status, pageNo, pageSize, data.totalPages);
+                totalItems = data.totalElements || 0;
+                const totalPages = data.totalPages || 1;
+                updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
             })
             .catch(error => console.error("Error:", error));
     }
-
 
     // this function is to control the color of the status color
     function getEnrollmentStatusClass(status, isCancelled) {
@@ -1417,16 +1413,15 @@
             });
 
             if (response.ok) {
-                const result = await response.text(); // Parse the response as text
-                alert(result);
-                goList(currentPageNo, currentPageSize);
+                showSuccessModal("Enrolling Grade Level successfully updated",false);
+                goList(currentPage);
             } else {
                 const errorMessage = await response.text();
-                alert(errorMessage);
+                showErrorModal(errorMessage);
             }
         } catch (error) {
             console.error("Error proceeding to assessment:", error);
-            alert("Transaction failed. Try again.");
+            showErrorModal("Transaction failed. Try again.");
         }
     }
 
@@ -1496,8 +1491,8 @@
             }
 
             const successText = await response.text();
-            showSuccessModal("✅ Success: " + successText);
-            goList(currentPageNo, currentPageSize);
+            showSuccessModal("✅ Success: " + successText,false);
+            goList(currentPage);
         } catch (error) {
             showErrorModal("❌ Error: " + error.message);
         }
@@ -1695,9 +1690,9 @@
             .then(response => {
                 return response.text().then(message => {
                     if (response.ok) {
-                        alert("Na update rapud baya");
+                        showSuccessModal(message,false);
                         displayStud(toUpdateRecStudent);
-                        goList();
+                        goList(currentPage);
                     } else {
                         showErrorModal(message); // Show the error message if the response is not ok
                     }
@@ -1708,55 +1703,56 @@
             });
     }
 
-    function updatePagination(status, currentPage, pageSize, totalPages) {
-        const paginationContainer = document.querySelector("#pagination");
-        paginationContainer.innerHTML = "";
+        //pagination JS code
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
 
-        if (totalPages <= 1) return;
+        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById("pageInput").value = currentPage;
+        document.getElementById("pageInput").min = 1;
+        document.getElementById("pageInput").max = totalPages;
+        document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-        const maxVisiblePages = 3;
-        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-        // Adjust if near the beginning or end
-        if (endPage - startPage + 1 < maxVisiblePages) {
-            startPage = Math.max(1, endPage - maxVisiblePages + 1);
-        }
-
-        // Left Arrow
-        if (currentPage > 1) {
-            const prevButton = document.createElement("button");
-            prevButton.innerText = "<";
-            prevButton.classList.add("pagination-button");
-            prevButton.addEventListener("click", () => {
-                goList(currentPage - 1, pageSize);
-            });
-            paginationContainer.appendChild(prevButton);
-        }
-
-        // Page Numbers
-        for (let i = startPage; i <= endPage; i++) {
-            const button = document.createElement("button");
-            button.innerText = i;
-            button.classList.add("pagination-button");
-            if (i === currentPage) button.classList.add("active");
-            button.addEventListener("click", () => {
-                goList(i, pageSize);
-            });
-            paginationContainer.appendChild(button);
-        }
-
-        // Right Arrow
-        if (currentPage < totalPages) {
-            const nextButton = document.createElement("button");
-            nextButton.innerText = ">";
-            nextButton.classList.add("pagination-button");
-            nextButton.addEventListener("click", () => {
-                goList(currentPage + 1, pageSize);
-            });
-            paginationContainer.appendChild(nextButton);
-        }
+        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
     }
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            goList(currentPage);
+        }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < document.getElementById("pageInput").max) {
+            currentPage++;
+            console.log("Navigating to page:", currentPage);
+            goList(currentPage);
+        } else {
+            console.log("Cannot navigate to next page");
+        }
+    });
+
+    document.getElementById("pageInput").addEventListener("change", (e) => {
+        const totalPages = parseInt(document.getElementById("pageInput").max);
+        let page = parseInt(e.target.value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            goList(currentPage);
+        } else {
+            e.target.value = currentPage;
+        }
+    });
+
+    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        console.log("pageSizeSelector changed", { value: e.target.value });
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        goList(currentPage);
+    });
+    
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -1766,7 +1762,6 @@
             modal.style.pointerEvents = "auto";
         }
     }
-
 
     // This will show and hide the transferee section if the student is a transferee or not
     function toggleTransfereeSection() {
@@ -1814,7 +1809,7 @@
             if (enrollmentIdElement) {
                 enrollmentIdLet = enrollmentIdElement.trim();
             } else {
-                alert("⚠️ Enrollment ID not found.");
+                showErrorModal("⚠️ Enrollment ID not found.");
             }
         }
         else if (paymentBtn) {
@@ -1882,7 +1877,7 @@
             const enteredValue = parseFloat(this.value);
 
             if (enteredValue > maxValue) {
-                alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
+                showErrorModal("Student is only allowed to pay up to P"+maxValue);
                 this.value = maxValue;
             }
         });

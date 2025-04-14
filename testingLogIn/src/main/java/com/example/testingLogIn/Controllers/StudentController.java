@@ -26,12 +26,13 @@ public class StudentController {
 
     @GetMapping("/all")
     public ResponseEntity<StudentDTOPage> getStudentByDisplayId(
+            @RequestParam(required = false) Boolean fullyPaid,
             @RequestParam(required = false,defaultValue = "") String q,
             @RequestParam(required = false,defaultValue = "") String sortBy,
             @RequestParam(required = false,defaultValue = "1") int pageNo,
             @RequestParam(required = false, defaultValue = "10") int pageSize){
         try{
-            return new ResponseEntity<>(studentService.getStudentByNameOrDisplayId(q,sortBy,pageNo,pageSize),HttpStatus.OK);
+            return new ResponseEntity<>(studentService.getStudentByNameOrDisplayId(q,sortBy,pageNo,pageSize,fullyPaid),HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);

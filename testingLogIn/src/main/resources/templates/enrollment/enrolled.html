@@ -204,7 +204,11 @@
         });
         getCurrentlyEnrolled();
     });
-    function getCurrentlyEnrolled(pageNo = 1, pageSize = 2) {
+    var totalItems;
+    var currentPage;
+    function getCurrentlyEnrolled(pageNo = 1) {
+        currentPage = pageNo;
+        const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
         const searchBy = document.getElementById("search-stud").value;
         const sortBy = document.getElementById("sort-select").value;
         fetch(`/enrollment/all/paged/ENROLLED?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
@@ -232,29 +236,62 @@
                 `;
                     tableBody.appendChild(row);
                 });
-
-                updateEnrolledPagination(pageNo, pageSize, data.totalPages);
+                totalItems = data.totalElements || 0;
+                const totalPages = data.totalPages || 1;
+                updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
             })
             .catch(error => console.error("Error fetching enrolled students:", error));
     }
 
-    function updateEnrolledPagination(currentPage, pageSize, totalPages) {
-        const paginationContainer = document.querySelector("#pagination");
-        paginationContainer.innerHTML = "";
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+            console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
 
-        if (totalPages <= 1) return;
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-        for (let i = 1; i <= totalPages; i++) {
-            const button = document.createElement("button");
-            button.innerText = i;
-            button.classList.add("pagination-button");
-            if (i === currentPage) button.classList.add("active");
-            button.addEventListener("click", () => {
-                getCurrentlyEnrolled(i, pageSize);
-            });
-            paginationContainer.appendChild(button);
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
         }
-    }
+
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                getCurrentlyEnrolled(currentPage);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                console.log("Navigating to page:", currentPage);
+                getCurrentlyEnrolled(currentPage);
+            } else {
+                console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                getCurrentlyEnrolled(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            getCurrentlyEnrolled(currentPage);
+        });
 </script>
 
 </html>

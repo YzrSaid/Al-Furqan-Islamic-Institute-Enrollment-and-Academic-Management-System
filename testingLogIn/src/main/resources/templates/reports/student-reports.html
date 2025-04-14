@@ -75,6 +75,22 @@
             </table> <br> <br>
         </div>
 
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
+            </div>
+        </div>
+
 
         <!-- Grade Report Template Modal -->
         <!--        FOR REMOVAL-->
@@ -522,11 +538,11 @@
         setStudentRecords();
     });
 
-    var currentPageNo;
-    var currentPageSize;
-    function setStudentRecords(pageNo = 1, pageSize = 20) {
-        currentPageNo = pageNo;
-        currentPageSize = pageSize;
+    var currentPage=0;
+    var totalItems=0;
+    function setStudentRecords(pageNo = 1) {
+        currentPage = pageNo;
+        pageSize = parseInt(document.getElementById("pageSizeSelector").value);
         var search = document.getElementById("search").value;;
         var studentTable = document.querySelector("#student-records tbody");
         studentTable.innerHTML = `<td conspan="6">No records found</td>`;
@@ -540,7 +556,6 @@
                 if (data.content.length === 0) { return; }
                 studentTable.innerHTML = ``;
                 data.content.forEach(student => {
-                    console.log(student);
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${student.studentDisplayId}</td>
@@ -562,11 +577,64 @@
                     </td>`;
                     studentTable.appendChild(row);
                 });
+                totalItems = data.totalElements || 0;
+                const totalPages = data.totalPages || 1;
+                console.log(totalItems);
+                updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     }
+    function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+        console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
+
+        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById("pageInput").value = currentPage;
+        document.getElementById("pageInput").min = 1;
+        document.getElementById("pageInput").max = totalPages;
+        document.getElementById("totalPages").textContent = `of ${totalPages}`;
+
+        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+    }
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            setStudentRecords(currentPage);
+        }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < document.getElementById("pageInput").max) {
+            currentPage++;
+            console.log("Navigating to page:", currentPage);
+            setStudentRecords(currentPage);
+        } else {
+            console.log("Cannot navigate to next page");
+        }
+    });
+
+    document.getElementById("pageInput").addEventListener("change", (e) => {
+        const totalPages = parseInt(document.getElementById("pageInput").max);
+        let page = parseInt(e.target.value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            setStudentRecords(currentPage);
+        } else {
+            e.target.value = currentPage;
+        }
+    });
+
+    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        console.log("pageSizeSelector changed", { value: e.target.value });
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        setStudentRecords(currentPage);
+    });
 </script>
 
 </html>

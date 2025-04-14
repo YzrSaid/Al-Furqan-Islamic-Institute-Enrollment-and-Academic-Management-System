@@ -333,11 +333,12 @@
     <script>
         document.addEventListener("click", async function (event) {
             const addButton = event.target.closest('.add-payment-btn');
-
+            const paymentList = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
             if (addButton) {
                 // Retrieve student information
                 const studentName = document.querySelector("#student-name")?.textContent?.trim();
                 const studentId = document.querySelector("#student-id")?.textContent;
+                console.log(studentId);
                 if (!studentName || !studentId) {
                     console.error("Student information not found");
                     return;
@@ -386,7 +387,12 @@
                 } catch (error) {
                     console.error("Error fetching payment list:", error);
                 }
-            }
+            }else if(paymentList){
+                    const enrollmentId = paymentList.getAttribute("data-enrollment-id");
+                    if (!enrollmentId) return console.error("Enrollment Id Not Found");
+                    gradeLevelId = paymentList.getAttribute("data-level-Id");
+                    fetchPayments(enrollmentId);
+                }
         });
 
         function printReport() {
@@ -416,10 +422,10 @@
             getOnPayments();
         });
         let currentPage = 0;
-        let currentPageSize = 0;
-        function getOnPayments(pageNo = 1, pageSize = 1) {
+        let totalItems = 0;
+        function getOnPayments(pageNo = 1) {
             currentPage = pageNo;
-            currentPageSize = pageSize;
+            const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
             const searchBy = document.getElementById("search-stud").value;
             const sortBy = document.getElementById("sort-select").value;
             fetch(`/enrollment/all/paged/PAYMENT?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
@@ -457,7 +463,7 @@
                             </a>`
                             : `
                                 <a style="pointer-events: none; opacity: 0.5; color: gray;">
-                                   Bayarig minimum isa2 suss
+                                   Pay minimum to each fee/s
                                 </a>`;
 
                         // Build row content
@@ -489,47 +495,65 @@
                         listOfPaymentsModal-->
                         tableBody.appendChild(row);
                     });
-                    console.log(data.totalPages);
-                    console.log("I am at page" + pageNo);
-                    updatePaymentPagination(pageNo, pageSize, data.totalPages);
+                    totalItems = data.totalElements || 0;
+                    const totalPages = data.totalPages || 1;
+                    updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
         }
 
-        function updatePaymentPagination(currentPage, pageSize, totalPages) {
-            const paginationContainer = document.querySelector("#pagination");
-            paginationContainer.innerHTML = ``;
+            //pagination JS code
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+            console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
 
-            if (totalPages <= 1) return;
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-            for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement("button");
-                button.innerText = i;
-                button.classList.add("pagination-button");
-                if (i === currentPage) button.classList.add("active");
-                button.addEventListener("click", () => {
-                    getOnPayments(i, pageSize);
-                });
-                paginationContainer.appendChild(button);
-            }
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
         }
 
-        let studentId;
-        let gradeLevelId;
-        document.addEventListener("click", function (event) {
-            const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
-            const paymentBtn = event.target.closest('[data-open-modal="addPaymentModal"]');
-            if (viewListbtn) {
-                studentId = viewListbtn.getAttribute("data-student-id");
-                const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
-                gradeLevelId = viewListbtn.getAttribute("data-level-Id");
-                if (!enrollmentId) return console.error("Enrollment Id Not Found");
-                fetchPayments(enrollmentId);
-            } else if (paymentBtn) {
-                setUpPaymentForm();
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                getAssessments(currentPage);
             }
         });
 
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                console.log("Navigating to page:", currentPage);
+                getAssessments(currentPage);
+            } else {
+                console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                getAssessments(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            getAssessments(currentPage);
+        });
+
+        var gradeLevelId;
         async function setUpPaymentForm() {
             paymentAmountInput.max = 0;
             paymentAmountInput.value = 0.0;
@@ -587,7 +611,6 @@
         function savePayment() {
             const feesSelectedId = getCheckedPaymentValues();
             const totalAmount = paymentAmountInput.value;
-
             if (totalAmount == 0) {
                 alert("DLi pwde wlay kay ibayad uys");
                 return;
@@ -641,8 +664,7 @@
                                 </tr>
                             </tfoot>`;
                     tableBody.appendChild(row);
-                    alert(`Page : ${currentPage} with size of ${currentPageSize}`);
-                    getOnPayments(currentPage, currentPageSize);
+                    getOnPayments(currentPage);
                     closeOpen();
                 })
                 .catch(error => {
@@ -698,7 +720,7 @@
                 .then(epv => {
                     const studentname = document.querySelector("#student-name");
                     const studentDisplayId = document.querySelector("#student-id");
-                    if (!studentname || !studentId) return console.error("Dropdown for sections not found");
+                    if (!studentname || !studentDisplayId) return console.error("Dropdown for sections not found");
 
                     studentname.textContent = epv.student.fullName;
 
@@ -707,6 +729,7 @@
                     const tableBody = document.querySelector("#table-ni-kharl tbody");
                     tableBody.innerHTML = "";
                     epv.feesAndBalance.forEach(datas => {
+                        console.log(datas);
                         var status = datas.totalPaid < datas.totalRequired && datas.totalPaid === 0 ? "Unpaid" :
                             datas.totalPaid > 0 && datas.totalPaid < datas.totalRequired ? "Partially Paid" :
                                 "Fully Paid";
@@ -776,19 +799,17 @@
             })
                 .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
                 .then(({ text, status }) => {
-                    console.log(`🔹 API Response (${status}): ${text}`);
-
                     if (status === 200) {
-                        alert("Show success message without reloading");
-                        getOnPayments(currentPage, currentPageSize);
+                        showSucessModal(text);
+                        getOnPayments(currentPage);
                     } else {
-                        showErrorModal("❌ Error: Please try again!");
-                        getOnPayments(currentPage, currentPageSize)
+                        showErrorModal(text);
+                        getOnPayments(currentPage)
                     }
                 })
                 .catch(error => {
                     showErrorModal("❌ Error: Please try again!");
-                    getOnPayments(currentPage, currentPageSize)
+                    getOnPayments(currentPage)
                 });
         }
 

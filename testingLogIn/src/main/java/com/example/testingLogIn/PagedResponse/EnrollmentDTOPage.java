@@ -25,7 +25,7 @@ public class EnrollmentDTOPage {
                 .pageNo(page.getNumber())
                 .pageSize(page.getSize())
                 .totalPages(page.getTotalPages())
-                .totalElements(page.getNumberOfElements())
+                .totalElements(page.getTotalElements())
                 .isLast(page.isLast())
                 .build();
     }

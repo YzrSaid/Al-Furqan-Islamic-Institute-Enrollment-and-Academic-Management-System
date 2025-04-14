@@ -81,13 +81,32 @@
                 </tbody>
             </table> <br> <br>
         </div>
+        
+        <!-- Pagionation -->
+        <div class="pagination-container">
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
+            </div>
+        </div>
 
         <div class="cancelBtnDiv">
             <button type="button" onclick="resetDisplay()" id="btn-cancel" class="btn-cancel"
                 style="display: none;">Cancel</button>
         </div>
 
+        <!-- Background overlay -->
         <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
         <div id="successModal">
             <p id="successModalMessage"></p>
         </div>

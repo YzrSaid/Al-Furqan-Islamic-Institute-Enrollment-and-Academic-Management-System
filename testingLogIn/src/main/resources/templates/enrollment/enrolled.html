@@ -85,16 +85,21 @@
             </table>
         </div>
 
-
         <!-- Pagination -->
         <div class="pagination-container">
-            <div id="pagination" class="pagination">
-                <button id="prevPage" disabled>&laquo;</button>
-                <div id="pageNumbers"></div>
-                <button id="nextPage">&raquo;</button>
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
             </div>
         </div>
-
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">

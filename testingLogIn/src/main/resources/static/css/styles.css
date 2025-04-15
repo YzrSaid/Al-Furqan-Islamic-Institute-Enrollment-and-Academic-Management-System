@@ -569,6 +569,11 @@ body {
   max-height: 60vh;
   overflow-y: auto;
 }
+.table-wrapper-printable {
+  min-height: 30vh;
+  max-height: 60vh;
+  overflow-y: auto;
+}
 .main-table thead th {
   position: sticky;
   top: 0;
@@ -803,11 +808,24 @@ select option[value=""] {
   font-weight: 500;
   font-size: 16px;
 }
+.printable-table {
+  width: 100%;
+  table-layout: fixed;
+}
+.printable-table th,
+.printable-table td {
+  border: 1px solid #000000;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+}
 .main-table th {
   text-align: center;
   background-color: rgb(87, 88, 89);
   color: white;
 }
+
 .listing-table th:nth-child(1),
 .listing-table td:nth-child(1) {
   width: 10%;
@@ -826,7 +844,7 @@ select option[value=""] {
 }
 .listing-table th:nth-child(5),
 .listing-table td:nth-child(5) {
-  width: 20%;
+  width: 10%;
 }
 
 .payment-table th:nth-child(1),
@@ -869,27 +887,19 @@ select option[value=""] {
 
 .assessment-table th:nth-child(1),
 .assessment-table td:nth-child(1) {
-  width: 12%;
+  width: 15%;
 }
 .assessment-table th:nth-child(2),
 .assessment-table td:nth-child(2) {
-  width: 25%;
+  width: 30%;
 }
 .assessment-table th:nth-child(3),
 .assessment-table td:nth-child(3) {
-  width: 15%;
+  width: 20%;
 }
 .assessment-table th:nth-child(4),
 .assessment-table td:nth-child(4) {
-  width: 15%;
-}
-.assessment-table th:nth-child(5),
-.assessment-table td:nth-child(5) {
-  width: 15%;
-}
-.assessment-table th:nth-child(6),
-.assessment-table td:nth-child(6) {
-  width: 20%;
+  width: 10%;
 }
 
 /* for grade management table */
@@ -1553,6 +1563,7 @@ table td {
   background-color: rgba(0, 0, 0, 0.5);
   transition: visibility 0s linear 0.2s, opacity 0.2s ease-in-out;
 }
+
 .modal.show {
   visibility: visible;
   opacity: 1;
@@ -1565,7 +1576,7 @@ table td {
   justify-content: center;
   align-self: center;
   justify-self: center;
-  background: white;
+  background: rgb(255, 255, 255);
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -1579,14 +1590,23 @@ table td {
 .modal-buttons {
   position: sticky;
   bottom: 0;
-  background: rgb(255, 255, 255);
   padding: 25px 25px;
   display: flex;
   background: linear-gradient(to top, rgb(255, 255, 255) 90%, transparent);
   justify-content: space-between;
   align-items: center;
-  width: 100%; 
-  z-index: 1000; 
+  width: 100%;
+  z-index: 1000;
+}
+
+.confirmation-modal-buttons,
+.basic-modal-buttons {
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  z-index: 1000;
 }
 
 .modal-body {
@@ -1594,7 +1614,7 @@ table td {
   overflow-y: auto;
   overflow-x: hidden;
   padding: 30px;
-  padding-bottom: 0; 
+  padding-bottom: 0;
 }
 
 .report-main-btns {
@@ -1607,12 +1627,6 @@ table td {
 .report-main-btns-right {
   display: flex;
   gap: 10px;
-}
-.report-main-btns button {
-  padding: 5px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
 }
 
 .back-btn {
@@ -1647,13 +1661,11 @@ table td {
   align-items: center;
 }
 
-.modal-buttons button {
-  padding: 8px 15px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
-.payment-modal-buttons button {
+.modal-buttons button,
+.confirmation-modal-buttons button,
+.basic-modal-buttons button,
+.payment-modal-buttons button,
+.report-main-btns button {
   padding: 8px 15px;
   border: none;
   cursor: pointer;
@@ -2282,7 +2294,8 @@ input[type="checkbox"] {
 .transferee-req-edit-modal h2,
 .view-student-list-modal h2,
 .scholarship-modal h2,
-.scholarship-edit-modal h2 {
+.scholarship-edit-modal h2,
+.view-past-transactions-modal h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -2363,7 +2376,7 @@ input[type="checkbox"] {
 .view-student-list-modal-content label,
 .scholarship-modal-content label,
 .scholarship-edit-modal-content label,
-.modal {
+.view-past-transactions-modal-content label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -2458,7 +2471,8 @@ input[type="checkbox"] {
 .scholarship-modal,
 .scholarship-edit-modal,
 .grade-print-modal,
-.all-transactions-print-modal {
+.all-transactions-print-modal,
+.view-past-transactions-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -2484,7 +2498,8 @@ input[type="checkbox"] {
 .scholarship-modal.show,
 .scholarship-edit-modal.show,
 .grade-print-modal.show,
-.all-transactions-print-modal.show {
+.all-transactions-print-modal.show,
+.view-past-transactions-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
@@ -2556,6 +2571,18 @@ input[type="checkbox"] {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
   min-height: 40vh;
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+
+.view-past-transactions-modal-content {
+  background: white !important;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 900px;
+  min-height: 85vh;
   text-align: left;
   position: relative;
   z-index: 1001;
@@ -3155,7 +3182,8 @@ input[type="checkbox"] {
   .no-print,
   .close-modal,
   .print-button,
-  .print-btn {
+  .print-btn,
+  .btn-cancel {
     display: none !important;
   }
 
@@ -3193,7 +3221,7 @@ input[type="checkbox"] {
   .receipt-table table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px; /* Adjust font size */
+    font-size: 14px;
   }
 
   .receipt-table th,
@@ -3795,7 +3823,6 @@ td[rowspan] {
 .half-width label {
   display: block;
   font-weight: bold;
-  margin-bottom: 5px;
 }
 
 .half-width h6 {
@@ -4296,9 +4323,9 @@ td {
   font-weight: bold;
 }
 
-.printable-footer {
+/* .printable-footer {
   margin-top: -40px;
-}
+} */
 
 th {
   position: relative;
@@ -4451,4 +4478,11 @@ select + p {
   font-weight: bold;
   font-size: 14px;
   border-radius: 3px;
+}
+
+.report-title {
+  margin-top: 10px;
+  display: flex;
+  justify-self: center;
+  font-size: 18px;
 }

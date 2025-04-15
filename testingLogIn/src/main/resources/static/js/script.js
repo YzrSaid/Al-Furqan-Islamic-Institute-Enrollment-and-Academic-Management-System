@@ -831,6 +831,7 @@ document.addEventListener("DOMContentLoaded", function () {
       case "proceedAssessment":
         console.log(enrollmentIdLet);
         proceedToAssessment(enrollmentIdLet);
+        toggleModal("gradeLevelModal", false);
         break;
       case "proceedToPayment":
         proceedToPayment(enrollmentIdLet, sectionNumberLet);
@@ -1499,6 +1500,45 @@ function printReceipt() {
   window.print();
 }
 
+function printIndividTransactions() {
+  // Get the modal you actually want to print
+  const modalToPrint = document.getElementById("individTransactionsPrintModal");
+
+  // Show the print modal temporarily (if it's hidden via display:none)
+  modalToPrint.style.display = "block";
+
+  // Clone only the printable area inside the modal
+  const printableContent = modalToPrint
+    .querySelector(".printable-area-transactions")
+    .cloneNode(true);
+
+  // Create a new window to print from
+  const printWindow = window.open("", "", "width=800,height=600");
+
+  // Write content into new window
+  printWindow.document.write(`
+        <html>
+            <head>
+                <title>Print Record</title>
+                <link rel="stylesheet" href="/../css/styles.css">
+            </head>
+            <body>
+                ${printableContent.outerHTML}
+            </body>
+        </html>
+    `);
+
+  printWindow.document.close();
+
+  printWindow.onload = () => {
+    printWindow.focus();
+    printWindow.print();
+  };
+
+  // Re-hide the print modal if it was hidden before
+  modalToPrint.style.display = "none";
+}
+
 // This will hide and show the password in the login/sign up pages
 document.addEventListener("DOMContentLoaded", function () {
   const passwordField = document.getElementById("password");
@@ -1516,7 +1556,6 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleIcon.alt = isPassword ? "Hide Password" : "Show Password";
   });
 });
-
 
 function clearForm() {
   document
@@ -2117,7 +2156,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //This is for Modal Buttons (Cancel and Confirm)
 document.addEventListener("DOMContentLoaded", function () {
-  const modalButtonsContainers = document.querySelectorAll(".modal-buttons");
+  const modalButtonsContainers = document.querySelectorAll(
+    ".modal-buttons, .confirmation-modal-buttons, .basic-modal-buttons"
+  );
 
   modalButtonsContainers.forEach((container) => {
     const cancelBtn = container.querySelector(

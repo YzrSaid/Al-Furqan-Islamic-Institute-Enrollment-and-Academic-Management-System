@@ -48,7 +48,7 @@
                             <!-- Print Button -->
                             <button type="button" data-open-modal="allTransactionsPrintModal" class="print-btn">
                                 <i class="fas fa-print"></i>
-                            </button> 
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -61,13 +61,10 @@
             </div>
         </div>
 
-          <!-- Grade Print Modal -->
-          <div id="allTransactionsPrintModal" class="all-transactions-print-modal modal">
-            <div class="printable-area">
+        <!-- All Transactions Modal -->
+        <div id="allTransactionsPrintModal" class="all-transactions-print-modal modal">
+            <div class="printable-area-transactions">
                 <div class="all-transactions-print-modal-content scroll-lock">
-                    <!-- Close Button -->
-                    <span class="close-modal" data-close-modal="allTransactionsPrintModal">&times;</span>
-
                     <!-- Report Header -->
                     <div class="header-container-print">
 
@@ -80,120 +77,44 @@
                                 <p th:text="${schoolAddress}"></p>
                                 <p th:text="${schoolEmail}"></p>
                                 <p th:text="${schoolNum}"></p>
-                                <h3 class="report-type"><strong>Grade Form</strong></h3>
                             </div>
                         </div>
                     </div>
 
                     <div class="separator-line"></div>
                     <!-- Student Info -->
-                    <table border="1" cellspacing="0" cellpadding="6"
-                        style="width: 100%; margin-top: -30px; font-family: Arial, sans-serif; border-collapse: collapse;">
-                        <!-- Student Info Section -->
-                        <tr class="stud-info-section">
-                            <td colspan="6">
-                                <div class="student-info-container-printable">
-                                    <div class="payment-student-info-row">
-                                        <label for="receipt-student-id">Student ID:</label>
-                                        <input type="text" class="print-inputs" id="receipt-student-id"
-                                            placeholder="">
-                                    </div>
 
-                                    <div class="payment-student-info-row">
-                                        <label for="receipt-date">Date:</label>
-                                        <input type="date" class="print-inputs" id="receipt-date">
-                                    </div>
+                    <h3 class="report-title"><strong>Payments and Transactions Report</strong></h3>
 
-                                    <div class="payment-student-info-row">
-                                        <label for="receipt-student-name">Student Name:</label>
-                                        <input type="text" class="print-inputs" id="receipt-student-name"
-                                            placeholder="">
-                                    </div>
-
-                                    <div class="payment-student-info-row">
-                                        <label for="sy-and-sem">SY & Sem:</label>
-                                        <input type="text" class="print-inputs" id="current-sy-and-sem"
-                                            placeholder="">
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <!-- Grade Table Header -->
-                        <tr class="grade-header">
-                            <th>Subject</th>
-                            <th>1st Sem</th>
-                            <th>2nd Sem</th>
-                            <th>Final</th>
-                            <th>Remarks</th>
-                        </tr>
-
-                        <!-- Grade Table Rows (No inner borders) -->
-                        <tr class="grade-row">
-                            <td>READING AND WRITING</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr class="grade-row">
-                            <td>PAGBASA AT PAGSUSURI NG IBAT IBANG TEKSTO TUNGO SA P</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr class="grade-row">
-                            <td>21ST CENTURY LITERATURE FROM THE PHILIPPINES AND THE W</td>
-                            <td>78</td>
-                            <td>77</td>
-                            <td>77.5</td>
-                            <td>Passed</td>
-                        </tr>
-                        <tr class="grade-row">
-                            <td>HOUSEKEEPING</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr class="grade-row">
-                            <td>STATISTICS AND PROBABILITY</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr class="grade-row">
-                            <td>PHYSICAL EDUCATION AND HEALTH</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr class="grade-row">
-                            <td>PHYSICAL SCIENCE</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
+                    <!-- Table -->
+                    <table id="realginnas-printable" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Student Name</th>
+                                <th>Date Paid</th>
+                                <th>Transaction No.</th>
+                                <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
                     </table>
 
                     <div class="printable-footer">
                         Date Printed: <strong>4/1/2020</strong>
                     </div>
-             
+
                     <div class="modal-buttons">
                         <button type="button" class="btn-cancel"
-                        data-close-modal="allTransactionsPrintModal">Close</button>
+                            data-close-modal="allTransactionsPrintModal">Close</button>
 
                         <button type="button" onclick="printReceipt()" class="print-btn">Print Record</button>
                     </div>
                 </div>
             </div>
         </div>
-        
+
 
         <div class="table-wrapper">
             <!-- Table -->
@@ -629,7 +550,7 @@
         });
 
         let currentPage;
-        var totalItems=0;
+        var totalItems = 0;
         function getRecords(pageNo = 1) {
             currentPage = pageNo;
             pageSize = parseInt(document.getElementById("pageSizeSelector").value);
@@ -710,53 +631,53 @@
         }
 
         function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
-        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-        const end = Math.min(currentPage * pageSize, totalItems);
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
 
-        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
-        document.getElementById("pageInput").value = currentPage;
-        document.getElementById("pageInput").min = 1;
-        document.getElementById("pageInput").max = totalPages;
-        document.getElementById("totalPages").textContent = `of ${totalPages}`;
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
-        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
-    }
-
-    document.getElementById("prevPage").addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            getRecords(currentPage);
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
         }
-    });
 
-    document.getElementById("nextPage").addEventListener("click", () => {
-        if (currentPage < document.getElementById("pageInput").max) {
-            currentPage++;
-            console.log("Navigating to page:", currentPage);
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                getRecords(currentPage);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                console.log("Navigating to page:", currentPage);
+                getRecords(currentPage);
+            } else {
+                console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                getRecords(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
             getRecords(currentPage);
-        } else {
-            console.log("Cannot navigate to next page");
-        }
-    });
-
-    document.getElementById("pageInput").addEventListener("change", (e) => {
-        const totalPages = parseInt(document.getElementById("pageInput").max);
-        let page = parseInt(e.target.value);
-        if (page >= 1 && page <= totalPages) {
-            currentPage = page;
-            getRecords(currentPage);
-        } else {
-            e.target.value = currentPage;
-        }
-    });
-
-    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
-        console.log("pageSizeSelector changed", { value: e.target.value });
-        pageSize = parseInt(e.target.value);
-        currentPage = 1;
-        getRecords(currentPage);
-    });
+        });
 
         let studentId;
         let gradeLevelId;
@@ -1065,54 +986,54 @@
         }
 
         function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
-        console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
-        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-        const end = Math.min(currentPage * pageSize, totalItems);
+            console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
 
-        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
-        document.getElementById("pageInput").value = currentPage;
-        document.getElementById("pageInput").min = 1;
-        document.getElementById("pageInput").max = totalPages;
-        document.getElementById("totalPages").textContent = `of ${totalPages}`;
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
-        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
-    }
-
-    document.getElementById("prevPage").addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            viewStudents(currentPage);
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
         }
-    });
 
-    document.getElementById("nextPage").addEventListener("click", () => {
-        if (currentPage < document.getElementById("pageInput").max) {
-            currentPage++;
-            console.log("Navigating to page:", currentPage);
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                viewStudents(currentPage);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                console.log("Navigating to page:", currentPage);
+                viewStudents(currentPage);
+            } else {
+                console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                viewStudents(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
             viewStudents(currentPage);
-        } else {
-            console.log("Cannot navigate to next page");
-        }
-    });
-
-    document.getElementById("pageInput").addEventListener("change", (e) => {
-        const totalPages = parseInt(document.getElementById("pageInput").max);
-        let page = parseInt(e.target.value);
-        if (page >= 1 && page <= totalPages) {
-            currentPage = page;
-            viewStudents(currentPage);
-        } else {
-            e.target.value = currentPage;
-        }
-    });
-
-    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
-        console.log("pageSizeSelector changed", { value: e.target.value });
-        pageSize = parseInt(e.target.value);
-        currentPage = 1;
-        viewStudents(currentPage);
-    });
+        });
 
         function setUpForm(theForm) {
             theForm = JSON.parse(theForm);

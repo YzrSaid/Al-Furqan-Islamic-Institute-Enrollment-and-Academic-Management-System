@@ -25,7 +25,6 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-
         String errorMessage;
         if (exception instanceof UsernameNotFoundException) {
             errorMessage = "Username does not exist.";

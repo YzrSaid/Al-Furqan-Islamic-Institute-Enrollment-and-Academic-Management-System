@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
@@ -1298,20 +1289,24 @@
     var currentPage = 0;
     let totalItems = 0;
     var currentStat = "";
-    function goList(pageNo = 1) {
+    async function goList(pageNo = 1) {
         const search = document.getElementById("search-stud").value;
         currentStat = document.getElementById("sort-select").value;
         currentPage = pageNo;
+        const tableBody = document.querySelector("#lamesa tbody");
         const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
         fetch(`/enrollment/all/paged/${currentStat}?pageNo=${pageNo}&pageSize=${pageSize}&search=${search}`)
             .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch enrollment records");
+                tableBody.innerHTML = `<tr><td colspan="4">No records found.</td></tr>`;
+                if(res.status === 404) {
+                    showErrorModal("No currently active semester");
+                    return;}
+                else if(!res.ok) throw new Error("Failed to fetch enrollment records");
                 return res.json();
             })
             .then(data => {
-                const tableBody = document.querySelector("#lamesa tbody");
+                if(data.content.length === 0) {return;}
                 tableBody.innerHTML = "";
-
                 data.content.forEach(enr => {
                     const row = document.createElement("tr");
                     row.setAttribute("data-enrollment-id", enr.enrollmentId);

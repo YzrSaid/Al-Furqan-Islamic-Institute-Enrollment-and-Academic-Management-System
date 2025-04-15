@@ -80,7 +80,7 @@ public class TransfereeRequirementsController {
     public ResponseEntity<String> addStudentTransfereeRequirements(@PathVariable int studentId,@RequestBody MultipleInteger ids){
         try{
             transferReqServices.addingStudentRequirements(studentId,ids.getIds());
-            return new ResponseEntity<>("Student transferee requirements successfully added",HttpStatus.OK);
+            return new ResponseEntity<>("Student transferee requirements updated successfully",HttpStatus.OK);
         }catch (NullPointerException npe){
             npe.printStackTrace();
             return new ResponseEntity<>("Student record not found",HttpStatus.NOT_FOUND);

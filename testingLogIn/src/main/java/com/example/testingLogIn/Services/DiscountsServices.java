@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -65,9 +66,10 @@ public class DiscountsServices {
 
         CompletableFuture.runAsync(()->{
             SchoolYearSemester actvSem = sem.getCurrentActive();
+            if(actvSem != null){
             int currentSem = actvSem.getSySemNumber();
             for(Student student : studDiscRepo.findStudentByDiscount(discountId, currentSem)){
-                updateStudentFees(student);}
+                updateStudentFees(student);}}
         });
     }
 
@@ -163,9 +165,9 @@ public class DiscountsServices {
     }
 
     private void updateStudentFees(Student student) {
-        int currentSemId = sem.getCurrentActive().getSySemNumber();
+        int currentSemId = Optional.ofNullable(sem.getCurrentActive()).map(SchoolYearSemester::getSySemNumber).orElse(0);
         StudentTotalDiscount studDiscount = studDiscRepo.getStudentTotalDiscount(student.getStudentId()).orElse(null);
-        if (studDiscount != null) {
+        if (studDiscount != null && currentSemId>0) {
             CompletableFuture.runAsync(() -> {
                 double percentDisc = studDiscount.getTotalPercentageDiscount();
                 double fixedDisc = studDiscount.getTotalFixedDiscount();

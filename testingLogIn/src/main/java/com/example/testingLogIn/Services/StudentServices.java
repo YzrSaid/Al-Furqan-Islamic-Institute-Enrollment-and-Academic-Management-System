@@ -102,7 +102,7 @@ public class StudentServices {
                                     .madrasaAddress(student.getMadrasaAddress())
                                     .build();
             Student newSavedStudent = studentRepo.save(newStudent);
-            enrollmentService.addStudentToListing(newSavedStudent.getStudentId());
+            enrollmentService.addStudentToListing(null,newSavedStudent);
             if(!student.getDiscountsAvailed().isEmpty())
                 CompletableFuture.runAsync(() -> discountsServices.addStudentDiscounts(newSavedStudent.getStudentId(),student.getDiscountsAvailed()));
             if(newSavedStudent.isTransferee())

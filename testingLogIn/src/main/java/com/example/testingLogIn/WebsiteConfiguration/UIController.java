@@ -121,6 +121,7 @@ public class UIController {
     @ExceptionHandler(NoHandlerFoundException.class)
     public RedirectView handleNoHandlerFoundException(NoHandlerFoundException ex,
             RedirectAttributes redirectAttributes) {
+        System.out.println("Not allowed");
         redirectAttributes.addFlashAttribute("errorMessage", "The requested resource was not found.");
         return new RedirectView("/home"); // Redirect to a custom error page
     }

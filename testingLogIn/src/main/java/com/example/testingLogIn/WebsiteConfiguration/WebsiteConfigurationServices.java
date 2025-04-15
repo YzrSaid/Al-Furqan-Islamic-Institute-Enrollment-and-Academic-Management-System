@@ -9,14 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +30,7 @@ public class WebsiteConfigurationServices {
     private GradeLevelRepo gradeLevelRepo;
 
     @CacheEvict(value = {"schoolAddress","schoolEmail","schoolName","schoolNum",
-                        "graduatingLevel","website-cover","website-logo"})
+            "graduatingLevel","website-cover","website-logo","enrollmentPage"},allEntries = true)
     public boolean updateSchoolInterface(WebsiteProfile profile) {
         try{
             byte[] newLogo = Optional.ofNullable(profile.getLogo()).map(logo -> {
@@ -146,7 +142,6 @@ public class WebsiteConfigurationServices {
         return schoolProfileRepo.findById("SchoolAddress").map(name -> new String(name.getKey_value())).orElse("Contact Info Not Available");
     }
 
-    @Cacheable("userRole")
     public String getRole() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof UserModel user) {

@@ -33,6 +33,7 @@ public class TransferReqServices {
             return transfereeReqRepo.findByIsNotDeletedTrue();
         return transfereeReqRepo.findByIsNotDeletedFalse();
     }
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public int addNewRequirement(String requirementName){
         if(transfereeReqRepo.findUsingName("%"+requirementName.toLowerCase()+"%").orElse(null) == null){
             transfereeReqRepo.save(TransfereeRequirements.builder()
@@ -44,6 +45,7 @@ public class TransferReqServices {
 
         return 1;
     }
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean deleteRequirement(int requirementId){
         TransfereeRequirements req = transfereeReqRepo.findById(requirementId).orElseThrow(NullPointerException::new);
         req.setNotDeleted(false);
@@ -63,7 +65,7 @@ public class TransferReqServices {
     }
 
     // for manipulating the requirements complied by the transferee student
-    @CacheEvict(value = "enrollmentPage")
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean addingStudentRequirements(int studentId, List<Integer> requirementsId){
         Student student = studentRepo.findById(studentId).orElseThrow(NullPointerException::new);
         List<TransfereeRequirements> transfereeRequirements = transfereeReqRepo.findByIsNotDeletedTrue();

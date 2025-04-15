@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 import com.example.testingLogIn.WebsiteConfiguration.SchoolProfile;
 import com.example.testingLogIn.WebsiteConfiguration.SchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 /**
  *
@@ -92,7 +93,7 @@ public class sySemesterServices {
         
         return toReturn;
     }
-    
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean activateSemester(int semNumber){
         SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
         if(sem == null)
@@ -116,7 +117,8 @@ public class sySemesterServices {
         
         return true;
     }
-    
+
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean deactivateSemester(int semNumber){
         SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
         if(sem == null)
@@ -127,7 +129,7 @@ public class sySemesterServices {
         
         return true;
     }
-    
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean finishSemester(int semNumber){
         SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
         if(sem == null)

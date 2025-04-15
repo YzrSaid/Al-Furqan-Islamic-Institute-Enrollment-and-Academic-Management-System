@@ -33,12 +33,12 @@ public class EnrollmentController {
     @PostMapping("/add/student/{studentId}")
     public ResponseEntity<String> addExistingStudentToListing(@PathVariable Integer studentId){
         try{
-            if(enrollmentService.addStudentToListing(studentId))
+            if(enrollmentService.addStudentToListing(studentId,null))
                 return new ResponseEntity<>("Student Successfully Added To Listing",HttpStatus.OK);
             else
-                return new ResponseEntity<>("Student Is Already In Enrollment Process",HttpStatus.CONFLICT);
+                return new ResponseEntity<>("Enrollment is now closed. Check back next semester!",HttpStatus.CONFLICT);
         }catch(NullPointerException npe){
-            return new ResponseEntity<>("Student Record Not Found",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No currently active semester",HttpStatus.NOT_FOUND);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("Transaction Failed",HttpStatus.BAD_REQUEST);
@@ -52,8 +52,9 @@ public class EnrollmentController {
                                                                               @RequestParam(required = false) String search){
         try{
             return new ResponseEntity<>(enrollmentService.getAllEnrollmentPage(status,pageNo,pageSize,sortBy,search),HttpStatus.OK);
-        }catch(Exception e){
-            e.printStackTrace();
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

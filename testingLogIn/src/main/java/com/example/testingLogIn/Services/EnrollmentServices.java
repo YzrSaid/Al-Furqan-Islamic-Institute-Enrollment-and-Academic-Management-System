@@ -1,6 +1,5 @@
 package com.example.testingLogIn.Services;
 
-import com.example.testingLogIn.AssociativeModels.GradeLevelRequiredFees;
 import com.example.testingLogIn.CountersService.SectionStudentCountServices;
 import com.example.testingLogIn.CustomObjects.*;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
@@ -11,6 +10,7 @@ import com.example.testingLogIn.Models.*;
 import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
 import com.example.testingLogIn.Repositories.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -56,21 +56,17 @@ public class EnrollmentServices {
     }
 
     @CacheEvict(value = "enrollmentPage",allEntries = true)
-    public boolean addStudentToListing(Integer studentId) {
-        Student student = null;
+    public boolean addStudentToListing(Integer studentId,Student newstudent) {
+        Student student = newstudent;
+        SchoolYearSemester currentSem = Optional.ofNullable(sySemRepo.findCurrentActive()).orElseThrow(NullPointerException::new);
         if(studentId != null)
             student =  studentRepo.findById(studentId).orElse(null);
-
-        if (student == null || !student.isNotDeleted())
-            throw new NullPointerException();
-        else if (enrollmentRepo.studentCurrentlyEnrolled(student.getStudentId(),
-                sySemRepo.findCurrentActive().getSySemNumber()))
+        if(LocalDate.now().isAfter(currentSem.getEnrollmentDeadline()))
             return false;
-
         Enrollment enroll = new Enrollment();
         enroll.setEnrollmentStatus(EnrollmentStatus.LISTING);
         enroll.setStudent(student);
-        enroll.setSYSemester(sySemRepo.findCurrentActive());
+        enroll.setSYSemester(currentSem);
         enroll.setNotDeleted(true);
         enrollmentRepo.save(enroll);
         return true;

@@ -491,7 +491,7 @@ document.addEventListener("DOMContentLoaded", function () {
       confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
     }
 
-    if (modalId.includes("Edit")) {
+    if (modalId.includes("Edit") && modalId !== ("studentInformationEditModal")) {
       console.log("yawa");
       const confirmBtn = modal.querySelector(".btn-confirm");
       const cancelBtn = modal.querySelector(".btn-cancel");
@@ -2136,11 +2136,24 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
   const buttons = [
     { buttonId: "dropdown-scholar", popoverId: "scholar-popover" },
+    {
+      buttonId: "dropdown-report-scholar",
+      popoverId: "report-scholar-popover",
+    },
+    { buttonId: "dropdown-add-scholar", popoverId: "add-scholar-popover" },
     { buttonId: "dropdown-transferee", popoverId: "transferee-popover" },
+    {
+      buttonId: "dropdown-add-transferee",
+      popoverId: "add-transferee-popover",
+    },
   ];
 
   // Validate modal and popovers
-  if (!document.querySelector(".student-modal-content")) {
+  if (
+    !document.querySelector(
+      ".student-modal-content, .student-information-container-content"
+    )
+  ) {
     return;
   }
 
@@ -2200,7 +2213,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const buttonHeight = button.offsetHeight;
 
     // Get modal and popover dimensions
-    const modalContent = document.querySelector(".student-modal-content");
+    const modalContent = document.querySelector(
+      ".student-modal-content, .student-information-container-content"
+    );
     const modalHeight = modalContent.clientHeight;
     const popoverHeight = popover.offsetHeight || 100; // Fallback if not rendered
     const popoverWidth = popover.offsetWidth || 200; // Assuming width is calculated after render, fallback to 200px
@@ -2245,11 +2260,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Close popover on outside click
-  document.addEventListener("click", (e) => {
+  // Close popover on outside click (with slight delay to allow button click logic to finish)
+  document.addEventListener("mousedown", (e) => {
     buttons.forEach(({ popoverId, buttonId }) => {
       const popover = document.getElementById(popoverId);
       const button = document.getElementById(buttonId);
+  
+      // ✅ Check if elements exist first
+      if (!popover || !button) return;
+  
       if (
         popover.style.visibility === "visible" &&
         !popover.contains(e.target) &&
@@ -2258,7 +2277,7 @@ document.addEventListener("DOMContentLoaded", function () {
         closePopover(popover);
       }
     });
-  });
+  });  
 });
 
 //This is for Modal Buttons (Cancel and Confirm)

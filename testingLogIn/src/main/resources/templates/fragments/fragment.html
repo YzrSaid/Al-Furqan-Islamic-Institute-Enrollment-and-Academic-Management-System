@@ -36,20 +36,23 @@
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar" th:fragment="sidebar">
-        <div class="text-center">
-            <div class="school-logo">
-                <img th:src="@{/website-logo}" id="previewLogoMini" alt="School Logo">
-            </div> <br>
-            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
-                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
-            </p> <br>
-            <div class="welcome-div">
-                <p>
-                    Welcome, <span class="account-text" th:text="|${userFirstName} (${userRole})|"></span>
-                </p>
+        <div class="sticky-sidebar">
+            <div class="text-center">
+                <div class="school-logo">
+                    <img th:src="@{/website-logo}" id="previewLogoMini" alt="School Logo">
+                </div> <br>
+                <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
+                    th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
+                </p> <br>
+                <div class="welcome-div">
+                    <p>
+                        Welcome, <span class="account-text" th:text="|${userFirstName} (${userRole})|"></span>
+                    </p>
+                </div>
             </div>
+    
         </div>
-
+        
         <!-- Dashboard -->
         <a href="/home" class="sidebar-icons" onclick="clearSubmenus()" data-path="/home">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard

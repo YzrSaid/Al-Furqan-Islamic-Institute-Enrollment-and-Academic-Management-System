@@ -102,6 +102,7 @@ public class EnrollmentController {
             return switch (result) {
                 case 1 -> new ResponseEntity<>("Enrollment Record Not Found",HttpStatus.NOT_FOUND);
                 case 2 -> new ResponseEntity<>("Section Record Not Found",HttpStatus.NOT_FOUND);
+                case 3 -> new ResponseEntity<>("Student is not qualified to the Grade Level",HttpStatus.NOT_FOUND);
                 default -> new ResponseEntity<>("Enrollment Record Successfully Moved To Payment",HttpStatus.OK);
             };
         }catch(Exception e){

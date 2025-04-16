@@ -58,7 +58,7 @@ public class DiscountsServices {
         return true;
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void deleteDiscount(int discountId){
         Discount discount = discRepo.findById(discountId).orElseThrow(NullPointerException::new);
         discount.setNotDeleted(false);
@@ -73,7 +73,7 @@ public class DiscountsServices {
         });
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean addStudentDiscount(int discountId, List<Integer> studentIds){
         Discount discount = discRepo.findById(discountId).orElse(null);
         assert discount != null;
@@ -96,7 +96,7 @@ public class DiscountsServices {
     }
 
     //para mag update ng student info
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean addStudentDiscounts(Integer studentId, List<Integer> discounts){
         Student student = studRepo.findById(studentId).orElseThrow(NullPointerException::new);
         List<StudentDiscount> studentDiscounts = new ArrayList<>();
@@ -140,7 +140,7 @@ public class DiscountsServices {
                 .build();
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void removeStudentsDiscount(List<Integer> connectionIds){
         connectionIds.forEach(conId ->{
             studDiscRepo.findById(conId).ifPresent(studentDiscount -> {
@@ -151,7 +151,7 @@ public class DiscountsServices {
         });
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void removeStudentDiscount(int discId){
         StudentDiscount studentDiscount = studDiscRepo.findById(discId).orElseThrow(NullPointerException::new);
         studentDiscount.setNotDeleted(false);
@@ -159,6 +159,7 @@ public class DiscountsServices {
         updateStudentFees(studentDiscount.getStudent());
     }
 
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void removeStudentDiscounts(int studentId){
         List<Integer> connectionIds = studDiscRepo.findByStudentNotDeleted(studentId).stream().map(StudentDiscount::getConnectionId).toList();
         removeStudentsDiscount(connectionIds);

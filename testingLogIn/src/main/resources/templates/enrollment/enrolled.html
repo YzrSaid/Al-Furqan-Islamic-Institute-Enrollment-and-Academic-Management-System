@@ -28,12 +28,12 @@
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button type="button" onclick="getCurrentlyEnrolled()" class="search-btn">Search</button>
+                        <button type="button" onclick="getCurrentlyEnrolled(1)" class="search-btn">Search</button>
                     </div>
                 </div>
 
                 <div class="sort-container">
-                    <select name="sort" onchange="getCurrentlyEnrolled()" id="sort-select" class="sort-select">
+                    <select name="sort" onchange="getCurrentlyEnrolled(1)" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
                         <option value="StudentId">Student Id</option>
                         <option value="StudentName">Student Name</option>
@@ -194,7 +194,7 @@
                 }
             }
         });
-        getCurrentlyEnrolled();
+        getCurrentlyEnrolled(1);
     });
     var totalItems;
     var currentPage;

@@ -27,7 +27,7 @@
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button type="button" onclick="goList()" class="search-btn">Search</button>
+                        <button type="button" onclick="goList(1)" class="search-btn">Search</button>
                     </div>
 
                     <!-- Enrollment Buttons -->
@@ -38,13 +38,13 @@
                 </div>
 
                 <div class="sort-container">
-                    <select title="sort" name="sort" onchange="goList()" id="sort-select" class="sort-select">
+                    <select title="sort" name="sort" onchange="goList(1)" id="sort-select" class="sort-select">
                         <option value="All" selected>All</option>
                         <option value="Listing">Listing</option>
                         <option value="Assessment">Assessment</option>
                         <option value="Payment">Payment</option>
                         <option value="Enrolled">Enrolled</option>
-                        <option value="Not_registered">Wala sa listing</option>
+                        <option value="Not_registered">Not listed</option>
                         <option value="Cancelled">Cancelled</option>
                     </select>
                 </div>
@@ -474,7 +474,6 @@
 
             <!-- Grades Table -->
             <div id="preRequisite-grades"></div>
-
             <!-- <div class="half-width" id="view-grade-average">
                 <label for="grade-average">Final Average:</label>
                 <input type="text" id="average-input" readonly value="90">
@@ -638,7 +637,7 @@
 
                         <div class="transferee-requirements">
                             <h4>Requirements</h4>
-                            <div id="transfereeReq" class="checkbox-transferee-reqs-group">
+                            <div id="transfereeReqRec" class="checkbox-transferee-reqs-group">
                                 <!--Ibutang ang mga transferee requiremetns dri-->
                             </div>
 
@@ -1935,10 +1934,26 @@
             .then((response) => response.json())
             .then((data) => {
                 const studentGradesMap = new Map(Object.entries(data.content));
-                preRequisiteGradesDiv.innerHTML = ``;
+                preRequisiteGradesDiv.innerHTML = `
+                        <table class="view-grades-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Subject ID</th>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td colspan="3">No Records Found</td>
+                            </tr>
+                        </tbody>
+                    </table>`;
                 if (studentGradesMap.size === 0) {
                     return;
                 }
+                preRequisiteGradesDiv.innerHTML = ``;
                 studentGradesMap.forEach((values, key) => {
                     let gradeTotal = 0;
                     let gradeCount = 0;

@@ -40,9 +40,8 @@
                         <button type="button" onclick="getRecords(1)" class="search-btn">Search</button>
                         
                         <div class="add-something-btn-container add-something-dropdown">
-                            <button type="button" class="btn-confirm" onclick="viewStudents()"
-                            id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add
-                            Payment</button>
+                            <button type="button" class="btn-confirm" onclick="viewStudents(1)"
+                            id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add Payment</button>
 
 
                             <button type="button" class="add-something-btn">
@@ -146,7 +145,7 @@
             <div class="pagination-controls">
                 <span id="itemRange">1–10 of 37</span>
                 <select id="pageSizeSelector">
-                    <option value="10">10</option>
+                    <option value="10" selected>10</option>
                     <option value="20">20</option>
                     <option value="30">30</option>
                 </select>
@@ -230,6 +229,21 @@
                         </tr>
                     </tbody>
                 </table>
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <div class="pagination-controls">
+                <span id="itemRangeStud">1–10 of 37</span>
+                <select id="pageSizeSelectorStud">
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPageStud">«</button>
+                <input type="number" id="pageInputStud" min="1" value="1">
+                <span id="totalPagesStud">of 4</span>
+                <button type="button" id="nextPageStud">»</button>
+            </div>
+        </div>
             </div>
         </div>
 
@@ -553,7 +567,7 @@
                 }
             });
             fetchMgaBayarin();
-            getRecords();
+            getRecords(1);
         });
 
         let currentPage;
@@ -924,40 +938,40 @@
         var totalItems = 0;
         function viewStudents(pageNo = 1) {
             studPageNo = pageNo;
-            var pageSize = parseInt(document.getElementById("pageSizeSelector").value);
+            var pageSize = parseInt(document.getElementById("pageSizeSelectorStud").value) || 10;
             const orderBy = document.getElementById("view-stud-by-select").value;
             const search = document.getElementById("search-student").value;
             const studentsTable = document.querySelector("#table-ni-martin tbody");
             var url = `/students/all?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${orderBy}&fullyPaid=true`;
-            console.log(url);
             fetch(url)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.content.length === 0) { return; }
-                    studentsTable.innerHTML = ``;
-                    data.content.forEach(stud => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                        <td>${stud.studentDisplayId}</td>
-                        <td>${stud.fullName}</td>
-                        <td>${stud.currentGradeLevel?.levelName ?? 'None'}</td>
-                        <td>${stud.balanceAmount}</td>
-                        <td>
-                            <div class="dropdown">
-                                <div class="action-container action">
-                                    <img src="/images/icons/eye.png" onclick="viewToPaid(${stud.studentId})"
-                                    data-open-modal="listOfPaymentsModal"
-                                        alt="edit-icon">
+                    studentsTable.innerHTML = `<tr><td colspan="5">No records found.</td></tr>`;
+                    if (data.content.length > 0) { 
+                        studentsTable.innerHTML = ``;
+                        data.content.forEach(stud => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                            <td>${stud.studentDisplayId}</td>
+                            <td>${stud.fullName}</td>
+                            <td>${stud.currentGradeLevel?.levelName ?? 'None'}</td>
+                            <td>${stud.balanceAmount}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <div class="action-container action">
+                                        <img src="/images/icons/eye.png" onclick="viewToPaid(${stud.studentId})"
+                                        data-open-modal="listOfPaymentsModal"
+                                            alt="edit-icon">
 
+                                    </div>
                                 </div>
-                            </div>
-                        </td>`;
-                        studentsTable.appendChild(row);
-                    });
-
+                            </td>`;
+                            studentsTable.appendChild(row);
+                        });
+                    }
                     totalItems = data.totalElements || 0;
                     const totalPages = data.totalPages || 1;
-                    updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
+                    updatePaginationUIStud(currentPage, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching sections:", error));
         }
@@ -992,29 +1006,28 @@
                 .catch(error => console.error("Error fetching sections:", error));
         }
 
-        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
-            console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+        function updatePaginationUIStud(currentPage, pageSize, totalItems, totalPages) {
             const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
             const end = Math.min(currentPage * pageSize, totalItems);
 
-            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
-            document.getElementById("pageInput").value = currentPage;
-            document.getElementById("pageInput").min = 1;
-            document.getElementById("pageInput").max = totalPages;
-            document.getElementById("totalPages").textContent = `of ${totalPages}`;
+            document.getElementById("itemRangeStud").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInputStud").value = currentPage;
+            document.getElementById("pageInputStud").min = 1;
+            document.getElementById("pageInputStud").max = totalPages;
+            document.getElementById("totalPagesStud").textContent = `of ${totalPages}`;
 
-            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
-            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+            document.getElementById("prevPageStud").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPageStud").disabled = currentPage >= totalPages || totalPages === 0;
         }
 
-        document.getElementById("prevPage").addEventListener("click", () => {
+        document.getElementById("prevPageStud").addEventListener("click", () => {
             if (currentPage > 1) {
                 currentPage--;
                 viewStudents(currentPage);
             }
         });
 
-        document.getElementById("nextPage").addEventListener("click", () => {
+        document.getElementById("nextPageStud").addEventListener("click", () => {
             if (currentPage < document.getElementById("pageInput").max) {
                 currentPage++;
                 console.log("Navigating to page:", currentPage);
@@ -1024,7 +1037,7 @@
             }
         });
 
-        document.getElementById("pageInput").addEventListener("change", (e) => {
+        document.getElementById("pageInputStud").addEventListener("change", (e) => {
             const totalPages = parseInt(document.getElementById("pageInput").max);
             let page = parseInt(e.target.value);
             if (page >= 1 && page <= totalPages) {
@@ -1035,7 +1048,7 @@
             }
         });
 
-        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        document.getElementById("pageSizeSelectorStud").addEventListener("change", (e) => {
             console.log("pageSizeSelector changed", { value: e.target.value });
             pageSize = parseInt(e.target.value);
             currentPage = 1;

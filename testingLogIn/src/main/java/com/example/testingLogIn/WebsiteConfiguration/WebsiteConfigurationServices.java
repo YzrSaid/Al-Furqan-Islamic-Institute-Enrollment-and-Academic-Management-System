@@ -150,7 +150,6 @@ public class WebsiteConfigurationServices {
         return "GUEST";
     }
 
-    @Cacheable("userFullName")
     public String getFullName() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof UserModel user) {
@@ -159,7 +158,6 @@ public class WebsiteConfigurationServices {
         return "UNKNOWN";
     }
 
-    @Cacheable("userFirstName")
     public String getFirstName() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof UserModel user) {

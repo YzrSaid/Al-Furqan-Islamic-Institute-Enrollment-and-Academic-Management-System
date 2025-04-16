@@ -27,14 +27,14 @@
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button type="button" onclick="getAssessments()" class="search-btn">Search</button>
+                        <button type="button" onclick="getAssessments(1)" class="search-btn">Search</button>
                     </div>
 
                 </div>
 
                 <div class="sort-container">
                     <label for="sort-select">Order By</label>
-                    <select name="sort" onchange="getAssessments()" id="sort-select" class="sort-select">
+                    <select name="sort" onchange="getAssessments(1)" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
                         <option value="StudentId">Student Id</option>
                         <option value="StudentName">Student Name</option>
@@ -423,7 +423,7 @@
                     showSuccessModal(text,false);
                     getAssessments(currentPage);
                 } else {
-                    showErrorModal("❌ Error:" + text);
+                    showErrorModal(text);
                 }
             })
             .catch(error => {
@@ -452,10 +452,26 @@
                 .then((response) => response.json())
                 .then((data) => {
                     const studentGradesMap = new Map(Object.entries(data.content));
-                    preRequisiteGradesDiv.innerHTML = ``;
+                    preRequisiteGradesDiv.innerHTML = `
+                        <table class="view-grades-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Subject ID</th>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td colspan="3">No Records Found</td>
+                            </tr>
+                        </tbody>
+                    </table>`;
                     if (studentGradesMap.size === 0) {
                         return;
                     }
+                    preRequisiteGradesDiv.innerHTML = ``;
                     studentGradesMap.forEach((values, key) => {
                         let gradeTotal = 0;
                         let gradeCount = 0;

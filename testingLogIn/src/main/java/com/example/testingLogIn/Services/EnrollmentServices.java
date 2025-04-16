@@ -127,12 +127,14 @@ public class EnrollmentServices {
             return 1;
         else if (section == null)
             return 2;
+        else if(!enrollmentRecord.isQualified())
+            return 3;
         else {
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.PAYMENT);
             enrollmentRecord.setSectionToEnroll(section);
             enrollmentRepo.save(enrollmentRecord);
 
-            return 3;
+            return 4;
         }
     }
 
@@ -168,7 +170,6 @@ public class EnrollmentServices {
             return 2;
         }
     }
-
 
     @Cacheable(
             value = "enrollmentPage",

@@ -28,11 +28,11 @@
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button type="button" onclick="getOnPayments()" class="search-btn">Search</button>
+                        <button type="button" onclick="getOnPayments(1)" class="search-btn">Search</button>
                     </div>
                 </div>
                 <div class="sort-container">
-                    <select name="sort" onchange="getOnPayments()" id="sort-select" class="sort-select">
+                    <select name="sort" onchange="getOnPayments(1)" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
                         <option value="StudentId">Student Id</option>
                         <option value="StudentName">Student Name</option>
@@ -103,7 +103,7 @@
                 </div> <br>
 
                 <!-- List of Payments Table -->
-                <table id="table-ni-kharl" class="view-list-of-payments-table">
+                <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
                     <thead>
                         <tr>
                             <th>Type</th>
@@ -411,7 +411,7 @@
                     }
                 }
             });
-            getOnPayments();
+            getOnPayments(1);
         });
         let currentPage = 0;
         let totalItems = 0;
@@ -697,7 +697,7 @@
             status = status.toLowerCase();
             if (status === "fully paid") {
                 return "paid-status";
-            } else if (status === "unpaid") {
+            } else if (status === "not paid") {
                 return "unpaid-status";
             } else if (status === "partially paid") {
                 return "partially-paid-status"
@@ -719,10 +719,11 @@
                     studentDisplayId.textContent = epv.student.studentDisplayId;
                     payerId = epv.student.studentId;
                     const tableBody = document.querySelector("#table-ni-kharl tbody");
-                    tableBody.innerHTML = "";
+                    tableBody.innerHTML = `<tr><td>All payments are complete. No outstanding charges</td></tr>`;
+                    if(epv.feesAndBalance.length === 0){return;}
+                    tableBody.innerHTML = ``;
                     epv.feesAndBalance.forEach(datas => {
-                        console.log(datas);
-                        var status = datas.totalPaid < datas.totalRequired && datas.totalPaid === 0 ? "Unpaid" :
+                        var status = datas.totalPaid < datas.totalRequired && datas.totalPaid === 0 ? "Not Paid" :
                             datas.totalPaid > 0 && datas.totalPaid < datas.totalRequired ? "Partially Paid" :
                                 "Fully Paid";
                         const row = document.createElement("tr");

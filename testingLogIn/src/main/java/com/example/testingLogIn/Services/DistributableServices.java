@@ -156,7 +156,7 @@ public class DistributableServices {
     }
 
     public PagedResponse getStudentDistributable(int pageNo, int pageSize, String student, Boolean isClaimed, Integer item, String sortByGrade){
-        student = "%"+student.toLowerCase()+"%";
+        student = NonModelServices.forLikeOperator(student);
         Pageable pageRequest;
         if(sortByGrade.equalsIgnoreCase("none"))
             pageRequest = PageRequest.of(pageNo-1,pageSize);
@@ -170,7 +170,7 @@ public class DistributableServices {
                 .content(studentPage.getContent().stream().map(DistributablesPerStudent::DTOmapper).collect(Collectors.toList()))
                 .pageNo(studentPage.getNumber())
                 .pageSize(studentPage.getSize())
-                .totalElements(studentPage.getNumberOfElements())
+                .totalElements(studentPage.getTotalElements())
                 .totalPages(studentPage.getTotalPages())
                 .isLast(studentPage.isLast())
                 .build();

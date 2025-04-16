@@ -37,7 +37,7 @@
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search" placeholder="Search..." class="search-input" />
-                        <button type="button" onclick="setUpTables()" class="search-btn">Search</button>
+                        <button type="button" onclick="setUpTables(1)" class="search-btn">Search</button>
 
                         <div class="add-something-btn-container add-something-dropdown">
                             <button type="button" class="add-something-btn">
@@ -298,7 +298,7 @@
         document.getElementById("prevPage").addEventListener("click", () => {
             if (currentPage > 1) {
                 currentPage--;
-                getAssessments(currentPage);
+                setUpTables(currentPage);
             }
         });
 
@@ -306,7 +306,7 @@
             if (currentPage < document.getElementById("pageInput").max) {
                 currentPage++;
                 console.log("Navigating to page:", currentPage);
-                getAssessments(currentPage);
+                setUpTables(currentPage);
             } else {
                 console.log("Cannot navigate to next page");
             }
@@ -317,7 +317,7 @@
             let page = parseInt(e.target.value);
             if (page >= 1 && page <= totalPages) {
                 currentPage = page;
-                getAssessments(currentPage);
+                setUpTables(currentPage);
             } else {
                 e.target.value = currentPage;
             }
@@ -327,7 +327,7 @@
             console.log("pageSizeSelector changed", { value: e.target.value });
             pageSize = parseInt(e.target.value);
             currentPage = 1;
-            getAssessments(currentPage);
+            setUpTables(currentPage);
         });
 
         document.getElementById("select").addEventListener('change', (event) => {
@@ -368,7 +368,7 @@
             if (flag++ % 2 == 0) {
                 sortByGrade = "asc";
             }
-            setUpTables();
+            setUpTables(currentPage);
         }
         var selectMultiple = false;
 

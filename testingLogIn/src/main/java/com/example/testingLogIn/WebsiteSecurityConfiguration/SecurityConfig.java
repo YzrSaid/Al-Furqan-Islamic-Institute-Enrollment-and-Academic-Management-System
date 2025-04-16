@@ -45,11 +45,10 @@ public class SecurityConfig {
                             .defaultSuccessUrl("/home", true)
                             .failureHandler(customAuthenticationFailureHandler))  // Custom login page
                     //.httpBasic(Customizer.withDefaults())  // Enable basic authentication (for Postman)
-                    .logout(c -> c.invalidateHttpSession(true))
+                    .logout(c -> c.invalidateHttpSession(true)
+                            .clearAuthentication(true))
                     .build();
     }
-
-
 
     @Bean
     public AuthenticationProvider authenticationProvider(){

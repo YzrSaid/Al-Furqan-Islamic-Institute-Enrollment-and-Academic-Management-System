@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
@@ -32,7 +33,7 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button type="button" class="btn-confirm" onclick="fetchDiscounts()"
+                        <button type="button" class="btn-confirm" onclick='fetchDiscounts("add-scholar-popover")'
                             data-open-modal="newStudentModal" title="Add New Student">Add New Student</button>
                     </div>
                 </div>
@@ -84,12 +85,9 @@
 
         <!-- Modal for student information -->
         <div id="studentInformationModal" class="student-information-modal modal">
-            <!-- Close Button -->
-            <span class="close-modal exit-btn" data-close-modal="studentInformationModal">&times;</span>
-
             <div class="student-information-modal-content scroll-lock">
-                <h1>Student Information</h1>
                 <div class="modal-body">
+                    <h1>Student Information</h1>
                     <form method="" action="" id="studentInformationForm">
                         <div class="header">
                             <div class="half-unique">
@@ -103,10 +101,21 @@
                                     <h6 id="stud-type">New</h6>
                                 </div>
 
-                                <div class="half-other-info" id="scholar-row">
+                                <!-- <div class="half-other-info" id="scholar-row">
                                     <label for="type">Scholar:</label>
                                     <h6>Yes</h6>
-                                </div>
+                                    <div class="checkbox">
+                                        <label for="scholar">Scholar:</label>
+                                        <input type="checkbox" id="scholar">
+
+                                        <button type="button" id="dropdown-scholar"> <img
+                                                src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                        </button>
+                                        
+                                        <div id="scholar-popover" name="add-discount" class="styled-popover">
+                                        </div>
+                                    </div>
+                                </div> -->
 
                                 <!-- <div class="checkbox">
                                     <label for="scholar">Scholar:</label>
@@ -129,9 +138,53 @@
                                     </div>
                                 </div> -->
 
-                                <div class="half-other-info" id="transferee-row">
+                                <!-- <div class="half-other-info" id="transferee-row">
                                     <label for="transferee">Transferee:</label>
                                     <h6 id="transferee"></h6>
+                                </div> -->
+
+                                <div class="checkbox-container">
+                                    <div class="checkbox">
+                                        <label for="scholar">Scholar:</label>
+                                        <h6>Yes</h6>
+
+                                        <button type="button" id="dropdown-scholar"> <img
+                                                src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                        </button>
+                                        
+                                        <div id="scholar-popover" name="add-discount" class="styled-popover">
+                                        </div>
+                                    </div>
+
+                                    <div class="checkbox">
+                                        <label for="isTransferee">Transferee:</label>
+                                        <input type="checkbox" id="isTransferee">
+
+                                        <button type="button" id="dropdown-transferee"> <img
+                                                src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                        </button>
+
+                                        <!-- Popover lives right below the button now -->
+                                        <div id="transferee-popover" name="add-transferee-req" class="styled-popover">
+                                            <!-- Transferee Requirements Section -->
+                                            <div class="transferee-requirements">
+                                                <h6>Requirements:</h6>
+                                                <div id="transfereeReq" class="checkbox-transferee-reqs-group">
+                                                    <!--Ibutang ang mga transferee requiremetns dri-->
+                                                </div>
+
+                                                <!-- Update Button -->
+                                                <div>
+                                                    <button type="button" style="width: 100%;"
+                                                        data-action="editGradeLevel"
+                                                        data-message="Are you sure you want to update the transferee requirements?"
+                                                        onclick="updateRequirements()"
+                                                        class="btn-confirm">Update</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -231,26 +284,6 @@
                             <input type="text" id="guardianAddress">
                         </div> <br>
 
-                        <div class="scholar-section">
-                            <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                                <h2>For Scholars Only</h2>
-                            </div>
-
-                            <!-- Transferee Requirements Section -->
-                            <div class="scholar-discount">
-                                <h4>Scholarship Type</h4>
-                                <div id="scholarDiscountRecord" class="checkbox-scholar-discounts-group">
-                                    <!--naka check na daan ang mga filled-->
-                                </div>
-
-                                <!-- Update Button -->
-                                <div style="margin-top: 15px;">
-                                    <button type="button" data-action="editGradeLevel"
-                                        data-message="Are you sure you want to update the scholar discounts?"
-                                        onclick="updateRequirements()" class="btn-confirm">Update</button>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="transferee-section">
                             <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
@@ -496,8 +529,6 @@
 
     <!-- Modal for New/Transferee Student Enrollment -->
     <div id="newStudentModal" class="student-modal modal">
-        <!-- Close Button -->
-        <!-- <span class="close-modal exit-btn" data-close-modal="newStudentModal">&times;</span> -->
         <div class="student-modal-content scroll-lock">
             <div class="modal-body">
                 <h1>Student Information</h1>
@@ -537,13 +568,12 @@
                                 <label for="scholar">Scholar:</label>
                                 <input type="checkbox" id="scholar">
 
-                                <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png"
+                                <button type="button" id="dropdown-add-scholar"> <img src="/images/icons/arrow-down.png"
                                         alt="dropdown-icon">
                                 </button>
 
                                 <!-- Popover lives right below the button now -->
-                                <div id="scholar-popover" name="add-discount" class="styled-popover">
-                                    <h6>Scholarship Types:</h6>
+                                <div id="add-scholar-popover" name="add-discount" class="styled-popover">
                                 </div>
                             </div>
 
@@ -551,24 +581,17 @@
                                 <label for="isTransferee">Transferee:</label>
                                 <input type="checkbox" id="isTransferee">
 
-                                <button type="button" id="dropdown-transferee"> <img src="/images/icons/arrow-down.png"
-                                        alt="dropdown-icon">
+                                <button type="button" id="dropdown-add-transferee"> <img
+                                        src="/images/icons/arrow-down.png" alt="dropdown-icon">
                                 </button>
 
                                 <!-- Popover lives right below the button now -->
-                                <div id="transferee-popover" name="add-transferee-req" class="styled-popover">
+                                <div id="add-transferee-popover" name="add-transferee-req" class="styled-popover">
                                     <!-- Transferee Requirements Section -->
                                     <div class="transferee-requirements">
                                         <h6>Requirements:</h6>
                                         <div id="transfereeReq" class="checkbox-transferee-reqs-group">
                                             <!--Ibutang ang mga transferee requiremetns dri-->
-                                        </div>
-
-                                        <!-- Update Button -->
-                                        <div>
-                                            <button type="button" style="width: 100%;" data-action="editGradeLevel"
-                                                data-message="Are you sure you want to update the transferee requirements?"
-                                                onclick="updateRequirements()" class="btn-confirm">Update</button>
                                         </div>
                                     </div>
                                 </div>
@@ -899,7 +922,7 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-                    showSuccessModal("✅ Success: New student has been added successfully!",false);
+                    showSuccessModal("✅ Success: New student has been added successfully!", false);
                     goList(currentPage);
                 } else {
                     showErrorModal("❌ Error:" + text);
@@ -1134,7 +1157,7 @@
                 console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-                    showSuccessModal("✅ Success: Student successfully enrolled!",false);
+                    showSuccessModal("✅ Success: Student successfully enrolled!", false);
                     location.reload();
                     goList(currentPage);
                 } else {
@@ -1165,7 +1188,7 @@
             const result = await response.text();
 
             if (response.ok) {
-                showSuccessModal(result,false);
+                showSuccessModal(result, false);
                 goList(currentPage);
             } else {
                 showErrorModal("❌ Error: Transaction failed. Please try again!");
@@ -1186,7 +1209,7 @@
                 return response.text().then(message => {
                     if (response.ok) {
                         goList(currentPage);
-                        showSuccessModal(message,false);
+                        showSuccessModal(message, false);
                     } else {
                         showErrorModal(message);
                     }
@@ -1297,14 +1320,15 @@
         fetch(`/enrollment/all/paged/${currentStat}?pageNo=${pageNo}&pageSize=${pageSize}&search=${search}`)
             .then(res => {
                 tableBody.innerHTML = `<tr><td colspan="4">No records found.</td></tr>`;
-                if(res.status === 404) {
+                if (res.status === 404) {
                     showErrorModal("No currently active semester");
-                    return;}
-                else if(!res.ok) throw new Error("Failed to fetch enrollment records");
+                    return;
+                }
+                else if (!res.ok) throw new Error("Failed to fetch enrollment records");
                 return res.json();
             })
             .then(data => {
-                if(data.content.length === 0) {return;}
+                if (data.content.length === 0) { return; }
                 tableBody.innerHTML = "";
                 data.content.forEach(enr => {
                     const row = document.createElement("tr");
@@ -1407,7 +1431,7 @@
             });
 
             if (response.ok) {
-                showSuccessModal("Enrolling Grade Level successfully updated",false);
+                showSuccessModal("Enrolling Grade Level successfully updated", false);
                 goList(currentPage);
             } else {
                 const errorMessage = await response.text();
@@ -1485,7 +1509,7 @@
             }
 
             const successText = await response.text();
-            showSuccessModal("✅ Success: " + successText,false);
+            showSuccessModal("✅ Success: " + successText, false);
             goList(currentPage);
         } catch (error) {
             showErrorModal("❌ Error: " + error.message);
@@ -1548,13 +1572,20 @@
         }
     }
 
-    function fetchDiscounts(name = "add-discount", discIds = []) {
-        const popover = document.getElementById("scholar-popover");
-        popover.innerHTML =``;
+    function fetchDiscounts(popoverId = "add-scholar-popover", discIds = []) {
+        const popover = document.getElementById(popoverId);
+        if (!popover) return console.error(`Element with ID ${popoverId} not found.`);
+
+        popover.innerHTML = ``;
+
         fetch("/discounts/all")
             .then(response => response.json())
             .then(data => {
-                // Create wrapper div with your custom class
+                // Create and append the heading
+                const heading = document.createElement("h6");
+                heading.textContent = "Scholarship Types:";
+                popover.appendChild(heading);
+
                 const discountWrapper = document.createElement("div");
                 discountWrapper.classList.add("checkbox-container-popover");
 
@@ -1581,11 +1612,12 @@
                     discountWrapper.appendChild(paymentDiv);
                 });
 
-                // Append the container to the popover
                 popover.appendChild(discountWrapper);
             })
-            .catch(error => console.error("Error fetching grade levels:", error));
+            .catch(error => console.error("Error fetching discounts:", error));
     }
+
+
 
     function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
         fetch("/trans-req/all")
@@ -1684,7 +1716,7 @@
             .then(response => {
                 return response.text().then(message => {
                     if (response.ok) {
-                        showSuccessModal(message,false);
+                        showSuccessModal(message, false);
                         displayStud(toUpdateRecStudent);
                         goList(currentPage);
                     } else {
@@ -1697,8 +1729,8 @@
             });
     }
 
-        //pagination JS code
-        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+    //pagination JS code
+    function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
         const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
         const end = Math.min(currentPage * pageSize, totalItems);
 
@@ -1746,7 +1778,7 @@
         currentPage = 1;
         goList(currentPage);
     });
-    
+
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -1871,7 +1903,7 @@
             const enteredValue = parseFloat(this.value);
 
             if (enteredValue > maxValue) {
-                showErrorModal("Student is only allowed to pay up to P"+maxValue);
+                showErrorModal("Student is only allowed to pay up to P" + maxValue);
                 this.value = maxValue;
             }
         });

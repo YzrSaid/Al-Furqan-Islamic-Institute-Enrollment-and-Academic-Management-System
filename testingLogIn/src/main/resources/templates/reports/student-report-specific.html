@@ -65,23 +65,63 @@
             </div>
         </div>
 
-        <!-- viewPastTransactionsModal -->
-        <div id="viewPastTransactionsModal" class="view-past-transactions-modal modal">
-            <div class="view-past-transactions-modal-content scroll-lock">
-                <h2>Past Transactions</h2>
+        <!-- viewClaimedResourcesModal -->
+        <div id="viewClaimedResourcesModal" class="view-claimed-resources-modal modal">
+            <div class="view-claimed-resources-modal-content scroll-lock">
+                <h2>Claimed Resources</h2>
 
-                <div class="half-width" id="view-grade-studId">
+                <div class="half-width view-studId" id="">
                     <label for="student-grade-id">Student ID:</label>
                     <h6 id="student-grade-id"></h6>
                 </div>
-                <div class="half-width" id="view-grade-studName">
+                <div class="half-width view-studName" id="">
                     <label for="student-grade-name">Student Name:</label>
                     <h6 id="student-grade-name">Martin Francisco</h6>
                 </div> <br>
 
                 <!-- Table -->
                  <div class="table-wrapper-printable">
-                    <table id="realginnas-printable" class="printable-table">
+                    <table id="claimed-res-table" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Grade Level</th>
+                                <th>Date Received</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                 </div>
+
+
+                <!-- Close button -->
+                <div class="modal-buttons">
+                    <button type="button" data-close-modal="viewClaimedResourcesModal" class="btn-cancel"
+                        id="close-button">Close</button>
+
+                    <button type="button" onclick="printClaimedResources()" class="print-btn">Print Record</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- viewPastTransactionsModal -->
+        <div id="viewPastTransactionsModal" class="view-past-transactions-modal modal">
+            <div class="view-past-transactions-modal-content scroll-lock">
+                <h2>Past Transactions</h2>
+
+                <div class="half-width view-studId" id="">
+                    <label for="student-grade-id">Student ID:</label>
+                    <h6 id="student-grade-id"></h6>
+                </div>
+                <div class="half-width view-studName" id="">
+                    <label for="student-grade-name">Student Name:</label>
+                    <h6 id="student-grade-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- Table -->
+                 <div class="table-wrapper-printable">
+                    <table id="past-trans-table" class="printable-table">
                         <thead>
                             <tr>
                                 <th>No.</th>
@@ -132,7 +172,7 @@
                     <h3 class="report-title"><strong>Payments and Transactions Report</strong></h3>
 
                     <!-- Table -->
-                    <table id="realginnas-printable" class="printable-table">
+                    <table id="individ-trans-table-printable" class="printable-table">
                         <thead>
                             <tr>
                                 <th>No.</th>
@@ -140,6 +180,58 @@
                                 <th>Date Paid</th>
                                 <th>Transaction No.</th>
                                 <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                    <div class="printable-footer">
+                        Date Printed: <strong>4/1/2020</strong>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="allTransactionsPrintModal">Close</button>
+
+                        <button type="button" onclick="printReceipt()" class="print-btn">Print Record</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- individClaimedResourcesPrintModal -->
+        <div id="individClaimedResourcesPrintModal" class="all-transactions-print-modal modal">
+            <div class="printable-area-claimed-resources">
+                <div class="all-transactions-print-modal-content scroll-lock">
+                    <!-- Report Header -->
+                    <div class="header-container-print">
+
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        </div>
+                        <div class="middle-header">
+                            <div class="school-info-print">
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+                    <!-- Student Info -->
+
+                    <h3 class="report-title"><strong>Payments and Transactions Report</strong></h3>
+
+                    <!-- Table -->
+                    <table id="claimed-res-table-printable" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Grade Level</th>
+                                <th>Date Received</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -380,7 +472,7 @@
                             </div>
 
                             <div class="basic-modal-buttons">
-                                <button type="button" class="btn-confirm" id="unclaimed-resources-btn">View Claimed
+                                <button type="button" class="btn-confirm" data-open-modal="viewClaimedResourcesModal" id="unclaimed-resources-btn">View Claimed
                                     Resources</button>
                             </div>
                         </div>

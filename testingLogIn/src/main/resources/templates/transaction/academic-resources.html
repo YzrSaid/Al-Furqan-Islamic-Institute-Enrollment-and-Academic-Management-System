@@ -26,11 +26,10 @@
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
             <div class="text-link">
-                <h4>Book Distribution</h4>
+                <h4>Resources Distribution</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/transaction/academic-resources" title="You're currently in this page.">Transaction - Book
-                    Distribution</a>
+                <a href="/transaction/academic-resources" title="You're currently in this page.">Transaction - Resources Distribution</a>
             </div>
 
             <div class="search-div">
@@ -39,9 +38,26 @@
                     <div class="search-container">
                         <input type="text" id="search" placeholder="Search..." class="search-input" />
                         <button type="button" onclick="setUpTables()" class="search-btn">Search</button>
-                    </div>
 
+                        <div class="add-something-btn-container add-something-dropdown">
+                            <button type="button" class="add-something-btn">
+                                <span style="display:none;">Print</span>
+                                <i class="fas fa-print"></i>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+
+
+                            <div class="add-something-dropdown-content">
+                                <a href="#" class="action" data-open-modal="allResourcesPrintModal">All Resources</a>
+                                <a href="#" class="action" data-open-modal="allResourcesPrintModal">Claimed
+                                    Resources</a>
+                                <a href="#" class="action" data-open-modal="allResourcesPrintModal">Unclaimed
+                                    Resources</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
 
                 <div class="sort-container">
                     <select name="sort" id="view-type" onchange="changeHeader()" class="sort-select">
@@ -60,6 +76,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="table-wrapper">
             <!-- Table -->
@@ -81,7 +98,7 @@
                 </tbody>
             </table> <br> <br>
         </div>
-        
+
         <!-- Pagionation -->
         <div class="pagination-container">
             <div class="pagination-controls">
@@ -116,8 +133,62 @@
             <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Claimed Resources Print Modal-->
+        <div id="allResourcesPrintModal" class="all-resources-print-modal modal">
+            <div class="printable-area-resources">
+                <div class="all-resources-print-modal-content scroll-lock">
+                    <!-- Report Header -->
+                    <div class="header-container-print">
+
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        </div>
+                        <div class="middle-header">
+                            <div class="school-info-print">
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+                    <!-- Student Info -->
+
+                    <h3 class="report-title"><strong>Payments and Transactions Report</strong></h3>
+
+                    <!-- Table -->
+                    <table id="realginnas-printable" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Student Name</th>
+                                <th>Date Paid</th>
+                                <th>Transaction No.</th>
+                                <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                    <div class="printable-footer">
+                        Date Printed: <strong>4/1/2020</strong>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="allTransactionsPrintModal">Close</button>
+
+                        <button type="button" onclick="printReceipt()" class="print-btn">Print Record</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -132,7 +203,7 @@
         var flag = 1;
         var totalItems = 0;
         var currentPage = 0;
-        async function setUpTables(pageNo=1) {
+        async function setUpTables(pageNo = 1) {
             try {
                 currentPage = pageNo;
                 var pageSize = parseInt(document.getElementById("pageSizeSelector").value);

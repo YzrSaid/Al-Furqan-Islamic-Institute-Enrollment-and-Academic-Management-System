@@ -38,17 +38,24 @@
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
                         <button type="button" onclick="getRecords(1)" class="search-btn">Search</button>
-
-                        <!-- Add Payment Button -->
-                        <div class="add-something-btn-container">
+                        
+                        <div class="add-something-btn-container add-something-dropdown">
                             <button type="button" class="btn-confirm" onclick="viewStudents()"
-                                id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add
-                                Payment</button>
+                            id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add
+                            Payment</button>
 
-                            <!-- Print Button -->
-                            <button type="button" data-open-modal="allTransactionsPrintModal" class="print-btn">
+
+                            <button type="button" class="add-something-btn">
+                                <span style="display:none;">Print</span>
                                 <i class="fas fa-print"></i>
+                                <i class="fas fa-chevron-down"></i>
                             </button>
+
+
+                            <div class="add-something-dropdown-content payment-dropdown-content">
+                                <a href="#" class="action" data-open-modal="allResourcesPrintModal">All Transactions</a>
+                                <a href="#" class="action" data-open-modal="claimedResourcesPrintModal">Voided Transactions</a>
+                            </div>
                         </div>
                     </div>
                 </div>

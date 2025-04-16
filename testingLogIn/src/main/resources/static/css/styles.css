@@ -786,8 +786,6 @@ select option[value=""] {
 }
 .search-div {
   width: 100%;
-  /* background-color: #007bff;
-  padding: 0 33px; */
   display: flex;
   align-items: center;
   justify-self: center;
@@ -1470,15 +1468,18 @@ table td {
   width: 100px;
 }
 .dropdown {
-  /* cursor: pointer; */
   padding: 5px;
-}
-.dropdown {
   display: flex;
   gap: 20px;
   align-items: center;
   justify-content: center;
 }
+.add-something-dropdown {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
 .dropdown-logout {
   display: flex;
   gap: 20px;
@@ -1511,7 +1512,25 @@ table td {
   font-size: 13px;
 }
 
-.dropdown-status-content.show {
+.add-something-dropdown-content {
+  display: none;
+  position: absolute;
+  text-align: start;
+  top: 85%;
+  transition: opacity 0.3s ease;
+  background-color: white;
+  min-width: 150px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  font-size: 13px;
+  z-index: 1;
+}
+.payment-dropdown-content {
+    right: 36%;
+}
+
+.dropdown-status-content.show,
+.add-something-status-content.show {
   display: block;
 }
 
@@ -1532,7 +1551,8 @@ table td {
 }
 
 /* Dropdown items */
-.dropdown-status-content a {
+.dropdown-status-content a,
+.add-something-dropdown-content a {
   display: block;
   padding: 10px;
   color: black;
@@ -1540,7 +1560,8 @@ table td {
 }
 
 /* Hover effect for dropdown items */
-.dropdown-status-content a:hover {
+.dropdown-status-content a:hover,
+.add-something-dropdown-content a:hover {
   background-color: #f1f1f1;
 }
 
@@ -1666,7 +1687,6 @@ table td {
 .basic-modal-buttons button,
 .payment-modal-buttons button,
 .report-main-btns button {
-  padding: 8px 15px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
@@ -1674,6 +1694,7 @@ table td {
 
 .btn-confirm,
 .btn-cancel,
+.btn-close-confirm,
 .btn-gray,
 .btn-neutral,
 .search-btn {
@@ -1686,6 +1707,26 @@ table td {
   padding: 8px 15px;
   cursor: pointer;
   font-size: 14px;
+  display: flex;
+  gap: 20px;
+  text-align: center;
+  justify-content: center;
+}
+
+.add-something-btn {
+  padding: 12px;
+  min-width: 50px;
+  font-weight: 500;
+
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  gap: 10px;
+  text-align: center;
+  justify-content: center;
 }
 
 .print-btn {
@@ -1703,7 +1744,8 @@ table td {
 .btn-cancel:hover,
 .btn-gray:hover,
 .btn-neutral:hover,
-.print-btn:hover .search-btn {
+.print-btn:hover .search-btn,
+.add-something-btn:hover {
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -1731,7 +1773,8 @@ table td {
 
 .btn-gray,
 .print-btn,
-.search-btn {
+.search-btn,
+.add-something-btn {
   background-color: #6c757d;
 }
 .btn-gray:hover,
@@ -1796,7 +1839,8 @@ table td {
 }
 
 .grade-print-modal-content,
-.all-transactions-print-modal-content {
+.all-transactions-print-modal-content,
+.all-resources-print-modal-content {
   background: white !important;
   padding: 20px 0;
   border-radius: 5px;
@@ -1949,7 +1993,8 @@ table td {
 
 .receipt-modal-content > *,
 .grade-print-modal-content > *,
-.all-transactions-print-modal-content > * {
+.all-transactions-print-modal-content > *,
+.all-resources-print-modal-content > * {
   transform: scale(0.8);
 }
 
@@ -2289,13 +2334,15 @@ input[type="checkbox"] {
 .receipt-modal h2,
 .grade-print-modal h2,
 .all-transactions-print-modal h2,
+.all-resources-print-modal h2,
 .add-account-type-modal h2,
 .transferee-req-modal h2,
 .transferee-req-edit-modal h2,
 .view-student-list-modal h2,
 .scholarship-modal h2,
 .scholarship-edit-modal h2,
-.view-past-transactions-modal h2 {
+.view-past-transactions-modal h2,
+.view-claimed-resources-modal h2 {
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -2367,16 +2414,16 @@ input[type="checkbox"] {
 .view-book-modal-content label,
 .receipt-modal-content label,
 .grade-print-modal-content label,
-.all-transactions-print-modal-content
-  label
-  .add-account-type-modal-content
-  label,
+.all-transactions-print-modal-content label,
+.all-resources-print-modal-content label,
+.add-account-type-modal-content label,
 .transferee-req-modal-content label,
 .transferee-req-edit-modal-content label,
 .view-student-list-modal-content label,
 .scholarship-modal-content label,
 .scholarship-edit-modal-content label,
-.view-past-transactions-modal-content label {
+.view-past-transactions-modal-content label,
+.view-claimed-resources-modal label {
   font-weight: 500;
   font-size: 14px;
 }
@@ -2472,7 +2519,9 @@ input[type="checkbox"] {
 .scholarship-edit-modal,
 .grade-print-modal,
 .all-transactions-print-modal,
-.view-past-transactions-modal {
+.view-past-transactions-modal,
+.view-claimed-resources-modal,
+.all-resources-print-modal {
   visibility: hidden;
   opacity: 0;
   position: fixed;
@@ -2499,7 +2548,9 @@ input[type="checkbox"] {
 .scholarship-edit-modal.show,
 .grade-print-modal.show,
 .all-transactions-print-modal.show,
-.view-past-transactions-modal.show {
+.view-past-transactions-modal.show,
+.view-claimed-resources-modal.show,
+.all-resoources-print-modal.show {
   visibility: visible;
   opacity: 1;
   transition-delay: 0s;
@@ -2576,7 +2627,8 @@ input[type="checkbox"] {
   z-index: 1001;
 }
 
-.view-past-transactions-modal-content {
+.view-past-transactions-modal-content,
+.view-claimed-resources-modal-content {
   background: white !important;
   padding: 30px;
   border-radius: 5px;
@@ -2810,7 +2862,6 @@ input[type="checkbox"] {
 }
 
 .btn-container button {
-  background-color: #28a745;
   color: white;
   border: none;
   border-radius: 5px;
@@ -3013,14 +3064,14 @@ input[type="checkbox"] {
   margin-top: 30px;
 }
 
-#view-grade-studId,
-#view-grade-studName {
+.view-studId,
+.view-studName {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-#view-grade-studId h6,
-#view-grade-studName h6 {
+.view-studId h6,
+.view-studName h6 {
   margin: 0;
   font-size: 14px;
   font-weight: bold;
@@ -3234,7 +3285,8 @@ input[type="checkbox"] {
   /* Improve input aesthetics */
   .receipt-modal-content input,
   .grade-print-modal-content input,
-  .all-transactions-print-modal-content input {
+  .all-transactions-print-modal-content input,
+  .all-resources-print-modal-content input {
     border: none !important;
     outline: none !important;
     background: transparent;
@@ -3251,7 +3303,8 @@ input[type="checkbox"] {
   }
   .receipt-modal-content,
   .grade-print-modal-content,
-  .all-transactions-print-modal-content {
+  .all-transactions-print-modal-content,
+  .all-resources-print-modal-content {
     width: 100%;
     padding: 40px;
     border: none !important;
@@ -3828,7 +3881,6 @@ td[rowspan] {
 .half-width h6 {
   font-size: 14.5px;
   display: block;
-  margin-bottom: 5px;
 }
 .half-width input {
   width: 100%;
@@ -4234,7 +4286,7 @@ td[rowspan] {
   position: sticky;
   top: 0;
   background-color: white;
-  z-index: 2;
+  z-index: 9;
   /* padding: 10px 20px; */
   padding: 10px 1rem;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.1);

@@ -1537,6 +1537,57 @@ function printIndividTransactions() {
 
   // Re-hide the print modal if it was hidden before
   modalToPrint.style.display = "none";
+
+  // Close the window after printing is done or canceled
+  printWindow.onafterprint = () => {
+    printWindow.close();
+  };
+}
+
+function printClaimedResources() {
+  // Get the modal you actually want to print
+  const modalToPrint = document.getElementById(
+    "individClaimedResourcesPrintModal"
+  );
+
+  // Show the print modal temporarily (if it's hidden via display:none)
+  modalToPrint.style.display = "block";
+
+  // Clone only the printable area inside the modal
+  const printableContent = modalToPrint
+    .querySelector(".printable-area-claimed-resources")
+    .cloneNode(true);
+
+  // Create a new window to print from
+  const printWindow = window.open("", "", "width=800,height=600");
+
+  // Write content into new window
+  printWindow.document.write(`
+          <html>
+              <head>
+                  <title>Print Record</title>
+                  <link rel="stylesheet" href="/../css/styles.css">
+              </head>
+              <body>
+                  ${printableContent.outerHTML}
+              </body>
+          </html>
+      `);
+
+  printWindow.document.close();
+
+  printWindow.onload = () => {
+    printWindow.focus();
+    printWindow.print();
+  };
+
+  // Re-hide the print modal if it was hidden before
+  modalToPrint.style.display = "none";
+
+  // Close the window after printing is done or canceled
+  printWindow.onafterprint = () => {
+    printWindow.close();
+  };
 }
 
 // This will hide and show the password in the login/sign up pages
@@ -1774,49 +1825,105 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // This is for the dropdown buttons (to open, hide, and clicking outisde will close the dropdown)
-document.addEventListener("DOMContentLoaded", function () {
-  // Function to toggle dropdown visibility
-  function toggleDropdown(event) {
-    event.stopPropagation(); // Prevent click from propagating to document
+// document.addEventListener("DOMContentLoaded", function () {
+//   // Function to toggle dropdown visibility
+//   function toggleDropdown(event) {
+//     event.stopPropagation(); // Prevent click from propagating to document
 
-    const dropdown = event.target.closest(".dropdown");
+//     const dropdown = event.target.closest(".dropdown");
+//     if (!dropdown) return;
+
+//     const dropdownContent = dropdown.querySelector(".dropdown-status-content");
+//     if (!dropdownContent) return;
+
+//     // First, close all other dropdowns
+//     document.querySelectorAll(".dropdown-status-content").forEach((content) => {
+//       if (content !== dropdownContent) {
+//         content.style.display = "none";
+//       }
+//     });
+
+//     // Then toggle the one you clicked
+//     dropdownContent.style.display =
+//       dropdownContent.style.display === "block" ? "none" : "block";
+//   }
+
+//   // Close the dropdown if clicked outside
+//   document.addEventListener("click", function (event) {
+//     const dropdownContents = document.querySelectorAll(
+//       ".dropdown-status-content"
+//     );
+
+//     dropdownContents.forEach((dropdownContent) => {
+//       if (!dropdownContent.contains(event.target)) {
+//         dropdownContent.style.display = "none";
+//       }
+//     });
+//   });
+
+//   // Delegate click event to the parent of all dropdown buttons
+//   document.body.addEventListener("click", function (event) {
+//     const targetButton = event.target.closest(".dropdown-print-btn");
+//     const targetStatusButton = event.target.closest(".dropdown-status-btn");
+
+//     if (targetButton || targetStatusButton) {
+//       toggleDropdown(event);
+//     }
+//   });
+// });
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Central dropdown handling
+  function toggleDropdown(event, dropdownClass, contentClass) {
+    event.stopPropagation();
+
+    const dropdown = event.target.closest(`.${dropdownClass}`);
     if (!dropdown) return;
 
-    const dropdownContent = dropdown.querySelector(".dropdown-status-content");
+    const dropdownContent = dropdown.querySelector(`.${contentClass}`);
     if (!dropdownContent) return;
 
-    // First, close all other dropdowns
-    document.querySelectorAll(".dropdown-status-content").forEach((content) => {
+    // Close all other dropdowns
+    document.querySelectorAll(`.${contentClass}`).forEach((content) => {
       if (content !== dropdownContent) {
         content.style.display = "none";
       }
     });
 
-    // Then toggle the one you clicked
+    // Toggle current
     dropdownContent.style.display =
       dropdownContent.style.display === "block" ? "none" : "block";
   }
 
-  // Close the dropdown if clicked outside
+  // Close any dropdown if clicked outside
   document.addEventListener("click", function (event) {
-    const dropdownContents = document.querySelectorAll(
-      ".dropdown-status-content"
-    );
-
-    dropdownContents.forEach((dropdownContent) => {
-      if (!dropdownContent.contains(event.target)) {
-        dropdownContent.style.display = "none";
-      }
-    });
+    document
+      .querySelectorAll(
+        ".dropdown-status-content, .add-something-dropdown-content"
+      )
+      .forEach((dropdownContent) => {
+        if (!dropdownContent.contains(event.target)) {
+          dropdownContent.style.display = "none";
+        }
+      });
   });
 
-  // Delegate click event to the parent of all dropdown buttons
+  // Listen for clicks on dropdown buttons
   document.body.addEventListener("click", function (event) {
-    const targetButton = event.target.closest(".dropdown-print-btn");
-    const targetStatusButton = event.target.closest(".dropdown-status-btn");
+    const printBtn = event.target.closest(".dropdown-print-btn");
+    const statusBtn = event.target.closest(".dropdown-status-btn");
+    const addSomethingBtn = event.target.closest(".add-something-btn");
 
-    if (targetButton || targetStatusButton) {
-      toggleDropdown(event);
+    if (printBtn) {
+      toggleDropdown(event, "dropdown", "dropdown-status-content");
+    } else if (statusBtn) {
+      toggleDropdown(event, "dropdown", "dropdown-status-content");
+    } else if (addSomethingBtn) {
+      toggleDropdown(
+        event,
+        "add-something-dropdown",
+        "add-something-dropdown-content"
+      );
     }
   });
 });

@@ -7,7 +7,6 @@ import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.*;
-import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
 import com.example.testingLogIn.Repositories.*;
 
 import java.time.LocalDate;
@@ -176,7 +175,7 @@ public class EnrollmentServices {
             key = "#status + #pageNo + #pageSize",  // status becomes part of the cache key
             condition = "(#search == null || #search.isEmpty())"
     )
-    public EnrollmentDTOPage getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize,String sort ,String search) {
+    public PagedResponse getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize,String sort ,String search) {
         Pageable pageable;
         if(sort == null || sort.trim().isEmpty())
             pageable = PageRequest.of(pageNo-1,pageSize);
@@ -185,8 +184,8 @@ public class EnrollmentServices {
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = Optional.of(sySemRepo.findCurrentActive().getSySemNumber()).orElseThrow(NullPointerException::new);
-        Page<EnrollmentHandler> enrollmentRetrieved = enrollmentRepo.findStudentsEnrollment(estatus,sem,search,pageable);
-        List<EnrollmentDTO> pageContent = enrollmentRetrieved.getContent().stream().map(enrollmentHandler -> {
+        Page<EnrollmentHandler> enrollmentPage = enrollmentRepo.findStudentsEnrollment(estatus,sem,search,pageable);
+        List<EnrollmentDTO> pageContent = enrollmentPage.getContent().stream().map(enrollmentHandler -> {
             Enrollment enrollment = enrollmentHandler.getEnrollment();
             StudentDTO student = Optional.ofNullable(enrollmentHandler.getStudent()).map(Student::DTOmapper).orElse(null);
             if(enrollment != null){
@@ -197,7 +196,13 @@ public class EnrollmentServices {
             }
             return new EnrollmentDTO(null,student);
         }).toList();
-        return EnrollmentDTOPage.buildMe(enrollmentRetrieved,pageContent);
+        return PagedResponse.builder()
+                .content(pageContent)
+                .pageNo(enrollmentPage.getNumber())
+                .pageSize(enrollmentPage.getSize())
+                .totalPages(enrollmentPage.getTotalPages())
+                .totalElements(enrollmentPage.getTotalElements())
+                .build();
     }
 
     private Sort sortBy(String sort){

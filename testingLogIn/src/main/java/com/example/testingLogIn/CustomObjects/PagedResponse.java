@@ -1,6 +1,5 @@
-package com.example.testingLogIn.PagedResponse;
+package com.example.testingLogIn.CustomObjects;
 
-import com.example.testingLogIn.ModelDTO.StudentDiscountDTO;
 import lombok.Builder;
 import lombok.Data;
 

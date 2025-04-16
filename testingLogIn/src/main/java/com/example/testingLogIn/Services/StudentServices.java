@@ -1,12 +1,12 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.CustomObjects.StudentHandler;
 import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
-import com.example.testingLogIn.PagedResponse.StudentDTOPage;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 
@@ -191,7 +191,7 @@ public class StudentServices {
         return false;
     }
 
-    public StudentDTOPage getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize, Boolean isFullyPaid){
+    public PagedResponse getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize, Boolean isFullyPaid){
         word = NonModelServices.forLikeOperator(word);
         Pageable pageable = PageRequest.of(pageNo-1,pageSize,orderBy(sortBy));
         Page<StudentDTO> studentPage;
@@ -203,7 +203,7 @@ public class StudentServices {
             studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable,isFullyPaid)
                     .map(Student::DTOmapper);
 
-        return StudentDTOPage.builder()
+        return PagedResponse.builder()
                             .content(studentPage.getContent())
                             .pageNo(pageNo)
                             .pageSize(pageSize)

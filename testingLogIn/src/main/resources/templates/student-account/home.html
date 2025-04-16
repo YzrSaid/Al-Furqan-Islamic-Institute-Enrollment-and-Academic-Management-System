@@ -97,5 +97,20 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        getMyInfo();
+    });
+
+    async function getMyInfo(){
+    console.log("getting info");
+        const response = await fetch("/user/student/my-info");
+
+        if(response.ok){
+            const result = await response.json();
+            console.log(result);
+        }
+    }
+</script>
 
 </html>

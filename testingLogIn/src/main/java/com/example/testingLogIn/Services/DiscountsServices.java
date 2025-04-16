@@ -8,7 +8,7 @@ import com.example.testingLogIn.Models.Discount;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.AssociativeModels.StudentDiscount;
-import com.example.testingLogIn.PagedResponse.PagedResponse;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Repositories.DiscountRepo;
 import com.example.testingLogIn.Repositories.StudentDiscountRepo;
 import com.example.testingLogIn.Repositories.StudentFeesListRepo;

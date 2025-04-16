@@ -2,21 +2,11 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.CustomObjects.PaymentObject;
 import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
-import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
-import com.example.testingLogIn.ModelDTO.PaymentTransactionDTO;
-import com.example.testingLogIn.Models.PaymentTransaction;
-import com.example.testingLogIn.PagedResponse.PagedResponse;
-import com.example.testingLogIn.PagedResponse.PaymentTransactionDTOPage;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Repositories.PaymentTransactionRepo;
 import com.example.testingLogIn.Services.PaymentRecordService;
-import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

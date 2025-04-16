@@ -3,11 +3,12 @@ package com.example.testingLogIn.WebsiteSecurityConfiguration;
 import com.example.testingLogIn.AssociativeModels.StudentPassword;
 import com.example.testingLogIn.CustomObjects.StudentAccount;
 import com.example.testingLogIn.Enums.Role;
-import com.example.testingLogIn.ModelDTO.StudentAccountDTO;
+import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.Models.Student;
-import com.example.testingLogIn.PagedResponse.PagedResponse;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
+import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Services.NonModelServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserRepo userRepo;
     @Autowired
     private StudentPasswordRepo studentPasswordRepo;
+    @Autowired
+    private StudentRepo studentRepo;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
 
@@ -143,6 +146,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
                 return (UserModel)authentication.getPrincipal();
+        }
+        return null;
+    }
+
+    public StudentDTO getCurrentlyLoggedInStudent(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            int id = ((UserModel)authentication.getPrincipal()).getStudent().getStudentId();
+            return studentRepo.findById(id).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
         }
         return null;
     }

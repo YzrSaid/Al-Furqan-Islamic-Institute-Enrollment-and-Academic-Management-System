@@ -30,8 +30,6 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             errorMessage = "Username does not exist.";
         } else if (exception instanceof BadCredentialsException bc) {
             String username = request.getParameter("username");
-            System.out.println(username);
-            System.out.println(isUsernameValid(username));
             if (isUsernameValid(username)) {
                 errorMessage = "Incorrect password.";
             } else {

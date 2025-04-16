@@ -1,14 +1,11 @@
 package com.example.testingLogIn.Controllers;
 
-import com.example.testingLogIn.AssociativeModels.StudentDiscount;
 import com.example.testingLogIn.CustomObjects.MultipleInteger;
-import com.example.testingLogIn.CustomObjects.NewStudentDiscounts;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.Models.Discount;
-import com.example.testingLogIn.PagedResponse.PagedResponse;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Services.DiscountsServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

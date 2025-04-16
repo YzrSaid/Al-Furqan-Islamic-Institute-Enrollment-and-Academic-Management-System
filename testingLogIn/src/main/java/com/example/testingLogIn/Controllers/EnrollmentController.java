@@ -1,19 +1,10 @@
 package com.example.testingLogIn.Controllers;
 
-import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
-import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
-import com.example.testingLogIn.ModelDTO.StudentDTO;
-import com.example.testingLogIn.Models.Enrollment;
-import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
-import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Services.EnrollmentServices;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -45,7 +36,7 @@ public class EnrollmentController {
         }
     }
     @GetMapping("/all/paged/{status}")
-    public ResponseEntity<EnrollmentDTOPage> getEnrollmentRecordsByStatusPage(@PathVariable String status,
+    public ResponseEntity<PagedResponse> getEnrollmentRecordsByStatusPage(@PathVariable String status,
                                                                               @RequestParam(required = false,defaultValue = "1") Integer pageNo,
                                                                               @RequestParam(required = false,defaultValue = "10") Integer pageSize,
                                                                               @RequestParam(required = false) String sortBy,

@@ -1,12 +1,9 @@
 package com.example.testingLogIn.Controllers;
 
-import com.example.testingLogIn.CustomObjects.StudentHandler;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
-import com.example.testingLogIn.Models.Student;
-import com.example.testingLogIn.PagedResponse.StudentDTOPage;
 import com.example.testingLogIn.Services.StudentServices;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +22,7 @@ public class StudentController {
     private StudentServices studentService;
 
     @GetMapping("/all")
-    public ResponseEntity<StudentDTOPage> getStudentByDisplayId(
+    public ResponseEntity<PagedResponse> getStudentByDisplayId(
             @RequestParam(required = false) Boolean fullyPaid,
             @RequestParam(required = false,defaultValue = "") String q,
             @RequestParam(required = false,defaultValue = "") String sortBy,

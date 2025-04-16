@@ -2,15 +2,13 @@ package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.AssociativeModels.GradeLevelRequiredFees;
 import com.example.testingLogIn.AssociativeModels.StudentFeesList;
-import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
 import com.example.testingLogIn.CustomObjects.FeesAndBalance;
 import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
 import com.example.testingLogIn.CustomObjects.StudentTotalDiscount;
 import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
 import com.example.testingLogIn.ModelDTO.PaymentTransactionDTO;
 import com.example.testingLogIn.Models.*;
-import com.example.testingLogIn.PagedResponse.PagedResponse;
-import com.example.testingLogIn.PagedResponse.PaymentTransactionDTOPage;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Repositories.*;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 

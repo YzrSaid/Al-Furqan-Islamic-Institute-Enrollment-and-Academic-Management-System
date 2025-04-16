@@ -2,8 +2,7 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.CustomObjects.MultipleInteger;
 import com.example.testingLogIn.ModelDTO.DistributableDTO;
-import com.example.testingLogIn.PagedResponse.PagedResponse;
-import com.example.testingLogIn.PagedResponse.StudentDistributablePage;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Services.DistributableServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

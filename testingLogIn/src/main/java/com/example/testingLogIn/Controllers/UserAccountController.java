@@ -1,8 +1,9 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.Enums.RegistrationStatus;
+import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.AccountRegister;
-import com.example.testingLogIn.PagedResponse.PagedResponse;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,17 @@ public class UserAccountController {
                                                             @RequestParam(defaultValue = "") String q){
         try{
             return new ResponseEntity<>(customUserDetailsService.getStudentAccounts(pageNo,pageSize,q),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    //get the currently logged student info
+    @GetMapping("/student/my-info")
+    public ResponseEntity<StudentDTO> getLoggedStudentInfo(){
+        try{
+            return new ResponseEntity<>(customUserDetailsService.getCurrentlyLoggedInStudent(), HttpStatus.OK);
+        }catch (NullPointerException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

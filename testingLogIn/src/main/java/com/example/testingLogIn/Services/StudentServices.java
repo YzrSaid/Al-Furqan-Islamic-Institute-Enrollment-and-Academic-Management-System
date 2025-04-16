@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
@@ -36,15 +37,17 @@ public class StudentServices {
     private final TransferReqServices transReqServices;
     private final GradeLevelRepo gradeLevelRepo;
     private final DiscountsServices discountsServices;
+    private final CustomUserDetailsService userService;
 
     @Autowired
-    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices, EnrollmentServices enrollmentService, TransferReqServices transReqServices, GradeLevelRepo gradeLevelRepo, DiscountsServices discountsServices) {
+    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices, EnrollmentServices enrollmentService, TransferReqServices transReqServices, GradeLevelRepo gradeLevelRepo, DiscountsServices discountsServices, CustomUserDetailsService userService) {
         this.studentRepo = studentRepo;
         this.sectionServices = sectionServices;
         this.enrollmentService = enrollmentService;
         this.transReqServices = transReqServices;
         this.gradeLevelRepo = gradeLevelRepo;
         this.discountsServices = discountsServices;
+        this.userService = userService;
     }
 
     public StudentDTO getStudentBtName(String studentName){
@@ -103,6 +106,7 @@ public class StudentServices {
                                     .build();
             Student newSavedStudent = studentRepo.save(newStudent);
             enrollmentService.addStudentToListing(null,newSavedStudent);
+            userService.registerStudent(newSavedStudent);
             if(!student.getDiscountsAvailed().isEmpty())
                 CompletableFuture.runAsync(() -> discountsServices.addStudentDiscounts(newSavedStudent.getStudentId(),student.getDiscountsAvailed()));
             if(newSavedStudent.isTransferee())

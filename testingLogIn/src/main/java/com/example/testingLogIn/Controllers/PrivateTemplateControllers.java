@@ -19,28 +19,26 @@ public class PrivateTemplateControllers {
 
     @GetMapping("/h?me")
     public String getDashboard() {
-        return "dashboard";
+        if(userDetailsService.getCurrentlyLoggedInUser().getRole() != Role.STUDENT)
+            return "dashboard";
+
+        return "student-account/home";
     }
 
     // These are for the student account
 
-    @GetMapping("student/personal-profile")
+    @GetMapping("/personal-profile")
     public String getStudentAccountPersonalProfile() {
         return "student-account/personal-profile";
     }
-    @GetMapping("student/grades")
+    @GetMapping("/grades")
     public String getStudentAccountGrades() {
         return "student-account/grades";
     }
 
-    @GetMapping("student/class-schedule")
+    @GetMapping("/class-schedule")
     public String getStudentAccountSchedule() {
         return "student-account/class-schedule";
-    }
-
-    @GetMapping("student/home")
-    public String getStudentAccountHome() {
-        return "student-account/home";
     }
 
     @GetMapping("")
@@ -189,6 +187,10 @@ public class PrivateTemplateControllers {
     }
 
     // these are for accounts pages
+    @GetMapping("/accounts/student-accounts")
+    public String getStudentAccountsPage() {
+        return "/accounts/student-accounts";
+    }
 
     @GetMapping("/accounts/verify-accounts")
     public String getAccountVerificationPage() {

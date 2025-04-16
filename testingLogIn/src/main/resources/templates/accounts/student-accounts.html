@@ -67,9 +67,10 @@
             <table id="realginnas" class="listing-table main-table">
                 <thead>
                     <tr>
-                        <th>Student ID</th>
-                        <th>Student Name</th>
-                        <th>Enrolled Grade Level & Section</th>
+                        <th>Student Id</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Password</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -196,43 +197,37 @@
         });
         getCurrentlyEnrolled(1);
     });
-    var totalItems;
     var currentPage;
-    function getCurrentlyEnrolled(pageNo = 1) {
+    async function getCurrentlyEnrolled(pageNo = 1) {
+        var tableBody = document.querySelector("#realginnas tbody");
+        tableBody.innerHTML = ``;
         currentPage = pageNo;
         const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
         const searchBy = document.getElementById("search-stud").value;
         const sortBy = document.getElementById("sort-select").value;
-        fetch(`/enrollment/all/paged/ENROLLED?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch enrolled students");
-                return res.json();
-            })
-            .then(data => {
-                const tableBody = document.querySelector("#realginnas tbody");
-                if (!tableBody) return console.error("Table body not found");
 
-                tableBody.innerHTML = ""; // Clear previous data
-
-                if (!data || !data.content || data.content.length === 0) {
-                    tableBody.innerHTML = "<tr><td colspan='3'>No enrolled students found.</td></tr>";
-                    return;
-                }
-
-                data.content.forEach(rec => {
+        const response = await fetch(`/user/student-accounts?pageNo=${pageNo}&pageSize=${pageSize}&q=${searchBy}`);
+        if(response.ok){
+            const data = await response.json();
+            if (!data || !data.content || data.content.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='4'>No enrolled students found.</td></tr>";
+            }else{
+                data.content.forEach(info => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                    <td>${rec.student.studentDisplayId || "N/A"}</td>
-                    <td>${rec.student.fullName}</td>
-                    <td>${rec.sectionToEnroll || "N/A"}</td>
-                `;
+                        <td>${info.studentDisplayId || "N/A"}</td>
+                        <td>${info.studentFullName || "N/A"}</td>
+                        <td>${info.userName}</td>
+                        <td>${info.password || "N/A"}</td>`;
                     tableBody.appendChild(row);
                 });
-                totalItems = data.totalElements || 0;
+                var totalItems = data.totalElements || 0;
                 const totalPages = data.totalPages || 1;
                 updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
-            })
-            .catch(error => console.error("Error fetching enrolled students:", error));
+            }
+        }else{
+            tableBody.innerHTML = `<tr><td colspan="4">No records found</td></tr>`;
+        }
     }
 
         function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {

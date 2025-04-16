@@ -39,14 +39,14 @@ public class SecurityConfig {
                                 "/accounts/manage-accounts").hasAnyAuthority("ADMIN")
                             .requestMatchers("/reports/*","/enrollment/**","/transaction/**").hasAnyAuthority("ADMIN","ENROLLMENT_STAFF")
                             .requestMatchers("/schedule/**","/grade-management/**","/class-list/**").hasAnyAuthority("ADMIN","TEACHER")
+                            .requestMatchers("/class-schedule","/personal-profile","/grades").hasAnyAuthority("STUDENT")
                         .anyRequest().authenticated()
                     )
                     .formLogin(form -> form.loginPage("/login").permitAll()
                             .defaultSuccessUrl("/home", true)
                             .failureHandler(customAuthenticationFailureHandler))  // Custom login page
-                    //.httpBasic(Customizer.withDefaults())  // Enable basic authentication (for Postman)
-                    .logout(c -> c.invalidateHttpSession(true)
-                            .clearAuthentication(true))
+                    .httpBasic(Customizer.withDefaults())  // Enable basic authentication (for Postman)
+                    .logout(c -> c.invalidateHttpSession(true))
                     .build();
     }
 

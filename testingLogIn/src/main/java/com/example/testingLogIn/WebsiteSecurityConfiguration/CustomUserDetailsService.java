@@ -1,9 +1,17 @@
 package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
+import com.example.testingLogIn.AssociativeModels.StudentPassword;
+import com.example.testingLogIn.CustomObjects.StudentAccount;
 import com.example.testingLogIn.Enums.Role;
+import com.example.testingLogIn.ModelDTO.StudentAccountDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.AccountRegister;
+import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.PagedResponse.PagedResponse;
+import com.example.testingLogIn.Services.NonModelServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -22,6 +31,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private StudentPasswordRepo studentPasswordRepo;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
 
@@ -55,6 +66,19 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
     }
 
+    public PagedResponse getStudentAccounts(int pageNo,int pageSize, String search){
+        search = NonModelServices.forLikeOperator(search);
+        Page<StudentAccount> studentAccounts = userRepo.findStudentAccounts(search, PageRequest.of(pageNo-1,pageSize));
+        return  PagedResponse.builder()
+                .content(studentAccounts.getContent())
+                .pageNo(studentAccounts.getNumber())
+                .pageSize(studentAccounts.getSize())
+                .totalElements(studentAccounts.getTotalElements())
+                .totalPages(studentAccounts.getTotalPages())
+                .isLast(studentAccounts.isLast())
+                .build();
+    }
+
     public List<UserDTO> getAllUsers() {
         return userRepo.findAll().stream()
                 .map(UserModel::mapperDTO)
@@ -75,6 +99,24 @@ public class CustomUserDetailsService implements UserDetailsService {
     public boolean registerNewUser(AccountRegister accountRegister) {
         userRepo.save(AccountRegToUserModel(accountRegister));
         return true;
+    }
+
+    public void registerStudent(Student student){
+        CompletableFuture.runAsync(()->{
+            String userName = (student.getStudentDisplayId().replace("-",""))+"@alfurqan";
+            String password = NonModelServices.generate(8);
+            studentPasswordRepo.save(new StudentPassword(student,password));
+            userRepo.save(UserModel.builder()
+                    .username(userName)
+                    .firstname(student.getFirstName())
+                    .fullName(student.getFullName())
+                    .password(encoder.encode(password))
+                    .isNotDeleted(true)
+                    .isNotRestricted(true)
+                    .role(Role.STUDENT)
+                    .student(student)
+                    .build());
+        });
     }
 
     public boolean usernameExist(String username) {
@@ -114,14 +156,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserModel AccountRegToUserModel(AccountRegister accountRegister) {
-        String fullname = accountRegister.getFirstname()+" "+ Optional.ofNullable(accountRegister.getMiddlename()).map(s-> s+" ").orElse("") + accountRegister.getLastname();
+        String fullName = accountRegister.getFirstname()+" "+ Optional.ofNullable(accountRegister.getMiddlename()).map(s-> s+" ").orElse("") + accountRegister.getLastname();
         return UserModel.builder()
                 .isNotRestricted(true)
                 .isNotDeleted(true)
                 .firstname(accountRegister.getFirstname())
                 .lastname(accountRegister.getLastname())
                 .middlename(accountRegister.getMiddlename())
-                //.fullName(fullname)
+                .fullName(fullName)
                 .role(accountRegister.getRole())
                 .address(accountRegister.getAddress())
                 .birthdate(accountRegister.getBirthdate())
@@ -129,5 +171,5 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .username(accountRegister.getUsername())
                 .password(encoder.encode(accountRegister.getPassword()))
                 .build();
-    } 
+    }
 }

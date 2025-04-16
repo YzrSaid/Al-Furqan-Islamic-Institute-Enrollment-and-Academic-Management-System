@@ -129,6 +129,8 @@
         </a>
 
         <div class="submenu" id="account-submenu">
+            <a th:href="@{/accounts/student-accounts}" class="submenu-item"
+               data-path="/accounts/student-accounts">Student Accounts</a>
             <th:block th:if="${userRole == 'ADMIN'}">
                 <a th:href="@{/accounts/verify-accounts}" class="submenu-item"
                     data-path="/accounts/verify-accounts">Verify Accounts</a>

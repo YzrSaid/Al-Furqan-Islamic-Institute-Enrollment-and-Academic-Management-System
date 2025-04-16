@@ -28,6 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(indexes = {@Index(name = "idx_user_name", columnList = "username")})
 public class UserModel implements UserDetails {
 
     @Id

@@ -26,10 +26,12 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         String errorMessage;
-        if (exception instanceof UsernameNotFoundException) {
+        if (exception instanceof UsernameNotFoundException ua) {
             errorMessage = "Username does not exist.";
-        } else if (exception instanceof BadCredentialsException) {
+        } else if (exception instanceof BadCredentialsException bc) {
             String username = request.getParameter("username");
+            System.out.println(username);
+            System.out.println(isUsernameValid(username));
             if (isUsernameValid(username)) {
                 errorMessage = "Incorrect password.";
             } else {

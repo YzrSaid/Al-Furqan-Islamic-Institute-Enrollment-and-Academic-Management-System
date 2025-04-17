@@ -2,9 +2,6 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head th:replace="~{fragments/fragment :: commonHead}">
-    <meta charset="utf-8">
-    <script th:src="@{/js/script.js}"></script>
-    <script th:src="@{/js/sidebar.js}"></script>
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
@@ -111,7 +108,7 @@
                                         <button type="button" id="dropdown-scholar"> <img
                                                 src="/images/icons/arrow-down.png" alt="dropdown-icon">
                                         </button>
-
+                                        
                                         <div id="scholar-popover" name="add-discount" class="styled-popover">
                                             <div id="discounts-rec" class="checkbox-transferee-reqs-group">
                                                 <!--Ibutang ang mga transferee requiremetns dri-->
@@ -197,8 +194,7 @@
                                             <label for="address">Address:</label>
                                             <div class="student-form-group half-unique">
                                                 <input readonly type="text" id="street" required placeholder="Street">
-                                                <input readonly type="text" id="barangay" required
-                                                    placeholder="Barangay">
+                                                <input readonly type="text" id="barangay" required placeholder="Barangay">
                                                 <input readonly type="text" id="city" required placeholder="City">
                                             </div>
                                         </div>
@@ -308,9 +304,7 @@
     <!-- Modal for adding a section to what grade level it will be enrolled to (assessment) -->
     <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
         <div class="add-grade-level-assessment-modal-content scroll-lock">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="addGradeLevelAssessmentModal">&times;</span>
-
+        <div class="modal-body">
             <h2>Promote To</h2>
 
             <label for="grade-level">Grade Level:</label>
@@ -322,23 +316,21 @@
             </select>
 
 
-            <div class="modal-buttons">
-                <button type="button" class="btn-confirm" data-action="proceedToPayment"
-                    data-message="Are you sure you want to proceed with payment?" id=""
-                    data-open-modal="confirmationModal">
-                    Confirm
-                </button>
-                <button type="button" class="btn-cancel" data-close-modal="addGradeLevelAssessmentModal">Cancel</button>
-            </div>
+           <div class="modal-buttons" style="display: flex;justify-content: center;align-items: center;gap: 24px;margin-top: 1rem;flex-wrap: wrap;width: 100%;">
+    <button type="button" class="btn-cancel" data-close-modal="addGradeLevelAssessmentModal">Cancel</button><button type="button" class="btn-confirm" data-action="proceedToPayment" data-message="Are you sure you want to proceed with payment?" data-open-modal="confirmationModal" title="Confirm Button">
+        Confirm
+    </button>
+    
+</div>
+
         </div>
+    </div>
     </div>
 
     <!-- Modal for listOfPaymentsModal -->
     <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
         <div class="list-of-payments-modal-content scroll-lock">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="listOfPaymentsModal">&times;</span>
-
+        <div class="modal-body">
             <h2>List of Payments</h2>
 
             <div class="half-width">
@@ -370,17 +362,15 @@
                 <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
                     Payment</button>
             </div>
-
+        </div>
         </div>
     </div>
 
 
     <!-- Modal for listing add grade level -->
     <div id="gradeLevelModal" class="grade-level-modal modal">
-        <div class="grade-level-modal-content scroll-lock">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="gradeLevelModal">&times;</span>
-
+     <div class="grade-level-modal-content scroll-lock">
+        <div class="modal-body">
             <h2>Enroll To</h2>
             <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
                 <label for="levelName">Grade Level Name:</label>
@@ -398,6 +388,7 @@
                 </div>
             </form>
         </div>
+     </div>
     </div>
 
     <!-- Error Modal -->
@@ -422,8 +413,6 @@
     <!-- Modal for adding a a section to what grade level it will be enrolled to (assessment) -->
     <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
         <div class="add-grade-level-assessment-modal-content scroll-lock">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="addGradeLevelAssessmentModal">&times;</span>
 
             <h2>Promote To</h2>
 
@@ -450,9 +439,7 @@
     <!-- Modal for viewing grades -->
     <div id="viewGradesModal" class="view-grades-modal modal">
         <div class="view-grades-modal-content scroll-lock">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="viewGradesModal">&times;</span>
-
+            
             <h2>Student Grades</h2>
 
             <div class="half-width view-studId" id="view-grade-studId">
@@ -479,7 +466,7 @@
             </div> -->
 
             <!-- Close button -->
-            <div class="close-button" id="view-grades-close-btn">
+            <div class="modal-buttons">
                 <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
                     id="close-button">Close</button>
             </div>
@@ -663,9 +650,6 @@
     <div id="receiptModal" class="receipt-modal modal">
         <div class="printable-area">
             <div class="receipt-modal-content scroll-lock">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="receiptModal">&times;</span>
-
                 <!-- Receipt Header -->
                 <div class="header-container-payment">
                     <div class="left-header">
@@ -762,8 +746,7 @@
     <div id="addPaymentModal" class="add-payment-modal modal">
         <div class="printable-area">
             <div class="add-payment-modal-content scroll-lock">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
+                <div class="modal-body">
                 <div class="header-container">
                     <h3>Payment Form</h3>
                 </div> <br>

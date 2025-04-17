@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
-    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
-    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
@@ -96,6 +88,7 @@
         <div class="my-account-container-wrapper">
             <div id="myAccountEditModal" class="my-account-edit-modal modal">
                 <div class="my-account-edit-modal-content scroll-lock">
+                    <div class="modal-body">
                     <h2>My Account Information</h2>
                     <form action="" id="myAccountEditForm">
                         <div class="half-width">
@@ -141,13 +134,15 @@
                 </div>
             </div>
         </div>
+        </div>
 
         <!-- Modal for changing password -->
         <div class="my-account-container-wrapper">
             <div id="changePasswordModal" class="change-password-modal">
                 <div class="change-password-modal-content scroll-lock">
-                    <h2>Change Password</h2>
-                    <form action="" id="changePasswordForm">
+                    <div class="modal-body">
+                        <h2>Change Password</h2>
+                        <form action="" id="changePasswordForm">
                         <div class="change-pass-div">
                             <label for="current-passowrd">Current Password</label>
                             <input type="password" id="current-passowrd">
@@ -171,9 +166,11 @@
                             <button type="button" class="btn-confirm" id="confirmChangePassword"
                                 data-action="change-password" title="Confirm Button">Confirm</button>
                         </div>
-                    </form>
+                        </form>
+                    </div>    
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </body>

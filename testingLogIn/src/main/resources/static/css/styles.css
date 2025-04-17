@@ -1711,7 +1711,6 @@ table td {
   text-align: center;
   justify-content: center;
 }
-
 .add-something-btn {
   padding: 12px;
   min-width: 50px;
@@ -1897,6 +1896,10 @@ table td {
 #fatherName,
 #guardianName {
   width: 700px;
+}
+
+#staff-address {
+  width: 590px;
 }
 
 .eighty {
@@ -2606,7 +2609,6 @@ input[type="checkbox"] {
 /* student list view modal (transaction page) */
 .view-student-list-modal-content {
   background: white !important;
-  padding: 30px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 900px;
@@ -3122,6 +3124,17 @@ input[type="checkbox"] {
   font-weight: bold;
   padding: 8px 30px;
 }
+#view-grades-close-btn button
+{
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  padding: 8px 30px;
+}
 .header-container {
   display: flex;
   align-items: center;
@@ -3509,7 +3522,7 @@ td[rowspan] {
   margin-bottom: 30px;
 }
 .column2 {
-  display: flex;
+  display: flex;    
   flex-direction: column;
   width: 40%;
   margin-bottom: 30px;
@@ -3677,24 +3690,32 @@ td[rowspan] {
   margin: 0;
 }
 
-#stud-type-row h6 {
+#stud-type-row h6,
+#staff-type-row h6 {
   font-weight: bold;
   margin-top: 10px;
   display: flex;
 }
-#stud-type-row {
+#stud-type-row,
+#staff-type-row {
   gap: 10px;
   min-width: 150px;
 }
 
-#scholar-row h6 {
+#staff-address {
+    margin-bottom: 20px;
+}
+
+#scholar-row h6,
+#staff-status-row h6 {
   font-weight: bold;
   margin-top: 10px;
   display: flex;
 }
-#scholar-row {
+#scholar-row,
+#staff-status-row {
   gap: 10px;
-  width: 100px;
+  min-width: 100px;
 }
 
 #transferee-row h6 {

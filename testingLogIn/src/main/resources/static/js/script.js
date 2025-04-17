@@ -2409,3 +2409,30 @@ function resetValidationErrors() {
     input.removeAttribute("title");
   });
 }
+// Center Close Button
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".modal-buttons").forEach(function (container) {
+      const btn = container.querySelector("button.btn-cancel");
+      if (btn && btn.textContent.trim().toLowerCase() === "close") {
+          container.style.display = "flex";
+          container.style.justifyContent = "center";
+          container.style.alignItems = "center";
+      }
+  });
+});
+//GradeLevelAssessment Modal Cancel-Confirm Button Centered
+document.addEventListener("DOMContentLoaded", function () {
+  const modal = document.querySelector("#addGradeLevelAssessmentModal");
+  if (modal) {
+      const buttonsContainer = modal.querySelector(".modal-buttons");
+      if (buttonsContainer) {
+          buttonsContainer.style.display = "flex";
+          buttonsContainer.style.justifyContent = "center";
+          buttonsContainer.style.alignItems = "center";
+          buttonsContainer.style.flexWrap = "wrap";
+          buttonsContainer.style.gap = "24px";
+          buttonsContainer.style.marginTop = "1rem";
+          buttonsContainer.style.width = "100%";
+      }
+  }
+});

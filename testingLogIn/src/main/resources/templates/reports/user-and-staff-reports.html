@@ -28,57 +28,61 @@
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
             <div class="text-link" id="breadcrumb-container">
-                <h4>Teacher Reports</h4>
+                <h4>User & Staff Reports</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/reports/teacher" title="You're currently in this page.">Reports - Teacher Reports</a>
+                <a href="/reports/user-and-staff" title="You're currently in this page.">Reports - User & Staff Reports</a>
             </div>
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
                         <button class="search-btn">Search</button>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                        </select>
-                    </div>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <table class="teacher-report-table">
-            <thead>
-                <tr>
-                    <th>Teacher ID</th>
-                    <th>Teacher Name</th>
-                    <th>Advisory Class</th>
-                    <th>Gender</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>2025-0001</td>
-                    <td>Jose Rizal</td>
-                    <td>Grade 1 - Malunggay</td>
-                    <td>Male</td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="action-container action">
-                                <a href="#" class="view-student" data-action="viewStudentReportModal">
-                                    <img th:src="@{/images/icons/eye.png}" alt="edit-icon">
-                                </a>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table class="teacher-report-table main-table">
+                <thead>
+                    <tr>
+                        <th>Staff ID</th>
+                        <th>Staff Name</th>
+                        <th>Gender</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2025-0001</td>
+                        <td>Jose Rizal</td>
+                        <td>Male</td>
+                        <td>UNRESTRICTED</td>
+                        <td>
+                            <div class="dropdown">
+                                <div class="action-container action">
+                                    <a href="#" class="view-student" data-action="viewStudentReportModal">
+                                        <img th:src="@{/images/icons/eye.png}" alt="edit-icon">
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table> <br> <br>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> <br> <br>
+        </div>
+
+
     </div>
 </body>
 

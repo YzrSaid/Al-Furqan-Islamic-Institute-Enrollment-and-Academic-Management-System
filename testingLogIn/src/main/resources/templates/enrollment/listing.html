@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head th:replace="~{fragments/fragment :: commonHead}">
+    <meta charset="utf-8">
+    <script th:src="@{/js/script.js}"></script>
+    <script th:src="@{/js/sidebar.js}"></script>
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
@@ -151,7 +154,7 @@
                                         <button type="button" id="dropdown-scholar"> <img
                                                 src="/images/icons/arrow-down.png" alt="dropdown-icon">
                                         </button>
-                                        
+
                                         <div id="scholar-popover" name="add-discount" class="styled-popover">
                                         </div>
                                     </div>
@@ -227,7 +230,8 @@
                                             <label for="address">Address:</label>
                                             <div class="student-form-group half-unique">
                                                 <input readonly type="text" id="street" required placeholder="Street">
-                                                <input readonly type="text" id="barangay" required placeholder="Barangay">
+                                                <input readonly type="text" id="barangay" required
+                                                    placeholder="Barangay">
                                                 <input readonly type="text" id="city" required placeholder="City">
                                             </div>
                                         </div>

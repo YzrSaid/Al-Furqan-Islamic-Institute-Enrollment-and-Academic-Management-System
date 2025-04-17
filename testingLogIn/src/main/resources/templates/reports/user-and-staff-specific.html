@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Furqan Islamic Institute Incorporated</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
+    <!-- Bootstrap JS -->
+    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.4.2/css/all.min.css}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Student Reports</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/reports/student">Reports - Student Reports</a>
+                <p>/</p>
+                <a href="/reports/student/{studentName}" title="You're currently on this page.">Reynolds Perkins</a>
+            </div>
+
+            <div class="report-main-btns">
+                <div class="report-main-btns-left back-btn">
+                    <button type="button" class="btn-back" onclick="history.back()" title="Back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+
+                <div class="report-main-btns-right">
+                    <button type="button" class="btn-gray" id="editStudInfo"
+                        data-open-modal="studentInformationEditModal">Edit</button>
+                    <button type="button" class="btn-neutral" id="printGrade"
+                        data-open-modal="studentInformationPrintModal">Print</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="modalText">Are you sure?</p>
+                <div class="confirmation-modal-buttons">
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- viewClaimedResourcesModal -->
+        <div id="viewClaimedResourcesModal" class="view-claimed-resources-modal modal">
+            <div class="view-claimed-resources-modal-content scroll-lock">
+                <h2>Claimed Resources</h2>
+
+                <div class="half-width view-studId" id="">
+                    <label for="student-grade-id">Student ID:</label>
+                    <h6 id="student-grade-id"></h6>
+                </div>
+                <div class="half-width view-studName" id="">
+                    <label for="student-grade-name">Student Name:</label>
+                    <h6 id="student-grade-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- Table -->
+                <div class="table-wrapper-printable">
+                    <table id="claimed-res-table" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Grade Level</th>
+                                <th>Date Received</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <!-- Close button -->
+                <div class="modal-buttons">
+                    <button type="button" data-close-modal="viewClaimedResourcesModal" class="btn-cancel"
+                        id="close-button">Close</button>
+
+                    <button type="button" onclick="printClaimedResources()" class="print-btn">Print Record</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- viewPastTransactionsModal -->
+        <div id="viewPastTransactionsModal" class="view-past-transactions-modal modal">
+            <div class="view-past-transactions-modal-content scroll-lock">
+                <h2>Past Transactions</h2>
+
+                <div class="half-width view-studId" id="">
+                    <label for="student-grade-id">Student ID:</label>
+                    <h6 id="student-grade-id"></h6>
+                </div>
+                <div class="half-width view-studName" id="">
+                    <label for="student-grade-name">Student Name:</label>
+                    <h6 id="student-grade-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- Table -->
+                <div class="table-wrapper-printable">
+                    <table id="past-trans-table" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Date Paid</th>
+                                <th>Transaction No.</th>
+                                <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <!-- Close button -->
+                <div class="modal-buttons">
+                    <button type="button" data-close-modal="viewPastTransactionsModal" class="btn-cancel"
+                        id="close-button">Close</button>
+
+                    <button type="button" onclick="printIndividTransactions()" class="print-btn">Print Record</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- individTransactionPrintModal -->
+        <div id="individTransactionsPrintModal" class="all-transactions-print-modal modal">
+            <div class="printable-area-transactions">
+                <div class="all-transactions-print-modal-content scroll-lock">
+                    <!-- Report Header -->
+                    <div class="header-container-print">
+
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        </div>
+                        <div class="middle-header">
+                            <div class="school-info-print">
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+                    <!-- Student Info -->
+
+                    <h3 class="report-title"><strong>Payments and Transactions Report</strong></h3>
+
+                    <!-- Table -->
+                    <table id="individ-trans-table-printable" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Student Name</th>
+                                <th>Date Paid</th>
+                                <th>Transaction No.</th>
+                                <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                    <div class="printable-footer">
+                        Date Printed: <strong>4/1/2020</strong>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="allTransactionsPrintModal">Close</button>
+
+                        <button type="button" onclick="printReceipt()" class="print-btn">Print Record</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- individClaimedResourcesPrintModal -->
+        <div id="individClaimedResourcesPrintModal" class="all-transactions-print-modal modal">
+            <div class="printable-area-claimed-resources">
+                <div class="all-transactions-print-modal-content scroll-lock">
+                    <!-- Report Header -->
+                    <div class="header-container-print">
+
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        </div>
+                        <div class="middle-header">
+                            <div class="school-info-print">
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+                    <!-- Student Info -->
+
+                    <h3 class="report-title"><strong>Payments and Transactions Report</strong></h3>
+
+                    <!-- Table -->
+                    <table id="claimed-res-table-printable" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Grade Level</th>
+                                <th>Date Received</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                    <div class="printable-footer">
+                        Date Printed: <strong>4/1/2020</strong>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="allTransactionsPrintModal">Close</button>
+
+                        <button type="button" onclick="printReceipt()" class="print-btn">Print Record</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for editing the student information -->
+        <div id="studentInformationEditModal" class="student-information-edit-modal">
+            <div class="student-information-edit-modal-content">
+                <div class="modal-body">
+                    <h1>Student Information</h1>
+                    <form method="" action="" id="studentInformationForm">
+                        <div class="header">
+                            <div class="half-unique">
+                                <label for="student-id">Student ID: </label>
+                                <input readonly type="text" id="student-id">
+                            </div> <br>
+
+                            <div class="checkbox-container other-info-container">
+                                <div class="checkbox">
+                                    <label for="scholar">Scholar:</label>
+                                    <input type="checkbox" id="scholar">
+
+                                    <button type="button" id="dropdown-edit-scholar"> <img
+                                            src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                    </button>
+
+                                    <div id="edit-scholar-popover" name="add-discount" class="styled-popover">
+                                    </div>
+                                </div>
+
+                                <div class="checkbox">
+                                    <label for="isTransferee">Transferee:</label>
+                                    <input type="checkbox" id="isTransferee">
+
+                                    <button type="button" id="dropdown-edit-transferee"> <img
+                                            src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                    </button>
+
+
+                                    <div id="edit-transferee-popover" name="add-transferee-req" class="styled-popover">
+
+                                        <div class="transferee-requirements">
+                                            <h6>Requirements:</h6>
+                                            <div id="transfereeReq" class="checkbox-transferee-reqs-group">
+
+                                            </div>
+
+
+                                            <div>
+                                                <button type="button" style="width: 100%;" data-action="editGradeLevel"
+                                                    data-message="Are you sure you want to update the transferee requirements?"
+                                                    onclick="updateRequirements()" class="btn-confirm">Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-content: center; justify-items: left;">
+                            <h2>Personal Information</h2>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="column1">
+                                    <div>
+                                        <label for="name">Name</label>
+                                        <div class="student-form-group half">
+                                            <input type="text" id="firstName">
+                                            <input type="text" id="middleName">
+                                            <input type="text" id="lastName">
+                                        </div>
+                                        <div class="small-text">
+                                            <p>First</p>
+                                            <p>Middle</p>
+                                            <p>Last</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column2">
+                                    <!-- Gender, BDate, and Scholar -->
+                                    <div class="student-form-group half-stud-info-small" style="margin-bottom: 0px;">
+                                        <label for="gender">Gender:</label>
+                                        <input type="text" id="gender">
+
+                                        <label for="birthdate">Birthdate:</label>
+                                        <input required type="date" id="birthdate">
+                                    </div>
+                                </div>
+
+                                <div class="student-form-group">
+                                    <div>
+                                        <label for="address">Address:</label>
+                                        <div class="student-form-group half-unique">
+                                            <input type="text" id="street" required placeholder="Street">
+                                            <input type="text" id="barangay" required placeholder="Barangay">
+                                            <input type="text" id="city" required placeholder="City">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label>Place of Birth:</label>
+                                        <div class="student-form-group">
+                                            <input type="text" id="placeOfBirth" class="place-of-birth-report"
+                                                style="width: 390px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>Additional Information</h2>
+                        </div>
+
+                        <div>
+                            <h6>Father's Information</h6>
+                            <div class="student-form-group">
+                                <label for="fatherName">Name:</label>
+                                <input type="text" id="fatherName">
+
+                                <label for="fatherOccupation">Occupation:</label>
+                                <input type="text" id="fatherOccupation">
+                            </div> <br>
+                        </div>
+                        <div>
+                            <h6>Mother's Information</h6>
+                            <div class="student-form-group">
+                                <label for="motherName">Name:</label>
+                                <input type="text" id="motherName">
+
+                                <label for="motherOccupation">Occupation:</label>
+                                <input type="text" id="motherOccupation">
+                            </div> <br>
+                        </div>
+
+                        <h6>Guardian's Information</h6>
+                        <div class="student-form-group">
+                            <label for="guardianName">Name:</label>
+                            <input type="text" id="guardianName">
+
+                            <label for="guardianOccupation">Occupation:</label>
+                            <input type="text" id="guardianOccupation">
+                        </div> <br>
+
+                        <div class="student-form-group">
+                            <label for="guardianContactNumber">Contact Number:</label>
+                            <input type="text" id="guardianContactNumber">
+
+                            <label for="guardianAddress">Address:</label>
+                            <input type="text" id="guardianAddress">
+                        </div> <br>
+
+                        <div class="transferee-section">
+                            <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                                <h2>For Transferees Only</h2>
+                            </div>
+
+                            <!-- Transferee Requirements Section -->
+                            <div class="transferee-requirements">
+                                <h4>Requirements</h4>
+                                <div id="transReqRecord" class="checkbox-transferee-reqs-group">
+                                    <!--naka check na daan ang mga filled-->
+                                </div>
+
+                                <!-- Update Button -->
+                                <div style="margin-top: 15px;">
+                                    <button type="button" data-action="editGradeLevel"
+                                        data-message="Are you sure you want to update this grade level?"
+                                        id="updateRequirementsBtn" class="btn-confirm">Update</button>
+                                </div>
+                            </div>
+
+                            <div class="student-form-group">
+                                <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
+                                <input type="text" id="lastGradeLevelCompleted">
+
+                                <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
+                                <input type="text" id="lastMadrasaYearCompleted">
+                            </div> <br>
+
+                            <div class="student-form-group">
+                                <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                                <input type="text" id="madrasaNameLastAttended">
+                            </div> <br>
+
+                            <div class="student-form-group">
+                                <label for="madrasaAddress">Madrasa Address:</label>
+                                <input type="text" id="madrasaAddress">
+                            </div> <br>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" data-action="" class="btn-confirm" id="confirmStudent"
+                        data-open-modal="confirmationModal"
+                        data-message="Are you sure you want to add this student?">Confirm</button>
+
+                    <button type="button" class="btn-cancel" id="cancelStudent"
+                        data-close-modal="studentInformationEditModal">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Grade Print Modal -->
+            <div id="gradePrintModal" class="grade-print-dal modal">
+                <div class="printable-area">
+                    <div class="grade-print-modal-content scroll-lock">
+                        <!-- Close Button -->
+                        <span class="close-modal" data-close-modal="gradePrintModal">&times;</span>
+
+                        <!-- Report Header -->
+                        <div class="header-container-print">
+
+                            <div class="left-header">
+                                <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                            </div>
+                            <div class="middle-header">
+                                <div class="school-info-print">
+                                    <h3 th:text="${schoolName}"></h3>
+                                    <p th:text="${schoolAddress}"></p>
+                                    <p th:text="${schoolEmail}"></p>
+                                    <p th:text="${schoolNum}"></p>
+                                    <h3 class="report-type"><strong>Grade Form</strong></h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="separator-line"></div>
+                        <!-- Student Info -->
+                        <table border="1" cellspacing="0" cellpadding="6"
+                            style="width: 100%; margin-top: -30px; font-family: Arial, sans-serif; border-collapse: collapse;">
+                            <!-- Student Info Section -->
+                            <tr class="stud-info-section">
+                                <td colspan="6">
+                                    <div class="student-info-container-printable">
+                                        <div class="payment-student-info-row">
+                                            <label for="receipt-student-id">Student ID:</label>
+                                            <input type="text" class="print-inputs" id="receipt-student-id"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="payment-student-info-row">
+                                            <label for="receipt-date">Date:</label>
+                                            <input type="date" class="print-inputs" id="receipt-date">
+                                        </div>
+
+                                        <div class="payment-student-info-row">
+                                            <label for="receipt-student-name">Student Name:</label>
+                                            <input type="text" class="print-inputs" id="receipt-student-name"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="payment-student-info-row">
+                                            <label for="sy-and-sem">SY & Sem:</label>
+                                            <input type="text" class="print-inputs" id="current-sy-and-sem"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Grade Table Header -->
+                            <tr class="grade-header">
+                                <th>Subject</th>
+                                <th>1st Sem</th>
+                                <th>2nd Sem</th>
+                                <th>Final</th>
+                                <th>Remarks</th>
+                            </tr>
+
+                            <!-- Grade Table Rows (No inner borders) -->
+                            <tr class="grade-row">
+                                <td>READING AND WRITING</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>PAGBASA AT PAGSUSURI NG IBAT IBANG TEKSTO TUNGO SA P</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>21ST CENTURY LITERATURE FROM THE PHILIPPINES AND THE W</td>
+                                <td>78</td>
+                                <td>77</td>
+                                <td>77.5</td>
+                                <td>Passed</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>HOUSEKEEPING</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>STATISTICS AND PROBABILITY</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>PHYSICAL EDUCATION AND HEALTH</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>PHYSICAL SCIENCE</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                        </table>
+
+                        <div class="printable-footer">
+                            Date Printed: <strong>4/1/2020</strong>
+                        </div>
+
+                        <!-- Print Button -->
+                        <div class="modal-buttons">
+                            <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal for student information -->
+        <div id="studentInformationContainer" class="student-information-container">
+            <div class="student-information-container-content">
+                <h1>Student Information</h1>
+                <form method="" action="" id="studentInformationForm">
+                    <div class="header">
+                        <div class="half-unique">
+                            <label for="student-id">Student ID: </label>
+                            <input readonly type="text" id="student-id">
+                        </div> <br>
+
+                        <div class="checkbox-container other-info-container">
+                            <div class="checkbox">
+                                <label for="scholar">Scholar:</label>
+                                <input type="checkbox" id="scholar">
+
+                                <button type="button" id="dropdown-report-scholar"> <img
+                                        src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                </button>
+
+                                <div id="report-scholar-popover" name="add-discount" class="styled-popover">
+                                </div>
+                            </div>
+
+                            <div class="checkbox">
+                                <label for="isTransferee">Transferee:</label>
+                                <input type="checkbox" id="isTransferee">
+
+                                <button type="button" id="dropdown-report-transferee"> <img src="/images/icons/arrow-down.png"
+                                        alt="dropdown-icon">
+                                </button>
+
+
+                                <div id="report-transferee-popover" name="add-transferee-req" class="styled-popover">
+
+                                    <div class="transferee-requirements">
+                                        <h6>Requirements:</h6>
+                                        <div id="transfereeReq" class="checkbox-transferee-reqs-group">
+
+                                        </div>
+
+
+                                        <div>
+                                            <button type="button" style="width: 100%;" data-action="editGradeLevel"
+                                                data-message="Are you sure you want to update the transferee requirements?"
+                                                onclick="updateRequirements()" class="btn-confirm">Update</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-content: center; justify-items: left;">
+                        <h2>Personal Information</h2>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="column1">
+                                <div>
+                                    <label for="name">Name</label>
+                                    <div class="student-form-group half">
+                                        <input readonly type="text" id="firstName">
+                                        <input readonly type="text" id="middleName">
+                                        <input readonly type="text" id="lastName">
+                                    </div>
+                                    <div class="small-text">
+                                        <p>First</p>
+                                        <p>Middle</p>
+                                        <p>Last</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column2">
+                                <!-- Gender, BDate, and Scholar -->
+                                <div class="student-form-group half-stud-info-small">
+                                    <label for="gender">Gender:</label>
+                                    <input readonly type="text" id="gender">
+
+                                    <label for="birthdate">Birthdate:</label>
+                                    <input readonly required type="date" id="birthdate-report">
+                                </div>
+                            </div>
+
+                            <div class="column1">
+                                <div class="student-form-group">
+                                    <div>
+                                        <label for="address">Address:</label>
+                                        <div class="student-form-group half-unique">
+                                            <input readonly type="text" id="street" required placeholder="Street">
+                                            <input readonly type="text" id="barangay" required placeholder="Barangay">
+                                            <input readonly type="text" id="city" required placeholder="City">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column2">
+                                <label>Place of Birth:</label>
+                                <div class="student-form-group">
+                                    <div class="student-form-group">
+                                        <input readonly type="text" id="placeOfBirth" class="place-of-birth-report">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                        <h2>Additional Information</h2>
+                    </div>
+
+                    <div>
+                        <h6>Father's Information</h6>
+                        <div class="student-form-group">
+                            <label for="fatherName">Name:</label>
+                            <input readonly type="text" id="fatherName">
+
+                            <label for="fatherOccupation">Occupation:</label>
+                            <input readonly type="text" id="fatherOccupation">
+                        </div> <br>
+                    </div>
+                    <div>
+                        <h6>Mother's Information</h6>
+                        <div class="student-form-group">
+                            <label for="motherName">Name:</label>
+                            <input readonly type="text" id="motherName">
+
+                            <label for="motherOccupation">Occupation:</label>
+                            <input readonly type="text" id="motherOccupation">
+                        </div> <br>
+                    </div>
+
+                    <h6>Guardian's Information</h6>
+                    <div class="student-form-group">
+                        <label for="guardianName">Name:</label>
+                        <input readonly type="text" id="guardianName">
+
+                        <label for="guardianOccupation">Occupation:</label>
+                        <input readonly type="text" id="guardianOccupation">
+                    </div> <br>
+
+                    <div class="student-form-group">
+                        <label for="guardianContactNumber">Contact Number:</label>
+                        <input readonly type="text" id="guardianContactNumber">
+
+                        <label for="guardianAddress">Address:</label>
+                        <input readonly type="text" id="guardianAddress">
+                    </div> <br>
+
+                    <div class="transferee-section">
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>For Transferees Only</h2>
+                        </div>
+
+                        <!-- Transferee Requirements Section -->
+                        <div class="transferee-requirements">
+                            <h4>Requirements</h4>
+                            <div id="transReqRecord" class="checkbox-transferee-reqs-group">
+                                <!--naka check na daan ang mga filled-->
+                            </div>
+
+                            <!-- Update Button -->
+                            <div style="margin-top: 15px;">
+                                <button type="button" data-action="editGradeLevel"
+                                    data-message="Are you sure you want to update this grade level?"
+                                    id="updateRequirementsBtn" class="btn-confirm">Update</button>
+                            </div>
+                        </div>
+
+                        <div class="student-form-group">
+                            <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
+                            <input readonly type="text" id="lastGradeLevelCompleted">
+
+                            <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
+                            <input readonly type="text" id="lastMadrasaYearCompleted">
+                        </div> <br>
+
+                        <div class="student-form-group">
+                            <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                            <input readonly type="text" id="madrasaNameLastAttended">
+                        </div> <br>
+
+                        <div class="student-form-group">
+                            <label for="madrasaAddress">Madrasa Address:</label>
+                            <input readonly type="text" id="madrasaAddress">
+                        </div> <br>
+                    </div>
+
+
+                    <div class="report-header">
+                        <div class="report-header-item">
+                            <h2>Balance Information</h2>
+                        </div>
+                        <div class="report-header-item">
+                            <h2>Resources Distribution</h2>
+                        </div>
+                    </div>
+
+                    <div class="container-two">
+                        <div class="column-main">
+                            <p>Remaining Balance</p>
+                            <div class="table-container">
+                                <table class="mini-table" id="payment-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Req. Amount</th>
+                                            <th>Paid</th>
+                                            <th>Status</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="basic-modal-buttons">
+                                <h6>Balance:</h6>
+                                <h6 id="total-balance">P0</h6>
+                                <button type="button" class="btn-confirm" data-open-modal="viewPastTransactionsModal"
+                                    id="transaction-record-btn">View Past
+                                    Transactions</button>
+                            </div>
+
+                        </div>
+
+                        <div class="column-main">
+                            <p>Unclaimed Resources</p>
+                            <div class="table-container">
+                                <table class="mini-table" id="distribution-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Grade Level</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="basic-modal-buttons">
+                                <button type="button" class="btn-confirm" data-open-modal="viewClaimedResourcesModal"
+                                    id="unclaimed-resources-btn">View Claimed
+                                    Resources</button>
+                            </div>
+                        </div>
+                    </div> <br>
+
+
+                    <div class="header-stud-info-half">
+                        <h2>Grades</h2>
+                        <div class="action">
+                            <div class="dropdown">
+
+                                <button type="button" class="dropdown-print-btn" onclick="toggleDropdown(event)">
+                                    Print
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+
+                                <div class="dropdown-status-content" id="dropdown-print-options">
+                                    <a href="#" class="action" data-open-modal="gradePrintModal">All</a>
+                                    <a href="#" class="action" data-open-modal="gradePrintModal">Semester 1</a>
+                                    <a href="#" class="action" data-open-modal="gradePrintModal">Semester 2</a>
+                                    <a href="#" class="action" data-open-modal="gradePrintModal">School Year
+                                        2023-2024</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="grades-container">
+
+                    </div>
+                </form>
+            </div>
+
+            <!-- Grade Print Modal -->
+            <div id="gradePrintModal" class="grade-print-dal modal">
+                <div class="printable-area">
+                    <div class="grade-print-modal-content scroll-lock">
+                        <!-- Close Button -->
+                        <span class="close-modal" data-close-modal="gradePrintModal">&times;</span>
+
+                        <!-- Report Header -->
+                        <div class="header-container-print">
+
+                            <div class="left-header">
+                                <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                            </div>
+                            <div class="middle-header">
+                                <div class="school-info-print">
+                                    <h3 th:text="${schoolName}"></h3>
+                                    <p th:text="${schoolAddress}"></p>
+                                    <p th:text="${schoolEmail}"></p>
+                                    <p th:text="${schoolNum}"></p>
+                                    <h3 class="report-type"><strong>Grade Form</strong></h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="separator-line"></div>
+                        <!-- Student Info -->
+                        <table border="1" cellspacing="0" cellpadding="6"
+                            style="width: 100%; margin-top: -30px; font-family: Arial, sans-serif; border-collapse: collapse;">
+                            <!-- Student Info Section -->
+                            <tr class="stud-info-section">
+                                <td colspan="6">
+                                    <div class="student-info-container-printable">
+                                        <div class="payment-student-info-row">
+                                            <label for="receipt-student-id">Student ID:</label>
+                                            <input type="text" class="print-inputs" id="receipt-student-id"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="payment-student-info-row">
+                                            <label for="receipt-date">Date:</label>
+                                            <input type="date" class="print-inputs" id="receipt-date">
+                                        </div>
+
+                                        <div class="payment-student-info-row">
+                                            <label for="receipt-student-name">Student Name:</label>
+                                            <input type="text" class="print-inputs" id="receipt-student-name"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="payment-student-info-row">
+                                            <label for="sy-and-sem">SY & Sem:</label>
+                                            <input type="text" class="print-inputs" id="current-sy-and-sem"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Grade Table Header -->
+                            <tr class="grade-header">
+                                <th>Subject</th>
+                                <th>1st Sem</th>
+                                <th>2nd Sem</th>
+                                <th>Final</th>
+                                <th>Remarks</th>
+                            </tr>
+
+                            <!-- Grade Table Rows (No inner borders) -->
+                            <tr class="grade-row">
+                                <td>READING AND WRITING</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>PAGBASA AT PAGSUSURI NG IBAT IBANG TEKSTO TUNGO SA P</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>21ST CENTURY LITERATURE FROM THE PHILIPPINES AND THE W</td>
+                                <td>78</td>
+                                <td>77</td>
+                                <td>77.5</td>
+                                <td>Passed</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>HOUSEKEEPING</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>STATISTICS AND PROBABILITY</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>PHYSICAL EDUCATION AND HEALTH</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>PHYSICAL SCIENCE</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                        </table>
+
+                        <div class="printable-footer">
+                            Date Printed: <strong>4/1/2020</strong>
+                        </div>
+
+                        <!-- Print Button -->
+                        <div class="modal-buttons">
+                            <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+        const wordArray = (path.split("/"));
+        const studentName = ((wordArray[wordArray.length - 1]));
+        findStudent(studentName);
+    });
+    var studentId;
+    async function findStudent(studentName) {
+        const response = await fetch(`/students/find-student/name/${studentName}`);
+        if (!response.ok) { alert("student record no found"); }
+        const student = await response.json();
+
+        document.getElementById("stud-type").textContent = student.status;
+        document.getElementById("transferee").textContent = (student.transferee === "true" || student.transferee) ? "YES" : "NO";
+        document.getElementById("student-id").value = student.studentDisplayId;
+        document.getElementById("firstName").value = student.firstName;
+        document.getElementById("middleName").value = student.middleName;
+        document.getElementById("lastName").value = student.lastName;
+        document.getElementById("gender").value = student.gender;
+        document.getElementById("birthdate").value = student.birthdate;
+        document.getElementById("placeOfBirth").value = student.birthPlace;
+
+        document.getElementById("fatherName").value = student.fatherName;
+        document.getElementById("fatherOccupation").value = student.fatherOccupation;
+        document.getElementById("motherName").value = student.motherName;
+        document.getElementById("motherOccupation").value = student.motherOccupation;
+        document.getElementById("guardianName").value = student.guardianName;
+        document.getElementById("guardianOccupation").value = student.fatherOccupation;
+        document.getElementById("guardianContactNumber").value = student.guardianContactNum;
+        document.getElementById("guardianAddress").value = student.guardianAddress;
+
+        document.getElementById("street").value = student.address.street;
+        document.getElementById("barangay").value = student.address.barangay;
+        document.getElementById("city").value = student.address.city;
+        document.getElementById("lastGradeLevelCompleted").value = student.currentGradeLevel ? student.currentGradeLevel.levelName : 'None';
+        document.getElementById("lastMadrasaYearCompleted").value = student.lastMadrasaYearCompleted;
+        document.getElementById("madrasaNameLastAttended").value = student.madrasaName;
+        document.getElementById("madrasaAddress").value = student.madrasaAddress;
+        fetchTransRequirements("transReqRecord", student.transfereeRequirements);
+
+        studentId = student.studentId;
+        fetchRemainingFees();
+        setStudentGrades();
+        setUpDistribution(student.fullName)
+    }
+    async function setStudentGrades() {
+        const response = await fetch(`/student-grades/student/${studentId}`);
+        if (!response.ok) { return; }
+
+        const grades = await response.json();
+        const gradesview = document.getElementById("grades-container");
+        gradesview.innerHTML = ""; // clear previous content
+      
+        // 👉 Check if no grades were returned
+        if (!grades || grades.length === 0) {
+            gradesview.innerHTML = `
+            <div class="no-records-message">
+                <p>No grade records found for this student.<p>
+            </div>`;
+            return;
+        }
+
+        grades.forEach(sem => {
+            var allFilled = true;
+            let gradesRow = '';
+            let totalGrade = 0;
+            let count = 0;
+
+            sem.grades.forEach(grade => {
+                if (allFilled) {
+                    allFilled = grade.subjectGrade;
+                }
+                totalGrade += grade.subjectGrade;
+                count++;
+                gradesRow += `
+                <tr>
+                    <td>${grade.subjectName}</td>
+                    <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status" id="grade-remarks">
+                                ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
+                            </div>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+
+            const average = totalGrade / count;
+
+            const semesterFormatted = sem.sectionSemester.includes("First semester")
+                ? sem.sectionSemester.replace("First semester", "1st Sem")
+                : sem.sectionSemester.includes("Second semester")
+                    ? sem.sectionSemester.replace("Second semester", "2nd Sem")
+                    : sem.sectionSemester;
+
+            const row = document.createElement("div");
+            row.classList.add("column-main");
+
+            row.innerHTML = `
+            <div class="table-container">
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="grade-table-header">
+                        <div>
+                            <label>SY & Sem:</label>
+                            <h6 id="sy">${semesterFormatted}</h6>
+                        </div>
+                        <div>
+                            <label>Level:</label>
+                            <h6>${sem.gradeSection}</h6>
+                        </div>
+                    </div>
+                </div> <br>
+                <table class="mini-table" id="grades-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${gradesRow}
+                        <tr id="average-row">
+                            <td>Average</td>
+                            <td>${allFilled ? average : ""}</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status">
+                                        <div class="average-remarks">
+                                            ${average === "N/A" || !allFilled ? "" : (average > 49 ? "PASSED" : "FAILED")}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>`;
+
+            gradesview.appendChild(row);
+        });
+    }
+
+
+    async function setUpDistribution(fullName) {
+        try {
+            const claimed = false;
+            const response = await fetch(`/distributable/student-distribution/all?isClaimed=false&student=${fullName}&itemType=0&sortBy=none`);
+            if (!response.ok) {
+                console.error("Failed to fetch data:", response.status);
+                return;
+            }
+
+            const data = await response.json();
+
+            const tableBody = document.querySelector("#distribution-table tbody");
+            if (!tableBody) {
+                console.error("Table body not found");
+                return;
+            }
+
+            // Clear existing rows
+            tableBody.innerHTML = '';
+
+            if (!data.content || data.content.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="3">No records found</td></tr>`;
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+
+            data.content.forEach(studDis => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${studDis.itemName || 'N/A'}</td>
+                    <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
+                    <td>
+                        <div class="dropdown">
+                            <div class="action-container action">
+                                <button
+                                    data-open-modal="confirmationModal" class="add-something-btn"
+                                    data-action="itemDistributed"
+                                    data-message="Confirm item is distributed to the student"
+                                    data-item-id="${studDis.distId}">Distribute
+                                </button>
+                            </div>
+                        </div>
+                    </td>`;
+                fragment.appendChild(row);
+            });
+
+            tableBody.appendChild(fragment);
+
+        } catch (error) {
+            const tableBody = document.querySelector("#table-ko tbody");
+            if (tableBody) {
+                tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
+            }
+        }
+    }
+
+    function confirmDistribution() {
+        fetch(`/distributable/student-distribution/received/${selectedDistId}`, {
+            method: 'PUT'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(msg => {
+                showSuccessModal(msg);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    var selectedDistId;
+    document.body.addEventListener("click", function (event) {
+        const target = event.target.closest("[data-open-modal='confirmationModal']");
+        if (target) {
+            selectedDistId = target.getAttribute("data-item-id");
+        }
+    });
+
+    async function fetchRemainingFees() {
+        console.log(`/paymentrecord/form/${studentId}`);
+        const feesTable = document.querySelector("#payment-table tbody");
+        const response = await fetch(`/paymentrecord/form/${studentId}`);
+        if (!response.ok) { return; }
+
+        const remainingFees = await response.json();
+
+        feesTable.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
+        if (remainingFees.feesAndBalance.length === 0) { return; }
+        feesTable.innerHTML = ``;
+        document.getElementById("total-balance").textContent = `P${remainingFees.totalFee}`;
+        remainingFees.feesAndBalance.forEach(data => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${data.fee.name}</td>
+                <td>${data.totalRequired}</td>
+                <td>${data.totalPaid}</td>
+                <td>
+                    <div class="status-container">
+                        <div class="status" id="status-payments">${data.totalPaid > 0 ? "Partially Paid" : "Not Paid"}</div>
+                    </div>
+                </td>
+                <td><span>P</span>${data.balance}</td>`;
+            feesTable.appendChild(row);
+        });
+    }
+
+    function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
+        fetch("/trans-req/all")
+            .then(response => response.json())
+            .then(data => {
+                const reqContainer = document.getElementById(divId);
+                reqContainer.innerHTML = "";
+                data.forEach(transReq => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("checkbox-each");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `transReq-${transReq.levelId}`;
+                    checkbox.name = "transferRequirements";
+                    checkbox.value = transReq.id;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `transReq-${transReq.idd}`;
+                    label.textContent = transReq.name;
+
+                    if (reqIds.includes(transReq.id)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    reqContainer.appendChild(paymentDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+</script>
+
+</html>

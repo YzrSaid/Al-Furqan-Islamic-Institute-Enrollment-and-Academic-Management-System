@@ -337,11 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (action === "make-inactive") {
         modalText.textContent =
           "Are you sure you want to make this school year inactive?";
-      } else if (action === "archive") {
-        modalText.textContent =
-          "Are you sure you want to archive this school year? Take note, you cannot access this schoole year once it is already in your archive";
       }
-
       modal.style.display = "block"; // Show the modal
 
       // Handle the confirmation button

@@ -2606,7 +2606,6 @@ input[type="checkbox"] {
 /* student list view modal (transaction page) */
 .view-student-list-modal-content {
   background: white !important;
-  padding: 30px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 900px;
@@ -3114,6 +3113,17 @@ input[type="checkbox"] {
 #view-grades-close-btn button,
 #add-payment-btn button {
   background-color: #28a745;
+  color: white;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  padding: 8px 30px;
+}
+#view-grades-close-btn button
+{
+  background-color: #dc3545;
   color: white;
   border: none;
   outline: none;

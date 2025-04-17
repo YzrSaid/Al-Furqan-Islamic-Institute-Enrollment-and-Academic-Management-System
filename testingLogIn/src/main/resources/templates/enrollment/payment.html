@@ -88,9 +88,7 @@
         <!-- Modal for listOfPaymentsModal -->
         <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
             <div class="list-of-payments-modal-content scroll-lock">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="listOfPaymentsModal">&times;</span>
-
+                <div class="modal-body">
                 <h2>List of Payments</h2>
 
                 <div class="half-width">
@@ -122,15 +120,13 @@
                     <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
                         Payment</button>
                 </div>
-
+            </div>
             </div>
         </div>
         <!-- Receipt Modal -->
         <div id="receiptModal" class="receipt-modal modal">
             <div class="printable-area">
                 <div class="receipt-modal-content scroll-lock">
-                    <!-- Close Button -->
-                    <span class="close-modal no-print" data-close-modal="receiptModal">&times;</span>
 
                     <!-- Receipt Header -->
                     <div class="header-container-payment">
@@ -212,6 +208,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
 
 
@@ -220,8 +217,7 @@
         <div id="addPaymentModal" class="add-payment-modal modal">
             <div class="printable-area">
                 <div class="add-payment-modal-content scroll-lock">
-                    <!-- Close Button -->
-                    <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
+                    <div class="modal-body">
                     <div class="header-container">
                         <h3>Payment Form</h3>
                     </div> <br>
@@ -298,7 +294,7 @@
                             data-message="Are you sure you want to save this payment?">Save Payment
                         </button>
                     </div>
-
+                </div>
                 </div>
             </div>
         </div>

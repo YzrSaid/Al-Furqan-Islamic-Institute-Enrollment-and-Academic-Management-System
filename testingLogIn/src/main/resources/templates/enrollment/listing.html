@@ -108,15 +108,14 @@
                                         <button type="button" id="dropdown-scholar"> <img
                                                 src="/images/icons/arrow-down.png" alt="dropdown-icon">
                                         </button>
-                                        
+
                                         <div id="scholar-popover" name="add-discount" class="styled-popover">
                                             <div id="discounts-rec" class="checkbox-transferee-reqs-group">
                                                 <!--Ibutang ang mga transferee requiremetns dri-->
                                             </div>
                                             <div>
                                                 <button type="button" style="width: 100%;"
-                                                    data-open-modal="confirmationModal"
-                                                    data-action="editDiscounts"
+                                                    data-open-modal="confirmationModal" data-action="editDiscounts"
                                                     data-message="Are you sure you want to update the student discounts?"
                                                     class="btn-confirm">Update</button>
                                             </div>
@@ -194,7 +193,8 @@
                                             <label for="address">Address:</label>
                                             <div class="student-form-group half-unique">
                                                 <input readonly type="text" id="street" required placeholder="Street">
-                                                <input readonly type="text" id="barangay" required placeholder="Barangay">
+                                                <input readonly type="text" id="barangay" required
+                                                    placeholder="Barangay">
                                                 <input readonly type="text" id="city" required placeholder="City">
                                             </div>
                                         </div>
@@ -304,91 +304,96 @@
     <!-- Modal for adding a section to what grade level it will be enrolled to (assessment) -->
     <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
         <div class="add-grade-level-assessment-modal-content scroll-lock">
-        <div class="modal-body">
-            <h2>Promote To</h2>
+            <div class="modal-body">
+                <h2>Promote To</h2>
 
-            <label for="grade-level">Grade Level:</label>
-            <input type="text" id="grade-level" readonly>
+                <label for="grade-level">Grade Level:</label>
+                <input type="text" id="grade-level" readonly>
 
-            <label for="section">Section:</label>
-            <select name="section" id="section">
-                <option value="" disabled selected>Choose</option>
-            </select>
+                <label for="section">Section:</label>
+                <select name="section" id="section">
+                    <option value="" disabled selected>Choose</option>
+                </select>
 
 
-           <div class="modal-buttons" style="display: flex;justify-content: center;align-items: center;gap: 24px;margin-top: 1rem;flex-wrap: wrap;width: 100%;">
-    <button type="button" class="btn-cancel" data-close-modal="addGradeLevelAssessmentModal">Cancel</button><button type="button" class="btn-confirm" data-action="proceedToPayment" data-message="Are you sure you want to proceed with payment?" data-open-modal="confirmationModal" title="Confirm Button">
-        Confirm
-    </button>
-    
-</div>
+                <div class="modal-buttons"
+                    style="display: flex;justify-content: center;align-items: center;gap: 24px;margin-top: 1rem;flex-wrap: wrap;width: 100%;">
+                    <button type="button" class="btn-cancel"
+                        data-close-modal="addGradeLevelAssessmentModal">Cancel</button><button type="button"
+                        class="btn-confirm" data-action="proceedToPayment"
+                        data-message="Are you sure you want to proceed with payment?"
+                        data-open-modal="confirmationModal" title="Confirm Button">
+                        Confirm
+                    </button>
 
+                </div>
+
+            </div>
         </div>
-    </div>
     </div>
 
     <!-- Modal for listOfPaymentsModal -->
     <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
         <div class="list-of-payments-modal-content scroll-lock">
-        <div class="modal-body">
-            <h2>List of Payments</h2>
+            <div class="modal-body">
+                <h2>List of Payments</h2>
 
-            <div class="half-width">
-                <label for="student-id-list">Student ID:</label>
-                <h6 id="student-id-list"></h6>
+                <div class="half-width">
+                    <label for="student-id-list">Student ID:</label>
+                    <h6 id="student-id-list"></h6>
+                </div>
+                <div class="half-width">
+                    <label for="student-name">Student Name:</label>
+                    <h6 id="student-name"></h6>
+                </div> <br>
+
+                <!-- List of Payments Table -->
+                <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Req. Amount</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+                <!-- Add Payment button -->
+                <div class="action" id="add-payment-btn">
+                    <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
+                        Payment</button>
+                </div>
             </div>
-            <div class="half-width">
-                <label for="student-name">Student Name:</label>
-                <h6 id="student-name"></h6>
-            </div> <br>
-
-            <!-- List of Payments Table -->
-            <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Req. Amount</th>
-                        <th>Amount Paid</th>
-                        <th>Balance</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-
-            <!-- Add Payment button -->
-            <div class="action" id="add-payment-btn">
-                <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
-                    Payment</button>
-            </div>
-        </div>
         </div>
     </div>
 
 
     <!-- Modal for listing add grade level -->
     <div id="gradeLevelModal" class="grade-level-modal modal">
-     <div class="grade-level-modal-content scroll-lock">
-        <div class="modal-body">
-            <h2>Enroll To</h2>
-            <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
-                <label for="levelName">Grade Level Name:</label>
-                <select name="levelName" id="levelName">
-                    <option value="" disabled>Choose a Grade Level</option>
-                </select>
-                <br><br>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-confirm" data-action="proceedAssessment"
-                        data-message="Are you sure you want to proceed this registration from Listing to Assessment?"
-                        id="confirmGradeLevel" data-open-modal="confirmationModal">
-                        Confirm
-                    </button>
-                    <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
-                </div>
-            </form>
+        <div class="grade-level-modal-content scroll-lock">
+            <div class="modal-body">
+                <h2>Enroll To</h2>
+                <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
+                    <label for="levelName">Grade Level Name:</label>
+                    <select name="levelName" id="levelName">
+                        <option value="" disabled>Choose a Grade Level</option>
+                    </select>
+                    <br><br>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="proceedAssessment"
+                            data-message="Are you sure you want to proceed this registration from Listing to Assessment?"
+                            id="confirmGradeLevel" data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
-     </div>
     </div>
 
     <!-- Error Modal -->
@@ -439,7 +444,7 @@
     <!-- Modal for viewing grades -->
     <div id="viewGradesModal" class="view-grades-modal modal">
         <div class="view-grades-modal-content scroll-lock">
-            
+
             <h2>Student Grades</h2>
 
             <div class="half-width view-studId" id="view-grade-studId">
@@ -612,7 +617,7 @@
 
                             <div class="student-form-group">
                                 <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
-                                <select required id="lastGradeLevelIdCompleted" class="lastGradeLevelCompletedSelect">
+                                <select id="lastGradeLevelIdCompleted" class="lastGradeLevelCompletedSelect">
                                 </select>
 
                                 <label for="studlastMadrasaYearCompleted">Last Madrasa Year Completed:</label>
@@ -622,12 +627,12 @@
 
                             <div class="student-form-group">
                                 <label for="studmadrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                                <input required type="text" id="studmadrasaNameLastAttended">
+                                <input type="text" id="studmadrasaNameLastAttended">
                             </div> <br>
 
                             <div class="student-form-group">
                                 <label for="studmadrasaAddress">Madrasa Address:</label>
-                                <input required type="text" id="studmadrasaAddress">
+                                <input type="text" id="studmadrasaAddress">
                             </div> <br>
                         </div>
                     </div>
@@ -747,88 +752,88 @@
         <div class="printable-area">
             <div class="add-payment-modal-content scroll-lock">
                 <div class="modal-body">
-                <div class="header-container">
-                    <h3>Payment Form</h3>
-                </div> <br>
-
-                <div class="payee-info-container" id="payee-info">
-                    <div class="half-width half-payee">
-                        <div>
-                            <label for="payee-id" id="label-id">Student ID:</label>
-                            <input type="text" id="payee-id" readonly>
-                        </div>
-                        <div>
-                            <label for="Date">Date:</label>
-                            <input type="date" id="date">
-                        </div>
-                    </div>
-
-                    <div class="full-width">
-                        <label for="payee-name">Student Name:</label>
-                        <input type="text" id="payee-name" readonly>
-                    </div>
-                    <div class="half-width half-payee">
-                        <div>
-                            <label for="semester" id="label-sem">Semester:</label>
-                            <input th:value="${currentSem}" type="text" id="semester" readonly>
-                        </div>
-                        <div>
-                            <label for="school-year">S.Y.</label>
-                            <input th:value="${currentSY}" type="text" id="school-year" readonly>
-                        </div>
-                    </div>
-                    <div class="full-width amount-container">
-                        <label for="amount" id="label-amount">Amount:</label>
-                        <div class="input-wrapper">
-                            <span class="currency-symbol">₱</span>
-                            <input type="number" max="0" id="payment-amount" placeholder="0.00">
-                        </div>
-                    </div>
-                </div>
-                <div class="payment-wrapper">
-                    <h6>Payment For:</h6>
-                    <div class="payment-container-group">
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
+                    <div class="header-container">
+                        <h3>Payment Form</h3>
                     </div> <br>
-                </div>
 
+                    <div class="payee-info-container" id="payee-info">
+                        <div class="half-width half-payee">
+                            <div>
+                                <label for="payee-id" id="label-id">Student ID:</label>
+                                <input type="text" id="payee-id" readonly>
+                            </div>
+                            <div>
+                                <label for="Date">Date:</label>
+                                <input type="date" id="date">
+                            </div>
+                        </div>
 
-                <div id="staff-receiver" class="collector-info-container">
-                    <h6>Received/Collected By:</h6>
-                    <div class="collector-name-container">
-                        <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                        <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        <div class="full-width">
+                            <label for="payee-name">Student Name:</label>
+                            <input type="text" id="payee-name" readonly>
+                        </div>
+                        <div class="half-width half-payee">
+                            <div>
+                                <label for="semester" id="label-sem">Semester:</label>
+                                <input th:value="${currentSem}" type="text" id="semester" readonly>
+                            </div>
+                            <div>
+                                <label for="school-year">S.Y.</label>
+                                <input th:value="${currentSY}" type="text" id="school-year" readonly>
+                            </div>
+                        </div>
+                        <div class="full-width amount-container">
+                            <label for="amount" id="label-amount">Amount:</label>
+                            <div class="input-wrapper">
+                                <span class="currency-symbol">₱</span>
+                                <input type="number" max="0" id="payment-amount" placeholder="0.00">
+                            </div>
+                        </div>
                     </div>
+                    <div class="payment-wrapper">
+                        <h6>Payment For:</h6>
+                        <div class="payment-container-group">
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                            <div class="payment-item">
+                                <input type="checkbox" id="" name="payment" value="payment">
+                                <label for="payment">Book</label>
+                            </div>
+                        </div> <br>
+                    </div>
+
+
+                    <div id="staff-receiver" class="collector-info-container">
+                        <h6>Received/Collected By:</h6>
+                        <div class="collector-name-container">
+                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        </div>
+                    </div>
+
+
+                    <div class="modal-buttons payment-modal-buttons">
+                        <button class="no-print" onclick="printReport()">Print Report</button>
+
+                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                            data-open-modal="confirmationModal" data-action="savePayment"
+                            data-message="Are you sure you want to save this payment?">Save Payment
+                        </button>
+                    </div>
+
                 </div>
-
-
-                <div class="modal-buttons payment-modal-buttons">
-                    <button class="no-print" onclick="printReport()">Print Report</button>
-
-                    <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                        data-open-modal="confirmationModal" data-action="savePayment"
-                        data-message="Are you sure you want to save this payment?">Save Payment
-                    </button>
-                </div>
-
             </div>
         </div>
-    </div>
     </div>
 </body>
 
@@ -1638,12 +1643,12 @@
         document.getElementById("madrasaNameLastAttended").value = studentProf.madrasaName;
         document.getElementById("madrasaAddress").value = studentProf.madrasaAddress;
         fetchTransRequirements("transfereeReq-rec", studentProf.transfereeRequirements);
-        fetchDiscounts("discounts-rec",studentProf.discountsAvailed);
+        fetchDiscounts("discounts-rec", studentProf.discountsAvailed);
 
         toggleTransfereeSection(studentProf.transferee);
     }
 
-    function updateDiscounts(){
+    function updateDiscounts() {
         const selectedTransReq = [];
         document.querySelectorAll("#discounts-rec input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
@@ -2076,6 +2081,31 @@
             }
         }
     });
+
+    // this will hide and unhide the transferee-section when user checks and unchecks the checkbox
+    document.addEventListener("DOMContentLoaded", function () {
+        const transfereeCheckbox = document.getElementById("isTransfereeRec");
+        const transfereeFields = document.getElementById("transfereeFields");
+
+        // Select all inputs/selects inside the transferee fields that may be required
+        const requiredInputs = transfereeFields.querySelectorAll("input, select, textarea");
+
+        transfereeCheckbox.addEventListener("change", function () {
+            if (this.checked) {
+                transfereeFields.style.display = "block";
+                requiredInputs.forEach(input => {
+                    input.setAttribute("required", "required");
+                });
+            } else {
+                transfereeFields.style.display = "none";
+                requiredInputs.forEach(input => {
+                    input.removeAttribute("required");
+                });
+            }
+        });
+    });
+
+    // this will validate the school year 
 </script>
 
 </html>

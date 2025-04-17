@@ -35,10 +35,11 @@ public class SecurityConfig {
                     .authorizeHttpRequests(req -> req
                         .requestMatchers("/css/**", "/website-logo", "/website-cover",
                                             "/images/**","/js/*","/signing","/register/add","/authentication/**","/forgot-password","/reset-password/{token}").permitAll()
-                        .requestMatchers("/maintenance/**","/settings/**","/accounts/**").hasAnyAuthority("ADMIN")
-                            .requestMatchers("/reports/*","/enrollment/**","/transaction/**","/accounts/my-account").hasAnyAuthority("ADMIN","ENROLLMENT_STAFF")
-                            .requestMatchers("/schedule/**","/grade-management/**","/class-list/**","/accounts/my-account").hasAnyAuthority("ADMIN","TEACHER")
-                            .requestMatchers("/class-schedule","/personal-profile","/grades").hasAnyAuthority("STUDENT")
+                        .requestMatchers("/reports/*","/enrollment/**","/transaction/**").hasAnyAuthority("ADMIN","ENROLLMENT_STAFF")
+                        .requestMatchers("/schedule/**","/grade-management/**","/class-list/**").hasAnyAuthority("ADMIN","TEACHER")
+                        .requestMatchers("/maintenance/**","/settings/**","/accounts/student-accounts","/accounts/verify-accounts","/accounts/manage-accounts").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/accounts/my-account").hasAnyAuthority("ADMIN","TEACHER","ENROLLMENT_STAFF")
+                        .requestMatchers("/class-schedule","/personal-profile","/grades").hasAnyAuthority("STUDENT")
                         .anyRequest().authenticated()
                     )
                     .formLogin(form -> form.loginPage("/login").permitAll()

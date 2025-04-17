@@ -233,7 +233,7 @@
 
                 data.forEach(teacher => {
                     let option = document.createElement("option");
-                    option.value = `${teacher.firstname} ${teacher.lastname}`
+                    option.value = teacher.staffId;
                     option.textContent = `${teacher.firstname} ${teacher.lastname}`; // Concatenate first and last name
                     adviserSelect.appendChild(option);
                     console.log(teacher);
@@ -254,7 +254,7 @@
                 advisers.forEach(adviser => {
                     console.log(adviser);
                     const option = document.createElement("option");
-                    option.value = adviser.fullName;
+                    option.value = teacher.staffId;
                     option.textContent = adviser.fullName;
 
                     if (adviser.adviserName === currentAdviser) {
@@ -364,10 +364,6 @@
 
 
     function addSection() {
-        const actionUrl = "/section/add";
-        const method = "POST";
-
-        // Collect input values
         const adviser = document.getElementById("adviser").value;
 
         // Validate if a prerequisite is selected
@@ -380,13 +376,13 @@
             gradeLevelName: document.getElementById("gradeLevel").value,
             sectionName: document.getElementById("sectionName").value,
             capacity: document.getElementById("capacity").value,
-            adviserName: document.getElementById("adviser").value
+            adviserId: document.getElementById("adviser").value
         };
 
         // console.log("Sending data:", JSON.stringify(formData));
 
-        fetch(actionUrl, {
-            method: method,
+        fetch("/section/add", {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -422,11 +418,8 @@
             sectionName: document.getElementById("sectionNameEdit").value,
             gradeLevelName: document.getElementById("gradeLevelEdit").value,
             capacity: document.getElementById("capacityEdit").value,
-            adviserName: document.getElementById("adviserEdit").value
+            adviserId: document.getElementById("adviserEdit").value
         };
-
-        console.log("📌 Sending Data:", JSON.stringify(sectionData)); // Debugging
-
         fetch("/section/update", {
             method: "PUT",
             headers: {

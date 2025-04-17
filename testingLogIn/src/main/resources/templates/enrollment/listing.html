@@ -33,7 +33,7 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button type="button" class="btn-confirm" onclick='fetchDiscounts("add-scholar-popover")'
+                        <button type="button" class="btn-confirm"
                             data-open-modal="newStudentModal" title="Add New Student">Add New Student</button>
                     </div>
                 </div>
@@ -1189,11 +1189,12 @@
         document.querySelectorAll("input[name='transferRequirements']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
+        console.log(selectedTransReq);
         const selectedDiscounts = [];
         document.querySelectorAll("input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedDiscounts.push(checkbox.value);
         });
-
+        console.log(selectedTransReq);
         const birthplace =
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
@@ -1221,10 +1222,10 @@
             guardianOccupation: document.getElementById("studguardianOccupation")?.value?.trim() || null,
             guardianContactNum: document.getElementById("studguardianContactNumber")?.value?.trim() || null,
             guardianAddress: document.getElementById("studguardianAddress")?.value?.trim() || null,
-            transferee: document.getElementById("isTransferee").checked,
+            transferee: document.getElementById("isTransfereeRec").checked,
             lastGradeLevelId: document.getElementById("lastGradeLevelIdCompleted").options[document.getElementById("lastGradeLevelIdCompleted").selectedIndex].value,
             lastMadrasaYearCompleted: document.getElementById("studlastMadrasaYearCompleted")?.value?.trim() || null,
-            madrasaNameLastAttended: document.getElementById("studmadrasaNameLastAttended")?.value?.trim() || null,
+            madrasaName: document.getElementById("studmadrasaNameLastAttended")?.value?.trim() || null,
             madrasaAddress: document.getElementById("studmadrasaAddress")?.value?.trim() || null,
             transfereeRequirements: selectedTransReq,
             discountsAvailed: selectedDiscounts
@@ -1571,10 +1572,8 @@
             .then(response => response.json())
             .then(data => {
                 const reqContainer = document.getElementById(divId);
-                console.log(reqContainer);
                 reqContainer.innerHTML = "";
 
-                // Add wrapper for consistent layout like fetchDiscounts
                 const reqWrapper = document.createElement("div");
                 reqWrapper.classList.add("checkbox-container-popover");
 
@@ -1653,7 +1652,6 @@
         document.querySelectorAll("#discounts-rec input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
-        console.log(selectedTransReq);
         fetch(`/discounts/add-student-discounts/${toUpdateRecStudent}`, {
             method: 'POST',
             headers: {
@@ -1684,7 +1682,6 @@
         document.querySelectorAll("#transfereeReq-rec input[name='transferRequirements']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
-        console.log(updateRequirements);
         fetch(`/trans-req/add/student-requirements/${toUpdateRecStudent}`, {
             method: 'POST',
             headers: {
@@ -2086,21 +2083,30 @@
     document.addEventListener("DOMContentLoaded", function () {
         const transfereeCheckbox = document.getElementById("isTransfereeRec");
         const transfereeFields = document.getElementById("transfereeFields");
-
-        // Select all inputs/selects inside the transferee fields that may be required
         const requiredInputs = transfereeFields.querySelectorAll("input, select, textarea");
 
         transfereeCheckbox.addEventListener("change", function () {
             if (this.checked) {
+                fetchTransRequirements();
                 transfereeFields.style.display = "block";
                 requiredInputs.forEach(input => {
                     input.setAttribute("required", "required");
                 });
             } else {
+                document.getElementById("transfereeReq").innerHTML = ``;
                 transfereeFields.style.display = "none";
                 requiredInputs.forEach(input => {
                     input.removeAttribute("required");
                 });
+            }
+        });
+        document.getElementById("add-scholar-popover").innerHTML= ``;
+        const isScholarship = document.getElementById("scholar");
+        isScholarship.addEventListener("change", function(){
+            if (this.checked) {
+                fetchDiscounts();
+            } else {
+                document.getElementById("add-scholar-popover").innerHTML= ``;
             }
         });
     });

@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.example.testingLogIn.StatisticsModel.StatisticsServices;
 import com.example.testingLogIn.WebsiteConfiguration.SchoolProfile;
 import com.example.testingLogIn.WebsiteConfiguration.SchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,10 @@ public class sySemesterServices {
     private final SchoolProfileRepo schoolProfileRepo;
     private final StudentSubjectGradeRepo ssgr;
     private final SubjectRepo subjectRepo;
+    private final StatisticsServices statisticsServices;
 
     @Autowired
-    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo, RequiredPaymentsRepo reqFee, StudentRepo studentRepo, SchoolProfileRepo schoolProfileRepo, StudentSubjectGradeRepo ssgr, SubjectRepo subjectRepo) {
+    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo, RequiredPaymentsRepo reqFee, StudentRepo studentRepo, SchoolProfileRepo schoolProfileRepo, StudentSubjectGradeRepo ssgr, SubjectRepo subjectRepo, StatisticsServices statisticsServices) {
         this.semesterRepo = semesterRepo;
         this.syRepo = syRepo;
         this.reqFee = reqFee;
@@ -48,6 +50,7 @@ public class sySemesterServices {
         this.schoolProfileRepo = schoolProfileRepo;
         this.ssgr = ssgr;
         this.subjectRepo = subjectRepo;
+        this.statisticsServices = statisticsServices;
     }
 
     public void addSemesters(String schoolYearName){
@@ -110,6 +113,8 @@ public class sySemesterServices {
             reqFee.setRequiredFeesActive();
             subjectRepo.activeAll();
             studentRepo.setNewStudentsToOld();
+            statisticsServices.setEnrolledCount(sem);
+            statisticsServices.setPreEnrolledCount(sem);
         },dbExecutor).exceptionally(ex -> {
             ex.printStackTrace();
             return null;

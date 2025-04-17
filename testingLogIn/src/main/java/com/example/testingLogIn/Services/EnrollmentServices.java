@@ -1,6 +1,6 @@
 package com.example.testingLogIn.Services;
 
-import com.example.testingLogIn.CountersService.SectionStudentCountServices;
+import com.example.testingLogIn.CountersRepositories.SectionStudentCountServices;
 import com.example.testingLogIn.CustomObjects.*;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.Enums.StudentStatus;
@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import com.example.testingLogIn.StatisticsModel.StatisticsServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,9 +37,10 @@ public class EnrollmentServices {
     private final PaymentRecordService paymentService;
     private final DistributableServices distributableServices;
     private final PaymentRecordService paymentRecordService;
+    private final StatisticsServices statisticsServices;
 
     @Autowired
-    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo,  StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, DistributableServices distributableServices, PaymentRecordService paymentRecordService) {
+    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, DistributableServices distributableServices, PaymentRecordService paymentRecordService, StatisticsServices statisticsServices) {
         this.enrollmentRepo = enrollmentRepo;
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
@@ -52,6 +54,7 @@ public class EnrollmentServices {
         this.paymentService = paymentService;
         this.distributableServices = distributableServices;
         this.paymentRecordService = paymentRecordService;
+        this.statisticsServices = statisticsServices;
     }
 
     @CacheEvict(value = "enrollmentPage",allEntries = true)
@@ -68,6 +71,7 @@ public class EnrollmentServices {
         enroll.setSYSemester(currentSem);
         enroll.setNotDeleted(true);
         enrollmentRepo.save(enroll);
+        statisticsServices.updatePreEnrolledCount(currentSem,false);
         return true;
     }
 
@@ -164,6 +168,9 @@ public class EnrollmentServices {
             CompletableFuture<Void> addStudentGrades = CompletableFuture.runAsync(() -> ssgService.addStudentGrades(enrollmentRecord));
             CompletableFuture<Void> addFeesRecord = CompletableFuture.runAsync(() -> studFeeListService.addFeesRecord(enrollmentRecord));
             CompletableFuture<Void> setItemToReceive = CompletableFuture.runAsync(() -> distributableServices.setStudentItemToReceive(enrollmentRecord));
+            CompletableFuture<Void> updateStatistic = CompletableFuture.runAsync(()->{
+                statisticsServices.updatePreEnrolledCount(enrollmentRecord.getSYSemester(),true);
+                statisticsServices.updateEnrolledCount(enrollmentRecord.getSYSemester());});
             CompletableFuture.allOf(updateStudent,addFeesRecord,addStudentGrades,setItemToReceive,updateSection).join();
 
             return 2;

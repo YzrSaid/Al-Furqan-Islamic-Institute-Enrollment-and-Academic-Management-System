@@ -1,7 +1,6 @@
 package com.example.testingLogIn.StatisticsModel;
 
 import com.example.testingLogIn.Models.SchoolYearSemester;
-import com.example.testingLogIn.Models.Student;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

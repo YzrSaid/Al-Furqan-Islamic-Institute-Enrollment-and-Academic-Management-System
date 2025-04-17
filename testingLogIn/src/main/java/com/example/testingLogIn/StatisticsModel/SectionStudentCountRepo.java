@@ -1,6 +1,5 @@
-package com.example.testingLogIn.CountersRepositories;
+package com.example.testingLogIn.StatisticsModel;
 
-import com.example.testingLogIn.StatisticsModel.SectionStudentCount;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

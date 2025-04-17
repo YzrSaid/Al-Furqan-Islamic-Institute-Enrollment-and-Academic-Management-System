@@ -1,6 +1,6 @@
 package com.example.testingLogIn.Services;
 
-import com.example.testingLogIn.CountersService.SectionStudentCountServices;
+import com.example.testingLogIn.CountersRepositories.SectionStudentCountServices;
 import com.example.testingLogIn.CustomComparator.SectionComparator;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
@@ -57,7 +57,7 @@ public class SectionServices {
     
     //FOR ADDING NEW SECTION
     public int addSection(SectionDTO sectionDTO){
-        UserModel user= getUserByFullName(sectionDTO.getAdviserName());
+        UserModel user= getTeacherById(sectionDTO.getAdviserId());
         GradeLevel gradeLevel = getGradeLevel(sectionDTO.getGradeLevelName());
         int result = user == null ?             1:
                      gradeLevel == null ?       2:
@@ -123,7 +123,7 @@ public class SectionServices {
         Section toUpdate = sectionRepo.findById(sectionDTO.getNumber()).orElse(null);
         if(toUpdate != null){
             toUpdate.setLevel(getGradeLevel(sectionDTO.getGradeLevelName()));
-            toUpdate.setAdviser(getUserByFullName(sectionDTO.getAdviserName()));
+            toUpdate.setAdviser(getTeacherById(sectionDTO.getAdviserId()));
             toUpdate.setSectionName(sectionDTO.getSectionName());
             toUpdate.setCapacity(sectionDTO.getCapacity());
             toUpdate.setNotDeleted(true);
@@ -177,11 +177,8 @@ public class SectionServices {
                           .findFirst().orElse(null) !=null;
     }
     
-    private UserModel getUserByFullName(String teacherName){
-        return userRepo.findAll().stream()
-                       .filter(user -> teacherName.contains(user.getFirstname()) &&
-                                       teacherName.contains(user.getLastname()))
-                       .findFirst().orElse(null);
+    private UserModel getTeacherById(int staffId){
+        return userRepo.findById(staffId).orElse(null);
     }
     
     private GradeLevel getGradeLevel(String levelName){

@@ -259,4 +259,13 @@ public class PrivateTemplateControllers {
     public String getSchedBoard() {
         return "/schedule/sched-board";
     }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword(){
+        return "password-reset/forgot-password";
+    }
+    @GetMapping("/reset-password/{token}")
+    public String resetPassword(){
+        return "password-reset/reset-password";
+    }
 }

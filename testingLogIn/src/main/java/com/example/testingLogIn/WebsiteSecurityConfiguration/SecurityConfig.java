@@ -34,7 +34,7 @@ public class SecurityConfig {
         return  http.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(req -> req
                         .requestMatchers("/css/**", "/website-logo", "/website-cover",
-                                            "/images/**","/js/*","/signing","/register/add").permitAll()
+                                            "/images/**","/js/*","/signing","/register/add","/authentication/**","/forgot-password","/reset-password/{token}").permitAll()
                         .requestMatchers("/maintenance/**","/settings/**","/accounts/**").hasAnyAuthority("ADMIN")
                             .requestMatchers("/reports/*","/enrollment/**","/transaction/**","/accounts/my-account").hasAnyAuthority("ADMIN","ENROLLMENT_STAFF")
                             .requestMatchers("/schedule/**","/grade-management/**","/class-list/**","/accounts/my-account").hasAnyAuthority("ADMIN","TEACHER")
@@ -44,7 +44,7 @@ public class SecurityConfig {
                     .formLogin(form -> form.loginPage("/login").permitAll()
                             .defaultSuccessUrl("/home", true)
                             .failureHandler(customAuthenticationFailureHandler))  // Custom login page
-                    //.httpBasic(Customizer.withDefaults())  // Enable basic authentication (for Postman)
+                    .httpBasic(Customizer.withDefaults())  // Enable basic authentication (for Postman)
                     .logout(c -> c.invalidateHttpSession(true))
                     .build();
     }

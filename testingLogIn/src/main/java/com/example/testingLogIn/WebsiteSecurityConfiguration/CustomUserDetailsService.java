@@ -150,6 +150,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         return null;
     }
 
+    public void changeUserPassword(UserModel user, String newPassword){
+        user.setPassword(encoder.encode(newPassword));
+        userRepo.save(user);
+    }
+
     public StudentDTO getCurrentlyLoggedInStudent(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {

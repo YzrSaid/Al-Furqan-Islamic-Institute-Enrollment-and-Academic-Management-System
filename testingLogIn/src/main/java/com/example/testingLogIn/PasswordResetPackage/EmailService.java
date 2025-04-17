@@ -16,10 +16,9 @@ public class EmailService {
     private final Session session;
 
     public EmailService(){
-        String to = "eh202200596@wmsu.edu.ph";
-        String from = "magnoclifford42@gmail.com";
-        String username = "magnoclifford42@gmail.com";
-        String password = "ggiv ohop xrwd aehy";
+        String from = "emailnmo";
+        String username = "emailnmo";
+        String password = "ang password";
         prop = new Properties();
         prop.put("mail.smtp.auth", "true");
         prop.put("mail.smtp.starttls.enable", "true");

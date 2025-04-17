@@ -92,6 +92,19 @@ public class DiscountsController {
         }
     }
 
+    @PostMapping("/add-student-discounts/{studentId}")
+    public ResponseEntity<String> addStudentDiscounts(@PathVariable int studentId, @RequestBody MultipleInteger ids){
+        try{
+            discountsServices.addStudentDiscounts(studentId,ids.getIds());
+            return new ResponseEntity<>("Student Discounts Updated Successfully",HttpStatus.OK);
+        }catch (NullPointerException npe){
+            npe.printStackTrace();
+            return new ResponseEntity<>("Student record not found.",HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>("Server Issue. Try again later.",HttpStatus.CONFLICT);
+        }
+    }
+
     @PutMapping("/add-student-discount/{discountId}/{studentId}")
     public ResponseEntity<String> addStudentsDiscount(@PathVariable int discountId,
                                                       @PathVariable int studentId){

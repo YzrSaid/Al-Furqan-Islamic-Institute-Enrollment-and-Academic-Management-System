@@ -891,6 +891,12 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "deleteStudDisc":
         break;
+      case "updateRequirements":
+        updateRequirements();
+        break;
+      case "editDiscounts":
+        updateDiscounts();
+        break;
       default:
         alert("Unknown action: " + action);
         return;

@@ -88,7 +88,6 @@
                     <table id="realginnas-printable" class="printable-table">
                         <thead>
                             <tr>
-                                <th>No.</th>
                                 <th>Student Name</th>
                                 <th>Date Paid</th>
                                 <th>Transaction No.</th>
@@ -119,7 +118,6 @@
             <table id="realginnas" class="payment-table main-table">
                 <thead>
                     <tr>
-                        <th>No.</th>
                         <th>Student Name</th>
                         <th>Date Paid</th>
                         <th>Transaction Number</th>
@@ -168,15 +166,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Background overlay -->
-        <div id="successModalOverlay"></div>
-
-        <!-- Success modal -->
-        <div id="successModal">
-            <p id="successModalMessage"></p>
-        </div>
-
 
         <!-- Modal for view student list -->
         <div id="viewStudentListModal" class="view-student-list-modal modal">
@@ -571,7 +560,6 @@
             const sortBy = document.getElementById("view-by-select").value;
             if (sortBy == "Transaction" || sortBy == "Voided") {
                 document.querySelector("#realginnas thead").innerHTML = `
-                <th>No.</th>
                 <th>Student Name</th>
                 <th>Date Paid</th>
                 <th>Transaction Number</th>
@@ -579,7 +567,6 @@
                 <th>Action</th>`;
             } else {
                 document.querySelector("#realginnas thead").innerHTML = `
-                <th>No.</th>
                 <th>Student Name</th>
                 <th>Date Paid</th>
                 <th>Particular</th>
@@ -604,7 +591,6 @@
                         let row = document.createElement("tr");
 
                         row.innerHTML = `
-                        <td>TBA</td>
                         <td>${rec.studentName}</td>
                         <td>${rec.date}</td>
                         <td>${rec.transactionReference}</td>
@@ -951,9 +937,8 @@
                             <td>
                                 <div class="dropdown">
                                     <div class="action-container action">
-                                        <img src="/images/icons/eye.png" onclick="viewToPaid(${stud.studentId})"
-                                        data-open-modal="listOfPaymentsModal"
-                                            alt="edit-icon">
+                                        <button onclick="viewToPaid(${stud.studentId})"
+                                        data-open-modal="listOfPaymentsModal">View List of Payments</button>
 
                                     </div>
                                 </div>

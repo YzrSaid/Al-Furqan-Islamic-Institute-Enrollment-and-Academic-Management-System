@@ -451,7 +451,7 @@
                             </a>`
                             : `
                                 <a style="pointer-events: none; opacity: 0.5; color: gray;">
-                                   Pay minimum to each fee/s
+                                   Minimum payment is required to each fee/s
                                 </a>`;
 
                         // Build row content
@@ -459,7 +459,7 @@
                             <td>${rec.student.studentDisplayId || "N/A"}</td>
                             <td>${rec.student.fullName}</td>
                             <td>${sectionToEnroll}</td>
-                            <td>
+                            <td>${rec.complete ? "COMPLETE" : "INCOMPLETE"}
                             <div class="dropdown">
                                 <div class="status-container">
                                 <button class="dropdown-status-btn">

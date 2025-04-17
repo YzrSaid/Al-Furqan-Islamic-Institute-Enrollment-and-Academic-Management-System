@@ -216,6 +216,7 @@
                         </select>
                     </td>
                     <td>
+                    ${enr.qualified ? "QUALIFIED" : "NOT QUALIFIED"}
                         <div class="dropdown">
                             <div class="status-container">
                                 <button class="dropdown-status-btn"><i class="fas fa-chevron-down"></i></button>
@@ -229,7 +230,7 @@
                                    data-open-modal="addGradeLevelAssessmentModal"
                                    data-enrollment-id="${enr.enrollmentId}" data-grade-level-id="${enr.gradeLevelToEnroll}"
                                    ${enr.qualified ? '' : 'style="pointer-events: none; opacity: 0.5; color: gray;"'}>
-                                   ${enr.qualified ? 'Proceed' : 'Not Qualified'}
+                                   Proceed
                                 </a>
                             </div>
                         </div>

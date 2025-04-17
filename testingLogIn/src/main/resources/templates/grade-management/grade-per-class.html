@@ -63,76 +63,75 @@
         </div>
 
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const path = window.location.pathname;
-                const pathParts = path.split('/');
-                const sectionId = pathParts[pathParts.length - 1];
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+        const pathParts = path.split('/');
+        const sectionId = pathParts[pathParts.length - 1];
 
-                setTextLink(sectionId);
-                getSubjectAndTeacher(sectionId);
+        setTextLink(sectionId);
+        getSubjectAndTeacher(sectionId);
+    });
+
+    function setTextLink(sectionId) {
+        fetch(`/section/${sectionId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                const textLink = document.querySelector("#sectionName");
+                textLink.innerHTML = `
+                    <h4>${data.gradeLevelName} - ${data.sectionName}</h4>
+                    <p>Main</p>
+                    <p>/</p>
+                    <p>Grade Management</p>
+                    <p>/</p>
+                    <p id="grade-and-section">${data.gradeLevelName} - ${data.sectionName}</p>
+                `;
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
             });
+    }
 
-            function setTextLink(sectionId) {
-                fetch(`/section/${sectionId}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json(); // Parse the response as JSON
-                    })
-                    .then(data => {
-                        const textLink = document.querySelector("#sectionName");
-                        textLink.innerHTML = `
-                            <h4>${data.gradeLevelName} - ${data.sectionName}</h4>
-                            <p>Main</p>
-                            <p>/</p>
-                            <p>Grade Management</p>
-                            <p>/</p>
-                            <p id="grade-and-section">${data.gradeLevelName} - ${data.sectionName}</p>
+    function getSubjectAndTeacher(sectionId) {
+        fetch(`/schedules/section-subjects/${sectionId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                const tableBody = document.querySelector("#fine-dining-restaurant-table tbody");
+                tableBody.innerHTML = "";
+
+                Object.entries(data).forEach(([key, value]) => {
+                    console.log("Value is :" + value);
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${value.subject}</td>
+                            <td>${value.teacherName}</td>
+                            <td>${value.gradedCount}/${value.toBeGradedCount}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <div class="action-container action">
+                                        <a href="/grade-management/subject/${sectionId}/${value.subjectId}"><button>View Student Grades</button></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                         `;
-                    })
-                    .catch(error => {
-                        console.error("Error fetching data:", error);
-                    });
-            }
-
-            function getSubjectAndTeacher(sectionId) {
-                fetch(`/schedules/section-subjects/${sectionId}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json(); // Parse the response as JSON
-                    })
-                    .then(data => {
-                        const tableBody = document.querySelector("#fine-dining-restaurant-table tbody");
-                        tableBody.innerHTML = "";
-
-                        Object.entries(data).forEach(([key, value]) => {
-                            console.log("Value is :" + value);
-                            const row = document.createElement("tr");
-                            row.innerHTML = `
-                                <td>${value.subject}</td>
-                                    <td>${value.teacherName}</td>
-                                    <td>${value.gradedCount}/${value.toBeGradedCount}</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <div class="action-container action">
-                                                <a href="/grade-management/subject/${sectionId}/${value.subjectId}" class="view-per-subject"><img src="/images/icons/compose.png"
-                                                        alt="edit-icon"></a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                `;
-                            tableBody.appendChild(row);
-                        });
-                    })
-                    .catch(error => {
-                        console.error("Error fetching data:", error);
-                    });
-            }
-        </script>
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    }
+</script>
 
 </html>

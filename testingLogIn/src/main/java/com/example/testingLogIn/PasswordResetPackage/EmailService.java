@@ -14,9 +14,9 @@ public class EmailService {
     private final Properties prop;
     private final Authenticator authenticator;
     private final Session session;
-
+    private final String username;
     public EmailService(){
-        String username = "imong gmail";
+        username = "imong gmail";
         String password = "imong app password";
         prop = new Properties();
         prop.put("mail.smtp.auth", "true");
@@ -50,16 +50,16 @@ public class EmailService {
     public void sendPasswordResetEmail(String recipientEmail, String token) {
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("magnoclifford42@gmail.com"));
+            message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipientEmail));
             message.setSubject("Password Reset Request");
-            String resetLink = "localhost:8081/reset-password/" + token;
+            String resetLink = "http://localhost:8081/reset-password/" + token;
 
             // HTML email content
             String htmlContent = "<h3>Password Reset</h3>"
                     + "<p>We received a request to reset your password. Click the link below:</p>"
-                    + "<p>" + resetLink + "</p>"
+                    + "<p><a href=\""+resetLink+"\">"+" Reset Password </a></p>"
                     + "<p>This link will expire in 24 hours.</p>"
                     + "<p>If you didn't request this, please ignore this email.</p>";
 

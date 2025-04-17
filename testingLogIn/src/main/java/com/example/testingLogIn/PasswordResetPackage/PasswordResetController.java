@@ -33,20 +33,22 @@ public class PasswordResetController {
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam String email) {
         UserModel user = Optional.ofNullable(userRepository.findByUsername(email))
-                .orElseThrow(NullPointerException::new);
+                .orElse(null);
 
-        // Generate and save token
-        String token = TokenGenerator.generateToken();
-        PasswordResetToken resetToken = new PasswordResetToken();
-        resetToken.setToken(token);
-        resetToken.setUser(user);
-        resetToken.setExpiryDate(LocalDateTime.now().plusHours(24));
-        tokenRepository.save(resetToken);
+        if(user != null){
+            String token = TokenGenerator.generateToken();
+            PasswordResetToken resetToken = new PasswordResetToken();
+            resetToken.setToken(token);
+            resetToken.setUser(user);
+            resetToken.setExpiryDate(LocalDateTime.now().plusHours(24));
+            tokenRepository.save(resetToken);
 
-        // Send email
-        emailService.sendPasswordResetEmail(user.getUsername(),token);
+            emailService.sendPasswordResetEmail(user.getUsername(),token);
 
-        return ResponseEntity.ok("Password reset email sent");
+            return ResponseEntity.ok("Password reset email sent");
+        }else{
+            return new ResponseEntity<>("Username not found",HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/reset-password")

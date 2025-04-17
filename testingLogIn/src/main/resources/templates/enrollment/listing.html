@@ -1503,7 +1503,7 @@
                     <a href="#" data-action="cancelRegistration"
                         data-enrollment-id="${enr.enrollmentId}"> Cancel Registration </a>
                 ` : `<a style="pointer-events: none; opacity: 0.5; color: gray;">
-                       Bayarig minimum isa2 suss
+                       Minimum payment is required to each fee/s
                     </a>`}
             `;
             case "ENROLLED":
@@ -1611,7 +1611,7 @@
         const studentProf = await response.json();
         toUpdateRecStudent = studentId;
         document.getElementById("stud-type").textContent = studentProf.status;
-        document.getElementById("isTransfereeRec").checked = studentProf.transferee;
+        document.getElementById("isTransferee").checked = studentProf.transferee;
         document.getElementById("student-id").value = studentProf.studentDisplayId;
         document.getElementById("firstName").value = studentProf.firstName;
         document.getElementById("middleName").value = studentProf.middleName;
@@ -1640,7 +1640,7 @@
         fetchTransRequirements("transfereeReq-rec", studentProf.transfereeRequirements);
         fetchDiscounts("discounts-rec",studentProf.discountsAvailed);
 
-        toggleTransfereeSection();
+        toggleTransfereeSection(studentProf.transferee);
     }
 
     function updateDiscounts(){
@@ -1766,18 +1766,9 @@
     }
 
     // This will show and hide the transferee section if the student is a transferee or not
-    function toggleTransfereeSection() {
-        const transfereeRow = document.querySelector("#transferee-row h6");
+    function toggleTransfereeSection(isTransferee) {
         const transfereeSections = document.querySelectorAll(".transferee-section");
-
-        if (!transfereeRow) {
-            console.log("❌ Element #transferee-row h6 not found.");
-            return;
-        }
-
-        console.log("✅ Found #transferee-row h6 with text:", transfereeRow.textContent.trim());
-
-        if (transfereeRow.textContent.trim().toUpperCase() === "YES") {
+        if (isTransferee) {
             console.log("✅ YES detected, showing transferee sections.");
             transfereeSections.forEach(section => section.style.display = "block");
         } else {

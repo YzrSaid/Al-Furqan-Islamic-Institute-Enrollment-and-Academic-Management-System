@@ -1,5 +1,7 @@
 package com.example.testingLogIn.PasswordResetPackage;
 
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -12,4 +14,10 @@ public interface PasswordResetTokenRepository extends CrudRepository <PasswordRe
     @Query("SELECT t FROM PasswordResetToken t " +
             "WHERE t.token = :token")
     Optional<PasswordResetToken> findByToken(String token);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM PasswordResetToken t " +
+            "WHERE t.user.staffId = :userId")
+    void deleteUserTokens(int userId);
 }

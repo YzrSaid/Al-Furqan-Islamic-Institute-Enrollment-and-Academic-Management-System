@@ -16,9 +16,8 @@ public class EmailService {
     private final Session session;
 
     public EmailService(){
-        String from = "emailnmo";
-        String username = "emailnmo";
-        String password = "ang password";
+        String username = "imong gmail";
+        String password = "imong app password";
         prop = new Properties();
         prop.put("mail.smtp.auth", "true");
         prop.put("mail.smtp.starttls.enable", "true");

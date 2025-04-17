@@ -55,7 +55,7 @@ public class PasswordResetController {
         if(pwToken != null && pwToken.getExpiryDate().isAfter(LocalDateTime.now())){
             UserModel user =pwToken.getUser();
             userService.changeUserPassword(user,newPassword);
-            tokenRepository.delete(pwToken);
+            tokenRepository.deleteUserTokens(user.getStaffId());
             return new ResponseEntity<>("User password changed successfully",HttpStatus.OK);
         }
         return new ResponseEntity<>("Token not found", HttpStatus.NOT_FOUND);

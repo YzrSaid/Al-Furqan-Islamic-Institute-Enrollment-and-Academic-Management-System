@@ -1934,13 +1934,18 @@ table td {
 }
 
 /* this is place of birth for add */
-.student-form-group .place-of-birth {
-  width: 900px;
+.student-form-group .place-of-birth-view {
+  width: 385px;
 }
-/* this is place of birth for view */
-/* .place-of-birth-view {
-    width: 338px;
-} */
+
+.student-form-group .place-of-birth {
+  min-width: 375px;
+  max-width: 905px;
+}
+
+.student-form-group .place-of-birth-report {
+  width: 405px;
+}
 
 .student-form-group #studstreet,
 .student-form-group #studbarangay,
@@ -2811,7 +2816,6 @@ input[type="checkbox"] {
   justify-content: space-between;
   display: flex;
   gap: 20px;
-  background-color: #007bff;
 }
 .student-form-group #firstName,
 .student-form-group #lastName,
@@ -3486,29 +3490,27 @@ td[rowspan] {
   font-size: 12px;
 }
 .small-text {
-    background-color: #186328;
   display: flex;
-  justify-content: space-around;
-  width: 100%;
+  justify-self: center;
+  justify-content: space-between;
+  width: 70%;
+  margin-right: 40px;
 }
 
 .row {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* background-color: #cedd2d; */
 }
 .column1 {
   display: flex;
   flex-direction: column;
-  /* background-color: #218838; */
   width: 60%;
   margin-bottom: 30px;
 }
 .column2 {
   display: flex;
   flex-direction: column;
-  /* background-color: #218838; */
   width: 40%;
   margin-bottom: 30px;
 }
@@ -3517,11 +3519,16 @@ td[rowspan] {
 }
 .student-form-group #gender,
 .column2 #gender {
-  width: 80px;
+  width: 70px;
 }
+
 .student-form-group #birthdate,
 .column2 #birthdate {
   width: 120px;
+}
+
+.student-form-group #birthdate-report {
+  width: 150px;
 }
 
 .half {
@@ -4429,6 +4436,8 @@ th {
   height: 25px;
 }
 #dropdown-scholar img,
+#dropdown-edit-scholar img,
+#dropdown-edit-transferee img,
 #dropdown-report-scholar img,
 #dropdown-report-transferee img,
 #dropdown-transferee img,
@@ -4442,6 +4451,8 @@ th {
 #confirm-btn,
 #dropdown-report-scholar,
 #dropdown-report-transferee,
+#dropdown-edit-scholar,
+#dropdown-edit-transferee,
 #dropdown-scholar,
 #dropdown-transferee,
 #dropdown-add-scholar,

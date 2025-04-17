@@ -2140,8 +2140,14 @@ document.addEventListener("DOMContentLoaded", function () {
       buttonId: "dropdown-report-scholar",
       popoverId: "report-scholar-popover",
     },
+    {
+        buttonId: "dropdown-report-transferee",
+        popoverId: "report-transferee-popover"
+    },
     { buttonId: "dropdown-add-scholar", popoverId: "add-scholar-popover" },
     { buttonId: "dropdown-transferee", popoverId: "transferee-popover" },
+    { buttonId: "dropdown-edit-transferee", popoverId: "edit-transferee-popover" },
+    { buttonId: "dropdown-edit-scholar", popoverId: "edit-scholar-popover" },
     {
       buttonId: "dropdown-add-transferee",
       popoverId: "add-transferee-popover",

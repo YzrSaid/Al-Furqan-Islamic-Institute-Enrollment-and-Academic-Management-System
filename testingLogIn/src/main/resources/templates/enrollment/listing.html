@@ -212,30 +212,33 @@
                                 </div>
                                 <div class="column2">
                                     <!-- Gender, BDate, and Scholar -->
-                                    <div class="student-form-group half-stud-info-small" style="margin-bottom: 0px;">
+                                    <div class="student-form-group half-stud-info-small">
                                         <label for="gender">Gender:</label>
-                                        <input type="text" id="gender" style="width: 80px;">
+                                        <input type="text" id="gender">
 
                                         <label for="birthdate">Birthdate:</label>
-                                        <input type="date" id="birthdate" readonly style="width: 120px;">
+                                        <input type="date" id="birthdate" readonly>
                                     </div>
                                 </div>
 
-                                <div class="student-form-group">
-                                    <div>
-                                        <label for="address">Address:</label>
-                                        <div class="student-form-group half-unique">
-                                            <input type="text" id="street" required placeholder="Street">
-                                            <input type="text" id="barangay" required placeholder="Barangay">
-                                            <input type="text" id="city" required placeholder="City">
+                                <div class="column1">
+                                    <div class="student-form-group">
+                                        <div>
+                                            <label for="address">Address:</label>
+                                            <div class="student-form-group half-unique">
+                                                <input readonly type="text" id="street" required placeholder="Street">
+                                                <input readonly type="text" id="barangay" required placeholder="Barangay">
+                                                <input readonly type="text" id="city" required placeholder="City">
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div>
-                                        <label>Place of Birth:</label>
+                                <div class="column2">
+                                    <label>Place of Birth:</label>
+                                    <div class="student-form-group">
                                         <div class="student-form-group">
-                                            <input type="text" id="placeOfBirth" class="place-of-birth"
-                                                style="width: 390px;">
+                                            <input readonly type="text" id="placeOfBirth" class="place-of-birth">
                                         </div>
                                     </div>
                                 </div>

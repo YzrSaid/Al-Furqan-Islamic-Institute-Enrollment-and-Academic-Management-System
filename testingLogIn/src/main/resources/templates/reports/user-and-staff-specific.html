@@ -17,12 +17,13 @@
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
             <div class="text-link" id="breadcrumb-container">
-                <h4>Student Reports</h4>
+                <h4>User & Staff Reports</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/reports/student">Reports - Student Reports</a>
+                <a href="/reports/user-and-staff">Reports - Student Reports</a>
                 <p>/</p>
-                <a href="/reports/student/{studentName}" title="You're currently on this page.">Reynolds Perkins</a>
+                <a href="/reports/user-and-staff/{studentName}" title="You're currently on this page.">Reynolds
+                    Perkins</a>
             </div>
 
             <div class="report-main-btns">
@@ -37,6 +38,8 @@
                         data-open-modal="studentInformationEditModal">Edit</button>
                     <button type="button" class="btn-neutral" id="printGrade"
                         data-open-modal="studentInformationPrintModal">Print</button>
+                    <button type="button" class="btn-neutral" data-open-modal="changePasswordModal">Change
+                        Password</button>
                 </div>
 
             </div>
@@ -245,53 +248,29 @@
         <div id="studentInformationEditModal" class="student-information-edit-modal">
             <div class="student-information-edit-modal-content">
                 <div class="modal-body">
-                    <h1>Student Information</h1>
-                    <form method="" action="" id="studentInformationForm">
+                    <h1>Staff Information</h1>
+                    <form method="" action="" id="staffInformationEditForm">
                         <div class="header">
                             <div class="half-unique">
-                                <label for="student-id">Student ID: </label>
+                                <label for="student-id">Staff ID: </label>
                                 <input readonly type="text" id="student-id">
                             </div> <br>
 
-                            <div class="checkbox-container other-info-container">
-                                <div class="checkbox">
-                                    <label for="scholar">Scholar:</label>
-                                    <input type="checkbox" id="scholar">
-
-                                    <button type="button" id="dropdown-edit-scholar"> <img
-                                            src="/images/icons/arrow-down.png" alt="dropdown-icon">
-                                    </button>
-
-                                    <div id="edit-scholar-popover" name="add-discount" class="styled-popover">
-                                    </div>
+                            <div class="other-info-container">
+                                <div class="half-other-info" id="staff-type-row">
+                                    <label for="staff-type">Account Type/Role:</label>
+                                    <select name="role" id="role" required>
+                                        <option value="TEACHER">Teacher</option>
+                                        <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
+                                    </select>
                                 </div>
 
-                                <div class="checkbox">
-                                    <label for="isTransferee">Transferee:</label>
-                                    <input type="checkbox" id="isTransferee">
-
-                                    <button type="button" id="dropdown-edit-transferee"> <img
-                                            src="/images/icons/arrow-down.png" alt="dropdown-icon">
-                                    </button>
-
-
-                                    <div id="edit-transferee-popover" name="add-transferee-req" class="styled-popover">
-
-                                        <div class="transferee-requirements">
-                                            <h6>Requirements:</h6>
-                                            <div id="transfereeReq" class="checkbox-transferee-reqs-group">
-
-                                            </div>
-
-
-                                            <div>
-                                                <button type="button" style="width: 100%;" data-action="editGradeLevel"
-                                                    data-message="Are you sure you want to update the transferee requirements?"
-                                                    onclick="updateRequirements()" class="btn-confirm">Update</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                <div class="half-other-info" id="staff-status-row">
+                                    <label for="staff-status">Status:</label>
+                                    <select name="status" id="status" required>
+                                        <option value="UNRESTRICTED">Unrestricted</option>
+                                        <option value="RESTRICTED">Restricted</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -306,9 +285,9 @@
                                     <div>
                                         <label for="name">Name</label>
                                         <div class="student-form-group half">
-                                            <input type="text" id="firstName">
-                                            <input type="text" id="middleName">
-                                            <input type="text" id="lastName">
+                                            <input readonly type="text" id="firstName">
+                                            <input readonly type="text" id="middleName">
+                                            <input readonly type="text" id="lastName">
                                         </div>
                                         <div class="small-text">
                                             <p>First</p>
@@ -319,115 +298,35 @@
                                 </div>
                                 <div class="column2">
                                     <!-- Gender, BDate, and Scholar -->
-                                    <div class="student-form-group half-stud-info-small" style="margin-bottom: 0px;">
+                                    <div class="student-form-group half-stud-info-small">
                                         <label for="gender">Gender:</label>
-                                        <input type="text" id="gender">
+                                        <select name="gender" id="gender" required>
+                                            <option value="MALE">Male</option>
+                                            <option value="FEMALE">Female</option>
+                                        </select>
 
                                         <label for="birthdate">Birthdate:</label>
-                                        <input required type="date" id="birthdate">
+                                        <input readonly required type="date" id="birthdate-report">
                                     </div>
                                 </div>
 
-                                <div class="student-form-group">
-                                    <div>
-                                        <label for="address">Address:</label>
-                                        <div class="student-form-group half-unique">
-                                            <input type="text" id="street" required placeholder="Street">
-                                            <input type="text" id="barangay" required placeholder="Barangay">
-                                            <input type="text" id="city" required placeholder="City">
-                                        </div>
+                                <div class="column1">
+                                    <label for="address">Address:</label>
+                                    <div class="student-form-group">
+                                        <input readonly type="text" id="staff-address" required placeholder="">
                                     </div>
+                                </div>
 
+                                <div class="column2">
                                     <div>
-                                        <label>Place of Birth:</label>
                                         <div class="student-form-group">
-                                            <input type="text" id="placeOfBirth" class="place-of-birth-report"
-                                                style="width: 390px;">
+                                            <label>Email:</label>
+                                            <input readonly type="email" id="staff-email">
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
-                        </div>
-
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                            <h2>Additional Information</h2>
-                        </div>
-
-                        <div>
-                            <h6>Father's Information</h6>
-                            <div class="student-form-group">
-                                <label for="fatherName">Name:</label>
-                                <input type="text" id="fatherName">
-
-                                <label for="fatherOccupation">Occupation:</label>
-                                <input type="text" id="fatherOccupation">
-                            </div> <br>
-                        </div>
-                        <div>
-                            <h6>Mother's Information</h6>
-                            <div class="student-form-group">
-                                <label for="motherName">Name:</label>
-                                <input type="text" id="motherName">
-
-                                <label for="motherOccupation">Occupation:</label>
-                                <input type="text" id="motherOccupation">
-                            </div> <br>
-                        </div>
-
-                        <h6>Guardian's Information</h6>
-                        <div class="student-form-group">
-                            <label for="guardianName">Name:</label>
-                            <input type="text" id="guardianName">
-
-                            <label for="guardianOccupation">Occupation:</label>
-                            <input type="text" id="guardianOccupation">
-                        </div> <br>
-
-                        <div class="student-form-group">
-                            <label for="guardianContactNumber">Contact Number:</label>
-                            <input type="text" id="guardianContactNumber">
-
-                            <label for="guardianAddress">Address:</label>
-                            <input type="text" id="guardianAddress">
-                        </div> <br>
-
-                        <div class="transferee-section">
-                            <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                                <h2>For Transferees Only</h2>
-                            </div>
-
-                            <!-- Transferee Requirements Section -->
-                            <div class="transferee-requirements">
-                                <h4>Requirements</h4>
-                                <div id="transReqRecord" class="checkbox-transferee-reqs-group">
-                                    <!--naka check na daan ang mga filled-->
-                                </div>
-
-                                <!-- Update Button -->
-                                <div style="margin-top: 15px;">
-                                    <button type="button" data-action="editGradeLevel"
-                                        data-message="Are you sure you want to update this grade level?"
-                                        id="updateRequirementsBtn" class="btn-confirm">Update</button>
-                                </div>
-                            </div>
-
-                            <div class="student-form-group">
-                                <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                                <input type="text" id="lastGradeLevelCompleted">
-
-                                <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                                <input type="text" id="lastMadrasaYearCompleted">
-                            </div> <br>
-
-                            <div class="student-form-group">
-                                <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                                <input type="text" id="madrasaNameLastAttended">
-                            </div> <br>
-
-                            <div class="student-form-group">
-                                <label for="madrasaAddress">Madrasa Address:</label>
-                                <input type="text" id="madrasaAddress">
-                            </div> <br>
                         </div>
                     </form>
                 </div>
@@ -441,190 +340,28 @@
                         data-close-modal="studentInformationEditModal">Cancel</button>
                 </div>
             </div>
-
-            <!-- Grade Print Modal -->
-            <div id="gradePrintModal" class="grade-print-dal modal">
-                <div class="printable-area">
-                    <div class="grade-print-modal-content scroll-lock">
-                        <!-- Close Button -->
-                        <span class="close-modal" data-close-modal="gradePrintModal">&times;</span>
-
-                        <!-- Report Header -->
-                        <div class="header-container-print">
-
-                            <div class="left-header">
-                                <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
-                            </div>
-                            <div class="middle-header">
-                                <div class="school-info-print">
-                                    <h3 th:text="${schoolName}"></h3>
-                                    <p th:text="${schoolAddress}"></p>
-                                    <p th:text="${schoolEmail}"></p>
-                                    <p th:text="${schoolNum}"></p>
-                                    <h3 class="report-type"><strong>Grade Form</strong></h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="separator-line"></div>
-                        <!-- Student Info -->
-                        <table border="1" cellspacing="0" cellpadding="6"
-                            style="width: 100%; margin-top: -30px; font-family: Arial, sans-serif; border-collapse: collapse;">
-                            <!-- Student Info Section -->
-                            <tr class="stud-info-section">
-                                <td colspan="6">
-                                    <div class="student-info-container-printable">
-                                        <div class="payment-student-info-row">
-                                            <label for="receipt-student-id">Student ID:</label>
-                                            <input type="text" class="print-inputs" id="receipt-student-id"
-                                                placeholder="">
-                                        </div>
-
-                                        <div class="payment-student-info-row">
-                                            <label for="receipt-date">Date:</label>
-                                            <input type="date" class="print-inputs" id="receipt-date">
-                                        </div>
-
-                                        <div class="payment-student-info-row">
-                                            <label for="receipt-student-name">Student Name:</label>
-                                            <input type="text" class="print-inputs" id="receipt-student-name"
-                                                placeholder="">
-                                        </div>
-
-                                        <div class="payment-student-info-row">
-                                            <label for="sy-and-sem">SY & Sem:</label>
-                                            <input type="text" class="print-inputs" id="current-sy-and-sem"
-                                                placeholder="">
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Grade Table Header -->
-                            <tr class="grade-header">
-                                <th>Subject</th>
-                                <th>1st Sem</th>
-                                <th>2nd Sem</th>
-                                <th>Final</th>
-                                <th>Remarks</th>
-                            </tr>
-
-                            <!-- Grade Table Rows (No inner borders) -->
-                            <tr class="grade-row">
-                                <td>READING AND WRITING</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>PAGBASA AT PAGSUSURI NG IBAT IBANG TEKSTO TUNGO SA P</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>21ST CENTURY LITERATURE FROM THE PHILIPPINES AND THE W</td>
-                                <td>78</td>
-                                <td>77</td>
-                                <td>77.5</td>
-                                <td>Passed</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>HOUSEKEEPING</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>STATISTICS AND PROBABILITY</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>PHYSICAL EDUCATION AND HEALTH</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>PHYSICAL SCIENCE</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                        </table>
-
-                        <div class="printable-footer">
-                            Date Printed: <strong>4/1/2020</strong>
-                        </div>
-
-                        <!-- Print Button -->
-                        <div class="modal-buttons">
-                            <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
         <!-- Modal for student information -->
         <div id="studentInformationContainer" class="student-information-container">
             <div class="student-information-container-content">
-                <h1>Student Information</h1>
+                <h1>Staff Information</h1>
                 <form method="" action="" id="studentInformationForm">
                     <div class="header">
                         <div class="half-unique">
-                            <label for="student-id">Student ID: </label>
+                            <label for="student-id">Staff ID: </label>
                             <input readonly type="text" id="student-id">
                         </div> <br>
 
-                        <div class="checkbox-container other-info-container">
-                            <div class="checkbox">
-                                <label for="scholar">Scholar:</label>
-                                <input type="checkbox" id="scholar">
-
-                                <button type="button" id="dropdown-report-scholar"> <img
-                                        src="/images/icons/arrow-down.png" alt="dropdown-icon">
-                                </button>
-
-                                <div id="report-scholar-popover" name="add-discount" class="styled-popover">
-                                </div>
+                        <div class="other-info-container">
+                            <div class="half-other-info" id="staff-type-row">
+                                <label for="staff-type">Account Type/Role:</label>
+                                <h6 id="staff-type">Teacher</h6>
                             </div>
 
-                            <div class="checkbox">
-                                <label for="isTransferee">Transferee:</label>
-                                <input type="checkbox" id="isTransferee">
-
-                                <button type="button" id="dropdown-report-transferee"> <img src="/images/icons/arrow-down.png"
-                                        alt="dropdown-icon">
-                                </button>
-
-
-                                <div id="report-transferee-popover" name="add-transferee-req" class="styled-popover">
-
-                                    <div class="transferee-requirements">
-                                        <h6>Requirements:</h6>
-                                        <div id="transfereeReq" class="checkbox-transferee-reqs-group">
-
-                                        </div>
-
-
-                                        <div>
-                                            <button type="button" style="width: 100%;" data-action="editGradeLevel"
-                                                data-message="Are you sure you want to update the transferee requirements?"
-                                                onclick="updateRequirements()" class="btn-confirm">Update</button>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="half-other-info" id="staff-status-row">
+                                <label for="staff-status">Status:</label>
+                                <h6 id="staff-status">Unrestricted</h6>
                             </div>
                         </div>
                     </div>
@@ -662,332 +399,22 @@
                             </div>
 
                             <div class="column1">
+                                <label for="address">Address:</label>
                                 <div class="student-form-group">
-                                    <div>
-                                        <label for="address">Address:</label>
-                                        <div class="student-form-group half-unique">
-                                            <input readonly type="text" id="street" required placeholder="Street">
-                                            <input readonly type="text" id="barangay" required placeholder="Barangay">
-                                            <input readonly type="text" id="city" required placeholder="City">
-                                        </div>
-                                    </div>
+                                    <input readonly type="text" id="staff-address" required placeholder="">
                                 </div>
                             </div>
 
                             <div class="column2">
-                                <label>Place of Birth:</label>
                                 <div class="student-form-group">
-                                    <div class="student-form-group">
-                                        <input readonly type="text" id="placeOfBirth" class="place-of-birth-report">
-                                    </div>
+                                    <label>Email:</label>
+                                    <input readonly type="email" id="staff-email">
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                        <h2>Additional Information</h2>
-                    </div>
-
-                    <div>
-                        <h6>Father's Information</h6>
-                        <div class="student-form-group">
-                            <label for="fatherName">Name:</label>
-                            <input readonly type="text" id="fatherName">
-
-                            <label for="fatherOccupation">Occupation:</label>
-                            <input readonly type="text" id="fatherOccupation">
-                        </div> <br>
-                    </div>
-                    <div>
-                        <h6>Mother's Information</h6>
-                        <div class="student-form-group">
-                            <label for="motherName">Name:</label>
-                            <input readonly type="text" id="motherName">
-
-                            <label for="motherOccupation">Occupation:</label>
-                            <input readonly type="text" id="motherOccupation">
-                        </div> <br>
-                    </div>
-
-                    <h6>Guardian's Information</h6>
-                    <div class="student-form-group">
-                        <label for="guardianName">Name:</label>
-                        <input readonly type="text" id="guardianName">
-
-                        <label for="guardianOccupation">Occupation:</label>
-                        <input readonly type="text" id="guardianOccupation">
-                    </div> <br>
-
-                    <div class="student-form-group">
-                        <label for="guardianContactNumber">Contact Number:</label>
-                        <input readonly type="text" id="guardianContactNumber">
-
-                        <label for="guardianAddress">Address:</label>
-                        <input readonly type="text" id="guardianAddress">
-                    </div> <br>
-
-                    <div class="transferee-section">
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                            <h2>For Transferees Only</h2>
-                        </div>
-
-                        <!-- Transferee Requirements Section -->
-                        <div class="transferee-requirements">
-                            <h4>Requirements</h4>
-                            <div id="transReqRecord" class="checkbox-transferee-reqs-group">
-                                <!--naka check na daan ang mga filled-->
-                            </div>
-
-                            <!-- Update Button -->
-                            <div style="margin-top: 15px;">
-                                <button type="button" data-action="editGradeLevel"
-                                    data-message="Are you sure you want to update this grade level?"
-                                    id="updateRequirementsBtn" class="btn-confirm">Update</button>
-                            </div>
-                        </div>
-
-                        <div class="student-form-group">
-                            <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                            <input readonly type="text" id="lastGradeLevelCompleted">
-
-                            <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                            <input readonly type="text" id="lastMadrasaYearCompleted">
-                        </div> <br>
-
-                        <div class="student-form-group">
-                            <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                            <input readonly type="text" id="madrasaNameLastAttended">
-                        </div> <br>
-
-                        <div class="student-form-group">
-                            <label for="madrasaAddress">Madrasa Address:</label>
-                            <input readonly type="text" id="madrasaAddress">
-                        </div> <br>
-                    </div>
-
-
-                    <div class="report-header">
-                        <div class="report-header-item">
-                            <h2>Balance Information</h2>
-                        </div>
-                        <div class="report-header-item">
-                            <h2>Resources Distribution</h2>
-                        </div>
-                    </div>
-
-                    <div class="container-two">
-                        <div class="column-main">
-                            <p>Remaining Balance</p>
-                            <div class="table-container">
-                                <table class="mini-table" id="payment-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Req. Amount</th>
-                                            <th>Paid</th>
-                                            <th>Status</th>
-                                            <th>Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="basic-modal-buttons">
-                                <h6>Balance:</h6>
-                                <h6 id="total-balance">P0</h6>
-                                <button type="button" class="btn-confirm" data-open-modal="viewPastTransactionsModal"
-                                    id="transaction-record-btn">View Past
-                                    Transactions</button>
-                            </div>
-
-                        </div>
-
-                        <div class="column-main">
-                            <p>Unclaimed Resources</p>
-                            <div class="table-container">
-                                <table class="mini-table" id="distribution-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Item</th>
-                                            <th>Grade Level</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="basic-modal-buttons">
-                                <button type="button" class="btn-confirm" data-open-modal="viewClaimedResourcesModal"
-                                    id="unclaimed-resources-btn">View Claimed
-                                    Resources</button>
-                            </div>
-                        </div>
-                    </div> <br>
-
-
-                    <div class="header-stud-info-half">
-                        <h2>Grades</h2>
-                        <div class="action">
-                            <div class="dropdown">
-
-                                <button type="button" class="dropdown-print-btn" onclick="toggleDropdown(event)">
-                                    Print
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-
-                                <div class="dropdown-status-content" id="dropdown-print-options">
-                                    <a href="#" class="action" data-open-modal="gradePrintModal">All</a>
-                                    <a href="#" class="action" data-open-modal="gradePrintModal">Semester 1</a>
-                                    <a href="#" class="action" data-open-modal="gradePrintModal">Semester 2</a>
-                                    <a href="#" class="action" data-open-modal="gradePrintModal">School Year
-                                        2023-2024</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="grades-container">
-
                     </div>
                 </form>
             </div>
-
-            <!-- Grade Print Modal -->
-            <div id="gradePrintModal" class="grade-print-dal modal">
-                <div class="printable-area">
-                    <div class="grade-print-modal-content scroll-lock">
-                        <!-- Close Button -->
-                        <span class="close-modal" data-close-modal="gradePrintModal">&times;</span>
-
-                        <!-- Report Header -->
-                        <div class="header-container-print">
-
-                            <div class="left-header">
-                                <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
-                            </div>
-                            <div class="middle-header">
-                                <div class="school-info-print">
-                                    <h3 th:text="${schoolName}"></h3>
-                                    <p th:text="${schoolAddress}"></p>
-                                    <p th:text="${schoolEmail}"></p>
-                                    <p th:text="${schoolNum}"></p>
-                                    <h3 class="report-type"><strong>Grade Form</strong></h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="separator-line"></div>
-                        <!-- Student Info -->
-                        <table border="1" cellspacing="0" cellpadding="6"
-                            style="width: 100%; margin-top: -30px; font-family: Arial, sans-serif; border-collapse: collapse;">
-                            <!-- Student Info Section -->
-                            <tr class="stud-info-section">
-                                <td colspan="6">
-                                    <div class="student-info-container-printable">
-                                        <div class="payment-student-info-row">
-                                            <label for="receipt-student-id">Student ID:</label>
-                                            <input type="text" class="print-inputs" id="receipt-student-id"
-                                                placeholder="">
-                                        </div>
-
-                                        <div class="payment-student-info-row">
-                                            <label for="receipt-date">Date:</label>
-                                            <input type="date" class="print-inputs" id="receipt-date">
-                                        </div>
-
-                                        <div class="payment-student-info-row">
-                                            <label for="receipt-student-name">Student Name:</label>
-                                            <input type="text" class="print-inputs" id="receipt-student-name"
-                                                placeholder="">
-                                        </div>
-
-                                        <div class="payment-student-info-row">
-                                            <label for="sy-and-sem">SY & Sem:</label>
-                                            <input type="text" class="print-inputs" id="current-sy-and-sem"
-                                                placeholder="">
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Grade Table Header -->
-                            <tr class="grade-header">
-                                <th>Subject</th>
-                                <th>1st Sem</th>
-                                <th>2nd Sem</th>
-                                <th>Final</th>
-                                <th>Remarks</th>
-                            </tr>
-
-                            <!-- Grade Table Rows (No inner borders) -->
-                            <tr class="grade-row">
-                                <td>READING AND WRITING</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>PAGBASA AT PAGSUSURI NG IBAT IBANG TEKSTO TUNGO SA P</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>21ST CENTURY LITERATURE FROM THE PHILIPPINES AND THE W</td>
-                                <td>78</td>
-                                <td>77</td>
-                                <td>77.5</td>
-                                <td>Passed</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>HOUSEKEEPING</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>STATISTICS AND PROBABILITY</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>PHYSICAL EDUCATION AND HEALTH</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>PHYSICAL SCIENCE</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                        </table>
-
-                        <div class="printable-footer">
-                            Date Printed: <strong>4/1/2020</strong>
-                        </div>
-
-                        <!-- Print Button -->
-                        <div class="modal-buttons">
-                            <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
 </body>
 <script>
@@ -995,7 +422,7 @@
         const path = window.location.pathname;
         const wordArray = (path.split("/"));
         const studentName = ((wordArray[wordArray.length - 1]));
-        findStudent(studentName);
+        // findStudent(studentName);
     });
     var studentId;
     async function findStudent(studentName) {
@@ -1043,7 +470,7 @@
         const grades = await response.json();
         const gradesview = document.getElementById("grades-container");
         gradesview.innerHTML = ""; // clear previous content
-      
+
         // 👉 Check if no grades were returned
         if (!grades || grades.length === 0) {
             gradesview.innerHTML = `

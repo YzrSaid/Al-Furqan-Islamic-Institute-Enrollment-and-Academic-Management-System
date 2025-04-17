@@ -105,7 +105,7 @@ public class DiscountsServices {
             .forEach(studentDiscount -> {
                 studentDiscount.setNotDeleted(true);
                 if(!discounts.contains(studentDiscount.getDiscount().getDiscountId()))
-                    studentDiscount.setNotDeleted(true);
+                    studentDiscount.setNotDeleted(false);
                 discounts.remove(Integer.valueOf(studentDiscount.getDiscount().getDiscountId()));
                 studentDiscounts.add(studentDiscount);
             });

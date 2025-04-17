@@ -100,49 +100,6 @@
                                     <label for="stud-type">Student Type:</label>
                                     <h6 id="stud-type">New</h6>
                                 </div>
-
-                                <!-- <div class="half-other-info" id="scholar-row">
-                                    <label for="type">Scholar:</label>
-                                    <h6>Yes</h6>
-                                    <div class="checkbox">
-                                        <label for="scholar">Scholar:</label>
-                                        <input type="checkbox" id="scholar">
-
-                                        <button type="button" id="dropdown-scholar"> <img
-                                                src="/images/icons/arrow-down.png" alt="dropdown-icon">
-                                        </button>
-                                        
-                                        <div id="scholar-popover" name="add-discount" class="styled-popover">
-                                        </div>
-                                    </div>
-                                </div> -->
-
-                                <!-- <div class="checkbox">
-                                    <label for="scholar">Scholar:</label>
-                                    <h6>Yes</h6>
-    
-                                    <input type="checkbox" id="scholar">
-    
-                                    <button type="button" id="dropdown-scholar"> <img src="/images/icons/arrow-down.png"
-                                            popovertarget="my-popover" alt="dropdown-icon">
-                                    </button>
-                                  
-                                    <div popover id="my-popover" name="add-discount" class="styled-popover">
-                                        <h6>Scholarships:</h6>
-                                    </div>
-    
-                                    <div class="action-container">
-                                        <div class="action">
-                                            <img src="/images/icons/compose.png" alt="edit-btn">
-                                        </div>
-                                    </div>
-                                </div> -->
-
-                                <!-- <div class="half-other-info" id="transferee-row">
-                                    <label for="transferee">Transferee:</label>
-                                    <h6 id="transferee"></h6>
-                                </div> -->
-
                                 <div class="checkbox-container">
                                     <div class="checkbox">
                                         <label for="scholar">Scholar:</label>
@@ -153,6 +110,16 @@
                                         </button>
                                         
                                         <div id="scholar-popover" name="add-discount" class="styled-popover">
+                                            <div id="discounts-rec" class="checkbox-transferee-reqs-group">
+                                                <!--Ibutang ang mga transferee requiremetns dri-->
+                                            </div>
+                                            <div>
+                                                <button type="button" style="width: 100%;"
+                                                    data-open-modal="confirmationModal"
+                                                    data-action="editDiscounts"
+                                                    data-message="Are you sure you want to update the student discounts?"
+                                                    class="btn-confirm">Update</button>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -169,16 +136,16 @@
                                             <!-- Transferee Requirements Section -->
                                             <div class="transferee-requirements">
                                                 <h6>Requirements:</h6>
-                                                <div id="transfereeReq" class="checkbox-transferee-reqs-group">
+                                                <div id="transfereeReq-rec" class="checkbox-transferee-reqs-group">
                                                     <!--Ibutang ang mga transferee requiremetns dri-->
                                                 </div>
 
                                                 <!-- Update Button -->
                                                 <div>
                                                     <button type="button" style="width: 100%;"
-                                                        data-action="editGradeLevel"
+                                                        data-open-modal="confirmationModal"
+                                                        data-action="updateRequirements"
                                                         data-message="Are you sure you want to update the transferee requirements?"
-                                                        onclick="updateRequirements()"
                                                         class="btn-confirm">Update</button>
                                                 </div>
                                             </div>
@@ -291,21 +258,6 @@
                         <div class="transferee-section">
                             <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
                                 <h2>For Transferees Only</h2>
-                            </div>
-
-                            <!-- Transferee Requirements Section -->
-                            <div class="transferee-requirements">
-                                <h4>Requirements</h4>
-                                <div id="transReqRecord" class="checkbox-transferee-reqs-group">
-                                    <!--naka check na daan ang mga filled-->
-                                </div>
-
-                                <!-- Update Button -->
-                                <div style="margin-top: 15px;">
-                                    <button type="button" data-action="editGradeLevel"
-                                        data-message="Are you sure you want to update the transferee requirements?"
-                                        onclick="updateRequirements()" class="btn-confirm">Update</button>
-                                </div>
                             </div>
 
                             <div class="student-form-group">
@@ -572,8 +524,8 @@
                             </div>
 
                             <div class="checkbox">
-                                <label for="isTransferee">Transferee:</label>
-                                <input type="checkbox" id="isTransferee">
+                                <label for="isTransfereeRec">Transferee:</label>
+                                <input type="checkbox" id="isTransfereeRec">
 
                                 <button type="button" id="dropdown-add-transferee"> <img
                                         src="/images/icons/arrow-down.png" alt="dropdown-icon">
@@ -802,7 +754,7 @@
                 <div class="payee-info-container" id="payee-info">
                     <div class="half-width half-payee">
                         <div>
-                            <label for="student-id" id="label-id">Student ID:</label>
+                            <label for="payee-id" id="label-id">Student ID:</label>
                             <input type="text" id="payee-id" readonly>
                         </div>
                         <div>
@@ -1614,6 +1566,7 @@
             .then(response => response.json())
             .then(data => {
                 const reqContainer = document.getElementById(divId);
+                console.log(reqContainer);
                 reqContainer.innerHTML = "";
 
                 // Add wrapper for consistent layout like fetchDiscounts
@@ -1621,6 +1574,7 @@
                 reqWrapper.classList.add("checkbox-container-popover");
 
                 data.forEach(transReq => {
+                    console.log(transReq);
                     const reqDiv = document.createElement("div");
                     reqDiv.classList.add("checkbox-each");
 
@@ -1657,7 +1611,7 @@
         const studentProf = await response.json();
         toUpdateRecStudent = studentId;
         document.getElementById("stud-type").textContent = studentProf.status;
-        document.getElementById("transferee").textContent = (studentProf.transferee === "true" || studentProf.transferee) ? "YES" : "NO";
+        document.getElementById("isTransfereeRec").checked = studentProf.transferee;
         document.getElementById("student-id").value = studentProf.studentDisplayId;
         document.getElementById("firstName").value = studentProf.firstName;
         document.getElementById("middleName").value = studentProf.middleName;
@@ -1683,17 +1637,49 @@
         document.getElementById("lastMadrasaYearCompleted").value = studentProf.lastMadrasaYearCompleted;
         document.getElementById("madrasaNameLastAttended").value = studentProf.madrasaName;
         document.getElementById("madrasaAddress").value = studentProf.madrasaAddress;
-        fetchTransRequirements("transReqRecord", studentProf.transfereeRequirements);
-        fetchDiscounts(studentProf.discountsAvailed);
+        fetchTransRequirements("transfereeReq-rec", studentProf.transfereeRequirements);
+        fetchDiscounts("discounts-rec",studentProf.discountsAvailed);
 
         toggleTransfereeSection();
     }
 
-    function updateRequirements() {
+    function updateDiscounts(){
         const selectedTransReq = [];
-        document.querySelectorAll("#transReqRecord input[name='transferRequirements']:checked").forEach(checkbox => {
+        document.querySelectorAll("#discounts-rec input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
+        console.log(selectedTransReq);
+        fetch(`/discounts/add-student-discounts/${toUpdateRecStudent}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ids: selectedTransReq
+            }),
+        })
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        showSuccessModal(message, false);
+                        displayStud(toUpdateRecStudent);
+                        goList(currentPage);
+                    } else {
+                        showErrorModal(message); // Show the error message if the response is not ok
+                    }
+                });
+            })
+            .catch(error => {
+                showErrorModal(error.message || "An unexpected error occurred."); // Show an error modal in case of failure
+            });
+    }
+
+    function updateRequirements() {
+        const selectedTransReq = [];
+        document.querySelectorAll("#transfereeReq-rec input[name='transferRequirements']:checked").forEach(checkbox => {
+            selectedTransReq.push(checkbox.value);
+        });
+        console.log(updateRequirements);
         fetch(`/trans-req/add/student-requirements/${toUpdateRecStudent}`, {
             method: 'POST',
             headers: {

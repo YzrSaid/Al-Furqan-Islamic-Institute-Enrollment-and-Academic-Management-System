@@ -7,11 +7,11 @@
 <body>
     <div class="wrapper">
         <div id="left-login-block">
-            <img th:src="@{/images/al-furqan-bg.jpg}" alt="bg">
+            <img th:src="@{/website-cover}" alt="bg">
         </div>
         <div id="right-login-block">
             <div id="signup-header">
-                <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo" id="school-logo"> <br> <br>
+                <img th:src="@{/website-logo}" alt="school-logo" id="school-logo"> <br> <br>
                 <h3 th:text="${schoolName}" style="text-transform:uppercase;"></h3>
             </div>
             <form action="/register/add" method="post" id="signup-form">

@@ -7,25 +7,26 @@
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
 
-<body>
+<body style="margin: 0; padding: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;">
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
-    <div class="dashboard-container" id="content">
+    <div id="content" class="dashboard-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
         <div class="sticky-header">
             <!-- Topbar -->
         <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div id="create-user">
+        <div id="create-user" style="overflow-y: auto; max-height: calc(100vh - 100px);">
     <!-- Header Section (Logo and Title) -->
-    <div id="signup-header" style="text-align: center; margin-bottom: 20px;">
+    <div id="signup-header-createuser" style="text-align: center; margin-bottom: 20px;">
         <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo" id="school-logo" style="max-width: 120px; height: auto;"> <br> <br>
         <h3 th:text="${schoolName}" style="text-transform: uppercase; font-weight: bold;">School Name Placeholder</h3>
+        <h4 class="createuserform">Registration Form</h4>
     </div>
 
     <!-- Form Section -->
-    <form id="signup-form-large">
+    <form id="signup-form-large" style="display: flex; flex-direction: column; gap: 16px;">
         <label class="normal-label" for="name">Full Name</label>
         <div class="input-group-half">
             <div class="input-group">

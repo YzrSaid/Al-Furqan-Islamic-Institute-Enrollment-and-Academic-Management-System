@@ -33,5 +33,5 @@ public interface PassedCountRepo extends CrudRepository<PassedCount,Integer> {
             WHERE (:sy IS NULL OR pc.sem.schoolYear.schoolYearNum = :sy)
             AND (:sem IS NULL OR pc.sem.sem = :sem)
             """)
-    Optional<Integer> getSum(Integer sy, Semester sem);
+    Optional<Long> getSum(Integer sy, Semester sem);
 }

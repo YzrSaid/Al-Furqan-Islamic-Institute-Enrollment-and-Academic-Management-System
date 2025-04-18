@@ -100,8 +100,10 @@ public class StatisticsServices {
                 .enrolledCount(enrolledCountRepo.getSum(schoolYear,semester).orElse(0L))
                 .preEnrolledCount(preEnrolledCountRepo.getSum(schoolYear,semester).orElse(0L))
                 .graduatesCount(graduatesCountRepo.getSum(schoolYear,semester).orElse(0L))
-                .passedCount(gradeLevelPassedCountRepo.getTotal(schoolYear,semester,null).orElse(0L))
-                .retainedCount(gradeLevelRetainedCountRepo.getTotal(schoolYear,semester,null).orElse(0L))
+                .passedCount(passedCountRepo.getSum(schoolYear,semester).orElse(0L))//good for when testing with actual development
+                .retainedCount(retainedCountRepo.getSum(schoolYear, semester).orElse(0L))
+                //.passedCount(gradeLevelPassedCountRepo.getTotal(schoolYear,semester,null).orElse(0L)) //good when testing by directly manipulating ang contents sa database
+                //.retainedCount(gradeLevelRetainedCountRepo.getTotal(schoolYear,semester,null).orElse(0L))
                 .build();
     }
 

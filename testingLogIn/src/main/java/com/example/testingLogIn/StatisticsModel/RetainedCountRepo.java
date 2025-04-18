@@ -31,5 +31,5 @@ public interface RetainedCountRepo extends CrudRepository<RetainedCount,Integer>
             WHERE (:sy IS NULL OR rc.sem.schoolYear.schoolYearNum = :sy)
             AND (:sem IS NULL OR rc.sem.sem = :sem)
             """)
-    Optional<Integer> getSum(Integer sy, Semester sem);
+    Optional<Long> getSum(Integer sy, Semester sem);
 }

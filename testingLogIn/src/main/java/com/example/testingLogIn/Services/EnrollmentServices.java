@@ -170,8 +170,8 @@ public class EnrollmentServices {
             CompletableFuture<Void> setItemToReceive = CompletableFuture.runAsync(() -> distributableServices.setStudentItemToReceive(enrollmentRecord));
             CompletableFuture<Void> updateStatistic = CompletableFuture.runAsync(()->{
                 statisticsServices.updatePreEnrolledCount(enrollmentRecord.getSYSemester(),true);
-                statisticsServices.updateEnrolledCount(enrollmentRecord.getSYSemester());});
-            CompletableFuture.allOf(updateStudent,addFeesRecord,addStudentGrades,setItemToReceive,updateSection).join();
+                statisticsServices.updateEnrolledCount(enrollmentRecord);});
+            CompletableFuture.allOf(updateStudent,addFeesRecord,addStudentGrades,setItemToReceive,updateSection,updateStatistic).join();
 
             return 2;
         }

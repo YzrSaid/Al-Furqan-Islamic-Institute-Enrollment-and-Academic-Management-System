@@ -121,7 +121,9 @@ public class EnrollmentController {
     public ResponseEntity<String> cancelEnrollment(@PathVariable int enrollmentId,
                                                    @RequestParam(required = false,defaultValue = "false") Boolean undo){
         try{
-            boolean result = enrollmentService.cancelEnrollment(enrollmentId,undo);
+            enrollmentService.cancelEnrollment(enrollmentId,undo);
+            if(undo)
+                return new ResponseEntity<>("Enrollment cancellation has been successfully undone",HttpStatus.OK);
             return new ResponseEntity<>("Enrollment Cancelled Successfully",HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();

@@ -431,7 +431,6 @@
                         tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
                         return;
                     }
-                    console.log(data);
                     data.content.forEach(rec => {
                         let row = document.createElement("tr");
 
@@ -600,10 +599,10 @@
             const feesSelectedId = getCheckedPaymentValues();
             const totalAmount = paymentAmountInput.value;
             if (totalAmount == 0) {
-                alert("DLi pwde wlay kay ibayad uys");
+                showErrorModal("Minimum amount is required");
                 return;
             } else if (feesSelectedId.length == 0) {
-                alert("Dapat naa ka pilion");
+                showErrorModal("Please select a particular");
                 return;
             }
             const url = `/paymentrecord/add/all/${encodeURIComponent(studentId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(gradeLevelId)}`;
@@ -715,7 +714,7 @@
                     studentDisplayId.textContent = epv.student.studentDisplayId;
                     payerId = epv.student.studentId;
                     const tableBody = document.querySelector("#table-ni-kharl tbody");
-                    tableBody.innerHTML = `<tr><td>All payments are complete. No outstanding charges</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="5">All payments are complete. No outstanding charges</td></tr>`;
                     if(epv.feesAndBalance.length === 0){return;}
                     tableBody.innerHTML = ``;
                     epv.feesAndBalance.forEach(datas => {
@@ -789,7 +788,7 @@
                 .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
                 .then(({ text, status }) => {
                     if (status === 200) {
-                        showSucessModal(text);
+                        showSuccessModal(text);
                         getOnPayments(currentPage);
                     } else {
                         showErrorModal(text);

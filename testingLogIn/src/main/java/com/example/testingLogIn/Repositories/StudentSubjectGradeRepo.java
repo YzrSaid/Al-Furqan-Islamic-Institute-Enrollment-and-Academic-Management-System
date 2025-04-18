@@ -3,6 +3,8 @@ package com.example.testingLogIn.Repositories;
 import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
 import java.util.List;
 
+import com.example.testingLogIn.CustomObjects.FailedStudents;
+import com.example.testingLogIn.CustomObjects.PassedStudents;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -101,4 +103,22 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             "WHERE sg.subject.subjectNumber = :subjectId " +
             "AND sg.semester.sySemNumber = :semId")
     void deleteStudentSubjectGrade(int subjectId, int semId);
+
+    @Query("""
+            SELECT NEW com.example.testingLogIn.CustomObjects.PassedStudents(stud, ssg.section.level) FROM StudentSubjectGrade ssg 
+            JOIN Student stud ON ssg.student.studentId = stud.studentId
+            WHERE sg.semester.sySemNumber = semId 
+            AND (:levelId IS NULL OR ssg.section.level.levelId = :levelId) 
+            HAVING AVG(ssg.SubjectGrade) >= 50
+            """)
+    List<PassedStudents> findPassedStudents(int semId, Integer levelId);
+
+    @Query("""
+            SELECT NEW com.example.testingLogIn.CustomObjects.FailedStudents(stud, ssg.section.level) FROM StudentSubjectGrade ssg 
+            JOIN Student stud ON ssg.student.studentId = stud.studentId
+            WHERE sg.semester.sySemNumber = semId 
+            AND (:levelId IS NULL OR ssg.section.level.levelId = :levelId) 
+            HAVING AVG(ssg.SubjectGrade) < 50
+            """)
+    List<FailedStudents> findFailedStudents(int semId, Integer levelId);
 }

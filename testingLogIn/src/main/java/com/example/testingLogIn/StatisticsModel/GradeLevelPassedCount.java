@@ -1,25 +1,31 @@
 package com.example.testingLogIn.StatisticsModel;
 
 import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-public class RetainedStudents {
+public class GradeLevelPassedCount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private int count;
     @ManyToOne
-    @JoinColumn(name = "student")
-    private Student student;
+    @JoinColumn(name = "sem")
+    private SchoolYearSemester sem;
 
     @ManyToOne
     @JoinColumn(name = "gradeLevel")
     private GradeLevel gradeLevel;
+
+    public GradeLevelPassedCount(GradeLevel gradeLevel, SchoolYearSemester sem, int count) {
+        this.gradeLevel = gradeLevel;
+        this.sem = sem;
+        this.count = count;
+    }
 }

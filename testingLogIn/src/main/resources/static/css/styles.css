@@ -76,6 +76,10 @@ body {
   width: 50%;
   margin-left: 0%;
 }
+#forgot-password-header {
+  font-size: 24px;
+  margin-top: -25px;
+}
 #create-user-form {
   margin-top: 5%;
   display: flex;
@@ -203,6 +207,8 @@ body {
   width: 120px;
   height: 120px;
   margin-right: 20px;
+  margin-top: 93px;
+ margin-bottom: 45px;
 }
 #signup-header h3 {
   font-size: 25px;

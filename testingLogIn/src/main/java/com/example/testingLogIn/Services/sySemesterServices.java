@@ -113,8 +113,7 @@ public class sySemesterServices {
             reqFee.setRequiredFeesActive();
             subjectRepo.activeAll();
             studentRepo.setNewStudentsToOld();
-            statisticsServices.setEnrolledCount(sem);
-            statisticsServices.setPreEnrolledCount(sem);
+            statisticsServices.setInitialCounts(sem);
         },dbExecutor).exceptionally(ex -> {
             ex.printStackTrace();
             return null;

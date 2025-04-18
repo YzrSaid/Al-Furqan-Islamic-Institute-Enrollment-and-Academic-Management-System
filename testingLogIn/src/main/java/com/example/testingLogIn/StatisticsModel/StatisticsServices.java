@@ -1,5 +1,6 @@
 package com.example.testingLogIn.StatisticsModel;
 
+import com.example.testingLogIn.Enums.Semester;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.SchoolYearSemester;
@@ -9,9 +10,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class StatisticsServices {
@@ -44,9 +44,18 @@ public class StatisticsServices {
         this.gradeLevelRepo = gradeLevelRepo;
     }
 
-    public void setPreEnrolledCount(SchoolYearSemester sem){
-        if(preEnrolledCountRepo.findBySemester(sem.getSySemNumber()).orElse(null) == null)
-            preEnrolledCountRepo.save(new PreEnrolledCount(0,sem));
+    public void setInitialCounts(SchoolYearSemester sem){
+        int semId = sem.getSySemNumber();
+        if(preEnrolledCountRepo.findBySemester(semId).orElse(null) == null)
+            preEnrolledCountRepo.save(new PreEnrolledCount(sem));
+        if(enrolledCountRepo.findBySemester(semId).orElse(null) == null)
+            enrolledCountRepo.save(new EnrolledCount(sem));
+        if(graduatesCountRepo.findBySemester(semId).orElse(null) == null)
+            graduatesCountRepo.save(new GraduatesCount(sem));
+        if(passedCountRepo.findBySemester(semId).orElse(null)==null)
+            passedCountRepo.save(new PassedCount(0,sem));
+        if(retainedCountRepo.findBySemester(semId).orElse(null)==null)
+            retainedCountRepo.save(new RetainedCount(0,sem));
     }
 
     @Transactional
@@ -55,11 +64,6 @@ public class StatisticsServices {
             preEnrolledCountRepo.reduceByOne(sem.getSySemNumber());
         else
             preEnrolledCountRepo.addByOne(sem.getSySemNumber());
-    }
-
-    public void setEnrolledCount(SchoolYearSemester sem){
-        if(enrolledCountRepo.findBySemester(sem.getSySemNumber()).orElse(null) == null)
-            enrolledCountRepo.save(new EnrolledCount(0,sem));
     }
 
     @Transactional
@@ -77,16 +81,41 @@ public class StatisticsServices {
     public void setStudentPassingRecords(SchoolYearSemester sem){
         List<StudentPassingRecord> studentRetainedList = studentSubjectGradeRepo.findFailedStudents(sem.getSySemNumber(),null)
                                                         .stream().map(ssg -> new StudentPassingRecord(false,sem,ssg.getGradeLevel(),ssg.getStudent())).toList();
+        System.out.println(studentRetainedList);
         List<StudentPassingRecord> studentPassedList = studentSubjectGradeRepo.findPassedStudents(sem.getSySemNumber(),null)
                 .stream().map(ssg -> new StudentPassingRecord(true,sem,ssg.getGradeLevel(),ssg.getStudent())).toList();
         studentPassingRecordRepo.saveAll(studentPassedList);
         studentPassingRecordRepo.saveAll(studentRetainedList);
-        retainedCountRepo.save(new RetainedCount(studentRetainedList.size(),sem));
-        passedCountRepo.save(new PassedCount(studentPassedList.size(),sem));
+        retainedCountRepo.updateCount(sem.getSySemNumber(), studentRetainedList.size());
+        passedCountRepo.updateCount(sem.getSySemNumber(), studentPassedList.size());
 
         for(GradeLevel gradeLevel : gradeLevelRepo.findByIsNotDeletedTrue()){
             gradeLevelRetainedCountRepo.save(new GradeLevelRetainedCount(sem,gradeLevel,studentSubjectGradeRepo.findFailedStudents(sem.getSySemNumber(), gradeLevel.getLevelId()).size()));
             gradeLevelPassedCountRepo.save(new GradeLevelPassedCount(gradeLevel,sem,studentSubjectGradeRepo.findPassedStudents(sem.getSySemNumber(), gradeLevel.getLevelId()).size()));
         }
+    }
+
+    public CounterObject getCounts(Integer schoolYear, Semester semester){
+        return CounterObject.builder()
+                .enrolledCount(enrolledCountRepo.getSum(schoolYear,semester).orElse(0L))
+                .preEnrolledCount(preEnrolledCountRepo.getSum(schoolYear,semester).orElse(0L))
+                .graduatesCount(graduatesCountRepo.getSum(schoolYear,semester).orElse(0L))
+                .passedCount(gradeLevelPassedCountRepo.getTotal(schoolYear,semester,null).orElse(0L))
+                .retainedCount(gradeLevelRetainedCountRepo.getTotal(schoolYear,semester,null).orElse(0L))
+                .build();
+    }
+
+    public GradeLevelRates getGradeLevelRates(Integer schoolYear, Semester semester, boolean didPassed){
+        List<String> levelNames = new ArrayList<>();
+        List<Long> rates = new ArrayList<>();
+        for(GradeLevel gl : studentPassingRecordRepo.getUniqueGradeLevels(schoolYear, semester,didPassed)){
+            levelNames.add(gl.getLevelName());
+            int levelId = gl.getLevelId();
+            if(didPassed)
+                rates.add(gradeLevelPassedCountRepo.getTotal(schoolYear,semester,levelId).orElse(0L));
+            else
+                rates.add(gradeLevelRetainedCountRepo.getTotal(schoolYear,semester,levelId).orElse(0L));
+        }
+        return new GradeLevelRates(levelNames,rates);
     }
 }

@@ -25,21 +25,17 @@
             <!-- sort buttons -->
             <div class="sort-btns-container">
                 <div class="sort-year">
-                    <label for="year">Year</label>
-                    <select name="year" id="year-sort">
-                        <option value="" disabled selected>---</option>
+                    <label for="school-year">Year</label>
+                    <select name="year" onchange="setCounts(),setChartContents()" id="school-year">
+                        <option value="0" selected>All Time</option>
                     </select>
                 </div>
                 <div class="sort-semester">
-                    <label for="semester">Semester</label>
-                    <select name="semester" id="semester-sort">
-                        <option value="" disabled selected>---</option>
-                    </select>
-                </div>
-                <div class="sort-grade">
-                    <label for="grade">Grade</label>
-                    <select name="grade" id="grade-sort">
-                        <option value="" disabled selected>---</option>
+                    <label for="semester-sort">Semester</label>
+                    <select name="semester" onchange="setCounts(),setChartContents()" id="semester-sort">
+                        <option selected>All</option>
+                        <option value="First">First</option>
+                        <option value="Second">Second</option>
                     </select>
                 </div>
             </div>
@@ -73,14 +69,14 @@
                             <a href="/reports/teacher" class="card-link">
                                 <div class="card">
                                     <h3 class="card-title" id="num-dropped">21</h3>
-                                    <p class="card-label">Dropped</p>
+                                    <p class="card-label">Failed</p>
                                 </div>
                             </a>
 
                             <a href="/maintenance/section" class="card-link">
                                 <div class="card">
                                     <h3 class="card-title" id="num-retained">5</h3>
-                                    <p class="card-label">Retained</p>
+                                    <p class="card-label">Passed</p>
                                 </div>
                             </a>
                         </div>
@@ -162,13 +158,12 @@
             <div class="chart-box-bar">
                 <div class="bar-graph-container">
                     <div class="title-row">
-                        <h6 id="barGraphTitle">Retention Rates</h6>
+                        <h6 id="barGraphTitle">Grade Level Rates</h6>
                         <div class="filter-container-bar">
                             <label for="sort">Filter:</label>
-                            <select name="sort" id="sort-bar-graph">
-                                <option value="retention-rates" selected>Retention</option>
-                                <option value="completion-rates">Completion</option>
-                                <option value="drop-rates">Drop</option>
+                            <select name="sort" onchange="setChartContents()" id="sort-bar-graph">
+                                <option value="failed" selected>Failing Rates</option>
+                                <option value="passed">Passing Rates</option>
                             </select>
                         </div>
                     </div>
@@ -186,9 +181,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const enrollmentCanvas = document.getElementById('enrollmentChart').getContext('2d');
-        const retentionCanvas = document.getElementById('retentionChart').getContext('2d');
         const graphTitle = document.getElementById('graphTitle');
-
         // Enrollment Chart (Doughnut)
         const enrollmentChart = new Chart(enrollmentCanvas, {
             type: 'doughnut',
@@ -215,25 +208,6 @@
             }
         });
 
-        // Retention Rates Chart (Bar)
-        const retentionChart = new Chart(retentionCanvas, {
-            type: 'bar',
-            data: {
-                labels: ['2019-2020', '2020-2021', '2021-2022', '2022-2023', '2023-2024', '2024-2025'],
-                datasets: [{
-                    label: 'Retention Rates',
-                    data: [88, 95, 72, 86, 94, 75], // Example retention data
-                    backgroundColor: 'rgba(210, 90, 90, 0.7)'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: { y: { beginAtZero: true, max: 100 } },
-                plugins: { legend: { display: false } }
-            }
-        });
-
-        // Update Chart Data Function
         function updateChartData(filterValue) {
             let newData = {};
             let newTitle = '';
@@ -257,9 +231,93 @@
         document.getElementById('filter').addEventListener('change', function (e) {
             updateChartData(e.target.value);
         });
-    });
-</script>
+        
+        fetch("/schoolyear/all")
+            .then(response => {
+                if(!response.ok){throw new Error(`HTTP error! Status: ${response.status}`);}
+                return response.json();
+            })
+            .then(sys =>{
+                var school_year_dd = document.getElementById("school-year");
+                sys.forEach(sy=>{
+                    let option = document.createElement("option");
+                    option.value = sy.schoolYearNum;
+                    option.textContent = sy.schoolYear;
+                    school_year_dd.appendChild(option);
+                });
+            })
+            .catch(error => {
+                showErrorModal("Failed to retrieve School Years");
+            });
 
+        setChartContents();
+        setCounts();
+    });
+
+    async function setCounts(){
+        var sem = document.getElementById("semester-sort").value;
+        var sy = document.getElementById("school-year").value;
+        const response = await fetch(`/statistics/counts?semester=${sem}&schoolYear=${sy}`);
+        if(response.ok){
+            const counts = await response.json();
+            console.log(counts);
+            setFirstTableContents(counts.enrolledCount,
+                                    counts.preEnrolledCount,
+                                    counts.graduatesCount,
+                                    counts.passedCount,
+                                    counts.retainedCount);
+        }else{
+            setFirstTableContents(0,0,0,0,0);
+        }
+    }
+    function setFirstTableContents(enrolled,pre_enrolled,graduates,passed,failed){
+        document.getElementById("num-enrolled").textContent = enrolled;
+        document.getElementById("num-pre-enrolled").textContent = pre_enrolled;
+        document.getElementById("graduates-student").textContent = graduates;
+        document.getElementById("num-dropped").textContent = passed;
+        document.getElementById("num-retained").textContent = failed;
+    }
+
+    let retentionChart = null;
+
+    async function setChartContents() {
+        // Destroy existing chart if it exists
+        if (retentionChart) {
+            retentionChart.destroy();
+        }
+
+        var sem = document.getElementById("semester-sort").value;
+        var sy = document.getElementById("school-year").value;
+        var didPassed = document.getElementById("sort-bar-graph").value === "passed";
+        var gradeLabels = [];
+        var gradeRates = [];
+        
+        const response = await fetch(`/statistics/rates?semester=${sem}&schoolYear=${sy}&didPassed=${didPassed}`);
+        if (response.ok) {
+            const ratesResult = await response.json();
+            gradeLabels = ratesResult.gradeLevelNames;
+            gradeRates = ratesResult.gradeLevelCounts;
+        }
+
+        const retentionCanvas = document.getElementById('retentionChart').getContext('2d');
+        retentionChart = new Chart(retentionCanvas, {
+            type: 'bar',
+            data: {
+                labels: gradeLabels,
+                datasets: [{
+                    label: 'Retention Rates',
+                    data: gradeRates,
+                    backgroundColor: 'rgba(210, 90, 90, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, max: 100 } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+</script>
 
 
 </html>

@@ -18,8 +18,8 @@ public class EnrolledCount {
     @JoinColumn(name = "sem")
     private SchoolYearSemester sem;
 
-    public EnrolledCount(int count, SchoolYearSemester sem) {
-        this.count = count;
+    public EnrolledCount(SchoolYearSemester sem) {
+        this.count = 0;
         this.sem = sem;
     }
 }

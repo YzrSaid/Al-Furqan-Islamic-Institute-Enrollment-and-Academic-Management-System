@@ -112,7 +112,7 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             WHERE ssg.semester.sySemNumber = :semId
             AND (:levelId IS NULL OR lvl.levelId = :levelId)
             GROUP BY stud, lvl
-            HAVING AVG(ssg.subjectGrade) >= 50
+            HAVING AVG(COALESCE(ssg.subjectGrade, 0)) >= 50
             """)
     List<PassedStudents> findPassedStudents(int semId, Integer levelId);
 
@@ -124,7 +124,7 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             WHERE ssg.semester.sySemNumber = :semId
             AND (:levelId IS NULL OR lvl.levelId = :levelId)
             GROUP BY stud, lvl
-            HAVING AVG(ssg.subjectGrade) < 50
+            HAVING AVG(COALESCE(ssg.subjectGrade, 0)) < 50
             """)
     List<FailedStudents> findFailedStudents(int semId, Integer levelId);
 }

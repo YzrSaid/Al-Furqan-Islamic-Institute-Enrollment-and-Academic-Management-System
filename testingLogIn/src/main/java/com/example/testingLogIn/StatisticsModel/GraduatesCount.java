@@ -20,8 +20,8 @@ public class GraduatesCount {
 
     private int count;
 
-    public GraduatesCount(int count, SchoolYearSemester sem) {
-        this.count = count;
+    public GraduatesCount(SchoolYearSemester sem) {
+        this.count = 0;
         this.sem = sem;
     }
 }

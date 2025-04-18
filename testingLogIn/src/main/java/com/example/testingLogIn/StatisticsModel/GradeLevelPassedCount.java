@@ -4,9 +4,11 @@ import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@Data
 @Entity
 public class GradeLevelPassedCount {
 

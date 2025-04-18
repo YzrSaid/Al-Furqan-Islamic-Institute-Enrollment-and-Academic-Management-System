@@ -87,6 +87,12 @@ body {
   display: flex;
   flex-direction: column;
   width: 66%;
+  margin: auto;
+}
+.forgot-password-text {
+  padding: 20px;
+  max-width: 300px; 
+  line-height: 1.4; 
 }
 
 #forgot-pass {
@@ -101,7 +107,7 @@ body {
   color: rgb(30, 30, 30);
 }
 #forgot-pass:hover {
-  color: rgb(4, 210, 9);
+  color: rgba(30, 30, 30, 0.804);
   text-decoration: underline;
 }
 #login-btn {
@@ -127,6 +133,7 @@ body {
 
 #signup-link a:hover {
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .input-group-input {
@@ -180,9 +187,11 @@ body {
 #signup-link a {
   font-weight: 600;
   color: rgb(30, 30, 30);
+  text-decoration: underline;
 }
 #signup-link a:hover {
-  color: rgb(4, 210, 9);
+  text-decoration: underline;
+  color: rgba(30, 30, 30, 0.785);
 }
 
 #signup-header {
@@ -216,7 +225,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   width: 100%;
 }
 

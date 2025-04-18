@@ -105,20 +105,26 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     void deleteStudentSubjectGrade(int subjectId, int semId);
 
     @Query("""
-            SELECT NEW com.example.testingLogIn.CustomObjects.PassedStudents(stud, ssg.section.level) FROM StudentSubjectGrade ssg 
-            JOIN Student stud ON ssg.student.studentId = stud.studentId
-            WHERE sg.semester.sySemNumber = semId 
-            AND (:levelId IS NULL OR ssg.section.level.levelId = :levelId) 
-            HAVING AVG(ssg.SubjectGrade) >= 50
+            SELECT NEW com.example.testingLogIn.CustomObjects.PassedStudents(stud, ssg.section.level) 
+            FROM StudentSubjectGrade ssg
+            JOIN ssg.student stud
+            JOIN ssg.section.level lvl
+            WHERE ssg.semester.sySemNumber = :semId
+            AND (:levelId IS NULL OR lvl.levelId = :levelId)
+            GROUP BY stud, lvl
+            HAVING AVG(ssg.subjectGrade) >= 50
             """)
     List<PassedStudents> findPassedStudents(int semId, Integer levelId);
 
     @Query("""
-            SELECT NEW com.example.testingLogIn.CustomObjects.FailedStudents(stud, ssg.section.level) FROM StudentSubjectGrade ssg 
-            JOIN Student stud ON ssg.student.studentId = stud.studentId
-            WHERE sg.semester.sySemNumber = semId 
-            AND (:levelId IS NULL OR ssg.section.level.levelId = :levelId) 
-            HAVING AVG(ssg.SubjectGrade) < 50
+            SELECT NEW com.example.testingLogIn.CustomObjects.FailedStudents(stud, ssg.section.level) 
+            FROM StudentSubjectGrade ssg
+            JOIN ssg.student stud
+            JOIN ssg.section.level lvl
+            WHERE ssg.semester.sySemNumber = :semId
+            AND (:levelId IS NULL OR lvl.levelId = :levelId)
+            GROUP BY stud, lvl
+            HAVING AVG(ssg.subjectGrade) < 50
             """)
     List<FailedStudents> findFailedStudents(int semId, Integer levelId);
 }

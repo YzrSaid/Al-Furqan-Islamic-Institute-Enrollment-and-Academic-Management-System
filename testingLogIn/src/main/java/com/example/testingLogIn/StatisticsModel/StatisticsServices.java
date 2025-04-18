@@ -21,7 +21,6 @@ public class StatisticsServices {
     private final PreEnrolledCountRepo preEnrolledCountRepo;
     private final RetainedCountRepo retainedCountRepo;
     private final PassedCountRepo passedCountRepo;
-    private final SectionStudentCountRepo sectionStudentCountRepo;
     private final GradeLevelEnrolledCountRepo gradeLevelEnrolledCountRepo;
     private final StudentPassingRecordRepo studentPassingRecordRepo;
     private final StudentSubjectGradeRepo studentSubjectGradeRepo;
@@ -30,14 +29,13 @@ public class StatisticsServices {
     private final GradeLevelRepo gradeLevelRepo;
 
     @Autowired
-    public StatisticsServices(EnrolledCountRepo enrolledCountRepo, GraduatesCountRepo graduatesCountRepo, GraduateStudentsRepo graduateStudentsRepo, PreEnrolledCountRepo preEnrolledCountRepo, RetainedCountRepo retainedCountRepo, PassedCountRepo passedCountRepo, SectionStudentCountRepo sectionStudentCountRepo, GradeLevelEnrolledCountRepo gradeLevelEnrolledCountRepo, StudentPassingRecordRepo studentPassingRecordRepo, StudentSubjectGradeRepo studentSubjectGradeRepo, GradeLevelRetainedCountRepo gradeLevelRetainedCountRepo, GradeLevelPassedCountRepo gradeLevelPassedCountRepo, GradeLevelRepo gradeLevelRepo) {
+    public StatisticsServices(EnrolledCountRepo enrolledCountRepo, GraduatesCountRepo graduatesCountRepo, GraduateStudentsRepo graduateStudentsRepo, PreEnrolledCountRepo preEnrolledCountRepo, RetainedCountRepo retainedCountRepo, PassedCountRepo passedCountRepo, GradeLevelEnrolledCountRepo gradeLevelEnrolledCountRepo, StudentPassingRecordRepo studentPassingRecordRepo, StudentSubjectGradeRepo studentSubjectGradeRepo, GradeLevelRetainedCountRepo gradeLevelRetainedCountRepo, GradeLevelPassedCountRepo gradeLevelPassedCountRepo, GradeLevelRepo gradeLevelRepo) {
         this.enrolledCountRepo = enrolledCountRepo;
         this.graduatesCountRepo = graduatesCountRepo;
         this.graduateStudentsRepo = graduateStudentsRepo;
         this.preEnrolledCountRepo = preEnrolledCountRepo;
         this.retainedCountRepo = retainedCountRepo;
         this.passedCountRepo = passedCountRepo;
-        this.sectionStudentCountRepo = sectionStudentCountRepo;
         this.gradeLevelEnrolledCountRepo = gradeLevelEnrolledCountRepo;
         this.studentPassingRecordRepo = studentPassingRecordRepo;
         this.studentSubjectGradeRepo = studentSubjectGradeRepo;

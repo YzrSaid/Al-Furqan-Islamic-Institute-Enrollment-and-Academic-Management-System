@@ -32,65 +32,52 @@
                 <h4 id="adviser">Sir Jisun</h4>
             </div>
 
-            <div class="table-wrapper">
-                <table id="paragas-eatery-table" class="sched-table main-table">
-                    <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>Teacher</th>
-                            <th>Day</th>
-                            <th>From</th>
-                            <th>To</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="scheduleBody">
-                        <tr class="sched-row hidden-row">
-                            <td>
-                                <select name="subject">
-                                    <option value="" disabled selected>Choose a subject</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select name="teacher">
-                                    <option value="" disabled selected>Choose a teacher</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select name="days">
-                                    <option value="" disabled selected>Choose a day</option>
-                                    <option value="Saturday">Saturday</option>
-                                    <option value="Sunday">Sunday</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="time">
-                            </td>
-                            <td>
-                                <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> <br> <br>
-            </div>
 
-
-
-            <div class="add-row-container">
-                <img id="addRowBtn" th:src="@{/images/icons/add-button.png}" alt="">
-            </div>
+            <table id="paragas-eatery-table" class="sched-table main-table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Teacher</th>
+                        <th>Day</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody">
+                    <tr class="sched-row hidden-row">
+                        <td>
+                            <select name="subject">
+                                <option value="" disabled selected>Choose a subject</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="teacher">
+                                <option value="" disabled selected>Choose a teacher</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="days">
+                                <option value="" disabled selected>Choose a day</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="time">
+                        </td>
+                        <td>
+                            <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                        </td>
+                    </tr>
+                </tbody>
+            </table> <br>
         </div>
 
-        <!-- buttons -->
         <div class="btn-container">
-            <button class="save-button" data-action="saveSched"
-                data-message="Are you sure you want to save this schedule" id="saveBtn"
-                data-open-modal="confirmationModal">Add</button>
-            <button class="clear-button" data-action="clearSched"
-                data-message="Are you sure you want to clear all the schedule" id="clearBtn"
-                data-open-modal="confirmationModal">
-                Clear</button>
+            <button type="button" class="btn-confirm" id="addRowBtn">Add</button>
         </div>
+
 
 
         <!-- Modal for confirmation -->
@@ -98,96 +85,11 @@
             <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
-
-        <!-- Modal for edit account -->
-        <div class="my-account-container-wrapper">
-            <div id="myAccountEditModal" class="my-account-edit-modal modal">
-                <div class="my-account-edit-modal-content scroll-lock">
-                    <h2>My Account Information</h2>
-                    <form action="" id="myAccountEditForm">
-                        <div class="half-width">
-                            <div class="user-id">
-                                <label for="user-id" id="user-id-label">User ID:</label>
-                                <p id="user-id">0001</p>
-                            </div>
-                        </div> <br>
-                        <div class="half-width">
-                            <div class="email">
-                                <label for="email">Email:</label>
-                                <p id="email">sample@gmail.com</p>
-                            </div>
-                        </div> <br>
-                        <div class="half-width student-form-group">
-                            <div class="first-name">
-                                <label for="first-name">First Name:</label>
-                                <input type="text" id="first-name" value="Batman" readonly>
-                            </div>
-                            <div class="last-name">
-                                <label for="last-name">Last Name:</label>
-                                <input type="text" id="last-name" value="Rizal" readonly>
-                            </div>
-                        </div> <br>
-                        <div class="account-type">
-                            <label for="account-type">Account Type:</label>
-                            <select name="account-type" id="account-type">
-                                <option value="" disabled>Select account type</option>
-                                <option value="ADMIN_Enrollment">Admin - Enrollment</option>
-                                <option value="TEACHER">Teacher</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-buttons">
-                            <button type="button" class="btn-confirm" data-action="editMyAccount"
-                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
-                                Edit
-                            </button>
-                            <button type="button" class="btn-cancel"
-                                data-close-modal="myAccountEditModal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal for changing password -->
-        <div class="my-account-container-wrapper">
-            <div id="changePasswordModal" class="change-password-modal">
-                <div class="change-password-modal-content scroll-lock">
-                    <h2>Change Password</h2>
-                    <form action="" id="changePasswordForm">
-                        <div class="change-pass-div">
-                            <label for="current-passowrd">Current Password</label>
-                            <input type="password" id="current-passowrd">
-                        </div>
-                        <div class="change-pass-div">
-                            <label for="new-password">New Password</label>
-                            <input type="password" id="new-password">
-                        </div>
-                        <div class="change-pass-div">
-                            <ul>
-                                <li>Must be 8 characters</li>
-                                <li>Must contain a spacial character</li>
-                                <li>Must contain upper and lower case</li>
-                            </ul>
-                        </div>
-                        <div class="change-pass-div">
-                            <label for="confirm-password">Confirm Password</label>
-                            <input type="password" id="confirm-password">
-                        </div>
-                        <div class="modal-buttons change-pass-buttons">
-                            <button type="button" class="btn-confirm" id="confirmChangePassword"
-                                data-action="change-password">Confirm</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
     </div>
 
 </body>

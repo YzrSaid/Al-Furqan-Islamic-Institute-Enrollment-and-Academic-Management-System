@@ -487,7 +487,7 @@ document.addEventListener("DOMContentLoaded", function () {
       confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
     }
 
-    if (modalId.includes("Edit") && modalId !== ("studentInformationEditModal")) {
+    if (modalId.includes("Edit") && modalId !== "studentInformationEditModal") {
       console.log("yawa");
       const confirmBtn = modal.querySelector(".btn-confirm");
       const cancelBtn = modal.querySelector(".btn-cancel");
@@ -1255,148 +1255,18 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.getElementById("scheduleBody");
   const addRowBtn = document.getElementById("addRowBtn");
-  const saveBtn = document.getElementById("saveBtn");
-  const clearBtn = document.getElementById("clearBtn");
 
-  if (!tableBody || !addRowBtn || !saveBtn || !clearBtn) return;
+  let draggedRow = null;
 
-  let firstClick = true; // Track first click on "Add"
-  let draggedRow = null; // For drag-and-drop functionality
-  let hasInitialRows = tableBody.children.length > 0; // Check if rows existed on page load
-
-  // Hide buttons initially
-  addRowBtn.style.display = "none";
-  clearBtn.style.display = "none";
-  saveBtn.textContent = hasInitialRows ? "Edit" : "Add"; // Set button based on initial rows
-
-  function updateButtonState() {
-    const visibleRows = Array.from(tableBody.children).filter(
-      (row) => !row.classList.contains("hidden-row")
-    );
-    const hasVisibleRows = visibleRows.length > 0;
-
-    if (!hasVisibleRows) {
-      saveBtn.textContent = "Add";
-      firstClick = true;
-      addRowBtn.style.display = "none";
-      clearBtn.style.display = "none";
-    } else {
-      saveBtn.textContent = "Save"; // Keep it "Save" when rows exist
-      addRowBtn.style.display = "block"; // Keep the Add Row button visible
-      clearBtn.style.display = "block"; // Keep the Clear button visible
-    }
-  }
-
-  //let firstClick = true; // Track if it's the first click
-  //let draggedRow = null; // Track the currently dragged row
-
-  async function createRow() {
-    const path = window.location.pathname;
-    const pathParts = path.split("/");
-    const sectionId = pathParts[pathParts.length - 1];
-    console.log("Section ID:", sectionId);
-
-    // Create the new row
-    const newRow = document.createElement("tr");
-    newRow.classList.add("sched-row");
-    newRow.setAttribute("draggable", "false"); // Default: Not draggable
-    newRow.innerHTML = `
-        <td>
-            <select name="subject" id="subject-select">
-                <option value="" disabled selected>Choose a subject</option>
-            </select>
-        </td>
-        <td>
-            <select name="teacher"  id="teacher-select">
-                <option value="" disabled selected>Choose a teacher</option>
-            </select>
-        </td>
-        <td>
-            <select id="day" name="days">
-                <option value="" disabled selected>Choose a day</option>
-                <option value="SATURDAY">Saturday</option>
-                <option value="SUNDAY">Sunday</option>
-            </select>
-        </td>
-        <td>
-            <input id="starttime" type="time">
-        </td>
-        <td>
-            <input id="endtime" type="time">
-        </td>
-        <td>
-            <img class="delete-row" src="/images/icons/cross.png" alt="Delete" style="display: inline-block; cursor: pointer;">
-            <button onClick="saveSchedule()" data-message="Sure?" id="saveButtonSchedule">Save</button>
-        </td>
-    `;
-
-    // Fetch and populate subjects
-    await populateSubjects(sectionId, newRow);
-
-    // Fetch and populate teachers
-    await populateTeachers(newRow);
-
-    // Attach event listeners
-    attachDeleteEvent(newRow);
-    attachDoubleClickDrag(newRow);
-
-    return newRow;
-  }
-
-  // Function to fetch and populate subjects
-  async function populateSubjects(sectionId, row) {
-    try {
-      const response = await fetch(`/subject/section/${sectionId}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const subjects = await response.json();
-
-      const subjectSelect = row.querySelector("#subject-select");
-      subjects.forEach((subject) => {
-        console.log(subject);
-        const option = document.createElement("option");
-        option.value = subject.subjectName; // Use subject ID as the value
-        option.textContent = subject.subjectName; // Use subject name as the display text
-        subjectSelect.appendChild(option);
-      });
-    } catch (error) {
-      console.error("Error fetching subjects:", error);
-    }
-  }
-
-  // Function to fetch and populate teachers
-  async function populateTeachers(row) {
-    try {
-      const response = await fetch("/user/teachers");
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const teachers = await response.json();
-
-      const teacherSelect = row.querySelector("#teacher-select");
-      teachers.forEach((teacher) => {
-        console.log(teacher);
-        const option = document.createElement("option");
-        option.value = teacher.firstname + " " + teacher.lastname; // Use teacher ID as the value
-        option.textContent = teacher.firstname + " " + teacher.lastname; // Use teacher name as the display text
-        teacherSelect.appendChild(option);
-      });
-    } catch (error) {
-      console.error("Error fetching teachers:", error);
-    }
-  }
-
-  function attachDeleteEvent(row) {
-    row.querySelector(".delete-row").addEventListener("click", () => {
-      row.remove();
-      updateButtonState();
-    });
-  }
+  // Add button click
+  addRowBtn.addEventListener("click", async () => {
+    const newRow = await createRow();
+    tableBody.appendChild(newRow);
+  });
 
   function attachDoubleClickDrag(row) {
     row.addEventListener("dblclick", () => {
-      row.setAttribute("draggable", "true"); // Enable dragging on double-click
+      row.setAttribute("draggable", "true");
       row.classList.add("dragging-enabled");
     });
 
@@ -1413,7 +1283,7 @@ document.addEventListener("DOMContentLoaded", () => {
     row.addEventListener("dragover", (e) => {
       e.preventDefault();
       const afterElement = getDragAfterElement(tableBody, e.clientY);
-      if (afterElement == null) {
+      if (!afterElement) {
         tableBody.appendChild(draggedRow);
       } else {
         tableBody.insertBefore(draggedRow, afterElement);
@@ -1421,66 +1291,140 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     row.addEventListener("dragend", () => {
-      draggedRow.classList.remove("dragging");
-      draggedRow.setAttribute("draggable", "false"); // Disable dragging after release
-      draggedRow.classList.remove("dragging-enabled");
-      draggedRow = null;
+      if (draggedRow) {
+        draggedRow.classList.remove("dragging");
+        draggedRow.setAttribute("draggable", "false");
+        draggedRow.classList.remove("dragging-enabled");
+        draggedRow = null;
+      }
     });
   }
 
   function getDragAfterElement(container, y) {
     const draggableElements = [
-      ...container.querySelectorAll(".sched-row:not(.dragging)"),
+      ...container.querySelectorAll("tr.sched-row:not(.dragging)"),
     ];
 
     return draggableElements.reduce(
       (closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2;
-        return offset < 0 && offset > closest.offset
-          ? { offset, element: child }
-          : closest;
+
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
       },
       { offset: Number.NEGATIVE_INFINITY }
     ).element;
   }
 
-  saveBtn.addEventListener("click", async () => {
-    const visibleRows = Array.from(tableBody.children).filter(
-      (row) => !row.classList.contains("hidden-row")
-    );
-    const hasVisibleRows = visibleRows.length > 0;
+  async function createRow() {
+    const path = window.location.pathname;
+    const sectionId = path.split("/").pop();
 
-    if (firstClick) {
-      // First time clicking "Add"
-      const newRow = await createRow(); // Await the creation of the new row
-      tableBody.appendChild(newRow);
-      addRowBtn.style.display = "block";
-      clearBtn.style.display = "block";
-      firstClick = false;
-    } else {
-      addRowBtn.style.display = "block";
-      clearBtn.style.display = "block";
+    const newRow = document.createElement("tr");
+    newRow.classList.add("sched-row");
+    newRow.setAttribute("draggable", "false");
+
+    newRow.innerHTML = `
+        <td>
+            <select name="subject" class="subject-select">
+                <option value="" disabled selected>Choose a subject</option>
+            </select>
+        </td>
+        <td>
+            <select name="teacher" class="teacher-select">
+                <option value="" disabled selected>Choose a teacher</option>
+            </select>
+        </td>
+        <td>
+            <select name="days" class="day-select">
+                <option value="" disabled selected>Choose a day</option>
+                <option value="SATURDAY">Saturday</option>
+                <option value="SUNDAY">Sunday</option>
+            </select>
+        </td>
+        <td><input type="time" class="starttime-input"></td>
+        <td><input type="time" class="endtime-input"></td>
+      <td>
+       <button class="btn-row-cancel cancel-btn" title="Cancel">
+            <img src="/images/icons/cross.png" alt="Cancel" />
+        </button>
+        <button class="btn-row-save confirm-btn" title="Save">
+            <img src="/images/icons/check.png" alt="Save" />
+        </button>
+       
+        </td>
+      `;
+
+    await populateSubjects(sectionId, newRow);
+    await populateTeachers(newRow);
+
+    attachDoubleClickDrag(newRow);
+    attachRowActionHandlers(newRow);
+
+    return newRow;
+  }
+
+  function attachRowActionHandlers(row) {
+    const cancelBtn = row.querySelector(".btn-row-cancel");
+    const saveBtn = row.querySelector(".btn-row-save");
+
+    cancelBtn.addEventListener("click", () => {
+      row.remove(); // Just removes this row
+    });
+
+    saveBtn.addEventListener("click", () => {
+      // Grab values from the inputs
+      const subject = row.querySelector(".subject-select").value;
+      const teacher = row.querySelector(".teacher-select").value;
+      const day = row.querySelector(".day-select").value;
+      const start = row.querySelector(".starttime-input").value;
+      const end = row.querySelector(".endtime-input").value;
+
+      // Do something with them (send to server or display confirmation)
+      console.log("Save row:", { subject, teacher, day, start, end });
+
+      // Optional: disable inputs or give visual feedback
+      alert("Saved!");
+    });
+  }
+
+  async function populateSubjects(sectionId, row) {
+    try {
+      const res = await fetch(`/subject/section/${sectionId}`);
+      const subjects = await res.json();
+      const select = row.querySelector(".subject-select");
+      subjects.forEach((subject) => {
+        const opt = document.createElement("option");
+        opt.value = subject.subjectName;
+        opt.textContent = subject.subjectName;
+        select.appendChild(opt);
+      });
+    } catch (err) {
+      console.error("Error loading subjects:", err);
     }
+  }
 
-    document
-      .querySelectorAll(".delete-row")
-      .forEach((btn) => (btn.style.display = "inline-block"));
-  });
-  addRowBtn.addEventListener("click", () => {
-    tableBody.appendChild(createRow());
-    saveBtn.textContent = "Save";
-    addRowBtn.style.display = "block"; // Ensure it stays visible
-    clearBtn.style.display = "block"; // Ensure clear button stays visible
-  });
-  window.clearSched = function () {
-    tableBody.innerHTML = ""; // Clears everything
-    saveBtn.textContent = "Add";
-    firstClick = true;
-    addRowBtn.style.display = "none";
-    clearBtn.style.display = "none";
-  };
-  updateButtonState();
+  async function populateTeachers(row) {
+    try {
+      const res = await fetch("/user/teachers");
+      const teachers = await res.json();
+      const select = row.querySelector(".teacher-select");
+      teachers.forEach((teacher) => {
+        const opt = document.createElement("option");
+        opt.value = `${teacher.firstname} ${teacher.lastname}`;
+        opt.textContent = `${teacher.firstname} ${teacher.lastname}`;
+        select.appendChild(opt);
+      });
+    } catch (err) {
+      console.error("Error loading teachers:", err);
+    }
+  }
+
+  // drag and drop logic stays unchanged...
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -1979,7 +1923,6 @@ document.addEventListener("DOMContentLoaded", function () {
 //   });
 // });
 
-
 // document.querySelectorAll('.dropdown-print-btn').forEach(button => {
 //     button.addEventListener('click', (event) => {
 //         const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-status-content');
@@ -2129,12 +2072,15 @@ document.addEventListener("DOMContentLoaded", function () {
       popoverId: "report-scholar-popover",
     },
     {
-        buttonId: "dropdown-report-transferee",
-        popoverId: "report-transferee-popover"
+      buttonId: "dropdown-report-transferee",
+      popoverId: "report-transferee-popover",
     },
     { buttonId: "dropdown-add-scholar", popoverId: "add-scholar-popover" },
     { buttonId: "dropdown-transferee", popoverId: "transferee-popover" },
-    { buttonId: "dropdown-edit-transferee", popoverId: "edit-transferee-popover" },
+    {
+      buttonId: "dropdown-edit-transferee",
+      popoverId: "edit-transferee-popover",
+    },
     { buttonId: "dropdown-edit-scholar", popoverId: "edit-scholar-popover" },
     {
       buttonId: "dropdown-add-transferee",
@@ -2259,10 +2205,10 @@ document.addEventListener("DOMContentLoaded", function () {
     buttons.forEach(({ popoverId, buttonId }) => {
       const popover = document.getElementById(popoverId);
       const button = document.getElementById(buttonId);
-  
+
       // ✅ Check if elements exist first
       if (!popover || !button) return;
-  
+
       if (
         popover.style.visibility === "visible" &&
         !popover.contains(e.target) &&
@@ -2271,7 +2217,7 @@ document.addEventListener("DOMContentLoaded", function () {
         closePopover(popover);
       }
     });
-  });  
+  });
 });
 
 //This is for Modal Buttons (Cancel and Confirm)
@@ -2394,27 +2340,27 @@ function resetValidationErrors() {
 // Center Close Button
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".modal-buttons").forEach(function (container) {
-      const btn = container.querySelector("button.btn-cancel");
-      if (btn && btn.textContent.trim().toLowerCase() === "close") {
-          container.style.display = "flex";
-          container.style.justifyContent = "center";
-          container.style.alignItems = "center";
-      }
+    const btn = container.querySelector("button.btn-cancel");
+    if (btn && btn.textContent.trim().toLowerCase() === "close") {
+      container.style.display = "flex";
+      container.style.justifyContent = "center";
+      container.style.alignItems = "center";
+    }
   });
 });
 //GradeLevelAssessment Modal Cancel-Confirm Button Centered
 document.addEventListener("DOMContentLoaded", function () {
   const modal = document.querySelector("#addGradeLevelAssessmentModal");
   if (modal) {
-      const buttonsContainer = modal.querySelector(".modal-buttons");
-      if (buttonsContainer) {
-          buttonsContainer.style.display = "flex";
-          buttonsContainer.style.justifyContent = "center";
-          buttonsContainer.style.alignItems = "center";
-          buttonsContainer.style.flexWrap = "wrap";
-          buttonsContainer.style.gap = "24px";
-          buttonsContainer.style.marginTop = "1rem";
-          buttonsContainer.style.width = "100%";
-      }
+    const buttonsContainer = modal.querySelector(".modal-buttons");
+    if (buttonsContainer) {
+      buttonsContainer.style.display = "flex";
+      buttonsContainer.style.justifyContent = "center";
+      buttonsContainer.style.alignItems = "center";
+      buttonsContainer.style.flexWrap = "wrap";
+      buttonsContainer.style.gap = "24px";
+      buttonsContainer.style.marginTop = "1rem";
+      buttonsContainer.style.width = "100%";
+    }
   }
 });

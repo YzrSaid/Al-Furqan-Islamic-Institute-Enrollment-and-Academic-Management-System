@@ -445,32 +445,22 @@
     <!-- Modal for viewing grades -->
     <div id="viewGradesModal" class="view-grades-modal modal">
         <div class="view-grades-modal-content scroll-lock">
+            <div class="modal-body">
+                <h2>Student Grades</h2>
 
-            <h2>Student Grades</h2>
-
-            <div class="half-width view-studId" id="view-grade-studId">
-                <label for="student-grade-id">Student ID:</label>
-                <h6 id="student-grade-id"></h6>
+                <div class="half-width view-studId" id="view-grade-studId">
+                    <label for="student-grade-id">Student ID:</label>
+                    <h6 id="student-grade-id"></h6>
+                </div>
+                <div class="half-width view-studName" id="view-grade-studName">
+                    <label for="student-grade-name">Student Name:</label>
+                    <h6 id="student-grade-name">Martin Francisco</h6>
+                </div> <br>
+    
+                <!-- Grades Table -->
+                <div id="preRequisite-grades"></div>
             </div>
-            <div class="half-width view-studName" id="view-grade-studName">
-                <label for="student-grade-name">Student Name:</label>
-                <h6 id="student-grade-name">Martin Francisco</h6>
-            </div> <br>
-
-            <!-- Grades Table -->
-            <div id="preRequisite-grades"></div>
-            <!-- <div class="half-width" id="view-grade-average">
-                <label for="grade-average">Final Average:</label>
-                <input type="text" id="average-input" readonly value="90">
-            </div>
-            
-            <div class="half-width" id="view-grade-remarks">
-                <label for="grade-average">Remarks:</label>
-                <div class="status-container">
-                    <div class="status" id="grade-remarks">Pass</div>
-                </div>  
-            </div> -->
-
+          
             <!-- Close button -->
             <div class="modal-buttons">
                 <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
@@ -1904,10 +1894,10 @@
         }
 
         fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
-            .then((response) => response.json())
-            .then((data) => {
-                const studentGradesMap = new Map(Object.entries(data.content));
-                preRequisiteGradesDiv.innerHTML = `
+                .then((response) => response.json())
+                .then((data) => {
+                    const studentGradesMap = new Map(Object.entries(data.content));
+                    preRequisiteGradesDiv.innerHTML = `
                         <table class="view-grades-table main-table">
                         <thead>
                             <tr>
@@ -1923,49 +1913,72 @@
                             </tr>
                         </tbody>
                     </table>`;
-                if (studentGradesMap.size === 0) {
-                    return;
-                }
-                preRequisiteGradesDiv.innerHTML = ``;
-                studentGradesMap.forEach((values, key) => {
-                    let gradeTotal = 0;
-                    let gradeCount = 0;
-                    var gradesRow = ``;
-                    values.forEach((grade) => {
-                        gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
-                        gradeCount++;
-                        gradesRow += `
-                            <tr>
-                                <td>${grade.subjectName}</td>
-                                <td>${grade.subjectName}</td>
-                                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
-                            </tr>`;
-                    });
-                    var avg = gradeTotal / gradeCount;
-                    var grade_new_table = document.createElement("div");
-                    grade_new_table.innerHTML = `
-                                <h5>${key}</h5>
-                                <table class="view-grades-table main-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Subject ID</th>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                        </tr>
-                                    </thead>
+                    if (studentGradesMap.size === 0) {
+                        return;
+                    }
+                    preRequisiteGradesDiv.innerHTML = ``;
+                    let count = 0; // make sure this is defined above the forEach
+                    let rowContainer;
 
-                                    <tbody>
-                                        ${gradesRow}
-                                        <tr>
-                                            <td colspan="2">Average</td>
-                                            <td>${avg.toFixed(2)}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>`;
-                    preRequisiteGradesDiv.appendChild(grade_new_table);
-                });
-            })
-            .catch((error) => console.error("Error fetching grade level:", error));
+                    studentGradesMap.forEach((values, key) => {
+                        let gradeTotal = 0;
+                        let gradeCount = 0;
+                        let gradesRow = ``;
+
+                        values.forEach((grade) => {
+                            gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
+                            gradeCount++;
+                            gradesRow += `
+        <tr>
+            <td>${grade.subjectName}</td>
+            <td>${grade.subjectName}</td>
+            <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
+        </tr>`;
+                        });
+
+                        let avg = gradeTotal / gradeCount;
+
+                        // Format the key: "Grade 1 - Section 2 : 2025-2026-Second sem"
+                        const [sectionPart, rest] = key.split(":");
+                        const restParts = rest.trim().split("-");
+                        const sy = `${restParts[0]}-${restParts[1]}`;
+                        const sem = restParts.slice(2).join(" ").replace(/\bfirst\b/i, "1st").replace(/\bsecond\b/i, "2nd");
+                        const formattedHeader = `${sectionPart.trim()} | SY: ${sy} (${sem})`;
+
+
+                        const gradeWrapper = document.createElement("div");
+                        gradeWrapper.className = "grade-wrapper";
+                        gradeWrapper.innerHTML = `
+        <h6 class="grades-header">${formattedHeader}</h6>
+        <table class="view-grades-table main-table">
+            <thead>
+                <tr>
+                    <th>Subject ID</th>
+                    <th>Subject</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${gradesRow}
+                <tr>
+                    <td colspan="2">Average</td>
+                    <td>${avg.toFixed(2)}</td>
+                </tr>
+            </tbody>
+        </table>`;
+
+                        // Group every 2 wrappers in a row
+                        if (count % 2 === 0) {
+                            rowContainer = document.createElement("div");
+                            rowContainer.className = "grades-row";
+                            preRequisiteGradesDiv.appendChild(rowContainer);
+                        }
+
+                        rowContainer.appendChild(gradeWrapper);
+                        count++;
+                    });
+                })
+                .catch((error) => console.error("Error fetching grade level:", error));
     }
 
     let enrollmentIdLet = null;

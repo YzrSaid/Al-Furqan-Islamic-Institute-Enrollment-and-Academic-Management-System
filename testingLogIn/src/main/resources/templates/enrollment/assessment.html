@@ -61,7 +61,7 @@
                 </tbody>
             </table>
         </div>
-    
+
         <!-- Pagination -->
         <div class="pagination-container">
             <div class="pagination-controls">
@@ -95,52 +95,52 @@
         <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
             <div class="add-grade-level-assessment-modal-content scroll-lock">
                 <div class="modal-body">
-                <h2>Promote To</h2>
+                    <h2>Promote To</h2>
 
-                <label for="grade-level">Grade Level:</label>
-                <input type="text" id="grade-level" readonly> <br> <br>
+                    <label for="grade-level">Grade Level:</label>
+                    <input type="text" id="grade-level" readonly> <br> <br>
 
-                <label for="section">Section:</label>
-                <select name="section" id="section">
-                    <option value="" disabled selected>Choose</option>
-                </select>
+                    <label for="section">Section:</label>
+                    <select name="section" id="section">
+                        <option value="" disabled selected>Choose</option>
+                    </select>
 
-                <div class="modal-buttons">
-                    <button type="button" class="btn-confirm" data-action="proceedToPayment"
-                        data-message="Are you sure you want to proceed with payment?" id=""
-                        data-open-modal="confirmationModal">
-                        Confirm
-                    </button>
-                    <button type="button" class="btn-cancel"
-                        data-close-modal="addGradeLevelAssessmentModal">Cancel</button>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="proceedToPayment"
+                            data-message="Are you sure you want to proceed with payment?" id=""
+                            data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="addGradeLevelAssessmentModal">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
         <!-- Modal for viewing grades -->
         <div id="viewGradesModal" class="view-grades-modal modal">
             <div class="view-grades-modal-content scroll-lock">
                 <div class="modal-body">
-                <h2>Student Grades</h2>
+                    <h2>Student Grades</h2>
 
-                <div class="half-width view-studId" id="view-grade-studId">
-                    <label for="student-id">Student ID:</label>
-                    <h6 id="student-id">0001</h6>
+                    <div class="half-width view-studId" id="view-grade-studId">
+                        <label for="student-id">Student ID:</label>
+                        <h6 id="student-id">0001</h6>
+                    </div>
+                    <div class="half-width view-studName" id="view-grade-studName">
+                        <label for="student-name">Student Name:</label>
+                        <h6 id="student-name">Martin Francisco</h6>
+                    </div> <br>
+
+                    <!-- Grades Table -->
+                    <div id="preRequisite-grades"></div>
                 </div>
-                <div class="half-width view-studName" id="view-grade-studName">
-                    <label for="student-name">Student Name:</label>
-                    <h6 id="student-name">Martin Francisco</h6>
-                </div> <br>
-
-                <!-- Grades Table -->
-                <div id="preRequisite-grades"></div>
-                <div class="close-button" id="view-grades-close-btn">
+                <div class="modal-buttons">
                     <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
                         id="close-button">Close</button>
                 </div>
             </div>
-        </div>
         </div>
     </div>
 
@@ -191,7 +191,7 @@
                 const tableBody = document.querySelector("#lamesa tbody");
                 if (!tableBody) return console.error("Table body not found");
 
-                tableBody.innerHTML = ""; 
+                tableBody.innerHTML = "";
 
                 if (!data || !data.content || data.content.length === 0) {
                     tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
@@ -204,7 +204,7 @@
                     const levelName = enr.student.currentGradeLevel === null ? "NONE" : enr.student.currentGradeLevel.levelName;
                     const displayStatus = enr.qualified ? "QUALIFIED" : "NOT QUALIFIED";
                     const statusClass = getAssessmentStatusClass(displayStatus);
-                    
+
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId || "N/A"}</td>
@@ -260,8 +260,8 @@
             .catch(error => console.error("Error fetching assessments:", error));
     }
 
-     // this function is to control the color of the status color
-     function getAssessmentStatusClass(status) {
+    // this function is to control the color of the status color
+    function getAssessmentStatusClass(status) {
         console.log(status);
         status = status.toLowerCase();
         switch (status) {
@@ -441,7 +441,7 @@
                     button1.setAttribute("data-close-modal", "addGradeLevelAssessmentModal");
                     document.body.appendChild(button1);
                     button1.click();
-                    showSuccessModal(text,false);
+                    showSuccessModal(text, false);
                     getAssessments(currentPage);
                 } else {
                     showErrorModal(text);
@@ -493,42 +493,65 @@
                         return;
                     }
                     preRequisiteGradesDiv.innerHTML = ``;
+                    let count = 0; // make sure this is defined above the forEach
+                    let rowContainer;
+
                     studentGradesMap.forEach((values, key) => {
                         let gradeTotal = 0;
                         let gradeCount = 0;
-                        var gradesRow = ``;
+                        let gradesRow = ``;
+
                         values.forEach((grade) => {
                             gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
                             gradeCount++;
                             gradesRow += `
-                            <tr>
-                                <td>${grade.subjectName}</td>
-                                <td>${grade.subjectName}</td>
-                                <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
-                            </tr>`;
+        <tr>
+            <td>${grade.subjectName}</td>
+            <td>${grade.subjectName}</td>
+            <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
+        </tr>`;
                         });
-                        var avg = gradeTotal / gradeCount;
-                        var grade_new_table = document.createElement("div");
-                        grade_new_table.innerHTML = `
-                                <h5>${key}</h5>
-                                <table class="view-grades-table main-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Subject ID</th>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                        </tr>
-                                    </thead>
 
-                                    <tbody>
-                                        ${gradesRow}
-                                        <tr>
-                                            <td colspan="2">Average</td>
-                                            <td>${avg.toFixed(2)}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>`;
-                        preRequisiteGradesDiv.appendChild(grade_new_table);
+                        let avg = gradeTotal / gradeCount;
+
+                        // Format the key: "Grade 1 - Section 2 : 2025-2026-Second sem"
+                        const [sectionPart, rest] = key.split(":");
+                        const restParts = rest.trim().split("-");
+                        const sy = `${restParts[0]}-${restParts[1]}`;
+                        const sem = restParts.slice(2).join(" ").replace(/\bfirst\b/i, "1st").replace(/\bsecond\b/i, "2nd");
+                        const formattedHeader = `${sectionPart.trim()} | SY: ${sy} (${sem})`;
+
+
+                        const gradeWrapper = document.createElement("div");
+                        gradeWrapper.className = "grade-wrapper";
+                        gradeWrapper.innerHTML = `
+        <h6 class="grades-header">${formattedHeader}</h6>
+        <table class="view-grades-table main-table">
+            <thead>
+                <tr>
+                    <th>Subject ID</th>
+                    <th>Subject</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${gradesRow}
+                <tr>
+                    <td colspan="2">Average</td>
+                    <td>${avg.toFixed(2)}</td>
+                </tr>
+            </tbody>
+        </table>`;
+
+                        // Group every 2 wrappers in a row
+                        if (count % 2 === 0) {
+                            rowContainer = document.createElement("div");
+                            rowContainer.className = "grades-row";
+                            preRequisiteGradesDiv.appendChild(rowContainer);
+                        }
+
+                        rowContainer.appendChild(gradeWrapper);
+                        count++;
                     });
                 })
                 .catch((error) => console.error("Error fetching grade level:", error));

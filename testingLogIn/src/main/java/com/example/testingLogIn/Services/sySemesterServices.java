@@ -134,11 +134,12 @@ public class sySemesterServices {
         return true;
     }
     @CacheEvict(value = {"enrollmentPage"},allEntries = true)
-    public boolean finishSemester(int semNumber){
+    public int finishSemester(int semNumber){
         SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
         if(sem == null)
-            return false;
-        
+            return 2;
+        else if(ssgr.countUngraded(semNumber).orElse(0L) > 0L)
+            return 1;
         sem.setActive(false);
         sem.setFinished(true);
         CompletableFuture.runAsync(()->statisticsServices.setStudentPassingRecords(sem));
@@ -161,7 +162,7 @@ public class sySemesterServices {
                 return null;
             });;
         }
-        return true;
+        return 0;
     }
     
     private void disableAll(){

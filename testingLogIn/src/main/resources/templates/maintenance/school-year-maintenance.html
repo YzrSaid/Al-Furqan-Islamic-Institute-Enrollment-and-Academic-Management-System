@@ -113,6 +113,31 @@
             </div>
         </div>
 
+        <div id="evaluations" class="list-of-payments-modal modal">
+            <div class="list-of-payments-modal-content scroll-lock">
+                <div class="modal-body">
+                <h2>Grade Evaluation Status</h2>
+                <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
+                    <thead>
+                        <tr>
+                            <th>Teacher</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Graded Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+                <!-- Add Payment button -->
+                <div class="action" id="add-payment-btn">
+                    <button type="button" id="open-add-payment-modal" data-close-modal="evaluations">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
     </div>
 </body>
 <script>
@@ -218,7 +243,8 @@
                             finishSemesterOption = `<a href="#" data-action="finishSemester"
                        data-message="Are you sure you want to end and finish this semester?"
                        data-open-modal="confirmationModal"
-                       data-semid="${sem.sySemNumber}">Finish Semester</a>`;
+                       data-semid="${sem.sySemNumber}">Finish Semester</a>
+                       <a href="#" data-open-modal="evaluations">Evaluation Status</a>`;
                         }
 
                         // ✅ Delete option (visible for all semesters)
@@ -546,32 +572,30 @@
             });
     }
 
-    function finishSemester() {
+    async function finishSemester() {
         if (!semNumber) {
             console.error("Semester number is not set.");
             return;
         }
-
-        fetch(`/semester/finish/${semNumber}`, {
+        try {
+        const response = await fetch(`/semester/finish/${semNumber}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.text();
-                } else {
-                    throw new Error("Failed to finish semester.");
-                }
-            })
-            .then(message => {
-                showSuccessModal("✅ Success: " + message);
-                fetchSchoolYears();
-            })
-            .catch(error => {
-                showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
-            });
+        });
+
+        const message = await response.text();
+
+        if (!response.ok) {
+            throw new Error(message);
+        }
+
+        showSuccessModal(message);
+        fetchSchoolYears();
+    } catch (error) {
+        showErrorModal(error.message);
+    }
     }
 
     function updateStatusColors() {

@@ -1,10 +1,12 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.CustomObjects.SubjectSectionCount;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.Models.Schedule;
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Subject;
 import com.example.testingLogIn.Repositories.ScheduleRepo;
@@ -99,40 +101,24 @@ public class ScheduleServices {
                             .map(Schedule::mapper)
                             .toList();
     }
-    
-    public Map<Integer,ScheduleDTO> getSubjectsUniqeTeacher(int sectionId){
-            SectionDTO section = sectionService.getSection(sectionId);
-            if(section == null)
-                throw new NullPointerException();
-
-            Map<Integer,ScheduleDTO> subjectTeachers = new HashMap<>();
-            List<Schedule> sectionScheds = scheduleRepo.findSectionSchedules(section.getNumber()).stream()
-                                                    .sorted(Comparator
-                                                    .comparing(Schedule::getDay)
-                                                    .thenComparing(Schedule::getTimeStart))
-                                                    .toList();
-
-            sectionScheds.forEach(sched -> {
-                if(!subjectTeachers.containsKey(sched.getSubject().getSubjectNumber()))
-                    subjectTeachers.put(sched.getSubject().getSubjectNumber(), sched.mapper());
-            });
-            for(Integer key : subjectTeachers.keySet()){
-                ScheduleDTO sched = subjectTeachers.get(key);
-                Integer toBeGraded = ssgRepo.getGradesBySectionSubjectSem(
-                        sched.getSectionId(),
-                        sched.getSubjectId(),
-                        semRepo.findCurrentActive().getSySemNumber()).size();
-                Integer graded = ssgRepo.getTotalGraded(
-                        sched.getSectionId(),
-                        sched.getSubjectId(),
-                        semRepo.findCurrentActive().getSySemNumber());
-                subjectTeachers.get(key).setGradedCount(graded);
-                subjectTeachers.get(key).setToBeGradedCount(toBeGraded);
-            }
-
-            return subjectTeachers;
+    public List<EvaluationStatus> getSectionSubjects(Integer sectionId){
+        SchoolYearSemester sem = semRepo.findCurrentActive();
+        int semId = Optional.ofNullable(sem).map(SchoolYearSemester::getSySemNumber).orElse(0);
+        if(semId == 0)
+            return null;
+        return ssgRepo.findSectionSubjects(sectionId,semId).stream()
+                .peek(es -> {
+                    es.setGradedCount(ssgRepo.getTotalGraded(
+                            sectionId,
+                            es.getSubject().getSubjectNumber(),
+                            semRepo.findCurrentActive().getSySemNumber()));
+                    es.setTotalToBeGraded(ssgRepo.getGradesBySectionSubjectSem(
+                            sectionId,
+                            es.getSubject().getSubjectNumber(),
+                            semRepo.findCurrentActive().getSySemNumber()).size());
+                }).toList();
     }
-    
+
     public int updateSchedule(ScheduleDTO schedDTO){
         Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElse(null);
         UserModel t = getTeacherByName(schedDTO.getTeacherName().toLowerCase());

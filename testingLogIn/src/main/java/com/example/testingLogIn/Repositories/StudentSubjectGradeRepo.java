@@ -2,7 +2,9 @@ package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
 import java.util.List;
+import java.util.Optional;
 
+import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.CustomObjects.FailedStudents;
 import com.example.testingLogIn.CustomObjects.PassedStudents;
 import com.example.testingLogIn.Models.SchoolYearSemester;
@@ -90,6 +92,17 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             @Param("subjectId") int subjectId,
             @Param("semId") int semId);
 
+    @Query("""
+    SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher,sg.subject)
+    FROM StudentSubjectGrade sg
+    LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber
+    LEFT JOIN s.teacher t
+    WHERE (:sectionNum IS NULL OR sg.section.number = :sectionNum)
+    AND sg.semester.sySemNumber = :semId
+    GROUP BY s.teacher, sg.subject, sg.section.number
+    """)
+    List<EvaluationStatus> findSectionSubjects(@Param("sectionNum") Integer sectionNum, int semId);
+
     @Query("SELECT sub FROM StudentSubjectGrade sub " +
             "JOIN sub.subject subj " +
             "JOIN sub.semester sem " +
@@ -127,4 +140,12 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             HAVING AVG(COALESCE(ssg.subjectGrade, 0)) < 50
             """)
     List<FailedStudents> findFailedStudents(int semId, Integer levelId);
+
+    @Query("""
+            SELECT COUNT(ssg) FROM StudentSubjectGrade ssg
+            JOIN ssg.semester sem
+            WHERE sem.sySemNumber = :semId
+            AND ssg.subjectGrade IS NULL
+            """)
+    Optional<Long> countUngraded(int semId);
 }

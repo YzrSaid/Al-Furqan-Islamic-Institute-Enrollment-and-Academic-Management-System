@@ -598,10 +598,24 @@ body {
   letter-spacing: 2px;
 }
 .table-wrapper {
-  margin: 0 15px;
+  margin: 0 auto;
   min-height: 30vh;
   max-height: 60vh;
   overflow-y: auto;
+  transition: width 0.3s ease, padding 0.3s ease;
+  padding: 0 15px;
+}
+/* Default when sidebar is open */
+.table-wrapper .sidebar-open {
+  width: 30%;
+  background-color: #186328;
+  padding: 0 15px;
+}
+
+/* When sidebar is closed */
+.table-wrapper .sidebar-closed {
+  width: 20%;
+  padding: 0 35px;
 }
 .table-wrapper-printable {
   min-height: 30vh;
@@ -832,7 +846,6 @@ select option[value=""] {
   border-collapse: collapse;
 }
 
-
 .main-table th,
 .main-table td {
   border: 1px solid #ddd;
@@ -932,7 +945,7 @@ select option[value=""] {
 }
 .assessment-table th:nth-child(4),
 .assessment-table td:nth-child(4) {
-  width: 10%;
+  width: 20%;
 }
 
 /* for grade management table */
@@ -1273,7 +1286,6 @@ select option[value=""] {
   width: 15%;
 }
 
-
 table td {
   text-align: center;
 }
@@ -1342,7 +1354,11 @@ table td {
 .payment-status,
 .enrolled-status,
 .enrollment-cancelled,
-.not-registered-status {
+.not-registered-status,
+.qualified-status,
+.not-qualified-status,
+.complete-status,
+.incomplete-status {
   font-weight: bolder;
   font-size: 15px;
 }
@@ -1355,14 +1371,18 @@ table td {
 .payment-status {
   color: #fd7e14;
 }
-.enrolled-status {
+.enrolled-status,
+.qualified-status,
+.complete-status {
   color: #218838;
 }
 .not-registered-status {
   color: black;
 }
 /* Apply to the whole row (tr) when it's canceled */
-.enrollment-cancelled {
+.enrollment-cancelled,
+.not-qualified-status,
+.incomplete-status {
   color: rgb(122, 5, 5);
 }
 
@@ -1472,7 +1492,7 @@ table td {
   cursor: pointer;
 }
 .student-grade {
-    text-align: center;
+  text-align: center;
 }
 .action {
   display: flex;
@@ -1655,7 +1675,7 @@ table td {
   z-index: 1000;
 }
 .add-payment-modal-content .modal-buttons {
-    padding: 40px 60px;
+  padding: 40px 60px;
 }
 
 .confirmation-modal-buttons,
@@ -2091,7 +2111,6 @@ table td {
   gap: 20px;
 }
 
-
 .input-wrapper {
   display: flex;
   align-items: center;
@@ -2100,7 +2119,6 @@ table td {
   height: 40px;
   width: 362px;
 }
-
 
 .currency-symbol {
   background-color: #d4ecd4;

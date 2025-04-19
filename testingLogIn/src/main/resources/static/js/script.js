@@ -30,64 +30,117 @@ document.addEventListener("DOMContentLoaded", function () {
   setTimeout(updateLabels, 1000);
 });
 
+// function toggleSidebar() {
+//   let sidebar = document.getElementById("sidebar");
+//   let content = document.getElementById("content");
+//   let stickyHeader = document.querySelector(".sticky-header");
+
+//   // this is for the report-main-btns (reports)
+//   let reportBtnsDiv = document.querySelector(".report-main-btns");
+
+//   let table = document.querySelector(".table-wrapper");
+
+//   let searchDiv = document.querySelector(".search-div");
+//   let topBar = document.querySelector(".topbar");
+//   let textLink = document.querySelector(".text-link");
+
+//   if (sidebar.classList.contains("collapsed-sidebar")) {
+//     // open header
+//     sidebar.classList.remove("collapsed-sidebar");
+//     content.classList.remove("collapsed-content");
+//     content.style.marginLeft = "320px";
+
+//     // report-main-btns
+//     reportBtnsDiv.style.padding = "0 15px";
+
+//     // stickyHeader.style.padding = "10px 20px";
+//     stickyHeader.style.padding = "10px 1rem";
+//     searchDiv.style.width = "100%";
+//     searchDiv.style.padding = "0";
+//     searchDiv.style.margin = "0 0 20px 0";
+//     table.style.padding = "0";
+
+//     // schedBoard.style.padding = "200px";
+
+//     textLink.style.width = "100%";
+//     textLink.style.padding = "15px 0";
+
+//     topBar.style.padding = "10px 0";
+//   } else {
+//     // close header
+//     sidebar.classList.add("collapsed-sidebar");
+//     content.classList.add("collapsed-content");
+//     content.style.marginLeft = "0";
+
+//     // report-main-btns
+//     reportBtnsDiv.style.padding = "0 8.8rem";
+
+//     stickyHeader.style.padding = "10px 3.125rem";
+//     searchDiv.style.width = "100%";
+//     searchDiv.style.padding = "0 0px";
+//     searchDiv.style.margin = "0 10px 20px 10px";
+//     table.style.padding = "0 35px";
+//     table.style.width = "80%";
+
+//     textLink.style.width = "100%";
+//     textLink.style.padding = "15px 0";
+
+//     topBar.style.padding = "10px 0.1rem";
+//   }
+// }
+
 function toggleSidebar() {
   let sidebar = document.getElementById("sidebar");
   let content = document.getElementById("content");
   let stickyHeader = document.querySelector(".sticky-header");
-
-  // this is for the report-main-btns (reports)
   let reportBtnsDiv = document.querySelector(".report-main-btns");
-
-  let table = document.querySelector(".table-wrapper");
-
-  // This will be used incase a page has no table and has board instead
-  let schedBoard = document.querySelector(".sched-board");
-
+  let tableWrapper = document.querySelector(".table-wrapper"); // Corrected this
   let searchDiv = document.querySelector(".search-div");
   let topBar = document.querySelector(".topbar");
   let textLink = document.querySelector(".text-link");
 
-  if (sidebar.classList.contains("collapsed-sidebar")) {
-    // open header
+  const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
+
+  if (isCollapsed) {
+    // OPEN sidebar
     sidebar.classList.remove("collapsed-sidebar");
     content.classList.remove("collapsed-content");
     content.style.marginLeft = "320px";
 
-    // report-main-btns
     reportBtnsDiv.style.padding = "0 15px";
-
-    // stickyHeader.style.padding = "10px 20px";
     stickyHeader.style.padding = "10px 1rem";
     searchDiv.style.width = "100%";
     searchDiv.style.padding = "0";
     searchDiv.style.margin = "0 0 20px 0";
-    table.style.padding = "0";
-
-    // schedBoard.style.padding = "200px";
 
     textLink.style.width = "100%";
     textLink.style.padding = "15px 0";
 
     topBar.style.padding = "10px 0";
+
+    // Apply sidebar-open class when sidebar is OPEN
+    tableWrapper.classList.remove("sidebar-closed");
+    tableWrapper.classList.add("sidebar-open");
   } else {
-    // close header
+    // CLOSE sidebar
     sidebar.classList.add("collapsed-sidebar");
     content.classList.add("collapsed-content");
     content.style.marginLeft = "0";
 
-    // report-main-btns
     reportBtnsDiv.style.padding = "0 8.8rem";
-
     stickyHeader.style.padding = "10px 3.125rem";
     searchDiv.style.width = "100%";
-    searchDiv.style.padding = "0 0px";
+    searchDiv.style.padding = "0";
     searchDiv.style.margin = "0 10px 20px 10px";
-    table.style.padding = "0 35px";
 
     textLink.style.width = "100%";
     textLink.style.padding = "15px 0";
 
     topBar.style.padding = "10px 0.1rem";
+
+    // Apply sidebar-closed class when sidebar is CLOSED
+    tableWrapper.classList.remove("sidebar-open");
+    tableWrapper.classList.add("sidebar-closed");
   }
 }
 

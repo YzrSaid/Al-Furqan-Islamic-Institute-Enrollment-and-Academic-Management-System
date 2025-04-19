@@ -202,7 +202,9 @@
                 data.content.forEach(enr => {
                     const levelId = enr.student.currentGradeLevel?.levelId ?? null;
                     const levelName = enr.student.currentGradeLevel === null ? "NONE" : enr.student.currentGradeLevel.levelName;
-
+                    const displayStatus = enr.qualified ? "QUALIFIED" : "NOT QUALIFIED";
+                    const statusClass = getAssessmentStatusClass(displayStatus);
+                    
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId || "N/A"}</td>
@@ -216,9 +218,9 @@
                         </select>
                     </td>
                     <td>
-                    ${enr.qualified ? "QUALIFIED" : "NOT QUALIFIED"}
                         <div class="dropdown">
                             <div class="status-container">
+                                <div class="status ${statusClass}"> ${enr.qualified ? "QUALIFIED" : "NOT QUALIFIED"} </div>
                                 <button class="dropdown-status-btn"><i class="fas fa-chevron-down"></i></button>
                             </div>
                             <div class="dropdown-status-content">
@@ -256,6 +258,20 @@
                 updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
             })
             .catch(error => console.error("Error fetching assessments:", error));
+    }
+
+     // this function is to control the color of the status color
+     function getAssessmentStatusClass(status) {
+        console.log(status);
+        status = status.toLowerCase();
+        switch (status) {
+            case "qualified":
+                return "qualified-status";
+            case "not qualified":
+                return "not-qualified-status";
+            default:
+                return "";
+        }
     }
 
     //pagination JS code

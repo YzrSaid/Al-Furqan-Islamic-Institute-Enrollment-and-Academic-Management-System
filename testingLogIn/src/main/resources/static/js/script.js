@@ -1349,12 +1349,13 @@ document.addEventListener("DOMContentLoaded", () => {
         <td><input type="time" class="starttime-input"></td>
         <td><input type="time" class="endtime-input"></td>
       <td>
+       <button class="btn-row-cancel cancel-btn" title="Cancel">
+            <img src="/images/icons/cross.png" alt="Cancel" />
+        </button>
         <button class="btn-row-save confirm-btn" title="Save">
             <img src="/images/icons/check.png" alt="Save" />
         </button>
-        <button class="btn-row-cancel cancel-btn" title="Cancel">
-            <img src="/images/icons/cross.png" alt="Cancel" />
-        </button>
+       
         </td>
       `;
 

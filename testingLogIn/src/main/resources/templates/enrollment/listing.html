@@ -33,8 +33,8 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button type="button" class="btn-confirm"
-                            data-open-modal="newStudentModal" title="Add New Student">Add New Student</button>
+                        <button type="button" class="btn-confirm" data-open-modal="newStudentModal"
+                            title="Add New Student">Add New Student</button>
                     </div>
                 </div>
 
@@ -348,6 +348,7 @@
                 </div> <br>
 
                 <!-- List of Payments Table -->
+
                 <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
                     <thead>
                         <tr>
@@ -361,12 +362,12 @@
                     <tbody>
                     </tbody>
                 </table>
-
-                <!-- Add Payment button -->
-                <div class="action" id="add-payment-btn">
-                    <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
-                        Payment</button>
-                </div>
+            </div>
+            <!-- Add Payment button -->
+            <div class="modal-buttons" id="add-payment-btn">
+                <button type="button" class="btn-confirm" data-open-modal="addPaymentModal">Add
+                    Payment</button>
+                <button type="button" class="btn-cancel" data-close-modal="listOfPaymentsModal">Close</button>
             </div>
         </div>
     </div>
@@ -401,7 +402,7 @@
         <div class="modal-content scroll-lock">
             <p id="errorMessage"></p>
             <div class="modal-buttons">
-                <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                <button type="button" class="error-btn-cancel" data-close-modal="errorModal">Close</button>
             </div>
         </div>
     </div>
@@ -640,8 +641,7 @@
             </div>
 
             <div class="modal-buttons">
-                <button type="button" class="btn-confirm" id="confirmStudent"
-                    data-open-modal="confirmationModal"
+                <button type="button" class="btn-confirm" id="confirmStudent" data-open-modal="confirmationModal"
                     data-message="Are you sure you want to add this student?">Confirm</button>
 
                 <button type="button" class="btn-cancel" id="cancelStudent"
@@ -724,23 +724,19 @@
                     </table>
                 </div>
 
-                <!-- Total Amount -->
-                <div class="total-container">
-                    <p>Total Amount Due: <strong>₱ 800.00</strong></p>
-                </div>
-
                 <!-- Collected By Section -->
                 <div id="staff-receiver" class="collector-info-container">
                     <h6>Received/Collected By:</h6>
                     <div class="collector-name-container">
                         <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                        <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        <p id="position" th:text="${userRole}"></p>
                     </div>
                 </div>
 
                 <!-- Print Button -->
                 <div class="modal-buttons">
-                    <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                    <button type="button" class="btn-cancel">Close</button>
+                    <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
                 </div>
             </div>
         </div>
@@ -749,91 +745,68 @@
 
     <!-- Modal for addPaymentModal-->
     <div id="addPaymentModal" class="add-payment-modal modal">
-        <div class="printable-area">
-            <div class="add-payment-modal-content scroll-lock">
-                <div class="modal-body">
-                    <div class="header-container">
-                        <h3>Payment Form</h3>
+
+        <div class="add-payment-modal-content scroll-lock">
+            <div class="modal-body">
+                <div class="header-container">
+                    <h3>Payment Form</h3>
+                </div> <br>
+
+                <div class="payee-info-container" id="payee-info">
+                    <div class="student-form-group">
+                        <label for="payee-id">Student ID:</label>
+                        <input type="text" id="payee-id" readonly>
+
+                        <label for="Date">Date:</label>
+                        <input type="date" id="date">
+                    </div>
+
+                    <div class="student-form-group">
+                        <label for="payee-name">Name:</label>
+                        <input type="text" id="payee-name" readonly>
+                    </div>
+                    <div class="student-form-group">
+                        <label for="semester">Semester:</label>
+                        <input th:value="${currentSem}" type="text" id="semester" readonly>
+
+                        <label for="school-year">S.Y.</label>
+                        <input th:value="${currentSY}" type="text" id="school-year" readonly>
+                    </div>
+                    <div class="student-form-group">
+                        <label for="amount" id="label-amount">Amount:</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">₱</span>
+                            <input type="number" max="0" id="payment-amount" placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-wrapper">
+                    <h6>Payment For:</h6>
+                    <div class="payment-container-group">
+
                     </div> <br>
+                </div>
 
-                    <div class="payee-info-container" id="payee-info">
-                        <div class="half-width half-payee">
-                            <div>
-                                <label for="payee-id" id="label-id">Student ID:</label>
-                                <input type="text" id="payee-id" readonly>
-                            </div>
-                            <div>
-                                <label for="Date">Date:</label>
-                                <input type="date" id="date">
-                            </div>
-                        </div>
 
-                        <div class="full-width">
-                            <label for="payee-name">Student Name:</label>
-                            <input type="text" id="payee-name" readonly>
-                        </div>
-                        <div class="half-width half-payee">
-                            <div>
-                                <label for="semester" id="label-sem">Semester:</label>
-                                <input th:value="${currentSem}" type="text" id="semester" readonly>
-                            </div>
-                            <div>
-                                <label for="school-year">S.Y.</label>
-                                <input th:value="${currentSY}" type="text" id="school-year" readonly>
-                            </div>
-                        </div>
-                        <div class="full-width amount-container">
-                            <label for="amount" id="label-amount">Amount:</label>
-                            <div class="input-wrapper">
-                                <span class="currency-symbol">₱</span>
-                                <input type="number" max="0" id="payment-amount" placeholder="0.00">
-                            </div>
-                        </div>
+                <div id="staff-receiver" class="collector-info-container">
+                    <h6>Received/Collected By:</h6>
+                    <div class="collector-name-container">
+                        <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                        <p id="position" th:text="${userRole}"></p>
                     </div>
-                    <div class="payment-wrapper">
-                        <h6>Payment For:</h6>
-                        <div class="payment-container-group">
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                        </div> <br>
-                    </div>
-
-
-                    <div id="staff-receiver" class="collector-info-container">
-                        <h6>Received/Collected By:</h6>
-                        <div class="collector-name-container">
-                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
-                        </div>
-                    </div>
-
-
-                    <div class="modal-buttons payment-modal-buttons">
-                        <button class="no-print" onclick="printReport()">Print Report</button>
-
-                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                            data-open-modal="confirmationModal" data-action="savePayment"
-                            data-message="Are you sure you want to save this payment?">Save Payment
-                        </button>
-                    </div>
-
                 </div>
             </div>
+
+            <div class="modal-buttons payment-modal-buttons">
+                <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                    data-open-modal="confirmationModal" data-action="savePayment"
+                    data-message="Are you sure you want to save this payment?">Save Payment
+                </button>
+
+                <button type="button" class="btn-cancel" data-close-modal="addPaymentModal">Cancel</button>
+            </div>
         </div>
+
     </div>
 </body>
 
@@ -2100,13 +2073,13 @@
                 });
             }
         });
-        document.getElementById("add-scholar-popover").innerHTML= ``;
+        document.getElementById("add-scholar-popover").innerHTML = ``;
         const isScholarship = document.getElementById("scholar");
-        isScholarship.addEventListener("change", function(){
+        isScholarship.addEventListener("change", function () {
             if (this.checked) {
                 fetchDiscounts();
             } else {
-                document.getElementById("add-scholar-popover").innerHTML= ``;
+                document.getElementById("add-scholar-popover").innerHTML = ``;
             }
         });
     });

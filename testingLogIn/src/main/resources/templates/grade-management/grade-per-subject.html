@@ -12,37 +12,39 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div id="theTextLink" class="text-link">
-            <h4>Science</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Grade Management</p>
-            <p>/</p>
-            <p id="grade-and-section">Grade 1 - Rose</p>
-            <p>/</p>
-            <p>Science</p>
-        </div>
-
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="left-section">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button type="button" class="search-btn">Search</button>
+            <div id="theTextLink" class="text-link">
+                <h4>Science</h4>
+                <p>Main</p>
+                <p>/</p>
+                <p>Grade Management</p>
+                <p>/</p>
+                <p id="grade-and-section">Grade 1 - Rose</p>
+                <p>/</p>
+                <p>Science</p>
+            </div>
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+                    </div>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
                 </div>
             </div>
-            <div class="sort-container">
-                <select name="sort" id="sort-select" class="sort-select">
-                    <option value="" disabled selected>Sort</option>
-                    <option value="patient-number">Patient Number</option>
-                    <option value="patient-name">Patient Name</option>
-                    <option value="patient-sex">Sex</option>
-                </select>
-            </div>
         </div>
+
 
         <div class="table-wrapper">
             <!-- Table -->
@@ -129,31 +131,37 @@
                     <tr>
                         <td>${rec.studentId}</td>
                         <td>${rec.studentLastName}, ${rec.studentFirstName} ${rec.studentMiddleName}</td>
-                        <td><input type="number" min="1" max="100" name="student-grade" class="student-grade" value="${rec.subjectGrade}" id="student-grade-${rec.studGradeId}"></td>`;
+                        <td><input type="number" min="1" max="100" name="student-grade" readonly class="student-grade" value="${rec.subjectGrade}" id="student-grade-${rec.studGradeId}"></td>`;
                     if (rec.subjectGrade === null) {
                         row.innerHTML += `
-                                    <td>
-                                            <div class="action-container action">
-                                                <a href="#" class="save-grade" data-grade-id="${rec.studGradeId}">
-                                                    <img src="/images/icons/check.png" alt="save-icon">
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            `;
+       
+                            <td>
+                                <div class="action-container action">
+                                    <a href="#" class="save-grade" data-grade-id="${rec.studGradeId}">
+                                        <img src="/images/icons/check.png" alt="save-icon">
+                                    </a>
+                                </div>
+                            </td>
+                        `;
                     } else {
                         row.innerHTML += `
-                                    <td>
-                                        <div class="dropdown">
-                                            <div class="action-container action">
-                                                <a href=""><img src="/images/icons/compose.png" alt="edit-icon"></a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            `;
+       
+                            <td>
+                                <div class="action-container action">
+                                    <a href="#" class="edit-grade" data-grade-id="${rec.studGradeId}">
+                                        <img src="/images/icons/compose.png" alt="edit-icon">
+                                    </a>
+                                    <a href="#" class="save-grade" data-grade-id="${rec.studGradeId}" style="display: none;">
+                                        <img src="/images/icons/check.png" alt="save-icon">
+                                    </a>
+                                    <a href="#" class="cancel-edit" data-grade-id="${rec.studGradeId}" style="display: none;">
+                                        <img src="/images/icons/cross.png" alt="cancel-icon">
+                                    </a>
+                                </div>
+                            </td>
+                        `;
                     }
+
                     tableBody.appendChild(row);
                 });
                 document.querySelector("#theTextLink").innerHTML = `
@@ -185,6 +193,54 @@
                 console.error("Error fetching data:", error);
             });
     }
+
+    document.addEventListener("click", function (e) {
+        if (e.target.closest(".edit-grade")) {
+            e.preventDefault();
+            const row = e.target.closest("tr");
+            const input = row.querySelector(".student-grade");
+            const saveBtn = row.querySelector(".save-grade");
+            const cancelBtn = row.querySelector(".cancel-edit");
+            const editBtn = row.querySelector(".edit-grade");
+
+            input.removeAttribute("readonly");
+            input.dataset.originalValue = input.value;
+            saveBtn.style.display = "inline-block";
+            cancelBtn.style.display = "inline-block";
+            editBtn.style.display = "none";
+        }
+
+        if (e.target.closest(".cancel-edit")) {
+            e.preventDefault();
+            const row = e.target.closest("tr");
+            const input = row.querySelector(".student-grade");
+            const saveBtn = row.querySelector(".save-grade");
+            const cancelBtn = row.querySelector(".cancel-edit");
+            const editBtn = row.querySelector(".edit-grade");
+
+            input.value = input.dataset.originalValue || "";
+            input.setAttribute("readonly", true);
+            saveBtn.style.display = "none";
+            cancelBtn.style.display = "none";
+            editBtn.style.display = "inline-block";
+        }
+
+        if (e.target.closest(".save-grade")) {
+            e.preventDefault();
+            const row = e.target.closest("tr");
+            const input = row.querySelector(".student-grade-input");
+            const gradeId = e.target.closest("a").dataset.gradeId;
+            const newValue = input.value;
+           
+
+            // Then disable editing
+            input.setAttribute("readonly", true);
+            row.querySelector(".save-grade").style.display = "none";
+            row.querySelector(".cancel-edit").style.display = "none";
+            row.querySelector(".edit-grade").style.display = "inline-block";
+        }
+    });
+
 
     function saveGrade(gradeId, subGrade) {
         console.log("Grade ID:", gradeId);

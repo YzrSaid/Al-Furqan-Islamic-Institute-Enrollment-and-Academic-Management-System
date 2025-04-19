@@ -274,8 +274,8 @@
         document.getElementById("num-enrolled").textContent = enrolled;
         document.getElementById("num-pre-enrolled").textContent = pre_enrolled;
         document.getElementById("graduates-student").textContent = graduates;
-        document.getElementById("num-dropped").textContent = passed;
-        document.getElementById("num-retained").textContent = failed;
+        document.getElementById("num-dropped").textContent = failed;
+        document.getElementById("num-retained").textContent = passed;
     }
 
     let retentionChart = null;
@@ -297,6 +297,16 @@
             const ratesResult = await response.json();
             gradeLabels = ratesResult.gradeLevelNames;
             gradeRates = ratesResult.gradeLevelCounts;
+            gradeLabels = gradeLabels.concat(gradeLabels);
+            gradeRates = gradeRates.concat(gradeRates);
+            gradeLabels = gradeLabels.concat(gradeLabels);
+            gradeRates = gradeRates.concat(gradeRates);
+            gradeLabels = gradeLabels.concat(gradeLabels);
+            gradeRates = gradeRates.concat(gradeRates);
+            gradeLabels = gradeLabels.concat(gradeLabels);
+            gradeRates = gradeRates.concat(gradeRates);
+            gradeLabels = gradeLabels.concat(gradeLabels);
+            gradeRates = gradeRates.concat(gradeRates);
         }
 
         const retentionCanvas = document.getElementById('retentionChart').getContext('2d');

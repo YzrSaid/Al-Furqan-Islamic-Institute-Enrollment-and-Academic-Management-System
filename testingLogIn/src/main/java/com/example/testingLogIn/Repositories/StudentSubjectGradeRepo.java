@@ -93,7 +93,7 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             @Param("semId") int semId);
 
     @Query("""
-    SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher,sg.subject)
+    SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher,sg.section,sg.subject)
     FROM StudentSubjectGrade sg
     LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber
     LEFT JOIN s.teacher t
@@ -102,6 +102,17 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     GROUP BY s.teacher, sg.subject, sg.section.number
     """)
     List<EvaluationStatus> findSectionSubjects(@Param("sectionNum") Integer sectionNum, int semId);
+
+    @Query("""
+    SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher,sg.section,sg.subject)
+    FROM StudentSubjectGrade sg
+    LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber
+    LEFT JOIN s.teacher t
+    WHERE sg.subjectGrade IS NULL
+    AND sg.semester.sySemNumber = :semId
+    GROUP BY sg.section.number, sg.subject
+    """)
+    List<EvaluationStatus> findWithUngradedGrades(int semId);
 
     @Query("SELECT sub FROM StudentSubjectGrade sub " +
             "JOIN sub.subject subj " +

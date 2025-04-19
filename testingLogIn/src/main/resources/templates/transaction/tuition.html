@@ -965,8 +965,8 @@
                         const row = document.createElement("tr");
                         row.innerHTML = `
                         <td>${particular.fee.name}</td>
-                        <td>${particular.fee.requiredAmount}</td>
-                        <td>${particular.fee.requiredAmount - particular.balance}</td>
+                        <td>${particular.totalRequired}</td>
+                        <td>${particular.totalPaid}</td>
                         <td>${particular.balance}</td>`;
                         tableBody.appendChild(row);
                     });

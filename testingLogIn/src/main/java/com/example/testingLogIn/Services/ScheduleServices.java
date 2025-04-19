@@ -108,12 +108,13 @@ public class ScheduleServices {
             return null;
         return ssgRepo.findSectionSubjects(sectionId,semId).stream()
                 .peek(es -> {
+                    int sectionNum = es.getSection().getNumber();
                     es.setGradedCount(ssgRepo.getTotalGraded(
-                            sectionId,
+                            sectionNum,
                             es.getSubject().getSubjectNumber(),
                             semRepo.findCurrentActive().getSySemNumber()));
                     es.setTotalToBeGraded(ssgRepo.getGradesBySectionSubjectSem(
-                            sectionId,
+                            sectionNum,
                             es.getSubject().getSubjectNumber(),
                             semRepo.findCurrentActive().getSySemNumber()).size());
                 }).toList();

@@ -81,12 +81,13 @@ public class StatisticsServices {
     public void setStudentPassingRecords(SchoolYearSemester sem){
         List<StudentPassingRecord> studentRetainedList = studentSubjectGradeRepo.findFailedStudents(sem.getSySemNumber(),null)
                                                         .stream().map(ssg -> new StudentPassingRecord(false,sem,ssg.getGradeLevel(),ssg.getStudent())).toList();
-        System.out.println(studentRetainedList);
         List<StudentPassingRecord> studentPassedList = studentSubjectGradeRepo.findPassedStudents(sem.getSySemNumber(),null)
                 .stream().map(ssg -> new StudentPassingRecord(true,sem,ssg.getGradeLevel(),ssg.getStudent())).toList();
         studentPassingRecordRepo.saveAll(studentPassedList);
         studentPassingRecordRepo.saveAll(studentRetainedList);
+        System.out.println(studentRetainedList.size());
         retainedCountRepo.updateCount(sem.getSySemNumber(), studentRetainedList.size());
+        System.out.println(studentPassedList.size());
         passedCountRepo.updateCount(sem.getSySemNumber(), studentPassedList.size());
 
         for(GradeLevel gradeLevel : gradeLevelRepo.findByIsNotDeletedTrue()){

@@ -72,6 +72,7 @@ public class PaymentRecordService {
         this.studFeesRepo = studFeesRepo;
     }
     //NEW WAY OF PAYING
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public PaymentTransactionDTO addPaymentAutoAllocate(int studentId, Integer gradeLevelId, double amount, List<Integer> feesId){
         PaymentTransaction transaction = generateTransaction();
         Student student = studentRepo.findById(studentId).orElse(null);

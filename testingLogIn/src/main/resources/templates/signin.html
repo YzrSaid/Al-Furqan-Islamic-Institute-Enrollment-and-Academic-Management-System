@@ -6,12 +6,12 @@
 
 <body>
     <div class="wrapper">
-        <div id="left-login-block">
+        <div id="left-signup-block">
             <img th:src="@{/website-cover}" alt="bg">
         </div>
-        <div id="right-login-block">
+        <div id="right-signup-block">
             <div id="signup-header">
-                <img th:src="@{/website-logo}" alt="school-logo" id="school-logo"> <br> <br>
+                <img th:src="@{/website-logo}" alt="school-logo" class="school-logo">
                 <h3 th:text="${schoolName}" style="text-transform:uppercase;"></h3>
             </div>
             <form action="/register/add" method="post" id="signup-form">
@@ -71,8 +71,9 @@
                 </div>
 
                 <button type="submit" id="login-btn">Sign Up</button>
+                <h4 id="signup-link">Already have an account? <a href="/login">Log in here.</a></h4>
             </form>
-            <h4 id="signup-link">Already have an account? <a href="/login">Log in here.</a></h4>
+           
         </div>
 
         <!-- Error Modal -->

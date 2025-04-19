@@ -1592,24 +1592,6 @@ function printClaimedResources() {
   };
 }
 
-// This will hide and show the password in the login/sign up pages
-document.addEventListener("DOMContentLoaded", function () {
-  const passwordField = document.getElementById("password");
-  const toggleIcon = document.getElementById("togglePassword");
-
-  // Exit early if elements are not on the current page
-  if (!passwordField || !toggleIcon) return;
-
-  toggleIcon.addEventListener("click", function () {
-    const isPassword = passwordField.type === "password";
-    passwordField.type = isPassword ? "text" : "password";
-    toggleIcon.src = isPassword
-      ? "/images/icons/eye.png"
-      : "/images/icons/hidden-pass.png";
-    toggleIcon.alt = isPassword ? "Hide Password" : "Show Password";
-  });
-});
-
 function clearForm() {
   document
     .querySelectorAll(".modal input, .modal select, .modal textarea")
@@ -1973,29 +1955,29 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   });
 });
-document.addEventListener("DOMContentLoaded", function () {
-  const toggle = document.getElementById("toggleResetPassword"); // updated ID
-  const passwordField = document.getElementById("password");
-  let isVisible = false;
+// document.addEventListener("DOMContentLoaded", function () {
+//   const toggle = document.getElementById("toggleResetPassword"); // updated ID
+//   const passwordField = document.getElementById("password");
+//   let isVisible = false;
 
-  if (!toggle || !passwordField) {
-    console.warn("Toggle icon or password field not found.");
-    return;
-  }
+//   if (!toggle || !passwordField) {
+//     console.warn("Toggle icon or password field not found.");
+//     return;
+//   }
 
-  toggle.addEventListener("click", function () {
-    isVisible = !isVisible;
+//   toggle.addEventListener("click", function () {
+//     isVisible = !isVisible;
 
-    passwordField.type = isVisible ? "text" : "password";
+//     passwordField.type = isVisible ? "text" : "password";
 
-    toggle.src = isVisible
-      ? "/images/icons/eye.png"
-      : "/images/icons/hidden-pass.png";
+//     toggle.src = isVisible
+//       ? "/images/icons/eye.png"
+//       : "/images/icons/hidden-pass.png";
 
-    toggle.title = isVisible ? "Hide Password" : "Show Password";
-    toggle.alt = isVisible ? "Hide Password" : "Show Password";
-  });
-});
+//     toggle.title = isVisible ? "Hide Password" : "Show Password";
+//     toggle.alt = isVisible ? "Hide Password" : "Show Password";
+//   });
+// });
 
 
 // document.querySelectorAll('.dropdown-print-btn').forEach(button => {

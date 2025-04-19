@@ -640,7 +640,7 @@
             </div>
 
             <div class="modal-buttons">
-                <button type="button" data-action="" class="btn-confirm" id="confirmStudent"
+                <button type="button" class="btn-confirm" id="confirmStudent"
                     data-open-modal="confirmationModal"
                     data-message="Are you sure you want to add this student?">Confirm</button>
 
@@ -2111,7 +2111,27 @@
         });
     });
 
-    // this will validate the school year 
+    // this will validate the last madrasa year completed (it must only submit 2 succeeding years e.g. 2012-2013)
+    function validateMadrasaYear() {
+        const madrasaYearInput = document.getElementById("studlastMadrasaYearCompleted").value.trim();
+        const regex = /^(\d{4})-(\d{4})$/;
+        const match = madrasaYearInput.match(regex);
+
+        if (!match) {
+            showErrorModal("❌ Error: " + "Invalid format! Please enter the Madrasa year in YYYY-YYYY format.");
+            return false;
+        }
+
+        const startYear = parseInt(match[1], 10);
+        const endYear = parseInt(match[2], 10);
+
+        if (endYear !== startYear + 1) {
+            showErrorModal("❌ Error: " + "Invalid year range! The second year must be exactly one year after the first.");
+            return false;
+        }
+
+        return true;
+    }
 </script>
 
 </html>

@@ -7,124 +7,129 @@
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
 
-<body style="margin: 0; padding: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;">
+<body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
-    <div id="content" class="dashboard-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+    <div id="content" class="dashboard-container">
         <div class="sticky-header">
             <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div id="create-user" style="overflow-y: auto; max-height: calc(100vh - 100px);">
-    <!-- Header Section (Logo and Title) -->
-    <div id="signup-header-createuser" style="text-align: center; margin-bottom: 20px;">
-        <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo" id="school-logo" style="max-width: 120px; height: auto;"> <br> <br>
-        <h3 th:text="${schoolName}" style="text-transform: uppercase; font-weight: bold;">School Name Placeholder</h3>
-        <h4 class="createuserform">Registration Form</h4>
-    </div>
-
-    <!-- Form Section -->
-    <form id="signup-form-large" style="display: flex; flex-direction: column; gap: 16px;">
-        <label class="normal-label" for="name">Full Name</label>
-        <div class="input-group-half">
-            <div class="input-group">
-                <input class="input-group-input" type="text" name="firstname" id="firstname"
-                       placeholder="First Name" required>
-            </div>
-            <div class="input-group">
-                <input class="input-group-input" type="text" name="lastname" id="lastname"
-                       placeholder="Last Name">
-            </div>
-            <div class="input-group">
-                <input class="input-group-input" type="text" name="middlename" id="middlnamee"
-                       placeholder="Optional">
-            </div>
-        </div>
-
-        <div class="input-group">
-            <input class="input-group-input" type="email" name="username" id="email" placeholder="" required>
-            <label class="input-group-label" for="email">Email</label>
-        </div>
-
-        <div class="input-row">
-            <div class="input-group">
-                <div class="account-type-div">
-                    <label class="normal-label" for="role">Role</label>
-                    <select name="role" id="role" required>
-                        <option value="TEACHER">Teacher</option>
-                        <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
-                    </select>
-                    <label class="normal-label" for="gender">Gender</label>
-                    <select name="gender" id="gender" required>
-                        <option value="">Choose a gender</option>
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
-                    </select>
+            <!-- Modal for confirmation -->
+            <div id="confirmationModal" class="modal">
+                <div class="modal-content scroll-lock">
+                    <p id="modalText"></p>
+                    <div class="modal-buttons">
+                        <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                        <button type="button" class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                    </div>
                 </div>
             </div>
-        
-            <div class="input-group">
-                <div class="account-type-div">
-                    <label class="normal-label" for="birthdate">Birthdate</label>
-                    <input type="date" id="birthdate" name="birthdate" required>
+
+
+            <!-- Error Modal -->
+            <div id="errorModal" class="modal">
+                <div class="modal-content scroll-lock">
+                    <p id="errorMessage"></p>
+                    <div class="modal-buttons">
+                        <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="input-group">
-            <input class="input-group-input" type="text" name="address" id="address" placeholder="" required>
-            <label class="input-group-label" for="address">Address</label>
-        </div>
-
-        <div class="input-group">
-            <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber" placeholder=""
-                   required>
-            <label class="input-group-label" for="contactNumber">Contact Number</label>
-        </div>
-
-        <div class="input-group">
-            <input class="input-group-input" type="password" name="password" id="password" required placeholder=" ">
-            <label class="input-group-label" for="password">Password</label>
-            <img th:src="@{/images/icons/hidden-pass.png}" title="Show Passowrd" alt="Show Password" class="toggle-password"
-                 id="togglePassword">
-        </div>
-
-        <button type="submit" id="login-btn">Sign Up</button>
-    </form>
-</div>
-
-        <!-- Modal for confirmation -->
-        <div id="confirmationModal" class="modal">
-            <div class="modal-content scroll-lock">
-                <p id="modalText"></p>
-                <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
-                </div>
+        <div class="create-user-container">
+            <!-- Header Section (Logo and Title) -->
+            <div class="school-logo-container">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo"> <br>
             </div>
-        </div>
 
+            <h4>Registration Form</h4>
 
-        <!-- Error Modal -->
-        <div id="errorModal" class="modal">
-            <div class="modal-content scroll-lock">
-                <p id="errorMessage"></p>
-                <div class="modal-buttons">
-                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+            <!-- Form Section -->
+            <form id="signup-form-large">
+                <label class="normal-label" for="name">Full Name</label>
+                <div class="input-group-half">
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="firstname" id="firstname"
+                            placeholder="First Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="lastname" id="lastname"
+                            placeholder="Last Name">
+                    </div>
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="middlename" id="middlnamee"
+                            placeholder="Optional">
+                    </div>
                 </div>
-            </div>
+
+                <div class="input-group">
+                    <input class="input-group-input" type="email" name="username" id="email" placeholder="" required>
+                    <label class="input-group-label" for="email">Email</label>
+                </div>
+
+                <div class="input-group">
+                    <div class="account-type-div">
+                        <label class="normal-label" for="gender">Gender</label>
+                        <select name="gender" id="gender" required>
+                            <option value="">Choose a gender</option>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+                    <div class="account-type-div">
+                        <label class="normal-label" for="birthdate">Birthdate</label>
+                        <input type="date" id="birthdate" name="birthdate" required>
+                    </div>
+
+                </div>
+
+
+                <div class="input-group">
+                    <div class="account-type-div">
+                        <label class="normal-label" for="role">Role</label>
+                        <select name="role" id="role" required>
+                            <option value="TEACHER">Teacher</option>
+                            <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input class="input-group-input" type="text" name="address" id="address" placeholder="" required>
+                    <label class="input-group-label" for="address">Address</label>
+                </div>
+
+                <div class="input-group">
+                    <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber" placeholder=""
+                        required>
+                    <label class="input-group-label" for="contactNumber">Contact Number</label>
+                </div>
+
+                <div class="input-group">
+                    <input class="input-group-input" type="password" name="password" id="password" required
+                        placeholder=" ">
+                    <label class="input-group-label" for="password">Password</label>
+                </div>
+
+                <button type="submit" id="login-btn">Sign Up</button>
+            </form>
         </div>
 
+        <!-- Background overlay -->
         <div id="successModalOverlay"></div>
+
         <!-- Success modal -->
-        <div id="successModal"
-            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-     background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
+        <div id="successModal">
             <p id="successModalMessage"></p>
         </div>
-    </div>
     </div>
 </body>
 <script>

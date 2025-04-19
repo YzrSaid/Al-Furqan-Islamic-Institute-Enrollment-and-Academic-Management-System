@@ -25,39 +25,42 @@
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn" title="Search Account">Search</button>
+                        <button type="button" class="search-btn" title="Search Account">Search</button>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="user-id">User ID</option>
-                            <option value="account-name">Name</option>
-                            <option value="account-email">Email</option>
-                            <option value="account-type">Account Type</option>
-                            <option value="account-status">Status</option>
-                        </select>
-                    </div>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="user-id">User ID</option>
+                        <option value="account-name">Name</option>
+                        <option value="account-email">Email</option>
+                        <option value="account-type">Account Type</option>
+                        <option value="account-status">Status</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- Table -->
-        <table class="verify-accounts-table main-table">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Account Type</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="accounts-table-body">
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table class="verify-accounts-table main-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Account Type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="accounts-table-body">
+                </tbody>
+            </table>
+        </div>
+
 
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
@@ -127,11 +130,12 @@
 
                         <div class="modal-buttons">
                             <button type="button" class="btn-confirm" data-action="editMyAccount"
-                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit" title="Confirm Account Edit">
+                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit"
+                                title="Confirm Account Edit">
                                 Edit
                             </button>
-                            <button type="button" class="btn-cancel"
-                                data-close-modal="myAccountEditModal" title="Close Button">Close</button>
+                            <button type="button" class="btn-cancel" data-close-modal="myAccountEditModal"
+                                title="Close Button">Close</button>
                         </div>
                     </form>
                 </div>

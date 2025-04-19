@@ -122,7 +122,6 @@
                         <tr>
                             <th>Teacher</th>
                             <th>Subject</th>
-                            <th>Status</th>
                             <th>Graded Status</th>
                         </tr>
                     </thead>
@@ -244,7 +243,7 @@
                        data-message="Are you sure you want to end and finish this semester?"
                        data-open-modal="confirmationModal"
                        data-semid="${sem.sySemNumber}">Finish Semester</a>
-                       <a href="#" data-open-modal="evaluations">Evaluation Status</a>`;
+                       <a href="#" data-open-modal="evaluations">Pending</a>`;
                         }
 
                         // ✅ Delete option (visible for all semesters)
@@ -466,7 +465,26 @@
     });
 
     async function setEvaluationTable(){
-        var evel_table = document.querySelector("#table-ni-kharl tbody");
+        var eval_table = document.querySelector("#table-ni-kharl tbody");
+        eval_table.innerHTML= "<tr><td>No records found.</td></tr>";
+
+        const response = await fetch("/schedules/section-subjects");
+        if(response.ok){
+            const result = await response.json();
+            eval_table.innerHTML= "";
+            if(result.length > 0){
+                result.forEach(data =>{
+                    var row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${data.teacher? data.teacher.fullName : "N/A"}</td>
+                        <td>${data.subject.subjectName}</td>
+                        <td>${data.gradedCount}/${data.totalToBeGraded}</td>`;
+                    
+                    eval_table.appendChild(row);
+                });
+            }
+        }
+
     }
 
     function canActivateSemester(semId) {

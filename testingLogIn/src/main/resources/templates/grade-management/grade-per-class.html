@@ -119,16 +119,15 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <td>${data.subject.subjectName}</td>
-                            <td>${data.teacher? data.teacher.fullName : "N/A"}</td>
-                            <td>${data.gradedCount}/${data.totalToBeGraded}</td>
-                            <td>
-                                <div class="dropdown">
-                                    <div class="action-container action">
-                                        <a href="/grade-management/subject/${sectionId}/${data.subject.subjectNumber}"><button>View Student Grades</button></a>
-                                    </div>
+                        <td>${data.teacher? data.teacher.fullName : "N/A"}</td>
+                        <td>${data.gradedCount}/${data.totalToBeGraded}</td>
+                        <td>
+                            <div class="dropdown">
+                                <div class="action-container action">
+                                    <a href="/grade-management/subject/${sectionId}/${data.subject.subjectNumber}"><button>View Student Grades</button></a>
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
                         `;
                     tableBody.appendChild(row);
                 });

@@ -116,96 +116,100 @@
                     </table>
 
                     <!-- Add Payment button -->
-                    <div class="action" id="add-payment-btn">
-                        <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
+                    <div class="modal-buttons" id="add-payment-btn">
+                        <button type="button" class="btn-confirm" data-open-modal="addPaymentModal">Add
                             Payment</button>
+                        <button type="button" class="btn-cancel" data-close-modal="listOfPaymentsModal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Receipt Modal -->
-        <div id="receiptModal" class="receipt-modal modal">
-            <div class="printable-area">
-                <div class="receipt-modal-content scroll-lock">
-
-                    <!-- Receipt Header -->
-                    <div class="header-container-payment">
-                        <div class="left-header">
-                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
-                            <div class="school-info">
-                                <h3>AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
-                                <p>Talabaan, Zamboanga City</p>
-                                <p>Phone #: 09358268263</p>
-                            </div>
-                        </div>
-
-                        <div class="right-header">
-                            <div class="receipt-box">
-                                <h2>RECEIPT</h2>
-                            </div>
-                            <p>Semester & SY: <strong>1ST SEM | 2021-2022</strong></p>
+    <div id="receiptModal" class="receipt-modal modal">
+        <div class="printable-area">
+            <div class="receipt-modal-content scroll-lock">
+                <!-- Receipt Header -->
+                <div class="header-container-payment">
+                    <div class="left-header">
+                        <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        <div class="school-info">
+                            <h3>AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
+                            <p>Talabaan, Zamboanga City</p>
+                            <p>Phone #: 09358268263</p>
                         </div>
                     </div>
 
-                    <div class="separator-line"></div>
+                    <div class="right-header">
+                        <div class="receipt-box">
+                            <h2>RECEIPT</h2>
+                        </div>
+                        <p>Semester & SY: <strong>1ST SEM | 2021-2022</strong></p>
+                    </div>
+                </div>
 
-                    <!-- Student Info -->
-                    <div class="payment-student-info-container" id="receipt-student-info">
-                        <div class="payment-student-info-row">
-                            <label for="receipt-student-id">Student ID:</label>
-                            <input type="text" id="receipt-student-id" placeholder="">
+                <div class="separator-line"></div>
+
+                <!-- Student Info -->
+                <div class="student-info-container">
+                    <div class="payment-student-info-container">
+                        <div class="half-width">
+                            <label id="receipt-student-id-label">Student ID:</label>
+                            <input type="text" id="receipt-student-id" readonly>
                         </div>
 
-                        <div class="payment-student-info-row">
-                            <label for="receipt-date">Date:</label>
-                            <input type="date" id="receipt-date">
-                        </div>
-
-                        <div class="payment-student-info-row">
-                            <label for="receipt-student-name">Student Name:</label>
-                            <input type="text" id="receipt-student-name" placeholder="">
-                        </div>
-
-                        <div class="payment-student-info-row">
-                            <label for="receipt-number">Receipt Number:</label>
-                            <input type="text" id="receipt-number" placeholder="">
+                        <div class="half-width">
+                            <label>Date:</label>
+                            <input type="date" id="receipt-date" readonly>
                         </div>
                     </div>
+                    <div class="payment-student-info-container">
+                        <div class="half-width">
+                            <label id="receipt-student-name-label">Student Name:</label>
+                            <input type="text" id="receipt-student-name" readonly>
+                        </div>
 
-
-                    <!-- Payment Table -->
-                    <div id="receipt-table" class="receipt-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ITEM #</th>
-                                    <th>DESCRIPTION</th>
-                                    <th>AMOUNT</th>
-                                </tr>
-                            </thead>
-                            <tbody id="receipt-items">
-                                <tr>
-                                    <td>1</td>
-                                    <td>Tuition Fee</td>
-                                    <td>800.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Collected By Section -->
-                    <div id="staff-receiver" class="collector-info-container">
-                        <h6>Received/Collected By:</h6>
-                        <div class="collector-name-container">
-                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        <div class="half-width">
+                            <label id="receipt-number-label">Receipt Number:</label>
+                            <input type="text" id="receipt-number" readonly>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Print Button -->
-                    <div class="print-button">
-                        <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                <div id="receipt-table" class="receipt-table main-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ITEM #</th>
+                                <th>DESCRIPTION</th>
+                                <th>AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receipt-items">
+                            <!-- <tr>
+                                <td>1</td>
+                                <td>Tuition Fee</td>
+                                <td>1,000.00</td>
+                                <td>-200.00</td>
+                                <td>800.00</td>
+                            </tr> -->
+                            <!-- Additional rows will be inserted dynamically if needed -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Collected By Section -->
+                <div id="staff-receiver" class="collector-info-container">
+                    <h6>Received/Collected By:</h6>
+                    <div class="collector-name-container">
+                        <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                        <p id="position" th:text="${userRole}"></p>
                     </div>
+                </div>
+
+                <!-- Print Button -->
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel">Close</button>
+                    <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
                 </div>
             </div>
         </div>
@@ -215,90 +219,68 @@
 
     <!-- Modal for addPaymentModal-->
     <div id="addPaymentModal" class="add-payment-modal modal">
-        <div class="printable-area">
-            <div class="add-payment-modal-content scroll-lock">
-                <div class="modal-body">
-                    <div class="header-container">
-                        <h3>Payment Form</h3>
+        <div class="add-payment-modal-content scroll-lock">
+            <div class="modal-body">
+                <div class="header-container">
+                    <h3>Payment Form</h3>
+                </div> <br>
+
+                <div class="payee-info-container" id="payee-info">
+                    <div class="student-form-group">
+                        <label for="payee-id">Student ID:</label>
+                        <input type="text" id="payee-id" readonly>
+
+                        <label for="Date">Date:</label>
+                        <input type="date" id="date">
+                    </div>
+
+                    <div class="student-form-group">
+                        <label for="payee-name">Name:</label>
+                        <input type="text" id="payee-name" readonly>
+                    </div>
+                    <div class="student-form-group">
+                        <label for="semester">Semester:</label>
+                        <input th:value="${currentSem}" type="text" id="semester" readonly>
+
+                        <label for="school-year">S.Y.</label>
+                        <input th:value="${currentSY}" type="text" id="school-year" readonly>
+                    </div>
+                    <div class="student-form-group">
+                        <label for="amount" id="label-amount">Amount:</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">₱</span>
+                            <input type="number" max="0" id="payment-amount" placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-wrapper">
+                    <h6>Payment For:</h6>
+                    <div class="payment-container-group">
+
                     </div> <br>
-
-                    <div class="payee-info-container" id="payee-info">
-                        <div class="half-payee">
-                            <div>
-                                <label for="student-id" id="label-id">Student ID:</label>
-                                <input type="text" id="payee-id" readonly>
-                            </div>
-                            <div>
-                                <label for="Date">Date:</label>
-                                <input type="date" id="date">
-                            </div>
-                        </div>
-
-                        <div class="full-width">
-                            <label for="payee-name">Student Name:</label>
-                            <input type="text" id="payee-name" readonly>
-                        </div>
-                        <div class="half-width half-payee">
-                            <div>
-                                <label for="semester" id="label-sem">Semester:</label>
-                                <input th:value="${currentSem}" type="text" id="semester" readonly>
-                            </div>
-                            <div>
-                                <label for="school-year">S.Y.</label>
-                                <input th:value="${currentSY}" type="text" id="school-year" readonly>
-                            </div>
-                        </div>
-                        <div class="full-width amount-container">
-                            <label for="amount" id="label-amount">Amount:</label>
-                            <div class="input-wrapper">
-                                <span class="currency-symbol">₱</span>
-                                <input type="number" max="0" id="payment-amount" placeholder="0.00">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="payment-wrapper">
-                        <label>Payment For:</label>
-                        <div class="payment-container-group">
-                            <!-- <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div> -->
-                        </div> <br>
-                    </div>
+                </div>
 
 
-                    <div id="staff-receiver" class="collector-info-container">
-                        <h6>Received/Collected By:</h6>
-                        <div class="collector-name-container">
-                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
-                        </div>
-                    </div>
-
-
-                    <div class="modal-buttons payment-modal-buttons">
-                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                            data-open-modal="confirmationModal" data-action="savePayment"
-                            data-message="Are you sure you want to save this payment?">Save Payment
-                        </button>
+                <div id="staff-receiver" class="collector-info-container">
+                    <h6>Received/Collected By:</h6>
+                    <div class="collector-name-container">
+                        <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                        <p id="position" th:text="${userRole}"></p>
                     </div>
                 </div>
             </div>
+
+            <div class="modal-buttons payment-modal-buttons">
+                <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                    data-open-modal="confirmationModal" data-action="savePayment"
+                    data-message="Are you sure you want to save this payment?">Save Payment
+                </button>
+
+                <button type="button" class="btn-cancel" data-close-modal="addPaymentModal">Cancel</button>
+            </div>
         </div>
     </div>
-    </div>
+    
 
     <!-- Error Modal -->
     <div id="errorModal" class="modal">

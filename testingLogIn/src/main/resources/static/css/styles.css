@@ -1204,16 +1204,6 @@ select option[value=""] {
 }
 
 /* for sched table */
-#addRowBtn {
-  background-color: transparent;
-  color: white;
-  border: none;
-  font-size: 30px;
-  cursor: pointer;
-  border-radius: 5px;
-  width: 30px;
-  margin-bottom: 10px;
-}
 .add-row-container {
   display: flex;
   justify-content: flex-end;
@@ -1254,7 +1244,7 @@ select option[value=""] {
 }
 .sched-table th:nth-child(1),
 .sched-table td:nth-child(1) {
-  width: 20%;
+  width: 15%;
 }
 .sched-table th:nth-child(2),
 .sched-table td:nth-child(2) {
@@ -1262,15 +1252,20 @@ select option[value=""] {
 }
 .sched-table th:nth-child(3),
 .sched-table td:nth-child(3) {
-  width: 20%;
+  width: 15%;
 }
 .sched-table th:nth-child(4),
 .sched-table td:nth-child(4) {
-  width: 15%;
+  width: 10%;
 }
 .sched-table th:nth-child(5),
 .sched-table td:nth-child(5) {
-  width: 20%;
+  width: 10%;
+}
+
+.sched-table th:nth-child(6),
+.sched-table td:nth-child(6) {
+  width: 15%;
 }
 
 table td {
@@ -2934,9 +2929,7 @@ input[type="checkbox"] {
   font-size: 13px;
   font-weight: 500;
 }
-.btn-container button:hover {
-  background-color: #218838;
-}
+
 .btn-container {
   display: flex;
   width: 20%;
@@ -4489,7 +4482,8 @@ th {
   height: 15px;
 }
 
-#confirm-btn img,
+.confirm-btn img,
+.cancel-btn img,
 #select-multiple img {
   width: 25px;
   height: 25px;
@@ -4507,7 +4501,8 @@ th {
 }
 
 #select,
-#confirm-btn,
+.confirm-btn,
+.cancel-btn,
 #dropdown-report-scholar,
 #dropdown-report-transferee,
 #dropdown-edit-scholar,

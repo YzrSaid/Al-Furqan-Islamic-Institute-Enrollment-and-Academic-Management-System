@@ -36,13 +36,26 @@ body {
   align-items: center;
   justify-content: center;
 }
+#right-signup-block {
+  background-color: rgb(255, 255, 255);
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 #right-login-block h3 {
   width: 50%;
   text-align: center;
   font-weight: 900;
   font-size: 1.5em;
 }
-#school-logo {
+#right-signup-block h3 {
+  width: 50%;
+  text-align: center;
+  font-weight: 900;
+  font-size: 1.5em;
+}
+.school-logo {
   height: 150px;
   width: 150px;
   border-radius: 50%;
@@ -63,6 +76,21 @@ body {
   object-fit: cover;
 }
 
+#left-signup-block {
+  background-color: rgb(101, 224, 104);
+  width: 60%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+#left-signup-block img {
+  opacity: 0.3;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 #login-form {
   margin-top: 5%;
   display: flex;
@@ -70,22 +98,13 @@ body {
   width: 50%;
 }
 #signup-form {
-  margin-top: 5%;
   display: flex;
   flex-direction: column;
   width: 50%;
-  margin-left: 0%;
 }
 #forgot-password-header {
-  font-size: 24px;
-  margin-top: -25px;
-}
-#create-user-form {
-  margin-top: 5%;
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  margin-left: 25%;
+  font-weight: bold;
+  font-size: 25px;
 }
 #signup-form-large {
   display: flex;
@@ -95,8 +114,10 @@ body {
 }
 .forgot-password-text {
   padding: 20px;
-  max-width: 300px; 
-  line-height: 1.4; 
+  width: 70%;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 #forgot-pass {
@@ -132,7 +153,7 @@ body {
 
 .input-group {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 #signup-link a:hover {
@@ -199,20 +220,19 @@ body {
 }
 
 #signup-header {
+  width: 100%;
+  padding: 25px 0px 25px 0px;
   display: flex;
   justify-content: center;
+  gap: 20px;
   align-items: center;
 }
-#signup-header #school-logo {
+#signup-header .school-logo {
   width: 120px;
   height: 120px;
-  margin-right: 20px;
-  margin-top: 93px;
- margin-bottom: 45px;
 }
 #signup-header h3 {
   font-size: 25px;
-  margin-right: 70px;
 }
 .input-group-half {
   display: flex;
@@ -530,7 +550,7 @@ body {
   text-align: center;
   color: rgb(30, 30, 30);
 }
-.school-logo img {
+.school-logo-container img {
   width: 100px;
   display: block;
   margin: 0 auto;
@@ -2312,7 +2332,7 @@ input[type="checkbox"] {
   width: 100%;
 }
 .change-pass-div {
-  width: 80%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -2492,6 +2512,8 @@ input[type="checkbox"] {
 .school-year-modal-content select,
 .grade-level-modal-content select,
 .subject-modal-content select,
+.student-information-edit-modal-content select,
+.student-form-group select,
 .teacher-modal-content select,
 .section-modal-content select,
 .listing-table select,
@@ -3078,15 +3100,18 @@ input[type="checkbox"] {
 }
 
 .create-user-container {
-  width: 40%;
+  width: 50%;
   display: flex;
-  align-self: center;
+  flex-direction: column;
+  align-items: center;
   justify-self: center;
+  padding-bottom: 40px;
+}
+.create-user-container h4 {
+  font-size: 18px;
+  font-weight: bold;
 }
 .form-container {
-  width: 100%;
-}
-.create-user {
   width: 100%;
 }
 
@@ -3139,8 +3164,7 @@ input[type="checkbox"] {
   font-weight: bold;
   padding: 8px 30px;
 }
-#view-grades-close-btn button
-{
+#view-grades-close-btn button {
   background-color: #dc3545;
   color: white;
   border: none;
@@ -3537,7 +3561,7 @@ td[rowspan] {
   margin-bottom: 30px;
 }
 .column2 {
-  display: flex;    
+  display: flex;
   flex-direction: column;
   width: 40%;
   margin-bottom: 30px;
@@ -3547,16 +3571,16 @@ td[rowspan] {
 }
 .student-form-group #gender,
 .column2 #gender {
-  width: 70px;
+  width: 90px;
 }
 
 .student-form-group #birthdate,
 .column2 #birthdate {
-  width: 120px;
+  width: 100px;
 }
 
 .student-form-group #birthdate-report {
-  width: 150px;
+  width: 130px;
 }
 
 .half {
@@ -3578,11 +3602,16 @@ td[rowspan] {
   align-items: center;
   justify-content: end;
 }
+
 .other-info-container {
   display: flex;
   justify-content: right;
   gap: 30px;
   width: 920px;
+}
+.other-info-container select {
+  min-width: 120px;
+  max-width: 140px;
 }
 .half-50 {
   width: 300px;
@@ -3718,29 +3747,23 @@ td[rowspan] {
 }
 
 #staff-address {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 #scholar-row h6,
-#staff-status-row h6 {
-  font-weight: bold;
-  margin-top: 10px;
-  display: flex;
-}
-#scholar-row,
-#staff-status-row {
-  gap: 10px;
-  min-width: 100px;
-}
-
+#staff-status-row h6,
+#staff-type-row h6,
 #transferee-row h6 {
   font-weight: bold;
   margin-top: 10px;
   display: flex;
 }
+#scholar-row,
+#staff-status-row,
+#staff-type-row,
 #transferee-row {
   gap: 10px;
-  width: 100px;
+  min-width: 100px;
 }
 
 .clickable-row {
@@ -4622,4 +4645,14 @@ select + p {
   background: rgb(246, 246, 246);
   margin: 0;
   padding-top: 20px;
+}
+
+.my-account-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+a {
+  text-decoration: none;
 }

@@ -12,57 +12,184 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link">
-            <h4>Account</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/accounts/my-account" title="You're currently in this page.">Account - My Account</a>
-        </div>
-        <div class="my-account-container-wrapper">
-            <div class="my-account-container">
-                <div class="half-width">
-                    <div class="user-id">
-                        <label for="user-id" id="user-id-label">User ID:</label>
-                        <p id="user-id">0001</p>
-                    </div>
-                </div>
-                <div class="email">
-                    <label for="email">Email:</label>
-                    <p id="email">sample@gmail.com</p>
-                </div>
-                <div class="half-width">
-                    <div class="first-name">
-                        <label for="first-name">First Name:</label>
-                        <p id="first-name">Batman</p>
-                    </div>
-                    <div class="last-name">
-                        <label for="last-name">Last Name:</label>
-                        <p id="last-name">Rizal</p>
-                    </div>
-                </div>
-                <div class="account-type">
-                    <label for="account-type">Account Type:</label>
-                    <p id="account-type">Admin</p>
-                </div>
-            </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-            <!-- this is for the edit and change password divs -->
-            <!-- <div class="change-password-container">
-                <div class="change-password">
-                    <button id="openChangePasswordModal" class="btn-change-password"
-                        data-open-modal="changePasswordModal">Change Password</button>
+            <div class="text-link">
+                <h4>Account</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/accounts/my-account" title="You're currently in this page.">Account - My Account</a>
+            </div>
+        </div>
+
+        <!-- Modal for student information -->
+        <div id="studentInformationContainer" class="student-information-container">
+            <div class="student-information-container-content">
+                <h1>Staff Information</h1>
+                <form method="" action="" id="studentInformationForm">
+                    <div class="header">
+                        <div class="half-unique">
+                            <label for="student-id">Staff ID: </label>
+                            <input readonly type="text" id="student-id">
+                        </div> <br>
+
+                        <div class="other-info-container">
+                            <div class="half-other-info" id="staff-type-row">
+                                <label for="staff-type">Account Type/Role:</label>
+                                <h6 id="staff-type">Teacher</h6>
+                            </div>
+
+                            <div class="half-other-info" id="staff-status-row">
+                                <label for="staff-status">Status:</label>
+                                <h6 id="staff-status">Unrestricted</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-content: center; justify-items: left;">
+                        <h2>Personal Information</h2>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="column1">
+                                <div>
+                                    <label for="name">Name</label>
+                                    <div class="student-form-group half">
+                                        <input readonly type="text" id="firstName">
+                                        <input readonly type="text" id="middleName">
+                                        <input readonly type="text" id="lastName">
+                                    </div>
+                                    <div class="small-text">
+                                        <p>First</p>
+                                        <p>Middle</p>
+                                        <p>Last</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column2">
+                                <!-- Gender, BDate, and Scholar -->
+                                <div class="student-form-group half-stud-info-small">
+                                    <label for="gender">Gender:</label>
+                                    <input readonly type="text" id="gender">
+
+                                    <label for="birthdate">Birthdate:</label>
+                                    <input readonly required type="date" id="birthdate-report">
+                                </div>
+                            </div>
+
+                            <div class="column1">
+                                <label for="address">Address:</label>
+                                <div class="student-form-group">
+                                    <input readonly type="text" id="staff-address" required placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="column2">
+                                <div class="student-form-group">
+                                    <label>Email:</label>
+                                    <input readonly type="email" id="staff-email">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="my-account-btns">
+            <div class="report-main-btns-right">
+                <button type="button" class="btn-gray" id="editStudInfo"
+                    data-open-modal="studentInformationEditModal">Edit</button>
+                <button type="button" class="btn-neutral" data-open-modal="changePasswordModal">Change
+                    Password</button>
+            </div>
+        </div>
+
+        <!-- Modal for editing the student information -->
+        <div id="studentInformationEditModal" class="student-information-edit-modal">
+            <div class="student-information-edit-modal-content">
+                <div class="modal-body">
+                    <h1>Staff Information</h1>
+                    <form method="" action="" id="staffInformationEditForm">
+                        <div class="header">
+                            <div class="half-unique">
+                                <label for="student-id">Staff ID: </label>
+                                <input readonly type="text" id="student-id">
+                            </div> <br>
+
+                           
+                        </div>
+
+                        <div style="display: flex; align-content: center; justify-items: left;">
+                            <h2>Personal Information</h2>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="column1">
+                                    <div>
+                                        <label for="name">Name</label>
+                                        <div class="student-form-group half">
+                                            <input readonly type="text" id="firstName">
+                                            <input readonly type="text" id="middleName">
+                                            <input readonly type="text" id="lastName">
+                                        </div>
+                                        <div class="small-text">
+                                            <p>First</p>
+                                            <p>Middle</p>
+                                            <p>Last</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column2">
+                                    <!-- Gender, BDate, and Scholar -->
+                                    <div class="student-form-group half-stud-info-small">
+                                        <label for="gender">Gender:</label>
+                                        <select name="gender" id="gender" required>
+                                            <option value="MALE">Male</option>
+                                            <option value="FEMALE">Female</option>
+                                        </select>
+
+                                        <label for="birthdate">Birthdate:</label>
+                                        <input readonly required type="date" id="birthdate-report">
+                                    </div>
+                                </div>
+
+                                <div class="column1">
+                                    <label for="address">Address:</label>
+                                    <div class="student-form-group">
+                                        <input readonly type="text" id="staff-address" required placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="column2">
+                                    <div>
+                                        <div class="student-form-group">
+                                            <label>Email:</label>
+                                            <input readonly type="email" id="staff-email">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </div> -->
-            <div class="edit-account-container">
-                <div class="edit-account">
-                    <button class="btn-edit" id="openMyAccountEditModal" data-open-modal="myAccountEditModal" title="Edit Account">Edit My
-                        Account</button>
+
+                <div class="modal-buttons">
+                    <button type="button" data-action="" class="btn-confirm" id="confirmStudent"
+                        data-open-modal="confirmationModal"
+                        data-message="Are you sure you want to add this student?">Confirm</button>
+
+                    <button type="button" class="btn-cancel" id="cancelStudent"
+                        data-close-modal="studentInformationEditModal">Cancel</button>
                 </div>
             </div>
         </div>
+
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">
@@ -70,56 +197,6 @@
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm" title="Confirm">Confirm</button>
                     <button class="btn-cancel" data-close-modal="confirmationModal" title="Cancel">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal for edit account -->
-        <div class="my-account-container-wrapper">
-            <div id="myAccountEditModal" class="my-account-edit-modal modal">
-                <div class="my-account-edit-modal-content scroll-lock">
-                    <h2>My Account Information</h2>
-                    <form action="" id="myAccountEditForm">
-                        <div class="half-width">
-                            <div class="user-id">
-                                <label for="user-id" id="user-id-label">User ID:</label>
-                                <p id="user-id">0001</p>
-                            </div>
-                        </div> <br>
-                        <div class="half-width">
-                            <div class="email">
-                                <label for="email">Email:</label>
-                                <p id="email">sample@gmail.com</p>
-                            </div>
-                        </div> <br>
-                        <div class="half-width student-form-group">
-                            <div class="first-name">
-                                <label for="first-name">First Name:</label>
-                                <input type="text" id="first-name" value="Batman" readonly>
-                            </div>
-                            <div class="last-name">
-                                <label for="last-name">Last Name:</label>
-                                <input type="text" id="last-name" value="Rizal" readonly>
-                            </div>
-                        </div> <br>
-                        <div class="account-type">
-                            <label for="account-type">Account Type:</label>
-                            <select name="account-type" id="account-type">
-                                <option value="" disabled>Select account type</option>
-                                <option value="ADMIN_Enrollment">Enrollment Staff</option>
-                                <option value="TEACHER">Teacher</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-buttons">
-                            <button type="button" class="btn-confirm" data-action="editMyAccount"
-                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit" title="Edit Account">
-                                Edit
-                            </button>
-                            <button type="button" class="btn-cancel"
-                                data-close-modal="myAccountEditModal" title="Close">Close</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -132,7 +209,7 @@
                     <form action="" id="changePasswordForm">
                         <div class="change-pass-div">
                             <label for="current-passowrd">Current Password</label>
-                            <input type="password" id="current-passowrd">
+                            <input type="password" id="current-password">
                         </div>
                         <div class="change-pass-div">
                             <label for="new-password">New Password</label>
@@ -149,10 +226,14 @@
                             <label for="confirm-password">Confirm Password</label>
                             <input type="password" id="confirm-password">
                         </div>
-                        <div class="modal-buttons change-pass-buttons">
-                            <button type="button" class="btn-confirm" id="confirmChangePassword"
+                        <div class="modal-buttons">
+                            <button type="button" class="btn-confirm"
                                 data-action="changePassword" data-open-modal="confirmationModal"
-                                data-message="Are you sure you want update the password for this account?" title="Confirm Button">Confirm</button>
+                                data-message="Are you sure you want update the password for this account?"
+                                title="Confirm Button">Confirm</button>
+
+                            <button type="button" class="btn-cancel"
+                                data-close-modal="changePasswordModal">Cancel</button>
                         </div>
                     </form>
                 </div>

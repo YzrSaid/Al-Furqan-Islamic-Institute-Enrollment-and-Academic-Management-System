@@ -460,7 +460,14 @@
                 console.log("Semester number set:", semNumber);
             }
         }
+        else if (event.target.matches("[data-open-modal='evaluations']")) {
+            setEvaluationTable();
+        }
     });
+
+    async function setEvaluationTable(){
+        var evel_table = document.querySelector("#table-ni-kharl tbody");
+    }
 
     function canActivateSemester(semId) {
         return new Promise((resolve, reject) => {

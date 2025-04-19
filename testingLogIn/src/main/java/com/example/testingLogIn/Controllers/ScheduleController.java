@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.CustomObjects.SubjectSectionCount;
 import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.Services.ScheduleServices;
@@ -12,13 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -57,12 +52,13 @@ public class ScheduleController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    
-    @GetMapping("/section-subjects/{sectionId}")
-    public ResponseEntity<Map<Integer,ScheduleDTO>> getTeachersBySectionScheds(@PathVariable int sectionId){
+
+    @GetMapping("/section-subjects")
+    public ResponseEntity<List<EvaluationStatus>> getTest(@RequestParam(required = false) Integer sectionId){
         try{
-            return new ResponseEntity<>(scheduleService.getSubjectsUniqeTeacher(sectionId),HttpStatus.OK);
+            return new ResponseEntity<>(scheduleService.getSectionSubjects(sectionId),HttpStatus.OK);
         }catch(NullPointerException npe){
+            npe.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

@@ -58,11 +58,16 @@ public class SemesterController {
         else
             return new ResponseEntity<>("Semester Not Found",HttpStatus.NOT_FOUND);
     }
+
     @PutMapping("/finish/{semNumber}")
     public ResponseEntity<String> finishSemester(@PathVariable int semNumber){
-        if(semService.finishSemester(semNumber))
-            return new ResponseEntity<>("Semester Activated Successfully",HttpStatus.OK);
-        else
-            return new ResponseEntity<>("Semester Not Found",HttpStatus.NOT_FOUND);
+        switch(semService.finishSemester(semNumber)){
+            case 0:
+                return new ResponseEntity<>("Semester Activated Successfully",HttpStatus.OK);
+            case 1:
+                return new ResponseEntity<>("Unable to complete the semester. There are still grades pending evaluation.",HttpStatus.NOT_ACCEPTABLE);
+            default :
+                return new ResponseEntity<>("Semester Not Found",HttpStatus.NOT_FOUND);
+        }
     }
 }

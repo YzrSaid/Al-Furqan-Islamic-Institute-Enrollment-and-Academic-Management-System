@@ -99,28 +99,27 @@
     }
 
     function getSubjectAndTeacher(sectionId) {
-        fetch(`/schedules/section-subjects/${sectionId}`)
+        fetch(`/schedules/section-subjects?sectionId=${sectionId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 return response.json(); // Parse the response as JSON
             })
-            .then(data => {
+            .then(datas => {
                 const tableBody = document.querySelector("#fine-dining-restaurant-table tbody");
                 tableBody.innerHTML = "";
 
-                Object.entries(data).forEach(([key, value]) => {
-                    console.log("Value is :" + value);
+                datas.forEach((data) => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                        <td>${value.subject}</td>
-                            <td>${value.teacherName}</td>
-                            <td>${value.gradedCount}/${value.toBeGradedCount}</td>
+                        <td>${data.subject.subjectName}</td>
+                            <td>${data.teacher? data.teacher.fullName : "N/A"}</td>
+                            <td>${data.gradedCount}/${data.totalToBeGraded}</td>
                             <td>
                                 <div class="dropdown">
                                     <div class="action-container action">
-                                        <a href="/grade-management/subject/${sectionId}/${value.subjectId}"><button>View Student Grades</button></a>
+                                        <a href="/grade-management/subject/${sectionId}/${data.subject.subjectNumber}"><button>View Student Grades</button></a>
                                     </div>
                                 </div>
                             </td>

@@ -3398,7 +3398,7 @@ td[rowspan] {
 }
 
 .gray-status {
-  background-color: #f3f3f3 !important;
+  background-color: #007bff !important;
   color: #888 !important;
 }
 
@@ -4277,6 +4277,7 @@ td[rowspan] {
   justify-content: center;
   align-items: center;
   padding: 20px 0;
+  gap: 40px;
   width: 100%;
 }
 

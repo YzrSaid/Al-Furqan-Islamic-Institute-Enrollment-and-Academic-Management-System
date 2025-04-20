@@ -100,9 +100,13 @@
 
             <!-- Centered Save Button -->
             <div class="save-button-wrapper">
-                <button type="button" data-action="updateSchoolSettings" data-message="Are you sure you want to update the school settings?" data id="editButton" class="save-settings-btn btn-confirm btn">Edit</button>
+                <button type="button" class="btn-cancel hidden" id="cancelButton">Cancel</button>
+
+                <button type="button" data-action="updateSchoolSettings"
+                    data-message="Are you sure you want to update the school settings?" data id="editButton"
+                    class="btn-confirm">Edit</button>
             </div>
-        
+
         </div>
         <br> <br>
 
@@ -213,6 +217,21 @@
     <script th:src="@{/js/school-settings.js}"></script>
 </body>
 <script>
+    const editButton = document.getElementById("editButton");
+    const cancelButton = document.getElementById("cancelButton");
+
+    editButton.addEventListener("click", () => {
+
+        // Show Cancel button
+        cancelButton.classList.remove("hidden");
+    });
+    cancelButton.addEventListener("click", () => {
+        // Revert text
+        editButton.textContent = "Edit";
+
+        // Hide Cancel button
+        cancelButton.classList.add("hidden");
+    });
     document.addEventListener("DOMContentLoaded", function () {
         setTableValues();
         setGraduatingLevel();
@@ -362,7 +381,7 @@
                 showErrorModal("❌ Error:" + error);
             });
     }
-   
+
 </script>
 
 </html>

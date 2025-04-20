@@ -561,10 +561,29 @@ document.addEventListener("DOMContentLoaded", function () {
   document.body.addEventListener("click", function (event) {
     const editButton = event.target.closest("#editButton");
     const confirmActionButton = event.target.closest("#confirmAction");
+    const cancelButton = event.target.closest("#cancelButton");
 
     const inputs = document.querySelectorAll(
       "#schoolSettingsForm input, #schoolSettingsForm select, #schoolSettingsForm textarea"
     );
+
+    if (cancelButton) {
+      // Lock all inputs again
+      inputs.forEach((input) => {
+        input.disabled = true;
+        input.readOnly = true;
+      });
+
+      // Reset Edit button
+      const editBtn = document.getElementById("editButton");
+      if (editBtn) {
+        editBtn.textContent = "Edit";
+        editBtn.setAttribute("data-mode", "edit");
+      }
+
+      // Hide cancel button again
+      cancelButton.classList.add("hidden");
+    }
 
     if (editButton) {
       let currentMode = editButton.getAttribute("data-mode") || "edit";

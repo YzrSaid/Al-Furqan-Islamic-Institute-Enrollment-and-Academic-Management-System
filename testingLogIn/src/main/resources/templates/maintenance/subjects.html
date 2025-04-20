@@ -27,7 +27,7 @@
                 <!-- Searchbox and sort btn -->
                 <div class="left-section">
                     <div class="search-container">
-                        <input type="text" placeholder="Search..." class="search-input" />
+                        <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
                         <button class="search-btn">Search</button>
                     </div>
                     
@@ -61,9 +61,16 @@
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
+                <p id="security-message" class="hidden">To continue, enter the admin password before proceeding.</p>
+
+                <div class="input-group hidden" id="admin-pass-form">
+                  <label for="adminPassword">Admin Password:</label>
+                  <input type="password"  autocapitalize="new-password" id="adminPassword" placeholder="Enter admin password" />
+                </div>
+
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>

@@ -699,8 +699,20 @@ document.addEventListener("DOMContentLoaded", function () {
           showErrorModal("⚠️ Please fill in all required fields!");
           return;
         } else {
-          editGradeLevel();
-          closeConfirmationModal();
+          // This is to check if the password field is not empty before verifying it
+          if (!validateForm("confirmationModal")) {
+            showErrorModal("⚠️ Please enter the Admin Password!");
+            return;
+          } else {
+            // If its not empty, it will now verify the password
+            if (await validateAdminPassword()) {
+              editGradeLevel();
+              closeConfirmationModal();
+            } else {
+              showErrorModal("⚠️ Incorrect Admin Password!");
+              return;
+            }
+          }
         }
         break;
       case "deleteGradeLevel":
@@ -955,6 +967,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  async function validateAdminPassword() {
+    // Ibutang diri ang code nimo mags, make sure butangi await sa pag fetch para astig
+  }
+
   function closeConfirmationModal() {
     const modal = document.getElementById("confirmationModal");
     modal.classList.remove("show");
@@ -1099,12 +1115,41 @@ document.addEventListener("DOMContentLoaded", function () {
       const modalId = target.getAttribute("data-open-modal");
       const message = target.getAttribute("data-message") || "";
       const action = target.getAttribute("data-action") || "";
+      const requirePassword =
+        target.getAttribute("data-require-password") === "true";
 
       document
         .getElementById("confirmAction")
         .setAttribute("data-confirm-action", action);
 
-      // Check if the clicked button is the saveBtn
+      // Show or hide admin password section
+      const adminPassSection = document.getElementById("admin-pass-form");
+      const securityText = document.getElementById("security-message");
+
+      // Only modify the password section visibility if requirePassword is true
+      if (requirePassword) {
+        // Show the admin password section and security message
+        if (adminPassSection) {
+          adminPassSection.classList.remove("hidden");
+          adminPassSection.style.display = "flex"; // Ensure it's visible when required
+        }
+        if (securityText) {
+          securityText.classList.remove("hidden");
+          securityText.style.display = "block"; // Ensure it's visible when required
+        }
+      } else {
+        // Hide the admin password section and security message if no password is needed
+        if (adminPassSection) {
+          adminPassSection.classList.add("hidden");
+          adminPassSection.style.display = "none"; // Hide the section when not required
+        }
+        if (securityText) {
+          securityText.classList.add("hidden");
+          securityText.style.display = "none"; // Hide the security message
+        }
+      }
+
+      // Special logic for save button
       if (target === saveBtn) {
         if (saveBtn.textContent.trim() === "Add") {
           console.log("🔄 Changing text to Save...");
@@ -1113,25 +1158,27 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      // Open modal only if saveBtn is already "Save"
-      if (target.matches("[data-open-modal]")) {
-        // if (saveBtn.textContent.trim() === "Save") {
-        //   console.log("✅ Showing Modal");
-        //   const modalId = target.getAttribute("data-open-modal");
-        //   const message = target.getAttribute("data-message") || "";
-        //   toggleModal(modalId, true, message);
-        // } else {
-        //     toggleModal(modalId, true, message);
-        // //   console.log(
-        // //     "❌ Modal won't open because text is:",
-        // //     saveBtn.textContent.trim()
-        // //   );
-        // }
-        const modalId = target.getAttribute("data-open-modal");
-        const message = target.getAttribute("data-message") || "";
-        toggleModal(modalId, true, message);
-      }
+      toggleModal(modalId, true, message);
     }
+
+    // Open modal only if saveBtn is already "Save"
+    //   if (target.matches("[data-open-modal]")) {
+    //     // if (saveBtn.textContent.trim() === "Save") {
+    //     //   console.log("✅ Showing Modal");
+    //     //   const modalId = target.getAttribute("data-open-modal");
+    //     //   const message = target.getAttribute("data-message") || "";
+    //     //   toggleModal(modalId, true, message);
+    //     // } else {
+    //     //     toggleModal(modalId, true, message);
+    //     // //   console.log(
+    //     // //     "❌ Modal won't open because text is:",
+    //     // //     saveBtn.textContent.trim()
+    //     // //   );
+    //     // }
+    //     const modalId = target.getAttribute("data-open-modal");
+    //     const message = target.getAttribute("data-message") || "";
+
+    //   }
 
     // Close modal
     if (target.matches("[data-close-modal]")) {
@@ -1160,6 +1207,35 @@ document.addEventListener("DOMContentLoaded", function () {
         target.setAttribute("data-mode", "update");
         enableFormInputs();
       } else if (target.getAttribute("data-mode") === "update") {
+        const requirePassword =
+          target.getAttribute("data-require-password") === "true";
+
+        // Show or hide admin password section
+        const adminPassSection = document.getElementById("admin-pass-form");
+        const securityText = document.getElementById("security-message");
+
+        // Only modify the password section visibility if requirePassword is true
+        if (requirePassword) {
+          // Show the admin password section and security message
+          if (adminPassSection) {
+            adminPassSection.classList.remove("hidden");
+            adminPassSection.style.display = "flex"; // Ensure it's visible when required
+          }
+          if (securityText) {
+            securityText.classList.remove("hidden");
+            securityText.style.display = "block"; // Ensure it's visible when required
+          }
+        } else {
+          // Hide the admin password section and security message if no password is needed
+          if (adminPassSection) {
+            adminPassSection.classList.add("hidden");
+            adminPassSection.style.display = "none"; // Hide the section when not required
+          }
+          if (securityText) {
+            securityText.classList.add("hidden");
+            securityText.style.display = "none"; // Hide the security message
+          }
+        }
         const message =
           target.getAttribute("data-message") ||
           "Are you sure you want to update this record?";

@@ -27,8 +27,8 @@
                 <!-- Searchbox and sort btn -->
                 <div class="left-section">
                     <div class="search-container">
-                        <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
+                        <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
                         
                     </div>
                     <!-- Add Fees Management Button -->
@@ -63,13 +63,20 @@
         </table> <br> <br>
         </div>
 
-        <!-- Modal for confirmation -->
-        <div id="confirmationModal" class="modal">
+          <!-- Modal for confirmation -->
+          <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
+                <p id="security-message" class="hidden">To continue, enter the admin password before proceeding.</p>
+
+                <div class="input-group hidden" id="admin-pass-form">
+                  <label for="adminPassword">Admin Password:</label>
+                  <input type="password" autocomplete="new-password" id="adminPassword" placeholder="Enter admin password" />
+                </div>
+
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -154,7 +161,7 @@
                     </div>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="editFeeButton" data-action="editDistributable"
+                        <button type="button" class="btn-confirm" id="editFeeButton" data-require-password="true" data-action="editDistributable"
                             data-message="Are you sure you want to update this fee?">Edit</button>
                         <button type="button" class="btn-cancel"
                             data-close-modal="distributableManagementEditModal">Cancel</button>
@@ -238,7 +245,7 @@
                     data-is-active = "${distributable.currentlyActive}"
                     data-open-modal="distributableManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon" title="Click to Edit Distributable">
                     
-                        <img data-open-modal="confirmationModal"  data-name="${distributable.itemId}" data-action="deleteFee"
+                        <img data-open-modal="confirmationModal"  data-name="${distributable.itemId}" data-require-password="true" data-action="deleteFee"
                                      data-message="Are you sure you want to delete this fee?" 
                                      src="/images/icons/bin.png" alt="grade-level-delete-icon" title="Click to Delete">
                         

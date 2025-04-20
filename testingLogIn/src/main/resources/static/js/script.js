@@ -1618,7 +1618,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${rec.timeEndString}</td>
                 <td>
                     <button id="delete-btn" data-id="${rec.scheduleNumber}">Delete</button>
-                    <button id="edit-btn" data-id="${rec.scheduleNumber}">Edit This</button>
+                    <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                    <button id="edit-btn" data-id="${rec.scheduleNumber}" data-subj-id=${rec.subjectId}
+                        data-teacher-id=${rec.teacherId} data-sect-id=${rec.sectionId} data-day=${rec.day}
+                        >Edit This</button>
+                    <img class="edit-row" th:src="@{/images/icons/cross.png}" alt="">
                 </td>
             </tr>`;
             attachedDeleteHandler(row);
@@ -1688,8 +1692,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${rec.timeStartString}</td>
                 <td>${rec.timeEndString}</td>
                 <td>
-                    <button id="delete-btn" data-id="${rec.scheduleNumber}">Delete</button>
-                    <button id="edit-btn" data-id="${rec.scheduleNumber}">Edit This</button>
+                                <button id="delete-btn" data-id="${rec.scheduleNumber}">Delete</button>
+                                <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                                <button id="edit-btn" data-id="${rec.scheduleNumber}" data-subj-id=${rec.subjectId}
+                                    data-teacher-id=${rec.teacherId} data-sect-id=${rec.sectionId} data-day=${rec.day}
+                                    >Edit This</button>
+                                <img class="edit-row" th:src="@{/images/icons/cross.png}" alt="">
                 </td>
             </tr>`;
             attachedDeleteHandler(row);

@@ -633,8 +633,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   async function handleConfirmAction(action, event) {
+    console.log("Action triggered:", action);
     if (event && typeof event.preventDefault === "function") {
       event.preventDefault();
+      console.log("Prevented default behavior");
     } else {
       console.warn("⚠️ Warning: Event is missing or invalid");
     }
@@ -647,6 +649,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let confirmationModal = document.getElementById("confirmationModal");
     confirmationModal.style.visibility = "hidden";
     confirmationModal.style.opacity = "0";
+    console.log("Closed confirmation modal");
 
     switch (action) {
       case "updateSchoolSettings":
@@ -1051,13 +1054,12 @@ document.addEventListener("DOMContentLoaded", function () {
       let modalId = this.getAttribute("data-close-modal");
       let modal = document.getElementById(modalId);
 
-      if (modal) {
-        modal.classList.remove("show");
-        modal.style.visibility = "hidden";
-        modal.style.opacity = "0";
-        modal.style.pointerEvents = "none";
+      if (modal && modalId != "errorModal") {
+        closeConfirmationModal();
         resetValidationErrors();
         clearForm();
+      } else {
+        closeConfirmationModal();
       }
     });
   });

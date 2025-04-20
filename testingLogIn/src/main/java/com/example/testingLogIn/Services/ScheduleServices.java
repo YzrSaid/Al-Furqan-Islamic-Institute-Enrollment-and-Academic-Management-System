@@ -141,11 +141,11 @@ public class ScheduleServices {
     }
 
     public Map<Integer,ScheduleDTO> updateSchedule(ScheduleDTO schedDTO){
-        Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElse(null);
-        UserModel t = userRepo.findById(schedDTO.getTeacherId()).orElse(null);
+        Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElseThrow(NullPointerException::new);
+        UserModel t = userRepo.findById(schedDTO.getTeacherId()).orElseThrow(UnknownError::new);
         List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(schedDTO.getSubjectId()
                 ,toUpdate.getSection().getNumber(),t.getStaffId());
-        if(toUpdate != null && toUpdate.isNotDeleted()){
+        if(toUpdate.isNotDeleted()){
             Schedule updated = ScheduleDTOtoSchedule(schedDTO);
             UserModel teacher = updated.getTeacher();
             Section section = updated.getSection();

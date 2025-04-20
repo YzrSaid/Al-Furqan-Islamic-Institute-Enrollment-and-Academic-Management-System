@@ -1520,6 +1520,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 });
       editbtn.addEventListener('click', function() {
+        var oldRow = document.createElement("tr");
+        oldRow.innerHTML = row.innerHTML;
         const scheduleId = this.getAttribute('data-id');
         var editSection = this.getAttribute('data-sect-id');
         var day = this.getAttribute('data-day');
@@ -1556,73 +1558,80 @@ document.addEventListener("DOMContentLoaded", () => {
           </td>`;
         populateSubjects(editSection, row,subjId);
         populateTeachers(row,teacherId);
-        attachedEditHandler(row);
+        attachedEditHandler(row,oldRow.innerHTML);
         });
   }
 
-  window.attachedEditHandler = function(row){
+  window.attachedEditHandler = function(row,oldRow){
     const cancelEdit = row.querySelector("#cancelEdit");
     const saveEdit =  row.querySelector("#saveEdit");
 
-    saveEdit.addEventListener('click', function() {
-      var scheduleId = this.getAttribute('data-sched-id');
-      const addSubjectId = row.querySelector(".subject-select").value;
-      const teacher = row.querySelector(".teacher-select").value;
-      const day = row.querySelector(".day-select").value;
-      const startTime = row.querySelector(".starttime-input").value;
-      const endTime = row.querySelector(".endtime-input").value;
-
-      if (!addSubjectId || !teacher || !day || !startTime || !endTime) {
-          showErrorModal('Please fill in all fields.');
-          return;
-      } else if (startTime >= endTime) {
-          showErrorModal('End time must be after start time.');
-          return;
-      }
-
-      const data = {
-          scheduleNumber : scheduleId,
-          sectionId: selectedSectionId,
-          subjectId: addSubjectId,
-          teacherId: teacher,
-          day: day,
-          timeStart: startTime,
-          timeEnd: endTime
-      };
-      fetch('/schedules/update', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
-    })
-    .then(response => {
-      if(response.ok){
-        return response.json().then(rec => {
-          showSuccessModal("Schedule updated successfully",false);
-          row.innerHTML =`
-          <tr class="sched-row hidden-row">
-              <td>${rec.subject}</td>
-              <td>${rec.teacherName}</td>
-              <td>${rec.day}</td>
-              <td>${rec.timeStartString}</td>
-              <td>${rec.timeEndString}</td>
-              <td>
-                  <button id="delete-btn" data-id="${rec.scheduleNumber}">Delete</button>
-                  <button id="edit-btn" data-id="${rec.scheduleNumber}">Edit This</button>
-              </td>
-          </tr>`;
-          attachedDeleteHandler(row);
-        });
-      }else{
-          return response.text().then(message => {
-            showErrorModal(message);
-        });
-      }
-    })
-    .catch(error => {
-      showErrorModal(error.message);
+    cancelEdit.addEventListener('click', function() {
+      row.innerHTML=`<tr>${oldRow}</tr>`;
+      attachedDeleteHandler(row);
     });
+    saveEdit.addEventListener('click', function() {
+        var scheduleId = this.getAttribute('data-sched-id');
+        const addSubjectId = row.querySelector(".subject-select").value;
+        const teacher = row.querySelector(".teacher-select").value;
+        const day = row.querySelector(".day-select").value;
+        const startTime = row.querySelector(".starttime-input").value;
+        const endTime = row.querySelector(".endtime-input").value;
+
+
+        if (!addSubjectId || !teacher || !day || !startTime || !endTime) {
+            showErrorModal('Please fill in all fields.');
+            return;
+        } else if (startTime >= endTime) {
+            showErrorModal('End time must be after start time.');
+            return;
+        }
+
+        const path = window.location.pathname;
+        selectedSectionId = path.split("/").pop();
+        const data = {
+            scheduleNumber : scheduleId,
+            sectionId: selectedSectionId,
+            subjectId: addSubjectId,
+            teacherId: teacher,
+            day: day,
+            timeStart: startTime,
+            timeEnd: endTime
+        };
+        fetch('/schedules/update', {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
+      })
+      .then(response => {
+        if(response.ok){
+          return response.json().then(rec => {
+            showSuccessModal("Schedule updated successfully",false);
+            row.innerHTML =`
+            <tr class="sched-row hidden-row">
+                <td>${rec.subject}</td>
+                <td>${rec.teacherName}</td>
+                <td>${rec.day}</td>
+                <td>${rec.timeStartString}</td>
+                <td>${rec.timeEndString}</td>
+                <td>
+                    <button id="delete-btn" data-id="${rec.scheduleNumber}">Delete</button>
+                    <button id="edit-btn" data-id="${rec.scheduleNumber}">Edit This</button>
+                </td>
+            </tr>`;
+            attachedDeleteHandler(row);
+          });
+        }else{
+            return response.text().then(message => {
+              showErrorModal(message);
+          });
+        }
+      })
+      .catch(error => {
+        showErrorModal(error.message);
+      });
     });
   }
 

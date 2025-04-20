@@ -90,19 +90,27 @@ public class ScheduleController {
     
     @PutMapping("/update")
     public ResponseEntity<Object> updateSchedule(@RequestBody ScheduleDTO schedDTO){
-        Map<Integer,ScheduleDTO> res = scheduleService.updateSchedule(schedDTO);
-        int result = res.keySet().iterator().next();
-        switch(result){
-            case 1:
-                return new ResponseEntity<>("Conflict with the Teacher's other existing schedule",HttpStatus.CONFLICT);
-            case 2:
-                return new ResponseEntity<>("Conflict with the Section's other existing schedule",HttpStatus.CONFLICT);
-            case 3:
-                return new ResponseEntity<>("Someone is already handling this subject on this section",HttpStatus.OK);
-            case 4:
-                return new ResponseEntity<>(res.get(result),HttpStatus.OK);
-            default:
-                return new ResponseEntity<>("Schedule Not Found",HttpStatus.NOT_FOUND);
+        try{
+            Map<Integer,ScheduleDTO> res = scheduleService.updateSchedule(schedDTO);
+            int result = res.keySet().iterator().next();
+            switch(result){
+                case 1:
+                    return new ResponseEntity<>("Conflict with the Teacher's other existing schedule",HttpStatus.CONFLICT);
+                case 2:
+                    return new ResponseEntity<>("Conflict with the Section's other existing schedule",HttpStatus.CONFLICT);
+                case 3:
+                    return new ResponseEntity<>("Someone is already handling this subject on this section",HttpStatus.OK);
+                case 4:
+                    return new ResponseEntity<>(res.get(result),HttpStatus.OK);
+                default:
+                    return new ResponseEntity<>("Schedule Not Found",HttpStatus.NOT_FOUND);
+            }
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>("Schedule not found",HttpStatus.NOT_FOUND);
+        }catch (UnknownError u){
+            return new ResponseEntity<>("Selected teacher not found",HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>("Server error",HttpStatus.CONFLICT);
         }
     }
     

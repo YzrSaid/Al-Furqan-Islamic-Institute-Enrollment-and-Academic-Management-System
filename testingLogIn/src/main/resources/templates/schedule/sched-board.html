@@ -78,7 +78,22 @@
             <button type="button" class="btn-confirm" id="addRowBtn">Add</button>
         </div>
 
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
 
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
@@ -97,68 +112,11 @@
     document.addEventListener("DOMContentLoaded", function () {
         setUpTables();
     });
-
-    function saveSchedule() {
-        const path = window.location.pathname;
-
-        const pathParts = path.split('/');
-        const secId = pathParts[pathParts.length - 1];
-        const subjectName = document.getElementById('subject-select').value;
-        const teacher = document.getElementById('teacher-select').value;
-        const day = document.getElementById('day').value;
-        const startTime = document.getElementById('starttime').value;
-        const endTime = document.getElementById('endtime').value;
-
-        // Validate that all fields are filled
-        if (!subjectName || !teacher || !day || !startTime || !endTime) {
-            alert('Please fill in all fields.');
-            return;
-        } else if (startTime >= endTime) {
-            alert('End time must be after start time.');
-            return;
-        }
-
-        const data = {
-            sectionId: secId,
-            subject: subjectName,
-            teacherName: teacher,
-            day: day,
-            timeStart: startTime,
-            timeEnd: endTime
-        };
-
-        fetch('/schedules/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
-        })
-            .then(response => {
-                return response.text().then(message => {
-                    // Handle different status codes
-                    if (response.ok) {
-                        // Success (HTTP 200 OK)
-                        alert(message); // Display the success message
-                        window.location.reload(); // Reload the page
-                    } else {
-                        alert(message);
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Display the error message to the user
-                alert(error.message);
-            });
-    }
-
     function setUpTables() {
         const path = window.location.pathname;
 
         const pathParts = path.split('/');
         const sectionId = pathParts[pathParts.length - 1];
-        console.log(sectionId);
 
         fetch(`/schedules/section/${sectionId}`)
             .then(response => {
@@ -181,36 +139,21 @@
                             <td>${rec.timeStartString}</td>
                             <td>${rec.timeEndString}</td>
                             <td>
-                                <button onClick="deleteThis(${rec.scheduleNumber})">Delete</button>
+                                <button id="delete-btn" data-id="${rec.scheduleNumber}">Delete</button>
                                 <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                                <button id="edit-btn" data-id="${rec.scheduleNumber}" data-subj-id=${rec.subjectId}
+                                    data-teacher-id=${rec.teacherId} data-sect-id=${rec.sectionId} data-day=${rec.day}
+                                    >Edit This</button>
+                                <img class="edit-row" th:src="@{/images/icons/cross.png}" alt="">
                             </td>
                         </tr>
                         `;
+                        attachedDeleteHandler(row);
                     tableBody.appendChild(row);
                 });
             })
             .catch(error => {
                 console.error("Error fetching data:", error);
-            });
-    }
-
-    function deleteThis(schedId) {
-        fetch('/schedules/delete/' + schedId, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                return response.text().then(message => {
-                    if (response.ok) {
-                        alert(message);
-                        window.location.reload();
-                    } else {
-                        alert(message);
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert(error.message);
             });
     }
 </script>

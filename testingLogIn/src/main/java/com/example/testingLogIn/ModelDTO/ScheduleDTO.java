@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class ScheduleDTO {
     private int scheduleNumber;
     private String teacherName;
+    private int teacherId;
     private String subject;
     private int subjectId;
 

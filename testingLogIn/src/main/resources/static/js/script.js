@@ -1375,10 +1375,10 @@ document.addEventListener("DOMContentLoaded", () => {
     ).element;
   }
 
+  var selectedSectionId;
   async function createRow() {
     const path = window.location.pathname;
-    const sectionId = path.split("/").pop();
-
+    selectedSectionId = path.split("/").pop();
     const newRow = document.createElement("tr");
     newRow.classList.add("sched-row");
     newRow.setAttribute("draggable", "false");
@@ -1410,17 +1410,144 @@ document.addEventListener("DOMContentLoaded", () => {
         <button class="btn-row-save confirm-btn" title="Save">
             <img src="/images/icons/check.png" alt="Save" />
         </button>
-       
-        </td>
-      `;
+        </td>`;
 
-    await populateSubjects(sectionId, newRow);
+    await populateSubjects(selectedSectionId, newRow);
     await populateTeachers(newRow);
 
     attachDoubleClickDrag(newRow);
     attachRowActionHandlers(newRow);
 
     return newRow;
+  }
+
+  window.attachedDeleteHandler = function(row){
+    const deleteBtn = row.querySelector("#delete-btn");
+    const editbtn =  row.querySelector("#edit-btn");
+        deleteBtn.addEventListener('click', function() {
+            const scheduleId = this.getAttribute('data-id');
+            fetch(`/schedules/delete/${scheduleId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    return response.text().then(message => {
+                        if (response.ok) {
+                            showSuccessModal(message,false);
+                            row.remove();
+                        } else {
+                            showErrorModal(message);
+                        }
+                    });
+                })
+                .catch(error => {
+                    showErrorModal(error.message);
+                });
+                });
+      editbtn.addEventListener('click', function() {
+        const scheduleId = this.getAttribute('data-id');
+        var editSection = this.getAttribute('data-sect-id');
+        var day = this.getAttribute('data-day');
+        var subjId = this.getAttribute('data-subj-id');
+        var teacherId = this.getAttribute('data-teacher-id');
+        var dayOpt = day === "SATURDAY" ?`
+                    <option value="SATURDAY" selected>Saturday</option>
+                    <option value="SUNDAY">Sunday</option>`
+                    :`
+                    <option value="SATURDAY">Saturday</option>
+                    <option value="SUNDAY"selected>Sunday</option>`;
+        row.innerHTML = `
+            <td>
+                <select name="subject" class="subject-select">
+                    <option value="" disabled selected>Choose a subject</option>
+                </select>
+            </td>
+            <td>
+                <select name="teacher" class="teacher-select">
+                    <option value="" disabled selected>Choose a teacher</option>
+                </select>
+            </td>
+            <td>
+                <select name="days" class="day-select">
+                    <option value="" disabled selected>Choose a day</option>
+                    ${dayOpt}
+                </select>
+            </td>
+            <td><input type="time" class="starttime-input"></td>
+            <td><input type="time" class="endtime-input"></td>
+          <td>
+            <button id="cancelEdit">Cancel</button>
+            <button id="saveEdit" data-sched-id="${scheduleId}">Save Changes</button>
+          </td>`;
+        populateSubjects(editSection, row,subjId);
+        populateTeachers(row,teacherId);
+        attachedEditHandler(row);
+        });
+  }
+
+  window.attachedEditHandler = function(row){
+    const cancelEdit = row.querySelector("#cancelEdit");
+    const saveEdit =  row.querySelector("#saveEdit");
+
+    saveEdit.addEventListener('click', function() {
+      var scheduleId = this.getAttribute('data-sched-id');
+      const addSubjectId = row.querySelector(".subject-select").value;
+      const teacher = row.querySelector(".teacher-select").value;
+      const day = row.querySelector(".day-select").value;
+      const startTime = row.querySelector(".starttime-input").value;
+      const endTime = row.querySelector(".endtime-input").value;
+
+      if (!addSubjectId || !teacher || !day || !startTime || !endTime) {
+          showErrorModal('Please fill in all fields.');
+          return;
+      } else if (startTime >= endTime) {
+          showErrorModal('End time must be after start time.');
+          return;
+      }
+
+      const data = {
+          scheduleNumber : scheduleId,
+          sectionId: selectedSectionId,
+          subjectId: addSubjectId,
+          teacherId: teacher,
+          day: day,
+          timeStart: startTime,
+          timeEnd: endTime
+      };
+      fetch('/schedules/update', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
+    })
+    .then(response => {
+      if(response.ok){
+        return response.json().then(rec => {
+          showSuccessModal("Schedule updated successfully",false);
+          row.innerHTML =`
+          <tr class="sched-row hidden-row">
+              <td>${rec.subject}</td>
+              <td>${rec.teacherName}</td>
+              <td>${rec.day}</td>
+              <td>${rec.timeStartString}</td>
+              <td>${rec.timeEndString}</td>
+              <td>
+                  <button id="delete-btn" data-id="${rec.scheduleNumber}">Delete</button>
+                  <button id="edit-btn" data-id="${rec.scheduleNumber}">Edit This</button>
+              </td>
+          </tr>`;
+          attachedDeleteHandler(row);
+        });
+      }else{
+          return response.text().then(message => {
+            showErrorModal(message);
+        });
+      }
+    })
+    .catch(error => {
+      showErrorModal(error.message);
+    });
+    });
   }
 
   function attachRowActionHandlers(row) {
@@ -1433,29 +1560,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
     saveBtn.addEventListener("click", () => {
       // Grab values from the inputs
-      const subject = row.querySelector(".subject-select").value;
+      const addSubjectId = row.querySelector(".subject-select").value;
       const teacher = row.querySelector(".teacher-select").value;
       const day = row.querySelector(".day-select").value;
-      const start = row.querySelector(".starttime-input").value;
-      const end = row.querySelector(".endtime-input").value;
+      const startTime = row.querySelector(".starttime-input").value;
+      const endTime = row.querySelector(".endtime-input").value;
 
-      // Do something with them (send to server or display confirmation)
-      console.log("Save row:", { subject, teacher, day, start, end });
+        // Validate that all fields are filled
+      if (!addSubjectId || !teacher || !day || !startTime || !endTime) {
+          showErrorModal('Please fill in all fields.');
+          return;
+      } else if (startTime >= endTime) {
+          showErrorModal('End time must be after start time.');
+          return;
+      }
 
-      // Optional: disable inputs or give visual feedback
-      alert("Saved!");
+      const data = {
+          sectionId: selectedSectionId,
+          subjectId: addSubjectId,
+          teacherId: teacher,
+          day: day,
+          timeStart: startTime,
+          timeEnd: endTime
+      };
+    
+      fetch('/schedules/add', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
+      })
+      .then(response => {
+        if(response.ok){
+          return response.json().then(rec => {
+            showSuccessModal("New schedule added successfully",false);
+            row.innerHTML =`
+            <tr class="sched-row hidden-row">
+                <td>${rec.subject}</td>
+                <td>${rec.teacherName}</td>
+                <td>${rec.day}</td>
+                <td>${rec.timeStartString}</td>
+                <td>${rec.timeEndString}</td>
+                <td>
+                    <button id="delete-btn" data-id="${rec.scheduleNumber}">Delete</button>
+                    <button id="edit-btn" data-id="${rec.scheduleNumber}">Edit This</button>
+                </td>
+            </tr>`;
+            attachedDeleteHandler(row);
+          });
+        }else{
+            return response.text().then(message => {
+              showErrorModal(message);
+          });
+        }
+      })
+      .catch(error => {
+        showErrorModal(error.message);
+      });
     });
   }
 
-  async function populateSubjects(sectionId, row) {
+  async function populateSubjects(sectionId, row, selectedSub = 0) {
     try {
       const res = await fetch(`/subject/section/${sectionId}`);
       const subjects = await res.json();
       const select = row.querySelector(".subject-select");
       subjects.forEach((subject) => {
+        console.log(subject);
         const opt = document.createElement("option");
-        opt.value = subject.subjectName;
+        opt.value = subject.subjectNumber;
         opt.textContent = subject.subjectName;
+        if(selectedSub == subject.subjectNumber){
+          opt.selected = true;
+        }
         select.appendChild(opt);
       });
     } catch (err) {
@@ -1463,15 +1641,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function populateTeachers(row) {
+  async function populateTeachers(row,id = 0) {
     try {
       const res = await fetch("/user/teachers");
       const teachers = await res.json();
       const select = row.querySelector(".teacher-select");
       teachers.forEach((teacher) => {
         const opt = document.createElement("option");
-        opt.value = `${teacher.firstname} ${teacher.lastname}`;
-        opt.textContent = `${teacher.firstname} ${teacher.lastname}`;
+        opt.value = teacher.staffId;
+        if(teacher.staffId == id){
+          opt.selected = true;
+        }
+        opt.textContent = teacher.fullName;
         select.appendChild(opt);
       });
     } catch (err) {

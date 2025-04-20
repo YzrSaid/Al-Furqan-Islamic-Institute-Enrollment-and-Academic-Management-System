@@ -95,9 +95,9 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     @Query("""
     SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher,sg.section,sg.subject)
     FROM StudentSubjectGrade sg
-    LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber
+    LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber AND s.isNotDeleted
     LEFT JOIN s.teacher t
-    WHERE (:sectionNum IS NULL OR sg.section.number = :sectionNum)
+    WHERE sg.section.number = :sectionNum
     AND sg.semester.sySemNumber = :semId
     GROUP BY s.teacher, sg.subject, sg.section.number
     """)
@@ -106,7 +106,7 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     @Query("""
     SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher,sg.section,sg.subject)
     FROM StudentSubjectGrade sg
-    LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber
+    LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber AND s.isNotDeleted
     LEFT JOIN s.teacher t
     WHERE sg.subjectGrade IS NULL
     AND sg.semester.sySemNumber = :semId

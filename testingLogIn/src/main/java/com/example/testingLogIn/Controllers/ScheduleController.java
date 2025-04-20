@@ -43,16 +43,6 @@ public class ScheduleController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    
-    @GetMapping("/section/{sectionId}")
-    public ResponseEntity<List<ScheduleDTO>> getSchedulesBySection(@PathVariable int sectionId){
-        try{
-            return new ResponseEntity<>(scheduleService.getSchedulesBySection(sectionId),HttpStatus.OK);
-        }catch(NullPointerException npe){
-            npe.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 
     @GetMapping("/section-subjects")
     public ResponseEntity<List<EvaluationStatus>> getTest(@RequestParam(required = false) Integer sectionId){

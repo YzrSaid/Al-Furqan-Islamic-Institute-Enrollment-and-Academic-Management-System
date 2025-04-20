@@ -1190,6 +1190,8 @@ document.addEventListener("DOMContentLoaded", function () {
           toggleModal(openModal.id, false);
         }
       }
+    } else if (target.id === "confirmWithPass") {
+        
     }
   });
 });

@@ -131,7 +131,7 @@
                     <tr>
                         <td>${rec.studentId}</td>
                         <td>${rec.studentLastName}, ${rec.studentFirstName} ${rec.studentMiddleName}</td>
-                        <td><input type="number" min="1" max="100" name="student-grade" readonly class="student-grade" value="${rec.subjectGrade}" id="student-grade-${rec.studGradeId}"></td>`;
+                        <td><input type="number" min="1" max="100" name="student-grade" class="student-grade" value="${rec.subjectGrade}" id="student-grade-${rec.studGradeId}"></td>`;
                     if (rec.subjectGrade === null) {
                         row.innerHTML += `
        
@@ -228,7 +228,7 @@
         if (e.target.closest(".save-grade")) {
             e.preventDefault();
             const row = e.target.closest("tr");
-            const input = row.querySelector(".student-grade-input");
+            const input = row.querySelector(".student-grade");
             const gradeId = e.target.closest("a").dataset.gradeId;
             const newValue = input.value;
            

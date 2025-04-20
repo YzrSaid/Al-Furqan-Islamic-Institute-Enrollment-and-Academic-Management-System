@@ -381,7 +381,7 @@
                 showSuccessModal(responseData);
             }
         } catch (error) {
-            showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
+            showErrorModal(error.message);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.testingLogIn.PasswordResetPackage;
 
+import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/authentication")
@@ -32,9 +34,12 @@ public class PasswordResetController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam String email) {
-        UserModel user = Optional.ofNullable(userRepository.findByUsername(email))
-                .orElse(null);
+        UserModel user = userRepository.findByUsername(email);
 
+        CompletableFuture.runAsync(()->tokenRepository.deleteSomeTokens(LocalDateTime.now()));
+
+        if(user.getRole().equals(Role.STUDENT))
+            return new ResponseEntity<>("Please contact admin for your account password",HttpStatus.NOT_ACCEPTABLE);
         if(user != null){
             String token = TokenGenerator.generateToken();
             PasswordResetToken resetToken = new PasswordResetToken();
@@ -53,14 +58,19 @@ public class PasswordResetController {
 
     @PutMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestParam String newPassword, @RequestParam String token) {
-        PasswordResetToken pwToken = tokenRepository.findByToken(token).orElse(null);
-        if(pwToken != null && pwToken.getExpiryDate().isAfter(LocalDateTime.now())){
-            UserModel user =pwToken.getUser();
-            userService.changeUserPassword(user,newPassword);
-            tokenRepository.deleteUserTokens(user.getStaffId());
-            return new ResponseEntity<>("User password changed successfully",HttpStatus.OK);
+        try{
+            CompletableFuture.runAsync(()->tokenRepository.deleteSomeTokens(LocalDateTime.now()));
+            PasswordResetToken pwToken = tokenRepository.findByToken(token).orElse(null);
+            if(pwToken != null && pwToken.getExpiryDate().isAfter(LocalDateTime.now())){
+                UserModel user = pwToken.getUser();
+                userService.changeUserPassword(user,newPassword);
+                tokenRepository.deleteUserTokens(user.getStaffId());
+                return new ResponseEntity<>("User password changed successfully",HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Invalid token.", HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>("Server error",HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>("Token not found", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/get-user")

@@ -16,8 +16,8 @@ public class EmailService {
     private final Session session;
     private final String username;
     public EmailService(){
-        username = "imong gmail";
-        String password = "imong app password";
+        username = "customerservicealfurqanislamic@gmail.com";
+        String password = "xlfp ycim vsoz zizu";
         prop = new Properties();
         prop.put("mail.smtp.auth", "true");
         prop.put("mail.smtp.starttls.enable", "true");
@@ -36,7 +36,7 @@ public class EmailService {
     public void sendEmail(String receiver){
         Message msg = new MimeMessage(session);
         try {
-            msg.setFrom(new InternetAddress("magnoclifford42@gmail.com"));
+            msg.setFrom(new InternetAddress("customerservicealfurqanislamic@gmail.com"));
             msg.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(receiver));
             msg.setSubject("Testing email");

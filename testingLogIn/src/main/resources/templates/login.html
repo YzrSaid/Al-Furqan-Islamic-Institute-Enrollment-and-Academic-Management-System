@@ -33,6 +33,21 @@
         
         <h4 id="signup-link">New staff? <a href="/signing">Register for an Account.</a></h4>
     </div>
+    <div id="errorModal" class="modal">
+        <div class="modal-content scroll-lock">
+            <p id="errorMessage"></p>
+            <div class="modal-buttons">
+                <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- Background overlay -->
+    <div id="successModalOverlay"></div>
+
+    <!-- Success modal -->
+    <div id="successModal">
+        <p id="successModalMessage"></p>
+    </div>
 </div>
 </body>
 <script th:src="@{/js/script.js}" defer></script>
@@ -50,18 +65,15 @@ document.getElementById('login-form').addEventListener('submit', function (event
     })
     .then(response => {
         if (response.ok) {
-            // ✅ Redirect without parsing JSON
             window.location.href = '/home';  
         } else {
             return response.text().then(text => {
-                console.error("Error response:", text); 
-                throw new Error("Failed to login: " + text);
+                showErrorModal(text);
             });
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert(error.message);
+        showErrorModal("Server error");
     });
 });
 

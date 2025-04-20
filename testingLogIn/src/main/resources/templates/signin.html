@@ -112,7 +112,10 @@
             .then(response => {
                 if (response.ok) {
                     return response.text().then(text => {
-                        showSuccessModal("✅ Account has been created successfully! This record will be sent for approval.");
+                        showSuccessModal("✅ Account has been created successfully! This record will be sent for approval.",false);
+                        setTimeout(() => {
+                            window.location.href = "/login";
+                        }, 2000);
                     });
                 } else {
                     return response.text().then(text => {

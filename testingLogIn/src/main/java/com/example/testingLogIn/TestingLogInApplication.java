@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableCaching
 @EnableAsync
 @SpringBootApplication
-public class TestingLogInApplication //extends SpringBootServletInitializer
+public class TestingLogInApplication extends SpringBootServletInitializer
  									{
 	public static void main(String[] args) {
 		SpringApplication.run(TestingLogInApplication.class, args);

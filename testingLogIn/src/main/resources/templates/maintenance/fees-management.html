@@ -28,13 +28,13 @@
                 <!-- Searchbox and sort btn -->
                 <div class="left-section">
                     <div class="search-container">
-                        <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
+                        <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
                     </div>
                     <!-- Add Fees Management Button -->
                     <div class="add-something-btn-container">
-                        <button type="button" class="btn-confirm" id="addAFeeButton" data-open-modal="feesManagementModal"
-                            title="Click to Add a Fee">Add a
+                        <button type="button" class="btn-confirm" id="addAFeeButton"
+                            data-open-modal="feesManagementModal" title="Click to Add a Fee">Add a
                             Fee</button>
                     </div>
 
@@ -70,9 +70,17 @@
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
+                <p id="security-message" class="hidden">To continue, enter the admin password before
+                    proceeding.</p>
+
+                <div class="input-group hidden" id="admin-pass-form">
+                    <label for="adminPassword">Admin Password:</label>
+                    <input type="password" autocomplete="new-password" id="adminPassword" placeholder="Enter admin password" />
+                </div>
+
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -112,7 +120,7 @@
 
                     <label for="amount">Amount</label>
                     <input type="number" id="amount">
-                    <br> 
+                    <br>
 
                     <div class="full-width-row">
                         <div>
@@ -141,7 +149,7 @@
                             data-open-modal="confirmationModal">
                             Confirm
                         </button>
-                        
+
                     </div>
                 </form>
 
@@ -206,7 +214,7 @@
                     </div>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="editFeeButton" data-action="editFee"
+                        <button type="button" class="btn-confirm" id="editFeeButton" data-require-password="true" data-action="editFee"
                             data-message="Are you sure you want to update this fee?">Edit</button>
                         <button type="button" class="btn-cancel"
                             data-close-modal="feesManagementEditModal">Cancel</button>
@@ -317,7 +325,7 @@
                     data-amount="${payment.requiredAmount}" data-grade-levels="${payment.gradeLevelNames.join(',')}"
                     data-open-modal="feesManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon" title="Click to Edit Fee Information">
                     
-                        <img data-open-modal="confirmationModal"  data-name="${payment.id}" data-action="deleteFee" title="Click to Delete Fee"
+                        <img data-open-modal="confirmationModal"  data-require-password="true" data-name="${payment.id}" data-action="deleteFee" title="Click to Delete Fee"
                                      data-message="Are you sure you want to delete this fee?"
                                      src="/images/icons/bin.png" alt="grade-level-delete-icon">
                         

@@ -1654,14 +1654,30 @@ table td {
   align-self: center;
   justify-self: center;
   background: rgb(255, 255, 255);
-  padding: 20px;
+  padding: 30px 30px 10px 30px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  min-width: 500px;
-  max-width: 450px;
+  width: 500px;
   min-height: 200px;
-  max-height: 200px;
   text-align: center;
+}
+
+#admin-pass-form {
+  margin: 0 auto;
+  width: 80%;
+}
+.hidden {
+  display: none !important;
+}
+
+.student-form-group #adminPassword {
+  width: 55%;
+}
+.modal-content p {
+  font-size: 16px;
+}
+#modalText {
+  font-weight: bold;
 }
 
 .modal-buttons {
@@ -2423,6 +2439,7 @@ input[type="checkbox"] {
 }
 
 .student-modal-content label,
+.modal-content label,
 .grade-level-modal-content label,
 .school-year-modal-content label,
 .subject-modal-content label,
@@ -2484,6 +2501,7 @@ input[type="checkbox"] {
 .list-of-payments-modal-content input,
 .fees-management-edit-modal-content input,
 .student-information-modal-content input,
+.modal-content input,
 .receipt-payment-modal-content input,
 .transferee-req-modal-content input,
 .transferee-req-edit-modal-content input,

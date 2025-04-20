@@ -27,12 +27,12 @@
                 <!-- Searchbox -->
                 <div class="left-section">
                     <div class="search-container">
-                        <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
-                     
+                        <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+
                     </div>
-                       <!-- Add School Year Button -->
-                       <div class="add-something-btn-container">
+                    <!-- Add School Year Button -->
+                    <div class="add-something-btn-container">
                         <button type="button" class="btn-confirm" id="openSchoolYearModal"
                             data-open-modal="schoolYearModal" title="Click to Add School Year">Add School Year</button>
                     </div>
@@ -43,32 +43,40 @@
 
 
         <!-- Table -->
-         <div class="table-wrapper">
-        <table class="school-year-table main-table" border="1">
-            <thead>
-                <tr>
-                    <th>School Year</th>
-                    <th>Semester</th>
-                    <th>Semester Ended</th>
-                    <th>Enrollment Deadline</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table> <br> <br>
-    </div>
-        <!-- Confirmation Modal -->
+        <div class="table-wrapper">
+            <table class="school-year-table main-table" border="1">
+                <thead>
+                    <tr>
+                        <th>School Year</th>
+                        <th>Semester</th>
+                        <th>Semester Ended</th>
+                        <th>Enrollment Deadline</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> <br> <br>
+        </div>
+        <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
             <div class="modal-content scroll-lock">
-                <p id="modalText">Are you sure?</p>
+                <p id="modalText"></p>
+                <p id="security-message" class="hidden">To continue, enter the admin password before
+                    proceeding.</p>
+
+                <div class="input-group hidden" id="admin-pass-form">
+                    <label for="adminPassword">Admin Password:</label>
+                    <input type="password" autocomplete="new-password" id="adminPassword"
+                        placeholder="Enter admin password" />
+                </div>
+
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button data-close-modal="confirmationModal" class="btn-close-confirm">Cancel</button>
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
-
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
             <div class="modal-content scroll-lock">
@@ -116,24 +124,24 @@
         <div id="evaluations" class="list-of-payments-modal modal">
             <div class="list-of-payments-modal-content scroll-lock">
                 <div class="modal-body">
-                <h2>Grade Evaluation Status</h2>
-                <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
-                    <thead>
-                        <tr>
-                            <th>Teacher</th>
-                            <th>Subject</th>
-                            <th>Graded Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                    <h2>Grade Evaluation Status</h2>
+                    <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Subject</th>
+                                <th>Graded Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
 
-                <!-- Add Payment button -->
-                <div class="action" id="add-payment-btn">
-                    <button type="button" id="open-add-payment-modal" data-close-modal="evaluations">Close</button>
+                    <!-- Add Payment button -->
+                    <div class="action" id="add-payment-btn">
+                        <button type="button" id="open-add-payment-modal" data-close-modal="evaluations">Close</button>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
 
@@ -241,7 +249,7 @@
                         ) {
                             finishSemesterOption = `<a href="#" data-action="finishSemester"
                        data-message="Are you sure you want to end and finish this semester?"
-                       data-open-modal="confirmationModal"
+                       data-open-modal="confirmationModal"  data-require-password="true"
                        data-semid="${sem.sySemNumber}">Finish Semester</a>
                        <a href="#" data-open-modal="evaluations">Pending</a>`;
                         }
@@ -259,7 +267,7 @@
                                 // ✅ Allow activating 1st sem anytime
                                 activateOption = `<a href="#" data-action="activateSemester"
                            data-message="Are you sure you want to activate this semester?"
-                           data-open-modal="confirmationModal"
+                           data-open-modal="confirmationModal" data-require-password="true"
                            data-semid="${sem.sySemNumber}">
                            Activate
                         </a>`;
@@ -268,7 +276,7 @@
                                 let firstSem = relatedSemesters.find(s => s.sem.toLowerCase() === "first");
                                 if (firstSem && firstSem.finished) {
                                     activateOption = `<a href="#" data-action="activateSemester"
-                               data-message="Are you sure you want to activate this semester? (1st sem will be automatically finished)"
+                               data-message="Are you sure you want to activate this semester?"
                                data-open-modal="confirmationModal"
                                data-semid="${sem.sySemNumber}">
                                Activate
@@ -365,7 +373,11 @@
             const statusId = statusElement.id;
             console.log(`Status ID: ${statusId}, Text: ${statusText}`);
 
-            if (statusText === "INACTIVE" || statusText === "N/A") {
+            if (statusText === "INACTIVE") {
+                statusElement.style.backgroundColor = "transparent";
+                statusElement.style.color = "black";
+                statusElement.style.fontWeight = "bold";
+            } else if (statusText === "N/A") {
                 statusElement.style.backgroundColor = "transparent";
                 statusElement.style.color = "black";
                 statusElement.style.fontWeight = "bold";
@@ -374,8 +386,7 @@
                 statusElement.style.backgroundColor = "transparent";
                 statusElement.style.color = "#218838";
                 statusElement.style.fontWeight = "bold";
-                statusElement.style.fontSize = "15px";
-            }  else {
+            } else {
                 statusElement.style.backgroundColor = "transparent";
                 statusElement.style.color = "#E74424";
                 statusElement.style.fontWeight = "bold";
@@ -444,22 +455,22 @@
         }
     });
 
-    async function setEvaluationTable(){
+    async function setEvaluationTable() {
         var eval_table = document.querySelector("#table-ni-kharl tbody");
-        eval_table.innerHTML= "<tr><td>No records found.</td></tr>";
+        eval_table.innerHTML = "<tr><td>No records found.</td></tr>";
 
         const response = await fetch("/schedules/section-subjects");
-        if(response.ok){
+        if (response.ok) {
             const result = await response.json();
-            eval_table.innerHTML= "";
-            if(result.length > 0){
-                result.forEach(data =>{
+            eval_table.innerHTML = "";
+            if (result.length > 0) {
+                result.forEach(data => {
                     var row = document.createElement("tr");
                     row.innerHTML = `
-                        <td>${data.teacher? data.teacher.fullName : "N/A"}</td>
+                        <td>${data.teacher ? data.teacher.fullName : "N/A"}</td>
                         <td>${data.subject.subjectName}</td>
                         <td>${data.gradedCount}/${data.totalToBeGraded}</td>`;
-                    
+
                     eval_table.appendChild(row);
                 });
             }
@@ -583,27 +594,27 @@
             return;
         }
         try {
-        const response = await fetch(`/semester/finish/${semNumber}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+            const response = await fetch(`/semester/finish/${semNumber}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-        const message = await response.text();
+            const message = await response.text();
 
-        if (!response.ok) {
-            throw new Error(message);
+            if (!response.ok) {
+                throw new Error(message);
+            }
+
+            showSuccessModal(message);
+            fetchSchoolYears();
+        } catch (error) {
+            showErrorModal(error.message);
         }
-
-        showSuccessModal(message);
-        fetchSchoolYears();
-    } catch (error) {
-        showErrorModal(error.message);
-    }
     }
 
-   
+
 
     // Function to update school year status (Make Inactive or Archive)
     function updateSchoolYearStatus(syNum, action) {

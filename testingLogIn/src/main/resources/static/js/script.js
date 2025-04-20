@@ -2691,3 +2691,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('a[title="You\'re currently in this page."]').forEach(anchor => {
+    // 1. Wrap text content in <strong>
+    const strong = document.createElement('strong');
+    strong.textContent = anchor.textContent;
+    anchor.textContent = '';
+    anchor.appendChild(strong);
+
+    // 2. Change href to "#"
+    anchor.setAttribute('href', '#');
+  });
+});

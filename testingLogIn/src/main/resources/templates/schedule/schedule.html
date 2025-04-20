@@ -182,7 +182,7 @@
                 tableBody.innerHTML = "";
 
                 data.forEach(rec => {
-                    console.log(rec);
+                    //console.log(rec);
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <tr>
@@ -200,7 +200,7 @@
                 });
             })
             .catch(error => {
-                console.error("Error fetching data:", error);
+                //console.error("Error fetching data:", error);
             });
     }
 </script>

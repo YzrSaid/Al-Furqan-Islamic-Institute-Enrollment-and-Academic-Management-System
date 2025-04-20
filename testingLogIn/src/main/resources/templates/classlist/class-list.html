@@ -210,12 +210,12 @@
                 return response.json(); // Parse the response as JSON
             })
             .then(data => {
-                console.log(data);
+               // console.log(data);
                 const tableBody = document.querySelector("#table-ba-to tbody");
                 tableBody.innerHTML = "";
 
                 data.forEach(rec => {
-                    console.log(rec);
+                   // console.log(rec);
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <tr>
@@ -234,7 +234,7 @@
                 });
             })
             .catch(error => {
-                console.error("Error fetching data:", error);
+                //console.error("Error fetching data:", error);
             });
     }
 </script>

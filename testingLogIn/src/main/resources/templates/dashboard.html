@@ -260,7 +260,7 @@
         const response = await fetch(`/statistics/counts?semester=${sem}&schoolYear=${sy}`);
         if(response.ok){
             const counts = await response.json();
-            console.log(counts);
+            //console.log(counts);
             setFirstTableContents(counts.enrolledCount,
                                     counts.preEnrolledCount,
                                     counts.graduatesCount,

@@ -128,15 +128,15 @@
                 });
                 totalItems = data.totalElements || 0;
                 const totalPages = data.totalPages || 1;
-                console.log(totalItems);
+                //console.log(totalItems);
                 updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
             })
             .catch(error => {
-                console.error('Error:', error);
+                //console.error('Error:', error);
             });
     }
     function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
-        console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+        //console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
         const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
         const end = Math.min(currentPage * pageSize, totalItems);
 
@@ -160,10 +160,10 @@
     document.getElementById("nextPage").addEventListener("click", () => {
         if (currentPage < document.getElementById("pageInput").max) {
             currentPage++;
-            console.log("Navigating to page:", currentPage);
+            //console.log("Navigating to page:", currentPage);
             setStudentRecords(currentPage);
         } else {
-            console.log("Cannot navigate to next page");
+            //console.log("Cannot navigate to next page");
         }
     });
 
@@ -179,7 +179,7 @@
     });
 
     document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
-        console.log("pageSizeSelector changed", { value: e.target.value });
+        //console.log("pageSizeSelector changed", { value: e.target.value });
         pageSize = parseInt(e.target.value);
         currentPage = 1;
         setStudentRecords(currentPage);

@@ -820,7 +820,7 @@
         }
 
         const apiUrl = `/enrollment/add/payment/${enrollmentIdLet}/${sectionNumberLet}`;
-        console.log(`🔄 Sending request to: ${apiUrl}`);
+       // console.log(`🔄 Sending request to: ${apiUrl}`);
 
         fetch(apiUrl, {
             method: "PUT",
@@ -828,7 +828,7 @@
         })
             .then(response => response.text().then(text => ({ text, status: response.status })))
             .then(({ text, status }) => {
-                console.log(`🔹 API Response (${status}): ${text}`);
+               // console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
                     showSuccessModal("✅ Success: New student has been added successfully!", false);
@@ -853,8 +853,8 @@
                 // Get the selected section number value
                 sectionNumberLet = document.querySelector("#section").value;
 
-                console.log("Enrollment ID:", enrollmentIdLet);
-                console.log("Selected Section:", sectionNumberLet);
+               // console.log("Enrollment ID:", enrollmentIdLet);
+               // console.log("Selected Section:", sectionNumberLet);
             }
         });
         goList();
@@ -895,7 +895,7 @@
             .then(epv => {
                 const studentname = document.querySelector("#student-name");
                 const studentId = document.querySelector("#student-id-list");
-                if (!studentname || !studentId) return console.error("Dropdown for sections not found");
+                if (!studentname || !studentId) return //console.error("Dropdown for sections not found");
 
                 studentname.textContent = epv.student.fullName;
 
@@ -941,7 +941,7 @@
             const data = await response.json();
             populateGradeLevelDropdown(data);
         } catch (error) {
-            console.error("Error fetching grade levels:", error);
+           // console.error("Error fetching grade levels:", error);
         }
     }
 
@@ -1055,7 +1055,7 @@
 
     function proceedToEnrolled(enrollmentIdLet) {
         const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;
-        console.log(`🔄 Sending request to: ${apiUrl}`);
+       // console.log(`🔄 Sending request to: ${apiUrl}`);
 
         fetch(apiUrl, {
             method: "PUT",
@@ -1063,7 +1063,7 @@
         })
             .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
             .then(({ text, status }) => {
-                console.log(`🔹 API Response (${status}): ${text}`);
+               // console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
                     showSuccessModal("✅ Success: Student successfully enrolled!", false);
@@ -1151,12 +1151,12 @@
         document.querySelectorAll("input[name='transferRequirements']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
-        console.log(selectedTransReq);
+       // console.log(selectedTransReq);
         const selectedDiscounts = [];
         document.querySelectorAll("input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedDiscounts.push(checkbox.value);
         });
-        console.log(selectedTransReq);
+       // console.log(selectedTransReq);
         const birthplace =
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
@@ -1348,7 +1348,7 @@
                 showErrorModal(errorMessage);
             }
         } catch (error) {
-            console.error("Error proceeding to assessment:", error);
+           // console.error("Error proceeding to assessment:", error);
             showErrorModal("Transaction failed. Try again.");
         }
     }
@@ -1375,7 +1375,7 @@
             })
             .then(gradeLevels => {
                 if (!Array.isArray(gradeLevels) || gradeLevels.length === 0) {
-                    console.warn("No grade levels received or data is not an array.");
+                   // console.warn("No grade levels received or data is not an array.");
                     return;
                 }
 
@@ -1385,7 +1385,7 @@
 
                 gradeLevels.forEach((grade, index) => {
                     if (!grade.levelId || !grade.levelName) {
-                        console.warn(`Invalid grade level at index ${index}:`, grade);
+                       // console.warn(`Invalid grade level at index ${index}:`, grade);
                         return;
                     }
 
@@ -1401,7 +1401,7 @@
                 });
 
                 if (!foundMatch) {
-                    console.warn(`⚠️ No matching grade level found for selectedGrade: ${selectedGrade}`);
+                    //console.warn(`⚠️ No matching grade level found for selectedGrade: ${selectedGrade}`);
                 }
                 selectTag.setAttribute("onChange", originalOnChange);
             })
@@ -1484,7 +1484,7 @@
 
     function fetchDiscounts(popoverId = "add-scholar-popover", discIds = []) {
         const popover = document.getElementById(popoverId);
-        if (!popover) return console.error(`Element with ID ${popoverId} not found.`);
+        if (!popover) return //console.error(`Element with ID ${popoverId} not found.`);
 
         popover.innerHTML = ``;
 
@@ -1540,7 +1540,7 @@
                 reqWrapper.classList.add("checkbox-container-popover");
 
                 data.forEach(transReq => {
-                    console.log(transReq);
+                    //console.log(transReq);
                     const reqDiv = document.createElement("div");
                     reqDiv.classList.add("checkbox-each");
 
@@ -1694,10 +1694,10 @@
     document.getElementById("nextPage").addEventListener("click", () => {
         if (currentPage < document.getElementById("pageInput").max) {
             currentPage++;
-            console.log("Navigating to page:", currentPage);
+           // console.log("Navigating to page:", currentPage);
             goList(currentPage);
         } else {
-            console.log("Cannot navigate to next page");
+           // console.log("Cannot navigate to next page");
         }
     });
 
@@ -1713,7 +1713,7 @@
     });
 
     document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
-        console.log("pageSizeSelector changed", { value: e.target.value });
+        //console.log("pageSizeSelector changed", { value: e.target.value });
         pageSize = parseInt(e.target.value);
         currentPage = 1;
         goList(currentPage);
@@ -1733,10 +1733,10 @@
     function toggleTransfereeSection(isTransferee) {
         const transfereeSections = document.querySelectorAll(".transferee-section");
         if (isTransferee) {
-            console.log("✅ YES detected, showing transferee sections.");
+            //console.log("✅ YES detected, showing transferee sections.");
             transfereeSections.forEach(section => section.style.display = "block");
         } else {
-            console.log("❌ NO detected, hiding transferee sections.");
+           // console.log("❌ NO detected, hiding transferee sections.");
             transfereeSections.forEach(section => section.style.display = "none");
         }
     }
@@ -1774,13 +1774,13 @@
         }
         else if (paymentList) {
             const enrollmentId = paymentList.getAttribute("data-enrollment-id");
-            if (!enrollmentId) return console.error("Enrollment Id Not Found");
+            if (!enrollmentId) return //console.error("Enrollment Id Not Found");
             payerStudentId = paymentList.getAttribute("data-student-id");
             payLevelToEnrollId = paymentList.getAttribute("data-level-Id");
             fetchPayments(enrollmentId);
         }
         if (target.classList.contains("viewRecordButton")) {
-            console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
+            //console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
             openModal("studentInformationModal");
         }
         if (target.classList.contains("proceedButton")) {
@@ -1791,12 +1791,12 @@
             viewStudentGrade(target);
         }
         if (target.classList.contains("viewPaymentsButton")) {
-            console.log(`💰 Viewing Payments for Enrollment ID: ${enrollmentId}`);
+            //console.log(`💰 Viewing Payments for Enrollment ID: ${enrollmentId}`);
             openModal("listOfPaymentsModal");
         }
         if (proceedButton) {
             const gradeLevel = proceedButton.getAttribute("data-grade-level-id");
-            if (!gradeLevel) return console.error("Grade level not found for section selection");
+            if (!gradeLevel) return //console.error("Grade level not found for section selection");
             const gradeLevelInput = document.querySelector("#grade-level");
             if (gradeLevelInput) {
                 gradeLevelInput.value = gradeLevel;
@@ -1857,8 +1857,8 @@
         data.feesAndBalance.forEach(par => {
             const paymentItem = document.createElement("div");
             paymentItem.classList.add("payment-item");
-            console.log(par);
-            console.log(par.balance);
+           // console.log(par);
+           // console.log(par.balance);
             const input = document.createElement("input");
             input.type = "checkbox";
             input.name = par.fee.name;
@@ -1887,7 +1887,7 @@
         }
 
         if (!studentId) {
-            console.error(
+           // console.error(
                 "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
             );
             return;
@@ -1987,7 +1987,7 @@
             .then(res => res.json())
             .then(sections => {
                 const selectTag = document.querySelector("#section"); // Modal select tag
-                if (!selectTag) return console.error("Dropdown for sections not found");
+                if (!selectTag) return //console.error("Dropdown for sections not found");
 
                 selectTag.innerHTML = `<option value="">Select Section</option>`; // Default option
 
@@ -2007,7 +2007,7 @@
             const studentName = document.querySelector("#student-name")?.textContent?.trim();
             const studentId = document.querySelector("#student-id-list")?.textContent;
             if (!studentName || !studentId) {
-                console.error("Student information not found");
+                //console.error("Student information not found");
                 return;
             }
 
@@ -2025,7 +2025,7 @@
                 dateInput.value = formattedDate; // Correct local date
                 dateInput.readOnly = true;       // Make it readonly
             } else {
-                console.error("Date input field not found in the modal");
+               // console.error("Date input field not found in the modal");
             }
 
 
@@ -2039,7 +2039,7 @@
                 document.getElementById("school-year").value = data.schoolYear.schoolYear;
 
             } catch (error) {
-                console.error("Error fetching current active school year:", error);
+               // console.error("Error fetching current active school year:", error);
             }
 
             // Fetch and populate payment list
@@ -2059,7 +2059,7 @@
                 });
 
             } catch (error) {
-                console.error("Error fetching payment list:", error);
+                //console.error("Error fetching payment list:", error);
             }
         }
     });

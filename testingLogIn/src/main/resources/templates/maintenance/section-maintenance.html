@@ -218,7 +218,7 @@
                     gradeLevelEditSelect.appendChild(option);
                 });
 
-                console.log("📌 Grade levels loaded.");
+               // console.log("📌 Grade levels loaded.");
             })
             .catch(error => console.error("Error fetching grade levels:", error));
     }
@@ -236,7 +236,7 @@
                     option.value = teacher.staffId;
                     option.textContent = `${teacher.firstname} ${teacher.lastname}`; // Concatenate first and last name
                     adviserSelect.appendChild(option);
-                    console.log(teacher);
+                   // console.log(teacher);
                 });
 
             })
@@ -252,7 +252,7 @@
                 let currentAdviserExists = false;
 
                 advisers.forEach(adviser => {
-                    console.log(adviser);
+                   // console.log(adviser);
                     const option = document.createElement("option");
                     option.value = teacher.staffId;
                     option.textContent = adviser.fullName;
@@ -267,7 +267,7 @@
 
                 // If current adviser is not in the fetched list, add them manually
                 if (!currentAdviserExists && currentAdviser) {
-                    console.log(currentAdviser);
+                   // console.log(currentAdviser);
                     let option = document.createElement("option");
                     option.value = currentAdviser;
                     option.textContent = currentAdviser;
@@ -276,7 +276,7 @@
                     adviserSelect.appendChild(option);
                 }
 
-                console.log("📌 Advisers loaded.");
+                //console.log("📌 Advisers loaded.");
             });
     }
 
@@ -321,7 +321,7 @@
                 });
             })
             .catch((error) => {
-                console.error("Error:", error);
+                //console.error("Error:", error);
             });
     }
 
@@ -330,14 +330,14 @@
         if (target.dataset.openModal === "sectionEditModal") {
             const sectionId = target.dataset.id;
             if (!sectionId) {
-                console.error("Error: sectionId is undefined!");
+                //console.error("Error: sectionId is undefined!");
                 return;
             }
 
             fetch(`/section/${sectionId}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Fetched data:", data);
+                   // console.log("Fetched data:", data);
 
                     document.getElementById("sectionNameEdit").value = data.sectionName;
                     document.getElementById("capacityEdit").value = data.capacity;
@@ -346,8 +346,8 @@
                     const adviser = data.adviserName;
                     const schedNum = data.number;
 
-                    console.log("📌 Grade Level from API:", gradeLevelName);
-                    console.log("📌 Adviser from API:", adviser);
+                   // console.log("📌 Grade Level from API:", gradeLevelName);
+                    //console.log("📌 Adviser from API:", adviser);
                     document.getElementById("schedId").innerText = schedNum;
                     Promise.all([fetchGradeLevelsEdit(), fetchAdvisersEdit(adviser)]).then(() => {
                         document.getElementById("gradeLevelEdit").value = gradeLevelName;

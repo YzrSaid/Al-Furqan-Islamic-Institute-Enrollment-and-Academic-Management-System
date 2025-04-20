@@ -118,7 +118,7 @@
                                 <label for="last-name">Last Name:</label>
                                 <input type="text" id="last-name" value="Rizal" readonly>
                             </div>
-                        </div> <br>
+                        </div> <br> 
                         <div class="account-type">
                             <label for="account-type">Account Type:</label>
                             <select name="account-type" id="account-type">
@@ -209,7 +209,7 @@
         accounts.forEach(account => {
             const row = document.createElement("tr");
 
-            console.log(account);
+           // console.log(account);
 
             // ✅ Use the correct role format
             const readableRole = roleMapping[account.role] || account.role;
@@ -279,7 +279,7 @@
                 const row = event.target.closest("tr");
                 if (row) {
                     selectedManageAccountId = row.querySelector("td:first-child").textContent.trim();
-                    console.log("Selected Manage Account ID:", selectedManageAccountId);
+                   // console.log("Selected Manage Account ID:", selectedManageAccountId);
                 }
             }
         });

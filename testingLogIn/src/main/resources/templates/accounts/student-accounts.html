@@ -231,7 +231,7 @@
     }
 
         function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
-            console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+           // console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
             const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
             const end = Math.min(currentPage * pageSize, totalItems);
 
@@ -255,10 +255,10 @@
         document.getElementById("nextPage").addEventListener("click", () => {
             if (currentPage < document.getElementById("pageInput").max) {
                 currentPage++;
-                console.log("Navigating to page:", currentPage);
+                //console.log("Navigating to page:", currentPage);
                 getCurrentlyEnrolled(currentPage);
             } else {
-                console.log("Cannot navigate to next page");
+               // console.log("Cannot navigate to next page");
             }
         });
 
@@ -274,7 +274,7 @@
         });
 
         document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
-            console.log("pageSizeSelector changed", { value: e.target.value });
+           // console.log("pageSizeSelector changed", { value: e.target.value });
             pageSize = parseInt(e.target.value);
             currentPage = 1;
             getCurrentlyEnrolled(currentPage);

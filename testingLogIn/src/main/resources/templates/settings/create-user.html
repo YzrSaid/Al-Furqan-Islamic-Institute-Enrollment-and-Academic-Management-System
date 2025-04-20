@@ -138,7 +138,7 @@
         const form = event.target; // Define 'form' from the event target
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries()); // Convert FormData to JSON
-        console.log(data);
+        //console.log(data);
         fetch("/user/register", {
             method: 'POST',
             headers: {

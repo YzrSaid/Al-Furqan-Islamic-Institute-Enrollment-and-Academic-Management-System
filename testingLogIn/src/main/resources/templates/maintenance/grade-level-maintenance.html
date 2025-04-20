@@ -238,7 +238,7 @@
                 .catch(error => console.error("Error:", error));
         }
         function populateEditDropdown(currentGradeLevelId, selectedPreReqId) {
-            console.log(selectedPreReqId, ' is the pre-requisite id');
+            //console.log(selectedPreReqId, ' is the pre-requisite id');
 
             const dropdown = document.getElementById("pre-req-grade-level-edit");
             dropdown.innerHTML = ""; // Clear previous options
@@ -298,7 +298,7 @@
                     tableBody.innerHTML = "";
 
                     data.forEach(grade => {
-                        console.log(grade);
+                        //console.log(grade);
                         const row = document.createElement("tr");
 
 
@@ -338,16 +338,16 @@
 
         document.addEventListener("click", function (event) {
             const target = event.target;
-            console.log("Clicked Element:", target);
-            console.log("Element Dataset:", target.dataset);
+            //console.log("Clicked Element:", target);
+           // console.log("Element Dataset:", target.dataset);
 
             if (target.dataset.openModal === "gradeLevelEditModal") {
-                console.log("Target has openModal attribute!");
+               // console.log("Target has openModal attribute!");
                 const gradeLevelId = target.dataset.id;
-                console.log("Grade Level ID:", gradeLevelId);
+               // console.log("Grade Level ID:", gradeLevelId);
 
                 if (!gradeLevelId) {
-                    console.error(
+                    //console.error(
                         "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
                     );
                     return;
@@ -356,7 +356,7 @@
                 fetch(`/gradelevel/${gradeLevelId}`)
                     .then((response) => response.json())
                     .then((data) => {
-                        console.log("Fetched Data:", data); // ✅ Check backend response
+                       // console.log("Fetched Data:", data); // ✅ Check backend response
 
                         // 🔹 FIX: Use `data.levelId` instead of `data.id`
                         document.getElementById("gradeLevelEditModal").dataset.id = data.levelId;
@@ -373,7 +373,7 @@
             // DELETE FUNCTIONALITY
             if (target.dataset.action === "deleteGradeLevel") {
                 selectedGradeLevelId = target.dataset.id; // Capture the ID
-                console.log("Selected Grade Level ID for Deletion:", selectedGradeLevelId); // Debugging
+               //console.log("Selected Grade Level ID for Deletion:", selectedGradeLevelId); // Debugging
             }
 
         });
@@ -388,7 +388,7 @@
                     selectedGradeLevelId = target.getAttribute("data-id"); // Get the ID
                     const gradeName = target.getAttribute("data-name"); // Get grade name
 
-                    console.log("Selected Grade Level ID:", selectedGradeLevelId); // Debugging
+                   // console.log("Selected Grade Level ID:", selectedGradeLevelId); // Debugging
 
                     document.getElementById("levelNameEdit").value = gradeName; // Set name
                     document.getElementById("gradeLevelEditForm").dataset.id =

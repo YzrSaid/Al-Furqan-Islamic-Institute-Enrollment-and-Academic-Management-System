@@ -145,7 +145,7 @@
                     resetDisplay();
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    //console.error('Error:', error);
                 });
         });
 
@@ -241,7 +241,7 @@
                     });
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    //console.error('Error:', error);
                     // Handle errors here
                 });
         }
@@ -253,14 +253,14 @@
                 const isAvailed = discId === "0" ? true : document.getElementById("view-type").value === "true" ? true : false;
                 const response = await fetch(`/discounts/records?discountId=${discId}&isAvailed=${isAvailed}&search=${search}`);
                 if (!response.ok) {
-                    console.error("Failed to fetch data:", response.status);
+                    //console.error("Failed to fetch data:", response.status);
                     return;
                 }
                 const data = await response.json();
 
                 const tableBody = document.querySelector("#table-ko tbody");
                 if (!tableBody) {
-                    console.error("Table body not found");
+                    //console.error("Table body not found");
                     return;
                 }
 
@@ -298,7 +298,7 @@
                 tableBody.appendChild(fragment);
 
             } catch (error) {
-                console.error("Error setting up tables:", error);
+                //console.error("Error setting up tables:", error);
                 // Optional: Show user-friendly error message in UI
                 const tableBody = document.querySelector("#table-ko tbody");
                 if (tableBody) {
@@ -333,7 +333,7 @@
                     setTableContent();
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    //console.error('Error:', error);
                 });
         }
     </script>

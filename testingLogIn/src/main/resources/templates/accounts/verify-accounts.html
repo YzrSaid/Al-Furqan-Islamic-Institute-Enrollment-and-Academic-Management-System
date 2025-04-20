@@ -142,14 +142,14 @@
             tableBody.addEventListener("click", function (event) {
                 if (event.target.tagName === "IMG" && event.target.closest(".action")) {
                     selectedVerificationId = event.target.closest("tr").querySelector("td:first-child").textContent.trim();
-                    console.log("Selected Verification ID:", selectedVerificationId);
+                    //console.log("Selected Verification ID:", selectedVerificationId);
                 }
             });
 
             const roleSelect = document.getElementById("account-type");
             roleSelect.addEventListener("change", function () {
                 selectedRole = roleSelect.value;
-                console.log("Selected Role:", selectedRole);
+                //console.log("Selected Role:", selectedRole);
             });
         });
 
@@ -183,7 +183,7 @@
             };
 
             accounts.forEach(account => {
-                console.log(account); // Debugging
+               // console.log(account); // Debugging
                 const row = document.createElement("tr");
 
                 const statusClass = getAccountStatusClass(account.status);
@@ -231,7 +231,7 @@
                     document.getElementById("user-id").textContent = userId;
                     document.getElementById("user-name").textContent = userName;
                 } else {
-                    console.log("⚠️ User ID or Name missing!");
+                   // console.log("⚠️ User ID or Name missing!");
                 }
             }
         });
@@ -254,7 +254,7 @@
         function updateActionVisibility() {
             const rows = document.querySelectorAll(".verify-accounts-table tbody tr");
 
-            console.log(`Rows found: ${rows.length}`); // Debugging
+           // console.log(`Rows found: ${rows.length}`); // Debugging
 
             rows.forEach(row => {
                 let statusElement = row.querySelector(".status-container div");
@@ -262,7 +262,7 @@
 
                 if (statusElement && actionContainer) {
                     let status = statusElement.textContent.trim().toLowerCase();
-                    console.log(`Status found: ${status}`); // Debugging
+                   // console.log(`Status found: ${status}`); // Debugging
 
                     if (status === "pending") {
                         actionContainer.style.display = "flex";

@@ -568,7 +568,7 @@
             const claimed = false;
             const response = await fetch(`/distributable/student-distribution/all?isClaimed=false&student=${fullName}&itemType=0&sortBy=none`);
             if (!response.ok) {
-                console.error("Failed to fetch data:", response.status);
+                //console.error("Failed to fetch data:", response.status);
                 return;
             }
 
@@ -576,7 +576,7 @@
 
             const tableBody = document.querySelector("#distribution-table tbody");
             if (!tableBody) {
-                console.error("Table body not found");
+                //console.error("Table body not found");
                 return;
             }
 
@@ -634,7 +634,7 @@
                 showSuccessModal(msg);
             })
             .catch(error => {
-                console.error('Error:', error);
+                //console.error('Error:', error);
             });
     }
 
@@ -647,7 +647,7 @@
     });
 
     async function fetchRemainingFees() {
-        console.log(`/paymentrecord/form/${studentId}`);
+        //console.log(`/paymentrecord/form/${studentId}`);
         const feesTable = document.querySelector("#payment-table tbody");
         const response = await fetch(`/paymentrecord/form/${studentId}`);
         if (!response.ok) { return; }

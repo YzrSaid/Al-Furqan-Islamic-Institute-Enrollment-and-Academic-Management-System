@@ -54,13 +54,13 @@ document.getElementById('login-form').addEventListener('submit', function (event
             window.location.href = '/home';  
         } else {
             return response.text().then(text => {
-                console.error("Error response:", text); 
+                //console.error("Error response:", text); 
                 throw new Error("Failed to login: " + text);
             });
         }
     })
     .catch(error => {
-        console.error('Error:', error);
+        //console.error('Error:', error);
         alert(error.message);
     });
 });

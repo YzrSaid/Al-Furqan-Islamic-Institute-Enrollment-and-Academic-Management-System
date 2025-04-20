@@ -204,8 +204,8 @@
             fetch("/semester/all").then(response => response.json())
         ])
             .then(([schoolYears, semesters]) => {
-                console.log("Fetched school years:", schoolYears);
-                console.log("Fetched semesters:", semesters);
+               // console.log("Fetched school years:", schoolYears);
+               // console.log("Fetched semesters:", semesters);
 
                 const semesterArray = Object.values(semesters).flat();
 
@@ -232,7 +232,7 @@
                         }
 
                         let semesterClass = sem.sem.toLowerCase() === "first" ? "first-sem" : "second-sem";
-                        console.log(`Semester: ${sem.sem}, Assigned Class:`, semesterClass);
+                        //console.log(`Semester: ${sem.sem}, Assigned Class:`, semesterClass);
 
                         // ✅ Add School Year column only in the first row (rowspan)
                         if (index === 0) {
@@ -371,7 +371,7 @@
         document.querySelectorAll(".status").forEach(statusElement => {
             const statusText = statusElement.textContent.trim().toUpperCase();
             const statusId = statusElement.id;
-            console.log(`Status ID: ${statusId}, Text: ${statusText}`);
+           // console.log(`Status ID: ${statusId}, Text: ${statusText}`);
 
             if (statusText === "INACTIVE") {
                 statusElement.style.backgroundColor = "transparent";
@@ -445,9 +445,9 @@
             semNumber = event.target.getAttribute("data-semid");
 
             if (!semNumber) {
-                console.error("Semester number is not set!");
+               // console.error("Semester number is not set!");
             } else {
-                console.log("Semester number set:", semNumber);
+                //console.log("Semester number set:", semNumber);
             }
         }
         else if (event.target.matches("[data-open-modal='evaluations']")) {
@@ -533,8 +533,8 @@
 
     function activateSemester() {
         if (!semNumber) {
-            console.error("Semester number is not set.");
-            console.log(semNumber);
+           // console.error("Semester number is not set.");
+            //console.log(semNumber);
             return;
         }
 
@@ -562,7 +562,7 @@
 
     function deactivateSemester() {
         if (!semNumber) {
-            console.error("Semester number is not set.");
+            //console.error("Semester number is not set.");
             return;
         }
 
@@ -590,7 +590,7 @@
 
     async function finishSemester() {
         if (!semNumber) {
-            console.error("Semester number is not set.");
+            //console.error("Semester number is not set.");
             return;
         }
         try {

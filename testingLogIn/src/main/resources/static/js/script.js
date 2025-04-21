@@ -540,7 +540,7 @@ document.addEventListener("DOMContentLoaded", function () {
       confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
     }
 
-    if (modalId.includes("Edit")) {
+    if (modalId.includes("Edit") && modalId != "studentInformationEditModal") {
       const confirmBtn = modal.querySelector(".btn-confirm");
       const cancelBtn = modal.querySelector(".btn-cancel");
       const inputs = modal.querySelectorAll("input, textarea, select");
@@ -549,15 +549,27 @@ document.addEventListener("DOMContentLoaded", function () {
       inputs.forEach((input) => {
         input.disabled = true;
       });
-      
+
       // Set initial button states
       confirmBtn.textContent = "Edit";
       cancelBtn.textContent = "Close";
       confirmBtn.setAttribute("data-mode", "edit");
 
-      if (confirmBtn.hasAttribute("data-mode")) {
-        console.log("meron nga");
-      }
+      console.log(confirmBtn.attributes);
+    } else if (modalId = "studentInformationEditModal") {
+      const confirmBtn = document.getElementById("confirmStudentReportEdit");
+      const cancelBtn = modal.querySelector(".btn-cancel");
+      const inputs = modal.querySelectorAll("input, textarea, select");
+
+      // Only disable inputs inside the current modal
+      inputs.forEach((input) => {
+        input.disabled = true;
+      });
+
+      // Set initial button states
+      confirmBtn.textContent = "Edit";
+      cancelBtn.textContent = "Close";
+      confirmBtn.setAttribute("data-mode", "edit");
     }
   }
 
@@ -1211,17 +1223,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Handle Edit/Update button inside Edit Modals
     if (target.matches(".btn-confirm")) {
-        console.log("pasok pt2");
       const modal = target.closest(".modal");
       const inputs = modal.querySelectorAll("input, textarea, select");
       const cancelBtn = modal.querySelector(".btn-cancel");
 
-      if (target.hasAttribute("data-mode")){
-        console.log("chene data mode");
-      }
-
       if (target.getAttribute("data-mode") === "edit") {
-        console.log("pasok pt3");
         inputs.forEach((input) => {
           if (input.tagName === "SELECT") {
             input.disabled = false;
@@ -1608,7 +1614,6 @@ document.addEventListener("DOMContentLoaded", () => {
   //       const startTime = row.querySelector(".starttime-input").value;
   //       const endTime = row.querySelector(".endtime-input").value;
 
-
   //       if (!addSubjectId || !teacher || !day || !startTime || !endTime) {
   //           showErrorModal('Please fill in all fields.');
   //           return;
@@ -1702,7 +1707,7 @@ document.addEventListener("DOMContentLoaded", () => {
   //         timeStart: startTime,
   //         timeEnd: endTime
   //     };
-    
+
   //     fetch('/schedules/add', {
   //         method: 'POST',
   //         headers: {
@@ -2721,15 +2726,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('a[title="You\'re currently in this page."]').forEach(anchor => {
-    // 1. Wrap text content in <strong>
-    const strong = document.createElement('strong');
-    strong.textContent = anchor.textContent;
-    anchor.textContent = '';
-    anchor.appendChild(strong);
+document.addEventListener("DOMContentLoaded", () => {
+  document
+    .querySelectorAll('a[title="You\'re currently in this page."]')
+    .forEach((anchor) => {
+      // 1. Wrap text content in <strong>
+      const strong = document.createElement("strong");
+      strong.textContent = anchor.textContent;
+      anchor.textContent = "";
+      anchor.appendChild(strong);
 
-    // 2. Change href to "#"
-    anchor.setAttribute('href', '#');
-  });
+      // 2. Change href to "#"
+      anchor.setAttribute("href", "#");
+    });
 });

@@ -2497,12 +2497,10 @@ input[type="checkbox"] {
 .view-student-list-modal-content input,
 .scholarship-modal-content input,
 .scholarship-edit-modal-content input,
-.student-information-edit-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
 .subject-modal-content select,
-.student-information-edit-modal-content select,
 .student-form-group select,
 .teacher-modal-content select,
 .section-modal-content select,
@@ -2527,7 +2525,9 @@ input[type="checkbox"] {
   font-size: 14px;
 }
 
-.student-information-container-content input {
+.student-information-container-content input,
+.student-information-edit-modal-content input,
+.student-information-edit-modal-content select {
   padding: 8px;
   margin: 5px 0;
   border: 1px solid #ccc;
@@ -3555,11 +3555,11 @@ input.gender,
 }
 
 input.birthdate {
-    width: 125px;
+  width: 125px;
 }
 
 input.place-of-birth-report {
-    width: 400px;
+  width: 400px;
 }
 
 .half {

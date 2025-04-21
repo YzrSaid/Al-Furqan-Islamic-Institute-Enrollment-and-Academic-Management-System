@@ -760,7 +760,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         break;
       case "deleteGradeLevel":
-        deleteGradeLevel(selectedGradeLevelId);
+        if (await validateAdminPassword()){
+          deleteGradeLevel(selectedGradeLevelId);}
         break;
       case "makeSchoolYearInactive":
         actionUrl = "/school-year/inactivate";
@@ -824,27 +825,24 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "addSubject":
         // This case is for adding subject level
-        if (!validateForm("subjectForm")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
+        if(validateForm("subjectForm","⚠️ Please fill in all required fields!")) {
+          if (await validateAdminPassword()){
           addSubject();
           closeConfirmationModal();
+          }
         }
 
         break;
       case "editSubject":
-        // This case is for adding subject level
-        if (!validateForm("subjectEditForm")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
-          editSubject();
-          closeConfirmationModal();
+        if(validateForm("subjectEditForm","⚠️ Please fill in all required fields!")) {
+          if (await validateAdminPassword()){
+            editSubject();
+            closeConfirmationModal();}
         }
         break;
       case "deleteSubject":
-        deleteSubject(selectedSubjectId);
+        if (await validateAdminPassword()){
+          deleteSubject(selectedSubjectId);}
         break;
       case "addTeacher":
         addTeacher();
@@ -899,7 +897,8 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("Activation blocked.");
           return; // 🚀 Stop the function from running
         }
-        activateSemester();
+        if (await validateAdminPassword()){
+          activateSemester();}
         break;
       case "deactivateSemester":
         deactivateSemester();
@@ -911,7 +910,8 @@ document.addEventListener("DOMContentLoaded", function () {
         addNewScholarship();
         break;
       case "deleteScholarshipType":
-        deletescholarship();
+        if (await validateAdminPassword()){
+          deletescholarship();}
         break;
       case "transfereeAddListing":
         // This case is for adding transferee student to the listing/registration
@@ -948,37 +948,43 @@ document.addEventListener("DOMContentLoaded", function () {
         proceedToEnrolled(enrollmentIdLet);
         break;
       case "addFee":
-        // This case is for adding new fee
-        if (!validateForm("feesManagementForm")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
+        if(validateForm("feesManagementForm")) {
+          if (await validateAdminPassword()){
           addFee();
           closeConfirmationModal();
+          }
         }
         break;
+      case "addDistributable":
+      if(validateForm("distributableManagementModal")) {
+          addDistributable();
+          closeConfirmationModal();
+      }
+      break;
       case "editFee":
         // This case is for editing the fee payment
-        if (!validateForm("feesManagementEditModal")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
+        if(validateForm("feesManagementEditModal")) {
+          if (await validateAdminPassword()){
           editFee();
           closeConfirmationModal();
+          }
         }
         break;
       case "editDistributable":
-        if (!validateForm("distributableManagementEditModal")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
-          editDistributable();
-          closeConfirmationModal();
+        if(validateForm("distributableManagementEditModal")) {
+          if (await validateAdminPassword()){
+            editDistributable();
+            closeConfirmationModal();}
         }
         break;
-      //      case "deleteFee":
-      //        deleteFee(selectedPaymentName);
-      //        break;
+      case "deleteFee":
+      if (await validateAdminPassword()){
+        deleteFee();}
+        break;
+      case "deleteDistributable":
+        if (await validateAdminPassword()){
+          deleteDistributable();}
+        break;
       case "savePaymentTrans":
         savePaymentTrans();
         break;
@@ -1040,7 +1046,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  function validateForm(formId,errorMsg="") {
+  function validateForm(formId,errorMsg="⚠️ Please fill in all required fields!") {
     let form = document.getElementById(formId);
     if (!form) {
       console.error("❌ Form not found:", formId);

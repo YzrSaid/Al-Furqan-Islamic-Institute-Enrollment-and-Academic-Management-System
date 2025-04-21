@@ -34,7 +34,7 @@
                     <!-- Add Fees Management Button -->
                     <div class="add-something-btn-container">
                         <button type="button" class="btn-confirm" id="addAFeeButton"
-                            data-open-modal="feesManagementModal" title="Click to Add New Distributable">Add New Distributable</button>
+                            data-open-modal="distributableManagementModal" title="Click to Add New Distributable">Add New Distributable</button>
                     </div>
                     </div>
                 <div class="sort-container">
@@ -99,7 +99,7 @@
         </div>
 
         <!-- Modal for adding fees -->
-        <div id="feesManagementModal" class="fees-management-modal modal">
+        <div id="distributableManagementModal" class="fees-management-modal modal">
             <div class="fees-management-modal-content scroll-lock">
                 <h2>Add New Item</h2>
                 <form method="post" action="" id="feesManagementForm">
@@ -124,12 +124,12 @@
                     </div>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addFee"
+                        <button type="button" class="btn-confirm" data-action="addDistributable"
                                 data-message="Are you sure you want to save this Fee?" id="confirmFee"
                                 data-open-modal="confirmationModal">
                             Confirm
                         </button>
-                        <button type="button" class="btn-cancel" data-close-modal="feesManagementModal">Cancel</button>
+                        <button type="button" class="btn-cancel" data-close-modal="distributableManagementModal">Cancel</button>
                     </div>
                 </form>
 
@@ -242,7 +242,7 @@
                     data-is-active = "${distributable.currentlyActive}"
                     data-open-modal="distributableManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon" title="Click to Edit Distributable">
                     
-                        <img data-open-modal="confirmationModal"  data-name="${distributable.itemId}" data-require-password="true" data-action="deleteFee"
+                        <img data-open-modal="confirmationModal"  data-name="${distributable.itemId}" data-require-password="true" data-action="deleteDistributable"
                                      data-message="Are you sure you want to delete this fee?" 
                                      src="/images/icons/bin.png" alt="grade-level-delete-icon" title="Click to Delete">
                         
@@ -255,7 +255,7 @@
             tableBody.appendChild(row);
         });
     }
-    async function addFee() {
+    async function addDistributable() {
         const paymentName = document.getElementById("paymentName").value.trim();
         if (!paymentName) {
             alert("Please fill in all fields.");
@@ -264,7 +264,7 @@
 
         const selectedGradeLevels = Array.from(document.querySelectorAll(".payment input[type='checkbox']:checked"))
             .map(checkbox => checkbox.value);
-
+        alert(selectedGradeLevels);
         if (selectedGradeLevels.length === 0) {
             alert("Please select at least one grade level.");
             return;
@@ -304,7 +304,6 @@
         document.querySelectorAll("input[name='gradeLevels']:checked").forEach(checkbox => {
             selectedGradeLevels.push(checkbox.value); // Add the selected grade level to the array
         });
-
         // Prepare the data to send in the request
         const updatedFeeData = {
             itemId: paymentId,
@@ -313,38 +312,39 @@
             currentlyActive : isCurrentlyActiveChecked
         };
        // console.log(updatedFeeData);
-        fetch("/distributable/update", {
+       fetch("/distributable/update", {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedFeeData),
         })
-            .then(response => {
-                if(!response.ok){
-                    showErrorModal("Distributable name already exists");
-                }
-                return response.text();
-            }).then(data => {
-                showSuccessModal(data);
-            })
-            .catch(error => {
-               // console.log(error);
-                showErrorModal("❌ An error occurred while updating the payment. Please try again later.");
-            });
+        .then(response => {
+            if (!response.ok) {
+                // Parse error message from server (assuming it returns text/JSON)
+                return response.text().then(errorMessage => {
+                    throw new Error(errorMessage || "Distributable update failed");
+                });
+            }
+            return response.text(); // Only parse response if successful
+        })
+        .then(data => {
+            showSuccessModal(data); // Only runs for successful responses
+        })
+        .catch(error => {
+            showErrorModal(error.message || "❌ An error occurred. Please try later.");
+        });
     }
 
     let selectedPaymentName;
 
     document.querySelector("#lamesa tbody").addEventListener("click", function (event) {
         // Check if the clicked element is a delete button (image with data-action="deleteFee")
-        if (event.target && event.target.getAttribute("data-action") === "deleteFee") {
+        if (event.target && event.target.getAttribute("data-action") === "deleteDistributable") {
             // Capture the payment name from the data-name attribute
             selectedPaymentName = event.target.getAttribute("data-name");
         }
     });
 
-    function deleteFee(selectedPaymentName) {
+    function deleteDistributable() {
         fetch(`/distributable/delete/${selectedPaymentName}`, {
             method: "DELETE",
             headers: {

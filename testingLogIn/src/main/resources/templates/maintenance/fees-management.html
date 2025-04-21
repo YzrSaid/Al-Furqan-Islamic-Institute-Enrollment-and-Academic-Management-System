@@ -377,6 +377,8 @@
 
             if (response.ok) {
                 showSuccessModal(responseData);
+            }else{
+                showErrorModal(responseData);
             }
         } catch (error) {
             showErrorModal(error.message);
@@ -441,7 +443,7 @@
         }
     });
 
-    function deleteFee(selectedPaymentName) {
+    function deleteFee() {
         // Send DELETE request to the backend
         fetch(`/payments/delete/${selectedPaymentName}`, {
             method: "DELETE",

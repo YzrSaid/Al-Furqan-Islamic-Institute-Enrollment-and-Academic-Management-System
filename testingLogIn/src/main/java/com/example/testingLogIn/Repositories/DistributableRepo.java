@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface DistributableRepo extends CrudRepository<Distributable,Integer> {
 
-    @Query("SELECT dis FROM Distributable dis WHERE dis.isNotDeleted AND LOWER(dis.itemName) LIKE :itemName")
+    @Query("SELECT dis FROM Distributable dis WHERE dis.isNotDeleted AND LOWER(dis.itemName) = :itemName")
     Optional<Distributable> findByName(@Param("itemName") String itemName);
 
     List<Distributable> findByIsNotDeletedTrue();

@@ -540,8 +540,7 @@ document.addEventListener("DOMContentLoaded", function () {
       confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
     }
 
-    if (modalId.includes("Edit") && modalId !== "studentInformationEditModal") {
-      console.log("yawa");
+    if (modalId.includes("Edit")) {
       const confirmBtn = modal.querySelector(".btn-confirm");
       const cancelBtn = modal.querySelector(".btn-cancel");
       const inputs = modal.querySelectorAll("input, textarea, select");
@@ -550,11 +549,15 @@ document.addEventListener("DOMContentLoaded", function () {
       inputs.forEach((input) => {
         input.disabled = true;
       });
-
+      
       // Set initial button states
       confirmBtn.textContent = "Edit";
       cancelBtn.textContent = "Close";
       confirmBtn.setAttribute("data-mode", "edit");
+
+      if (confirmBtn.hasAttribute("data-mode")) {
+        console.log("meron nga");
+      }
     }
   }
 
@@ -1126,6 +1129,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.body.addEventListener("click", function (event) {
+    console.log("target ka sakin");
     const target = event.target;
     let saveBtn = document.getElementById("saveBtn");
 
@@ -1207,11 +1211,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Handle Edit/Update button inside Edit Modals
     if (target.matches(".btn-confirm")) {
+        console.log("pasok pt2");
       const modal = target.closest(".modal");
       const inputs = modal.querySelectorAll("input, textarea, select");
       const cancelBtn = modal.querySelector(".btn-cancel");
 
+      if (target.hasAttribute("data-mode")){
+        console.log("chene data mode");
+      }
+
       if (target.getAttribute("data-mode") === "edit") {
+        console.log("pasok pt3");
         inputs.forEach((input) => {
           if (input.tagName === "SELECT") {
             input.disabled = false;
@@ -1223,6 +1233,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         target.textContent = "Update";
         cancelBtn.textContent = "Cancel";
+        console.log("yawa");
         target.setAttribute("data-mode", "update");
         enableFormInputs();
       } else if (target.getAttribute("data-mode") === "update") {

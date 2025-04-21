@@ -1938,9 +1938,7 @@ table td {
   width: 120px;
 }
 
-#guardianOccupation,
-#motherOccupation,
-#fatherOccupation,
+input.parent-occupation,
 #studguardianOccupation,
 #studmotherOccupation,
 #studfatherOccupation {
@@ -1953,9 +1951,7 @@ table td {
 #studmotherName,
 #studfatherName,
 #studguardianName,
-#motherName,
-#fatherName,
-#guardianName {
+input.parent-name {
   width: 700px;
 }
 
@@ -1983,12 +1979,12 @@ table td {
 - walang stud (informationStudentModal)                                    
 */
 
-.student-information-container-content #guardianContactNumber {
+input.guardian-number {
   width: 320px;
 }
 
 .student-modal-content #studguardianAddress,
-.student-information-modal-content #guardianAddress {
+input.guardian-address {
   width: 485px;
 }
 
@@ -2005,10 +2001,6 @@ table td {
 .student-form-group .place-of-birth {
   min-width: 375px;
   max-width: 905px;
-}
-
-.student-form-group .place-of-birth-report {
-  width: 405px;
 }
 
 .student-form-group #studstreet,
@@ -2214,9 +2206,6 @@ table td {
   text-align: left;
   position: relative;
   z-index: 1001;
-}
-.table-container {
-  width: 100%;
 }
 
 #transferee input {
@@ -2508,7 +2497,6 @@ input[type="checkbox"] {
 .view-student-list-modal-content input,
 .scholarship-modal-content input,
 .scholarship-edit-modal-content input,
-.student-information-container-content input,
 .student-information-edit-modal-content input,
 .student-modal-content select,
 .school-year-modal-content select,
@@ -2532,6 +2520,14 @@ input[type="checkbox"] {
 .settings-input select .modal input,
 .modal select {
   width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.student-information-container-content input {
   padding: 8px;
   margin: 5px 0;
   border: 1px solid #ccc;
@@ -2862,12 +2858,8 @@ input[type="checkbox"] {
   outline: none !important;
   width: 100%;
 }
-.student-form-group #firstName,
-.student-form-group #lastName,
-.student-form-group #middleName,
-.student-form-group #street,
-.student-form-group #city,
-.student-form-group #barangay,
+input.name,
+input.address,
 #studentFirstName,
 #studbirthdate,
 #studentLastName,
@@ -3549,7 +3541,7 @@ td[rowspan] {
 .column2:nth-child(2) {
   gap: 20px;
 }
-.student-form-group #gender,
+input.gender,
 .column2 #gender {
   width: 90px;
 }
@@ -3562,8 +3554,12 @@ td[rowspan] {
   width: 100px;
 }
 
-.student-form-group #birthdate-report {
-  width: 130px;
+input.birthdate {
+    width: 125px;
+}
+
+input.place-of-birth-report {
+    width: 400px;
 }
 
 .half {
@@ -3575,7 +3571,7 @@ td[rowspan] {
   display: flex;
   align-items: center;
 }
-#student-id {
+input.student-id-report {
   width: 200px;
 }
 .half-other-info {
@@ -3607,9 +3603,9 @@ td[rowspan] {
 .half-stud-info-small {
   width: 10%;
 }
-.half-stud-info-small input {
+/* .half-stud-info-small input {
   width: 120px;
-}
+} */
 
 .container {
   padding: 20px 15px;
@@ -3627,21 +3623,40 @@ td[rowspan] {
   display: flex;
   gap: 20px;
   justify-content: space-between;
+  align-items: flex-start;
 }
 
 .column-main {
   width: 50%;
   border-radius: 8px;
   padding: 20px;
+  min-height: 20vh;
   font-weight: 600;
   background-color: #cbe9cc;
 }
 .table-container {
   padding: 0px 0px 20px 0px;
+  max-height: 400px;
+  width: 100%;
+  /* overflow-y: auto;
+  overflow-x: auto; */
+  border: none;
+}
+
+#payment-mini-table,
+#distribution-mini-table,
+#grades-mini-table {
+  table-layout: fixed;
+  width: 100%;
 }
 
 .mini-table th,
-.mini-table td {
+.mini-table td,
+.grades-mini-table td,
+.grades-mini-table th {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   border: 1px solid #050505;
   padding: 10px;
   text-align: left;
@@ -3650,15 +3665,16 @@ td[rowspan] {
   font-size: 13px;
   background-color: #f6f6f6;
 }
-.mini-table th {
+.mini-table th,
+.grades-mini-table th {
   text-align: center;
   background-color: rgb(87, 88, 89);
   color: white;
 }
 .grade-table-header {
   display: flex;
-  flex-direction: column; /* Make the header a column */
-  align-items: flex-start; /* Align items to the start of the column */
+  flex-direction: column;
+  align-items: flex-start;
   width: 100%;
   gap: 10px;
 }
@@ -4342,14 +4358,6 @@ td[rowspan] {
 
 .transferee-section {
   display: none;
-}
-
-.table-container {
-  /* max-height: 400px;
-  width: 95%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  border: none; */
 }
 
 .sticky-header {

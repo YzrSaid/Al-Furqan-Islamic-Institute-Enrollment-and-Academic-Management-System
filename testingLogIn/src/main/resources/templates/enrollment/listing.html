@@ -1887,10 +1887,10 @@
         }
 
         if (!studentId) {
-           // console.error(
-                "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
-            );
-            return;
+        //    console.error(
+        //         "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
+        //     );
+            return;     
         }
 
         fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)

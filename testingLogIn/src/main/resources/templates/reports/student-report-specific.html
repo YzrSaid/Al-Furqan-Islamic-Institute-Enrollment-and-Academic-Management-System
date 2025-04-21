@@ -241,337 +241,189 @@
             </div>
         </div>
 
-        <!-- Modal for editing the student information -->
-<!--        <div id="studentInformationEditModal" class="student-information-edit-modal">-->
-<!--            <div class="student-information-edit-modal-content">-->
-<!--                <div class="modal-body">-->
-<!--                    <h1>Student Information</h1>-->
-<!--                    <form method="" action="" id="studentInformationForm-edit">-->
-<!--                        <div class="header">-->
-<!--                            <div class="half-unique">-->
-<!--                                <label for="student-id">Student ID: </label>-->
-<!--                                <input readonly type="text" id="student-id-edit">-->
-<!--                            </div> <br>-->
+        <div id="studentInformationEditModal" class="student-information-edit-modal modal">
+            <div class="student-information-edit-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h1>Student Information</h1>
+                    <form method="" action="" id="studentInformationFormEdit">
+                        <div class="header">
+                            <div class="half-unique">
+                                <label for="student-id-edit">Student ID: </label>
+                                <input readonly type="text" class="student-id-report" id="student-id-edit">
+                            </div> <br>
 
-<!--                            <div class="checkbox-container other-info-container">-->
-<!--                                <div class="checkbox">-->
-<!--                                    <label for="scholar-edit">Scholar:</label>-->
-<!--                                    <input type="checkbox" id="scholar-edit">-->
+                            <div class="checkbox-container other-info-container">
+                                <div class="checkbox">
+                                    <label for="scholar-edit">Scholar:</label>
+                                    <input type="checkbox" id="scholar-edit">
 
-<!--                                    <button type="button" id="dropdown-edit-scholar"> <img-->
-<!--                                            src="/images/icons/arrow-down.png" alt="dropdown-icon">-->
-<!--                                    </button>-->
+                                    <button type="button" id="dropdown-edit-scholar">
+                                        <img src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                    </button>
 
-<!--                                    <div id="edit-scholar-popover" name="add-discount" class="styled-popover">-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                                    <div id="edit-scholar-popover" name="add-discount" class="styled-popover">
+                                    </div>
+                                </div>
 
-<!--                                <div class="checkbox">-->
-<!--                                    <label for="isTransferee-edit">Transferee:</label>-->
-<!--                                    <input type="checkbox" id="isTransferee-edit">-->
+                                <div class="checkbox">
+                                    <label for="isTransferee-edit">Transferee:</label>
+                                    <input type="checkbox" id="isTransferee-edit">
 
-<!--                                    <button type="button" id="dropdown-edit-transferee"> <img-->
-<!--                                            src="/images/icons/arrow-down.png" alt="dropdown-icon">-->
-<!--                                    </button>-->
+                                    <button type="button" id="dropdown-edit-transferee">
+                                        <img src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                    </button>
 
+                                    <div id="edit-transferee-popover" name="add-transferee-req" class="styled-popover">
+                                        <div class="transferee-requirements">
+                                            <h6>Requirements:</h6>
+                                            <div id="transfereeReq-edit" class="checkbox-transferee-reqs-group">
+                                            </div>
 
-<!--                                    <div id="edit-transferee-popover" name="add-transferee-req" class="styled-popover">-->
-<!--                                        <div class="transferee-requirements">-->
-<!--                                            <h6>Requirements:</h6>-->
-<!--                                            <div id="transfereeReq-edit" class="checkbox-transferee-reqs-group">-->
+                                            <div>
+                                                <button type="button" style="width: 100%;" data-action="editGradeLevel"
+                                                    data-message="Are you sure you want to update the transferee requirements?"
+                                                    onclick="updateRequirements()" class="btn-confirm">Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-<!--                                            </div>-->
-<!--                                            -->
-<!--                                            <div>-->
-<!--                                                <button type="button" style="width: 100%;" data-action="editGradeLevel"-->
-<!--                                                    data-message="Are you sure you want to update the transferee requirements?"-->
-<!--                                                    onclick="updateRequirements()" class="btn-confirm">Update</button>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                </div>
+                            </div>
+                        </div>
 
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div style="display: flex; align-content: center; justify-items: left;">
+                            <h2>Personal Information</h2>
+                        </div>
 
-<!--                        <div style="display: flex; align-content: center; justify-items: left;">-->
-<!--                            <h2>Personal Information</h2>-->
-<!--                        </div>-->
+                        <div class="container">
+                            <div class="row">
+                                <div class="column1">
+                                    <div>
+                                        <label for="name-edit">Name</label>
+                                        <div class="student-form-group half">
+                                            <input type="text" required class="name" id="firstNameEdit">
+                                            <input type="text" required class="name" id="middleNameEdit">
+                                            <input type="text" required class="name" id="lastNameEdit">
+                                        </div>
+                                        <div class="small-text">
+                                            <p>First</p>
+                                            <p>Middle</p>
+                                            <p>Last</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column2">
+                                    <div class="student-form-group half-stud-info-small" style="margin-bottom: 0px;">
+                                        <label for="gender-edit">Gender:</label>
+                                        <input type="text" required class="gender" id="gender-edit">
 
-<!--                        <div class="container">-->
-<!--                            <div class="row">-->
-<!--                                <div class="column1">-->
-<!--                                    <div>-->
-<!--                                        <label for="name">Name</label>-->
-<!--                                        <div class="student-form-group half">-->
-<!--                                            <input type="text" id="firstName">-->
-<!--                                            <input type="text" id="middleName">-->
-<!--                                            <input type="text" id="lastName">-->
-<!--                                        </div>-->
-<!--                                        <div class="small-text">-->
-<!--                                            <p>First</p>-->
-<!--                                            <p>Middle</p>-->
-<!--                                            <p>Last</p>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="column2">-->
-<!--                                    &lt;!&ndash; Gender, BDate, and Scholar &ndash;&gt;-->
-<!--                                    <div class="student-form-group half-stud-info-small" style="margin-bottom: 0px;">-->
-<!--                                        <label for="gender">Gender:</label>-->
-<!--                                        <input type="text" id="gender">-->
+                                        <label for="birthdate-edit">Birthdate:</label>
+                                        <input required type="date" class="birthdate" id="birthdate-edit">
+                                    </div>
+                                </div>
 
-<!--                                        <label for="birthdate">Birthdate:</label>-->
-<!--                                        <input required type="date" id="birthdate">-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                                <div class="student-form-group">
+                                    <div>
+                                        <label for="address-edit">Address:</label>
+                                        <div class="student-form-group half-unique">
+                                            <input type="text" class="address" id="street-edit" required
+                                                placeholder="Street">
+                                            <input type="text" class="address" id="barangay-edit" required
+                                                placeholder="Barangay">
+                                            <input type="text" class="address" id="city-edit" required
+                                                placeholder="City">
+                                        </div>
+                                    </div>
 
-<!--                                <div class="student-form-group">-->
-<!--                                    <div>-->
-<!--                                        <label for="address">Address:</label>-->
-<!--                                        <div class="student-form-group half-unique">-->
-<!--                                            <input type="text" id="street" required placeholder="Street">-->
-<!--                                            <input type="text" id="barangay" required placeholder="Barangay">-->
-<!--                                            <input type="text" id="city" required placeholder="City">-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                    <div>
+                                        <label>Place of Birth:</label>
+                                        <div class="student-form-group">
+                                            <input type="text" required id="placeOfBirthEdit" class="place-of-birth-report">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-<!--                                    <div>-->
-<!--                                        <label>Place of Birth:</label>-->
-<!--                                        <div class="student-form-group">-->
-<!--                                            <input type="text" id="placeOfBirth" class="place-of-birth-report"-->
-<!--                                                style="width: 390px;">-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>Additional Information</h2>
+                        </div>
 
-<!--                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">-->
-<!--                            <h2>Additional Information</h2>-->
-<!--                        </div>-->
+                        <div>
+                            <h6>Father's Information</h6>
+                            <div class="student-form-group">
+                                <label for="fatherNameEdit">Name:</label>
+                                <input type="text" class="parent-name" required id="fatherNameEdit">
 
-<!--                        <div>-->
-<!--                            <h6>Father's Information</h6>-->
-<!--                            <div class="student-form-group">-->
-<!--                                <label for="fatherName">Name:</label>-->
-<!--                                <input type="text" id="fatherName">-->
+                                <label for="fatherOccupationEdit">Occupation:</label>
+                                <input type="text" class="parent-occupation" required id="fatherOccupationEdit">
+                            </div> <br>
+                        </div>
+                        <div>
+                            <h6>Mother's Information</h6>
+                            <div class="student-form-group">
+                                <label for="motherNameEdit">Name:</label>
+                                <input type="text" class="parent-name" required id="motherNameEdit">
 
-<!--                                <label for="fatherOccupation">Occupation:</label>-->
-<!--                                <input type="text" id="fatherOccupation">-->
-<!--                            </div> <br>-->
-<!--                        </div>-->
-<!--                        <div>-->
-<!--                            <h6>Mother's Information</h6>-->
-<!--                            <div class="student-form-group">-->
-<!--                                <label for="motherName">Name:</label>-->
-<!--                                <input type="text" id="motherName">-->
+                                <label for="motherOccupationEdit">Occupation:</label>
+                                <input type="text" class="parent-occupation" required id="motherOccupationEdit">
+                            </div> <br>
+                        </div>
 
-<!--                                <label for="motherOccupation">Occupation:</label>-->
-<!--                                <input type="text" id="motherOccupation">-->
-<!--                            </div> <br>-->
-<!--                        </div>-->
+                        <h6>Guardian's Information</h6>
+                        <div class="student-form-group">
+                            <label for="guardianNameEdit">Name:</label>
+                            <input type="text" class="parent-name" required id="guardianNameEdit">
 
-<!--                        <h6>Guardian's Information</h6>-->
-<!--                        <div class="student-form-group">-->
-<!--                            <label for="guardianName">Name:</label>-->
-<!--                            <input type="text" id="guardianName">-->
+                            <label for="guardianOccupationEdit">Occupation:</label>
+                            <input type="text" class="parent-occupation" required id="guardianOccupationEdit">
+                        </div> <br>
 
-<!--                            <label for="guardianOccupation">Occupation:</label>-->
-<!--                            <input type="text" id="guardianOccupation">-->
-<!--                        </div> <br>-->
+                        <div class="student-form-group">
+                            <label for="guardianContactNumberEdit">Contact Number:</label>
+                            <input type="text" class="guardian-number" required id="guardianContactNumberEdit">
 
-<!--                        <div class="student-form-group">-->
-<!--                            <label for="guardianContactNumber">Contact Number:</label>-->
-<!--                            <input type="text" id="guardianContactNumber">-->
+                            <label for="guardianAddressEdit">Address:</label>
+                            <input type="text" class="guardian-address" required id="guardianAddressEdit">
+                        </div> <br>
 
-<!--                            <label for="guardianAddress">Address:</label>-->
-<!--                            <input type="text" id="guardianAddress">-->
-<!--                        </div> <br>-->
+                        <div class="transferee-section">
+                            <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                                <h2>For Transferees Only</h2>
+                            </div>
 
-<!--                        <div class="transferee-section">-->
-<!--                            <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">-->
-<!--                                <h2>For Transferees Only</h2>-->
-<!--                            </div>-->
+                            <div class="student-form-group">
+                                <label for="lastGradeLevelCompletedEdit">Last Grade Level Completed:</label>
+                                <input type="text" required id="lastGradeLevelCompletedEdit">
 
-<!--                            &lt;!&ndash; Transferee Requirements Section &ndash;&gt;-->
-<!--                            <div class="transferee-requirements">-->
-<!--                                <h4>Requirements</h4>-->
-<!--                                <div id="transReqRecord" class="checkbox-transferee-reqs-group">-->
-<!--                                    &lt;!&ndash;naka check na daan ang mga filled&ndash;&gt;-->
-<!--                                </div>-->
+                                <label for="lastMadrasaYearCompletedEdit">Last Madrasa Year Completed</label>
+                                <input type="text" required id="lastMadrasaYearCompletedEdit">
+                            </div> <br>
 
-<!--                                &lt;!&ndash; Update Button &ndash;&gt;-->
-<!--                                <div style="margin-top: 15px;">-->
-<!--                                    <button type="button" data-action="editGradeLevel"-->
-<!--                                        data-message="Are you sure you want to update this grade level?"-->
-<!--                                        id="updateRequirementsBtn" class="btn-confirm">Update</button>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <div class="student-form-group">
+                                <label for="madrasaNameLastAttendedEdit">Madrasa Name Last Attended:</label>
+                                <input type="text" required id="madrasaNameLastAttendedEdit">
+                            </div> <br>
 
-<!--                            <div class="student-form-group">-->
-<!--                                <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>-->
-<!--                                <input type="text" id="lastGradeLevelCompleted">-->
+                            <div class="student-form-group">    
+                                <label for="madrasaAddressEdit">Madrasa Address:</label>
+                                <input type="text" required id="madrasaAddressEdit">
+                            </div> <br>
+                        </div>
+                    </form>
+                </div>
+                
 
-<!--                                <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>-->
-<!--                                <input type="text" id="lastMadrasaYearCompleted">-->
-<!--                            </div> <br>-->
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" data-action="editStudentReport"
+                        data-message="Are you sure you want to update this record?">Edit</button>
 
-<!--                            <div class="student-form-group">-->
-<!--                                <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>-->
-<!--                                <input type="text" id="madrasaNameLastAttended">-->
-<!--                            </div> <br>-->
+                    <button type="button" class="btn-cancel"
+                        data-close-modal="studentInformationEditModal">Cancel</button>
+                </div>
+            </div>
+        </div>
 
-<!--                            <div class="student-form-group">-->
-<!--                                <label for="madrasaAddress">Madrasa Address:</label>-->
-<!--                                <input type="text" id="madrasaAddress">-->
-<!--                            </div> <br>-->
-<!--                        </div>-->
-<!--                    </form>-->
-<!--                </div>-->
-
-<!--                <div class="modal-buttons">-->
-<!--                    <button type="button" data-action="" class="btn-confirm" id="confirmStudent"-->
-<!--                        data-open-modal="confirmationModal"-->
-<!--                        data-message="Are you sure you want to add this student?">Confirm</button>-->
-
-<!--                    <button type="button" class="btn-cancel" id="cancelStudent"-->
-<!--                        data-close-modal="studentInformationEditModal">Cancel</button>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            &lt;!&ndash; Grade Print Modal &ndash;&gt;-->
-<!--            <div id="gradePrintModal" class="grade-print-dal modal">-->
-<!--                <div class="printable-area">-->
-<!--                    <div class="grade-print-modal-content scroll-lock">-->
-<!--                        &lt;!&ndash; Close Button &ndash;&gt;-->
-<!--                        <span class="close-modal" data-close-modal="gradePrintModal">&times;</span>-->
-
-<!--                        &lt;!&ndash; Report Header &ndash;&gt;-->
-<!--                        <div class="header-container-print">-->
-
-<!--                            <div class="left-header">-->
-<!--                                <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">-->
-<!--                            </div>-->
-<!--                            <div class="middle-header">-->
-<!--                                <div class="school-info-print">-->
-<!--                                    <h3 th:text="${schoolName}"></h3>-->
-<!--                                    <p th:text="${schoolAddress}"></p>-->
-<!--                                    <p th:text="${schoolEmail}"></p>-->
-<!--                                    <p th:text="${schoolNum}"></p>-->
-<!--                                    <h3 class="report-type"><strong>Grade Form</strong></h3>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                        <div class="separator-line"></div>-->
-<!--                        &lt;!&ndash; Student Info &ndash;&gt;-->
-<!--                        <table border="1" cellspacing="0" cellpadding="6"-->
-<!--                            style="width: 100%; margin-top: -30px; font-family: Arial, sans-serif; border-collapse: collapse;">-->
-<!--                            &lt;!&ndash; Student Info Section &ndash;&gt;-->
-<!--                            <tr class="stud-info-section">-->
-<!--                                <td colspan="6">-->
-<!--                                    <div class="student-info-container-printable">-->
-<!--                                        <div class="payment-student-info-row">-->
-<!--                                            <label for="receipt-student-id">Student ID:</label>-->
-<!--                                            <input type="text" class="print-inputs" id="receipt-student-id"-->
-<!--                                                placeholder="">-->
-<!--                                        </div>-->
-
-<!--                                        <div class="payment-student-info-row">-->
-<!--                                            <label for="receipt-date">Date:</label>-->
-<!--                                            <input type="date" class="print-inputs" id="receipt-date">-->
-<!--                                        </div>-->
-
-<!--                                        <div class="payment-student-info-row">-->
-<!--                                            <label for="receipt-student-name">Student Name:</label>-->
-<!--                                            <input type="text" class="print-inputs" id="receipt-student-name"-->
-<!--                                                placeholder="">-->
-<!--                                        </div>-->
-
-<!--                                        <div class="payment-student-info-row">-->
-<!--                                            <label for="sy-and-sem">SY & Sem:</label>-->
-<!--                                            <input type="text" class="print-inputs" id="current-sy-and-sem"-->
-<!--                                                placeholder="">-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-
-<!--                            &lt;!&ndash; Grade Table Header &ndash;&gt;-->
-<!--                            <tr class="grade-header">-->
-<!--                                <th>Subject</th>-->
-<!--                                <th>1st Sem</th>-->
-<!--                                <th>2nd Sem</th>-->
-<!--                                <th>Final</th>-->
-<!--                                <th>Remarks</th>-->
-<!--                            </tr>-->
-
-<!--                            &lt;!&ndash; Grade Table Rows (No inner borders) &ndash;&gt;-->
-<!--                            <tr class="grade-row">-->
-<!--                                <td>READING AND WRITING</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                            </tr>-->
-<!--                            <tr class="grade-row">-->
-<!--                                <td>PAGBASA AT PAGSUSURI NG IBAT IBANG TEKSTO TUNGO SA P</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                            </tr>-->
-<!--                            <tr class="grade-row">-->
-<!--                                <td>21ST CENTURY LITERATURE FROM THE PHILIPPINES AND THE W</td>-->
-<!--                                <td>78</td>-->
-<!--                                <td>77</td>-->
-<!--                                <td>77.5</td>-->
-<!--                                <td>Passed</td>-->
-<!--                            </tr>-->
-<!--                            <tr class="grade-row">-->
-<!--                                <td>HOUSEKEEPING</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                            </tr>-->
-<!--                            <tr class="grade-row">-->
-<!--                                <td>STATISTICS AND PROBABILITY</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                            </tr>-->
-<!--                            <tr class="grade-row">-->
-<!--                                <td>PHYSICAL EDUCATION AND HEALTH</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                            </tr>-->
-<!--                            <tr class="grade-row">-->
-<!--                                <td>PHYSICAL SCIENCE</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                                <td>0</td>-->
-<!--                            </tr>-->
-<!--                        </table>-->
-
-<!--                        <div class="printable-footer">-->
-<!--                            Date Printed: <strong>4/1/2020</strong>-->
-<!--                        </div>-->
-
-<!--                        &lt;!&ndash; Print Button &ndash;&gt;-->
-<!--                        <div class="modal-buttons">-->
-<!--                            <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--        </div>-->
 
         <!-- Modal for student information -->
         <div id="studentInformationContainer" class="student-information-container">
@@ -581,7 +433,7 @@
                     <div class="header">
                         <div class="half-unique">
                             <label for="student-id">Student ID: </label>
-                            <input readonly type="text" id="student-id">
+                            <input readonly type="text" class="student-id-report" id="student-id">
                         </div> <br>
 
                         <div class="checkbox-container other-info-container">
@@ -601,8 +453,8 @@
                                 <label for="isTransferee">Transferee:</label>
                                 <input type="checkbox" id="isTransferee">
 
-                                <button type="button" id="dropdown-report-transferee"> <img src="/images/icons/arrow-down.png"
-                                        alt="dropdown-icon">
+                                <button type="button" id="dropdown-report-transferee"> <img
+                                        src="/images/icons/arrow-down.png" alt="dropdown-icon">
                                 </button>
 
 
@@ -613,7 +465,6 @@
                                         <div id="transfereeReq" class="checkbox-transferee-reqs-group">
 
                                         </div>
-
 
                                         <div>
                                             <button type="button" style="width: 100%;" data-action="editGradeLevel"
@@ -637,9 +488,9 @@
                                 <div>
                                     <label for="name">Name</label>
                                     <div class="student-form-group half">
-                                        <input readonly type="text" id="firstName">
-                                        <input readonly type="text" id="middleName">
-                                        <input readonly type="text" id="lastName">
+                                        <input readonly type="text" class="name" id="firstName">
+                                        <input readonly type="text" class="name" id="middleName">
+                                        <input readonly type="text" class="name" id="lastName">
                                     </div>
                                     <div class="small-text">
                                         <p>First</p>
@@ -652,10 +503,10 @@
                                 <!-- Gender, BDate, and Scholar -->
                                 <div class="student-form-group half-stud-info-small">
                                     <label for="gender">Gender:</label>
-                                    <input readonly type="text" id="gender">
+                                    <input readonly type="text" class="gender" id="gender">
 
                                     <label for="birthdate">Birthdate:</label>
-                                    <input readonly required type="date" id="birthdate-report">
+                                    <input readonly required type="date" class="birthdate" id="birthdate-report">
                                 </div>
                             </div>
 
@@ -664,9 +515,12 @@
                                     <div>
                                         <label for="address">Address:</label>
                                         <div class="student-form-group half-unique">
-                                            <input readonly type="text" id="street" required placeholder="Street">
-                                            <input readonly type="text" id="barangay" required placeholder="Barangay">
-                                            <input readonly type="text" id="city" required placeholder="City">
+                                            <input readonly type="text" class="address" id="street" required
+                                                placeholder="Street">
+                                            <input readonly type="text" class="address" id="barangay" required
+                                                placeholder="Barangay">
+                                            <input readonly type="text" class="address" id="city" required
+                                                placeholder="City">
                                         </div>
                                     </div>
                                 </div>
@@ -675,9 +529,7 @@
                             <div class="column2">
                                 <label>Place of Birth:</label>
                                 <div class="student-form-group">
-                                    <div class="student-form-group">
-                                        <input readonly type="text" id="placeOfBirth" class="place-of-birth-report">
-                                    </div>
+                                    <input readonly type="text" id="placeOfBirth" class="place-of-birth-report">
                                 </div>
                             </div>
                         </div>
@@ -691,38 +543,38 @@
                         <h6>Father's Information</h6>
                         <div class="student-form-group">
                             <label for="fatherName">Name:</label>
-                            <input readonly type="text" id="fatherName">
+                            <input readonly type="text" class="parent-name" id="fatherName">
 
                             <label for="fatherOccupation">Occupation:</label>
-                            <input readonly type="text" id="fatherOccupation">
+                            <input readonly type="text" class="parent-occupation" id="fatherOccupation">
                         </div> <br>
                     </div>
                     <div>
                         <h6>Mother's Information</h6>
                         <div class="student-form-group">
                             <label for="motherName">Name:</label>
-                            <input readonly type="text" id="motherName">
+                            <input readonly type="text" class="parent-name" id="motherName">
 
                             <label for="motherOccupation">Occupation:</label>
-                            <input readonly type="text" id="motherOccupation">
+                            <input readonly type="text" class="parent-occupation" id="motherOccupation">
                         </div> <br>
                     </div>
 
                     <h6>Guardian's Information</h6>
                     <div class="student-form-group">
                         <label for="guardianName">Name:</label>
-                        <input readonly type="text" id="guardianName">
+                        <input readonly type="text" class="parent-name" id="guardianName">
 
                         <label for="guardianOccupation">Occupation:</label>
-                        <input readonly type="text" id="guardianOccupation">
+                        <input readonly type="text" class="parent-occupation" id="guardianOccupation">
                     </div> <br>
 
                     <div class="student-form-group">
                         <label for="guardianContactNumber">Contact Number:</label>
-                        <input readonly type="text" id="guardianContactNumber">
+                        <input readonly type="text" class="guardian-number" id="guardianContactNumber">
 
                         <label for="guardianAddress">Address:</label>
-                        <input readonly type="text" id="guardianAddress">
+                        <input readonly type="text" class="guardian-address" id="guardianAddress">
                     </div> <br>
 
                     <div class="transferee-section">
@@ -778,7 +630,7 @@
                         <div class="column-main">
                             <p>Remaining Balance</p>
                             <div class="table-container">
-                                <table class="mini-table" id="payment-table">
+                                <table class="mini-table" id="payment-mini-table">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
@@ -806,7 +658,7 @@
                         <div class="column-main">
                             <p>Unclaimed Resources</p>
                             <div class="table-container">
-                                <table class="mini-table" id="distribution-table">
+                                <table class="mini-table" id="distribution-mini-table">
                                     <thead>
                                         <tr>
                                             <th>Item</th>
@@ -1040,8 +892,6 @@
         const grades = await response.json();
         const gradesview = document.getElementById("grades-container");
         gradesview.innerHTML = ""; // clear previous content
-      
-        // 👉 Check if no grades were returned
         if (!grades || grades.length === 0) {
             gradesview.innerHTML = `
             <div class="no-records-message">
@@ -1050,44 +900,49 @@
             return;
         }
 
-        grades.forEach(sem => {
-            var allFilled = true;
-            let gradesRow = '';
-            let totalGrade = 0;
-            let count = 0;
+        for (let i = 0; i < grades.length; i += 2) {
+            const containerTwo = document.createElement("div");
+            containerTwo.classList.add("container-two");
 
-            sem.grades.forEach(grade => {
-                if (allFilled) {
-                    allFilled = grade.subjectGrade;
-                }
-                totalGrade += grade.subjectGrade;
-                count++;
-                gradesRow += `
-                <tr>
-                    <td>${grade.subjectName}</td>
-                    <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="grade-remarks">
-                                ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
-                            </div>
+            for (let j = i; j < i + 2 && j < grades.length; j++) {
+                const sem = grades[j];
+                let allFilled = true;
+                let gradesRow = '';
+                let totalGrade = 0;
+                let count = 0;
+
+                sem.grades.forEach(grade => {
+                    if (allFilled) {
+                        allFilled = grade.subjectGrade;
+                    }
+                    totalGrade += grade.subjectGrade;
+                    count++;
+                    gradesRow += `
+            <tr>
+                <td>${grade.subjectName}</td>
+                <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
+                <td>
+                    <div class="status-container">
+                        <div class="status" id="grade-remarks">
+                            ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
                         </div>
-                    </td>
-                </tr>`;
-            });
+                    </div>
+                </td>
+            </tr>`;
+                });
 
-            const average = totalGrade / count;
+                const average = totalGrade / count;
 
-            const semesterFormatted = sem.sectionSemester.includes("First semester")
-                ? sem.sectionSemester.replace("First semester", "1st Sem")
-                : sem.sectionSemester.includes("Second semester")
-                    ? sem.sectionSemester.replace("Second semester", "2nd Sem")
-                    : sem.sectionSemester;
+                const semesterFormatted = sem.sectionSemester.includes("First semester")
+                    ? sem.sectionSemester.replace("First semester", "1st Sem")
+                    : sem.sectionSemester.includes("Second semester")
+                        ? sem.sectionSemester.replace("Second semester", "2nd Sem")
+                        : sem.sectionSemester;
 
-            const row = document.createElement("div");
-            row.classList.add("column-main");
+                const columnMain = document.createElement("div");
+                columnMain.classList.add("column-main");
 
-            row.innerHTML = `
+                columnMain.innerHTML = `
             <div class="table-container">
                 <div style="display: flex; justify-content: space-between;">
                     <div class="grade-table-header">
@@ -1101,7 +956,7 @@
                         </div>
                     </div>
                 </div> <br>
-                <table class="mini-table" id="grades-table">
+                <table class="grades-mini-table" id="grades-mini-table">
                     <thead>
                         <tr>
                             <th>Subject</th>
@@ -1126,10 +981,16 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>`;
+            </div>
+        `;
 
-            gradesview.appendChild(row);
-        });
+                containerTwo.appendChild(columnMain);
+            }
+
+            gradesview.appendChild(containerTwo);
+            gradesview.appendChild(document.createElement("br")); // Optional line break
+        }
+
     }
 
 
@@ -1144,7 +1005,7 @@
 
             const data = await response.json();
 
-            const tableBody = document.querySelector("#distribution-table tbody");
+            const tableBody = document.querySelector("#distribution-mini-table tbody");
             if (!tableBody) {
                 //console.error("Table body not found");
                 return;
@@ -1218,7 +1079,7 @@
 
     async function fetchRemainingFees() {
         //console.log(`/paymentrecord/form/${studentId}`);
-        const feesTable = document.querySelector("#payment-table tbody");
+        const feesTable = document.querySelector("#payment-mini-table tbody");
         const response = await fetch(`/paymentrecord/form/${studentId}`);
         if (!response.ok) { return; }
 
@@ -1227,7 +1088,7 @@
         feesTable.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
         if (remainingFees.feesAndBalance.length === 0) { return; }
         feesTable.innerHTML = ``;
-        document.getElementById("total-balance").textContent = `P${remainingFees.totalFee}`;
+        document.getElementById("total-balance").textContent = `₱${remainingFees.totalFee}`;
         remainingFees.feesAndBalance.forEach(data => {
             const row = document.createElement("tr");
             row.innerHTML = `

@@ -59,12 +59,9 @@ public class SectionServices {
     public int addSection(SectionDTO sectionDTO){
         UserModel user= Optional.ofNullable(getTeacherById(sectionDTO.getAdviserId())).orElseThrow(()->new NullPointerException("Teacher Information Not Found"));
         GradeLevel gradeLevel = Optional.ofNullable(getGradeLevel(sectionDTO.getGradeLevelName())).orElseThrow(()->new NullPointerException("Grade Level Information Not Found"));
-        int result = doesTeacherHaveAdvisory
-                                 (user) ?       3:
-                     getSectionByName
-        (sectionDTO.getSectionName()
-                .toLowerCase()) != null      ?  4:
-                                                5;
+        if(getSectionByName(sectionDTO.getSectionName()) != null)
+            throw new IllegalArgumentException("Section name already exists");
+        int result = doesTeacherHaveAdvisory(user) ? 3: 5;
 
         if (result == 5) {
             Section newSection = Section.builder()
@@ -116,6 +113,10 @@ public class SectionServices {
     //UPDATE SECTION RECORD
     public boolean updateSection(SectionDTO sectionDTO){
         Section toUpdate = sectionRepo.findById(sectionDTO.getNumber()).orElseThrow(()->new NullPointerException("Section Record Not Found"));
+        Section otherSec = getSectionByName(sectionDTO.getSectionName());
+        if(otherSec != null && otherSec.getNumber() != toUpdate.getNumber())
+            throw new IllegalArgumentException("Section name already exists");
+
         toUpdate.setLevel(getGradeLevel(sectionDTO.getGradeLevelName()));
         toUpdate.setAdviser(getTeacherById(sectionDTO.getAdviserId()));
         toUpdate.setSectionName(sectionDTO.getSectionName());

@@ -28,50 +28,25 @@ public class DistributableController {
 
     @GetMapping("/{itemId}")
     public ResponseEntity<DistributableDTO> getDistributable(@PathVariable("itemId") int itemId){
-        try{
-            return new ResponseEntity<>(distributableServices.getById(itemId),HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        return new ResponseEntity<>(distributableServices.getById(itemId),HttpStatus.OK);
     }
 
     @PostMapping("/add")
     public ResponseEntity<String> addNewDistributable(@RequestBody DistributableDTO newDistributable){
-        System.out.println(newDistributable);
-        try{
-            if(distributableServices.addNewDistributable(newDistributable))
-                return new ResponseEntity<>("New distributable successfully added",HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Distributable item already exists",HttpStatus.NOT_ACCEPTABLE);
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        distributableServices.addNewDistributable(newDistributable);
+        return new ResponseEntity<>("New distributable successfully added",HttpStatus.OK);
     }
 
     @PutMapping("/update")
     public ResponseEntity<String> updateDistributable(@RequestBody DistributableDTO newDistributable){
-        try{
-            if(distributableServices.updateDistributable(newDistributable))
-                return new ResponseEntity<>("Distributable edited successfully",HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Distributable item already exists",HttpStatus.NOT_ACCEPTABLE);
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        distributableServices.updateDistributable(newDistributable);
+        return new ResponseEntity<>("Distributable edited successfully",HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{itemId}")
     public ResponseEntity<String> deleteDistributable(@PathVariable("itemId") int itemId){
-        try{
-            distributableServices.deleteDistributable(itemId);
-            return new ResponseEntity<>("Distributable edited successfully",HttpStatus.OK);
-        }catch(NullPointerException npe){
-            return new ResponseEntity<>("Distributable not found",HttpStatus.NOT_FOUND);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        distributableServices.deleteDistributable(itemId);
+        return new ResponseEntity<>("Distributable edited successfully",HttpStatus.OK);
     }
 
     @GetMapping("/student-distribution/all")
@@ -95,8 +70,6 @@ public class DistributableController {
         try {
             distributableServices.itemDistributed(distId);
             return new ResponseEntity<>("Item distributed successfully",HttpStatus.OK);
-        }catch (NullPointerException e){
-            return new ResponseEntity<>("Distribution record not found",HttpStatus.NOT_FOUND);
         }catch (Exception e){
             return new ResponseEntity<>("Server Conflict. Contact Dev",HttpStatus.CONFLICT);
         }
@@ -107,8 +80,6 @@ public class DistributableController {
         try {
             distributableServices.multipleItemDistributed(selectedItem.getIds());
             return new ResponseEntity<>("Item distributed successfully",HttpStatus.OK);
-        }catch (NullPointerException e){
-            return new ResponseEntity<>("Distribution record not found",HttpStatus.NOT_FOUND);
         }catch (Exception e){
             return new ResponseEntity<>("Server Conflict. Contact Dev",HttpStatus.CONFLICT);
         }

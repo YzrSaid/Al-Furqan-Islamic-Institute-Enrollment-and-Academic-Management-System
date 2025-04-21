@@ -4,6 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.reactive.result.view.RedirectView;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.InvalidKeyException;
 
@@ -17,6 +20,19 @@ public class ErrorHandlers {
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<String> notFoundHandler(NullPointerException npe){
         return new ResponseEntity<>(npe.getMessage(),HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> illegalArgumentHandler(IllegalArgumentException iae){
+        return new ResponseEntity<>(iae.getMessage(),HttpStatus.SEE_OTHER);
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public RedirectView handleNoHandlerFoundException(NoHandlerFoundException ex,
+                                                      RedirectAttributes redirectAttributes) {
+        System.out.println("Not allowed");
+        redirectAttributes.addFlashAttribute("errorMessage", "The requested resource was not found.");
+        return new RedirectView("/home"); // Redirect to a custom error page
     }
 
     @ExceptionHandler(Exception.class)

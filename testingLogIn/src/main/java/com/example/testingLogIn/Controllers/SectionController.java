@@ -63,8 +63,6 @@ public class SectionController {
         switch (sectionService.addSection(sectionDTO)) {
             case 3:
                 return new ResponseEntity<>("The Selected Teacher Already Has an Advisory Class", HttpStatus.NOT_ACCEPTABLE);
-            case 4:
-                return new ResponseEntity<>("Section Name Already Exists", HttpStatus.NOT_ACCEPTABLE);
             default:
                 return new ResponseEntity<>("Section Information Added Successfully", HttpStatus.OK);
         }

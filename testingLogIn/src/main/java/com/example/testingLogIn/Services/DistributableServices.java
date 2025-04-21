@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.naming.NameAlreadyBoundException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -44,12 +45,13 @@ public class DistributableServices {
         return distributableRepo.findByName(distributableName.toLowerCase()).orElse(null);
     }
     public DistributableDTO getById(int itemId){
-        return distributableRepo.findById(itemId).map(Distributable::DTOmapper).orElse(null);
+        return distributableRepo.findById(itemId).map(Distributable::DTOmapper)
+                .orElseThrow(()->new NullPointerException("Distributable record not found"));
     }
     public boolean addNewDistributable(DistributableDTO item) {
         assert item != null;
         if(getByName(item.getItemName()) != null)
-            return false;
+            throw new IllegalArgumentException("Distributable Name item already exists");
 
         Distributable newDistributable = new Distributable(
                     item.getItemName(),
@@ -86,10 +88,11 @@ public class DistributableServices {
     }
 
     public boolean updateDistributable(DistributableDTO updatedItem){
-        Distributable toUpdate = distributableRepo.findById(updatedItem.getItemId()).orElseThrow(NullPointerException::new);
+        Distributable toUpdate = distributableRepo.findById(updatedItem.getItemId())
+                .orElseThrow(() -> new NullPointerException("Distributable record not found"));
         Distributable existingItem = getByName(updatedItem.getItemName());
         if(existingItem != null && existingItem.getItemId() != toUpdate.getItemId())
-            return false;
+            throw new IllegalArgumentException("Distributable Name item already exists");
 
         Map<DistributablesPerGrade,List<Student>> studentList = new HashMap<>();
         toUpdate.setItemName(updatedItem.getItemName());
@@ -141,7 +144,7 @@ public class DistributableServices {
     }
 
     public boolean deleteDistributable(int itemId){
-        Distributable item = distributableRepo.findById(itemId).orElseThrow(NullPointerException::new);
+        Distributable item = distributableRepo.findById(itemId).orElseThrow(()->new NullPointerException("Distributable not found"));
         item.setNotDeleted(false);
         distributableRepo.save(item);
         return true;
@@ -175,7 +178,8 @@ public class DistributableServices {
     }
 
     public void itemDistributed(int distributionId){
-        DistributablesPerStudent studentItem = disStudRepo.findById(distributionId).orElseThrow(NullPointerException::new);
+        DistributablesPerStudent studentItem = disStudRepo.findById(distributionId)
+                .orElseThrow(()->new NullPointerException("Distribution record not found"));
         studentItem.setReceived(true);
         studentItem.setDateReceived(LocalDate.now());
         disStudRepo.save(studentItem);
@@ -183,7 +187,8 @@ public class DistributableServices {
     public void multipleItemDistributed(List<Integer> distributionIds){
             List<DistributablesPerStudent> studentDistributions = new ArrayList<>();
             distributionIds.forEach(distributionId ->{
-                DistributablesPerStudent studentItem = disStudRepo.findById(distributionId).orElseThrow(NullPointerException::new);
+                DistributablesPerStudent studentItem = disStudRepo.findById(distributionId)
+                        .orElseThrow(()->new NullPointerException("Distribution record not found"));
                 studentItem.setReceived(true);
                 studentItem.setDateReceived(LocalDate.now());
                 studentDistributions.add(studentItem);

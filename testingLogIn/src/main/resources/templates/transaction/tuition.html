@@ -703,8 +703,8 @@
         document.getElementById("payment-amount").addEventListener('keyup', function (event) {
             savePaymentBtn.textContent = "Save Payment";
             savePaymentBtn.disabled = false;
-            if (parseFloat(this.value || 0) <= parseFloat(this.min)) {
-                savePaymentBtn.textContent = `Minimum of ${this.min} is Required`;
+            if (parseFloat(this.value || 0) < parseFloat(this.min)) {
+                savePaymentBtn.textContent = `Minimum of P${this.min} is Required`;
                 savePaymentBtn.disabled = true;
             }
         });
@@ -739,10 +739,10 @@
             const totalAmount = paymentAmountInput.value;
 
             if (totalAmount == 0) {
-                alert("DLi pwde wlay kay ibayad uys");
+                showErrorModal("Pay at least minimum");
                 return;
             } else if (feesSelectedId.length == 0) {
-                alert("Dapat naa ka pilion");
+                showErrorModal("Please select a particular");
                 return;
             }
 
@@ -875,7 +875,7 @@
                 const enteredValue = parseFloat(this.value);
 
                 if (enteredValue > maxValue) {
-                    alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
+                    showErrorModal("Maximum amount is "+maxValue);
                     this.value = maxValue;
                 }
             });
@@ -1007,7 +1007,6 @@
         document.getElementById("nextPageStud").addEventListener("click", () => {
             if (currentPage < document.getElementById("pageInput").max) {
                 currentPage++;
-                console.log("Navigating to page:", currentPage);
                 viewStudents(currentPage);
             } else {
                 console.log("Cannot navigate to next page");
@@ -1044,8 +1043,6 @@
             theForm.feesAndBalance.forEach(par => {
                 const paymentItem = document.createElement("div");
                 paymentItem.classList.add("payment-item");
-                console.log(par);
-                console.log(par.balance);
                 const input = document.createElement("input");
                 input.type = "checkbox";
                 input.name = par.fee.name;

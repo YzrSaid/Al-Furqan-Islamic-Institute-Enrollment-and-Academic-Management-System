@@ -117,7 +117,7 @@
 
                     <!-- Add Payment button -->
                     <div class="modal-buttons" id="add-payment-btn">
-                        <button type="button" class="btn-confirm" data-open-modal="addPaymentModal">Add
+                        <button type="button" class="btn-confirm" id="add-payment" data-open-modal="addPaymentModal">Add
                             Payment</button>
                         <button type="button" class="btn-cancel" data-close-modal="listOfPaymentsModal">Close</button>
                     </div>
@@ -208,7 +208,7 @@
 
                 <!-- Print Button -->
                 <div class="modal-buttons">
-                    <button type="button" class="btn-cancel">Close</button>
+                    <button type="button" data-close-modal="receiptModal" class="btn-cancel">Close</button>
                     <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
                 </div>
             </div>
@@ -273,10 +273,10 @@
             <div class="modal-buttons payment-modal-buttons">
                 <button id="save-payment-btn" class="btn-confirm no-print" type="button"
                     data-open-modal="confirmationModal" data-action="savePayment"
-                    data-message="Are you sure you want to save this payment?">Save Payment
+                    data-message="Are you sure you want to save this payment?" disabled>Please select a particular
                 </button>
 
-                <button type="button" class="btn-cancel" data-close-modal="addPaymentModal">Cancel</button>
+                <button type="button" class="btn-cancel" id="payment-closer" data-close-modal="addPaymentModal">Cancel</button>
             </div>
         </div>
     </div>
@@ -302,7 +302,7 @@
 
     <script>
         document.addEventListener("click", async function (event) {
-            const addButton = event.target.closest('.add-payment-btn');
+            const addButton = event.target.closest('#add-payment');
             const paymentList = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
             if (addButton) {
                 // Retrieve student information
@@ -313,7 +313,7 @@
                     //console.error("Student information not found");
                     return;
                 }
-
+                setUpPaymentForm();
                 // Populate modal fields
                 document.querySelector("#payee-name").value = studentName;
                 document.querySelector("#payee-id").value = studentId;
@@ -364,7 +364,7 @@
                 fetchPayments(enrollmentId);
             }
         });
-
+        var selectedStudent;
         function printReport() {
             window.print();
         }
@@ -529,8 +529,8 @@
         async function setUpPaymentForm() {
             paymentAmountInput.max = 0;
             paymentAmountInput.value = 0.0;
-            let response = await fetch(`/paymentrecord/form/${studentId}?gradeLevelId=${gradeLevelId}`);
-            if (!response.ok) throw new Error("wa nakita");
+            let response = await fetch(`/paymentrecord/form/${payerId}?gradeLevelId=${gradeLevelId}`);
+            if (!response.ok) throw new Error("Not found");
             let data = await response.json();
             const student = data.student;
             const studentname = document.querySelector("#payee-name");
@@ -543,8 +543,7 @@
             data.feesAndBalance.forEach(par => {
                 const paymentItem = document.createElement("div");
                 paymentItem.classList.add("payment-item");
-                //console.log(par);
-                //console.log(par.balance);
+
                 const input = document.createElement("input");
                 input.type = "checkbox";
                 input.name = par.fee.name;
@@ -563,11 +562,21 @@
             });
         }
 
+        const savePaymentBtn = document.getElementById("save-payment-btn");
+        document.getElementById("payment-amount").addEventListener('keyup', function (event) {
+            savePaymentBtn.textContent = "Save Payment";
+            savePaymentBtn.disabled = false;
+            if (parseFloat(this.value || 0) < parseFloat(this.min)) {
+                savePaymentBtn.textContent = `Minimum of P${this.min} is Required`;
+                savePaymentBtn.disabled = true;
+            }
+        });
         function handleCheckboxChange(event, balance) {
             const checkbox = event.target; // The checkbox that was clicked
             const value = checkbox.value; // The value of the checkbox
             const isChecked = checkbox.checked; // Whether the checkbox is checked or unchecked
             const currentMax = parseFloat(paymentAmountInput.max) || 0;
+            const checkedCheckboxes = document.querySelectorAll('.payment-item:checked');
             let newMax = 0;
             if (isChecked) {
                 newMax = currentMax + balance;
@@ -575,8 +584,16 @@
                 newMax = currentMax - balance;
             }
             paymentAmountInput.max = newMax;
+            paymentAmountInput.min = (newMax * 0.2);
             if (paymentAmountInput.value > newMax) {
                 paymentAmountInput.value = newMax;
+            }
+            if (newMax > 0) {
+                savePaymentBtn.textContent = "Enter Amount";
+                savePaymentBtn.disabled = true;
+            } else {
+                savePaymentBtn.textContent = "Please select a particular";
+                savePaymentBtn.disabled = true;
             }
         }
 
@@ -590,7 +607,7 @@
                 showErrorModal("Please select a particular");
                 return;
             }
-            const url = `/paymentrecord/add/all/${encodeURIComponent(studentId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(gradeLevelId)}`;
+            const url = `/paymentrecord/add/all/${encodeURIComponent(payerId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(gradeLevelId)}`;
             const obj = {
                 feesId: feesSelectedId
             };
@@ -647,7 +664,6 @@
 
         function closeOpen() {
             const button1 = document.createElement("button");
-            button1.setAttribute("data-close-modal", "addPaymentModal");
             button1.setAttribute("data-open-modal", "receiptModal");
             const button2 = document.createElement("button");
             button2.setAttribute("data-close-modal", "listOfPaymentsModal");
@@ -655,6 +671,7 @@
             document.body.appendChild(button2);
             button1.click();
             button2.click();
+            document.getElementById("payment-closer").click();
         }
 
         function getCheckedPaymentValues() {
@@ -761,7 +778,7 @@
                 const enteredValue = parseFloat(this.value);
 
                 if (enteredValue > maxValue) {
-                    alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
+                    showErrorModal("Maximum amount is "+maxValue);
                     this.value = maxValue;
                 }
             });

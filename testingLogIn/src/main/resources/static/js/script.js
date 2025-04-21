@@ -641,8 +641,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const action = confirmActionButton.getAttribute("data-confirm-action");
 
       if (action === "updateSchoolSettings") {
+        alert("Will validate");
         // ✅ Validate first
         if (!validateForm("schoolSettingsForm")) {
+          alert("Will validate again");
           showErrorModal("⚠️ Please fill in all required fields!");
           return;
         }
@@ -914,7 +916,7 @@ document.addEventListener("DOMContentLoaded", function () {
           deletescholarship();}
         break;
       case "transfereeAddListing":
-        // This case is for adding transferee student to the listing/registration
+        alert("at transfereeAddListing");
         if (!validateForm("studentForm")) {
           showErrorModal("⚠️ Please fill in all required fields!");
           return;
@@ -937,8 +939,7 @@ document.addEventListener("DOMContentLoaded", function () {
         finishSemester();
         break;
       case "proceedAssessment":
-        console.log(enrollmentIdLet);
-        proceedToAssessment(enrollmentIdLet);
+        proceedToAssessment();
         toggleModal("gradeLevelModal", false);
         break;
       case "proceedToPayment":
@@ -949,10 +950,8 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "addFee":
         if(validateForm("feesManagementForm")) {
-          if (await validateAdminPassword()){
           addFee();
           closeConfirmationModal();
-          }
         }
         break;
       case "addDistributable":
@@ -1047,6 +1046,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function validateForm(formId,errorMsg="⚠️ Please fill in all required fields!") {
+    alert(formId);
     let form = document.getElementById(formId);
     if (!form) {
       console.error("❌ Form not found:", formId);
@@ -1163,7 +1163,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.body.addEventListener("click", function (event) {
-    console.log("target ka sakin");
     const target = event.target;
     let saveBtn = document.getElementById("saveBtn");
 
@@ -1312,8 +1311,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (target.id === "confirmAction") {
       const action = target.getAttribute("data-confirm-action");
       handleConfirmAction(action, event);
-
+``
       // Only close confirmation modal if validation passes
+      alert("at validateForm(studentForm)");
       if (validateForm("studentForm")) {
         toggleModal("confirmationModal", false);
 

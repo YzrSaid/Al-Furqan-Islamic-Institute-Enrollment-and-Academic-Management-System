@@ -556,6 +556,10 @@ document.addEventListener("DOMContentLoaded", function () {
       confirmBtn.setAttribute("data-mode", "edit");
 
       console.log(confirmBtn.attributes);
+
+      if (confirmBtn.hasAttribute("data-mode")){
+        console.log("yawa2");
+      }
     } else if (modalId = "studentInformationEditModal") {
       const confirmBtn = document.getElementById("confirmStudentReportEdit");
       const cancelBtn = modal.querySelector(".btn-cancel");
@@ -1228,6 +1232,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const cancelBtn = modal.querySelector(".btn-cancel");
 
       if (target.getAttribute("data-mode") === "edit") {
+        console.log("pppp");
         inputs.forEach((input) => {
           if (input.tagName === "SELECT") {
             input.disabled = false;

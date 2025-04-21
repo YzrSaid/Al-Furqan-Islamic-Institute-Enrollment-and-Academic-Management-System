@@ -35,7 +35,7 @@
 
                 <div class="report-main-btns-right">
                     <button type="button" class="btn-gray" id="editStudInfo"
-                        data-open-modal="studentInformationEditModal">Edit</button>
+                        data-open-modal="staffInformationEditModal">Edit</button>
                     <button type="button" class="btn-neutral" id="printGrade"
                         data-open-modal="studentInformationPrintModal">Print</button>
                     <button type="button" class="btn-neutral" data-open-modal="changePasswordModal">Change
@@ -245,21 +245,21 @@
         </div>
 
         <!-- Modal for editing the student information -->
-        <div id="studentInformationEditModal" class="student-information-edit-modal">
-            <div class="student-information-edit-modal-content">
+        <div id="staffInformationEditModal" class="staff-information-edit-modal modal">
+            <div class="staff-information-edit-modal-content">
                 <div class="modal-body">
                     <h1>Staff Information</h1>
                     <form method="" action="" id="staffInformationEditForm">
                         <div class="header">
                             <div class="half-unique">
                                 <label for="student-id">Staff ID: </label>
-                                <input readonly type="text" id="student-id">
+                                <input readonly type="text" class="staff-id-report" id="staff-id-edit">
                             </div> <br>
 
                             <div class="other-info-container">
                                 <div class="half-other-info" id="staff-type-row">
                                     <label for="staff-type">Account Type/Role:</label>
-                                    <select name="role" id="role" required>
+                                    <select name="role" id="role-edit" required>
                                         <option value="TEACHER">Teacher</option>
                                         <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
                                     </select>
@@ -267,7 +267,7 @@
 
                                 <div class="half-other-info" id="staff-status-row">
                                     <label for="staff-status">Status:</label>
-                                    <select name="status" id="status" required>
+                                    <select name="status" id="status-edit" required>
                                         <option value="UNRESTRICTED">Unrestricted</option>
                                         <option value="RESTRICTED">Restricted</option>
                                     </select>
@@ -285,9 +285,9 @@
                                     <div>
                                         <label for="name">Name</label>
                                         <div class="student-form-group half">
-                                            <input readonly type="text" id="firstName">
-                                            <input readonly type="text" id="middleName">
-                                            <input readonly type="text" id="lastName">
+                                            <input type="text" required class="name" id="firstNameEdit">
+                                            <input type="text" required class="name" id="middleNameEdit">
+                                            <input type="text" required class="name" id="lastNameEdit">
                                         </div>
                                         <div class="small-text">
                                             <p>First</p>
@@ -299,32 +299,30 @@
                                 <div class="column2">
                                     <!-- Gender, BDate, and Scholar -->
                                     <div class="student-form-group half-stud-info-small">
-                                        <label for="gender">Gender:</label>
-                                        <select name="gender" id="gender" required>
+                                        <label for="gender-edit">Gender:</label>
+                                        <select name="gender-edit" title="Gender" class="gender" id="gender-edit"
+                                            required>
                                             <option value="MALE">Male</option>
                                             <option value="FEMALE">Female</option>
                                         </select>
 
                                         <label for="birthdate">Birthdate:</label>
-                                        <input readonly required type="date" id="birthdate-report">
+                                        <input required type="date" class="birthdate" id="birthdate-edit">
                                     </div>
                                 </div>
 
                                 <div class="column1">
                                     <label for="address">Address:</label>
                                     <div class="student-form-group">
-                                        <input readonly type="text" id="staff-address" required placeholder="">
+                                        <input type="text" id="staff-address-edit" required placeholder="">
                                     </div>
                                 </div>
 
                                 <div class="column2">
-                                    <div>
-                                        <div class="student-form-group">
-                                            <label>Email:</label>
-                                            <input readonly type="email" id="staff-email">
-                                        </div>
+                                    <div class="student-form-group">
+                                        <label>Email:</label>
+                                        <input required type="email" class="place-of-birth-report" id="staff-email-edit">
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -332,19 +330,18 @@
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="button" data-action="" class="btn-confirm" id="confirmStudent"
-                        data-open-modal="confirmationModal"
-                        data-message="Are you sure you want to add this student?">Confirm</button>
+                    <button type="button" data-action="editStaffReport" class="btn-confirm" id="confirmStaffReportEdit"
+                        data-message="Are you sure you want to update this record?">Edit</button>
 
                     <button type="button" class="btn-cancel" id="cancelStudent"
-                        data-close-modal="studentInformationEditModal">Cancel</button>
+                        data-close-modal="staffInformationEditModal">Cancel</button>
                 </div>
             </div>
         </div>
 
-        <!-- Modal for student information -->
-        <div id="studentInformationContainer" class="student-information-container">
-            <div class="student-information-container-content">
+        <!-- Modal for staff information -->
+        <div id="staffInformationContainer" class="staff-information-container">
+            <div class="staff-information-container-content">
                 <h1>Staff Information</h1>
                 <form method="" action="" id="studentInformationForm">
                     <div class="header">
@@ -394,7 +391,7 @@
                                     <input readonly type="text" id="gender">
 
                                     <label for="birthdate">Birthdate:</label>
-                                    <input readonly required type="date" id="birthdate-report">
+                                    <input readonly required type="date" class="birthdate" id="birthdate-report">
                                 </div>
                             </div>
 
@@ -408,7 +405,7 @@
                             <div class="column2">
                                 <div class="student-form-group">
                                     <label>Email:</label>
-                                    <input readonly type="email" id="staff-email">
+                                    <input readonly type="email" class="place-of-birth-report" id="staff-email">
                                 </div>
                             </div>
                         </div>

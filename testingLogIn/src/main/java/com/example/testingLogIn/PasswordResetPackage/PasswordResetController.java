@@ -73,6 +73,12 @@ public class PasswordResetController {
         }
     }
 
+    @GetMapping("/confirm-pw")
+    public ResponseEntity<String> authenticatePassword(@RequestParam String pw){
+        userService.authenticateAdminPassword(pw);
+        return new ResponseEntity<>("Password Confirmed",HttpStatus.OK);
+    }
+
     @GetMapping("/get-user")
     public UserDTO getUserInfo(@RequestParam String token){
         PasswordResetToken getUser = tokenRepository.findByToken(token).orElseThrow(NullPointerException::new);

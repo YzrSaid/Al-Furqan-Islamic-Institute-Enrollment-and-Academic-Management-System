@@ -297,29 +297,29 @@
 
 
                         row.innerHTML = `
-    <td>${grade.levelName}</td>
-    <td>${grade.preRequisite}</td>
-    <td>
-        <div class="action-container">
-            <div class="action">
-                <img data-open-modal="gradeLevelEditModal" 
-                     src="/images/icons/compose.png" 
-                     alt="grade-level-edit-icon" title="Click to Edit Grade Level" 
-                     data-id="${grade.levelId}" 
-                     data-prereq="${grade.preRequisite || 'NONE'}">
-                
-                <img data-open-modal="confirmationModal" 
-                     data-action="deleteGradeLevel" 
-                     data-require-password="true"
-                     data-message="Are you sure you want to delete this grade level?" 
-                     data-id="${grade.levelId}" 
-                     data-prereq="${grade.preRequisite || 'NONE'}"
-                     src="/images/icons/bin.png" 
-                     alt="grade-level-delete-icon" title="Click to Delete Grade Level">
-            </div>
-        </div>
-    </td>
-`;
+                                <td>${grade.levelName}</td>
+                                <td>${grade.preRequisite}</td>
+                                <td>
+                                    <div class="action-container">
+                                        <div class="action">
+                                            <img data-open-modal="gradeLevelEditModal" 
+                                                src="/images/icons/compose.png" 
+                                                alt="grade-level-edit-icon" title="Click to Edit Grade Level" 
+                                                data-id="${grade.levelId}" 
+                                                data-prereq="${grade.preRequisite || 'NONE'}">
+                                            
+                                            <img data-open-modal="confirmationModal" 
+                                                data-action="deleteGradeLevel" 
+                                                data-require-password="true"
+                                                data-message="Are you sure you want to delete this grade level?" 
+                                                data-id="${grade.levelId}" 
+                                                data-prereq="${grade.preRequisite || 'NONE'}"
+                                                src="/images/icons/bin.png" 
+                                                alt="grade-level-delete-icon" title="Click to Delete Grade Level">
+                                        </div>
+                                    </div>
+                                </td>
+                            `;
 
                         tableBody.appendChild(row);
                     });

@@ -732,24 +732,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         break;
       case "editGradeLevel":
+        // OLD VERSION
         // This case is for editing new grade level
-        if (!validateForm("gradeLevelEditForm")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
-          // This is to check if the password field is not empty before verifying it
-          if (!validateForm("confirmationModal")) {
-            showErrorModal("⚠️ Please enter the Admin Password!");
-            return;
-          } else {
-            // If its not empty, it will now verify the password
-            if (await validateAdminPassword()) {
-              editGradeLevel();
-              closeConfirmationModal();
-            } else {
-              showErrorModal("⚠️ Incorrect Admin Password!");
-              return;
-            }
+        // if (!validateForm("gradeLevelEditForm")) {
+        //   showErrorModal("⚠️ Please fill in all required fields!");
+        //   return;
+        // } else {
+        //   // This is to check if the password field is not empty before verifying it
+        //   if (!validateForm("confirmationModal")) {
+        //     showErrorModal("⚠️ Please enter the Admin Password!");
+        //     return;
+        //   } else {
+        //     // If its not empty, it will now verify the password
+        //     if (await validateAdminPassword()) {
+        //       editGradeLevel();
+        //       closeConfirmationModal();
+        //     }
+        //   }
+        // }
+        //if both are true, i test na niya if valid ang password.. instead of calling ang show error modal sa mga false result, i call nalng sa mismong validation method if false
+        if(validateForm("gradeLevelEditForm","⚠️ Please fill in all required fields!") 
+          && validateForm("confirmationModal","⚠️ Please enter the Admin Password!")){
+          if (await validateAdminPassword()) {
+            editGradeLevel();
+            closeConfirmationModal();
           }
         }
         break;
@@ -1006,7 +1012,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   async function validateAdminPassword() {
-    // Ibutang diri ang code nimo mags, make sure butangi await sa pag fetch para astig
+    var pw = document.getElementById("adminPassword").value;
+    const response = await fetch(`/authentication/confirm-pw?pw=${pw}`);
+    if(response.ok){
+      return true;
+    }
+    showErrorModal("⚠️ Incorrect Admin Password!");
   }
 
   function closeConfirmationModal() {
@@ -1029,7 +1040,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  function validateForm(formId) {
+  function validateForm(formId,errorMsg="") {
     let form = document.getElementById(formId);
     if (!form) {
       console.error("❌ Form not found:", formId);
@@ -1042,6 +1053,7 @@ document.addEventListener("DOMContentLoaded", function () {
     inputs.forEach((input) => {
       if (!input.value.trim()) {
         valid = false;
+        showErrorModal(errorMsg);
         input.classList.add("error");
       } else {
         input.classList.remove("error");

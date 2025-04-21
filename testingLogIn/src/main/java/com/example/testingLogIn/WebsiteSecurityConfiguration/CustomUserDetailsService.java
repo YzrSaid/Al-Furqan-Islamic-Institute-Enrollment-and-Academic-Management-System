@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -148,6 +149,20 @@ public class CustomUserDetailsService implements UserDetailsService {
                 return (UserModel)authentication.getPrincipal();
         }
         return null;
+    }
+
+    public void authenticateAdminPassword(String pw) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            if(encoder.matches(pw,((UserModel)authentication.getPrincipal()).getPassword())){
+                return;
+            }
+        }
+        try {
+            throw new InvalidKeyException("Invalid Password");
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void changeUserPassword(UserModel user, String newPassword){

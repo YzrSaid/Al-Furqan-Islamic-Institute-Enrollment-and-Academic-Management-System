@@ -26,4 +26,6 @@ public interface SectionRepo extends JpaRepository<Section, Integer> {
             "OR LOWER(gl.levelName) LIKE :search " +
             "OR LOWER(staff.fullName) LIKE :search)")
     List<Section> findSectionsAndGradeLevelNotDeleted(@Param("search") String search);
+
+    List<Section> findByIsNotDeletedTrue();
 }

@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.security.SecureRandom;
 
 public class NonModelServices {
+
     public static String forLikeOperator(String toFormat){
         return "%"+toFormat.toLowerCase()+"%";
     }

@@ -4721,47 +4721,17 @@ a {
     width: 75%;
   }
 }
-/*Responsiveness for signin.html */
-.wrapper {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-/* Mobile-first defaults */
-#left-signup-block {
-  display: none;
-}
-
-#right-signup-block {
-  width: 100%;
-  padding: 1rem;
-  height: auto;
-}
-
-.school-logo {
-  margin-bottom: 1.5rem;
-  max-width: 100px;
-  height: auto;
-}
-
-#right-signup-block h3,
-#signup-form {
-  width: 90%;
-  margin: 0 auto;
-  text-align: center;
-}
 
 /* Tablet screens */
-@media (min-width: 576px) {
+/* @media (min-width: 576px) {
   #right-signup-block h3,
   #signup-form {
     width: 80%;
   }
-}
+} */
 
 /* Medium to large devices */
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   #left-signup-block {
     display: block;
     width: 50%;
@@ -4787,79 +4757,25 @@ a {
     width: 75%;
     text-align: center;
   }
-}
+} */
 
 /* Large desktops */
-@media (min-width: 1200px) {
+/* @media (min-width: 1200px) {
   #right-signup-block h3,
   #signup-form {
     width: 60%;
   }
-}
-
-/* Responsiveness for Forgot Password Page */
-.wrapper {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-/* Mobile-first defaults */
-#left-login-block {
-  display: none;
-}
-
-#right-login-block {
-  width: 100%;
-  padding: 1rem;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.school-logo {
-  margin-bottom: 1.5rem;
-  max-width: 100px;
-  height: auto;
-}
-
-#forgot-password-header {
-  font-size: 24px;
-  text-align: center;
-}
-
-.forgot-password-text {
-  text-align: center;
-  padding: 0 1rem;
-}
-
-#error-message {
-  color: red;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-#signup-form {
-  width: 90%;
-  max-width: 400px;
-}
-
-#signup-link {
-  margin-top: 1rem;
-  text-align: center;
-}
+} */
 
 /* Tablet screens */
-@media (min-width: 576px) {
+/* @media (min-width: 576px) {
   #signup-form {
     width: 80%;
   }
-}
+} */
 
 /* Medium and large screens */
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   #left-login-block {
     display: block;
     width: 50%;
@@ -4885,12 +4801,12 @@ a {
   .forgot-password-text {
     padding: 0 2rem;
   }
-}
+} */
 
 /* Larger desktops */
-@media (min-width: 1200px) {
+/* @media (min-width: 1200px) {
   #signup-form {
     width: 60%;
   }
-}
+} */
 

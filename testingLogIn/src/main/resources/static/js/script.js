@@ -557,10 +557,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       console.log(confirmBtn.attributes);
 
-      if (confirmBtn.hasAttribute("data-mode")){
-        console.log("yawa2");
-      }
-    } else if (modalId = "studentInformationEditModal") {
+    //   if (confirmBtn.hasAttribute("data-mode")){
+    //     console.log("yawa2");
+    //   }
+    } else if (modalId.inclues("edit") && (modalId = "studentInformationEditModal")) {
       const confirmBtn = document.getElementById("confirmStudentReportEdit");
       const cancelBtn = modal.querySelector(".btn-cancel");
       const inputs = modal.querySelectorAll("input, textarea, select");

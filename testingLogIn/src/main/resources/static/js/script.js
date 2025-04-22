@@ -89,60 +89,132 @@ document.addEventListener("DOMContentLoaded", function () {
 //   }
 // }
 
-function toggleSidebar() {
-  let sidebar = document.getElementById("sidebar");
-  let content = document.getElementById("content");
-  let stickyHeader = document.querySelector(".sticky-header");
-  let reportBtnsDiv = document.querySelector(".report-main-btns");
-  let tableWrapper = document.querySelector(".table-wrapper"); // Corrected this
-  let searchDiv = document.querySelector(".search-div");
-  let topBar = document.querySelector(".topbar");
-  let textLink = document.querySelector(".text-link");
+document.addEventListener("DOMContentLoaded", () => {
+  const sidebar = document.getElementById("sidebar");
+  const body = document.body;
+  const isMobile = window.innerWidth <= 768;
 
+  // Set initial state
+  if (isMobile) {
+    sidebar.classList.add("collapsed-sidebar");
+    body.classList.remove("sidebar-active");
+  } else {
+    sidebar.classList.remove("collapsed-sidebar");
+    body.classList.add("sidebar-active");
+  }
+});
+
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const content = document.getElementById("content");
+  const overlay = document.getElementById("overlay");
+  const body = document.body;
   const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
+  const isMobile = window.innerWidth <= 768;
 
   if (isCollapsed) {
-    // OPEN sidebar
+    // Open sidebar
     sidebar.classList.remove("collapsed-sidebar");
-    content.classList.remove("collapsed-content");
-    content.style.marginLeft = "320px";
+    body.classList.add("sidebar-active");
 
-    reportBtnsDiv.style.padding = "0 15px";
-    stickyHeader.style.padding = "10px 1rem";
-    searchDiv.style.width = "100%";
-    searchDiv.style.padding = "0";
-    searchDiv.style.margin = "0 0 20px 0";
-
-    textLink.style.width = "100%";
-    textLink.style.padding = "15px 0";
-
-    topBar.style.padding = "10px 0";
-
-    // Apply sidebar-open class when sidebar is OPEN
-    tableWrapper.classList.remove("sidebar-closed");
-    tableWrapper.classList.add("sidebar-open");
+    if (isMobile) {
+      sidebar.classList.add("show-floating");
+      overlay.classList.add("show-overlay");
+    } else {
+      content.classList.remove("collapsed-content");
+      content.style.marginLeft = "320px";
+    }
   } else {
-    // CLOSE sidebar
+    // Close sidebar
     sidebar.classList.add("collapsed-sidebar");
-    content.classList.add("collapsed-content");
-    content.style.marginLeft = "0";
+    body.classList.remove("sidebar-active");
 
-    reportBtnsDiv.style.padding = "0 8.8rem";
-    stickyHeader.style.padding = "10px 3.125rem";
-    searchDiv.style.width = "100%";
-    searchDiv.style.padding = "0";
-    searchDiv.style.margin = "0 10px 20px 10px";
-
-    textLink.style.width = "100%";
-    textLink.style.padding = "15px 0";
-
-    topBar.style.padding = "10px 0.1rem";
-
-    // Apply sidebar-closed class when sidebar is CLOSED
-    tableWrapper.classList.remove("sidebar-open");
-    tableWrapper.classList.add("sidebar-closed");
+    if (isMobile) {
+      sidebar.classList.remove("show-floating");
+      overlay.classList.remove("show-overlay");
+    } else {
+      content.classList.add("collapsed-content");
+      content.style.marginLeft = "0";
+    }
   }
 }
+
+// Handle window resize to adjust sidebar state
+window.addEventListener("resize", () => {
+  const sidebar = document.getElementById("sidebar");
+  const content = document.getElementById("content");
+  const body = document.body;
+  const isMobile = window.innerWidth <= 768;
+
+  if (isMobile) {
+    sidebar.classList.add("collapsed-sidebar");
+    sidebar.classList.remove("show-floating");
+    content.style.marginLeft = "0";
+    content.classList.add("collapsed-content");
+    body.classList.remove("sidebar-active");
+    document.getElementById("overlay").classList.remove("show-overlay");
+  } else {
+    sidebar.classList.remove("collapsed-sidebar");
+    content.style.marginLeft = "320px";
+    content.classList.remove("collapsed-content");
+    body.classList.add("sidebar-active");
+    document.getElementById("overlay").classList.remove("show-overlay");
+  }
+});
+// function toggleSidebar() {
+//   let sidebar = document.getElementById("sidebar");
+//   let content = document.getElementById("content");
+//   let stickyHeader = document.querySelector(".sticky-header");
+//   let reportBtnsDiv = document.querySelector(".report-main-btns");
+//   let tableWrapper = document.querySelector(".table-wrapper"); // Corrected this
+//   let searchDiv = document.querySelector(".search-div");
+//   let topBar = document.querySelector(".topbar");
+//   let textLink = document.querySelector(".text-link");
+
+//   const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
+
+//   if (isCollapsed) {
+//     // OPEN sidebar
+//     sidebar.classList.remove("collapsed-sidebar");
+//     content.classList.remove("collapsed-content");
+//     content.style.marginLeft = "320px";
+
+//     reportBtnsDiv.style.padding = "0 15px";
+//     stickyHeader.style.padding = "10px 1rem";
+//     searchDiv.style.width = "100%";
+//     searchDiv.style.padding = "0";
+//     searchDiv.style.margin = "0 0 20px 0";
+
+//     textLink.style.width = "100%";
+//     textLink.style.padding = "15px 0";
+
+//     topBar.style.padding = "10px 0";
+
+//     // Apply sidebar-open class when sidebar is OPEN
+//     tableWrapper.classList.remove("sidebar-closed");
+//     tableWrapper.classList.add("sidebar-open");
+//   } else {
+//     // CLOSE sidebar
+//     sidebar.classList.add("collapsed-sidebar");
+//     content.classList.add("collapsed-content");
+//     content.style.marginLeft = "0";
+
+//     reportBtnsDiv.style.padding = "0 8.8rem";
+//     stickyHeader.style.padding = "10px 3.125rem";
+//     searchDiv.style.width = "100%";
+//     searchDiv.style.padding = "0";
+//     searchDiv.style.margin = "0 10px 20px 10px";
+
+//     textLink.style.width = "100%";
+//     textLink.style.padding = "15px 0";
+
+//     topBar.style.padding = "10px 0.1rem";
+
+//     // Apply sidebar-closed class when sidebar is CLOSED
+//     tableWrapper.classList.remove("sidebar-open");
+//     tableWrapper.classList.add("sidebar-closed");
+//   }
+// }
 
 // Function to toggle the dropdown menu
 function toggleDropdown(id) {
@@ -557,10 +629,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       console.log(confirmBtn.attributes);
 
-    //   if (confirmBtn.hasAttribute("data-mode")){
-    //     console.log("yawa2");
-    //   }
-    } else if (modalId.inclues("edit") && (modalId = "studentInformationEditModal")) {
+      //   if (confirmBtn.hasAttribute("data-mode")){
+      //     console.log("yawa2");
+      //   }
+    } else if (
+      modalId.inclues("edit") &&
+      (modalId = "studentInformationEditModal")
+    ) {
       const confirmBtn = document.getElementById("confirmStudentReportEdit");
       const cancelBtn = modal.querySelector(".btn-cancel");
       const inputs = modal.querySelectorAll("input, textarea, select");
@@ -753,8 +828,16 @@ document.addEventListener("DOMContentLoaded", function () {
         //   }
         // }
         //if both are true, i test na niya if valid ang password.. instead of calling ang show error modal sa mga false result, i call nalng sa mismong validation method if false
-        if(validateForm("gradeLevelEditForm","⚠️ Please fill in all required fields!") 
-          && validateForm("confirmationModal","⚠️ Please enter the Admin Password!")){
+        if (
+          validateForm(
+            "gradeLevelEditForm",
+            "⚠️ Please fill in all required fields!"
+          ) &&
+          validateForm(
+            "confirmationModal",
+            "⚠️ Please enter the Admin Password!"
+          )
+        ) {
           if (await validateAdminPassword()) {
             editGradeLevel();
             closeConfirmationModal();
@@ -827,24 +910,33 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "addSubject":
         // This case is for adding subject level
-        if(validateForm("subjectForm","⚠️ Please fill in all required fields!")) {
-          if (await validateAdminPassword()){
-          addSubject();
-          closeConfirmationModal();
+        if (
+          validateForm("subjectForm", "⚠️ Please fill in all required fields!")
+        ) {
+          if (await validateAdminPassword()) {
+            addSubject();
+            closeConfirmationModal();
           }
         }
 
         break;
       case "editSubject":
-        if(validateForm("subjectEditForm","⚠️ Please fill in all required fields!")) {
-          if (await validateAdminPassword()){
+        if (
+          validateForm(
+            "subjectEditForm",
+            "⚠️ Please fill in all required fields!"
+          )
+        ) {
+          if (await validateAdminPassword()) {
             editSubject();
-            closeConfirmationModal();}
+            closeConfirmationModal();
+          }
         }
         break;
       case "deleteSubject":
-        if (await validateAdminPassword()){
-          deleteSubject(selectedSubjectId);}
+        if (await validateAdminPassword()) {
+          deleteSubject(selectedSubjectId);
+        }
         break;
       case "addTeacher":
         addTeacher();
@@ -899,8 +991,9 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("Activation blocked.");
           return; // 🚀 Stop the function from running
         }
-        if (await validateAdminPassword()){
-          activateSemester();}
+        if (await validateAdminPassword()) {
+          activateSemester();
+        }
         break;
       case "deactivateSemester":
         deactivateSemester();
@@ -912,8 +1005,9 @@ document.addEventListener("DOMContentLoaded", function () {
         addNewScholarship();
         break;
       case "deleteScholarshipType":
-        if (await validateAdminPassword()){
-          deletescholarship();}
+        if (await validateAdminPassword()) {
+          deletescholarship();
+        }
         break;
       case "transfereeAddListing":
         alert("at transfereeAddListing");
@@ -949,40 +1043,43 @@ document.addEventListener("DOMContentLoaded", function () {
         proceedToEnrolled(enrollmentIdLet);
         break;
       case "addFee":
-        if(validateForm("feesManagementForm")) {
+        if (validateForm("feesManagementForm")) {
           addFee();
           closeConfirmationModal();
         }
         break;
       case "addDistributable":
-      if(validateForm("distributableManagementModal")) {
+        if (validateForm("distributableManagementModal")) {
           addDistributable();
           closeConfirmationModal();
-      }
-      break;
+        }
+        break;
       case "editFee":
         // This case is for editing the fee payment
-        if(validateForm("feesManagementEditModal")) {
-          if (await validateAdminPassword()){
-          editFee();
-          closeConfirmationModal();
+        if (validateForm("feesManagementEditModal")) {
+          if (await validateAdminPassword()) {
+            editFee();
+            closeConfirmationModal();
           }
         }
         break;
       case "editDistributable":
-        if(validateForm("distributableManagementEditModal")) {
-          if (await validateAdminPassword()){
+        if (validateForm("distributableManagementEditModal")) {
+          if (await validateAdminPassword()) {
             editDistributable();
-            closeConfirmationModal();}
+            closeConfirmationModal();
+          }
         }
         break;
       case "deleteFee":
-      if (await validateAdminPassword()){
-        deleteFee();}
+        if (await validateAdminPassword()) {
+          deleteFee();
+        }
         break;
       case "deleteDistributable":
-        if (await validateAdminPassword()){
-          deleteDistributable();}
+        if (await validateAdminPassword()) {
+          deleteDistributable();
+        }
         break;
       case "savePaymentTrans":
         savePaymentTrans();
@@ -1018,7 +1115,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function validateAdminPassword() {
     var pw = document.getElementById("adminPassword").value;
     const response = await fetch(`/authentication/confirm-pw?pw=${pw}`);
-    if(response.ok){
+    if (response.ok) {
       return true;
     }
     showErrorModal("⚠️ Incorrect Admin Password!");
@@ -1044,7 +1141,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  function validateForm(formId,errorMsg="⚠️ Please fill in all required fields!") {
+  function validateForm(
+    formId,
+    errorMsg = "⚠️ Please fill in all required fields!"
+  ) {
     alert(formId);
     let form = document.getElementById(formId);
     if (!form) {
@@ -1310,7 +1410,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (target.id === "confirmAction") {
       const action = target.getAttribute("data-confirm-action");
       handleConfirmAction(action, event);
-``
+      ``;
       // Only close confirmation modal if validation passes
       alert("at validateForm(studentForm)");
       if (validateForm("studentForm")) {
@@ -2760,5 +2860,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 2. Change href to "#"
       anchor.setAttribute("href", "#");
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const menuBtn = document.querySelector(".menu-btn");
+    const menuDropdown = document.querySelector(".menu-dropdown");
+
+    menuBtn.addEventListener("click", () => {
+        menuDropdown.classList.toggle("show");
+    });
+
+    // Close the dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+        if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+            menuDropdown.classList.remove("show");
+        }
     });
 });

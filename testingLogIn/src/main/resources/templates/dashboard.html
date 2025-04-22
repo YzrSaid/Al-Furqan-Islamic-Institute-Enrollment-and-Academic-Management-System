@@ -15,6 +15,8 @@
         <div class="sticky-header">
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
             <div class="text-link">
                 <h4>Dashboard</h4>
@@ -22,7 +24,6 @@
         </div>
 
         <div class="analytics-container">
-            <!-- sort buttons -->
             <div class="sort-btns-container">
                 <div class="sort-year">
                     <label for="school-year">Year</label>
@@ -42,7 +43,6 @@
             <div class="chart-box">
                 <div class="card-container">
                     <div class="card-grid">
-                        <!-- Row 1 -->
                         <a href="/enrollment/enrolled" class="card-link">
                             <div class="card">
                                 <h3 class="card-title" id="num-enrolled">95</h3>
@@ -63,8 +63,7 @@
                                 <p class="card-label">Graduates</p>
                             </div>
                         </a>
-
-                        <!-- Row 2 (centered) -->
+                      
                         <div class="card-row-center">
                             <a href="/reports/teacher" class="card-link">
                                 <div class="card">
@@ -81,10 +80,9 @@
                             </a>
                         </div>
                     </div>
-
                 </div>
             </div>
-            <div class="chart-box">
+            <div class="chart-box-graph">
                 <div class="graph-container">
                     <div class="title">
                         <h6 id="graphTitle">Enrollment by Gender</h6>
@@ -110,8 +108,7 @@
                     </div> <br>
 
                     <div class="recent-transactions-container">
-                        <!-- Table -->
-                        <table id="realginnas" class="mini-table">
+                        <table id="recent-transactions" class="mini-table">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -129,7 +126,7 @@
                                     <td>2025-04-01</td>
                                     <td>TXN-001234</td>
                                     <td>₱1,500.00</td>
-                                    <td><button class="btn">View</button></td>
+                                    <td><button type="button" class="btn mini-table-btn">View</button></td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
@@ -137,7 +134,7 @@
                                     <td>2025-04-02</td>
                                     <td>TXN-001235</td>
                                     <td>₱2,000.00</td>
-                                    <td><button class="btn">View</button></td>
+                                    <td><button type="button" class="btn mini-table-btn">View</button></td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
@@ -145,7 +142,7 @@
                                     <td>2025-04-03</td>
                                     <td>TXN-001236</td>
                                     <td>₱1,800.00</td>
-                                    <td><button class="btn">View</button></td>
+                                    <td><button type="button" class="btn mini-table-btn">View</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -231,15 +228,15 @@
         document.getElementById('filter').addEventListener('change', function (e) {
             updateChartData(e.target.value);
         });
-        
+
         fetch("/schoolyear/all")
             .then(response => {
-                if(!response.ok){throw new Error(`HTTP error! Status: ${response.status}`);}
+                if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`); }
                 return response.json();
             })
-            .then(sys =>{
+            .then(sys => {
                 var school_year_dd = document.getElementById("school-year");
-                sys.forEach(sy=>{
+                sys.forEach(sy => {
                     let option = document.createElement("option");
                     option.value = sy.schoolYearNum;
                     option.textContent = sy.schoolYear;
@@ -254,23 +251,23 @@
         setCounts();
     });
 
-    async function setCounts(){
+    async function setCounts() {
         var sem = document.getElementById("semester-sort").value;
         var sy = document.getElementById("school-year").value;
         const response = await fetch(`/statistics/counts?semester=${sem}&schoolYear=${sy}`);
-        if(response.ok){
+        if (response.ok) {
             const counts = await response.json();
             //console.log(counts);
             setFirstTableContents(counts.enrolledCount,
-                                    counts.preEnrolledCount,
-                                    counts.graduatesCount,
-                                    counts.passedCount,
-                                    counts.retainedCount);
-        }else{
-            setFirstTableContents(0,0,0,0,0);
+                counts.preEnrolledCount,
+                counts.graduatesCount,
+                counts.passedCount,
+                counts.retainedCount);
+        } else {
+            setFirstTableContents(0, 0, 0, 0, 0);
         }
     }
-    function setFirstTableContents(enrolled,pre_enrolled,graduates,passed,failed){
+    function setFirstTableContents(enrolled, pre_enrolled, graduates, passed, failed) {
         document.getElementById("num-enrolled").textContent = enrolled;
         document.getElementById("num-pre-enrolled").textContent = pre_enrolled;
         document.getElementById("graduates-student").textContent = graduates;
@@ -291,7 +288,7 @@
         var didPassed = document.getElementById("sort-bar-graph").value === "passed";
         var gradeLabels = [];
         var gradeRates = [];
-        
+
         const response = await fetch(`/statistics/rates?semester=${sem}&schoolYear=${sy}&didPassed=${didPassed}`);
         if (response.ok) {
             const ratesResult = await response.json();

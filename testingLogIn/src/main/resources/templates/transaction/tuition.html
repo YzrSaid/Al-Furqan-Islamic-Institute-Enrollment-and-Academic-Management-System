@@ -767,7 +767,6 @@
                 })
                 .catch(error => {
                     console.error("Error adding payment:", error);
-                    alert("Failed to add payment. Please try again.");
                 });
         }
 
@@ -781,6 +780,7 @@
         }
 
         function viewTheReceipt(receipt) {
+            console.log(receipt);
             receipt = JSON.parse(receipt);
             document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
             document.getElementById("receipt-date").value = receipt.date;

@@ -74,7 +74,7 @@ public class DiscountsServices {
     }
 
     @CacheEvict(value = {"enrollmentPage"},allEntries = true)
-    public boolean addStudentDiscount(int discountId, List<Integer> studentIds){
+    public void addStudentDiscount(int discountId, List<Integer> studentIds){
         Discount discount = discRepo.findById(discountId).orElse(null);
         assert discount != null;
         studentIds.forEach(studentId -> {
@@ -92,7 +92,6 @@ public class DiscountsServices {
             studDiscRepo.save(studentDiscount);
             updateStudentFees(student);
         });
-        return true;
     }
 
     //para mag update ng student info

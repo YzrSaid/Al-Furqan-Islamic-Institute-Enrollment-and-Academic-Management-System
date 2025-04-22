@@ -40,7 +40,7 @@ public class DistributableController {
     @PutMapping("/update")
     public ResponseEntity<String> updateDistributable(@RequestBody DistributableDTO newDistributable){
         distributableServices.updateDistributable(newDistributable);
-        return new ResponseEntity<>("Distributable edited successfully",HttpStatus.OK);
+        return new ResponseEntity<>("Distributable edited successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{itemId}")

@@ -988,7 +988,6 @@ document.addEventListener("DOMContentLoaded", function () {
         savePaymentTrans();
         break;
       case "savePayment":
-        // This case is for adding payment
         if (!validateForm("addPaymentModal")) {
           showErrorModal("⚠️ Please fill in all required fields!");
           return;

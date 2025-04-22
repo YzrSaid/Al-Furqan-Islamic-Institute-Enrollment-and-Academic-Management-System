@@ -165,8 +165,8 @@ public class PaymentRecordService {
             for (GradeLevelRequiredFees reqFee : requiredFees) {
                 double paidAmount = Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber())).orElse(0.0d);
                 double initialAmount = reqFee.getRequiredFee().getRequiredAmount();
-                double discountedAmount = NonModelServices.adjustDecimal(initialAmount - ((initialAmount*std.getTotalPercentageDiscount())+std.getTotalFixedDiscount()));
-                double remainingBalance = discountedAmount - paidAmount;
+                double discountedAmount = initialAmount - ((initialAmount*std.getTotalPercentageDiscount())+std.getTotalFixedDiscount());
+                double remainingBalance = NonModelServices.adjustDecimal(discountedAmount - paidAmount);
                 if(remainingBalance>0){
                     studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(reqFee.getRequiredFee(),remainingBalance,paidAmount,discountedAmount));
                     totalBalance+=remainingBalance;}

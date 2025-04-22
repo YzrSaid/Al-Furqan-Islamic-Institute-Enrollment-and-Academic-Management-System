@@ -207,7 +207,7 @@
                     </div>
                     <div class="full-width-row">
                         <div>
-                            Apply this fee to current semester: <input type="checkbox" id="applyThisSemEdit">
+                            The following fee applies to the current semester: <input type="checkbox" id="applyThisSemEdit">
                         </div>
                     </div>
 
@@ -320,6 +320,7 @@
                     <div class="action">
 
                     <img class="edit-fee" data-id="${payment.id}" data-name="${payment.name}"
+                    data-isActive="${payment.currentlyActive}"
                     data-amount="${payment.requiredAmount}" data-grade-levels="${payment.gradeLevelNames.join(',')}"
                     data-open-modal="feesManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon" title="Click to Edit Fee Information">
                     
@@ -358,7 +359,7 @@
         const requestData = {
             name: paymentName,
             requiredAmount: parseFloat(amount),
-            gradeLevelNames: selectedGradeLevels,
+            gradeLevels: selectedGradeLevels,
             distributable: isDistributable,
             willApplyNow: willApplyThisSem
         };
@@ -396,12 +397,12 @@
         document.querySelectorAll("input[name='gradeLevels']:checked").forEach(checkbox => {
             selectedGradeLevels.push(checkbox.value); // Add the selected grade level to the array
         });
-
+        alert(selectedGradeLevels);
         const updatedFeeData = {
             id: paymentId,
             name: paymentName,
             requiredAmount: requiredAmount,
-            gradeLevelNames: selectedGradeLevels,
+            gradeLevels: selectedGradeLevels,
             willApplyNow: willApplyThisSem
         };
 
@@ -484,7 +485,7 @@
                     checkbox.type = "checkbox";
                     checkbox.id = `grade-${gradeLevel.levelId}`;
                     checkbox.name = "gradeLevels";
-                    checkbox.value = gradeLevel.levelName;
+                    checkbox.value = gradeLevel.levelId;
 
                     const label = document.createElement("label");
                     label.htmlFor = `grade-${gradeLevel.levelId}`;
@@ -510,13 +511,15 @@
                 const paymentName = target.getAttribute("data-name"); // Get the payment name
                 const requiredAmount = target.getAttribute("data-amount"); // Get the amount
                 const gradeLevelNames = target.getAttribute("data-grade-levels").split(","); // Get the grade level names (as an array)
-
+                var val = target.getAttribute("data-isActive");
+                var isActive = val === "true" || val;
                // console.log("Selected Payment ID:", selectedPaymentId); // Debugging
                // console.log("Grade Level Names:", gradeLevelNames); // Debugging
 
                 // Set the payment name and amount in the form
                 document.getElementById("paymentNameEdit").value = paymentName;
                 document.getElementById("amountEdit").value = requiredAmount;
+                document.getElementById("applyThisSemEdit").checked = isActive;
 
                 // Store the ID in the form
                 document.getElementById("feesManagementEditModal").dataset.id = selectedPaymentId;
@@ -542,7 +545,7 @@
                     checkbox.type = "checkbox";
                     checkbox.id = `grade-${gradeLevel.levelId}`;
                     checkbox.name = "gradeLevels";
-                    checkbox.value = gradeLevel.levelName;
+                    checkbox.value = gradeLevel.levelId;
 
                     const label = document.createElement("label");
                     label.htmlFor = `grade-${gradeLevel.levelId}`;

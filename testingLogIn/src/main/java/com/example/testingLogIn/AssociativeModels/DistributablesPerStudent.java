@@ -30,6 +30,7 @@ public class DistributablesPerStudent {
 
     private boolean isReceived;
     private LocalDate dateReceived;
+    private boolean isNotDeleted;
 
     @ManyToOne
     @JoinColumn(name = "semester", nullable = false)
@@ -42,6 +43,7 @@ public class DistributablesPerStudent {
                 .sem(sem)
                 .dateReceived(null)
                 .isReceived(false)
+                .isNotDeleted(true)
                 .build();
     }
 

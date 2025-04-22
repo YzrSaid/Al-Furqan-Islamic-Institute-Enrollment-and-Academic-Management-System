@@ -30,13 +30,13 @@ public class ErrorHandlers {
     @ExceptionHandler(NoHandlerFoundException.class)
     public RedirectView handleNoHandlerFoundException(NoHandlerFoundException ex,
                                                       RedirectAttributes redirectAttributes) {
-        System.out.println("Not allowed");
         redirectAttributes.addFlashAttribute("errorMessage", "The requested resource was not found.");
         return new RedirectView("/home"); // Redirect to a custom error page
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> exceptionHandler(Exception e){
+        e.printStackTrace();
         return new ResponseEntity<>("Server Error",HttpStatus.CONFLICT);
     }
 }

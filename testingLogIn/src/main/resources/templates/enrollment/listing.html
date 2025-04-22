@@ -16,6 +16,9 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link" id="breadcrumb-container">
                 <h4>Listing</h4>
                 <a href="/home">Main</a>
@@ -29,6 +32,29 @@
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
                         <button type="button" onclick="goList(1)" class="search-btn">Search</button>
+                    </div>
+
+                    <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
+                    <div class="menu-container">
+                        <button type="button" class="menu-btn" aria-label="More options">
+                            <span class="menu-icon">⋮</span>
+                        </button>
+                        <div class="menu-dropdown">
+                            <button type="button" class="menu-item" data-open-modal="newStudentModal"
+                                title="Add New Student">Add New Student</button>
+                            <div class="menu-sort-container">
+                                <select title="sort" name="sort" onchange="goList(1)" id="sort-select"
+                                    class="sort-select">
+                                    <option value="All" selected>All</option>
+                                    <option value="Listing">Listing</option>
+                                    <option value="Assessment">Assessment</option>
+                                    <option value="Payment">Payment</option>
+                                    <option value="Enrolled">Enrolled</option>
+                                    <option value="Not_registered">Not listed</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Enrollment Buttons -->
@@ -92,7 +118,7 @@
                         <div class="header">
                             <div class="half-unique">
                                 <label for="student-id">Student ID: </label>
-                                <input type="text" id="student-id">
+                                <input type="text" class="student-id-report" id="student-id">
                             </div> <br>
 
                             <div class="other-info-container">
@@ -165,9 +191,9 @@
                                     <div>
                                         <label for="name">Name</label>
                                         <div class="student-form-group half">
-                                            <input type="text" id="firstName">
-                                            <input type="text" id="middleName">
-                                            <input type="text" id="lastName">
+                                            <input type="text" class="name" id="firstName">
+                                            <input type="text" class="name" id="middleName">
+                                            <input type="text" class="name" id="lastName">
                                         </div>
                                         <div class="small-text">
                                             <p>First</p>
@@ -180,10 +206,10 @@
                                     <!-- Gender, BDate, and Scholar -->
                                     <div class="student-form-group half-stud-info-small">
                                         <label for="gender">Gender:</label>
-                                        <input type="text" id="gender">
+                                        <input type="text" class="gender" id="gender">
 
                                         <label for="birthdate">Birthdate:</label>
-                                        <input type="date" id="birthdate" readonly>
+                                        <input type="date" class="birthdate" id="birthdate" readonly>
                                     </div>
                                 </div>
 
@@ -192,10 +218,10 @@
                                         <div>
                                             <label for="address">Address:</label>
                                             <div class="student-form-group half-unique">
-                                                <input readonly type="text" id="street" required placeholder="Street">
-                                                <input readonly type="text" id="barangay" required
+                                                <input readonly type="text" class="address" id="street" required placeholder="Street">
+                                                <input readonly type="text" class="address" id="barangay" required
                                                     placeholder="Barangay">
-                                                <input readonly type="text" id="city" required placeholder="City">
+                                                <input readonly type="text" class="address" id="city" required placeholder="City">
                                             </div>
                                         </div>
                                     </div>
@@ -220,30 +246,30 @@
                             <h6>Father's Information</h6>
                             <div class="student-form-group">
                                 <label for="fatherName">Name:</label>
-                                <input type="text" id="fatherName">
+                                <input type="text" class="parent-name" id="fatherName">
 
                                 <label for="fatherOccupation">Occupation:</label>
-                                <input type="text" id="fatherOccupation">
+                                <input type="text" class="parent-occupation" id="fatherOccupation">
                             </div> <br>
                         </div>
                         <div>
                             <h6>Mother's Information</h6>
                             <div class="student-form-group">
                                 <label for="motherName">Name:</label>
-                                <input type="text" id="motherName">
+                                <input type="text" class="parent-name" id="motherName">
 
                                 <label for="motherOccupation">Occupation:</label>
-                                <input type="text" id="motherOccupation">
+                                <input type="text" class="parent-occupation" id="motherOccupation">
                             </div> <br>
                         </div>
 
                         <h6>Guardian's Information</h6>
                         <div class="student-form-group">
                             <label for="guardianName">Name:</label>
-                            <input type="text" id="guardianName">
+                            <input type="text" class="parent-name" id="guardianName">
 
                             <label for="guardianOccupation">Occupation:</label>
-                            <input type="text" id="guardianOccupation">
+                            <input type="text" class="parent-occupation" id="guardianOccupation">
                         </div> <br>
 
                         <div class="student-form-group">
@@ -456,11 +482,11 @@
                     <label for="student-grade-name">Student Name:</label>
                     <h6 id="student-grade-name">Martin Francisco</h6>
                 </div> <br>
-    
+
                 <!-- Grades Table -->
                 <div id="preRequisite-grades"></div>
             </div>
-          
+
             <!-- Close button -->
             <div class="modal-buttons">
                 <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
@@ -787,7 +813,8 @@
                     data-message="Are you sure you want to save this payment?">Save Payment
                 </button>
 
-                <button type="button" id="payment-closer" class="btn-cancel" data-close-modal="addPaymentModal">Cancel</button>
+                <button type="button" id="payment-closer" class="btn-cancel"
+                    data-close-modal="addPaymentModal">Cancel</button>
             </div>
         </div>
 
@@ -815,7 +842,7 @@
         }
 
         const apiUrl = `/enrollment/add/payment/${enrollmentIdLet}/${sectionNumberLet}`;
-       // console.log(`🔄 Sending request to: ${apiUrl}`);
+        // console.log(`🔄 Sending request to: ${apiUrl}`);
 
         fetch(apiUrl, {
             method: "PUT",
@@ -823,7 +850,7 @@
         })
             .then(response => response.text().then(text => ({ text, status: response.status })))
             .then(({ text, status }) => {
-               // console.log(`🔹 API Response (${status}): ${text}`);
+                // console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
                     showSuccessModal("✅ Success: New student has been added successfully!", false);
@@ -848,8 +875,8 @@
                 // Get the selected section number value
                 sectionNumberLet = document.querySelector("#section").value;
 
-               // console.log("Enrollment ID:", enrollmentIdLet);
-               // console.log("Selected Section:", sectionNumberLet);
+                // console.log("Enrollment ID:", enrollmentIdLet);
+                // console.log("Selected Section:", sectionNumberLet);
             }
         });
         goList();
@@ -936,7 +963,7 @@
             const data = await response.json();
             populateGradeLevelDropdown(data);
         } catch (error) {
-           // console.error("Error fetching grade levels:", error);
+            // console.error("Error fetching grade levels:", error);
         }
     }
 
@@ -1050,7 +1077,7 @@
 
     function proceedToEnrolled(enrollmentIdLet) {
         const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;
-       // console.log(`🔄 Sending request to: ${apiUrl}`);
+        // console.log(`🔄 Sending request to: ${apiUrl}`);
 
         fetch(apiUrl, {
             method: "PUT",
@@ -1058,7 +1085,7 @@
         })
             .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
             .then(({ text, status }) => {
-               // console.log(`🔹 API Response (${status}): ${text}`);
+                // console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
                     showSuccessModal("✅ Success: Student successfully enrolled!", false);
@@ -1145,12 +1172,12 @@
         document.querySelectorAll("input[name='transferRequirements']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
-       // console.log(selectedTransReq);
+        // console.log(selectedTransReq);
         const selectedDiscounts = [];
         document.querySelectorAll("input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedDiscounts.push(checkbox.value);
         });
-       // console.log(selectedTransReq);
+        // console.log(selectedTransReq);
         const birthplace =
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
@@ -1342,7 +1369,7 @@
                 showErrorModal(errorMessage);
             }
         } catch (error) {
-           // console.error("Error proceeding to assessment:", error);
+            // console.error("Error proceeding to assessment:", error);
             showErrorModal("Transaction failed. Try again.");
         }
     }
@@ -1369,7 +1396,7 @@
             })
             .then(gradeLevels => {
                 if (!Array.isArray(gradeLevels) || gradeLevels.length === 0) {
-                   // console.warn("No grade levels received or data is not an array.");
+                    // console.warn("No grade levels received or data is not an array.");
                     return;
                 }
 
@@ -1379,7 +1406,7 @@
 
                 gradeLevels.forEach((grade, index) => {
                     if (!grade.levelId || !grade.levelName) {
-                       // console.warn(`Invalid grade level at index ${index}:`, grade);
+                        // console.warn(`Invalid grade level at index ${index}:`, grade);
                         return;
                     }
 
@@ -1690,10 +1717,10 @@
     document.getElementById("nextPage").addEventListener("click", () => {
         if (currentPage < document.getElementById("pageInput").max) {
             currentPage++;
-           // console.log("Navigating to page:", currentPage);
+            // console.log("Navigating to page:", currentPage);
             goList(currentPage);
         } else {
-           // console.log("Cannot navigate to next page");
+            // console.log("Cannot navigate to next page");
         }
     });
 
@@ -1732,7 +1759,7 @@
             //console.log("✅ YES detected, showing transferee sections.");
             transfereeSections.forEach(section => section.style.display = "block");
         } else {
-           // console.log("❌ NO detected, hiding transferee sections.");
+            // console.log("❌ NO detected, hiding transferee sections.");
             transfereeSections.forEach(section => section.style.display = "none");
         }
     }
@@ -1830,7 +1857,7 @@
             const enteredValue = parseFloat(this.value);
 
             if (enteredValue > maxValue) {
-                showErrorModal("Maximum amount is "+maxValue);
+                showErrorModal("Maximum amount is " + maxValue);
                 this.value = maxValue;
             }
         });
@@ -1853,8 +1880,8 @@
         data.feesAndBalance.forEach(par => {
             const paymentItem = document.createElement("div");
             paymentItem.classList.add("payment-item");
-           // console.log(par);
-           // console.log(par.balance);
+            // console.log(par);
+            // console.log(par.balance);
             const input = document.createElement("input");
             input.type = "checkbox";
             input.name = par.fee.name;
@@ -1883,17 +1910,17 @@
         }
 
         if (!studentId) {
-        //    console.error(
-        //         "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
-        //     );
-            return;     
+            //    console.error(
+            //         "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
+            //     );
+            return;
         }
 
         fetch(`/student-grades/student/${studentId}/${preRequisiteId}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    const studentGradesMap = new Map(Object.entries(data.content));
-                    preRequisiteGradesDiv.innerHTML = `
+            .then((response) => response.json())
+            .then((data) => {
+                const studentGradesMap = new Map(Object.entries(data.content));
+                preRequisiteGradesDiv.innerHTML = `
                         <table class="view-grades-table main-table">
                         <thead>
                             <tr>
@@ -1909,42 +1936,42 @@
                             </tr>
                         </tbody>
                     </table>`;
-                    if (studentGradesMap.size === 0) {
-                        return;
-                    }
-                    preRequisiteGradesDiv.innerHTML = ``;
-                    let count = 0; // make sure this is defined above the forEach
-                    let rowContainer;
+                if (studentGradesMap.size === 0) {
+                    return;
+                }
+                preRequisiteGradesDiv.innerHTML = ``;
+                let count = 0; // make sure this is defined above the forEach
+                let rowContainer;
 
-                    studentGradesMap.forEach((values, key) => {
-                        let gradeTotal = 0;
-                        let gradeCount = 0;
-                        let gradesRow = ``;
+                studentGradesMap.forEach((values, key) => {
+                    let gradeTotal = 0;
+                    let gradeCount = 0;
+                    let gradesRow = ``;
 
-                        values.forEach((grade) => {
-                            gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
-                            gradeCount++;
-                            gradesRow += `
+                    values.forEach((grade) => {
+                        gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
+                        gradeCount++;
+                        gradesRow += `
         <tr>
             <td>${grade.subjectName}</td>
             <td>${grade.subjectName}</td>
             <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
         </tr>`;
-                        });
+                    });
 
-                        let avg = gradeTotal / gradeCount;
+                    let avg = gradeTotal / gradeCount;
 
-                        // Format the key: "Grade 1 - Section 2 : 2025-2026-Second sem"
-                        const [sectionPart, rest] = key.split(":");
-                        const restParts = rest.trim().split("-");
-                        const sy = `${restParts[0]}-${restParts[1]}`;
-                        const sem = restParts.slice(2).join(" ").replace(/\bfirst\b/i, "1st").replace(/\bsecond\b/i, "2nd");
-                        const formattedHeader = `${sectionPart.trim()} | SY: ${sy} (${sem})`;
+                    // Format the key: "Grade 1 - Section 2 : 2025-2026-Second sem"
+                    const [sectionPart, rest] = key.split(":");
+                    const restParts = rest.trim().split("-");
+                    const sy = `${restParts[0]}-${restParts[1]}`;
+                    const sem = restParts.slice(2).join(" ").replace(/\bfirst\b/i, "1st").replace(/\bsecond\b/i, "2nd");
+                    const formattedHeader = `${sectionPart.trim()} | SY: ${sy} (${sem})`;
 
 
-                        const gradeWrapper = document.createElement("div");
-                        gradeWrapper.className = "grade-wrapper";
-                        gradeWrapper.innerHTML = `
+                    const gradeWrapper = document.createElement("div");
+                    gradeWrapper.className = "grade-wrapper";
+                    gradeWrapper.innerHTML = `
         <h6 class="grades-header">${formattedHeader}</h6>
         <table class="view-grades-table main-table">
             <thead>
@@ -1963,18 +1990,18 @@
             </tbody>
         </table>`;
 
-                        // Group every 2 wrappers in a row
-                        if (count % 2 === 0) {
-                            rowContainer = document.createElement("div");
-                            rowContainer.className = "grades-row";
-                            preRequisiteGradesDiv.appendChild(rowContainer);
-                        }
+                    // Group every 2 wrappers in a row
+                    if (count % 2 === 0) {
+                        rowContainer = document.createElement("div");
+                        rowContainer.className = "grades-row";
+                        preRequisiteGradesDiv.appendChild(rowContainer);
+                    }
 
-                        rowContainer.appendChild(gradeWrapper);
-                        count++;
-                    });
-                })
-                .catch((error) => console.error("Error fetching grade level:", error));
+                    rowContainer.appendChild(gradeWrapper);
+                    count++;
+                });
+            })
+            .catch((error) => console.error("Error fetching grade level:", error));
     }
 
     let enrollmentIdLet = null;
@@ -2021,7 +2048,7 @@
                 dateInput.value = formattedDate; // Correct local date
                 dateInput.readOnly = true;       // Make it readonly
             } else {
-               // console.error("Date input field not found in the modal");
+                // console.error("Date input field not found in the modal");
             }
 
 
@@ -2035,7 +2062,7 @@
                 document.getElementById("school-year").value = data.schoolYear.schoolYear;
 
             } catch (error) {
-               // console.error("Error fetching current active school year:", error);
+                // console.error("Error fetching current active school year:", error);
             }
 
             // Fetch and populate payment list

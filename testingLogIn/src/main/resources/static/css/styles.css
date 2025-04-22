@@ -42,22 +42,27 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow-y: auto;
+  /* padding-bottom: 10px; */
+  padding: 2rem 0.5rem;
 }
 #right-login-block h3 {
-  width: 50%;
+  width: 60%;
   text-align: center;
   font-weight: 900;
   font-size: 1.5em;
 }
 #right-signup-block h3 {
-  width: 50%;
+  width: 60%;
   text-align: center;
   font-weight: 900;
   font-size: 1.5em;
 }
 .school-logo {
-  height: 150px;
-  width: 150px;
+  height: 200px;
+  width: 200px;
   border-radius: 50%;
 }
 
@@ -65,7 +70,6 @@ body {
   background-color: rgb(101, 224, 104);
   width: 60%;
   height: 100vh;
-  overflow: hidden;
   position: relative;
 }
 
@@ -80,7 +84,6 @@ body {
   background-color: rgb(101, 224, 104);
   width: 60%;
   height: 100vh;
-  overflow: hidden;
   position: relative;
 }
 
@@ -95,12 +98,12 @@ body {
   margin-top: 5%;
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 60%;
 }
 #signup-form {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 60%;
 }
 #forgot-password-header {
   font-weight: bold;
@@ -228,8 +231,8 @@ body {
   align-items: center;
 }
 #signup-header .school-logo {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
 }
 #signup-header h3 {
   font-size: 25px;
@@ -377,6 +380,12 @@ body {
   min-height: 100vh;
   background-color: rgb(255, 255, 255);
 }
+.dashboard-container,
+#content {
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+}
 .account-text {
   margin-left: 5px;
   font-size: 15px;
@@ -401,7 +410,8 @@ body {
   gap: 10px;
   padding: 0 20px;
 }
-.chart-box {
+.chart-box,
+.chart-box-graph {
   flex: 1;
 }
 
@@ -575,6 +585,11 @@ body {
   height: 25px;
   cursor: pointer;
 }
+
+.hamburger {
+  width: 50px;
+  height: 50px;
+}
 .user-icon img {
   width: 40px;
   height: 40px;
@@ -736,7 +751,7 @@ body {
 .dropdown-logout-content {
   display: none;
   position: absolute;
-  top: 10%;
+  top: 40%;
   transform: translateX(-80%);
   background-color: #f9f9f9;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
@@ -795,13 +810,12 @@ body {
   gap: 20px;
 }
 
-/* Style the search container */
 .search-container {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-/* Style the sort container */
+
 .sort-container {
   display: flex;
   justify-content: flex-end;
@@ -809,7 +823,66 @@ body {
   gap: 10px;
 }
 
-/* Style the search input */
+.menu-container {
+  display: none;
+  position: relative;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.menu-icon {
+  font-size: 25px;
+  color: #333;
+  font-weight: 900;
+}
+
+.menu-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 1000;
+  width: 200px;
+  min-width: 200px;
+  box-sizing: border-box;
+}
+.menu-sort-container select {
+  width: 100%;
+  padding: 8px;
+  background-color: whitesmoke;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.menu-item {
+  text-align: center !important;
+}
+.menu-dropdown.show {
+  display: block;
+}
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.menu-item:hover {
+  background-color: #f0f0f0;
+}
+
 .search-input {
   padding: 5px 12px;
   width: 350px;
@@ -874,23 +947,19 @@ select option[value=""] {
 
 .listing-table th:nth-child(1),
 .listing-table td:nth-child(1) {
-  width: 10%;
+  width: 20%;
 }
 .listing-table th:nth-child(2),
 .listing-table td:nth-child(2) {
-  width: 30%;
+  width: 40%;
 }
 .listing-table th:nth-child(3),
 .listing-table td:nth-child(3) {
-  width: 15%;
+  width: 20%;
 }
 .listing-table th:nth-child(4),
 .listing-table td:nth-child(4) {
   width: 20%;
-}
-.listing-table th:nth-child(5),
-.listing-table td:nth-child(5) {
-  width: 10%;
 }
 
 .payment-table th:nth-child(1),
@@ -1334,13 +1403,11 @@ table td {
 }
 
 .status {
-  /* background-color: #28a745; */
   color: rgb(231, 20, 20);
   padding: 5px 0px;
   border-radius: 5px;
   font-weight: 500;
   width: 145px;
-  /* padding: 0px 25px; */
   font-size: 13px;
   text-align: center;
   height: 30px;
@@ -2699,7 +2766,6 @@ input[type="checkbox"] {
 .scholarship-modal-content,
 .scholarship-edit-modal-content {
   background: white !important;
-  padding: 30px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
@@ -3757,13 +3823,13 @@ input.staff-id-report {
 }
 
 #stud-type-row h6,
-#staff-type-row h6 {
+#staff-type-row h6{
   font-weight: bold;
   margin-top: 10px;
   display: flex;
 }
 #stud-type-row,
-#staff-type-row {
+#staff-type-row{
   gap: 10px;
   min-width: 150px;
 }
@@ -4571,6 +4637,10 @@ th {
   transform: none;
 }
 
+.checkbox h6 {
+    margin: 0;
+}
+
 .styled-popover h6 {
   text-align: center;
 }
@@ -4689,124 +4759,613 @@ a {
   background: #f9f9f9;
 }
 
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 100vh;
+  height: 100dvh;
+  background-color: #fff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.collapsed-sidebar {
+  transform: translateX(-100%);
+}
+
+#content {
+  transition: margin-left 0.3s ease-in-out;
+  margin-left: 320px;
+}
+
+.collapsed-content {
+  margin-left: 0 !important;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 900; /* Below sidebar, above content */
+  display: none;
+}
+
+.show-overlay {
+  display: block;
+}
+
+/* .hamburger span {
+  width: 100%;
+  height: 3px;
+  background-color: #ffffff;
+  transition: all 0.3s ease-in-out;
+} */
+
 /* BOSS BATTLE */
-@media (max-width: 768px) {
+/* 💻 Small Laptop/Desktop */
+@media (max-width: 1280px) {
+  #right-login-block h3 {
+    text-align: center;
+    width: 60%;
+    font-size: 20px;
+  }
+
+  #login-form {
+    width: 60%;
+  }
+  img.school-logo {
+    width: 150px;
+    height: 150px;
+  }
+
+  #right-signup-block h3 {
+    text-align: center;
+    width: 50%;
+    font-size: 20px;
+  }
+
+  #right-signup-block,
+  #right-login-block {
+    justify-content: center;
+  }
+}
+
+/* Tablet (Landscape */
+@media (max-width: 1278px) {
+  #right-login-block h3 {
+    text-align: center;
+    width: 60%;
+    font-size: 20px;
+  }
+
+  #right-signup-block h3 {
+    text-align: center;
+    width: 55%;
+    font-size: 18px;
+  }
+
+  #login-form {
+    width: 60%;
+  }
+  img.school-logo {
+    width: 150px;
+    height: 150px;
+  }
+  #right-signup-block .school-logo {
+    width: 120px;
+    height: 120px;
+  }
+
+  #signup-form {
+    width: 70%;
+  }
+}
+
+/* 📲 Tablet Portrait real (1024x768) */
+@media (max-width: 1023px) {
   .wrapper {
     flex-direction: column;
   }
 
-  #left-login-block {
+  #left-login-block,
+  #left-signup-block {
     display: none;
   }
 
-  #left-login-block img {
+  #left-login-block img,
+  #left-signup-block img {
     object-position: center;
   }
 
-  #right-login-block {
+  #right-login-block,
+  #right-signup-block {
     flex: none;
     padding: 0.5rem;
     width: 100%;
     height: 100vh;
   }
+
   .school-logo {
     margin-bottom: 20px;
   }
+
+  img.school-logo {
+    width: 200px;
+    height: 200px;
+  }
+
+  #right-signup-block .school-logo {
+    width: 150px;
+    height: 150px;
+  }
+
+  #right-login-block h3 {
+    text-align: center;
+    width: 60%;
+    font-size: 20px;
+  }
+
+  #right-signup-block h3 {
+    text-align: center;
+    width: 50%;
+    font-size: 22px;
+  }
+
+  #login-form {
+    width: 60%;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100vh;
+    background-color: #fff;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(0);
+  }
+
+  .collapsed-sidebar {
+    transform: translateX(-100%);
+  }
+
+  #content {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 320px;
+  }
+
+  .main-topbar {
+    gap: 0;
+  }
+
+  .collapsed-content {
+    margin-left: 0 !important;
+  }
+
+  .show-overlay {
+    display: block;
+  }
+
+  body.sidebar-active .hamburger {
+    position: relative;
+    left: 220px;
+    z-index: 1001;
+  }
+}
+ 
+
+/* Mobile Styles */
+@media (max-width: 767px) {
+  .listing-table th:nth-child(1),
+  .listing-table td:nth-child(1) {
+    width: 20%;
+  }
+  .listing-table th:nth-child(2),
+  .listing-table td:nth-child(2) {
+    width: 40%;
+  }
+  .listing-table th:nth-child(3),
+  .listing-table td:nth-child(3) {
+    width: 20%;
+  }
+  .listing-table th:nth-child(4),
+  .listing-table td:nth-child(4) {
+    width: 20%;
+  }
+  /* Sidebar */
+  #sidebar {
+    position: fixed; 
+    width: 80%;
+    max-width: 320px;
+    transform: translateX(-100%); 
+    z-index: 1000;
+  }
+
+  #sidebar.show-floating {
+    transform: translateX(0);
+  }
+
+  /* Content */
+  #content {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100%;
+    transition: none; 
+  }
+
+  /* Overlay */
+  .show-overlay {
+    display: block;
+    z-index: 900;
+  }
+
+  /* Hamburger Button in Mobile */
+  .hamburger {
+    transition: left 0.3s ease-in-out;
+  }
+  .hamburger img {
+    background-color: #ffffff;
+    width: 30px;
+    height: 30px;
+  }
+
+  body.sidebar-active .hamburger {
+    left: calc(100% - 50px);
+    top: -25px;
+    z-index: 1003;
+    background-color: #fff;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.2),
+      2px 0 8px rgba(0, 0, 0, 0.2);
+
+    border-radius: 0 5px 5px 0;
+    padding: 10px;
+  }
+  .dropdown-logout {
+    margin-bottom: 20px;
+  }
+
+  /* Other mobile styles (unchanged) */
+  .wrapper {
+    flex-direction: column;
+  }
+
+  #left-login-block,
+  #left-signup-block {
+    display: none;
+  }
+
+  #right-login-block,
+  #right-signup-block {
+    flex: none;
+    padding: 0.5rem;
+    width: 100%;
+    height: 100vh;
+  }
+
+  .school-logo {
+    margin-bottom: 20px;
+  }
+
+  img.school-logo {
+    width: 150px;
+    height: 150px;
+  }
+
+  #right-signup-block .school-logo {
+    width: 120px;
+    height: 120px;
+  }
+
   #right-login-block h3 {
     text-align: center;
     width: 75%;
     font-size: 20px;
   }
-  #login-form {
+
+  #right-signup-block h3 {
+    text-align: center;
+    width: 50%;
+    font-size: 18px;
+  }
+
+  #login-form,
+  #signup-form {
     width: 75%;
+  }
+
+  .institute-name {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  /* Dashboard Graph and Analythics */
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card-row-center {
+    grid-column: auto;
+    display: contents;
+  }
+
+  .card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .card-container {
+    height: auto;
+    padding: 0;
+  }
+
+  .chart-box-graph {
+    flex: none;
+  }
+  .chart-box,
+  .chart-box-graph,
+  .chart-box-recent,
+  .chart-box-bar {
+    width: 100%;
+    height: auto;
+  }
+  .chart-box-bar {
+    margin-bottom: 50px;
+  }
+  .title-row {
+    width: 100%;
+    flex-direction: column;
+  }
+  .filter-container-bar {
+    width: 60%;
+  }
+  .recent-transactions-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  #recent-transactions th,
+  #recent-transactions td {
+    font-size: 10px;
+    padding: 8px 15px;
+  }
+
+  .mini-table-btn {
+    font-size: 10px;
+    padding: 8px;
+  }
+
+  .sort-btns-container {
+    width: 100%;
+  }
+
+  option {
+    font-size: 12px;
+  }
+
+  /* Enrollment */
+  .table-wrapper {
+    width: 100%;
+    min-height: 40dvh;
+    overflow-x: auto;
+    padding: 0 15px;
+  }
+  .status-container {
+    gap: 20px;
+  }
+  .pagination-container span,
+  .pagination-controls input,
+  #pageSizeSelector {
+    font-size: 12px !important;
+  }
+  .text-link {
+    gap: 20px;
+    width: 100%;
+    overflow-y: auto;
+  }
+  .text-link p,
+  .text-link a {
+    font-size: 12px;
+  }
+  .text-link h4 {
+    font-size: 18px;
+  }
+  .listing-status,
+  .assessment-status,
+  .payment-status,
+  .enrolled-status,
+  .enrollment-cancelled,
+  .not-registered-status,
+  .qualified-status,
+  .not-qualified-status,
+  .complete-status,
+  .incomplete-status {
+    font-weight: bolder;
+    font-size: 10px;
+  }
+  .search-container input {
+    font-size: 12px;
+  }
+  .status {
+    width: 50px;
+  }
+  .main-table,
+  .listing-table {
+    /* table-layout: fixed; */
+    width: 100% !important;
+  }
+  .main-table th,
+  .main-table td {
+    font-size: 10px;
+    padding: 8px 15px;
+  }
+
+  /* Listing */
+  .search-div {
+    flex-direction: column; /* Stack rows vertically */
+    align-items: stretch;
+  }
+
+  .left-section {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .search-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-input {
+    width: 100%; 
+    box-sizing: border-box;
+  }
+
+  .menu-btn {
+    margin-left: auto;
+  }
+
+  .enrollment-buttons {
+    display: none;
+  }
+  .menu-dropdown {
+    width: auto;
+  }
+
+  .menu-container {
+    display: block;
+    width: auto;
+  }
+
+  .sort-container {
+    display: none;
   }
 }
 
-/* Tablet screens */
-/* @media (min-width: 576px) {
-  #right-signup-block h3,
-  #signup-form {
-    width: 80%;
+/* Fix blinking glitch: Hide sidebar by default on mobile */
+@media (max-width: 767px) {
+  #sidebar:not(.show-floating) {
+    transform: translateX(-100%);
   }
-} */
+}
 
-/* Medium to large devices */
-/* @media (min-width: 768px) {
-  #left-signup-block {
-    display: block;
-    width: 50%;
-  }
-
-  #left-signup-block img {
+/* 📱 Large Phones (414x896) */
+@media (max-width: 413px) {
+  #right-login-block {
+    flex: none;
+    padding: 0.5rem;
     width: 100%;
-    height: 100vh;
-    object-fit: cover;
-    object-position: center;
+    height: 100dvh;
+    padding-top: 20rem;
+    overflow-y: scroll !important;
   }
 
   #right-signup-block {
-    width: 50%;
-    height: 100vh;
+    flex: 1;
+    padding: 0.5rem;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto !important;
+  }
+
+  .wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    height: 100dvh;
+    overflow: hidden;
   }
 
-  #right-signup-block h3,
-  #signup-form {
-    width: 75%;
+  .school-logo {
+    margin-bottom: 0px;
+  }
+
+  img.school-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  #right-signup-block .school-logo {
+    width: 70px;
+    height: 70px;
+  }
+
+  #right-login-block h3 {
     text-align: center;
+    width: 75%;
+    font-size: 17px;
   }
-} */
 
-/* Large desktops */
-/* @media (min-width: 1200px) {
-  #right-signup-block h3,
-  #signup-form {
-    width: 60%;
+  #right-signup-block h3 {
+    text-align: center;
+    width: 50%;
+    font-size: 15px;
   }
-} */
 
-/* Tablet screens */
-/* @media (min-width: 576px) {
+  #login-form {
+    width: 75%;
+  }
+
   #signup-form {
     width: 80%;
-  }
-} */
-
-/* Medium and large screens */
-/* @media (min-width: 768px) {
-  #left-login-block {
-    display: block;
-    width: 50%;
+    gap: 5px;
   }
 
-  #left-login-block img {
-    width: 100%;
+  #signup-form input,
+  #signup-form select {
+    padding: 5px;
+  }
+  #signup-form label {
+    font-size: 12px;
+  }
+
+  #signup-form #login-btn {
+    padding: 8px;
+  }
+
+  .account-type-div {
+    gap: 0;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
     height: 100vh;
-    object-fit: cover;
-    object-position: center;
+    background-color: #fff;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(0);
   }
 
-  #right-login-block {
-    width: 50%;
-    height: 100vh;
-    padding: 2rem;
+  .collapsed-sidebar {
+    transform: translateX(-100%);
   }
 
-  #signup-form {
-    width: 75%;
+  #content {
+    transition: margin-left 0.3s ease-in-out;
+    margin-left: 320px;
   }
 
-  .forgot-password-text {
-    padding: 0 2rem;
+  .collapsed-content {
+    margin-left: 0 !important;
   }
-} */
-
-/* Larger desktops */
-/* @media (min-width: 1200px) {
-  #signup-form {
-    width: 60%;
-  }
-} */
-
+}

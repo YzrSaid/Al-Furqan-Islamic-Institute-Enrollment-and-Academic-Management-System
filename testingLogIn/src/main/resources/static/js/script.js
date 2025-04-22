@@ -1009,6 +1009,9 @@ document.addEventListener("DOMContentLoaded", function () {
       case "editDiscounts":
         updateDiscounts();
         break;
+      case "editStudentReport":
+        updateStudentRecord();
+        break;
       default:
         alert("Unknown action: " + action);
         return;

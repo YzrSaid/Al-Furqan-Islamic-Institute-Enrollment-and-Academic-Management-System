@@ -127,6 +127,7 @@ public class Student{
                         .isTransferee(isTransferee)
                         .madrasaName(madrasaName)
                         .lastGradeLevelCompleted(Optional.ofNullable(lastGradeLevelCompleted).map(GradeLevel::getLevelName).orElse(null))
+                        .lastGradeLevelId(Optional.ofNullable(lastGradeLevelCompleted).map(GradeLevel::getLevelId).orElse(0))
                         .lastMadrasaYearCompleted(lastMadrasaYearCompleted)
                         .madrasaAddress(madrasaAddress)
                         .transfereeRequirements(transfereeRequirements.stream().filter(StudentTransfereeRequirements::isNotDeleted).map(s-> s.getRequirement().getId()).toList())

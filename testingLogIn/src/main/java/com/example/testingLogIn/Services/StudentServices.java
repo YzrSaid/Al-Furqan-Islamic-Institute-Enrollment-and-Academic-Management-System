@@ -1,11 +1,9 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.CustomObjects.PagedResponse;
-import com.example.testingLogIn.CustomObjects.StudentHandler;
 import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
@@ -137,48 +135,43 @@ public class StudentServices {
         return studentRepo.findById(studentId).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
     }
     @CacheEvict(value = "enrollmentPage",allEntries = true)
-    public boolean updateStudent(StudentDTO stud){
+    public String updateStudent(int studentId, StudentDTO stud){
         String fullName = stud.getFirstName()+" "+ Optional.ofNullable(stud.getMiddleName()).map(mn -> mn+" ").orElse(" ")+stud.getLastName();
-        String sectionName = stud.getCurrentGradeSection().substring(stud.getCurrentGradeSection().indexOf("-")+1);
-        GradeLevel gradeLevel = gradeLevelRepo.findById(stud.getLastGradeLevelId()).orElse(null);
-        Section section = sectionServices.getSectionByName(sectionName);
-        Student toUpdate = studentRepo.findById(stud.getStudentId()).orElseThrow(NullPointerException::new);
-        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(stud.getStudentId(),fullName.toLowerCase()))//checks if a student with not the same ID has the same name
-            return false;
-        else{
-            toUpdate.setFirstName(stud.getFirstName());
-            toUpdate.setLastName(stud.getLastName());
-            toUpdate.setMiddleName(stud.getMiddleName());
-            toUpdate.setFullName(fullName);
-            toUpdate.setCellphoneNum(stud.getCellphoneNum());
-            toUpdate.setGender(stud.getGender());
-            toUpdate.setStreet(stud.getAddress().getStreet());
-            toUpdate.setBarangay(stud.getAddress().getBarangay());
-            toUpdate.setCity(stud.getAddress().getCity());
-            toUpdate.setBirthdate(stud.getBirthdate());
-            toUpdate.setBirthPlace(stud.getBirthPlace());
-            toUpdate.setCurrentGradeSection(section);
-            
-            toUpdate.setMotherName(stud.getMotherName());
-            toUpdate.setMotherOccupation(stud.getMotherOccupation());
-            toUpdate.setFatherName(stud.getFatherName());
-            toUpdate.setMotherOccupation(stud.getMotherOccupation());
-            toUpdate.setGuardianName(stud.getGuardianName());
-            toUpdate.setGuardianAddress(stud.getGuardianAddress());
-            toUpdate.setGuardianContactNum(stud.getGuardianContactNum());
-            toUpdate.setGuardianOccupation(stud.getGuardianOccupation());
-            
-            toUpdate.setScholar(stud.isScholar());
-            toUpdate.setTransferee(stud.isTransferee());
-            toUpdate.setMadrasaName(stud.getMadrasaName());
-            toUpdate.setMadrasaAddress(stud.getMadrasaAddress());
-            toUpdate.setLastGradeLevelCompleted(gradeLevel);
-            toUpdate.setLastMadrasaYearCompleted(stud.getLastGradeLevelCompleted());
-            studentRepo.save(toUpdate);
-            if(!toUpdate.isScholar())
-                CompletableFuture.runAsync(() -> discountsServices.removeStudentDiscounts(toUpdate.getStudentId()));
-            return true;
-        }
+        Student toUpdate = studentRepo.findById(studentId).orElseThrow(()->new NullPointerException("Student record not found"));
+        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(studentId,fullName.toLowerCase()))//checks if a student with not the same ID has the same name
+            throw new IllegalArgumentException("Student Full Name Already Exists");
+
+        toUpdate.setFirstName(stud.getFirstName());
+        toUpdate.setLastName(stud.getLastName());
+        toUpdate.setMiddleName(stud.getMiddleName());
+        toUpdate.setFullName(fullName);
+        toUpdate.setCellphoneNum(stud.getCellphoneNum());
+        toUpdate.setGender(stud.getGender());
+        toUpdate.setStreet(stud.getAddress().getStreet());
+        toUpdate.setBarangay(stud.getAddress().getBarangay());
+        toUpdate.setCity(stud.getAddress().getCity());
+        toUpdate.setBirthdate(stud.getBirthdate());
+        toUpdate.setBirthPlace(stud.getBirthPlace());
+
+        toUpdate.setMotherName(stud.getMotherName());
+        toUpdate.setMotherOccupation(stud.getMotherOccupation());
+        toUpdate.setFatherName(stud.getFatherName());
+        toUpdate.setMotherOccupation(stud.getMotherOccupation());
+        toUpdate.setGuardianName(stud.getGuardianName());
+        toUpdate.setGuardianAddress(stud.getGuardianAddress());
+        toUpdate.setGuardianContactNum(stud.getGuardianContactNum());
+        toUpdate.setGuardianOccupation(stud.getGuardianOccupation());
+
+        toUpdate.setScholar(stud.isScholar());
+        toUpdate.setTransferee(stud.isTransferee());
+        toUpdate.setMadrasaName(stud.getMadrasaName());
+        toUpdate.setMadrasaAddress(stud.getMadrasaAddress());
+        toUpdate.setLastGradeLevelCompleted(gradeLevelRepo.findById(stud.getLastGradeLevelId()).orElse(null));
+        toUpdate.setLastMadrasaYearCompleted(stud.getLastGradeLevelCompleted());
+        toUpdate.setLastMadrasaYearCompleted(stud.getLastMadrasaYearCompleted());
+        studentRepo.save(toUpdate);
+
+        return fullName;
     }
             
     public boolean deleteStudent(int studentId){

@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="report-main-btns-right">
-                    <button type="button" class="btn-gray" id="editStudInfo"
+                    <button onclick="setUpEditForm()" type="button" class="btn-gray" id="editStudInfo"
                         data-open-modal="studentInformationEditModal">Edit</button>
                     <button type="button" class="btn-neutral" id="printGrade"
                         data-open-modal="studentInformationPrintModal">Print</button>
@@ -254,39 +254,8 @@
 
                             <div class="checkbox-container other-info-container">
                                 <div class="checkbox">
-                                    <label for="scholar-edit">Scholar:</label>
-                                    <input type="checkbox" id="scholar-edit">
-
-                                    <button type="button" id="dropdown-edit-scholar">
-                                        <img src="/images/icons/arrow-down.png" alt="dropdown-icon">
-                                    </button>
-
-                                    <div id="edit-scholar-popover" name="add-discount" class="styled-popover">
-                                    </div>
-                                </div>
-
-                                <div class="checkbox">
                                     <label for="isTransferee-edit">Transferee:</label>
-                                    <input type="checkbox" id="isTransferee-edit">
-
-                                    <button type="button" id="dropdown-edit-transferee">
-                                        <img src="/images/icons/arrow-down.png" alt="dropdown-icon">
-                                    </button>
-
-                                    <div id="edit-transferee-popover" name="add-transferee-req" class="styled-popover">
-                                        <div class="transferee-requirements">
-                                            <h6>Requirements:</h6>
-                                            <div id="transfereeReq-edit" class="checkbox-transferee-reqs-group">
-                                            </div>
-
-                                            <div>
-                                                <button type="button" style="width: 100%;" data-action="editGradeLevel"
-                                                    data-message="Are you sure you want to update the transferee requirements?"
-                                                    onclick="updateRequirements()" class="btn-confirm">Update</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                    <input type="checkbox" name="amITransferee" id="isTransferee-edit">
                                 </div>
                             </div>
                         </div>
@@ -301,9 +270,9 @@
                                     <div>
                                         <label for="name-edit">Name</label>
                                         <div class="student-form-group half">
-                                            <input type="text" required class="name" id="firstNameEdit">
-                                            <input type="text" required class="name" id="middleNameEdit">
-                                            <input type="text" required class="name" id="lastNameEdit">
+                                            <input name="firstName" type="text" required class="name" id="firstNameEdit">
+                                            <input name="middleName" type="text" required class="name" id="middleNameEdit">
+                                            <input name="lastName" type="text" required class="name" id="lastNameEdit">
                                         </div>
                                         <div class="small-text">
                                             <p>First</p>
@@ -315,10 +284,13 @@
                                 <div class="column2">
                                     <div class="student-form-group half-stud-info-small" style="margin-bottom: 0px;">
                                         <label for="gender-edit">Gender:</label>
-                                        <input type="text" required class="gender" id="gender-edit">
+                                        <select type="text" name="gender" required class="gender" id="gender-edit">
+                                            <option value="MALE">Male</option>
+                                            <option value="FEMALE">Female</option>
+                                        </select>
 
                                         <label for="birthdate-edit">Birthdate:</label>
-                                        <input required type="date" class="birthdate" id="birthdate-edit">
+                                        <input required name="birthdate" type="date" class="birthdate" id="birthdate-edit">
                                     </div>
                                 </div>
 
@@ -326,11 +298,11 @@
                                     <div>
                                         <label for="address-edit">Address:</label>
                                         <div class="student-form-group half-unique">
-                                            <input type="text" class="address" id="street-edit" required
+                                            <input name=street type="text" class="address" id="street-edit" required
                                                 placeholder="Street">
-                                            <input type="text" class="address" id="barangay-edit" required
+                                            <input name="barangay" type="text" class="address" id="barangay-edit" required
                                                 placeholder="Barangay">
-                                            <input type="text" class="address" id="city-edit" required
+                                            <input name="city" type="text" class="address" id="city-edit" required
                                                 placeholder="City">
                                         </div>
                                     </div>
@@ -338,7 +310,7 @@
                                     <div>
                                         <label>Place of Birth:</label>
                                         <div class="student-form-group">
-                                            <input type="text" required id="placeOfBirthEdit" class="place-of-birth-report">
+                                            <input name="birthPlace" type="text" required id="placeOfBirthEdit" class="place-of-birth-report">
                                         </div>
                                     </div>
                                 </div>
@@ -353,61 +325,63 @@
                             <h6>Father's Information</h6>
                             <div class="student-form-group">
                                 <label for="fatherNameEdit">Name:</label>
-                                <input type="text" class="parent-name" required id="fatherNameEdit">
+                                <input name="fatherName" type="text" class="parent-name" required id="fatherNameEdit">
 
                                 <label for="fatherOccupationEdit">Occupation:</label>
-                                <input type="text" class="parent-occupation" required id="fatherOccupationEdit">
+                                <input name="fatherOccupation" type="text" class="parent-occupation" required id="fatherOccupationEdit">
                             </div> <br>
                         </div>
                         <div>
                             <h6>Mother's Information</h6>
                             <div class="student-form-group">
                                 <label for="motherNameEdit">Name:</label>
-                                <input type="text" class="parent-name" required id="motherNameEdit">
+                                <input name="motherName" type="text" class="parent-name" required id="motherNameEdit">
 
                                 <label for="motherOccupationEdit">Occupation:</label>
-                                <input type="text" class="parent-occupation" required id="motherOccupationEdit">
+                                <input name="motherOccupation" type="text" class="parent-occupation" required id="motherOccupationEdit">
                             </div> <br>
                         </div>
 
                         <h6>Guardian's Information</h6>
                         <div class="student-form-group">
                             <label for="guardianNameEdit">Name:</label>
-                            <input type="text" class="parent-name" required id="guardianNameEdit">
+                            <input name="guardianName" type="text" class="parent-name" required id="guardianNameEdit">
 
                             <label for="guardianOccupationEdit">Occupation:</label>
-                            <input type="text" class="parent-occupation" required id="guardianOccupationEdit">
+                            <input name="guardianOccupation" type="text" class="parent-occupation" required id="guardianOccupationEdit">
                         </div> <br>
 
                         <div class="student-form-group">
                             <label for="guardianContactNumberEdit">Contact Number:</label>
-                            <input type="text" class="guardian-number" required id="guardianContactNumberEdit">
+                            <input name="guardianContactNum" type="text" class="guardian-number" required id="guardianContactNumberEdit">
 
                             <label for="guardianAddressEdit">Address:</label>
-                            <input type="text" class="guardian-address" required id="guardianAddressEdit">
+                            <input name="guardianAddress"type="text" class="guardian-address" required id="guardianAddressEdit">
                         </div> <br>
 
-                        <div class="transferee-section">
+                        <div class="transferee-section" id="transfereeEditFields">
                             <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
                                 <h2>For Transferees Only</h2>
                             </div>
 
                             <div class="student-form-group">
                                 <label for="lastGradeLevelCompletedEdit">Last Grade Level Completed:</label>
-                                <input type="text" required id="lastGradeLevelCompletedEdit">
+                                <select name="lastGradeLevelId" type="text" required id="lastGradeLevelCompletedEdit">
+                                    <option value="0">None</option>
+                                </select>
 
                                 <label for="lastMadrasaYearCompletedEdit">Last Madrasa Year Completed</label>
-                                <input type="text" required id="lastMadrasaYearCompletedEdit">
+                                <input name="lastMadrasaYearCompleted"type="text" required id="lastMadrasaYearCompletedEdit">
                             </div> <br>
 
                             <div class="student-form-group">
                                 <label for="madrasaNameLastAttendedEdit">Madrasa Name Last Attended:</label>
-                                <input type="text" required id="madrasaNameLastAttendedEdit">
+                                <input name="madrasaName"type="text" required id="madrasaNameLastAttendedEdit">
                             </div> <br>
 
                             <div class="student-form-group">    
                                 <label for="madrasaAddressEdit">Madrasa Address:</label>
-                                <input type="text" required id="madrasaAddressEdit">
+                                <input name="madrasaAddress"type="text" required id="madrasaAddressEdit">
                             </div> <br>
                         </div>
                     </form>
@@ -416,7 +390,8 @@
 
                 <div class="modal-buttons">
                     <button type="button" id="confirmStudentReportEdit" class="btn-confirm" data-action="editStudentReport"
-                        data-message="Are you sure you want to update this record?">Edit</button>
+                        data-open-modal="confirmationModal"
+                        data-message="Are you sure you want to update this student record?">Save Changes</button>
 
                     <button type="button" class="btn-cancel"
                         data-close-modal="studentInformationEditModal">Cancel</button>
@@ -438,14 +413,22 @@
 
                         <div class="checkbox-container other-info-container">
                             <div class="checkbox">
-                                <label for="scholar">Scholar:</label>
-                                <input type="checkbox" id="scholar">
+                                <label for="isScholar">Scholar:</label>
+                                <h6 id="isScholar">Yes</h6>
 
                                 <button type="button" id="dropdown-report-scholar"> <img
                                         src="/images/icons/arrow-down.png" alt="dropdown-icon">
                                 </button>
 
                                 <div id="report-scholar-popover" name="add-discount" class="styled-popover">
+                                    <div id="discounts-rec" class="checkbox-transferee-reqs-group">
+                                    </div>
+                                    <div>
+                                        <button type="button" style="width: 100%;"
+                                            data-open-modal="confirmationModal" data-action="editDiscounts"
+                                            data-message="Are you sure you want to update the student discounts?"
+                                            class="btn-confirm">Update</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -577,26 +560,10 @@
                         <input readonly type="text" class="guardian-address" id="guardianAddress">
                     </div> <br>
 
-                    <div class="transferee-section">
+                    <div class="transferee-section" id="transfereeFields">
                         <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
                             <h2>For Transferees Only</h2>
                         </div>
-
-                        <!-- Transferee Requirements Section -->
-                        <div class="transferee-requirements">
-                            <h4>Requirements</h4>
-                            <div id="transReqRecord" class="checkbox-transferee-reqs-group">
-                                <!--naka check na daan ang mga filled-->
-                            </div>
-
-                            <!-- Update Button -->
-                            <div style="margin-top: 15px;">
-                                <button type="button" data-action="editGradeLevel"
-                                    data-message="Are you sure you want to update this grade level?"
-                                    id="updateRequirementsBtn" class="btn-confirm">Update</button>
-                            </div>
-                        </div>
-
                         <div class="student-form-group">
                             <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
                             <input readonly type="text" id="lastGradeLevelCompleted">
@@ -836,6 +803,23 @@
                 </div>
             </div>
 
+                    <!-- Error Modal -->
+            <div id="errorModal" class="modal">
+                <div class="modal-content scroll-lock">
+                    <p id="errorMessage"></p>
+                    <div class="modal-buttons">
+                        <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Background overlay -->
+            <div id="successModalOverlay"></div>
+
+            <!-- Success modal -->
+            <div id="successModal">
+                <p id="successModalMessage"></p>
+            </div>
+
         </div>
 </body>
 <script>
@@ -844,15 +828,60 @@
         const wordArray = (path.split("/"));
         const studentName = ((wordArray[wordArray.length - 1]));
         findStudent(studentName);
+        
+        const transfereeCheckbox = document.getElementById("isTransferee");
+        const transfereeFields = document.getElementById("transfereeFields");
+        const requiredInputs = transfereeFields.querySelectorAll("input, select, textarea");
+
+        transfereeCheckbox.addEventListener("change", function () {
+            if (this.checked) {
+                fetchTransRequirements();
+                transfereeFields.style.display = "block";
+                requiredInputs.forEach(input => {
+                    input.setAttribute("required", "required");
+                });
+            } else {
+                document.getElementById("transfereeReq").innerHTML = ``;
+                transfereeFields.style.display = "none";
+                requiredInputs.forEach(input => {
+                    input.removeAttribute("required");
+                });
+            }
+        });
+
+        const transfereeEditCheckbox = document.getElementById("isTransferee-edit");
+        const transfereeEditFields = document.getElementById("transfereeEditFields");
+        const requiredEditInputs = transfereeEditFields.querySelectorAll("input, select, textarea");
+
+        transfereeEditCheckbox.addEventListener("change", function () {
+            if (this.checked) {
+                transfereeEditFields.style.display = "block";
+                requiredEditInputs.forEach(input => {
+                    input.setAttribute("required", "required");
+                });
+            } else {
+                transfereeEditFields.style.display = "none";
+                requiredEditInputs.forEach(input => {
+                    input.removeAttribute("required");
+                });
+            }
+        });
+
     });
+    var student;
     var studentId;
     async function findStudent(studentName) {
         const response = await fetch(`/students/find-student/name/${studentName}`);
         if (!response.ok) { alert("student record no found"); }
-        const student = await response.json();
+        student = await response.json();
 
         //document.getElementById("stud-type").textContent = student.status;
-        //document.getElementById("transferee").textContent = (student.transferee === "true" || student.transferee) ? "YES" : "NO";
+        document.getElementById("isTransferee").checked = student.transferee;
+        if(student.transferee){
+            document.getElementById("transfereeFields").style.display = "block";
+        }
+        document.getElementById("isScholar").textContent =student.discountsAvailed > 0 ? "YES" : "NO";
+
         document.getElementById("student-id").value = student.studentDisplayId;
         document.getElementById("firstName").value = student.firstName;
         document.getElementById("middleName").value = student.middleName;
@@ -876,13 +905,65 @@
         document.getElementById("lastMadrasaYearCompleted").value = student.lastMadrasaYearCompleted;
         document.getElementById("madrasaNameLastAttended").value = student.madrasaName;
         document.getElementById("madrasaAddress").value = student.madrasaAddress;
-        fetchTransRequirements("transReqRecord", student.transfereeRequirements);
 
+        fetchTransRequirements(student.transfereeRequirements);
         studentId = student.studentId;
         fetchRemainingFees();
         setStudentGrades();
         setUpDistribution(student.fullName)
+        fetchDiscounts(student.discountsAvailed);
     }
+
+    async function setGradeLevels(elementId,selectedLvl){
+        const response = await fetch("/gradelevel/all");
+        var gradeOption = document.getElementById(elementId);
+        gradeOption.innerHTML = "<option value='0'>None</option>";
+        if(response.ok){
+            const gradeLevels = await response.json();
+            gradeLevels.forEach(gradeLevel =>{
+                var option = document.createElement("option");
+                option.textContent = gradeLevel.levelName;
+                option.value = gradeLevel.levelId;
+                if(selectedLvl === gradeLevel.levelId){
+                    console.log("true");
+                    option.selected = true;
+                }
+
+                gradeOption.appendChild(option);
+            });
+        }
+    }
+
+    function setUpEditForm(){
+        document.getElementById("student-id-edit").value = student.studentDisplayId;
+        document.getElementById("isTransferee-edit").checked = student.transferee;
+        if(student.transferee){
+            document.getElementById("transfereeEditFields").style.display = "block";
+        }
+        document.getElementById("firstNameEdit").value = student.firstName;
+        document.getElementById("middleNameEdit").value = student.middleName;
+        document.getElementById("lastNameEdit").value = student.lastName;
+        document.getElementById("gender-edit").value = student.gender;
+        document.getElementById("birthdate-edit").value = student.birthdate;
+        document.getElementById("placeOfBirthEdit").value = student.birthPlace;
+        document.getElementById("fatherNameEdit").value = student.fatherName;
+        document.getElementById("fatherOccupationEdit").value = student.fatherOccupation;
+        document.getElementById("motherNameEdit").value = student.motherName;
+        document.getElementById("motherOccupationEdit").value = student.motherOccupation;
+        document.getElementById("guardianNameEdit").value = student.guardianName;
+        document.getElementById("guardianOccupationEdit").value = student.fatherOccupation;
+        document.getElementById("guardianContactNumberEdit").value = student.guardianContactNum;
+        document.getElementById("guardianAddressEdit").value = student.guardianAddress;
+
+        document.getElementById("street-edit").value = student.address.street;
+        document.getElementById("barangay-edit").value = student.address.barangay;
+        document.getElementById("city-edit").value = student.address.city;
+        setGradeLevels("lastGradeLevelCompletedEdit",(student.lastGradeLevelCompleted ? student.lastGradeLevelCompleted.levelId : 0));
+        document.getElementById("lastMadrasaYearCompletedEdit").value = student.lastMadrasaYearCompleted;
+        document.getElementById("madrasaNameLastAttendedEdit").value = student.madrasaName;
+        document.getElementById("madrasaAddressEdit").value = student.madrasaAddress;
+    }
+
     async function setStudentGrades() {
         const response = await fetch(`/student-grades/student/${studentId}`);
         if (!response.ok) { return; }
@@ -991,6 +1072,37 @@
 
     }
 
+    async function updateStudentRecord(){
+        const form = document.getElementById('studentInformationFormEdit');
+
+        const formData = new FormData(form);
+
+        // Get all data as an object
+        const formDataObject = Object.fromEntries(formData.entries());
+        formDataObject.address = {
+            street: form.elements['street'].value,
+            barangay : form.elements['barangay'].value,
+            city : form.elements['city'].value
+        };
+
+        formDataObject.transferee = form.elements[`amITransferee`].value === "on";
+
+        const response = await fetch(`/students/update/${studentId}`,{
+            method : "PUT",
+            headers : { "Content-Type": "application/json" },
+            body : JSON.stringify(formDataObject)
+        });
+
+        const msgresult = await response.text();
+        if(response.ok){
+            showSuccessModal("Student Profile Updated Successfully",false);
+            setTimeout(() => {
+                window.location.href=`/reports/student/${msgresult}`;
+            }, 2000);
+        }else{
+            showErrorModal(msgresult);
+        }
+    }
 
     async function setUpDistribution(fullName) {
         try {
@@ -1103,7 +1215,109 @@
         });
     }
 
-    function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
+    function updateRequirements() {
+        const selectedTransReq = [];
+        document.querySelectorAll("#transfereeReq input[name='transferRequirements']:checked").forEach(checkbox => {
+            selectedTransReq.push(checkbox.value);
+        });
+        fetch(`/trans-req/add/student-requirements/${studentId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ids: selectedTransReq
+            }),
+        })
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        showSuccessModal(message);
+                    } else {
+                        showErrorModal(message); // Show the error message if the response is not ok
+                    }
+                });
+            })
+            .catch(error => {
+                showErrorModal(error.message || "An unexpected error occurred."); // Show an error modal in case of failure
+            });
+    }
+
+    function updateDiscounts() {
+        const selectedTransReq = [];
+        document.querySelectorAll("#discounts-rec input[name='studDiscounts']:checked").forEach(checkbox => {
+            selectedTransReq.push(checkbox.value);
+        });
+        alert(selectedTransReq+" ang sulod");
+        fetch(`/discounts/add-student-discounts/${studentId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ids: selectedTransReq
+            }),
+        })
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        showSuccessModal(message);
+                    } else {
+                        showErrorModal(message); // Show the error message if the response is not ok
+                    }
+                });
+            })
+            .catch(error => {
+                showErrorModal(error.message || "An unexpected error occurred."); // Show an error modal in case of failure
+            });
+    }
+
+    function fetchDiscounts(discIds = [], popoverId = "discounts-rec") {
+        const popover = document.getElementById(popoverId);
+        if (!popover) return //console.error(`Element with ID ${popoverId} not found.`);
+
+        popover.innerHTML = ``;
+
+        fetch("/discounts/all")
+            .then(response => response.json())
+            .then(data => {
+                // Create and append the heading
+                const heading = document.createElement("h6");
+                heading.textContent = "Scholarship Types:";
+                popover.appendChild(heading);
+
+                const discountWrapper = document.createElement("div");
+                discountWrapper.classList.add("checkbox-container-popover");
+
+                data.forEach(disc => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("checkbox-each");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `disc-${disc.discountId}`;
+                    checkbox.name = "studDiscounts";
+                    checkbox.value = disc.discountId;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `disc-${disc.discountId}`;
+                    label.textContent = disc.discountName;
+
+                    if (discIds.includes(disc.discountId)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    discountWrapper.appendChild(paymentDiv);
+                });
+
+                popover.appendChild(discountWrapper);
+            })
+            .catch(error => console.error("Error fetching discounts:", error));
+    }
+
+    function fetchTransRequirements(reqIds = [],divId = "transfereeReq") {
         fetch("/trans-req/all")
             .then(response => response.json())
             .then(data => {

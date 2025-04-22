@@ -103,7 +103,7 @@
                                 <div class="checkbox-container">
                                     <div class="checkbox">
                                         <label for="scholar">Scholar:</label>
-                                        <h6>Yes</h6>
+                                        <h6 id="isScholar">Yes</h6>
 
                                         <button type="button" id="dropdown-scholar"> <img
                                                 src="/images/icons/arrow-down.png" alt="dropdown-icon">
@@ -601,11 +601,6 @@
                         </div>
 
                         <div class="transferee-requirements">
-                            <h4>Requirements</h4>
-                            <div id="transfereeReqRec" class="checkbox-transferee-reqs-group">
-                                <!--Ibutang ang mga transferee requiremetns dri-->
-                            </div>
-
                             <div class="student-form-group">
                                 <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
                                 <select id="lastGradeLevelIdCompleted" class="lastGradeLevelCompletedSelect">
@@ -1577,6 +1572,8 @@
         toUpdateRecStudent = studentId;
         document.getElementById("stud-type").textContent = studentProf.status;
         document.getElementById("isTransferee").checked = studentProf.transferee;
+        document.getElementById("isScholar").textContent =studentProf.discountsAvailed > 0 ? "YES" : "NO";
+
         document.getElementById("student-id").value = studentProf.studentDisplayId;
         document.getElementById("firstName").value = studentProf.firstName;
         document.getElementById("middleName").value = studentProf.middleName;

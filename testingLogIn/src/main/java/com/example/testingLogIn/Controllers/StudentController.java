@@ -85,18 +85,9 @@ public class StudentController {
         }
     }
     
-    @PutMapping("/update")
-    public ResponseEntity<String> updateStudent(@RequestBody StudentDTO student){
-        try{
-            if(!studentService.updateStudent(student))
-                return new ResponseEntity<>("Student Record Not Found",HttpStatus.NOT_FOUND);
-            else
-                return new ResponseEntity<>("Student Name Already Exist",HttpStatus.OK);
-        }catch(NullPointerException npe){
-            return new ResponseEntity<>("Student Record Not Found",HttpStatus.NOT_FOUND);
-        }catch(Exception e){
-            return new ResponseEntity<>("Transaction Failed",HttpStatus.CONFLICT);
-        }
+    @PutMapping("/update/{studentId}")
+    public ResponseEntity<String> updateStudent(@PathVariable int studentId, @RequestBody StudentDTO student){
+        return new ResponseEntity<>(studentService.updateStudent(studentId, student),HttpStatus.OK);
     }
     
     @DeleteMapping("/delete/{studentNumber}")

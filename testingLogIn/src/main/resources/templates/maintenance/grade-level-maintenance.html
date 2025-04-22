@@ -197,7 +197,7 @@
                 })
                 .catch(error => {
                     try {
-                        showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
+                        showErrorModal(error.message);
                     } catch {
                         showErrorModal("❌ Error: An unexpected error occurred.");
                     }
@@ -421,7 +421,7 @@
                     showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
                 });
         }
-        function deleteGradeLevel(selectedGradeLevelId) {
+        function deleteGradeLevel() {
             fetch(`/gradelevel/${selectedGradeLevelId}`, {
                 method: "DELETE",
             })
@@ -435,7 +435,7 @@
                     showSuccessModal("✅ Success: This record been deleted successfully!");
                 })
                 .catch(error => {
-                    showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
+                    showErrorModal(error.message);
                 });
         }
     </script>

@@ -763,7 +763,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "deleteGradeLevel":
         if (await validateAdminPassword()){
-          deleteGradeLevel(selectedGradeLevelId);}
+          deleteGradeLevel();}
         break;
       case "makeSchoolYearInactive":
         actionUrl = "/school-year/inactivate";

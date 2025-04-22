@@ -87,4 +87,16 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
     List<Student> getCurrentlyEnrolledToGrade(@Param("gradeId") int gradeId,
                                          @Param("semId") int semId);
 
+    @Query("""
+            SELECT COUNT(e) FROM Enrollment e
+            LEFT JOIN e.gradeLevelToEnroll gl
+            LEFT JOIN e.sectionToEnroll sec
+            JOIN e.SYSemester sem
+            WHERE sem.sySemNumber = :semId
+            AND e.isNotDeleted
+            AND (:levelId IS NULL OR gl.levelId = :levelId)
+            AND (:sectionId IS NULL OR sec.number = :sectionId)
+            """)
+    Optional<Long> countGradeLevelAndSection(int semId, Integer levelId, Integer sectionId);
+
 }

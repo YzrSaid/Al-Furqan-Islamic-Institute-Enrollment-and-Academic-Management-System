@@ -78,8 +78,7 @@ public class SubjectServices {
     }
             
     public boolean addNewSubject(int levelId,String subjectName, boolean applyNow){
-        Optional.ofNullable(gradeLevelService.getGradeLevel(levelId)).orElseThrow(NullPointerException::new);
-        
+        gradeLevelService.getGradeLevel(levelId);//icheck if nag exists ba ang grade level
         if(!doesSubjectNameExist(levelId,subjectName)){
             Subject sub=new Subject();
             sub.setNotDeleted(true);

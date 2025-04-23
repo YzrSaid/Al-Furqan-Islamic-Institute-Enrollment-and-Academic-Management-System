@@ -53,7 +53,7 @@ public class DistributableController {
     public ResponseEntity<PagedResponse> getStudentDistributions(@RequestParam(defaultValue = "1") int pageNo,
                                                                  @RequestParam(defaultValue = "10") int pageSize,
                                                                  @RequestParam(defaultValue = "") String student,
-                                                                 @RequestParam Integer itemType,
+                                                                 @RequestParam(defaultValue = "0") Integer itemType,
                                                                  @RequestParam boolean isClaimed,
                                                                  @RequestParam String sortBy){
         try {

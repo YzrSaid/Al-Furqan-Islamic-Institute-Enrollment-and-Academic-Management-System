@@ -179,7 +179,7 @@ public class DistributableServices {
         Page<DistributablesPerStudent> studentPage = disStudRepo.getStudentDistPage(student,isClaimed,item,pageRequest);
         return PagedResponse.builder()
                 .content(studentPage.getContent().stream().map(DistributablesPerStudent::DTOmapper).collect(Collectors.toList()))
-                .pageNo(studentPage.getNumber())
+                .pageNo(studentPage.getNumber()+1)
                 .pageSize(studentPage.getSize())
                 .totalElements(studentPage.getTotalElements())
                 .totalPages(studentPage.getTotalPages())

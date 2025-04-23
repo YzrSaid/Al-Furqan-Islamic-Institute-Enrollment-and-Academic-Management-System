@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/fragment :: commonHead}">
@@ -22,7 +22,7 @@
                 <p>/</p>
                 <a href="/reports/student">Reports - Student Reports</a>
                 <p>/</p>
-                <a href="/reports/student/{studentName}" title="You're currently on this page.">Reynolds Perkins</a>
+                <a href="/reports/student/{studentName}" id="studName" title="You're currently on this page.">Reynolds Perkins</a>
             </div>
 
             <div class="report-main-btns">
@@ -60,17 +60,17 @@
                 <h2>Claimed Resources</h2>
 
                 <div class="half-width view-studId" id="">
-                    <label for="student-grade-id">Student ID:</label>
-                    <h6 id="student-grade-id"></h6>
+                    <label for="student-resources-id">Student ID:</label>
+                    <h6 id="student-resources-id"></h6>
                 </div>
                 <div class="half-width view-studName" id="">
-                    <label for="student-grade-name">Student Name:</label>
-                    <h6 id="student-grade-name">Martin Francisco</h6>
+                    <label for="student-resources-name">Student Name:</label>
+                    <h6 id="student-resources-name">Martin Francisco</h6>
                 </div> <br>
 
                 <!-- Table -->
                 <div class="table-wrapper-printable">
-                    <table id="claimed-res-table" class="printable-table">
+                    <table id="claimed-res-table" class="printable-table main-table">
                         <thead>
                             <tr>
                                 <th>Item</th>
@@ -97,7 +97,7 @@
         <!-- viewPastTransactionsModal -->
         <div id="viewPastTransactionsModal" class="view-past-transactions-modal modal">
             <div class="view-past-transactions-modal-content scroll-lock">
-                <h2>Past Transactions</h2>
+                <h2>Fees Breakdown</h2>
 
                 <div class="half-width view-studId" id="">
                     <label for="student-grade-id">Student ID:</label>
@@ -110,13 +110,14 @@
 
                 <!-- Table -->
                 <div class="table-wrapper-printable">
-                    <table id="past-trans-table" class="printable-table">
+                    <table id="past-trans-table" class="printable-table main-table">
                         <thead>
                             <tr>
-                                <th>No.</th>
-                                <th>Date Paid</th>
-                                <th>Transaction No.</th>
-                                <th>Amount Paid</th>
+                                <th>Particular</th>
+                                <th>Total Amount</th>
+                                <th>Total Paid</th>
+                                <th>Balance</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -603,8 +604,8 @@
                                             <th>Name</th>
                                             <th>Req. Amount</th>
                                             <th>Paid</th>
-                                            <th>Status</th>
                                             <th>Amount</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -615,9 +616,8 @@
                             <div class="basic-modal-buttons">
                                 <h6>Balance:</h6>
                                 <h6 id="total-balance">P0</h6>
-                                <button type="button" class="btn-confirm" data-open-modal="viewPastTransactionsModal"
-                                    id="transaction-record-btn">View Past
-                                    Transactions</button>
+                                <button type="button" onclick="fetchAllTimeFees()" class="btn-confirm" data-open-modal="viewPastTransactionsModal"
+                                    id="transaction-record-btn">View Fees Breakdown</button>
                             </div>
 
                         </div>
@@ -630,16 +630,26 @@
                                         <tr>
                                             <th>Item</th>
                                             <th>Grade Level</th>
-                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     </tbody>
                                 </table>
+
+                                        <!-- Pagination -->
+                                <div class="pagination-container">
+                                    <div class="pagination-controls">
+                                        <span id="itemRangeDistU">1–10 of 37</span>
+                                        <button type="button" id="prevPageDistU">«</button>
+                                        <input type="number" id="pageInputDistU" min="1" value="1">
+                                        <span id="totalPagesDistU">of 4</span>
+                                        <button type="button" id="nextPageDistU">»</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="basic-modal-buttons">
-                                <button type="button" class="btn-confirm" data-open-modal="viewClaimedResourcesModal"
+                                <button onclick="fetchDistributedItems()" type="button" class="btn-confirm" data-open-modal="viewClaimedResourcesModal"
                                     id="unclaimed-resources-btn">View Claimed
                                     Resources</button>
                             </div>
@@ -906,11 +916,12 @@
         document.getElementById("madrasaNameLastAttended").value = student.madrasaName;
         document.getElementById("madrasaAddress").value = student.madrasaAddress;
 
+        setNameIdText();
         fetchTransRequirements(student.transfereeRequirements);
         studentId = student.studentId;
         fetchRemainingFees();
         setStudentGrades();
-        setUpDistribution(student.fullName)
+        setUpDistribution();
         fetchDiscounts(student.discountsAvailed);
     }
 
@@ -1104,10 +1115,12 @@
         }
     }
 
-    async function setUpDistribution(fullName) {
+    var currentDisPage;
+    async function setUpDistribution(currentPage = 1) {
         try {
             const claimed = false;
-            const response = await fetch(`/distributable/student-distribution/all?isClaimed=false&student=${fullName}&itemType=0&sortBy=none`);
+            currentDisPage = currentPage;
+            const response = await fetch(`/distributable/student-distribution/all?pageSize=3&pageNo=${currentDisPage}&isClaimed=false&student=${student.fullName}&itemType=0&sortBy=none`);
             if (!response.ok) {
                 //console.error("Failed to fetch data:", response.status);
                 return;
@@ -1125,7 +1138,7 @@
             tableBody.innerHTML = '';
 
             if (!data.content || data.content.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="3">No records found</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="2">No records found</td></tr>`;
                 return;
             }
 
@@ -1135,23 +1148,11 @@
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${studDis.itemName || 'N/A'}</td>
-                    <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="action-container action">
-                                <button
-                                    data-open-modal="confirmationModal" class="add-something-btn"
-                                    data-action="itemDistributed"
-                                    data-message="Confirm item is distributed to the student"
-                                    data-item-id="${studDis.distId}">Distribute
-                                </button>
-                            </div>
-                        </div>
-                    </td>`;
+                    <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>`;
                 fragment.appendChild(row);
             });
-
             tableBody.appendChild(fragment);
+            updatePaginationUIDistU(currentDisPage,data.pageSize,data.totalElements,data.totalPages);
 
         } catch (error) {
             const tableBody = document.querySelector("#table-ko tbody");
@@ -1161,24 +1162,6 @@
         }
     }
 
-    function confirmDistribution() {
-        fetch(`/distributable/student-distribution/received/${selectedDistId}`, {
-            method: 'PUT'
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(msg => {
-                showSuccessModal(msg);
-            })
-            .catch(error => {
-                //console.error('Error:', error);
-            });
-    }
-
     var selectedDistId;
     document.body.addEventListener("click", function (event) {
         const target = event.target.closest("[data-open-modal='confirmationModal']");
@@ -1186,6 +1169,66 @@
             selectedDistId = target.getAttribute("data-item-id");
         }
     });
+
+    async function fetchAllTimeFees() {
+        const feesTable = document.querySelector("#past-trans-table tbody");
+        const response = await fetch(`/paymentrecord/form/${studentId}?forBreakDown=true`);
+        if (!response.ok) { return; }
+
+        const remainingFees = await response.json();
+
+        feesTable.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
+        if (remainingFees.feesAndBalance.length === 0) { return; }
+        feesTable.innerHTML = ``;
+        remainingFees.feesAndBalance.forEach(data => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${data.fee.name}</td>
+                <td>${data.totalRequired}</td>
+                <td>${data.totalPaid}</td>
+                <td><span>P</span>${data.balance}</td>
+                <td>
+                    <div class="status-container">
+                        <div class="status" id="status-payments">${data.totalPaid > 0 && data.totalPaid<data.totalRequired ? "Partially Paid" :
+                                                                    data.balance === 0 ? "Fully Paid" : data.balance<0 ? "For Refund" :"Not Paid"}</div>
+                    </div>
+                </td>`;
+            feesTable.appendChild(row);
+        });
+    }
+
+    function setNameIdText(){
+        document.getElementById("studName").innerHTML=`<a href="/reports/student/${student.fullName}" id="studName" title="You're currently on this page.">${student.fullName}</a>`;
+        document.getElementById("student-grade-id").textContent=student.studentDisplayId;
+        document.getElementById("student-grade-name").textContent=student.fullName;
+        document.getElementById("student-resources-name").textContent=student.studentDisplayId;
+        document.getElementById("student-resources-id").textContent=student.fullName;
+    }
+
+    //go here
+    async function fetchDistributedItems(){
+        const response = await fetch(`/distributable/student-distribution/all?isClaimed=true&student=${student.fullName}&itemType=0&sortBy=none`);
+        if(response.ok){
+            const distributed = await response.json();
+            var claimedTable = document.querySelector("#claimed-res-table tbody")
+            claimedTable.innerHTML = "<tr><td colspan='3'>No records found.</td></tr>";
+            if(distributed.content.length === 0){
+                return;
+            }
+            claimedTable.innerHTML="";
+            const fragment = document.createDocumentFragment();
+            distributed.content.forEach(item => {
+                console.log(item);
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.itemName || 'N/A'}</td>
+                    <td>${item.gradeLevel?.levelName || 'N/A'}</td>
+                    <td>${item.dateReceived || 'N/A'}</td>`;
+                fragment.appendChild(row);
+            });
+            claimedTable.appendChild(fragment);
+        }
+    }
 
     async function fetchRemainingFees() {
         //console.log(`/paymentrecord/form/${studentId}`);
@@ -1205,12 +1248,12 @@
                 <td>${data.fee.name}</td>
                 <td>${data.totalRequired}</td>
                 <td>${data.totalPaid}</td>
+                <td><span>P</span>${data.balance}</td>
                 <td>
                     <div class="status-container">
                         <div class="status" id="status-payments">${data.totalPaid > 0 ? "Partially Paid" : "Not Paid"}</div>
                     </div>
-                </td>
-                <td><span>P</span>${data.balance}</td>`;
+                </td>`;
             feesTable.appendChild(row);
         });
     }
@@ -1348,6 +1391,48 @@
             })
             .catch(error => console.error("Error fetching grade levels:", error));
     }
+
+    function updatePaginationUIDistU(currentPage, pageSize, totalItems, totalPages) {
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
+
+            document.getElementById("itemRangeDistU").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInputDistU").value = currentPage;
+            document.getElementById("pageInputDistU").min = 1;
+            document.getElementById("pageInputDistU").max = totalPages;
+            document.getElementById("totalPagesDistU").textContent = `of ${totalPages}`;
+
+            document.getElementById("prevPageDistU").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPageDistU").disabled = currentPage >= totalPages || totalPages === 0;
+        }
+
+        document.getElementById("prevPageDistU").addEventListener("click", () => {
+            if (currentDisPage > 1) {
+                currentDisPage--;
+                setUpDistribution(currentDisPage);
+            }
+        });
+
+        document.getElementById("nextPageDistU").addEventListener("click", () => {
+            if (currentDisPage < document.getElementById("pageInputDistU").max) {
+                currentDisPage++;
+                console.log("Navigating to page:", currentDisPage);
+                setUpDistribution(currentDisPage);
+            } else {
+                console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInputDistU").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInputDistU").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentDisPage = page;
+                setUpDistribution(currentDisPage);
+            } else {
+                e.target.value = currentDisPage;
+            }
+        });
 </script>
 
 </html>

@@ -247,7 +247,7 @@ public class EnrollmentServices {
     public StudentPaymentForm getStudentPaymentStatus(int enrollmentId) {
         Enrollment er = enrollmentRepo.findById(enrollmentId).orElse(null);
         assert er != null;
-        return paymentRecordService.getStudentPaymentForm(er.getStudent().getStudentId(),er.getGradeLevelToEnroll().getLevelId());
+        return paymentRecordService.getStudentPaymentForm(er.getStudent().getStudentId(),er.getGradeLevelToEnroll().getLevelId(),false);
     }
 
     public List<StudentDTO> getEnrolledStudentsBySection(int sectionId){
@@ -260,7 +260,7 @@ public class EnrollmentServices {
     private EnrollmentDTO isComplete(Enrollment e) {
         if(e == null)
             return null;
-        StudentPaymentForm toPay = paymentService.getStudentPaymentForm(e.getStudent().getStudentId(), e.getGradeLevelToEnroll().getLevelId());
+        StudentPaymentForm toPay = paymentService.getStudentPaymentForm(e.getStudent().getStudentId(), e.getGradeLevelToEnroll().getLevelId(),false);
         boolean isComplete = true;
         for(FeesAndBalance fee : toPay.getFeesAndBalance()){
             if(fee.getTotalPaid() == 0){

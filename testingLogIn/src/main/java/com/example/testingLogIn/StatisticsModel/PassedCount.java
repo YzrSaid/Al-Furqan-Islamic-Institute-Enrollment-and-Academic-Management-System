@@ -2,7 +2,9 @@ package com.example.testingLogIn.StatisticsModel;
 
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 public class PassedCount {
 

@@ -147,7 +147,7 @@ public class PaymentRecordService {
         return tran.DTOmapper();
     }
 
-    public StudentPaymentForm getStudentPaymentForm(int studentId,  Integer gradeLevelId){
+    public StudentPaymentForm getStudentPaymentForm(int studentId,  Integer gradeLevelId, boolean forBreakDown){
         Student student = studentRepo.findById(studentId).orElse(null);
         SchoolYearSemester sem = SYSemRepo.findCurrentActive();
         Map<RequiredFees,Double> feesBalance = new HashMap<>();
@@ -173,14 +173,12 @@ public class PaymentRecordService {
             }
         }else{//For all time debt
             for(StudentFeesList sfl : studFeesRepo.findBySem(studentId,null)) {
-                if (!feesBalance.containsValue(sfl.getFee())) {
-                    double totalPaidAmount = Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, sfl.getFee().getId(), null)).orElse(0.0);//(studentId,feeId,null)
-                    double totalFeeBalance = studFeesRepo.totalPerFeesByStudent(studentId, sfl.getFee().getId());
-                    double remainingBalance = NonModelServices.adjustDecimal(totalFeeBalance - totalPaidAmount);
-                    if (remainingBalance > 0) {
-                        totalBalance += remainingBalance;
-                        studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance,totalPaidAmount,totalFeeBalance));
-                    }
+                double totalPaidAmount = Optional.ofNullable(paymentRepo.totalPaidForSpecificFee(studentId, sfl.getFee().getId(), null)).orElse(0.0);//(studentId,feeId,null)
+                double totalFeeBalance = studFeesRepo.totalPerFeesByStudent(studentId, sfl.getFee().getId());
+                double remainingBalance = NonModelServices.adjustDecimal(totalFeeBalance - totalPaidAmount);
+                if (remainingBalance > 0 || (forBreakDown && (totalPaidAmount + totalFeeBalance) > 0)) {
+                    totalBalance += remainingBalance;
+                    studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance,totalPaidAmount,totalFeeBalance));
                 }
             }
         }

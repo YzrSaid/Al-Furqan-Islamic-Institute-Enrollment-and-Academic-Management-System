@@ -196,14 +196,13 @@
                                             <input type="text" class="name" id="lastName">
                                         </div>
                                         <div class="small-text">
-                                            <p>First</p>
-                                            <p>Middle</p>
-                                            <p>Last</p>
+                                            <p class="first-name-p">First</p>
+                                            <p class="middle-name-p">Middle</p>
+                                            <p class="last-name-p">Last</p>
                                         </div>
                                     </div>
-                                </div>
+                                </div> 
                                 <div class="column2">
-                                    <!-- Gender, BDate, and Scholar -->
                                     <div class="student-form-group half-stud-info-small">
                                         <label for="gender">Gender:</label>
                                         <input type="text" class="gender" id="gender">
@@ -217,22 +216,23 @@
                                     <div class="student-form-group">
                                         <div>
                                             <label for="address">Address:</label>
-                                            <div class="student-form-group half-unique">
-                                                <input readonly type="text" class="address" id="street" required placeholder="Street">
+                                            <div class="student-form-group address-div half-unique">
+                                                <input readonly type="text" class="address" id="street" required
+                                                    placeholder="Street">
                                                 <input readonly type="text" class="address" id="barangay" required
                                                     placeholder="Barangay">
-                                                <input readonly type="text" class="address" id="city" required placeholder="City">
+                                                <input readonly type="text" class="address" id="city" required
+                                                    placeholder="City">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
+
                                 <div class="column2">
                                     <label>Place of Birth:</label>
                                     <div class="student-form-group">
-                                        <div class="student-form-group">
-                                            <input readonly type="text" id="placeOfBirth" class="place-of-birth">
-                                        </div>
+                                        <input readonly type="text" id="placeOfBirth" class="place-of-birth">
                                     </div>
                                 </div>
                             </div>
@@ -244,7 +244,7 @@
 
                         <div>
                             <h6>Father's Information</h6>
-                            <div class="student-form-group">
+                            <div class="student-form-group address-div">
                                 <label for="fatherName">Name:</label>
                                 <input type="text" class="parent-name" id="fatherName">
 
@@ -254,7 +254,7 @@
                         </div>
                         <div>
                             <h6>Mother's Information</h6>
-                            <div class="student-form-group">
+                            <div class="student-form-group address-div">
                                 <label for="motherName">Name:</label>
                                 <input type="text" class="parent-name" id="motherName">
 
@@ -264,7 +264,7 @@
                         </div>
 
                         <h6>Guardian's Information</h6>
-                        <div class="student-form-group">
+                        <div class="student-form-group address-div">
                             <label for="guardianName">Name:</label>
                             <input type="text" class="parent-name" id="guardianName">
 
@@ -272,12 +272,12 @@
                             <input type="text" class="parent-occupation" id="guardianOccupation">
                         </div> <br>
 
-                        <div class="student-form-group">
+                        <div class="student-form-group address-div">
                             <label for="guardianContactNumber">Contact Number:</label>
-                            <input type="text" id="guardianContactNumber">
+                            <input type="text" class="guardian-number" id="guardianContactNumber">
 
                             <label for="guardianAddress">Address:</label>
-                            <input type="text" id="guardianAddress">
+                            <input type="text" class="guardian-address" id="guardianAddress">
                         </div> <br>
 
 
@@ -505,10 +505,10 @@
                         <h5>Personal Information</h5>
                     </div>
 
-                    <div class="student-form-group fullName">
+                    <div class="student-form-group address-div fullName">
                         <div>
                             <label for="studentFirstName">First Name:</label>
-                            <input type="text" name="firstname" id="studentFirstName" required>
+                            <input type="text" name="firstname" class="name" id="studentFirstName" required>
                         </div>
                         <div>
                             <label for="studentMiddleName">Middle Name:</label>
@@ -586,38 +586,38 @@
                     <h5>Parent's/Guardian's Information</h5>
 
                     <h6>Father's Information</h6>
-                    <div class="student-form-group">
+                    <div class="student-form-group address-div">
                         <label for="studfatherName">Name:</label>
-                        <input required type="text" name="fatherName" id="studfatherName">
+                        <input required type="text" name="fatherName" class="parent-name" id="studfatherName">
 
                         <label for="studfatherOccupation">Occupation:</label>
-                        <input required type="text" id="studfatherOccupation">
+                        <input required type="text" class="parent-occupation" id="studfatherOccupation">
                     </div> <br>
 
                     <h6>Mother's Information</h6>
-                    <div class="student-form-group">
+                    <div class="student-form-group address-div">
                         <label for="studmotherName">Name:</label>
-                        <input required type="text" id="studmotherName">
+                        <input required type="text" class="parent-name" id="studmotherName">
 
                         <label for="studmotherOccupation">Occupation:</label>
-                        <input required type="text" id="studmotherOccupation">
+                        <input required type="text" class="parent-occupation" id="studmotherOccupation">
                     </div> <br>
 
                     <h6>Guardian's Information</h6>
-                    <div class="student-form-group">
+                    <div class="student-form-group address-div">
                         <label for="studguardianName">Name:</label>
-                        <input required type="text" id="studguardianName">
+                        <input required type="text" class="parent-name" id="studguardianName">
 
                         <label for="studguardianOccupation">Occupation:</label>
-                        <input required type="text" id="studguardianOccupation">
+                        <input required type="text" class="parent-occupation" id="studguardianOccupation">
                     </div> <br>
 
-                    <div class="student-form-group">
+                    <div class="student-form-group address-div">
                         <label for="studguardianContactNumber">Contact Number:</label>
-                        <input required type="text" id="studguardianContactNumber">
+                        <input required type="text" class="guardian-number" id="studguardianContactNumber">
 
                         <label for="studguardianAddress">Address:</label>
-                        <input required type="text" id="studguardianAddress">
+                        <input required type="text" class="guardian-address" id="studguardianAddress">
                     </div> <br>
 
                     <!-- Transferee Fields -->

@@ -1776,7 +1776,7 @@ table td {
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 30px;
+  padding: 1.875rem;
   padding-bottom: 0;
 }
 
@@ -2005,19 +2005,10 @@ table td {
   width: 120px;
 }
 
-input.parent-occupation,
-#studguardianOccupation,
-#studmotherOccupation,
-#studfatherOccupation {
+input.parent-occupation {
   width: 520px;
 }
 
-#transfereemotherName,
-#transfereefatherName,
-#transfereeguardianName,
-#studmotherName,
-#studfatherName,
-#studguardianName,
 input.parent-name {
   width: 700px;
 }
@@ -2068,6 +2059,7 @@ input.guardian-address {
 
 .student-form-group .place-of-birth {
   min-width: 375px;
+  width: 100%;
   max-width: 905px;
 }
 
@@ -2549,7 +2541,6 @@ input[type="checkbox"] {
   font-weight: 500;
 }
 
-.student-modal-content input,
 .grade-level-modal-content input,
 .school-year-modal-content input,
 .subject-modal-content input,
@@ -2567,7 +2558,6 @@ input[type="checkbox"] {
 .add-grade-level-assessment-modal-content input,
 .list-of-payments-modal-content input,
 .fees-management-edit-modal-content input,
-.student-information-modal-content input,
 .modal-content input,
 .receipt-payment-modal-content input,
 .transferee-req-modal-content input,
@@ -2575,7 +2565,6 @@ input[type="checkbox"] {
 .view-student-list-modal-content input,
 .scholarship-modal-content input,
 .scholarship-edit-modal-content input,
-.student-modal-content select,
 .school-year-modal-content select,
 .grade-level-modal-content select,
 .subject-modal-content select,
@@ -2606,6 +2595,9 @@ input[type="checkbox"] {
 .student-information-container-content input,
 .student-information-container-content input,
 .student-information-edit-modal-content input,
+.student-information-modal-content input,
+.student-modal-content input,
+.student-modal-content select,
 .student-information-edit-modal-content select,
 .staff-information-container-content input,
 .staff-information-container-content select,
@@ -3604,7 +3596,7 @@ td[rowspan] {
   display: flex;
   justify-self: center;
   justify-content: space-between;
-  width: 70%;
+  width: 76%;
   margin-right: 40px;
 }
 
@@ -3697,7 +3689,7 @@ input.staff-id-report {
 } */
 
 .container {
-  padding: 20px 15px;
+  padding: 1.25rem 0.9375rem;
   border-radius: 8px;
   background-color: #d2eed3;
 }
@@ -3727,8 +3719,6 @@ input.staff-id-report {
   padding: 0px 0px 20px 0px;
   max-height: 400px;
   width: 100%;
-  /* overflow-y: auto;
-  overflow-x: auto; */
   border: none;
 }
 
@@ -3823,13 +3813,13 @@ input.staff-id-report {
 }
 
 #stud-type-row h6,
-#staff-type-row h6{
+#staff-type-row h6 {
   font-weight: bold;
   margin-top: 10px;
   display: flex;
 }
 #stud-type-row,
-#staff-type-row{
+#staff-type-row {
   gap: 10px;
   min-width: 150px;
 }
@@ -4616,6 +4606,9 @@ th {
 .styled-popover {
   position: absolute;
   padding: 1rem;
+  transform: translateY(60px);
+  left: 0;
+  top: 30% !important;
   border-radius: 8px;
   background-color: white !important;
   color: #333;
@@ -4638,7 +4631,7 @@ th {
 }
 
 .checkbox h6 {
-    margin: 0;
+  margin: 0;
 }
 
 .styled-popover h6 {
@@ -4966,10 +4959,17 @@ a {
     z-index: 1001;
   }
 }
- 
 
 /* Mobile Styles */
 @media (max-width: 767px) {
+  .fullName > div {
+    justify-content: space-between;
+    width: 100%;
+    gap: 40px;
+  }
+  .dropdown-status-content {
+    font-size: 12px;
+  }
   .listing-table th:nth-child(1),
   .listing-table td:nth-child(1) {
     width: 20%;
@@ -4988,10 +4988,10 @@ a {
   }
   /* Sidebar */
   #sidebar {
-    position: fixed; 
+    position: fixed;
     width: 80%;
     max-width: 320px;
-    transform: translateX(-100%); 
+    transform: translateX(-100%);
     z-index: 1000;
   }
 
@@ -5004,7 +5004,7 @@ a {
     margin-left: 0 !important;
     margin-right: 0 !important;
     width: 100%;
-    transition: none; 
+    transition: none;
   }
 
   /* Overlay */
@@ -5203,7 +5203,6 @@ a {
   }
   .main-table,
   .listing-table {
-    /* table-layout: fixed; */
     width: 100% !important;
   }
   .main-table th,
@@ -5212,9 +5211,170 @@ a {
     padding: 8px 15px;
   }
 
+  .student-information-modal h2,
+  .student-information-container h2,
+  .student-information-edit-modal h2,
+  .staff-information-container h2,
+  .staff-information-edit-modal h2,
+  .student-modal h2 {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .other-info-container,
+  .header {
+    flex-wrap: wrap;
+  }
+  .header .half-unique {
+    width: 100%;
+  }
+  .half-other-info {
+    width: 50%;
+    justify-content: start;
+  }
+  .header .other-info-container {
+    width: 100%;
+    justify-content: start;
+    gap: 0;
+  }
+  .checkbox-container {
+    width: 100% !important;
+  }
+  .header .other-info-container h6 {
+    font-size: 12px;
+  }
+  input.student-id-report,
+  input.staff-id-report {
+    width: 265px;
+  }
+  #stud-type-row,
+  #staff-type-row {
+    gap: 10px;
+    min-width: 50px;
+  }
+  input.name,
+  #studentFirstName,
+  #studbirthdate,
+  #studentLastName,
+  #studentMiddleName,
+  #studgender,
+  #lastGradeLevelCompleted,
+  #lastGradeLevelIdCompleted,
+  .student-form-group #lastMadrasaYearCompleted,
+  #studlastMadrasaYearCompleted {
+    min-width: 122px;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .address-div {
+    flex-wrap: wrap;
+    gap: 0;
+    flex-direction: column;
+    align-items: start;
+  }
+  .address-div.half-unique {
+    width: 325px;
+  }
+  input.address {
+    width: 100%;
+  }
+
+  .student-form-group {
+    gap: 10px;
+  }
+
+  #middleName {
+    min-width: 60px !important;
+  }
+
+  input {
+    font-size: 12px;
+  }
+
+  /* Small text */
+  .first-name,
+  .last-name {
+    min-width: 105px;
+    text-align: center;
+  }
+  .small-text .middle-name {
+    min-width: 100px;
+  }
+
+  .small-text {
+    flex-shrink: 0;
+    width: 70%;
+    margin-right: 0;
+    font-size: 10px;
+  }
+
+  /* small text end */
+
+  input.gender,
+  select.gender,
+  .column2 #gender {
+    width: 80px;
+  }
+
+  input.birthdate {
+    width: 105px !important;
+  }
+
+  input.place-of-birth {
+    width: 400px;
+  }
+
+  .row {
+    flex-wrap: wrap;
+  }
+  .column1,
+  .column2 {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .address-div label {
+    justify-self: left;
+  }
+
+  input.parent-occupation,
+  input.parent-name,
+  input.guardian-address,
+  input.guardian-number {
+    width: 360px !important;
+  }
+  .modal label {
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .student-form-group .place-of-birth {
+    min-width: 200px;
+    width: 100%;
+    max-width: 905px;
+  }
+
+  .student-information-modal h1,
+  .student-information-container h1,
+  .student-information-edit-modal h1,
+  .student-modal h1,
+  .staff-information-container h1,
+  .staff-information-edit-modal-content h1 {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 10px;
+  }
+
   /* Listing */
+  .student-information-modal-content {
+    width: 100%;
+    height: 80dvh;
+  }
+
   .search-div {
-    flex-direction: column; /* Stack rows vertically */
+    flex-direction: column;
     align-items: stretch;
   }
 
@@ -5233,7 +5393,7 @@ a {
   }
 
   .search-input {
-    width: 100%; 
+    width: 100%;
     box-sizing: border-box;
   }
 

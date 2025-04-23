@@ -75,7 +75,7 @@ public class EnrollmentServices {
         return true;
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage","countStat"},allEntries = true)
     public void cancelEnrollment(int enrollmentId, boolean undoCancel){
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElseThrow(NullPointerException::new);
         enrollmentRecord.setNotDeleted(undoCancel);

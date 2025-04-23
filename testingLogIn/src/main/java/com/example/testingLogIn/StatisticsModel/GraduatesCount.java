@@ -24,4 +24,9 @@ public class GraduatesCount {
         this.count = 0;
         this.sem = sem;
     }
+
+    public GraduatesCount(SchoolYearSemester sem, int count) {
+        this.count = count;
+        this.sem = sem;
+    }
 }

@@ -27,13 +27,13 @@
             <div class="sort-btns-container">
                 <div class="sort-year">
                     <label for="school-year">Year</label>
-                    <select name="year" onchange="setCounts(),setChartContents()" id="school-year">
+                    <select name="year" onchange="setCounts(),setChartContents(),setGradesChart()" id="school-year">
                         <option value="0" selected>All Time</option>
                     </select>
                 </div>
                 <div class="sort-semester">
                     <label for="semester-sort">Semester</label>
-                    <select name="semester" onchange="setCounts(),setChartContents()" id="semester-sort">
+                    <select name="semester" onchange="setCounts(),setChartContents(),setGradesChart()" id="semester-sort">
                         <option selected>All</option>
                         <option value="First">First</option>
                         <option value="Second">Second</option>
@@ -107,9 +107,8 @@
                         <h6 id="barGraphTitle">Subject Rates</h6>
                         <div class="filter-container-bar">
                             <label for="sort-bar-graph">Filter:</label>
-                            <select name="sort" onchange="setChartContents()" id="sort-bar-graph">
-                                <option value="failed" selected>Failing Rates</option>
-                                <option value="passed">Passing Rates</option>
+                            <select onchange="setGradesChart()" name="sort" id="grade-levels">
+                                <option value="0" selected>None</option>
                             </select>
                         </div>
                     </div>
@@ -217,6 +216,7 @@
 
         setChartContents();
         setCounts();
+        setGradeLevels();
     });
 
     async function setCounts() {
@@ -244,7 +244,6 @@
     }
 
     let retentionChart = null;
-
     async function setChartContents() {
         // Destroy existing chart if it exists
         if (retentionChart) {
@@ -262,18 +261,92 @@
             const ratesResult = await response.json();
             gradeLabels = ratesResult.gradeLevelNames;
             gradeRates = ratesResult.gradeLevelCounts;
-            gradeLabels = gradeLabels.concat(gradeLabels);
-            gradeRates = gradeRates.concat(gradeRates);
-            gradeLabels = gradeLabels.concat(gradeLabels);
-            gradeRates = gradeRates.concat(gradeRates);
-            gradeLabels = gradeLabels.concat(gradeLabels);
-            gradeRates = gradeRates.concat(gradeRates);
-            gradeLabels = gradeLabels.concat(gradeLabels);
-            gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
         }
 
         const retentionCanvas = document.getElementById('retentionChart').getContext('2d');
         retentionChart = new Chart(retentionCanvas, {
+            type: 'bar',
+            data: {
+                labels: gradeLabels,
+                datasets: [{
+                    label: 'Retention Rates',
+                    data: gradeRates,
+                    backgroundColor: 'rgba(210, 90, 90, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, max: 100 } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    async function setGradeLevels(){
+        const response = await fetch("/gradelevel/all");
+        if(response.ok){
+            const gradeLevels = await response.json();
+            var gradeLevelsSelect = document.getElementById("grade-levels");
+            
+            if(gradeLevels.length > 0){
+                gradeLevelsSelect.innerText = "";
+                var i = 0;
+                gradeLevels.forEach(gradeLvl => {
+                    var opt = document.createElement("option");
+                    opt.value = gradeLvl.levelId;
+                    opt.textContent = gradeLvl.levelName;
+                    console.log(gradeLvl);
+                    if(i === 0){
+                        opt.selected = true;
+                        i++;
+                    }
+
+                    gradeLevelsSelect.appendChild(opt);
+                });
+            }
+        }
+
+        setGradesChart();
+    }
+
+    var subjectRateChart = null;
+    async function setGradesChart() {
+        if (subjectRateChart) {
+            console.log("Destroy Now");
+            subjectRateChart.destroy();
+        }
+
+        var sem = document.getElementById("semester-sort").value;
+        var sy = document.getElementById("school-year").value;
+        var levelId = document.getElementById("grade-levels").value;
+        var gradeLabels = [];
+        var gradeRates = [];
+
+        const response = await fetch(`/statistics/subject-rates?semester=${sem}&schoolYear=${sy}&levelId=${levelId}`);
+        if (response.ok) {
+            const ratesResult = await response.json();
+            gradeLabels = ratesResult.subjectNames;
+            gradeRates = ratesResult.avgGrades;
+            // gradeLabels = gradeLabels.concat(gradeLabels); para matestingan nmo ang length
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+        }
+
+        const retentionCanvas = document.getElementById('subjectRateChart').getContext('2d');
+        subjectRateChart = new Chart(retentionCanvas, {
             type: 'bar',
             data: {
                 labels: gradeLabels,

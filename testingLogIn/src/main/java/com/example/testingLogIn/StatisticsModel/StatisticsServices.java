@@ -4,10 +4,13 @@ import com.example.testingLogIn.Enums.Semester;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.SchoolYearSemester;
+import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,6 +62,7 @@ public class StatisticsServices {
     }
 
     @Transactional
+    @CacheEvict(value = {"countStat"}, allEntries = true)
     public void updatePreEnrolledCount(SchoolYearSemester sem, boolean isDecrease){
         if(isDecrease)
             preEnrolledCountRepo.reduceByOne(sem.getSySemNumber());
@@ -67,6 +71,7 @@ public class StatisticsServices {
     }
 
     @Transactional
+    @CacheEvict(value = {"countStat"}, allEntries = true)
     public void updateEnrolledCount(Enrollment enrollment){
         SchoolYearSemester sem = enrollment.getSYSemester();
         GradeLevel gradeLevel = enrollment.getGradeLevelToEnroll();
@@ -78,6 +83,13 @@ public class StatisticsServices {
                         ()->gradeLevelEnrolledCountRepo.save(new GradeLevelEnrolledCount(sem,gradeLevel)));
     }
 
+    public void setGraduatesInformation(List<Student> graduates, SchoolYearSemester sem){
+        graduatesCountRepo.findBySemester(sem.getSySemNumber())
+                .ifPresentOrElse(count -> graduatesCountRepo.updateCount(sem.getSySemNumber(), graduates.size()),
+                        ()->graduatesCountRepo.save(new GraduatesCount(sem,graduates.size())));
+        graduates.forEach(student -> graduateStudentsRepo.save(new GraduateStudents(sem,student)));
+    }
+
     public void setStudentPassingRecords(SchoolYearSemester sem){
         List<StudentPassingRecord> studentRetainedList = studentSubjectGradeRepo.findFailedStudents(sem.getSySemNumber(),null)
                                                         .stream().map(ssg -> new StudentPassingRecord(false,sem,ssg.getGradeLevel(),ssg.getStudent())).toList();
@@ -85,9 +97,7 @@ public class StatisticsServices {
                 .stream().map(ssg -> new StudentPassingRecord(true,sem,ssg.getGradeLevel(),ssg.getStudent())).toList();
         studentPassingRecordRepo.saveAll(studentPassedList);
         studentPassingRecordRepo.saveAll(studentRetainedList);
-        System.out.println(studentRetainedList.size());
         retainedCountRepo.updateCount(sem.getSySemNumber(), studentRetainedList.size());
-        System.out.println(studentPassedList.size());
         passedCountRepo.updateCount(sem.getSySemNumber(), studentPassedList.size());
 
         for(GradeLevel gradeLevel : gradeLevelRepo.findByIsNotDeletedTrue()){
@@ -96,7 +106,9 @@ public class StatisticsServices {
         }
     }
 
-    public CounterObject getCounts(Integer schoolYear, Semester semester){
+    @Cacheable(value = "countStat", key = "#schoolYear + #semKey")
+    public CounterObject getCounts(Integer schoolYear, Semester semester,String semKey){
+        schoolYear = schoolYear == 0 ? null : schoolYear;
         return CounterObject.builder()
                 .enrolledCount(enrolledCountRepo.getSum(schoolYear,semester).orElse(0L))
                 .preEnrolledCount(preEnrolledCountRepo.getSum(schoolYear,semester).orElse(0L))
@@ -108,7 +120,9 @@ public class StatisticsServices {
                 .build();
     }
 
-    public GradeLevelRates getGradeLevelRates(Integer schoolYear, Semester semester, boolean didPassed){
+    @Cacheable(value = "gradeLevelRates", key = "#schoolYear + #passed + #semKey")
+    public GradeLevelRates getGradeLevelRates(Integer schoolYear, Semester semester, boolean didPassed,String semKey, String passed){
+        schoolYear = schoolYear == 0 ? null : schoolYear;
         List<String> levelNames = new ArrayList<>();
         List<Long> rates = new ArrayList<>();
         for(GradeLevel gl : studentPassingRecordRepo.getUniqueGradeLevels(schoolYear, semester,didPassed)){

@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
+import com.example.testingLogIn.Enums.Semester;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.ModelDTO.SubjectDTO;
 import com.example.testingLogIn.Models.SchoolYearSemester;
@@ -15,6 +16,9 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import com.example.testingLogIn.StatisticsModel.SubjectsStatistics;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,7 +56,6 @@ public class SubjectServices {
     
     public List<SubjectDTO> getSectionSubjects(int sectionId){
         SectionDTO sec = sectionService.getSection(sectionId);
-        
         return getSubjectByGrade(sec.getGradeLevelName());
     }
     
@@ -76,7 +79,8 @@ public class SubjectServices {
                           .map(this::SubjectToSubjectDTO)
                           .collect(Collectors.toList());
     }
-            
+
+    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public boolean addNewSubject(int levelId,String subjectName, boolean applyNow){
         gradeLevelService.getGradeLevel(levelId);//icheck if nag exists ba ang grade level
         if(!doesSubjectNameExist(levelId,subjectName)){
@@ -122,7 +126,8 @@ public class SubjectServices {
                           //.map(Subject::mapper)
                             .findFirst().orElse(null);
     }
-    
+
+    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public boolean updateSubjectDescription(SubjectDTO subject){
         Subject updatedSub = subjectRepo.findById(subject.getSubjectNumber()).orElseThrow(()->new NullPointerException("Subject Record Not Found"));
         List<Subject> existing = subjectRepo.findByNameNotEqualId(subject.getSubjectName().toLowerCase(), subject.getSubjectNumber());
@@ -161,7 +166,8 @@ public class SubjectServices {
         }
         return false;
     }
-    
+
+    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public void deleteSubject(int subjectNumber){
         Subject todelete = subjectRepo.findById(subjectNumber).orElseThrow(NullPointerException::new);
         todelete.setNotDeleted(false);
@@ -173,6 +179,25 @@ public class SubjectServices {
                 CompletableFuture.runAsync(()->ssgRepo.updateSubjectGradeStatus(todelete.getSubjectNumber(),semId,false));
             }
         }
+    }
+
+    @Cacheable(value = "subjectRates", key = "#levelId + #sy + #semKey")
+    public SubjectsStatistics getSubjectStatistics(Integer levelId, Integer sy, Semester sem, String semKey){
+        Integer schoolYear = sy == 0 ? null : sy;
+        SubjectsStatistics subjectStats = new SubjectsStatistics(new ArrayList<String>(),new ArrayList<Float>());
+
+        if(levelId == null || levelId == 0)
+            return subjectStats;
+
+        ssgRepo.findSemesterUniqueSubjects(schoolYear,sem,levelId)
+                .forEach(subj -> {
+                    subjectStats.getAvgGrades().add((float) NonModelServices.adjustDecimal(
+                                    ssgRepo.getSubjectAverageGrade(subj.getSubjectNumber(),schoolYear,sem)
+                                            .orElse(0.0F)));
+                    subjectStats.getSubjectNames().add(subj.getSubjectName());
+                });
+
+        return subjectStats;
     }
      
     private SubjectDTO SubjectToSubjectDTO(Subject subject){

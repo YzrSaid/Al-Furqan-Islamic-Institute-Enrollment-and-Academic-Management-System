@@ -70,7 +70,7 @@ public class UIController {
         try{
             return new ResponseEntity<>(configurationServices.getGraduatingLevel(),HttpStatus.OK);
         }catch (NullPointerException npe){
-            return  new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
     @ModelAttribute("schoolNum")

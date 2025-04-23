@@ -716,10 +716,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const action = confirmActionButton.getAttribute("data-confirm-action");
 
       if (action === "updateSchoolSettings") {
-        alert("Will validate");
         // ✅ Validate first
         if (!validateForm("schoolSettingsForm")) {
-          alert("Will validate again");
           showErrorModal("⚠️ Please fill in all required fields!");
           return;
         }

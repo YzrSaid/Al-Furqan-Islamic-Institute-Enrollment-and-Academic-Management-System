@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 /**
@@ -42,6 +43,7 @@ public class StudentSubjectGradeServices {
     }
 
     @Async
+    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public void addStudentGrades(Enrollment enrollment){
         subjectRepo.findActiveSubjectsNotDeletedByGradeLevel(enrollment.getGradeLevelToEnroll().getLevelId())
                         .forEach(subject ->{
@@ -112,7 +114,8 @@ public class StudentSubjectGradeServices {
 
         return studentGrades;
     }
-    
+
+    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public boolean updateStudentGrade(StudentSubjectGradeDTO studGrade){
         StudentSubjectGrade studSubGrade = ssgRepo.findById(studGrade.getStudGradeId()).orElse(null);
         if(studSubGrade == null)

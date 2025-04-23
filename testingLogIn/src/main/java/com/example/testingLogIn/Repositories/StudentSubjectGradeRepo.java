@@ -7,8 +7,10 @@ import java.util.Optional;
 import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.CustomObjects.FailedStudents;
 import com.example.testingLogIn.CustomObjects.PassedStudents;
+import com.example.testingLogIn.Enums.Semester;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.Models.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -32,7 +34,7 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             "AND stud.studentId = :studentId " +
             "AND lvl.levelId = :gradeLevelId " +
             "GROUP BY sem " +
-            "HAVING AVG(sg.subjectGrade) > 49" +
+            "HAVING AVG(COALESCE(sg.subjectGrade,0)) > 49" +
            ") THEN true ELSE false END")
     boolean didStudentPassed(
         @Param("studentId") int studentId,
@@ -176,4 +178,25 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             WHERE ssg.student IS NULL
             """)
     List<Student> findEnrolledStudentsNoRecord(int subjectNumber, int semId);
+
+    @Query("""
+           SELECT AVG(COALESCE(ssg.subjectGrade,0)) FROM StudentSubjectGrade ssg
+           JOIN ssg.semester semester
+           WHERE (:sy IS NULL OR semester.schoolYear.schoolYearNum = :sy)
+           AND (:sem IS NULL OR semester.sem = :sem)
+           AND ssg.subject.subjectNumber = :subjectNumber
+           """)
+    Optional<Float> getSubjectAverageGrade(int subjectNumber, Integer sy, Semester sem);
+
+    @Query( """
+            SELECT ssg.subject FROM StudentSubjectGrade ssg
+            JOIN ssg.semester semester
+            JOIN ssg.section.level gl
+            WHERE gl.levelId = :levelId
+            AND (:sy IS NULL OR semester.schoolYear.schoolYearNum = :sy)
+            AND (:sem IS NULL OR semester.sem = :sem)
+            AND ssg.isNotDeleted
+            GROUP BY ssg.subject
+            """)
+    List<Subject> findSemesterUniqueSubjects(Integer sy, Semester sem, int levelId);
 }

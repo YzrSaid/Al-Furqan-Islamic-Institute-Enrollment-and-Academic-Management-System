@@ -106,20 +106,21 @@ public class WebsiteConfigurationServices {
         }
     }
 
-    @Cacheable("graduatingLevel")
     public Object getGraduatingLevel(){
         try{
-            return new ResponseEntity<>(Objects.requireNonNull(schoolProfileRepo.findById("GraduatingLevel").map(glvl -> {
+            return Objects.requireNonNull(schoolProfileRepo.findById("GraduatingLevel").map(glvl -> {
                 GradeLevel graduatingLevel;
+                if(glvl.getKey_value().length == 0)
+                    throw new NullPointerException("Graduating Level Not Found");
                 try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(glvl.getKey_value()))) {
                     graduatingLevel = (GradeLevel) ois.readObject();
                 } catch (IOException | ClassNotFoundException e) {
-                    return null;
+                    throw new NullPointerException("Graduating Level Not Found");
                 }
                 return graduatingLevel;
-            }).orElseThrow(NullPointerException::new)),HttpStatus.OK);
+            }).orElseThrow(() -> new NullPointerException("Graduating Level Not Found")));
         }catch (NullPointerException npe){
-            return  null;
+            throw new NullPointerException("Graduating Level Not Found");
         }
     }
     @Cacheable("schoolNum")

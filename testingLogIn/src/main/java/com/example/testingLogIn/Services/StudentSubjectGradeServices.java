@@ -43,10 +43,8 @@ public class StudentSubjectGradeServices {
 
     @Async
     public void addStudentGrades(Enrollment enrollment){
-        subjectRepo.findAll().stream()
-                    .filter(subject ->  subject.isNotDeleted() && 
-                                        subject.getGradeLevel().getLevelId() == enrollment.getGradeLevelToEnroll().getLevelId())
-                    .forEach(subject ->{
+        subjectRepo.findActiveSubjectsNotDeletedByGradeLevel(enrollment.getGradeLevelToEnroll().getLevelId())
+                        .forEach(subject ->{
                         StudentSubjectGrade studSubGrade = StudentSubjectGrade.builder()
                                                             .student(enrollment.getStudent())
                                                             .subject(subject)

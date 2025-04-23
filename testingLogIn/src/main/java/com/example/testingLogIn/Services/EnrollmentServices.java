@@ -140,7 +140,7 @@ public class EnrollmentServices {
         }
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
     public int addToEnrolled(int enrollmentId) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         if (enrollmentRecord == null || !enrollmentRecord.isNotDeleted())
@@ -247,7 +247,7 @@ public class EnrollmentServices {
     public StudentPaymentForm getStudentPaymentStatus(int enrollmentId) {
         Enrollment er = enrollmentRepo.findById(enrollmentId).orElse(null);
         assert er != null;
-        return paymentRecordService.getStudentPaymentForm(er.getStudent().getStudentId(),er.getGradeLevelToEnroll().getLevelId(),false);
+        return paymentRecordService.enrollmentPaymentForm(er.getStudent().getStudentId(),er.getGradeLevelToEnroll().getLevelId());
     }
 
     public List<StudentDTO> getEnrolledStudentsBySection(int sectionId){
@@ -260,7 +260,7 @@ public class EnrollmentServices {
     private EnrollmentDTO isComplete(Enrollment e) {
         if(e == null)
             return null;
-        StudentPaymentForm toPay = paymentService.getStudentPaymentForm(e.getStudent().getStudentId(), e.getGradeLevelToEnroll().getLevelId(),false);
+        StudentPaymentForm toPay = paymentService.enrollmentPaymentForm(e.getStudent().getStudentId(), e.getGradeLevelToEnroll().getLevelId());
         boolean isComplete = true;
         for(FeesAndBalance fee : toPay.getFeesAndBalance()){
             if(fee.getTotalPaid() == 0){

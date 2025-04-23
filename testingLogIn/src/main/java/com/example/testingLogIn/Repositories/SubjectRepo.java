@@ -28,4 +28,13 @@ public interface SubjectRepo extends JpaRepository<Subject, Integer>{
     @Modifying
     @Query("UPDATE Subject sub SET sub.isCurrentlyActive = TRUE")
     void activeAll();
+
+    @Query("""
+           SELECT sub FROM Subject sub
+           LEFT JOIN sub.gradeLevel gl
+           WHERE gl.levelId = :levelId
+           AND sub.isNotDeleted
+           AND sub.isCurrentlyActive
+            """)
+    List<Subject> findActiveSubjectsNotDeletedByGradeLevel(int levelId);
 }

@@ -11,6 +11,7 @@ import com.example.testingLogIn.Repositories.GradeLevelRequiredFeeRepo;
 import com.example.testingLogIn.Repositories.StudentFeesListRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class StudentFeesListService {
     private DiscountsServices discService;;
 
     @Async
+    @CacheEvict(value = {"studPaymentForm"},allEntries = true)
     public void addFeesRecord(Enrollment e){
         StudentTotalDiscount std = discService.getStudentTotalDiscount(e.getStudent().getStudentId());
         gradeReqFeeRepo.findByGradeLevel(e.getGradeLevelToEnroll().getLevelId())
@@ -40,18 +42,21 @@ public class StudentFeesListService {
 
     @Transactional
     @Async
+    @CacheEvict(value = {"studPaymentForm"},allEntries = true)
     public void addFeeRecord(Student student, RequiredFees fee, SchoolYearSemester sem, double amount){
         studFeeRepo.save(StudentFeesList.build(fee,sem,student,amount));
     }
 
     @Transactional
     @Async
+    @CacheEvict(value = {"studPaymentForm"},allEntries = true)
     public void addFeeRecordList(List<StudentFeesList> studentFeesLists){
         studFeeRepo.saveAll(studentFeesLists);
     }
 
     @Transactional
     @Async
+    @CacheEvict(value = {"studPaymentForm"},allEntries = true)
     public void updateFeeRecord(List<StudentFeesList> studentFeesList){
         studFeeRepo.saveAll(studentFeesList);
     }

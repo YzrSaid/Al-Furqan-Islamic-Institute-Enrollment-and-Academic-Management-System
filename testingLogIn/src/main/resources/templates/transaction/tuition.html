@@ -681,16 +681,17 @@
         let studentId;
         let gradeLevelId;
         document.addEventListener("click", function (event) {
-            const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
+            //const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
             const viewReceiptbtn = event.target.closest('[data-open-modal="receiptModal"]');
             const voidTransaction = event.target.closest('[data-action="voidTransaction"]');
-            if (viewListbtn) {
-                studentId = viewListbtn.getAttribute("data-student-id");
-                const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
-                gradeLevelId = viewListbtn.getAttribute("data-level-Id");
-                if (!enrollmentId) return console.error("Enrollment Id Not Found");
-                fetchPayments(enrollmentId);
-            } else if (viewReceiptbtn) {
+            //if (viewListbtn) {
+                //studentId = viewListbtn.getAttribute("data-student-id");
+                //const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
+                //gradeLevelId = viewListbtn.getAttribute("data-level-Id");
+                // if (!enrollmentId) return console.error("Enrollment Id Not Found");
+                // fetchPayments(enrollmentId);
+            //} else 
+            if (viewReceiptbtn) {
                 const receiptId = viewReceiptbtn.getAttribute("data-transaction-id");
                 fetchThisPokemon(receiptId);
             } else if (voidTransaction) {
@@ -811,7 +812,7 @@
                 </tr>
             </tfoot>`;
             tableBody.appendChild(row);
-            getRecords(currentPage, currentPageSize);
+            getRecords(currentPage);
             closeOpen();
         }
 
@@ -833,14 +834,14 @@
             return checkedValues;
         }
 
-        let enrollmentIdLet = null;
-        document.addEventListener("click", function (event) {
-            const proceedToEnrolledButton = event.target.closest("#proceed-btn"); // Check if the clicked element is the button
+        // let enrollmentIdLet = null;
+        // document.addEventListener("click", function (event) {
+        //     const proceedToEnrolledButton = event.target.closest("#proceed-btn"); // Check if the clicked element is the button
 
-            if (proceedToEnrolledButton) {
-                enrollmentIdLet = proceedToEnrolledButton.getAttribute("data-enrollment-id");
-            }
-        });
+        //     if (proceedToEnrolledButton) {
+        //         enrollmentIdLet = proceedToEnrolledButton.getAttribute("data-enrollment-id");
+        //     }
+        // });
 
         function printThis(feeId) {
             var url = `/paymentrecord/balance/${payerId}?feeId=${feeId}&gradeLevelId=${gradeLevelId}&currentSem=true`;
@@ -954,7 +955,7 @@
         }
 
         function viewToPaid(studentId) {
-            fetch(`/paymentrecord/form/${studentId}`)
+            fetch(`/paymentrecord/form/${studentId}?forPayment=true`)
                 .then(res => res.json())
                 .then(payForm => {
                     document.querySelector("#student-name").textContent = payForm.student.fullName;

@@ -93,6 +93,19 @@ public class ScheduleServices {
         return null;
     }
 
+    public List<ScheduleDTO> getSchedulesBySection(int sectionNum){
+        SectionDTO section = sectionService.getSection(sectionNum);
+        if(section == null)
+            throw new NullPointerException("Section Information Not Found");
+
+        return scheduleRepo.findSectionSchedules(section.getNumber()).stream()
+                .sorted(Comparator
+                        .comparing(Schedule::getDay)
+                        .thenComparing(Schedule::getTimeStart))
+                .map(Schedule::mapper)
+                .toList();
+    }
+
     public List<EvaluationStatus> getSectionSubjects(Integer sectionId){
         SchoolYearSemester sem = semRepo.findCurrentActive();
         int semId = Optional.ofNullable(sem).map(SchoolYearSemester::getSySemNumber).orElse(0);

@@ -81,6 +81,15 @@
                         <tbody>
                         </tbody>
                     </table>
+                    <div class="pagination-container">
+                        <div class="pagination-controls">
+                            <span id="itemRangeDistC">1–10 of 37</span>
+                            <button type="button" id="prevPageDistC">«</button>
+                            <input type="number" id="pageInputDistC" min="1" value="1">
+                            <span id="totalPagesDistC">of 4</span>
+                            <button type="button" id="nextPageDistC">»</button>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -123,6 +132,16 @@
                         <tbody>
                         </tbody>
                     </table>
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="pagination-controls">
+                            <span id="itemRangePFee">1–10 of 37</span>
+                            <button type="button" id="prevPagePFee">«</button>
+                            <input type="number" id="pageInputPFee" min="1" value="1">
+                            <span id="totalPagesPFee">of 4</span>
+                            <button type="button" id="nextPagePFee">»</button>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -611,6 +630,17 @@
                                     <tbody>
                                     </tbody>
                                 </table>
+
+                                <!-- Pagination -->
+                                <div class="pagination-container">
+                                    <div class="pagination-controls">
+                                        <span id="itemRangeUFee">1–10 of 37</span>
+                                        <button type="button" id="prevPageUFee">«</button>
+                                        <input type="number" id="pageInputUFee" min="1" value="1">
+                                        <span id="totalPagesUFee">of 4</span>
+                                        <button type="button" id="nextPageUFee">»</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="basic-modal-buttons">
@@ -635,8 +665,7 @@
                                     <tbody>
                                     </tbody>
                                 </table>
-
-                                        <!-- Pagination -->
+                                <!-- Pagination -->
                                 <div class="pagination-container">
                                     <div class="pagination-controls">
                                         <span id="itemRangeDistU">1–10 of 37</span>
@@ -876,7 +905,6 @@
                 });
             }
         });
-
     });
     var student;
     var studentId;
@@ -1120,9 +1148,9 @@
         try {
             const claimed = false;
             currentDisPage = currentPage;
-            const response = await fetch(`/distributable/student-distribution/all?pageSize=3&pageNo=${currentDisPage}&isClaimed=false&student=${student.fullName}&itemType=0&sortBy=none`);
+            const response = await fetch(`/distributable/student-distribution/all?pageSize=3&pageNo=${currentPage}&isClaimed=false&student=${student.fullName}&itemType=0&sortBy=none`);
             if (!response.ok) {
-                //console.error("Failed to fetch data:", response.status);
+                updatePaginationUI("DistU",1,0,0,0);
                 return;
             }
 
@@ -1130,7 +1158,7 @@
 
             const tableBody = document.querySelector("#distribution-mini-table tbody");
             if (!tableBody) {
-                //console.error("Table body not found");
+                updatePaginationUI("DistU",1,0,0,0);
                 return;
             }
 
@@ -1139,6 +1167,7 @@
 
             if (!data.content || data.content.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="2">No records found</td></tr>`;
+                updatePaginationUI("DistU",1,0,0,0);
                 return;
             }
 
@@ -1152,7 +1181,7 @@
                 fragment.appendChild(row);
             });
             tableBody.appendChild(fragment);
-            updatePaginationUIDistU(currentDisPage,data.pageSize,data.totalElements,data.totalPages);
+            updatePaginationUI("DistU",currentDisPage,data.pageSize,data.totalElements,data.totalPages);
 
         } catch (error) {
             const tableBody = document.querySelector("#table-ko tbody");
@@ -1170,17 +1199,21 @@
         }
     });
 
-    async function fetchAllTimeFees() {
+    async function fetchAllTimeFees(currentPage=1) {
         const feesTable = document.querySelector("#past-trans-table tbody");
-        const response = await fetch(`/paymentrecord/form/${studentId}?forBreakDown=true`);
-        if (!response.ok) { return; }
+        const response = await fetch(`/paymentrecord/form/${studentId}?forBreakDown=true&pageNo=${currentPage}&pageSize=7`);
+        if (!response.ok) { 
+            updatePaginationUI("PFee",1,0,0,0);
+            return; }
 
         const remainingFees = await response.json();
 
-        feesTable.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
-        if (remainingFees.feesAndBalance.length === 0) { return; }
+        feesTable.innerHTML = `<tr><td colspan="5">No records found</td></tr>`;
+        if (remainingFees.content.length === 0) { 
+            updatePaginationUI("PFee",1,0,0,0);
+            return; }
         feesTable.innerHTML = ``;
-        remainingFees.feesAndBalance.forEach(data => {
+        remainingFees.content.forEach(data => {
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${data.fee.name}</td>
@@ -1194,6 +1227,7 @@
                     </div>
                 </td>`;
             feesTable.appendChild(row);
+            updatePaginationUI("PFee",currentPage,remainingFees.pageSize,remainingFees.totalElements,remainingFees.totalPages);
         });
     }
 
@@ -1203,22 +1237,23 @@
         document.getElementById("student-grade-name").textContent=student.fullName;
         document.getElementById("student-resources-name").textContent=student.studentDisplayId;
         document.getElementById("student-resources-id").textContent=student.fullName;
+        document.getElementById("total-balance").textContent = `₱${student.balanceAmount}`;
     }
 
     //go here
-    async function fetchDistributedItems(){
-        const response = await fetch(`/distributable/student-distribution/all?isClaimed=true&student=${student.fullName}&itemType=0&sortBy=none`);
+    async function fetchDistributedItems(currentPage=1){
+        const response = await fetch(`/distributable/student-distribution/all?pageSize=10&isClaimed=true&student=${student.fullName}&pageNo=${currentPage}&itemType=0&sortBy=none`);
         if(response.ok){
             const distributed = await response.json();
             var claimedTable = document.querySelector("#claimed-res-table tbody")
             claimedTable.innerHTML = "<tr><td colspan='3'>No records found.</td></tr>";
             if(distributed.content.length === 0){
+                updatePaginationUI("DistC",1,0,0,0);
                 return;
             }
             claimedTable.innerHTML="";
             const fragment = document.createDocumentFragment();
             distributed.content.forEach(item => {
-                console.log(item);
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${item.itemName || 'N/A'}</td>
@@ -1227,22 +1262,27 @@
                 fragment.appendChild(row);
             });
             claimedTable.appendChild(fragment);
+            updatePaginationUI("DistC",distributed.pageNo,distributed.pageSize,distributed.totalElements,distributed.totalPages);
         }
     }
 
-    async function fetchRemainingFees() {
+    async function fetchRemainingFees(currentPage=1) {
         //console.log(`/paymentrecord/form/${studentId}`);
         const feesTable = document.querySelector("#payment-mini-table tbody");
-        const response = await fetch(`/paymentrecord/form/${studentId}`);
-        if (!response.ok) { return; }
+        const response = await fetch(`/paymentrecord/form/${studentId}?pageNo=${currentPage}`);
+        if (!response.ok) { 
+            updatePaginationUI("UFee",1,0,0,0);
+            return; }
 
         const remainingFees = await response.json();
+        console.log(remainingFees);
 
-        feesTable.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
-        if (remainingFees.feesAndBalance.length === 0) { return; }
+        feesTable.innerHTML = `<tr><td colspan="5">No records found</td></tr>`;
+        if (remainingFees.content.length === 0) { 
+            updatePaginationUI("UFee",1,0,0,0);
+            return; }
         feesTable.innerHTML = ``;
-        document.getElementById("total-balance").textContent = `₱${remainingFees.totalFee}`;
-        remainingFees.feesAndBalance.forEach(data => {
+        remainingFees.content.forEach(data => {
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${data.fee.name}</td>
@@ -1255,6 +1295,7 @@
                     </div>
                 </td>`;
             feesTable.appendChild(row);
+            updatePaginationUI("UFee",currentPage,remainingFees.pageSize,remainingFees.totalElements,remainingFees.totalPages);
         });
     }
 
@@ -1392,47 +1433,110 @@
             .catch(error => console.error("Error fetching grade levels:", error));
     }
 
-    function updatePaginationUIDistU(currentPage, pageSize, totalItems, totalPages) {
-            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-            const end = Math.min(currentPage * pageSize, totalItems);
+    function updatePaginationUI(paginationKey, currentPage, pageSize, totalItems, totalPages) {
+    const config = paginationConfigs[paginationKey];
+    if (!config) return;
 
-            document.getElementById("itemRangeDistU").textContent = `${start}–${end} of ${totalItems}`;
-            document.getElementById("pageInputDistU").value = currentPage;
-            document.getElementById("pageInputDistU").min = 1;
-            document.getElementById("pageInputDistU").max = totalPages;
-            document.getElementById("totalPagesDistU").textContent = `of ${totalPages}`;
+    const { elements } = config;
+    const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+    const end = Math.min(currentPage * pageSize, totalItems);
 
-            document.getElementById("prevPageDistU").disabled = currentPage <= 1 || totalPages === 0;
-            document.getElementById("nextPageDistU").disabled = currentPage >= totalPages || totalPages === 0;
+    // Update UI elements
+    document.getElementById(elements.itemRange).textContent = `${start}–${end} of ${totalItems}`;
+    document.getElementById(elements.pageInput).value = currentPage;
+    document.getElementById(elements.pageInput).min = 1;
+    document.getElementById(elements.pageInput).max = totalPages;
+    document.getElementById(elements.totalPages).textContent = `of ${totalPages}`;
+
+    // Update button states
+    document.getElementById(elements.prevPage).disabled = currentPage <= 1 || totalPages === 0;
+    document.getElementById(elements.nextPage).disabled = currentPage >= totalPages || totalPages === 0;
+
+    // Update current page in config
+    config.currentPage = currentPage;
+}
+
+const paginationConfigs = {
+    'DistU': {
+        currentPage: 1,
+        setUpFunction: setUpDistribution,
+        elements: {
+            itemRange: "itemRangeDistU",
+            pageInput: "pageInputDistU",
+            totalPages: "totalPagesDistU",
+            prevPage: "prevPageDistU",
+            nextPage: "nextPageDistU"
         }
+    },
+    'DistC': {
+        currentPage: 1,
+        setUpFunction: fetchDistributedItems,
+        elements: {
+            itemRange: "itemRangeDistC",
+            pageInput: "pageInputDistC",
+            totalPages: "totalPagesDistC",
+            prevPage: "prevPageDistC",
+            nextPage: "nextPageDistC"
+        } 
+    },    
+    'UFee': {
+        currentPage: 1,
+        setUpFunction: fetchRemainingFees,
+        elements: {
+            itemRange: "itemRangeUFee",
+            pageInput: "pageInputUFee",
+            totalPages: "totalPagesUFee",
+            prevPage: "prevPageUFee",
+            nextPage: "nextPageUFee"}
+    },
+    'PFee': {
+        currentPage: 1,
+        setUpFunction: fetchAllTimeFees,
+        elements: {
+            itemRange: "itemRangePFee",
+            pageInput: "pageInputPFee",
+            totalPages: "totalPagesPFee",
+            prevPage: "prevPagePFee",
+            nextPage: "nextPagePFee"}
+    }
+};
 
-        document.getElementById("prevPageDistU").addEventListener("click", () => {
-            if (currentDisPage > 1) {
-                currentDisPage--;
-                setUpDistribution(currentDisPage);
+function initializePaginationListeners() {
+    Object.keys(paginationConfigs).forEach(key => {
+        const config = paginationConfigs[key];
+        const { elements, setUpFunction } = config;
+
+        // Previous page button
+        document.getElementById(elements.prevPage).addEventListener("click", () => {
+            if (config.currentPage > 1) {
+                config.currentPage--;
+                setUpFunction(config.currentPage);
             }
         });
 
-        document.getElementById("nextPageDistU").addEventListener("click", () => {
-            if (currentDisPage < document.getElementById("pageInputDistU").max) {
-                currentDisPage++;
-                console.log("Navigating to page:", currentDisPage);
-                setUpDistribution(currentDisPage);
-            } else {
-                console.log("Cannot navigate to next page");
+        // Next page button
+        document.getElementById(elements.nextPage).addEventListener("click", () => {
+            const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+            if (config.currentPage < totalPages) {
+                config.currentPage++;
+                setUpFunction(config.currentPage);
             }
         });
 
-        document.getElementById("pageInputDistU").addEventListener("change", (e) => {
-            const totalPages = parseInt(document.getElementById("pageInputDistU").max);
+        // Page input change
+        document.getElementById(elements.pageInput).addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById(elements.pageInput).max);
             let page = parseInt(e.target.value);
             if (page >= 1 && page <= totalPages) {
-                currentDisPage = page;
-                setUpDistribution(currentDisPage);
+                config.currentPage = page;
+                setUpFunction(config.currentPage);
             } else {
-                e.target.value = currentDisPage;
+                e.target.value = config.currentPage;
             }
         });
+    });
+}   
+document.addEventListener("DOMContentLoaded", initializePaginationListeners);
 </script>
 
 </html>

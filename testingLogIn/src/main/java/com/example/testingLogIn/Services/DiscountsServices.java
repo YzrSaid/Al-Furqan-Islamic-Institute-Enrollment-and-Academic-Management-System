@@ -9,10 +9,7 @@ import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.AssociativeModels.StudentDiscount;
 import com.example.testingLogIn.CustomObjects.PagedResponse;
-import com.example.testingLogIn.Repositories.DiscountRepo;
-import com.example.testingLogIn.Repositories.StudentDiscountRepo;
-import com.example.testingLogIn.Repositories.StudentFeesListRepo;
-import com.example.testingLogIn.Repositories.StudentRepo;
+import com.example.testingLogIn.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
@@ -33,14 +30,15 @@ public class DiscountsServices {
     private final StudentRepo studRepo;
     private final StudentFeesListRepo sfl;
     private final sySemesterServices sem;
+    private final PaymentsRecordRepo paymentRepo;
 
-    @Autowired
-    public DiscountsServices(DiscountRepo discRepo, StudentDiscountRepo studDiscRepo, StudentRepo studRepo, StudentFeesListRepo sfl, sySemesterServices sem) {
+    public DiscountsServices(DiscountRepo discRepo, StudentDiscountRepo studDiscRepo, StudentRepo studRepo, StudentFeesListRepo sfl, sySemesterServices sem, PaymentsRecordRepo paymentRepo) {
         this.discRepo = discRepo;
         this.studDiscRepo = studDiscRepo;
         this.studRepo = studRepo;
         this.sfl = sfl;
         this.sem = sem;
+        this.paymentRepo = paymentRepo;
     }
 
     public List<Discount> getDiscountsList(boolean isNotDeleted){
@@ -58,7 +56,6 @@ public class DiscountsServices {
         return true;
     }
 
-    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void deleteDiscount(int discountId){
         Discount discount = discRepo.findById(discountId).orElseThrow(NullPointerException::new);
         discount.setNotDeleted(false);
@@ -73,7 +70,6 @@ public class DiscountsServices {
         });
     }
 
-    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void addStudentDiscount(int discountId, List<Integer> studentIds){
         Discount discount = discRepo.findById(discountId).orElse(null);
         assert discount != null;
@@ -94,8 +90,6 @@ public class DiscountsServices {
         });
     }
 
-    //para mag update ng student info
-    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean addStudentDiscounts(Integer studentId, List<Integer> discounts){
         Student student = studRepo.findById(studentId).orElseThrow(NullPointerException::new);
         List<StudentDiscount> studentDiscounts = new ArrayList<>();
@@ -139,7 +133,6 @@ public class DiscountsServices {
                 .build();
     }
 
-    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void removeStudentsDiscount(List<Integer> connectionIds){
         connectionIds.forEach(conId ->{
             studDiscRepo.findById(conId).ifPresent(studentDiscount -> {
@@ -150,7 +143,6 @@ public class DiscountsServices {
         });
     }
 
-    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void removeStudentDiscount(int discId){
         StudentDiscount studentDiscount = studDiscRepo.findById(discId).orElseThrow(NullPointerException::new);
         studentDiscount.setNotDeleted(false);
@@ -158,31 +150,44 @@ public class DiscountsServices {
         updateStudentFees(studentDiscount.getStudent());
     }
 
-    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void removeStudentDiscounts(int studentId){
         List<Integer> connectionIds = studDiscRepo.findByStudentNotDeleted(studentId).stream().map(StudentDiscount::getConnectionId).toList();
         removeStudentsDiscount(connectionIds);
     }
 
+    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
     private void updateStudentFees(Student student) {
         int currentSemId = Optional.ofNullable(sem.getCurrentActive()).map(SchoolYearSemester::getSySemNumber).orElse(0);
         StudentTotalDiscount studDiscount = studDiscRepo.getStudentTotalDiscount(student.getStudentId()).orElse(null);
         if (studDiscount != null && currentSemId>0) {
             CompletableFuture.runAsync(() -> {
+                int studentId = student.getStudentId();
                 double percentDisc = studDiscount.getTotalPercentageDiscount();
                 double fixedDisc = studDiscount.getTotalFixedDiscount();
                 double toAddStudentBalance = 0;
-                List<StudentFeesList> studentFeesLists = sfl.getFeesBySemAndStudent(student.getStudentId(), currentSemId);
+                List<StudentFeesList> studentFeesLists = sfl.getFeesBySemAndStudent(studentId, currentSemId);
                 if (!studentFeesLists.isEmpty()) {
                     for (StudentFeesList studFee : studentFeesLists) {
                         double feeAmount = studFee.getFee().getRequiredAmount();
                         double newBalance = feeAmount - NonModelServices.adjustDecimal((feeAmount * percentDisc) + fixedDisc);
-                        toAddStudentBalance += studFee.getAmount() - newBalance;
+                        toAddStudentBalance += newBalance - studFee.getAmount();
                         studFee.setAmount(newBalance);
                         sfl.save(studFee);
                     }
-                    student.setScholar(!studDiscRepo.findByStudentNotDeleted(student.getStudentId()).isEmpty());
-                    student.setStudentBalance(student.getStudentBalance() + toAddStudentBalance);
+                    //Option 1 : Will deduct the difference between new fee balance and initial to be paid amount to student's current balance
+//                    student.setScholar(!studDiscRepo.findByStudentNotDeleted(studentId).isEmpty());
+//                    student.setStudentBalance(student.getStudentBalance() + toAddStudentBalance);
+//                    studRepo.save(student);
+
+                    //Option 2 : Will recalculate all of the balance from all fees then the total balance will become the new student balance
+                    double newBalance = 0;
+                    for(StudentFeesList paid : sfl.findUniqueFees(studentId)){
+                        Double amountPaid = paymentRepo.totalPaidForSpecificFee(studentId,paid.getFee().getId(),null).orElse(0d);
+                        newBalance += NonModelServices.zeroIfLess(Optional.ofNullable(sfl.totalPerFeesByStudent(studentId, paid.getFee().getId())).orElse(0d) - amountPaid);
+
+                    }
+                    student.setScholar(!studDiscRepo.findByStudentNotDeleted(studentId).isEmpty());
+                    student.setStudentBalance(NonModelServices.adjustDecimal(newBalance));
                     studRepo.save(student);
                 }
             });

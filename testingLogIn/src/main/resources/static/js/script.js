@@ -921,12 +921,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         break;
       case "editSubject":
-        if (
-          validateForm(
-            "subjectEditForm",
-            "⚠️ Please fill in all required fields!"
-          )
-        ) {
+        if (validateForm("subjectEditForm","⚠️ Please fill in all required fields!")) {
           if (await validateAdminPassword()) {
             editSubject();
             closeConfirmationModal();
@@ -1010,7 +1005,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         break;
       case "transfereeAddListing":
-        alert("at transfereeAddListing");
         if (!validateForm("studentForm")) {
           showErrorModal("⚠️ Please fill in all required fields!");
           return;
@@ -1148,7 +1142,6 @@ document.addEventListener("DOMContentLoaded", function () {
     formId,
     errorMsg = "⚠️ Please fill in all required fields!"
   ) {
-    alert(formId);
     let form = document.getElementById(formId);
     if (!form) {
       console.error("❌ Form not found:", formId);
@@ -1162,6 +1155,28 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!input.value.trim()) {
         valid = false;
         showErrorModal(errorMsg);
+        input.classList.add("error");
+      } else {
+        input.classList.remove("error");
+      }
+    });
+
+    return valid;
+  }
+
+  function validateFormListing(formId) {
+    let form = document.getElementById(formId);
+    if (!form) {
+      console.error("❌ Form not found:", formId);
+      return false;
+    }
+
+    let inputs = form.querySelectorAll("input[required], select[required]");
+    let valid = true;
+
+    inputs.forEach((input) => {
+      if (!input.value.trim()) {
+        valid = false;
         input.classList.add("error");
       } else {
         input.classList.remove("error");
@@ -1415,8 +1430,7 @@ document.addEventListener("DOMContentLoaded", function () {
       handleConfirmAction(action, event);
       ``;
       // Only close confirmation modal if validation passes
-      alert("at validateForm(studentForm)");
-      if (validateForm("studentForm")) {
+      if (validateFormListing("studentForm")) {
         toggleModal("confirmationModal", false);
 
         // Close the parent modal (Edit Modal) if open

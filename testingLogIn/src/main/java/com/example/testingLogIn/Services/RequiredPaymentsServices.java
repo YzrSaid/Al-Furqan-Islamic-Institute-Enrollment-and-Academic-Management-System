@@ -57,7 +57,7 @@ public class RequiredPaymentsServices {
         return reqPaymentsRepo.findById(reqPaymentId).orElse(null);
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
     public int addNewPayments(RequiredPaymentsDTO paymentsDTO) throws Exception {
         boolean doesNameExist = reqPaymentsRepo.findAll().stream()
                                                 .filter(payment -> payment.isNotDeleted() && 
@@ -146,7 +146,7 @@ public class RequiredPaymentsServices {
                         .toList();
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
     public boolean updatePayment(int feeId, RequiredPaymentsDTO updated){
         RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
         assert toUpdate != null;
@@ -222,12 +222,13 @@ public class RequiredPaymentsServices {
         return true;
     }
 
+    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
     public double afterDiscount(Student student, double initialPrice){
         StudentTotalDiscount std = discService.getStudentTotalDiscount(student.getStudentId());
         return (initialPrice - NonModelServices.adjustDecimal(((initialPrice * std.getTotalPercentageDiscount()) + std.getTotalFixedDiscount())));
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
     public void deleteRequiredPayment(int feeId){
         RequiredFees reqFee = reqPaymentsRepo.findById(feeId).orElseThrow(NullPointerException::new);
         int currentSemId = Optional.ofNullable(semServices.getCurrentActive()).map(SchoolYearSemester::getSySemNumber).orElse(0);

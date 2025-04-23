@@ -101,53 +101,21 @@
                 </div>
             </div>
 
-            <div class="chart-box-recent">
+            <div class="chart-box-bar">
                 <div class="bar-graph-container">
                     <div class="title-row">
-                        <h6 id="recentTransactionTitle">Recent Transactions</h6>
-                    </div> <br>
+                        <h6 id="barGraphTitle">Subject Rates</h6>
+                        <div class="filter-container-bar">
+                            <label for="sort-bar-graph">Filter:</label>
+                            <select name="sort" onchange="setChartContents()" id="sort-bar-graph">
+                                <option value="failed" selected>Failing Rates</option>
+                                <option value="passed">Passing Rates</option>
+                            </select>
+                        </div>
+                    </div>
 
-                    <div class="recent-transactions-container">
-                        <table id="recent-transactions" class="mini-table">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Student Name</th>
-                                    <th>Date Paid</th>
-                                    <th>Transaction Number</th>
-                                    <th>Amount Paid</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Juan Dela Cruz</td>
-                                    <td>2025-04-01</td>
-                                    <td>TXN-001234</td>
-                                    <td>₱1,500.00</td>
-                                    <td><button type="button" class="btn mini-table-btn">View</button></td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Maria Santos</td>
-                                    <td>2025-04-02</td>
-                                    <td>TXN-001235</td>
-                                    <td>₱2,000.00</td>
-                                    <td><button type="button" class="btn mini-table-btn">View</button></td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Carlos Garcia</td>
-                                    <td>2025-04-03</td>
-                                    <td>TXN-001236</td>
-                                    <td>₱1,800.00</td>
-                                    <td><button type="button" class="btn mini-table-btn">View</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <br><br>
-
+                    <div class="bar-graph">
+                        <canvas id="subjectRateChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -294,8 +262,6 @@
             const ratesResult = await response.json();
             gradeLabels = ratesResult.gradeLevelNames;
             gradeRates = ratesResult.gradeLevelCounts;
-            gradeLabels = gradeLabels.concat(gradeLabels);
-            gradeRates = gradeRates.concat(gradeRates);
             gradeLabels = gradeLabels.concat(gradeLabels);
             gradeRates = gradeRates.concat(gradeRates);
             gradeLabels = gradeLabels.concat(gradeLabels);

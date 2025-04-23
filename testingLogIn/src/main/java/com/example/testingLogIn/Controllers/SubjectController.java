@@ -100,8 +100,6 @@ public class SubjectController {
             return new ResponseEntity<>("Subject Updated Successfully",HttpStatus.OK);
         else
             return new ResponseEntity<>("Subject Name already used",HttpStatus.NOT_ACCEPTABLE);
-        }catch(NullPointerException e){
-            return new ResponseEntity<>("Selected subject not found",HttpStatus.NOT_FOUND);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("Process Failed",HttpStatus.CONFLICT);

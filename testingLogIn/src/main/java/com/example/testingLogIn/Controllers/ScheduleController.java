@@ -44,6 +44,12 @@ public class ScheduleController {
         }
     }
 
+
+    @GetMapping("/section")
+    public ResponseEntity<List<ScheduleDTO>> getSchedulesBySection(@RequestParam int sectionId){
+        return new ResponseEntity<>(scheduleService.getSchedulesBySection(sectionId),HttpStatus.OK);
+    }
+
     @GetMapping("/section-subjects")
     public ResponseEntity<List<EvaluationStatus>> getTest(@RequestParam(required = false) Integer sectionId){
         try{

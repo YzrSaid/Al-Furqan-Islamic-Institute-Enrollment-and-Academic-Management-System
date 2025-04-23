@@ -8,6 +8,7 @@ import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.CustomObjects.FailedStudents;
 import com.example.testingLogIn.CustomObjects.PassedStudents;
 import com.example.testingLogIn.Models.SchoolYearSemester;
+import com.example.testingLogIn.Models.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -108,7 +109,11 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     FROM StudentSubjectGrade sg
     LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber AND s.isNotDeleted
     LEFT JOIN s.teacher t
+    JOIN sg.subject sub
     WHERE sg.subjectGrade IS NULL
+    AND sg.isNotDeleted
+    AND sub.isNotDeleted
+    AND sub.isCurrentlyActive
     AND sg.semester.sySemNumber = :semId
     GROUP BY sg.section.number, sg.subject
     """)
@@ -123,10 +128,10 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
 
     @Modifying
     @Transactional
-    @Query("UPDATE StudentSubjectGrade sg SET sg.isNotDeleted = false " +
+    @Query("UPDATE StudentSubjectGrade sg SET sg.isNotDeleted = :status " +
             "WHERE sg.subject.subjectNumber = :subjectId " +
             "AND sg.semester.sySemNumber = :semId")
-    void deleteStudentSubjectGrade(int subjectId, int semId);
+    void updateSubjectGradeStatus(int subjectId, int semId,boolean status);
 
     @Query("""
             SELECT NEW com.example.testingLogIn.CustomObjects.PassedStudents(stud, ssg.section.level) 
@@ -159,4 +164,16 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             AND ssg.subjectGrade IS NULL
             """)
     Optional<Long> countUngraded(int semId);
+
+    @Query("""
+            SELECT stud FROM Student stud
+            JOIN Enrollment e ON e.student.studentId = stud.studentId
+                AND e.enrollmentStatus = 'ENROLLED'
+                AND e.SYSemester.sySemNumber = :semId
+            LEFT JOIN StudentSubjectGrade ssg ON ssg.student.studentId = stud.studentId
+                AND ssg.subject.subjectNumber = :subjectNumber
+                AND ssg.semester.sySemNumber = :semId
+            WHERE ssg.student IS NULL
+            """)
+    List<Student> findEnrolledStudentsNoRecord(int subjectNumber, int semId);
 }

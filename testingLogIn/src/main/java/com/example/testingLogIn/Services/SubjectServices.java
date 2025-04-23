@@ -124,7 +124,7 @@ public class SubjectServices {
     }
     
     public boolean updateSubjectDescription(SubjectDTO subject){
-        Subject updatedSub = subjectRepo.findById(subject.getSubjectNumber()).orElseThrow(NullPointerException::new);
+        Subject updatedSub = subjectRepo.findById(subject.getSubjectNumber()).orElseThrow(()->new NullPointerException("Subject Record Not Found"));
         List<Subject> existing = subjectRepo.findByNameNotEqualId(subject.getSubjectName().toLowerCase(), subject.getSubjectNumber());
         if(existing.isEmpty()){
             boolean isNotActiveBefore = !updatedSub.isCurrentlyActive();
@@ -133,13 +133,13 @@ public class SubjectServices {
             updatedSub.setCurrentlyActive(subject.isWillApplyNow());
             subjectRepo.save(updatedSub);
 
-            if(isNotActiveBefore && subject.isWillApplyNow()){
-                SchoolYearSemester sem = semServices.getCurrentActive();
+            SchoolYearSemester sem = semServices.getCurrentActive();
+            if(subject.isWillApplyNow()){
                 if(sem != null){
                     int semId = sem.getSySemNumber();
                     CompletableFuture.runAsync(()->{
                         List<StudentSubjectGrade> studentGrades = new ArrayList<>();
-                        enrollmentRepo.getCurrentlyEnrolledToGrade(updatedSub.getGradeLevel().getLevelId(),semId)
+                        ssgRepo.findEnrolledStudentsNoRecord(subject.getSubjectNumber(),semId)
                                 .forEach(student ->{
                                     studentGrades.add(StudentSubjectGrade.builder()
                                             .student(student)
@@ -155,6 +155,8 @@ public class SubjectServices {
                     });
                 }
             }
+            if(sem != null)
+                CompletableFuture.runAsync(()->ssgRepo.updateSubjectGradeStatus(subject.getSubjectNumber(),sem.getSySemNumber(),subject.isWillApplyNow()));
             return true;
         }
         return false;
@@ -168,7 +170,7 @@ public class SubjectServices {
             SchoolYearSemester sem = semServices.getCurrentActive();
             if(sem != null){
                 int semId = sem.getSySemNumber();
-                CompletableFuture.runAsync(()->ssgRepo.deleteStudentSubjectGrade(todelete.getSubjectNumber(),semId));
+                CompletableFuture.runAsync(()->ssgRepo.updateSubjectGradeStatus(todelete.getSubjectNumber(),semId,false));
             }
         }
     }

@@ -54,13 +54,17 @@ public interface StudentDiscountRepo extends JpaRepository<StudentDiscount,Integ
             "AND studDisc.isNotDeleted")
     List<StudentDiscount> findByStudentNotDeleted(@Param("studentId") int studentId);
 
-    @Query("SELECT NEW com.example.testingLogIn.CustomObjects.StudentDiscountHandler(sd,stud) " +
-            "FROM StudentDiscount sd " +
-            "RIGHT JOIN Student stud ON sd.student.studentId = stud.studentId " +
-            "AND (:discountId IS NULL OR sd.discount.discountId = :discountId) " +
-            "WHERE LOWER(stud.fullName) LIKE :search " +
-            "AND (CASE WHEN sd.connectionId IS NULL THEN FALSE " +
-                    "ELSE sd.isNotDeleted END) = :didAvailed")
+    @Query("""
+            SELECT NEW com.example.testingLogIn.CustomObjects.StudentDiscountHandler(sd,stud)
+            FROM StudentDiscount sd
+            LEFT JOIN sd.discount d
+            RIGHT JOIN Student stud ON sd.student.studentId = stud.studentId
+            AND (:discountId IS NULL OR sd.discount.discountId = :discountId)
+            WHERE (d IS NULL OR d.isNotDeleted)
+            AND LOWER(stud.fullName) LIKE :search
+            AND (CASE WHEN sd.connectionId IS NULL THEN FALSE
+                    ELSE sd.isNotDeleted END) = :didAvailed
+            """)
     Page<StudentDiscountHandler> findRecords(@Param("discountId")  Integer discountId,
                                                                     boolean didAvailed,
                                                                     String search,

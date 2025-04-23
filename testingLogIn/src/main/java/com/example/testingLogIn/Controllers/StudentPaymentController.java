@@ -81,12 +81,16 @@ public class StudentPaymentController{
 
     //NEW STUDENT PAYMENT FORM
     @GetMapping("/form/{studentId}")                                                    //if gradeLevelId = false (for all time debt) else if gradeLevelId has value, it is for the enrollment Payment form
-    public ResponseEntity<StudentPaymentForm> getPaymentForm(@PathVariable int studentId,@RequestParam(required = false) Integer gradeLevelId, @RequestParam(defaultValue = "false",required = false) boolean forBreakDown){
-        try{
-            return new ResponseEntity<>(paymentService.getStudentPaymentForm(studentId,gradeLevelId,forBreakDown),HttpStatus.OK);
-        }catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> getPaymentForm(@PathVariable int studentId,
+                                            @RequestParam(required = false) Integer gradeLevelId,
+                                            @RequestParam(defaultValue = "false",required = false) boolean forBreakDown,
+                                            @RequestParam(defaultValue = "1",required = false) int pageNo,
+                                            @RequestParam(defaultValue = "3",required = false) int pageSize,
+                                            @RequestParam(defaultValue = "false", required = false) boolean forPayment){
+        if(gradeLevelId != null){
+            return new ResponseEntity<>(paymentService.enrollmentPaymentForm(studentId,gradeLevelId),HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(paymentService.getStudentPaymentForm(studentId,forBreakDown,pageNo,pageSize,forPayment),HttpStatus.OK);
         }
     }
 

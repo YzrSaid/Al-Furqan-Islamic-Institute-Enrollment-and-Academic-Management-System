@@ -8,6 +8,7 @@ import org.springframework.web.reactive.result.view.RedirectView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.thymeleaf.exceptions.TemplateInputException;
 
 import java.security.InvalidKeyException;
 
@@ -36,14 +37,19 @@ public class ErrorHandlers {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<String> handleNoHandlerFoundException(NoResourceFoundException nrfe) {
-        System.out.println("No resources found");
-        return new ResponseEntity<>("No resources found",HttpStatus.NOT_FOUND); // Redirect to a custom error page
+    public RedirectView handleNoHandlerFoundException(NoResourceFoundException nrfe,RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMessage", "The requested resource was not found.");
+        return new RedirectView("/home"); // Redirect to a custom error page
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> exceptionHandler(Exception e){
-        e.printStackTrace();
-        return new ResponseEntity<>("Server Error",HttpStatus.CONFLICT);
+    @ExceptionHandler(TemplateInputException.class)
+    public RedirectView templateException(TemplateInputException nrfe, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMessage", "The requested resource was not found.");
+        return new RedirectView("/home"); // Redirect to a custom error page
     }
+
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<String> exceptionHandler(Exception e){
+//        return new ResponseEntity<>("Server Error",HttpStatus.CONFLICT);
+//    }
 }

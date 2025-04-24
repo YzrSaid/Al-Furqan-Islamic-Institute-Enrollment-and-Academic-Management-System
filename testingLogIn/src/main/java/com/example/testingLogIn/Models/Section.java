@@ -37,13 +37,14 @@ public class Section {
     
     public SectionDTO toSectionDTO(){
         return SectionDTO.builder()
-                             .number(getNumber())
-                             .gradeLevelName(level.getLevelName())
-                             .adviserName(adviser.getFullName())
-                             .sectionName(getSectionName())
-                             .capacity(getCapacity())
-                             .isNotDeleted(true)
-                             .build();
+                                .number(getNumber())
+                                .gradeLevelName(level.getLevelName())
+                                .levelId(level.getLevelId())
+                                .adviserName(adviser.getFullName())
+                                .sectionName(getSectionName())
+                                .capacity(getCapacity())
+                                 .isNotDeleted(true)
+                                .build();
     }
 
     @Override

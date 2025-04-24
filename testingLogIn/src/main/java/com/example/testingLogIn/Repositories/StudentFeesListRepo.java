@@ -16,18 +16,23 @@ import org.springframework.data.repository.query.Param;
 public interface StudentFeesListRepo extends JpaRepository<StudentFeesList,Integer> {
 
     @Query("SELECT sfl FROM StudentFeesList sfl " +
-            "JOIN sfl.student stud "+
-            "JOIN sfl.sem s "+
-            "WHERE (:semId IS NULL OR s.sySemNumber = :semId) "+
-            "AND stud.studentId = :studId " +
-            "GROUP BY sfl.fee")
+            "WHERE sfl.id IN (" +
+            "   SELECT MIN(sfl2.id) FROM StudentFeesList sfl2 " +
+            "   JOIN sfl2.student stud2 " +
+            "   JOIN sfl2.sem s2 " +
+            "   WHERE (:semId IS NULL OR s2.sySemNumber = :semId) " +
+            "   AND stud2.studentId = :studId " +
+            "   GROUP BY sfl2.fee" +
+            ")")
     List<StudentFeesList> findBySem(@Param("studId") int studentId,@Param("semId") Integer semId);
 
     @Query("SELECT sfl FROM StudentFeesList sfl " +
-            "JOIN sfl.student stud "+
-            "JOIN sfl.fee fee "+
-            "WHERE stud.studentId = :studId " +
-            "GROUP BY fee")
+            "WHERE sfl.id IN (" +
+            "   SELECT MIN(sfl2.id) FROM StudentFeesList sfl2 " +
+            "   JOIN sfl2.student stud2 " +
+            "   WHERE stud2.studentId = :studId " +
+            "   GROUP BY sfl2.fee" +
+            ")")
     List<StudentFeesList> findUniqueFees(@Param("studId") int studentId);
 
     @Query("SELECT COUNT(sfl) FROM StudentFeesList sfl "+

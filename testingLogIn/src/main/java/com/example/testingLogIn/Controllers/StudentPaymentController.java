@@ -87,10 +87,15 @@ public class StudentPaymentController{
                                             @RequestParam(defaultValue = "1",required = false) int pageNo,
                                             @RequestParam(defaultValue = "3",required = false) int pageSize,
                                             @RequestParam(defaultValue = "false", required = false) boolean forPayment){
-        if(gradeLevelId != null){
-            return new ResponseEntity<>(paymentService.enrollmentPaymentForm(studentId,gradeLevelId),HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(paymentService.getStudentPaymentForm(studentId,forBreakDown,pageNo,pageSize,forPayment),HttpStatus.OK);
+        try{
+            if(gradeLevelId != null){
+                return new ResponseEntity<>(paymentService.enrollmentPaymentForm(studentId,gradeLevelId),HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(paymentService.getStudentPaymentForm(studentId,forBreakDown,pageNo,pageSize,forPayment),HttpStatus.OK);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 

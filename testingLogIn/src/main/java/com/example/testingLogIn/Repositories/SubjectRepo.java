@@ -35,6 +35,14 @@ public interface SubjectRepo extends JpaRepository<Subject, Integer>{
            WHERE gl.levelId = :levelId
            AND sub.isNotDeleted
            AND sub.isCurrentlyActive
-            """)
+           """)
     List<Subject> findActiveSubjectsNotDeletedByGradeLevel(int levelId);
+
+    @Query("""
+           SELECT sub FROM Subject sub
+           LEFT JOIN sub.gradeLevel gl
+           WHERE gl.levelId = :levelId
+           AND sub.isNotDeleted
+           """)
+    List<Subject> findSubjectsByGradeLevel(int levelId);
 }

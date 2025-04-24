@@ -1,12 +1,15 @@
 package com.example.testingLogIn.Services;
 
 import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
+import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.Enums.Semester;
+import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.ModelDTO.SubjectDTO;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Subject;
 import com.example.testingLogIn.Repositories.EnrollmentRepo;
+import com.example.testingLogIn.Repositories.ScheduleRepo;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Repositories.SubjectRepo;
 
@@ -17,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import com.example.testingLogIn.StatisticsModel.SubjectsStatistics;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -34,14 +38,17 @@ public class SubjectServices {
     private final EnrollmentRepo enrollmentRepo;
     private final StudentSubjectGradeRepo ssgRepo;
     private final sySemesterServices semServices;
+    private final ScheduleRepo scheduleRepo;
 
-    public SubjectServices(SubjectRepo subjectRepo, GradeLevelServices gradeLevelService, SectionServices sectionService, EnrollmentRepo enrollmentRepo, StudentSubjectGradeRepo ssgRepo, sySemesterServices semServices) {
+    @Autowired
+    public SubjectServices(SubjectRepo subjectRepo, GradeLevelServices gradeLevelService, SectionServices sectionService, EnrollmentRepo enrollmentRepo, StudentSubjectGradeRepo ssgRepo, sySemesterServices semServices, ScheduleRepo scheduleRepo) {
         this.subjectRepo = subjectRepo;
         this.gradeLevelService = gradeLevelService;
         this.sectionService = sectionService;
         this.enrollmentRepo = enrollmentRepo;
         this.ssgRepo = ssgRepo;
         this.semServices = semServices;
+        this.scheduleRepo = scheduleRepo;
     }
 
     public List<SubjectDTO> getSubjectByGrade(String gradeLevel){
@@ -52,6 +59,27 @@ public class SubjectServices {
                                              subject.isNotDeleted())
                           .map(Subject::mapper)
                           .collect(Collectors.toList());
+    }
+
+    public List<EvaluationStatus> getGradeLevelSubjects(int levelId,int sectionId, boolean isActive){
+        int semId = Optional.ofNullable(semServices.getCurrentActive()).map(SchoolYearSemester::getSySemNumber).orElse(0);
+        List<EvaluationStatus> evaluationStatuses = new ArrayList<>();
+        subjectRepo.findActiveSubjectsNotDeletedByGradeLevel(levelId)
+                .forEach(subject ->
+                    evaluationStatuses.add(EvaluationStatus.builder()
+                                    .subject(subject)
+                                    .teacher(scheduleRepo.findSubjectSectionSchedule(subject.getSubjectNumber(), sectionId).map(sc -> sc.getTeacher().mapperDTO()).orElse(null))
+                                    .gradedCount(ssgRepo.getTotalGraded(
+                                            sectionId,
+                                            subject.getSubjectNumber(),
+                                            semId))
+                                    .totalToBeGraded(ssgRepo.getGradesBySectionSubjectSem(
+                                            sectionId,
+                                            subject.getSubjectNumber(),
+                                            semId).size())
+                                    .build())
+                );
+        return evaluationStatuses;
     }
     
     public List<SubjectDTO> getSectionSubjects(int sectionId){

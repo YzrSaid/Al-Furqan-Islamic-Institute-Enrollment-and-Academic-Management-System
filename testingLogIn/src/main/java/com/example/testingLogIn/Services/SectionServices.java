@@ -96,7 +96,6 @@ public class SectionServices {
         //this is for grade management
         return sectionRepo.findSectionsAndGradeLevelNotDeleted(null).stream()
                           .map(Section::toSectionDTO)
-                          .peek(sec -> sec.setSubSchedCount(schedRepo.getUniqueSubjectCountBySection(sec.getNumber())))
                           .collect(Collectors.toList());
     }
 

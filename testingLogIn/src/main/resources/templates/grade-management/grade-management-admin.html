@@ -52,7 +52,6 @@
                         <th>Grade Level</th>
                         <th>Section</th>
                         <th>Adviser</th>
-                        <th>Subjects Count</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -89,30 +88,21 @@
                 tableBody.innerHTML = "";
 
                 data.forEach(sec => {
-                    //console.log(sec);
                     secollmentIdLet = sec.secollmentId;
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                                <tr>
-                                    <td>${sec.gradeLevelName}</td>
-                                    <td>${sec.sectionName}</td>
-                                    <td>${sec.adviserName}</td>
-                                    <td>${sec.subSchedCount}<td>
-                                        <div class="dropdown">
-<!--                                            <div class="status-container">-->
-<!--                                                <div class="status" id="status-grade-management">${sec.subSchedCount}</div>-->
-<!--                                            </div>-->
-                                            <!-- <div class="action-container action">
-                                                <a href="grade-per-class.html"><img th:src="@{/images/icons/compose.png}"
-                                                        alt="edit-icon"></a>
-                                            </div> -->
-                                            <div class="action-container action">
-                                                <a href="/grade-management/class/${sec.number}"><button class="btn-confirm">View Subjects</button></a>
-                                            </div>
+                            <tr>
+                                <td>${sec.gradeLevelName}</td>
+                                <td>${sec.sectionName}</td>
+                                <td>${sec.adviserName}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <div class="action-container action">
+                                            <a href="/grade-management/class/${sec.number}"><button class="btn-confirm">View Subjects</button></a>
                                         </div>
-                                    </td>
-                                </tr>
-                                `;
+                                    </div>
+                                </td>
+                            </tr>`;
 
                     tableBody.appendChild(row);
                 });

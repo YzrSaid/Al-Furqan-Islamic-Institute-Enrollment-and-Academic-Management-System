@@ -1207,7 +1207,7 @@
 
         const remainingFees = await response.json();
 
-        feesTable.innerHTML = `<tr><td colspan="5">No records found</td></tr>`;
+        feesTable.innerHTML = `<tr><td colspan="4">No records found</td></tr>`;
         if (remainingFees.content.length === 0) { 
             updatePaginationUI("PFee",1,0,0,0);
             return; }

@@ -54,7 +54,7 @@ public class EmailService {
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipientEmail));
             message.setSubject("Password Reset Request");
-            String resetLink = "http://localhost:8081/reset-password/" + token;
+            String resetLink = "http://212.85.25.40:8080/reset-password/" + token;
 
             // HTML email content
             String htmlContent = "<h3>Password Reset</h3>"

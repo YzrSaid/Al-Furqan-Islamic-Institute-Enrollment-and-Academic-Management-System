@@ -125,4 +125,13 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Integer>{
             AND sc.subject.subjectNumber = :subjectId
             """)
     Integer countTeacherSubjectSched(@Param("teacherId") int userId, @Param("subjectId") int subjectId);
+
+    @Query("""
+            SELECT s FROM Schedule s
+            WHERE s.isNotDeleted
+            AND s.section.number = :sectionId
+            AND s.section.isNotDeleted
+            AND s.subject.subjectNumber = :subjectId
+            """)
+    Optional<Schedule> findSubjectSectionSchedule(int subjectId, int sectionId);
 }

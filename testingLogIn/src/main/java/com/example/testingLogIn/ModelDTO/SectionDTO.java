@@ -13,6 +13,7 @@ import lombok.*;
 public class SectionDTO {
     private int number;
     private String gradeLevelName;
+    private int levelId;
     private String  adviserName;
     private int adviserId;
     private String sectionName;

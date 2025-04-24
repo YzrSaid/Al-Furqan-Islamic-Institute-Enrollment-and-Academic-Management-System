@@ -5,12 +5,14 @@ import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Subject;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class EvaluationStatus {
     public UserDTO teacher;
     public Subject subject;

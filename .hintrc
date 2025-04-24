@@ -26,7 +26,8 @@
         "ignore": [
           "-webkit-overflow-scrolling",
           "overscroll-behavior",
-          "overscroll-behavior: contain"
+          "overscroll-behavior: contain",
+          "user-select"
         ]
       }
     ]

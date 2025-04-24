@@ -430,13 +430,20 @@ body {
   padding: 15px 0;
 }
 
-.title-row {
+.title-row-bar,
+.title-row-graph {
   display: flex;
   gap: 30px;
-  width: 84%;
   align-items: center;
   justify-content: center;
   margin: auto;
+}
+
+.title-row-bar {
+  width: 84%;
+}
+.title-row-graph {
+  width: 100%;
 }
 
 .graph-container {
@@ -502,10 +509,16 @@ body {
   width: 50%;
 }
 .filter-container-bar {
+  width: 40%;
+}
+.filter-container-graph {
+  width: 50%;
+}
+.filter-container-bar,
+.filter-container-graph {
   display: flex;
   align-items: center;
   gap: 20px;
-  width: 40%;
   margin-left: auto;
 }
 
@@ -987,6 +1000,27 @@ select option[value=""] {
   width: 20%;
 }
 
+.payment-transaction-table th:nth-child(1),
+.payment-transaction-table td:nth-child(1) {
+  width: 30%;
+}
+.payment-transaction-table th:nth-child(2),
+.payment-transaction-table td:nth-child(2) {
+  width: 20%;
+}
+.payment-transaction-table th:nth-child(3),
+.payment-transaction-table td:nth-child(3) {
+  width: 20%;
+}
+.payment-transaction-table th:nth-child(4),
+.payment-transaction-table td:nth-child(4) {
+  width: 20%;
+}
+.payment-transaction-table th:nth-child(5),
+.payment-transaction-table td:nth-child(5) {
+  width: 10%;
+}
+
 .receipt-table th:nth-child(1),
 .receipt-table td:nth-child(1) {
   width: 15%;
@@ -1367,6 +1401,7 @@ table td {
 .listing-table,
 .grade-management-table,
 .grade-level-table,
+.payment-transaction-table,
 .view-grades-table,
 .school-year-table,
 .subject-table,
@@ -1541,6 +1576,16 @@ table td {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.action button {
+  border: none;
+  outline: none;
+}
+.action-btn {
+  background-color: transparent;
+}
+.action {
+  /* background-color: #007bff; */
 }
 .action-non-scallable img {
   width: 20px;
@@ -2316,15 +2361,15 @@ input[type="checkbox"] {
 }
 
 .checkbox-container-popover label {
-  margin-left: -30px;
+  /* margin-left: -30px; */
   padding: 0;
 }
 
 .checkbox-container-popover input[type="checkbox"] {
   transform: scale(0.8);
   cursor: pointer;
-  margin-right: -25px;
-  margin-left: -55px;
+  /* margin-right: -25px;
+  margin-left: -55px; */
 }
 
 .student-modal-content-report,
@@ -2611,7 +2656,9 @@ input[type="checkbox"] {
 }
 
 #pageSizeSelector,
-#pageInput {
+#pageInput,
+#pageSizeSelectorStud,
+#pageInputStud {
   width: 50px;
   height: 35px;
   padding: 0 6px;
@@ -3336,6 +3383,7 @@ input.address,
 #position {
   font-size: 14px;
   color: gray;
+  display: inline !important;
   text-align: center;
   margin-top: 5px;
 }
@@ -3861,7 +3909,6 @@ input.staff-id-report {
 .pagination-container {
   display: flex;
   justify-content: end;
-  margin-right: 15px;
 }
 .pagination-container span {
   font-size: 15px;
@@ -3925,6 +3972,9 @@ input.staff-id-report {
   justify-content: center;
   align-items: center;
   word-wrap: break-word;
+}
+#successModal p {
+    margin: 0;
 }
 
 /* styles for close modal (x) button */
@@ -4608,7 +4658,6 @@ th {
   padding: 1rem;
   transform: translateY(60px);
   left: 0;
-  top: 30% !important;
   border-radius: 8px;
   background-color: white !important;
   color: #333;
@@ -4636,6 +4685,8 @@ th {
 
 .styled-popover h6 {
   text-align: center;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .styled-popover label {
@@ -4698,6 +4749,12 @@ select + p {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  width: 100%;
+  padding: 0 20px;
+  justify-content: end;
+}
+#inside-modal {
+    padding: 0;
 }
 
 .pagination-controls button {
@@ -4760,7 +4817,6 @@ a {
   height: 100vh;
   height: 100dvh;
   background-color: #fff;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   z-index: 5;
   transition: transform 0.3s ease-in-out;
   transform: translateX(0);
@@ -4962,10 +5018,19 @@ a {
 
 /* Mobile Styles */
 @media (max-width: 767px) {
+  .student-modal-content h5 {
+    margin-bottom: 0.625rem;
+  }
   .fullName > div {
     justify-content: space-between;
-    width: 100%;
-    gap: 40px;
+    width: 100% !important;
+    gap: 0px;
+    flex-direction: column;
+    align-items: normal;
+  }
+  .name #studentFirstName {
+    width: 300px;
+    background-color: #007bff;
   }
   .dropdown-status-content {
     font-size: 12px;
@@ -5263,12 +5328,17 @@ a {
   #studlastMadrasaYearCompleted {
     min-width: 122px;
     width: 100%;
-    max-width: 200px;
+    max-width: 400px;
+  }
+
+  #studgender {
+    margin: 0;
   }
 
   .address-div {
     flex-wrap: wrap;
     gap: 0;
+    background-color: #007bff;
     flex-direction: column;
     align-items: start;
   }

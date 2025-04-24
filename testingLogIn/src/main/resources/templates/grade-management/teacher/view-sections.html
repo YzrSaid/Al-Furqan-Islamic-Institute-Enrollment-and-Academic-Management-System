@@ -5,30 +5,33 @@
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link">
-            <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Maintenance</p>
-            <p>/</p>
-            <p>Schedule</p>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+            <div class="text-link">
+                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+                <p>Main</p>
+                <p>/</p>
+                <p>Maintenance</p>
+                <p>/</p>
+                <p>Schedule</p>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+                    </div>
                 </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
@@ -38,29 +41,33 @@
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="table-ba-to" class="verify-accounts-table main-table">
-            <thead>
-                <tr>
-                    <th>Grade Level</th>
-                    <th>Section</th>
-                    <th>Students</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Grade 1</td>
-                    <td>Malunggay</td>
-                    <td>30</td>
-                    <td>
-                        <div class="action-container">
-                            <a href="/schedules/sched-board" class="view-sched">View Schedule</a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="table-ba-to" class="verify-accounts-table main-table">
+                <thead>
+                    <tr>
+                        <th>Grade Level</th>
+                        <th>Section</th>
+                        <th>Students</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Grade 1</td>
+                        <td>Malunggay</td>
+                        <td>30</td>
+                        <td>
+                            <div class="action-container">
+                                <a href="/schedules/sched-board" class="view-sched">View Schedule</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
@@ -80,45 +87,46 @@
                     <div class="modal-body">
                         <h2>My Account Information</h2>
                         <form action="" id="myAccountEditForm">
-                        <div class="half-width">
-                            <div class="user-id">
-                                <label for="user-id" id="user-id-label">User ID:</label>
-                                <p id="user-id">0001</p>
+                            <div class="half-width">
+                                <div class="user-id">
+                                    <label for="user-id" id="user-id-label">User ID:</label>
+                                    <p id="user-id">0001</p>
+                                </div>
+                            </div> <br>
+                            <div class="half-width">
+                                <div class="email">
+                                    <label for="email">Email:</label>
+                                    <p id="email">sample@gmail.com</p>
+                                </div>
+                            </div> <br>
+                            <div class="half-width student-form-group">
+                                <div class="first-name">
+                                    <label for="first-name">First Name:</label>
+                                    <input type="text" id="first-name" value="Batman" readonly>
+                                </div>
+                                <div class="last-name">
+                                    <label for="last-name">Last Name:</label>
+                                    <input type="text" id="last-name" value="Rizal" readonly>
+                                </div>
+                            </div> <br>
+                            <div class="account-type">
+                                <label for="account-type">Account Type:</label>
+                                <select name="account-type" id="account-type">
+                                    <option value="" disabled>Select account type</option>
+                                    <option value="ADMIN_Enrollment">Admin - Enrollment</option>
+                                    <option value="TEACHER">Teacher</option>
+                                </select>
                             </div>
-                        </div> <br>
-                        <div class="half-width">
-                            <div class="email">
-                                <label for="email">Email:</label>
-                                <p id="email">sample@gmail.com</p>
-                            </div>
-                        </div> <br>
-                        <div class="half-width student-form-group">
-                            <div class="first-name">
-                                <label for="first-name">First Name:</label>
-                                <input type="text" id="first-name" value="Batman" readonly>
-                            </div>
-                            <div class="last-name">
-                                <label for="last-name">Last Name:</label>
-                                <input type="text" id="last-name" value="Rizal" readonly>
-                            </div>
-                        </div> <br>
-                        <div class="account-type">
-                            <label for="account-type">Account Type:</label>
-                            <select name="account-type" id="account-type">
-                                <option value="" disabled>Select account type</option>
-                                <option value="ADMIN_Enrollment">Admin - Enrollment</option>
-                                <option value="TEACHER">Teacher</option>
-                            </select>
-                        </div>
 
-                        <div class="modal-buttons">
-                            <button type="button" class="btn-confirm" data-action="editMyAccount"
-                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
-                                Edit
-                            </button>
-                            <button type="button" class="btn-cancel"
-                                data-close-modal="myAccountEditModal">Close</button>
-                        </div>
+                            <div class="modal-buttons">
+                                <button type="button" class="btn-confirm" data-action="editMyAccount"
+                                    data-message="Are you sure you want to update this record?"
+                                    id="confirmMyAccountEdit">
+                                    Edit
+                                </button>
+                                <button type="button" class="btn-cancel"
+                                    data-close-modal="myAccountEditModal">Close</button>
+                            </div>
                         </form>
                     </div>
                 </div>

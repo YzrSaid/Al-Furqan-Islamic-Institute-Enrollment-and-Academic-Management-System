@@ -7,7 +7,7 @@
 <script th:src="@{/js/sidebar.js}"></script>
 
 <body>
-    <!-- Sidebar -->
+    <!-- Sidebar (ADMIN) -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
@@ -118,7 +118,7 @@
                         <div class="header">
                             <div class="half-unique">
                                 <label for="student-id">Student ID: </label>
-                                <input type="text" class="student-id-report" id="student-id">
+                                <input type="text" readonly class="student-id-report" id="student-id">
                             </div> <br>
 
                             <div class="other-info-container">
@@ -138,7 +138,7 @@
                                         <div id="scholar-popover" name="add-discount" class="styled-popover">
                                             <div id="discounts-rec" class="checkbox-transferee-reqs-group">
                                                 <!--Ibutang ang mga transferee requiremetns dri-->
-                                            </div>
+                                            </div> <br>
                                             <div>
                                                 <button type="button" style="width: 100%;"
                                                     data-open-modal="confirmationModal" data-action="editDiscounts"
@@ -163,7 +163,7 @@
                                                 <h6>Requirements:</h6>
                                                 <div id="transfereeReq-rec" class="checkbox-transferee-reqs-group">
                                                     <!--Ibutang ang mga transferee requiremetns dri-->
-                                                </div>
+                                                </div> <br>
 
                                                 <!-- Update Button -->
                                                 <div>
@@ -191,9 +191,9 @@
                                     <div>
                                         <label for="name">Name</label>
                                         <div class="student-form-group half">
-                                            <input type="text" class="name" id="firstName">
-                                            <input type="text" class="name" id="middleName">
-                                            <input type="text" class="name" id="lastName">
+                                            <input readonly type="text" class="name" id="firstName">
+                                            <input readonly type="text" class="name" id="middleName">
+                                            <input readonly type="text" class="name" id="lastName">
                                         </div>
                                         <div class="small-text">
                                             <p class="first-name-p">First</p>
@@ -201,11 +201,11 @@
                                             <p class="last-name-p">Last</p>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="column2">
                                     <div class="student-form-group half-stud-info-small">
                                         <label for="gender">Gender:</label>
-                                        <input type="text" class="gender" id="gender">
+                                        <input readonly type="text" class="gender" id="gender">
 
                                         <label for="birthdate">Birthdate:</label>
                                         <input type="date" class="birthdate" id="birthdate" readonly>
@@ -246,38 +246,38 @@
                             <h6>Father's Information</h6>
                             <div class="student-form-group address-div">
                                 <label for="fatherName">Name:</label>
-                                <input type="text" class="parent-name" id="fatherName">
+                                <input readonly type="text" class="parent-name" id="fatherName">
 
                                 <label for="fatherOccupation">Occupation:</label>
-                                <input type="text" class="parent-occupation" id="fatherOccupation">
+                                <input readonly type="text" class="parent-occupation" id="fatherOccupation">
                             </div> <br>
                         </div>
                         <div>
                             <h6>Mother's Information</h6>
                             <div class="student-form-group address-div">
                                 <label for="motherName">Name:</label>
-                                <input type="text" class="parent-name" id="motherName">
+                                <input readonly type="text" class="parent-name" id="motherName">
 
                                 <label for="motherOccupation">Occupation:</label>
-                                <input type="text" class="parent-occupation" id="motherOccupation">
+                                <input readonly type="text" class="parent-occupation" id="motherOccupation">
                             </div> <br>
                         </div>
 
                         <h6>Guardian's Information</h6>
                         <div class="student-form-group address-div">
                             <label for="guardianName">Name:</label>
-                            <input type="text" class="parent-name" id="guardianName">
+                            <input readonly type="text" class="parent-name" id="guardianName">
 
                             <label for="guardianOccupation">Occupation:</label>
-                            <input type="text" class="parent-occupation" id="guardianOccupation">
+                            <input readonly type="text" class="parent-occupation" id="guardianOccupation">
                         </div> <br>
 
                         <div class="student-form-group address-div">
                             <label for="guardianContactNumber">Contact Number:</label>
-                            <input type="text" class="guardian-number" id="guardianContactNumber">
+                            <input readonly type="text" class="guardian-number" id="guardianContactNumber">
 
                             <label for="guardianAddress">Address:</label>
-                            <input type="text" class="guardian-address" id="guardianAddress">
+                            <input readonly type="text" class="guardian-address" id="guardianAddress">
                         </div> <br>
 
 
@@ -288,20 +288,20 @@
 
                             <div class="student-form-group">
                                 <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                                <input type="text" id="lastGradeLevelCompleted">
+                                <input readonly type="text" id="lastGradeLevelCompleted">
 
                                 <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed:</label>
-                                <input type="text" id="lastMadrasaYearCompleted">
+                                <input readonly type="text" id="lastMadrasaYearCompleted">
                             </div> <br>
 
                             <div class="student-form-group">
                                 <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                                <input type="text" id="madrasaNameLastAttended">
+                                <input readonly type="text" id="madrasaNameLastAttended">
                             </div> <br>
 
                             <div class="student-form-group">
                                 <label for="madrasaAddress">Madrasa Address:</label>
-                                <input type="text" id="madrasaAddress">
+                                <input readonly type="text" id="madrasaAddress">
                             </div> <br>
                         </div>
                     </form>
@@ -512,15 +512,16 @@
                         </div>
                         <div>
                             <label for="studentMiddleName">Middle Name:</label>
-                            <input type="text" name="middlename" id="studentMiddleName" placeholder="Optional">
+                            <input type="text" name="middlename" class="name" id="studentMiddleName"
+                                placeholder="Optional">
                         </div>
                         <div>
                             <label for="studentLastName">Last Name:</label>
-                            <input type="text" name="lastname" id="studentLastName" required>
+                            <input type="text" name="lastname" class="name" id="studentLastName" required>
                         </div>
                     </div> <br>
 
-                    <div class="student-form-group">
+                    <div class="student-form-group address-div">
                         <label for="gender">Gender:</label>
                         <select id="studgender" required>
                             <option value="" disabled selected>Select Gender</option>
@@ -557,7 +558,6 @@
                                 <div id="add-transferee-popover" name="add-transferee-req" class="styled-popover">
                                     <!-- Transferee Requirements Section -->
                                     <div class="transferee-requirements">
-                                        <h6>Requirements:</h6>
                                         <div id="transfereeReq" class="checkbox-transferee-reqs-group">
                                             <!--Ibutang ang mga transferee requiremetns dri-->
                                         </div>
@@ -1561,6 +1561,11 @@
                 reqWrapper.classList.add("checkbox-container-popover");
 
                 data.forEach(transReq => {
+                    // Create and append the heading
+                    const heading = document.createElement("h6");
+                    heading.textContent = "Requirements:";
+                    popover.appendChild(heading);
+
                     //console.log(transReq);
                     const reqDiv = document.createElement("div");
                     reqDiv.classList.add("checkbox-each");
@@ -1599,7 +1604,7 @@
         toUpdateRecStudent = studentId;
         document.getElementById("stud-type").textContent = studentProf.status;
         document.getElementById("isTransferee").checked = studentProf.transferee;
-        document.getElementById("isScholar").textContent =studentProf.discountsAvailed > 0 ? "YES" : "NO";
+        document.getElementById("isScholar").textContent = studentProf.discountsAvailed > 0 ? "YES" : "NO";
 
         document.getElementById("student-id").value = studentProf.studentDisplayId;
         document.getElementById("firstName").value = studentProf.firstName;

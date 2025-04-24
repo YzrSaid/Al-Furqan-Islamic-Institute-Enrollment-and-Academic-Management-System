@@ -73,8 +73,9 @@
                 <p id="security-message" class="hidden">To continue, enter the admin password before proceeding.</p>
 
                 <div class="input-group hidden" id="admin-pass-form">
-                  <label for="adminPassword">Admin Password:</label>
-                  <input type="password" autocomplete="new-password" id="adminPassword" placeholder="Enter admin password" />
+                    <label for="adminPassword">Admin Password:</label>
+                    <input type="password" autocomplete="new-password" id="adminPassword"
+                        placeholder="Enter admin password" />
                 </div>
 
                 <div class="modal-buttons">
@@ -90,7 +91,7 @@
             <div class="modal-content scroll-lock">
                 <p id="errorMessage"></p>
                 <div class="modal-buttons">
-                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                    <button type="button" class="error-btn-cancel" data-close-modal="errorModal">Close</button>
                 </div>
             </div>
         </div>
@@ -106,27 +107,30 @@
         <!-- Modal for adding grade level -->
         <div id="gradeLevelModal" class="grade-level-modal modal">
             <div class="grade-level-modal-content scroll-lock">
-                <h2>Add New Grade Level</h2>
-                <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
-                    <label for="levelName">Grade Level Name:</label>
-                    <input type="text" id="levelName" name="levelName" required>
-                    <br><br>
+                <div class="modal-body">
+                    <h2>Add New Grade Level</h2>
+                    <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
+                        <label for="levelName">Grade Level Name:</label>
+                        <input type="text" id="levelName" name="levelName" required>
+                        <br><br>
 
-                    <label for="pre-req">Pre-Requisite Grade Level</label>
-                    <select name="pre-req" id="pre-req-grade-level" data-preserve>
-                        <option value="NONE" disabled>Choose a pre-requisite</option>
-                        <option value="NONE">None</option>
-                    </select>
+                        <label for="pre-req">Pre-Requisite Grade Level</label>
+                        <select name="pre-req" id="pre-req-grade-level" data-preserve>
+                            <option value="NONE" disabled>Choose a pre-requisite</option>
+                            <option value="NONE">None</option>
+                        </select>
 
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addGradeLevel"
-                            data-message="Are you sure you want to add this grade level?" id="confirmGradeLevel"
-                            data-open-modal="confirmationModal">
-                            Confirm
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
-                    </div>
-                </form>
+
+                    </form>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" data-action="addGradeLevel"
+                        data-message="Are you sure you want to add this grade level?" id="confirmGradeLevel"
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
+                </div>
             </div>
         </div>
 
@@ -333,12 +337,12 @@
         document.addEventListener("click", function (event) {
             const target = event.target;
             //console.log("Clicked Element:", target);
-           // console.log("Element Dataset:", target.dataset);
+            // console.log("Element Dataset:", target.dataset);
 
             if (target.dataset.openModal === "gradeLevelEditModal") {
-               // console.log("Target has openModal attribute!");
+                // console.log("Target has openModal attribute!");
                 const gradeLevelId = target.dataset.id;
-               // console.log("Grade Level ID:", gradeLevelId);
+                // console.log("Grade Level ID:", gradeLevelId);
 
                 if (!gradeLevelId) {
                     // console.error(
@@ -350,7 +354,7 @@
                 fetch(`/gradelevel/${gradeLevelId}`)
                     .then((response) => response.json())
                     .then((data) => {
-                       // console.log("Fetched Data:", data); // ✅ Check backend response
+                        // console.log("Fetched Data:", data); // ✅ Check backend response
 
                         // 🔹 FIX: Use `data.levelId` instead of `data.id`
                         document.getElementById("gradeLevelEditModal").dataset.id = data.levelId;
@@ -367,7 +371,7 @@
             // DELETE FUNCTIONALITY
             if (target.dataset.action === "deleteGradeLevel") {
                 selectedGradeLevelId = target.dataset.id; // Capture the ID
-               //console.log("Selected Grade Level ID for Deletion:", selectedGradeLevelId); // Debugging
+                //console.log("Selected Grade Level ID for Deletion:", selectedGradeLevelId); // Debugging
             }
 
         });
@@ -382,7 +386,7 @@
                     selectedGradeLevelId = target.getAttribute("data-id"); // Get the ID
                     const gradeName = target.getAttribute("data-name"); // Get grade name
 
-                   // console.log("Selected Grade Level ID:", selectedGradeLevelId); // Debugging
+                    // console.log("Selected Grade Level ID:", selectedGradeLevelId); // Debugging
 
                     document.getElementById("levelNameEdit").value = gradeName; // Set name
                     document.getElementById("gradeLevelEditForm").dataset.id =

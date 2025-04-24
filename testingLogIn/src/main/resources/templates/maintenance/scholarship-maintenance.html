@@ -28,7 +28,7 @@
                 <!-- Searchbox and sort btn -->
                 <div class="left-section">
                     <div class="search-container">
-                        <input type="text"autocomplete="new-password" placeholder="Search..." class="search-input" />
+                        <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
                         <button type="button" class="search-btn">Search</button>
                         <!-- Add scholarship discount Button -->
                         <div class="add-something-btn-container">
@@ -81,7 +81,8 @@
 
                 <div class="input-group hidden" id="admin-pass-form">
                     <label for="adminPassword">Admin Password:</label>
-                    <input type="password" autocomplete="new-password"  id="adminPassword" placeholder="Enter admin password" />
+                    <input type="password" autocomplete="new-password" id="adminPassword"
+                        placeholder="Enter admin password" />
                 </div>
 
                 <div class="modal-buttons">
@@ -112,40 +113,43 @@
         <!-- Modal for adding scholarship type/name -->
         <div id="scholarshipModal" class="scholarship-modal modal">
             <div class="scholarship-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h2>Add New Scholarship Type</h2>
+                    <form id="scholarshipForm">
+                        <label for="scholarshipName">Scholarship Type/Name:</label>
+                        <input type="text" id="scholarshipName" name="scholarshipName" required>
+                        <br><br>
 
-                <h2>Add New Scholarship Type</h2>
-                <form id="scholarshipForm">
-                    <label for="scholarshipName">Scholarship Type/Name:</label>
-                    <input type="text" id="scholarshipName" name="scholarshipName" required>
-                    <br><br>
+                        <label for="scholarshipAmount">Amount</label>
+                        <input type="number" min="1" id="scholarshipAmount" disabled required>
 
-                    <label for="scholarshipAmount">Amount</label>
-                    <input type="number" min="1" id="scholarshipAmount" disabled required>
-
-                    <div class="full-width-row">
-                        <!-- Radio button for fixed amount -->
-                        <div class="radio-label">
-                            Fixed Amount: <input value="fixedamount" type="radio" id="fixedAmountDiscount"
-                                name="amountDiscount">
+                        <div class="full-width-row">
+                            <!-- Radio button for fixed amount -->
+                            <div class="radio-label">
+                                Fixed Amount: <input value="fixedamount" type="radio" id="fixedAmountDiscount"
+                                    name="amountDiscount">
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="full-width-row">
-                        <!-- Radio button for fixed amount -->
-                        <div class="radio-label">
-                            Percentage: <input value="percentage" type="radio" id="percentageAmountDiscount"
-                                name="amountDiscount">
-                        </div>
-                    </div> <br>
+                        <div class="full-width-row">
+                            <!-- Radio button for fixed amount -->
+                            <div class="radio-label">
+                                Percentage: <input value="percentage" type="radio" id="percentageAmountDiscount"
+                                    name="amountDiscount">
+                            </div>
+                        </div> <br>
 
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addShcholarshipType"
-                            data-message="Are you sure you want to add this scholarship type/name?" data-open-modal="confirmationModal">
-                            Confirm
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="scholarshipModal">Cancel</button>
-                    </div>
-                </form>
+
+                    </form>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" data-action="addShcholarshipType"
+                        data-message="Are you sure you want to add this scholarship type/name?"
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="scholarshipModal">Cancel</button>
+                </div>
             </div>
         </div>
 
@@ -180,7 +184,8 @@
                     </div> <br>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-require-password="true" data-action="editScholarshipType"
+                        <button type="button" class="btn-confirm" data-require-password="true"
+                            data-action="editScholarshipType"
                             data-message="Are you sure you want to update this scholarship information?"
                             id="confirmGradeLevelEdit">Edit</button>
                         <button type="button" class="btn-cancel" data-close-modal="scholarshipEditModal">Close</button>

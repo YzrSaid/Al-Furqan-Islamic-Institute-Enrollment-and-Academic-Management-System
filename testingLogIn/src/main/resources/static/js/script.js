@@ -2646,45 +2646,44 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function positionPopover(button, popover) {
-    // Get button position and dimensions
     const buttonTop = button.offsetTop;
     const buttonLeft = button.offsetLeft;
     const buttonHeight = button.offsetHeight;
-
-    // Get modal and popover dimensions
+  
     const modalContent = document.querySelector(
       ".student-modal-content, .student-information-container-content"
     );
     const modalHeight = modalContent.clientHeight;
-    const popoverHeight = popover.offsetHeight || 100; // Fallback if not rendered
-    const popoverWidth = popover.offsetWidth || 200; // Assuming width is calculated after render, fallback to 200px
-
-    // Calculate ideal top position (below button)
+    const modalWidth = modalContent.clientWidth;
+  
+    const popoverHeight = popover.offsetHeight || 100;
+    const popoverWidth = popover.offsetWidth || 200;
+  
     let top = buttonTop + buttonHeight + 5 + popoverOffset;
-    let position = "below";
-
-    // Check if placing below would exceed the modal's bottom
+  
     if (top + popoverHeight > modalHeight) {
-      top = buttonTop - popoverHeight - 5; // Place it above if it exceeds
-      position = "above";
+      top = buttonTop - popoverHeight - 5;
     }
-
-    // Boundary check: hide popover if it would go above the modal's top
+  
     if (top < 0) {
       closePopover(popover);
-      position = "hidden-top";
+      return;
     } else {
-      // Ensure popover is visible if within bounds
-      if (popover.style.visibility !== "visible") {
-        openPopover(popover);
-      }
+      openPopover(popover);
       popover.style.pointerEvents = "auto";
     }
-
-    // Adjust position to be to the left of the button
+  
+    // 🧠 Check if it overflows left
+    let left = buttonLeft - popoverWidth + popoverLeftOffset;
+    if (left < 0) {
+      // Overflowing left, move to right of button
+      left = buttonLeft + button.offsetWidth + 5; // Add a little space
+    }
+  
     popover.style.top = `${top}px`;
-    popover.style.left = `${buttonLeft - popoverWidth + popoverLeftOffset}px`; // Adjust left to move to the left of the button
+    popover.style.left = `${left}px`;
   }
+  
 
   // Open popover when any button is clicked
   buttons.forEach(({ buttonId, popoverId }) => {

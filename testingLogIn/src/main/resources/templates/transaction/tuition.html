@@ -30,10 +30,11 @@
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
                         <button type="button" onclick="getRecords(1)" class="search-btn">Search</button>
-                        
+
                         <div class="add-something-btn-container add-something-dropdown">
                             <button type="button" class="btn-confirm" onclick="viewStudents(1)"
-                            id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add Payment</button>
+                                id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add
+                                Payment</button>
 
 
                             <button type="button" class="add-something-btn">
@@ -45,7 +46,8 @@
 
                             <div class="add-something-dropdown-content payment-dropdown-content">
                                 <a href="#" class="action" data-open-modal="allResourcesPrintModal">All Transactions</a>
-                                <a href="#" class="action" data-open-modal="claimedResourcesPrintModal">Voided Transactions</a>
+                                <a href="#" class="action" data-open-modal="claimedResourcesPrintModal">Voided
+                                    Transactions</a>
                             </div>
                         </div>
                     </div>
@@ -115,7 +117,7 @@
 
         <div class="table-wrapper">
             <!-- Table -->
-            <table id="realginnas" class="payment-table main-table">
+            <table id="realginnas" class="payment-transaction-table main-table">
                 <thead>
                     <tr>
                         <th>Student Name</th>
@@ -169,62 +171,67 @@
 
         <!-- Modal for view student list -->
         <div id="viewStudentListModal" class="view-student-list-modal modal">
-            <!-- Close Button -->
-            <span class="close-modal exit-btn" data-close-modal="viewStudentListModal">&times;</span>
-
             <div class="view-student-list-modal-content scroll-lock">
-                <h2>Student List</h2>
+                <div class="modal-body">
+                    <h2>Student List</h2>
 
-                <div class="search-div">
-                    <!-- Searchbox and sort btn -->
-                    <div class="left-section">
-                        <div class="search-container">
-                            <input type="text" id="search-student" placeholder="Search..." class="search-input" />
-                            <button type="button" onclick="viewStudents(1)" class="search-btn">Search</button>
+                    <div class="search-div">
+                        <!-- Searchbox and sort btn -->
+                        <div class="left-section">
+                            <div class="search-container">
+                                <input type="text" id="search-student" placeholder="Search..." class="search-input" />
+                                <button type="button" onclick="viewStudents(1)" class="search-btn">Search</button>
+                            </div>
+                        </div>
+                        <div class="sort-container">
+                            <select name="sort" onchange="viewStudents(1)" id="view-stud-by-select" class="sort-select">
+                                <option value="balance" selected>Current Balance</option>
+                                <option value="gradelevel">Grade Level</option>
+                                <option value="studentname">Student Name</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" onchange="viewStudents(1)" id="view-stud-by-select" class="sort-select">
-                            <option value="balance" selected>Current Balance</option>
-                            <option value="gradelevel">Grade Level</option>
-                            <option value="studentname">Student Name</option>
-                        </select>
+
+
+                    <!-- List of Payments Table -->
+                    <table id="table-ni-martin" class="view-list-of-students-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Student Name</th>
+                                <th>Grade Level</th>
+                                <th>Balance</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5">No Student Record</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="pagination-controls" id="inside-modal">
+                            <span id="itemRangeStud">1–10 of 37</span>
+                            <select id="pageSizeSelectorStud">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                            </select>
+                            <button type="button" id="prevPageStud">«</button>
+                            <input type="number" id="pageInputStud" min="1" value="1">
+                            <span id="totalPagesStud">of 4</span>
+                            <button type="button" id="nextPageStud">»</button>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Add Payment button -->
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" data-close-modal="viewStudentListModal">Close</button>
+                </div>
 
-                <!-- List of Payments Table -->
-                <table id="table-ni-martin" class="view-list-of-students-table main-table">
-                    <thead>
-                        <tr>
-                            <th>Student ID</th>
-                            <th>Student Name</th>
-                            <th>Grade Level</th>
-                            <th>Balance</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="5">No Student Record</td>
-                        </tr>
-                    </tbody>
-                </table>
-        <!-- Pagination -->
-        <div class="pagination-container">
-            <div class="pagination-controls">
-                <span id="itemRangeStud">1–10 of 37</span>
-                <select id="pageSizeSelectorStud">
-                    <option value="10" selected>10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                </select>
-                <button type="button" id="prevPageStud">«</button>
-                <input type="number" id="pageInputStud" min="1" value="1">
-                <span id="totalPagesStud">of 4</span>
-                <button type="button" id="nextPageStud">»</button>
-            </div>
-        </div>
             </div>
         </div>
 
@@ -232,40 +239,38 @@
         <!-- Modal for listOfPaymentsModal -->
         <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
             <div class="list-of-payments-modal-content scroll-lock">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="listOfPaymentsModal">&times;</span>
+                <div class="modal-body">
+                    <h2>List of Payments</h2>
 
-                <h2>List of Payments</h2>
+                    <div class="half-width">
+                        <label for="student-id">Student ID:</label>
+                        <h6 id="student-id"></h6>
+                    </div>
+                    <div class="half-width">
+                        <label for="student-name">Student Name:</label>
+                        <h6 id="student-name"></h6>
+                    </div> <br>
 
-                <div class="half-width">
-                    <label for="student-id">Student ID:</label>
-                    <h6 id="student-id"></h6>
+                    <!-- List of Payments Table -->
+                    <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Particular</th>
+                                <th>Total</th>
+                                <th>Amount Paid</th>
+                                <th>Remaining Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="half-width">
-                    <label for="student-name">Student Name:</label>
-                    <h6 id="student-name"></h6>
-                </div> <br>
-
-                <!-- List of Payments Table -->
-                <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
-                    <thead>
-                        <tr>
-                            <th>Particular</th>
-                            <th>Total</th>
-                            <th>Amount Paid</th>
-                            <th>Remaining Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-
                 <!-- Add Payment button -->
-                <div class="action" id="add-payment-btn">
-                    <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Proceed to
-                        Payment Form</button>
+                <div class="modal-buttons" id="add-payment-btn">
+                    <button type="button" class="btn-confirm" data-open-modal="addPaymentModal">Add
+                        Payment</button>
+                    <button type="button" class="btn-cancel" data-close-modal="listOfPaymentsModal">Close</button>
                 </div>
-
             </div>
         </div>
         <!-- Receipt Modal -->
@@ -360,41 +365,33 @@
 
         <!-- Modal for addPaymentModal-->
         <div id="addPaymentModal" class="add-payment-modal modal">
-            <div class="printable-area">
-                <div class="add-payment-modal-content scroll-lock">
-                    <!-- Close Button -->
-                    <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
+            <div class="add-payment-modal-content scroll-lock">
+                <div class="modal-body">
                     <div class="header-container">
                         <h3>Payment Form</h3>
                     </div> <br>
 
                     <div class="payee-info-container" id="payee-info">
-                        <div class="half-payee">
-                            <div>
-                                <label for="student-id" id="label-id">Student ID:</label>
-                                <input type="text" id="payee-id" readonly>
-                            </div>
-                            <div>
-                                <label for="Date">Date:</label>
-                                <input type="date" id="date">
-                            </div>
+                        <div class="student-form-group">
+                            <label for="payee-id">Student ID:</label>
+                            <input type="text" id="payee-id" readonly>
+
+                            <label for="Date">Date:</label>
+                            <input type="date" id="date">
                         </div>
 
-                        <div class="full-width">
-                            <label for="payee-name">Student Name:</label>
+                        <div class="student-form-group">
+                            <label for="payee-name">Name:</label>
                             <input type="text" id="payee-name" readonly>
                         </div>
-                        <div class="half-width half-payee">
-                            <div>
-                                <label for="semester" id="label-sem">Semester:</label>
-                                <input th:value="${currentSem}" type="text" id="semester" readonly>
-                            </div>
-                            <div>
-                                <label for="school-year">S.Y.</label>
-                                <input th:value="${currentSY}" type="text" id="school-year" readonly>
-                            </div>
+                        <div class="student-form-group">
+                            <label for="semester">Semester:</label>
+                            <input th:value="${currentSem}" type="text" id="semester" readonly>
+
+                            <label for="school-year">S.Y.</label>
+                            <input th:value="${currentSY}" type="text" id="school-year" readonly>
                         </div>
-                        <div class="full-width amount-container">
+                        <div class="student-form-group">
                             <label for="amount" id="label-amount">Amount:</label>
                             <div class="input-wrapper">
                                 <span class="currency-symbol">₱</span>
@@ -403,24 +400,9 @@
                         </div>
                     </div>
                     <div class="payment-wrapper">
-                        <label>Payment For:</label>
+                        <h6>Payment For:</h6>
                         <div class="payment-container-group">
-                            <!-- <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div> -->
+
                         </div> <br>
                     </div>
 
@@ -429,18 +411,19 @@
                         <h6>Received/Collected By:</h6>
                         <div class="collector-name-container">
                             <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                            <p id="position" th:text="${userRole}"></p>
                         </div>
                     </div>
+                </div>
 
+                <div class="modal-buttons payment-modal-buttons">
+                    <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                        data-open-modal="confirmationModal" data-action="savePayment"
+                        data-message="Are you sure you want to save this payment?">Save Payment
+                    </button>
 
-                    <div class="modal-buttons payment-modal-buttons">
-                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                            data-open-modal="confirmationModal" data-action="savePaymentTrans"
-                            data-message="Are you sure you want to save this payment?" disabled>Please select a
-                            particular</button>
-                    </div>
-
+                    <button type="button" id="payment-closer" class="btn-cancel"
+                        data-close-modal="addPaymentModal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -558,21 +541,29 @@
             pageSize = parseInt(document.getElementById("pageSizeSelector").value);
             const searchBy = document.getElementById("search-stud").value;
             const sortBy = document.getElementById("view-by-select").value;
+
+            // Update table headers based on selected view
             if (sortBy == "Transaction" || sortBy == "Voided") {
                 document.querySelector("#realginnas thead").innerHTML = `
+            <tr>
                 <th>Student Name</th>
                 <th>Date Paid</th>
                 <th>Transaction Number</th>
                 <th>Amount Paid</th>
-                <th>Action</th>`;
+                <th>Action</th>
+            </tr>`;
             } else {
                 document.querySelector("#realginnas thead").innerHTML = `
+            <tr>
                 <th>Student Name</th>
                 <th>Date Paid</th>
                 <th>Particular</th>
                 <th>Amount Paid</th>
-                <th>Action</th>`;
+                <th>Action</th>
+            </tr>`;
             }
+
+            // Fetch records
             fetch(`/paymentrecord/transactions/all?pageNum=${pageNo}&pageSize=${pageSize}&particular=${sortBy}&q=${searchBy}`)
                 .then(res => {
                     if (!res.ok) throw new Error("Failed to fetch payment records");
@@ -583,20 +574,22 @@
 
                     if (!tableBody) return console.error("Table body not found");
                     tableBody.innerHTML = "";
+
                     if (!data || !data.content || data.content.length === 0) {
                         tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
                         return;
                     }
+
                     data.content.forEach(rec => {
                         let row = document.createElement("tr");
 
                         row.innerHTML = `
-                        <td>${rec.studentName}</td>
-                        <td>${rec.date}</td>
-                        <td>${rec.transactionReference}</td>
-                        <td>${rec.totalAmount}</td>
-                        <td>
-                            <div class="dropdown">
+                    <td>${rec.studentName}</td>
+                    <td>${rec.date}</td>
+                    <td>${rec.transactionReference}</td>
+                    <td>${rec.totalAmount}</td>
+                    <td>
+                        <div class="dropdown">
                             <div class="status-container">
                                 <button class="dropdown-status-btn">
                                     <i class="fas fa-chevron-down"></i>
@@ -604,24 +597,21 @@
                             </div>
                             <div class="dropdown-status-content" id="dropdown-listing">
                                 <a href="#" class="action" data-open-modal="receiptModal"
-                                data-transaction-id="${rec.transactionId}">
-                                    View Receipt
+                                   data-transaction-id="${rec.transactionId}">
+                                   View Receipt
                                 </a>
-
                                 <a href="#" class="action" data-action="voidTransaction"
-                                data-message="Are you sure you want to void this transaction?"
-                                data-transaction-id="${rec.transactionId}">
-                                    Void
+                                   data-message="Are you sure you want to void this transaction?"
+                                   data-transaction-id="${rec.transactionId}">
+                                   Void
                                 </a>
+                            </div>
                         </div>
-                    </div>
-
-                        </td>
-                    `;
-                        <!--receiptModal
-                        listOfPaymentsModal-->
+                    </td>
+                `;
                         tableBody.appendChild(row);
                     });
+
                     totalItems = data.totalElements || 0;
                     const totalPages = data.totalPages || 1;
                     updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
@@ -685,11 +675,11 @@
             const viewReceiptbtn = event.target.closest('[data-open-modal="receiptModal"]');
             const voidTransaction = event.target.closest('[data-action="voidTransaction"]');
             //if (viewListbtn) {
-                //studentId = viewListbtn.getAttribute("data-student-id");
-                //const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
-                //gradeLevelId = viewListbtn.getAttribute("data-level-Id");
-                // if (!enrollmentId) return console.error("Enrollment Id Not Found");
-                // fetchPayments(enrollmentId);
+            //studentId = viewListbtn.getAttribute("data-student-id");
+            //const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
+            //gradeLevelId = viewListbtn.getAttribute("data-level-Id");
+            // if (!enrollmentId) return console.error("Enrollment Id Not Found");
+            // fetchPayments(enrollmentId);
             //} else 
             if (viewReceiptbtn) {
                 const receiptId = viewReceiptbtn.getAttribute("data-transaction-id");
@@ -876,7 +866,7 @@
                 const enteredValue = parseFloat(this.value);
 
                 if (enteredValue > maxValue) {
-                    showErrorModal("Maximum amount is "+maxValue);
+                    showErrorModal("Maximum amount is " + maxValue);
                     this.value = maxValue;
                 }
             });
@@ -926,7 +916,7 @@
                 .then(res => res.json())
                 .then(data => {
                     studentsTable.innerHTML = `<tr><td colspan="5">No records found.</td></tr>`;
-                    if (data.content.length > 0) { 
+                    if (data.content.length > 0) {
                         studentsTable.innerHTML = ``;
                         data.content.forEach(stud => {
                             const row = document.createElement("tr");
@@ -937,11 +927,12 @@
                             <td>${stud.balanceAmount}</td>
                             <td>
                                 <div class="dropdown">
-                                    <div class="action-container action">
-                                        <button onclick="viewToPaid(${stud.studentId})"
-                                        data-open-modal="listOfPaymentsModal">View List of Payments</button>
-
+                                   <div class="action-container action">
+                                        <button class="action-btn" onclick="viewToPaid(${stud.studentId})" >
+                                            <img data-open-modal="listOfPaymentsModal" src="/images/icons/eye.png" alt="View List of Payments" />
+                                        </button>
                                     </div>
+
                                 </div>
                             </td>`;
                             studentsTable.appendChild(row);

@@ -114,6 +114,7 @@ public class sySemesterServices {
             subjectRepo.activeAll();
             studentRepo.setNewStudentsToOld();
             statisticsServices.setInitialCounts(sem);
+            studentRepo.setAllUnEnrolled();
         },dbExecutor).exceptionally(ex -> {
             ex.printStackTrace();
             return null;
@@ -160,9 +161,8 @@ public class sySemesterServices {
                 });
                 statisticsServices.setGraduatesInformation(graduated,sem);
                 studentRepo.saveAll(students);
-            },dbExecutor).exceptionally(ex -> {
-                return null;
-            });;
+                studentRepo.setAllUnEnrolled();
+            },dbExecutor).exceptionally(ex -> null);;
         }
         return 0;
     }

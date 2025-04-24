@@ -106,7 +106,7 @@
         <!-- viewPastTransactionsModal -->
         <div id="viewPastTransactionsModal" class="view-past-transactions-modal modal">
             <div class="view-past-transactions-modal-content scroll-lock">
-                <h2>Fees Breakdown</h2>
+                <h2>Fully Paid Particulars</h2>
 
                 <div class="half-width view-studId" id="">
                     <label for="student-grade-id">Student ID:</label>
@@ -125,7 +125,6 @@
                                 <th>Particular</th>
                                 <th>Total Amount</th>
                                 <th>Total Paid</th>
-                                <th>Balance</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -647,7 +646,7 @@
                                 <h6>Balance:</h6>
                                 <h6 id="total-balance">P0</h6>
                                 <button type="button" onclick="fetchAllTimeFees()" class="btn-confirm" data-open-modal="viewPastTransactionsModal"
-                                    id="transaction-record-btn">View Fees Breakdown</button>
+                                    id="transaction-record-btn">View Fully Paid</button>
                             </div>
 
                         </div>
@@ -1219,7 +1218,6 @@
                 <td>${data.fee.name}</td>
                 <td>${data.totalRequired}</td>
                 <td>${data.totalPaid}</td>
-                <td><span>P</span>${data.balance}</td>
                 <td>
                     <div class="status-container">
                         <div class="status" id="status-payments">${data.totalPaid > 0 && data.totalPaid<data.totalRequired ? "Partially Paid" :

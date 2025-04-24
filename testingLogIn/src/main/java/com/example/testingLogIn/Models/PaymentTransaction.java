@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Models;
 
 import com.example.testingLogIn.ModelDTO.PaymentTransactionDTO;
+import com.example.testingLogIn.Services.NonModelServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -54,8 +55,7 @@ public class PaymentTransaction {
                 .particulars(new ArrayList<>())
                 .build();
         for(PaymentRecords pr :particulars)
-            paymentTransactionDTO.addNewParticular(pr.getRequiredPayment().getName(),pr.getAmount());
-
+            paymentTransactionDTO.addNewParticular(pr.getRequiredPayment().getName(), NonModelServices.adjustDecimal(pr.getAmount()));
         return paymentTransactionDTO;
     }
 }

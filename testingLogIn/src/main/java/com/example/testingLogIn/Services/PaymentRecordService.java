@@ -27,6 +27,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +103,7 @@ public class PaymentRecordService {
                     if (totalFeeBalance > 0)
                         toSortByBalance.add(MapperObject.builder()
                                 .requiredFees(reqFee.getRequiredFee())
-                                .totalBalance(totalFeeBalance)
+                                .totalBalance(NonModelServices.adjustDecimal(totalFeeBalance))
                                 .build());
                 }
             }
@@ -114,7 +115,7 @@ public class PaymentRecordService {
                     if (remainingBalance > 0)
                         toSortByBalance.add(MapperObject.builder()
                                 .requiredFees(paid.getFee())
-                                .totalBalance(remainingBalance)
+                                .totalBalance(NonModelServices.adjustDecimal(remainingBalance))
                                 .build());
                 }
             }
@@ -138,7 +139,7 @@ public class PaymentRecordService {
             PaymentRecords particular = PaymentRecords.builder()
                     .transaction(tran)
                     .requiredPayment(fee.getRequiredFees())
-                    .amount(toAllocate)
+                    .amount(NonModelServices.adjustDecimal(toAllocate))
                     .build();
             paymentRepo.save(particular);
             tran.getParticulars().add(particular);
@@ -167,15 +168,13 @@ public class PaymentRecordService {
                 studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance,NonModelServices.adjustDecimal(totalPaidAmount),totalFeeBalance));
             }else if(forBreakDown && totalFeeBalance > 0 && remainingBalance == 0){
                 totalRemaining+=remainingBalance;
-                System.out.println(remainingBalance);
                 studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance,NonModelServices.adjustDecimal(totalPaidAmount),totalFeeBalance));
             }
         }
         studentPaymentForm.setTotalFee(totalRemaining);
 
-        if(forPayment){
-            System.out.println("Returning form");
-            return studentPaymentForm;}
+        if(forPayment)
+            return studentPaymentForm;
 
         double totalPage = Math.ceil((float) studentPaymentForm.getFeesAndBalance().size() /pageSize);
         int totalElements = studentPaymentForm.getFeesAndBalance().size();
@@ -223,7 +222,7 @@ public class PaymentRecordService {
     }
 
     public PagedResponse getTransactions(int pageNo, int pageSize,String type,String search){
-        Pageable pageable = PageRequest.of(pageNo-1,pageSize);
+        Pageable pageable = PageRequest.of(pageNo-1,pageSize , Sort.by(Sort.Order.desc("pt.dateReceived")));
         Page<?> transactionPage = null;
 
         if(type.equalsIgnoreCase("Transaction"))

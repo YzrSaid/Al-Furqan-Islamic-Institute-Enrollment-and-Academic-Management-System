@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+        </div>
+
+
+        <div id="studentInformationContainer" class="student-information-container">
+            <div class="student-information-container-content">
+                <h1>Balance Record</h1>
+                <form method="" action="" id="studentInformationForm">
+                    <div class="container-two">
+                        <div class="column-main">
+                            <p>Unclaimed Resources</p>
+                            <div class="table-container">
+                                <table class="mini-table main-table" id="distribution-mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Grade Level</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                                <!-- Pagination -->
+                                <div class="pagination-container">
+                                    <div class="pagination-controls">
+                                        <span id="itemRangeDistU">1–10 of 37</span>
+                                        <button type="button" id="prevPageDistU">«</button>
+                                        <input type="number" id="pageInputDistU" min="1" value="1">
+                                        <span id="totalPagesDistU">of 4</span>
+                                        <button type="button" id="nextPageDistU">»</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column-main">
+                            <p>Claimed Resources</p>
+                            <div class="table-wrapper-printable">
+                                <table id="claimed-res-table" class="mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Grade Level</th>
+                                            <th>Date Received</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                                <div class="pagination-container">
+                                    <div class="pagination-controls">
+                                        <span id="itemRangeDistC">1–10 of 37</span>
+                                        <button type="button" id="prevPageDistC">«</button>
+                                        <input type="number" id="pageInputDistC" min="1" value="1">
+                                        <span id="totalPagesDistC">of 4</span>
+                                        <button type="button" id="nextPageDistC">»</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchMyInfo();
+    });
+
+    async function fetchMyInfo(){
+        const response = await fetch("/user/student/my-info");
+
+        if(!response.ok){
+            return;
+        }
+        student = await response.json();
+        setUpDistribution();
+        fetchDistributedItems();
+    }
+
+    var student;
+    async function fetchDistributedItems(currentPage=1){
+        const response = await fetch(`/distributable/student-distribution/all?pageSize=10&isClaimed=true&student=${student.fullName}&pageNo=${currentPage}&itemType=0&sortBy=none`);
+        if(response.ok){
+            const distributed = await response.json();
+            var claimedTable = document.querySelector("#claimed-res-table tbody")
+            claimedTable.innerHTML = "<tr><td colspan='3'>No records found.</td></tr>";
+            if(distributed.content.length === 0){
+                updatePaginationUI("DistC",1,0,0,0);
+                return;
+            }
+            claimedTable.innerHTML="";
+            const fragment = document.createDocumentFragment();
+            distributed.content.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.itemName || 'N/A'}</td>
+                    <td>${item.gradeLevel?.levelName || 'N/A'}</td>
+                    <td>${item.dateReceived || 'N/A'}</td>`;
+                fragment.appendChild(row);
+            });
+            claimedTable.appendChild(fragment);
+            updatePaginationUI("DistC",distributed.pageNo,distributed.pageSize,distributed.totalElements,distributed.totalPages);
+        }
+    }
+
+    async function setUpDistribution(currentPage = 1) {
+        try {
+            const claimed = false;
+            currentDisPage = currentPage;
+            const response = await fetch(`/distributable/student-distribution/all?pageSize=3&pageNo=${currentPage}&isClaimed=false&student=${student.fullName}&itemType=0&sortBy=none`);
+            if (!response.ok) {
+                updatePaginationUI("DistU",1,0,0,0);
+                return;
+            }
+
+            const data = await response.json();
+
+            const tableBody = document.querySelector("#distribution-mini-table tbody");
+            if (!tableBody) {
+                updatePaginationUI("DistU",1,0,0,0);
+                return;
+            }
+
+            // Clear existing rows
+            tableBody.innerHTML = '';
+
+            if (!data.content || data.content.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="2">No records found</td></tr>`;
+                updatePaginationUI("DistU",1,0,0,0);
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+
+            data.content.forEach(studDis => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${studDis.itemName || 'N/A'}</td>
+                    <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>`;
+                fragment.appendChild(row);
+            });
+            tableBody.appendChild(fragment);
+            updatePaginationUI("DistU",currentDisPage,data.pageSize,data.totalElements,data.totalPages);
+
+        } catch (error) {
+            const tableBody = document.querySelector("#table-ko tbody");
+            if (tableBody) {
+                tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
+            }
+        }
+    }
+
+    function updatePaginationUI(paginationKey, currentPage, pageSize, totalItems, totalPages) {
+        const config = paginationConfigs[paginationKey];
+        if (!config) return;
+
+        const { elements } = config;
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
+
+        // Update UI elements
+        document.getElementById(elements.itemRange).textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById(elements.pageInput).value = currentPage;
+        document.getElementById(elements.pageInput).min = 1;
+        document.getElementById(elements.pageInput).max = totalPages;
+        document.getElementById(elements.totalPages).textContent = `of ${totalPages}`;
+
+        // Update button states
+        document.getElementById(elements.prevPage).disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById(elements.nextPage).disabled = currentPage >= totalPages || totalPages === 0;
+
+        // Update current page in config
+        config.currentPage = currentPage;
+    }
+    const paginationConfigs = {   
+    'DistU': {
+        currentPage: 1,
+        setUpFunction: setUpDistribution,
+        elements: {
+            itemRange: "itemRangeDistU",
+            pageInput: "pageInputDistU",
+            totalPages: "totalPagesDistU",
+            prevPage: "prevPageDistU",
+            nextPage: "nextPageDistU"
+        }
+    },
+    'DistC': {
+        currentPage: 1,
+        setUpFunction: fetchDistributedItems,
+        elements: {
+            itemRange: "itemRangeDistC",
+            pageInput: "pageInputDistC",
+            totalPages: "totalPagesDistC",
+            prevPage: "prevPageDistC",
+            nextPage: "nextPageDistC"
+        } 
+    }
+};
+
+function initializePaginationListeners() {
+    Object.keys(paginationConfigs).forEach(key => {
+        const config = paginationConfigs[key];
+        const { elements, setUpFunction } = config;
+
+        // Previous page button
+        document.getElementById(elements.prevPage).addEventListener("click", () => {
+            if (config.currentPage > 1) {
+                config.currentPage--;
+                setUpFunction(config.currentPage);
+            }
+        });
+
+        // Next page button
+        document.getElementById(elements.nextPage).addEventListener("click", () => {
+            const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+            if (config.currentPage < totalPages) {
+                config.currentPage++;
+                setUpFunction(config.currentPage);
+            }
+        });
+
+        // Page input change
+        document.getElementById(elements.pageInput).addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                config.currentPage = page;
+                setUpFunction(config.currentPage);
+            } else {
+                e.target.value = config.currentPage;
+            }
+        });
+    });
+}   
+document.addEventListener("DOMContentLoaded", initializePaginationListeners);
+</script>
+
+</html>

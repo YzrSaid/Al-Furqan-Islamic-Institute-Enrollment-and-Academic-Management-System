@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Models;
 
 import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
+import com.example.testingLogIn.Services.NonModelServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -43,7 +44,7 @@ public class PaymentRecords {
                             .studentName(transaction.getStudent().getFullName())
                             .receivedBy(transaction.getStaff().getFullName())
                             .date(transaction.getDateReceived())
-                            .totalAmount(amount)
+                            .totalAmount(NonModelServices.adjustDecimal(amount))
                             .build();
     }
 }

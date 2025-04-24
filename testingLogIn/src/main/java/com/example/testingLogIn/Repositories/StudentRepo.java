@@ -90,4 +90,9 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
     @Transactional
     @Query("UPDATE Student stud SET stud.status = 'OLD' WHERE stud.status = 'NEW'")
     void setNewStudentsToOld();
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Student stud SET stud.currentGradeSection = NULL")
+    void setAllUnEnrolled();
 }

@@ -46,6 +46,11 @@ public class PrivateTemplateControllers {
         return "student-account/student-balance";
     }
 
+    @GetMapping("/resources")
+    public String getStudentResourcesView() {
+        return "student-account/resources";
+    }
+
     @GetMapping("")
     public String getDashboardzz() {
         return "dashboard";
@@ -60,9 +65,6 @@ public class PrivateTemplateControllers {
     public String getSchoolSetting() {
         return "settings/school-settings";
     }
-
-
-    // these are for enrollment pages
 
     @GetMapping("enrollment/listing")
     public String getListing() {

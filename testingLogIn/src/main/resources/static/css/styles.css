@@ -1083,6 +1083,25 @@ select option[value=""] {
   width: 15%;
 }
 
+
+.itemized-table th:nth-child(1),
+.itemized-table td:nth-child(1) {
+  width: 40%;
+}
+.itemized-table th:nth-child(2),
+.itemized-table td:nth-child(2) {
+  width: 40%;
+}
+.itemized-table th:nth-child(3),
+.itemized-table td:nth-child(3) {
+  width: 15%;
+}
+.itemized-table th:nth-child(4),
+.itemized-table td:nth-child(4) {
+  width: 15%;
+}
+
+
 /* for scholarshop (maintenance) */
 .scholarship-table th:nth-child(1),
 .scholarship-table td:nth-child(1) {
@@ -1420,7 +1439,8 @@ table td {
 .scholarship-table,
 .distributable-table,
 .view-list-of-students-table,
-.view-list-of-payments-table {
+.view-list-of-payments-table,
+.itemized-table {
   width: 100%;
 }
 .mini-table {
@@ -2208,12 +2228,12 @@ input.guardian-address {
   font-weight: bold !important;
   font-size: 13px !important;
 }
-.payee-info-container {
+.payee-info-container,
+#itemized-payment-section {
   padding: 0px 35px;
   display: flex;
   flex-direction: column;
 }
-
 #payee-info {
   display: flex;
   gap: 20px;
@@ -2980,8 +3000,6 @@ input[type="checkbox"] {
   gap: 20px;
 }
 .student-form-group #payment-amount {
-  border: none !important;
-  outline: none !important;
   width: 100%;
 }
 input.name,
@@ -3584,7 +3602,7 @@ td[rowspan] {
   white-space: nowrap;
 }
 
-.payment-wrapper {
+.payment-wrapper, .amount-container {
   margin-top: 30px;
   padding: 0 35px;
 }
@@ -3673,7 +3691,7 @@ select.gender,
 .column2 #gender {
   width: 90px;
 }
-.student-form-group #payee-name {
+.student-form-group #payee-name, .student-form-group #payment-amount {
   width: 360px;
 }
 
@@ -3974,7 +3992,7 @@ input.staff-id-report {
   word-wrap: break-word;
 }
 #successModal p {
-    margin: 0;
+  margin: 0;
 }
 
 /* styles for close modal (x) button */
@@ -4754,7 +4772,7 @@ select + p {
   justify-content: end;
 }
 #inside-modal {
-    padding: 0;
+  padding: 0;
 }
 
 .pagination-controls button {
@@ -5598,4 +5616,49 @@ a {
   .collapsed-content {
     margin-left: 0 !important;
   }
+}
+
+.payment-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.mode-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mode-selector {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.mode-switch {
+  display: flex;
+  border: 1px solid #999;
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.mode-option {
+  padding: 8px 20px;
+  cursor: pointer;
+  background-color: #f2f2f2;
+  color: #333;
+  transition: all 0.2s ease;
+  user-select: none;
+  text-align: center;
+  flex: 1;
+}
+
+.mode-option.active {
+  background-color: #4caf50;
+  color: white;
 }

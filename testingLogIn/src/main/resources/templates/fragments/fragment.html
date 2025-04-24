@@ -177,9 +177,8 @@
                 <img th:src="@{/images/icons/account.png}" alt="Account Icon">My
                 Account</a>
         </div>
-    </div>
 
-    <!-- ENROLLMENT STAFF Sidebar -->
+            <!-- ENROLLMENT STAFF Sidebar -->
     <div th:if="${userRole == 'ENROLLMENT_STAFF'}">
         <!-- Dashboard -->
         <a href="/home" class="sidebar-icons" onclick="clearSubmenus()" data-path="/home">
@@ -245,10 +244,15 @@
     </div>
 
     <!-- STUDENT Sidebar -->
-    <div th:if="${userRole == 'ENROLLMENT_STAFF'}">
+    <div th:if="${userRole == 'STUDENT'}">
         <!-- Dashboard -->
         <a href="/home" class="sidebar-icons" onclick="clearSubmenus()" data-path="/home">
             <img th:src="@{/images/icons/dashboard_icon.png}" alt="Dashboard Icon"> Dashboard
+        </a>
+
+        <!-- Profile -->
+        <a href="/personal-profile" class="sidebar-icons" onclick="clearSubmenus()" data-path="/personal-profile">
+            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Personal Profile
         </a>
 
         <!-- Schedule -->
@@ -258,15 +262,15 @@
 
         <!-- Grades -->
         <a href="/grades" class="sidebar-icons" onclick="clearSubmenus()" data-path="/grades">
-            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Schedule
+            <img th:src="@{/images/icons/schedule.png}" alt="Schedule Icon"> Grades
         </a>
 
         <!-- Account -->
-        <a href="/personal-profile" class="submenu-item" onclick="clearSubmenus()" data-path="/personal/profile">
-            <img th:src="@{/images/icons/account.png}" alt="Account Icon">My
-            Account</a>
+        <a href="/accounts/my-account" class="sidebar-icons" onclick="clearSubmenus()"
+                data-path="/accounts/my-account">
+                <img th:src="@{/images/icons/account.png}" alt="Account Icon">My
+                Account</a>
     </div>
-
     </div>
 
     <!-- Topbar -->

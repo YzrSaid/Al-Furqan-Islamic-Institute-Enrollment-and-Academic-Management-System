@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,4 +19,11 @@ public class StudentPaymentForm {
     private double totalFee;
     private List<FeesAndBalance> feesAndBalance;
 
+    public static StudentPaymentForm preBuilt(StudentDTO student){
+        return StudentPaymentForm.builder()
+                .totalFee(0.0d)
+                .student(student)
+                .feesAndBalance(new ArrayList<>())
+                .build();
+    }
 }

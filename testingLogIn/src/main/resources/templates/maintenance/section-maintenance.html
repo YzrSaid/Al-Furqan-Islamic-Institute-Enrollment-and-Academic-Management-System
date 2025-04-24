@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
@@ -28,35 +20,36 @@
                 <h4>Section</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/maintenance/section">Maintenance - Section</a>
+                <a href="/maintenance/section" title="You're currently in this page.">Maintenance - Section</a>
             </div>
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
                         <button class="search-btn">Search</button>
                         <!-- add section button -->
                         <div class="add-something-btn-container">
-                            <button class="add-something-btn" id="openSectionModal" data-open-modal="sectionModal">Add a
-                                Section</button>
+                            <button type="button" class="btn-confirm" id="openSectionModal" data-open-modal="sectionModal" title="Click to Add a Section">Add Section</button>
                         </div>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="patient-number">Patient Number</option>
-                            <option value="patient-name">Patient Name</option>
-                            <option value="patient-sex">Sex</option>
-                        </select>
-                    </div>
+                    
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- Table -->
-        <table class="section-table">
+         <div class="table-wrapper">
+        <table class="section-table main-table">
             <thead>
                 <tr>
                     <th>Section</th>
@@ -69,10 +62,10 @@
             <tbody>
             </tbody>
         </table> <br> <br>
-
+    </div>
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
@@ -83,7 +76,7 @@
 
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="errorMessage"></p>
                 <div class="modal-buttons">
                     <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
@@ -101,15 +94,13 @@
 
         <!-- Modal for adding a section -->
         <div id="sectionModal" class="section-modal modal">
-            <div class="section-modal-content">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="sectionModal">&times;</span>
+            <div class="section-modal-content scroll-lock">
 
                 <h2>Add New Section</h2>
                 <form method="post" id="sectionForm">
                     <div>
                         <label for="gradeLevel">Grade Level:</label>
-                        <select name="gradeLevel" id="gradeLevel" required>
+                        <select name="gradeLevel" id="gradeLevel"  required>
                             <option value="" disabled selected>Select Grade Level</option>
                         </select>
                     </div>
@@ -144,9 +135,7 @@
 
         <!-- Modal for editing a section -->
         <div id="sectionEditModal" class="section-edit-modal modal">
-            <div class="section-edit-modal-content">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="sectionEditModal">&times;</span>
+            <div class="section-edit-modal-content scroll-lock">
 
                 <h2>Section Information</h2>
                 <form method="post" id="sectionEditForm">
@@ -225,7 +214,7 @@
                     gradeLevelEditSelect.appendChild(option);
                 });
 
-                console.log("📌 Grade levels loaded.");
+               // console.log("📌 Grade levels loaded.");
             })
             .catch(error => console.error("Error fetching grade levels:", error));
     }
@@ -240,10 +229,10 @@
 
                 data.forEach(teacher => {
                     let option = document.createElement("option");
-                    option.value = `${teacher.firstname} ${teacher.lastname}`
+                    option.value = teacher.staffId;
                     option.textContent = `${teacher.firstname} ${teacher.lastname}`; // Concatenate first and last name
                     adviserSelect.appendChild(option);
-                    console.log(teacher);
+                   // console.log(teacher);
                 });
 
             })
@@ -259,9 +248,9 @@
                 let currentAdviserExists = false;
 
                 advisers.forEach(adviser => {
-                    console.log(adviser);
+                   // console.log(adviser);
                     const option = document.createElement("option");
-                    option.value = adviser.fullName;
+                    option.value = teacher.staffId;
                     option.textContent = adviser.fullName;
 
                     if (adviser.adviserName === currentAdviser) {
@@ -274,7 +263,7 @@
 
                 // If current adviser is not in the fetched list, add them manually
                 if (!currentAdviserExists && currentAdviser) {
-                    console.log(currentAdviser);
+                   // console.log(currentAdviser);
                     let option = document.createElement("option");
                     option.value = currentAdviser;
                     option.textContent = currentAdviser;
@@ -283,7 +272,7 @@
                     adviserSelect.appendChild(option);
                 }
 
-                console.log("📌 Advisers loaded.");
+                //console.log("📌 Advisers loaded.");
             });
     }
 
@@ -311,7 +300,7 @@
                             <div class="action">
                                <img data-open-modal="sectionEditModal" 
                                   src="/images/icons/compose.png" 
-                                  alt="section-edit-icon" 
+                                  alt="section-edit-icon" title="Click to Edit Section" 
                                   data-id="${section.number}">
                                 
                                <img data-open-modal="confirmationModal" 
@@ -319,7 +308,7 @@
                                   data-message="Are you sure you want to delete this section?" 
                                   data-id="${section.number}"
                                   src="/images/icons/bin.png" 
-                                  alt="section-delete-icon">
+                                  alt="section-delete-icon" title="Click to Delete Section">
                             </div>
                         </div>
                     </td>
@@ -328,7 +317,7 @@
                 });
             })
             .catch((error) => {
-                console.error("Error:", error);
+                //console.error("Error:", error);
             });
     }
 
@@ -337,14 +326,14 @@
         if (target.dataset.openModal === "sectionEditModal") {
             const sectionId = target.dataset.id;
             if (!sectionId) {
-                console.error("Error: sectionId is undefined!");
+                //console.error("Error: sectionId is undefined!");
                 return;
             }
 
             fetch(`/section/${sectionId}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Fetched data:", data);
+                   // console.log("Fetched data:", data);
 
                     document.getElementById("sectionNameEdit").value = data.sectionName;
                     document.getElementById("capacityEdit").value = data.capacity;
@@ -353,8 +342,8 @@
                     const adviser = data.adviserName;
                     const schedNum = data.number;
 
-                    console.log("📌 Grade Level from API:", gradeLevelName);
-                    console.log("📌 Adviser from API:", adviser);
+                   // console.log("📌 Grade Level from API:", gradeLevelName);
+                    //console.log("📌 Adviser from API:", adviser);
                     document.getElementById("schedId").innerText = schedNum;
                     Promise.all([fetchGradeLevelsEdit(), fetchAdvisersEdit(adviser)]).then(() => {
                         document.getElementById("gradeLevelEdit").value = gradeLevelName;
@@ -371,10 +360,6 @@
 
 
     function addSection() {
-        const actionUrl = "/section/add";
-        const method = "POST";
-
-        // Collect input values
         const adviser = document.getElementById("adviser").value;
 
         // Validate if a prerequisite is selected
@@ -387,13 +372,13 @@
             gradeLevelName: document.getElementById("gradeLevel").value,
             sectionName: document.getElementById("sectionName").value,
             capacity: document.getElementById("capacity").value,
-            adviserName: document.getElementById("adviser").value
+            adviserId: document.getElementById("adviser").value
         };
 
         // console.log("Sending data:", JSON.stringify(formData));
 
-        fetch(actionUrl, {
-            method: method,
+        fetch("/section/add", {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -429,11 +414,8 @@
             sectionName: document.getElementById("sectionNameEdit").value,
             gradeLevelName: document.getElementById("gradeLevelEdit").value,
             capacity: document.getElementById("capacityEdit").value,
-            adviserName: document.getElementById("adviserEdit").value
+            adviserId: document.getElementById("adviserEdit").value
         };
-
-        console.log("📌 Sending Data:", JSON.stringify(sectionData)); // Debugging
-
         fetch("/section/update", {
             method: "PUT",
             headers: {

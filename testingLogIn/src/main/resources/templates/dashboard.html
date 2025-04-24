@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
@@ -21,39 +12,37 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
-        <div class="text-link">
-            <h4>Dashboard</h4>
+            <div class="text-link">
+                <h4>Dashboard</h4>
+            </div>
         </div>
 
         <div class="analytics-container">
+            <div class="sort-btns-container">
+                <div class="sort-year">
+                    <label for="school-year">Year</label>
+                    <select name="year" onchange="setCounts(),setChartContents(),setGradesChart()" id="school-year">
+                        <option value="0" selected>All Time</option>
+                    </select>
+                </div>
+                <div class="sort-semester">
+                    <label for="semester-sort">Semester</label>
+                    <select name="semester" onchange="setCounts(),setChartContents(),setGradesChart()" id="semester-sort">
+                        <option selected>All</option>
+                        <option value="First">First</option>
+                        <option value="Second">Second</option>
+                    </select>
+                </div>
+            </div>
             <div class="chart-box">
                 <div class="card-container">
-                    <!-- sort buttons -->
-                    <div class="sort-btns-container">
-                        <div class="sort-year">
-                            <label for="year">Year</label>
-                            <select name="year" id="year-sort">
-                                <option value="" disabled selected>---</option>
-                            </select>
-                        </div>
-                        <div class="sort-grade">
-                            <label for="grade">Grade</label>
-                            <select name="grade" id="grade-sort">
-                                <option value="" disabled selected>---</option>
-                            </select>
-                        </div>
-                    </div>
                     <div class="card-grid">
-                        <a href="/reports/student" class="card-link">
-                            <div class="card">
-                                <h3 class="card-title" id="num-total-students">100</h3>
-                                <p class="card-label">Total Students</p>
-                            </div>
-                        </a>
-
                         <a href="/enrollment/enrolled" class="card-link">
                             <div class="card">
                                 <h3 class="card-title" id="num-enrolled">95</h3>
@@ -68,30 +57,32 @@
                             </div>
                         </a>
 
-                        <a href="/reports/teacher" class="card-link">
+                        <a href="/reports/student" class="card-link">
                             <div class="card">
-                                <h3 class="card-title" id="num-teachers">21</h3>
-                                <p class="card-label">Teachers</p>
+                                <h3 class="card-title" id="graduates-student">100</h3>
+                                <p class="card-label">Graduates</p>
                             </div>
                         </a>
+                      
+                        <div class="card-row-center">
+                            <a href="/reports/teacher" class="card-link">
+                                <div class="card">
+                                    <h3 class="card-title" id="num-dropped">21</h3>
+                                    <p class="card-label">Failed</p>
+                                </div>
+                            </a>
 
-                        <a href="/maintenance/section" class="card-link">
-                            <div class="card">
-                                <h3 class="card-title" id="num-sections">5</h3>
-                                <p class="card-label">Sections</p>
-                            </div>
-                        </a>
-
-                        <a href="/accounts/manage-accounts" class="card-link">
-                            <div class="card">
-                                <h3 class="card-title" id="num-users">6</h3>
-                                <p class="card-label">Users</p>
-                            </div>
-                        </a>
+                            <a href="/maintenance/section" class="card-link">
+                                <div class="card">
+                                    <h3 class="card-title" id="num-retained">5</h3>
+                                    <p class="card-label">Passed</p>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="chart-box">
+            <div class="chart-box-graph">
                 <div class="graph-container">
                     <div class="title">
                         <h6 id="graphTitle">Enrollment by Gender</h6>
@@ -110,24 +101,51 @@
                 </div>
             </div>
 
-            <div class="chart-box-full">
+            <div class="chart-box-bar">
                 <div class="bar-graph-container">
+                    <div class="title-row-bar">
+                        <h6 id="barGraphTitle">Subject Rates</h6>
+                        <div class="filter-container-bar">
+                            <label for="sort-bar-graph">Filter:</label>
+                            <select onchange="setGradesChart()" name="sort" id="grade-levels">
+                                <option value="0" selected>None</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bar-graph">
+                        <canvas id="subjectRateChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-box-graph">
+                <div class="bar-graph-container">
+                    <div class="title-row-graph">
+                        <h6 id="barGraphTitle">Grade Level Rates</h6>
+                        <div class="filter-container-graph">
+                            <label for="sort-bar-graph">Filter:</label>
+                            <select name="sort" onchange="setChartContents()" id="sort-bar-graph">
+                                <option value="failed" selected>Failing Rates</option>
+                                <option value="passed">Passing Rates</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="bar-graph">
                         <canvas id="retentionChart"></canvas>
                     </div>
-                    
                 </div>
             </div>
-         
-        </div>
+
+
+        </div> <br>
     </div>
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const enrollmentCanvas = document.getElementById('enrollmentChart').getContext('2d');
-        const retentionCanvas = document.getElementById('retentionChart').getContext('2d');
         const graphTitle = document.getElementById('graphTitle');
-
         // Enrollment Chart (Doughnut)
         const enrollmentChart = new Chart(enrollmentCanvas, {
             type: 'doughnut',
@@ -140,31 +158,20 @@
             },
             options: {
                 responsive: true,
+                layout: {
+                    padding: {
+                        top: 0,
+                        right: 20,
+                        bottom: 50,
+                        left: 0
+                    }
+                },
                 plugins: {
                     legend: { display: true, position: 'right' }
                 }
             }
         });
 
-        // Retention Rates Chart (Bar)
-        const retentionChart = new Chart(retentionCanvas, {
-            type: 'bar',
-            data: {
-                labels: ['2019-2020', '2020-2021', '2021-2022', '2022-2023', '2023-2024', '2024-2025'],
-                datasets: [{
-                    label: 'Retention Rates',
-                    data: [88, 95, 72, 86, 94, 75], // Example retention data
-                    backgroundColor: 'rgba(210, 90, 90, 0.7)'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: { y: { beginAtZero: true, max: 100 } },
-                plugins: { legend: { display: false } }
-            }
-        });
-
-        // Update Chart Data Function
         function updateChartData(filterValue) {
             let newData = {};
             let newTitle = '';
@@ -188,9 +195,175 @@
         document.getElementById('filter').addEventListener('change', function (e) {
             updateChartData(e.target.value);
         });
-    });
-</script>
 
+        fetch("/schoolyear/all")
+            .then(response => {
+                if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`); }
+                return response.json();
+            })
+            .then(sys => {
+                var school_year_dd = document.getElementById("school-year");
+                sys.forEach(sy => {
+                    let option = document.createElement("option");
+                    option.value = sy.schoolYearNum;
+                    option.textContent = sy.schoolYear;
+                    school_year_dd.appendChild(option);
+                });
+            })
+            .catch(error => {
+                showErrorModal("Failed to retrieve School Years");
+            });
+
+        setChartContents();
+        setCounts();
+        setGradeLevels();
+    });
+
+    async function setCounts() {
+        var sem = document.getElementById("semester-sort").value;
+        var sy = document.getElementById("school-year").value;
+        const response = await fetch(`/statistics/counts?semester=${sem}&schoolYear=${sy}`);
+        if (response.ok) {
+            const counts = await response.json();
+            //console.log(counts);
+            setFirstTableContents(counts.enrolledCount,
+                counts.preEnrolledCount,
+                counts.graduatesCount,
+                counts.passedCount,
+                counts.retainedCount);
+        } else {
+            setFirstTableContents(0, 0, 0, 0, 0);
+        }
+    }
+    function setFirstTableContents(enrolled, pre_enrolled, graduates, passed, failed) {
+        document.getElementById("num-enrolled").textContent = enrolled;
+        document.getElementById("num-pre-enrolled").textContent = pre_enrolled;
+        document.getElementById("graduates-student").textContent = graduates;
+        document.getElementById("num-dropped").textContent = failed;
+        document.getElementById("num-retained").textContent = passed;
+    }
+
+    let retentionChart = null;
+    async function setChartContents() {
+        // Destroy existing chart if it exists
+        if (retentionChart) {
+            retentionChart.destroy();
+        }
+
+        var sem = document.getElementById("semester-sort").value;
+        var sy = document.getElementById("school-year").value;
+        var didPassed = document.getElementById("sort-bar-graph").value === "passed";
+        var gradeLabels = [];
+        var gradeRates = [];
+
+        const response = await fetch(`/statistics/rates?semester=${sem}&schoolYear=${sy}&didPassed=${didPassed}`);
+        if (response.ok) {
+            const ratesResult = await response.json();
+            gradeLabels = ratesResult.gradeLevelNames;
+            gradeRates = ratesResult.gradeLevelCounts;
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+        }
+
+        const retentionCanvas = document.getElementById('retentionChart').getContext('2d');
+        retentionChart = new Chart(retentionCanvas, {
+            type: 'bar',
+            data: {
+                labels: gradeLabels,
+                datasets: [{
+                    label: 'Retention Rates',
+                    data: gradeRates,
+                    backgroundColor: 'rgba(210, 90, 90, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, max: 100 } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    async function setGradeLevels(){
+        const response = await fetch("/gradelevel/all");
+        if(response.ok){
+            const gradeLevels = await response.json();
+            var gradeLevelsSelect = document.getElementById("grade-levels");
+            
+            if(gradeLevels.length > 0){
+                gradeLevelsSelect.innerText = "";
+                var i = 0;
+                gradeLevels.forEach(gradeLvl => {
+                    var opt = document.createElement("option");
+                    opt.value = gradeLvl.levelId;
+                    opt.textContent = gradeLvl.levelName;
+                    console.log(gradeLvl);
+                    if(i === 0){
+                        opt.selected = true;
+                        i++;
+                    }
+
+                    gradeLevelsSelect.appendChild(opt);
+                });
+            }
+        }
+
+        setGradesChart();
+    }
+
+    var subjectRateChart = null;
+    async function setGradesChart() {
+        if (subjectRateChart) {
+            console.log("Destroy Now");
+            subjectRateChart.destroy();
+        }
+
+        var sem = document.getElementById("semester-sort").value;
+        var sy = document.getElementById("school-year").value;
+        var levelId = document.getElementById("grade-levels").value;
+        var gradeLabels = [];
+        var gradeRates = [];
+
+        const response = await fetch(`/statistics/subject-rates?semester=${sem}&schoolYear=${sy}&levelId=${levelId}`);
+        if (response.ok) {
+            const ratesResult = await response.json();
+            gradeLabels = ratesResult.subjectNames;
+            gradeRates = ratesResult.avgGrades;
+            // gradeLabels = gradeLabels.concat(gradeLabels); para matestingan nmo ang length
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+            // gradeLabels = gradeLabels.concat(gradeLabels);
+            // gradeRates = gradeRates.concat(gradeRates);
+        }
+
+        const retentionCanvas = document.getElementById('subjectRateChart').getContext('2d');
+        subjectRateChart = new Chart(retentionCanvas, {
+            type: 'bar',
+            data: {
+                labels: gradeLabels,
+                datasets: [{
+                    label: 'Retention Rates',
+                    data: gradeRates,
+                    backgroundColor: 'rgba(210, 90, 90, 0.7)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, max: 100 } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+</script>
 
 
 </html>

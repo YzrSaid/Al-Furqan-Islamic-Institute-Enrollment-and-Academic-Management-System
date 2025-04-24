@@ -1,18 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
-    <!-- Bootstrap JS -->
-    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
-    <!-- Font Awesome CSS -->
-    <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.4.2/css/all.min.css}">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
@@ -31,7 +20,7 @@
                 <h4>Book Distribution Reports</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/reports/academic-resources">Reports - Book Distribution Reports</a>
+                <a href="/reports/academic-resources" title="You're currently in this page.">Reports - Book Distribution Reports</a>
             </div>
 
             <div class="search-div">
@@ -86,25 +75,25 @@
 
     <!-- Modal for confirmation -->
     <div id="confirmationModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content scroll-lock">
             <p id="modalText"></p>
             <div class="modal-buttons">
-                <button id="confirmAction" class="btn-confirm">Confirm</button>
-                <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                <button type="button" class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
             </div>
         </div>
     </div>
 
     <!-- Modal for viewBookModal -->
     <div id="viewBookModal" class="view-book-modal modal">
-        <div class="view-book-modal-content">
+        <div class="view-book-modal-content scroll-lock">
             <h2>Book Distribution Record</h2>
 
-            <div class="half-width" id="view-grade-studId">
+            <div class="half-width view-studId" id="view-grade-studId">
                 <label for="student-id">Student ID:</label>
                 <h6 id="student-id">2025-0001</h6>
             </div>
-            <div class="half-width" id="view-grade-studName">
+            <div class="half-width view-studName" id="view-grade-studName">
                 <label for="student-name">Student Name:</label>
                 <h6 id="student-name">Martin Francisco</h6>
             </div> <br>

@@ -2,15 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
-    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
-    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
@@ -28,60 +20,137 @@
                 <h4>Payment Transactions</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/transaction/tuition">Transaction - Payment Transactions</a>
+                <a href="/transaction/tuition" title="You're currently in this page.">Transaction - Payment
+                    Transactions</a>
             </div>
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button onclick="getRecords(1)" class="search-btn">Search</button>
+                        <button type="button" onclick="getRecords(1)" class="search-btn">Search</button>
 
-                        <!-- Add Payment Button -->
-                        <div class="add-something-btn-container">
-                            <button class="add-something-btn" onclick="viewStudents()" id="openViewStudentListModal"
-                                data-open-modal="viewStudentListModal">Add
+                        <div class="add-something-btn-container add-something-dropdown">
+                            <button type="button" class="btn-confirm" onclick="viewStudents(1)"
+                                id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add
                                 Payment</button>
+
+
+                            <button type="button" class="add-something-btn">
+                                <span style="display:none;">Print</span>
+                                <i class="fas fa-print"></i>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+
+
+                            <div class="add-something-dropdown-content payment-dropdown-content">
+                                <a href="#" class="action" data-open-modal="allResourcesPrintModal">All Transactions</a>
+                                <a href="#" class="action" data-open-modal="claimedResourcesPrintModal">Voided
+                                    Transactions</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" onchange="getRecords(1)" id="view-by-select" class="sort-select">
-                            <option value="Transaction" selected>Transaction</option>
-                        </select>
+                </div>
+
+                <div class="sort-container">
+                    <select name="sort" onchange="getRecords(1)" id="view-by-select" class="sort-select">
+                        <option value="Transaction" selected>Transaction</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Transactions Modal -->
+        <div id="allTransactionsPrintModal" class="all-transactions-print-modal modal">
+            <div class="printable-area-transactions">
+                <div class="all-transactions-print-modal-content scroll-lock">
+                    <!-- Report Header -->
+                    <div class="header-container-print">
+
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        </div>
+                        <div class="middle-header">
+                            <div class="school-info-print">
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+                    <!-- Student Info -->
+
+                    <h3 class="report-title"><strong>Payments and Transactions Report</strong></h3>
+
+                    <!-- Table -->
+                    <table id="realginnas-printable" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Date Paid</th>
+                                <th>Transaction No.</th>
+                                <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                    <div class="printable-footer">
+                        Date Printed: <strong>4/1/2020</strong>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="allTransactionsPrintModal">Close</button>
+
+                        <button type="button" onclick="printReceipt()" class="print-btn">Print Record</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="realginnas" class="payment-table">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Student Name</th>
-                    <th>Date Paid</th>
-                    <th>Transaction Number</th>
-                    <th>Amount Paid</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table> <br> <br>
+
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="realginnas" class="payment-transaction-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Date Paid</th>
+                        <th>Transaction Number</th>
+                        <th>Amount Paid</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> <br> <br>
+        </div>
 
         <!-- Pagination -->
         <div class="pagination-container">
-            <div id="pagination" class="pagination">
-                <button id="prevPage" disabled>&laquo;</button>
-                <div id="pageNumbers"></div>
-                <button id="nextPage">&raquo;</button>
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
             </div>
         </div>
 
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
@@ -92,7 +161,7 @@
 
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="errorMessage"></p>
                 <div class="modal-buttons">
                     <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
@@ -100,105 +169,114 @@
             </div>
         </div>
 
-        <!-- Background overlay -->
-        <div id="successModalOverlay"></div>
-
-        <!-- Success modal -->
-        <div id="successModal">
-            <p id="successModalMessage"></p>
-        </div>
-
-
         <!-- Modal for view student list -->
         <div id="viewStudentListModal" class="view-student-list-modal modal">
-            <!-- Close Button -->
-            <span class="close-modal exit-btn" data-close-modal="viewStudentListModal">&times;</span>
+            <div class="view-student-list-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h2>Student List</h2>
 
-            <div class="view-student-list-modal-content">
-                <h2>Student List</h2>
-
-                <div class="search-div">
-                    <!-- Searchbox and sort btn -->
-                    <div class="search">
-                        <div class="search-container">
-                            <input type="text" id="search-student" placeholder="Search..." class="search-input" />
-                            <button onclick="viewStudents(1)" class="search-btn">Search</button>
+                    <div class="search-div">
+                        <!-- Searchbox and sort btn -->
+                        <div class="left-section">
+                            <div class="search-container">
+                                <input type="text" id="search-student" placeholder="Search..." class="search-input" />
+                                <button type="button" onclick="viewStudents(1)" class="search-btn">Search</button>
+                            </div>
                         </div>
                         <div class="sort-container">
                             <select name="sort" onchange="viewStudents(1)" id="view-stud-by-select" class="sort-select">
                                 <option value="balance" selected>Current Balance</option>
                                 <option value="gradelevel">Grade Level</option>
                                 <option value="studentname">Student Name</option>
-                                <option value="studentid">Student Id</option>
                             </select>
+                        </div>
+                    </div>
+
+
+                    <!-- List of Payments Table -->
+                    <table id="table-ni-martin" class="view-list-of-students-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Student Name</th>
+                                <th>Grade Level</th>
+                                <th>Balance</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5">No Student Record</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="pagination-controls" id="inside-modal">
+                            <span id="itemRangeStud">1–10 of 37</span>
+                            <select id="pageSizeSelectorStud">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                            </select>
+                            <button type="button" id="prevPageStud">«</button>
+                            <input type="number" id="pageInputStud" min="1" value="1">
+                            <span id="totalPagesStud">of 4</span>
+                            <button type="button" id="nextPageStud">»</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- List of Payments Table -->
-                <table id="table-ni-martin" class="view-list-of-students-table">
-                    <thead>
-                        <tr>
-                            <th>Student ID</th>
-                            <th>Student Name</th>
-                            <th>Grade Level</th>
-                            <th>Balance</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="4">No Student Record</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Add Payment button -->
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" data-close-modal="viewStudentListModal">Close</button>
+                </div>
+
             </div>
         </div>
 
 
         <!-- Modal for listOfPaymentsModal -->
         <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
-            <div class="list-of-payments-modal-content">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="listOfPaymentsModal">&times;</span>
+            <div class="list-of-payments-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h2>List of Payments</h2>
 
-                <h2>List of Payments</h2>
+                    <div class="half-width">
+                        <label for="student-id">Student ID:</label>
+                        <h6 id="student-id"></h6>
+                    </div>
+                    <div class="half-width">
+                        <label for="student-name">Student Name:</label>
+                        <h6 id="student-name"></h6>
+                    </div> <br>
 
-                <div class="half-width">
-                    <label for="student-id">Student ID:</label>
-                    <h6 id="student-id"></h6>
+                    <!-- List of Payments Table -->
+                    <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Particular</th>
+                                <th>Total</th>
+                                <th>Amount Paid</th>
+                                <th>Remaining Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="half-width">
-                    <label for="student-name">Student Name:</label>
-                    <h6 id="student-name"></h6>
-                </div> <br>
-
-                <!-- List of Payments Table -->
-                <table id="table-ni-kharl" class="view-list-of-payments-table">
-                    <thead>
-                        <tr>
-                            <th>Particular</th>
-                            <th>Total</th>
-                            <th>Amount Paid</th>
-                            <th>Remaining Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-
                 <!-- Add Payment button -->
-                <div class="action" id="add-payment-btn">
-                    <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Proceed to
-                        Payment Form</button>
+                <div class="modal-buttons" id="add-payment-btn">
+                    <button type="button" class="btn-confirm" data-open-modal="addPaymentModal">Add
+                        Payment</button>
+                    <button type="button" class="btn-cancel" data-close-modal="listOfPaymentsModal">Close</button>
                 </div>
-
             </div>
         </div>
         <!-- Receipt Modal -->
         <div id="receiptModal" class="receipt-modal modal">
             <div class="printable-area">
-                <div class="receipt-modal-content">
+                <div class="receipt-modal-content scroll-lock">
                     <span class="close-modal no-print" data-close-modal="receiptModal">&times;</span>
 
                     <!-- Receipt Header -->
@@ -247,7 +325,7 @@
 
 
                     <!-- Payment Table -->
-                    <div id="receipt-table" class="receipt-table">
+                    <div id="receipt-table" class="receipt-table main-table">
                         <table>
                             <thead>
                                 <tr>
@@ -287,41 +365,33 @@
 
         <!-- Modal for addPaymentModal-->
         <div id="addPaymentModal" class="add-payment-modal modal">
-            <div class="printable-area">
-                <div class="add-payment-modal-content">
-                    <!-- Close Button -->
-                    <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
+            <div class="add-payment-modal-content scroll-lock">
+                <div class="modal-body">
                     <div class="header-container">
                         <h3>Payment Form</h3>
                     </div> <br>
 
                     <div class="payee-info-container" id="payee-info">
-                        <div class="half-payee">
-                            <div>
-                                <label for="student-id" id="label-id">Student ID:</label>
-                                <input type="text" id="payee-id" readonly>
-                            </div>
-                            <div>
-                                <label for="Date">Date:</label>
-                                <input type="date" id="date">
-                            </div>
+                        <div class="student-form-group">
+                            <label for="payee-id">Student ID:</label>
+                            <input type="text" id="payee-id" readonly>
+
+                            <label for="Date">Date:</label>
+                            <input type="date" id="date">
                         </div>
 
-                        <div class="full-width">
-                            <label for="payee-name">Student Name:</label>
+                        <div class="student-form-group">
+                            <label for="payee-name">Name:</label>
                             <input type="text" id="payee-name" readonly>
                         </div>
-                        <div class="half-width half-payee">
-                            <div>
-                                <label for="semester" id="label-sem">Semester:</label>
-                                <input th:value="${currentSem}" type="text" id="semester" readonly>
-                            </div>
-                            <div>
-                                <label for="school-year">S.Y.</label>
-                                <input th:value="${currentSY}" type="text" id="school-year" readonly>
-                            </div>
+                        <div class="student-form-group">
+                            <label for="semester">Semester:</label>
+                            <input th:value="${currentSem}" type="text" id="semester" readonly>
+
+                            <label for="school-year">S.Y.</label>
+                            <input th:value="${currentSY}" type="text" id="school-year" readonly>
                         </div>
-                        <div class="full-width amount-container">
+                        <div class="student-form-group">
                             <label for="amount" id="label-amount">Amount:</label>
                             <div class="input-wrapper">
                                 <span class="currency-symbol">₱</span>
@@ -330,24 +400,9 @@
                         </div>
                     </div>
                     <div class="payment-wrapper">
-                        <label>Payment For:</label>
+                        <h6>Payment For:</h6>
                         <div class="payment-container-group">
-                            <!-- <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div> -->
+
                         </div> <br>
                     </div>
 
@@ -356,18 +411,19 @@
                         <h6>Received/Collected By:</h6>
                         <div class="collector-name-container">
                             <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                            <p id="position" th:text="${userRole}"></p>
                         </div>
                     </div>
+                </div>
 
+                <div class="modal-buttons payment-modal-buttons">
+                    <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                        data-open-modal="confirmationModal" data-action="savePayment"
+                        data-message="Are you sure you want to save this payment?">Save Payment
+                    </button>
 
-                    <div class="modal-buttons payment-modal-buttons">
-                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                            data-open-modal="confirmationModal" data-action="savePaymentTrans"
-                            data-message="Are you sure you want to save this payment?" disabled>Please select a
-                            particular</button>
-                    </div>
-
+                    <button type="button" id="payment-closer" class="btn-cancel"
+                        data-close-modal="addPaymentModal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -375,7 +431,7 @@
 
     <!-- Error Modal -->
     <div id="errorModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content scroll-lock">
             <p id="errorMessage"></p>
             <div class="modal-buttons">
                 <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
@@ -475,33 +531,39 @@
                 }
             });
             fetchMgaBayarin();
-            getRecords();
+            getRecords(1);
         });
 
         let currentPage;
-        let currentPageSize;
-        function getRecords(pageNo = 1, pageSize = 1) {
+        var totalItems = 0;
+        function getRecords(pageNo = 1) {
             currentPage = pageNo;
-            currentPageSize = pageSize;
+            pageSize = parseInt(document.getElementById("pageSizeSelector").value);
             const searchBy = document.getElementById("search-stud").value;
             const sortBy = document.getElementById("view-by-select").value;
+
+            // Update table headers based on selected view
             if (sortBy == "Transaction" || sortBy == "Voided") {
                 document.querySelector("#realginnas thead").innerHTML = `
-                <th>No.</th>
+            <tr>
                 <th>Student Name</th>
                 <th>Date Paid</th>
                 <th>Transaction Number</th>
                 <th>Amount Paid</th>
-                <th>Action</th>`;
+                <th>Action</th>
+            </tr>`;
             } else {
                 document.querySelector("#realginnas thead").innerHTML = `
-                <th>No.</th>
+            <tr>
                 <th>Student Name</th>
                 <th>Date Paid</th>
                 <th>Particular</th>
                 <th>Amount Paid</th>
-                <th>Action</th>`;
+                <th>Action</th>
+            </tr>`;
             }
+
+            // Fetch records
             fetch(`/paymentrecord/transactions/all?pageNum=${pageNo}&pageSize=${pageSize}&particular=${sortBy}&q=${searchBy}`)
                 .then(res => {
                     if (!res.ok) throw new Error("Failed to fetch payment records");
@@ -512,21 +574,22 @@
 
                     if (!tableBody) return console.error("Table body not found");
                     tableBody.innerHTML = "";
+
                     if (!data || !data.content || data.content.length === 0) {
                         tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
                         return;
                     }
+
                     data.content.forEach(rec => {
                         let row = document.createElement("tr");
 
                         row.innerHTML = `
-                        <td>TBA</td>
-                        <td>${rec.studentName}</td>
-                        <td>${rec.date}</td>
-                        <td>${rec.transactionReference}</td>
-                        <td>${rec.totalAmount}</td>
-                        <td>
-                            <div class="dropdown">
+                    <td>${rec.studentName}</td>
+                    <td>${rec.date}</td>
+                    <td>${rec.transactionReference}</td>
+                    <td>${rec.totalAmount}</td>
+                    <td>
+                        <div class="dropdown">
                             <div class="status-container">
                                 <button class="dropdown-status-btn">
                                     <i class="fas fa-chevron-down"></i>
@@ -534,61 +597,91 @@
                             </div>
                             <div class="dropdown-status-content" id="dropdown-listing">
                                 <a href="#" class="action" data-open-modal="receiptModal"
-                                data-transaction-id="${rec.transactionId}">
-                                    View Receipt
+                                   data-transaction-id="${rec.transactionId}">
+                                   View Receipt
                                 </a>
-
                                 <a href="#" class="action" data-action="voidTransaction"
-                                data-message="Are you sure you want to void this transaction?"
-                                data-transaction-id="${rec.transactionId}">
-                                    Void
+                                   data-message="Are you sure you want to void this transaction?"
+                                   data-transaction-id="${rec.transactionId}">
+                                   Void
                                 </a>
+                            </div>
                         </div>
-                    </div>
-
-                        </td>
-                    `;
-                        <!--receiptModal
-                        listOfPaymentsModal-->
+                    </td>
+                `;
                         tableBody.appendChild(row);
                     });
-                    console.log(pageNo);
-                    updatePaymentPagination(pageNo, pageSize, data.totalPages);
+
+                    totalItems = data.totalElements || 0;
+                    const totalPages = data.totalPages || 1;
+                    updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
         }
 
-        function updatePaymentPagination(currentPage, pageSize, totalPages) {
-            const paginationContainer = document.querySelector("#pagination");
-            paginationContainer.innerHTML = ``;
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
 
-            if (totalPages <= 1) return;
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-            for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement("button");
-                button.innerText = i;
-                button.classList.add("pagination-button");
-                if (i === currentPage) button.classList.add("active");
-                button.addEventListener("click", () => {
-                    getRecords(i, pageSize);
-                });
-                paginationContainer.appendChild(button);
-            }
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
         }
+
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                getRecords(currentPage);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                console.log("Navigating to page:", currentPage);
+                getRecords(currentPage);
+            } else {
+                console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                getRecords(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            getRecords(currentPage);
+        });
 
         let studentId;
         let gradeLevelId;
         document.addEventListener("click", function (event) {
-            const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
+            //const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
             const viewReceiptbtn = event.target.closest('[data-open-modal="receiptModal"]');
             const voidTransaction = event.target.closest('[data-action="voidTransaction"]');
-            if (viewListbtn) {
-                studentId = viewListbtn.getAttribute("data-student-id");
-                const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
-                gradeLevelId = viewListbtn.getAttribute("data-level-Id");
-                if (!enrollmentId) return console.error("Enrollment Id Not Found");
-                fetchPayments(enrollmentId);
-            } else if (viewReceiptbtn) {
+            //if (viewListbtn) {
+            //studentId = viewListbtn.getAttribute("data-student-id");
+            //const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
+            //gradeLevelId = viewListbtn.getAttribute("data-level-Id");
+            // if (!enrollmentId) return console.error("Enrollment Id Not Found");
+            // fetchPayments(enrollmentId);
+            //} else 
+            if (viewReceiptbtn) {
                 const receiptId = viewReceiptbtn.getAttribute("data-transaction-id");
                 fetchThisPokemon(receiptId);
             } else if (voidTransaction) {
@@ -601,8 +694,8 @@
         document.getElementById("payment-amount").addEventListener('keyup', function (event) {
             savePaymentBtn.textContent = "Save Payment";
             savePaymentBtn.disabled = false;
-            if (parseFloat(this.value || 0) <= parseFloat(this.min)) {
-                savePaymentBtn.textContent = `Minimum of ${this.min} is Required`;
+            if (parseFloat(this.value || 0) < parseFloat(this.min)) {
+                savePaymentBtn.textContent = `Minimum of P${this.min} is Required`;
                 savePaymentBtn.disabled = true;
             }
         });
@@ -633,15 +726,14 @@
         }
 
         function savePaymentTrans() {
-            alert("paying now");
             const feesSelectedId = getCheckedPaymentValues();
             const totalAmount = paymentAmountInput.value;
 
             if (totalAmount == 0) {
-                alert("DLi pwde wlay kay ibayad uys");
+                showErrorModal("Pay at least minimum");
                 return;
             } else if (feesSelectedId.length == 0) {
-                alert("Dapat naa ka pilion");
+                showErrorModal("Please select a particular");
                 return;
             }
 
@@ -649,7 +741,6 @@
             const obj = {
                 feesId: feesSelectedId
             };
-
             fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -667,9 +758,7 @@
                 })
                 .catch(error => {
                     console.error("Error adding payment:", error);
-                    alert("Failed to add payment. Please try again.");
                 });
-
         }
 
         async function fetchThisPokemon(receiptReference) {
@@ -682,6 +771,7 @@
         }
 
         function viewTheReceipt(receipt) {
+            console.log(receipt);
             receipt = JSON.parse(receipt);
             document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
             document.getElementById("receipt-date").value = receipt.date;
@@ -712,7 +802,7 @@
                 </tr>
             </tfoot>`;
             tableBody.appendChild(row);
-            getRecords(currentPage, currentPageSize);
+            getRecords(currentPage);
             closeOpen();
         }
 
@@ -734,14 +824,14 @@
             return checkedValues;
         }
 
-        let enrollmentIdLet = null;
-        document.addEventListener("click", function (event) {
-            const proceedToEnrolledButton = event.target.closest("#proceed-btn"); // Check if the clicked element is the button
+        // let enrollmentIdLet = null;
+        // document.addEventListener("click", function (event) {
+        //     const proceedToEnrolledButton = event.target.closest("#proceed-btn"); // Check if the clicked element is the button
 
-            if (proceedToEnrolledButton) {
-                enrollmentIdLet = proceedToEnrolledButton.getAttribute("data-enrollment-id");
-            }
-        });
+        //     if (proceedToEnrolledButton) {
+        //         enrollmentIdLet = proceedToEnrolledButton.getAttribute("data-enrollment-id");
+        //     }
+        // });
 
         function printThis(feeId) {
             var url = `/paymentrecord/balance/${payerId}?feeId=${feeId}&gradeLevelId=${gradeLevelId}&currentSem=true`;
@@ -776,7 +866,7 @@
                 const enteredValue = parseFloat(this.value);
 
                 if (enteredValue > maxValue) {
-                    alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
+                    showErrorModal("Maximum amount is " + maxValue);
                     this.value = maxValue;
                 }
             });
@@ -813,44 +903,50 @@
                 })
                 .catch(error => console.error("Error fetching sections:", error));
         }
-        var studPageNo;
-        var studPageSize;
-        function viewStudents(pageNo = 1, pageSize = 1) {
+        var studPageNo = 0;
+        var totalItems = 0;
+        function viewStudents(pageNo = 1) {
             studPageNo = pageNo;
-            studPageSize = pageSize;
+            var pageSize = parseInt(document.getElementById("pageSizeSelectorStud").value) || 10;
             const orderBy = document.getElementById("view-stud-by-select").value;
             const search = document.getElementById("search-student").value;
             const studentsTable = document.querySelector("#table-ni-martin tbody");
-            fetch(`/students/all/s?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${orderBy}`)
+            var url = `/students/all?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${orderBy}&fullyPaid=true`;
+            fetch(url)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.content.length === 0) { return; }
-                    studentsTable.innerHTML = ``;
-                    data.content.forEach(stud => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                        <td>${stud.studentDisplayId}</td>
-                        <td>${stud.fullName}</td>
-                        <td>${stud.currentGradeLevel?.levelName ?? 'None'}</td>
-                        <td>${stud.balanceAmount}</td>
-                        <td>
-                            <div class="dropdown">
-                                <div class="action-container action">
-                                    <img th:src="@{/images/icons/eye.png}" onclick="viewToPaid(${stud.studentId})"
-                                    data-open-modal="listOfPaymentsModal"
-                                        alt="edit-icon">
+                    studentsTable.innerHTML = `<tr><td colspan="5">No records found.</td></tr>`;
+                    if (data.content.length > 0) {
+                        studentsTable.innerHTML = ``;
+                        data.content.forEach(stud => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                            <td>${stud.studentDisplayId}</td>
+                            <td>${stud.fullName}</td>
+                            <td>${stud.currentGradeLevel?.levelName ?? 'None'}</td>
+                            <td>${stud.balanceAmount}</td>
+                            <td>
+                                <div class="dropdown">
+                                   <div class="action-container action">
+                                        <button class="action-btn" onclick="viewToPaid(${stud.studentId})" >
+                                            <img data-open-modal="listOfPaymentsModal" src="/images/icons/eye.png" alt="View List of Payments" />
+                                        </button>
+                                    </div>
 
                                 </div>
-                            </div>
-                        </td>`;
-                        studentsTable.appendChild(row);
-                    });
+                            </td>`;
+                            studentsTable.appendChild(row);
+                        });
+                    }
+                    totalItems = data.totalElements || 0;
+                    const totalPages = data.totalPages || 1;
+                    updatePaginationUIStud(currentPage, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching sections:", error));
         }
 
         function viewToPaid(studentId) {
-            fetch(`/paymentrecord/form/${studentId}`)
+            fetch(`/paymentrecord/form/${studentId}?forPayment=true`)
                 .then(res => res.json())
                 .then(payForm => {
                     document.querySelector("#student-name").textContent = payForm.student.fullName;
@@ -861,8 +957,8 @@
                         const row = document.createElement("tr");
                         row.innerHTML = `
                         <td>${particular.fee.name}</td>
-                        <td>${particular.fee.requiredAmount}</td>
-                        <td>${particular.fee.requiredAmount - particular.balance}</td>
+                        <td>${particular.totalRequired}</td>
+                        <td>${particular.totalPaid}</td>
                         <td>${particular.balance}</td>`;
                         tableBody.appendChild(row);
                     });
@@ -878,6 +974,55 @@
                 })
                 .catch(error => console.error("Error fetching sections:", error));
         }
+
+        function updatePaginationUIStud(currentPage, pageSize, totalItems, totalPages) {
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
+
+            document.getElementById("itemRangeStud").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInputStud").value = currentPage;
+            document.getElementById("pageInputStud").min = 1;
+            document.getElementById("pageInputStud").max = totalPages;
+            document.getElementById("totalPagesStud").textContent = `of ${totalPages}`;
+
+            document.getElementById("prevPageStud").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPageStud").disabled = currentPage >= totalPages || totalPages === 0;
+        }
+
+        document.getElementById("prevPageStud").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                viewStudents(currentPage);
+            }
+        });
+
+        document.getElementById("nextPageStud").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                viewStudents(currentPage);
+            } else {
+                console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInputStud").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                viewStudents(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelectorStud").addEventListener("change", (e) => {
+            console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            viewStudents(currentPage);
+        });
+
         function setUpForm(theForm) {
             theForm = JSON.parse(theForm);
 
@@ -890,8 +1035,6 @@
             theForm.feesAndBalance.forEach(par => {
                 const paymentItem = document.createElement("div");
                 paymentItem.classList.add("payment-item");
-                console.log(par);
-                console.log(par.balance);
                 const input = document.createElement("input");
                 input.type = "checkbox";
                 input.name = par.fee.name;

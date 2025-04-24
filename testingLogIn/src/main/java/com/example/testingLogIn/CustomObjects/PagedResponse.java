@@ -1,13 +1,13 @@
-package com.example.testingLogIn.PagedResponse;
+package com.example.testingLogIn.CustomObjects;
 
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
-@Builder
 @Data
-public class PaymentTransactionDTOPage {
+@Builder
+public class PagedResponse {
     private List<?> content;
     private int pageNo;
     private int pageSize;

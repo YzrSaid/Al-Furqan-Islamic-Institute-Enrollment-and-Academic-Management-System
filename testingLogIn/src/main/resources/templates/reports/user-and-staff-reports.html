@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <div class="text-link" id="breadcrumb-container">
+                <h4>User & Staff Reports</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/reports/user-and-staff" title="You're currently in this page.">Reports - User & Staff Reports</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button class="search-btn">Search</button>
+                    </div>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table class="teacher-report-table main-table">
+                <thead>
+                    <tr>
+                        <th>Staff ID</th>
+                        <th>Staff Name</th>
+                        <th>Gender</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2025-0001</td>
+                        <td>Jose Rizal</td>
+                        <td>Male</td>
+                        <td>UNRESTRICTED</td>
+                        <td>
+                            <div class="dropdown">
+                                <div class="action-container action">
+                                    <a href="/reports/user-and-staff/${student.fullName}" class="view-student">
+                                        <img data-path="/reports/user-and-staff/${student.fullName}" th:src="@{/images/icons/eye.png}" alt="edit-icon">
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> <br> <br>
+        </div>
+
+
+    </div>
+</body>
+
+</html>

@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script th:src="@{/js/script.js}" defer></script>
@@ -40,7 +32,8 @@
                 <h4 id="adviser">Sir Jisun</h4>
             </div>
 
-            <table id="paragas-eatery-table" class="sched-table">
+
+            <table id="paragas-eatery-table" class="sched-table main-table">
                 <thead>
                     <tr>
                         <th>Subject</th>
@@ -78,194 +71,56 @@
                         </td>
                     </tr>
                 </tbody>
-            </table> <br> <br>
+            </table> <br>
+        </div>
 
-            <div class="add-row-container">
-                <img id="addRowBtn" th:src="@{/images/icons/add-button.png}" alt="">
+        <div class="btn-container">
+            <button type="button" class="btn-confirm" id="addRowBtn">Add</button>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
             </div>
         </div>
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
 
-        <!-- buttons -->
-        <div class="btn-container">
-            <button class="save-button" data-action="saveSched"
-                data-message="Are you sure you want to save this schedule" id="saveBtn"
-                data-open-modal="confirmationModal">Add</button>
-            <button class="clear-button" data-action="clearSched"
-                data-message="Are you sure you want to clear all the schedule" id="clearBtn"
-                data-open-modal="confirmationModal">
-                Clear</button>
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
         </div>
-
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
-
-        <!-- Modal for edit account -->
-        <div class="my-account-container-wrapper">
-            <div id="myAccountEditModal" class="my-account-edit-modal modal">
-                <div class="my-account-edit-modal-content">
-                    <h2>My Account Information</h2>
-                    <form action="" id="myAccountEditForm">
-                        <div class="half-width">
-                            <div class="user-id">
-                                <label for="user-id" id="user-id-label">User ID:</label>
-                                <p id="user-id">0001</p>
-                            </div>
-                        </div> <br>
-                        <div class="half-width">
-                            <div class="email">
-                                <label for="email">Email:</label>
-                                <p id="email">sample@gmail.com</p>
-                            </div>
-                        </div> <br>
-                        <div class="half-width student-form-group">
-                            <div class="first-name">
-                                <label for="first-name">First Name:</label>
-                                <input type="text" id="first-name" value="Batman" readonly>
-                            </div>
-                            <div class="last-name">
-                                <label for="last-name">Last Name:</label>
-                                <input type="text" id="last-name" value="Rizal" readonly>
-                            </div>
-                        </div> <br>
-                        <div class="account-type">
-                            <label for="account-type">Account Type:</label>
-                            <select name="account-type" id="account-type">
-                                <option value="" disabled>Select account type</option>
-                                <option value="ADMIN_Enrollment">Admin - Enrollment</option>
-                                <option value="TEACHER">Teacher</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-buttons">
-                            <button type="button" class="btn-confirm" data-action="editMyAccount"
-                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
-                                Edit
-                            </button>
-                            <button type="button" class="btn-cancel"
-                                data-close-modal="myAccountEditModal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal for changing password -->
-        <div class="my-account-container-wrapper">
-            <div id="changePasswordModal" class="change-password-modal">
-                <div class="change-password-modal-content">
-                    <h2>Change Password</h2>
-                    <form action="" id="changePasswordForm">
-                        <div class="change-pass-div">
-                            <label for="current-passowrd">Current Password</label>
-                            <input type="password" id="current-passowrd">
-                        </div>
-                        <div class="change-pass-div">
-                            <label for="new-password">New Password</label>
-                            <input type="password" id="new-password">
-                        </div>
-                        <div class="change-pass-div">
-                            <ul>
-                                <li>Must be 8 characters</li>
-                                <li>Must contain a spacial character</li>
-                                <li>Must contain upper and lower case</li>
-                            </ul>
-                        </div>
-                        <div class="change-pass-div">
-                            <label for="confirm-password">Confirm Password</label>
-                            <input type="password" id="confirm-password">
-                        </div>
-                        <div class="modal-buttons change-pass-buttons">
-                            <button type="button" class="btn-confirm" id="confirmChangePassword"
-                                data-action="change-password">Confirm</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
     </div>
 
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+        selectedSectionId = path.split("/").pop();
         setUpTables();
     });
-
-    function saveSchedule() {
-        const path = window.location.pathname;
-
-        const pathParts = path.split('/');
-        const secId = pathParts[pathParts.length - 1];
-        const subjectName = document.getElementById('subject-select').value;
-        const teacher = document.getElementById('teacher-select').value;
-        const day = document.getElementById('day').value;
-        const startTime = document.getElementById('starttime').value;
-        const endTime = document.getElementById('endtime').value;
-
-        // Validate that all fields are filled
-        if (!subjectName || !teacher || !day || !startTime || !endTime) {
-            alert('Please fill in all fields.');
-            return;
-        } else if (startTime >= endTime) {
-            alert('End time must be after start time.');
-            return;
-        }
-
-        const data = {
-            sectionId: secId,
-            subject: subjectName,
-            teacherName: teacher,
-            day: day,
-            timeStart: startTime,
-            timeEnd: endTime
-        };
-
-        fetch('/schedules/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
-        })
-            .then(response => {
-                return response.text().then(message => {
-                    // Handle different status codes
-                    if (response.ok) {
-                        // Success (HTTP 200 OK)
-                        alert(message); // Display the success message
-                        window.location.reload(); // Reload the page
-                    } else {
-                        alert(message);
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Display the error message to the user
-                alert(error.message);
-            });
-    }
-
+    var selectedSectionId = 0;
     function setUpTables() {
-        const path = window.location.pathname;
-
-        const pathParts = path.split('/');
-        const sectionId = pathParts[pathParts.length - 1];
-        console.log(sectionId);
-
-        fetch(`/schedules/section/${sectionId}`)
-            .then(response => {
+        fetch(`/schedules/section?sectionId=${selectedSectionId}`)
+            .then(async response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    const errorText = await response.text(); // Get error message from server
+                    throw new Error(errorText || `HTTP error! Status: ${response.status}`);
                 }
                 return response.json(); // Parse the response as JSON
             })
@@ -283,37 +138,402 @@
                             <td>${rec.timeStartString}</td>
                             <td>${rec.timeEndString}</td>
                             <td>
-                                <button onClick="deleteThis(${rec.scheduleNumber})">Delete</button>
-                                <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                                <div class="action-container action">
+                                   
+                                        <button id="delete-btn" data-id="${rec.scheduleNumber}" class="action-btn">
+                                        <img src="/images/icons/bin.png" alt="delete-icon">
+                                        </button>
+
+                                        <button class="action-btn" id="edit-btn"
+                                                data-id="${rec.scheduleNumber}"
+                                                data-subj-id="${rec.subjectId}"
+                                                data-teacher-id="${rec.teacherId}"
+                                                data-sect-id="${rec.sectionId}"
+                                                data-day="${rec.day}"
+                                                class="action-btn">
+                                        <img src="/images/icons/compose.png" alt="edit-icon">
+                                        </button>
+                                
+                                </div>
                             </td>
                         </tr>
                         `;
+                    attachedDeleteHandler(row);
                     tableBody.appendChild(row);
                 });
             })
             .catch(error => {
-                console.error("Error fetching data:", error);
+                showErrorModal(error.message);
+                setTimeout(() => {
+                    window.location.href = "/home";
+                }, 2000);
             });
     }
+    var selectedSectionId;
+    async function createRow() {
+        const newRow = document.createElement("tr");
+        newRow.classList.add("sched-row");
+        newRow.setAttribute("draggable", "false");
 
-    function deleteThis(schedId) {
-        fetch('/schedules/delete/' + schedId, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                return response.text().then(message => {
-                    if (response.ok) {
-                        alert(message);
-                        window.location.reload();
-                    } else {
-                        alert(message);
-                    }
-                });
+        newRow.innerHTML = `
+        <td>
+            <select name="subject" class="subject-select">
+                <option value="" disabled selected>Choose a subject</option>
+            </select>
+        </td>
+        <td>
+            <select name="teacher" class="teacher-select">
+                <option value="" disabled selected>Choose a teacher</option>
+            </select>
+        </td>
+        <td>
+            <select name="days" class="day-select">
+                <option value="" disabled selected>Choose a day</option>
+                <option value="SATURDAY">Saturday</option>
+                <option value="SUNDAY">Sunday</option>
+            </select>
+        </td>
+        <td><input type="time" class="starttime-input"></td>
+        <td><input type="time" class="endtime-input"></td>
+      <td>
+        <div class="action-container action">
+          
+                <button class="btn-row-cancel action-btn" title="Cancel">
+                        <img src="/images/icons/cross.png" alt="Cancel" />
+                    </button>
+                    <button class="btn-row-save action-btn" title="Save">
+                        <img src="/images/icons/check.png" alt="Save" />
+                    </button>
+               
+        </div
+        </td>`;
+
+        await populateSubjects(selectedSectionId, newRow);
+        await populateTeachers(newRow);
+
+        attachDoubleClickDrag(newRow);
+        attachRowActionHandlers(newRow);
+
+        return newRow;
+    }
+
+    function attachedDeleteHandler(row) {
+        const deleteBtn = row.querySelector("#delete-btn");
+        const editbtn = row.querySelector("#edit-btn");
+        deleteBtn.addEventListener('click', function () {
+            const scheduleId = this.getAttribute('data-id');
+            fetch(`/schedules/delete/${scheduleId}`, {
+                method: 'DELETE'
             })
-            .catch(error => {
-                console.error('Error:', error);
-                alert(error.message);
+                .then(response => {
+                    return response.text().then(message => {
+                        if (response.ok) {
+                            showSuccessModal(message, false);
+                            row.remove();
+                        } else {
+                            showErrorModal(message);
+                        }
+                    });
+                })
+                .catch(error => {
+                    showErrorModal(error.message);
+                });
+        });
+        editbtn.addEventListener('click', function () {
+            var oldRow = document.createElement("tr");
+            oldRow.innerHTML = row.innerHTML;
+            const scheduleId = this.getAttribute('data-id');
+            var editSection = this.getAttribute('data-sect-id');
+            var day = this.getAttribute('data-day');
+            var subjId = this.getAttribute('data-subj-id');
+            var teacherId = this.getAttribute('data-teacher-id');
+            var dayOpt = day === "SATURDAY" ? `
+                    <option value="SATURDAY" selected>Saturday</option>
+                    <option value="SUNDAY">Sunday</option>`
+                : `
+                    <option value="SATURDAY">Saturday</option>
+                    <option value="SUNDAY"selected>Sunday</option>`;
+            row.innerHTML = `
+            <td>
+                <select name="subject" class="subject-select">
+                    <option value="" disabled selected>Choose a subject</option>
+                </select>
+            </td>
+            <td>
+                <select name="teacher" class="teacher-select">
+                    <option value="" disabled selected>Choose a teacher</option>
+                </select>
+            </td>
+            <td>
+                <select name="days" class="day-select">
+                    <option value="" disabled selected>Choose a day</option>
+                    ${dayOpt}
+                </select>
+            </td>
+            <td><input type="time" class="starttime-input"></td>
+            <td><input type="time" class="endtime-input"></td>
+          <td>
+            <div class="action-container">
+                <div class="action">
+                    <button id="cancelEdit" class="action-btn">
+                        <img src="/images/icons/cross.png" alt="cancel-icon">
+                    </button>
+                    <button id="saveEdit" data-sched-id="${scheduleId}" class="action-btn">
+                        <img src="/images/icons/check.png" alt="save-icon">
+                    </button>
+                </div>
+            </div>
+            </td>`;
+            populateSubjects(editSection, row, subjId);
+            populateTeachers(row, teacherId);
+            attachedEditHandler(row, oldRow.innerHTML);
+        });
+    }
+
+    function attachedEditHandler(row, oldRow) {
+        const cancelEdit = row.querySelector("#cancelEdit");
+        const saveEdit = row.querySelector("#saveEdit");
+
+        cancelEdit.addEventListener('click', function () {
+            row.innerHTML = `<tr>${oldRow}</tr>`;
+            attachedDeleteHandler(row);
+        });
+        saveEdit.addEventListener('click', function () {
+            var scheduleId = this.getAttribute('data-sched-id');
+            const addSubjectId = row.querySelector(".subject-select").value;
+            const teacher = row.querySelector(".teacher-select").value;
+            const day = row.querySelector(".day-select").value;
+            const startTime = row.querySelector(".starttime-input").value;
+            const endTime = row.querySelector(".endtime-input").value;
+
+
+            if (!addSubjectId || !teacher || !day || !startTime || !endTime) {
+                showErrorModal('Please fill in all fields.');
+                return;
+            } else if (startTime >= endTime) {
+                showErrorModal('End time must be after start time.');
+                return;
+            }
+            const data = {
+                scheduleNumber: scheduleId,
+                sectionId: selectedSectionId,
+                subjectId: addSubjectId,
+                teacherId: teacher,
+                day: day,
+                timeStart: startTime,
+                timeEnd: endTime
+            };
+            fetch('/schedules/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data) // Ensure `data` is defined and contains the required payload
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json().then(rec => {
+                            showSuccessModal("Schedule updated successfully", false);
+                            row.innerHTML = `
+            <tr class="sched-row hidden-row">
+                <td>${rec.subject}</td>
+                <td>${rec.teacherName}</td>
+                <td>${rec.day}</td>
+                <td>${rec.timeStartString}</td>
+                <td>${rec.timeEndString}</td>
+                <td>
+
+                     <div class="action-container action">
+                        <button id="delete-btn" data-id="${rec.scheduleNumber}" class="action-btn">
+                            <img src="/images/icons/bin.png" alt="delete-icon">
+                            </button>
+                                        <button class="action-btn" id="edit-btn"
+                                                data-id="${rec.scheduleNumber}"
+                                                data-subj-id="${rec.subjectId}"
+                                                data-teacher-id="${rec.teacherId}"
+                                                data-sect-id="${rec.sectionId}"
+                                                data-day="${rec.day}"
+                                                class="action-btn">
+                                        <img src="/images/icons/compose.png" alt="edit-icon">
+                                        </button>
+                                
+                                </div>
+                   
+                </td>
+            </tr>`;
+                            attachedDeleteHandler(row);
+                        });
+                    } else {
+                        return response.text().then(message => {
+                            showErrorModal(message);
+                        });
+                    }
+                })
+                .catch(error => {
+                    showErrorModal(error.message);
+                });
+        });
+    }
+
+    function attachRowActionHandlers(row) {
+        const cancelBtn = row.querySelector(".btn-row-cancel");
+        const saveBtn = row.querySelector(".btn-row-save");
+
+        cancelBtn.addEventListener("click", () => {
+            row.remove(); // Just removes this row
+        });
+
+        saveBtn.addEventListener("click", () => {
+            // Grab values from the inputs
+            const addSubjectId = row.querySelector(".subject-select").value;
+            const teacher = row.querySelector(".teacher-select").value;
+            const day = row.querySelector(".day-select").value;
+            const startTime = row.querySelector(".starttime-input").value;
+            const endTime = row.querySelector(".endtime-input").value;
+
+            // Validate that all fields are filled
+            if (!addSubjectId || !teacher || !day || !startTime || !endTime) {
+                showErrorModal('Please fill in all fields.');
+                return;
+            } else if (startTime >= endTime) {
+                showErrorModal('End time must be after start time.');
+                return;
+            }
+
+            const data = {
+                sectionId: selectedSectionId,
+                subjectId: addSubjectId,
+                teacherId: teacher,
+                day: day,
+                timeStart: startTime,
+                timeEnd: endTime
+            };
+
+            fetch('/schedules/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json().then(rec => {
+                            showSuccessModal("New schedule added successfully", false);
+                            row.innerHTML = `
+            <tr class="sched-row hidden-row">
+                <td>${rec.subject}</td>
+                <td>${rec.teacherName}</td>
+                <td>${rec.day}</td>
+                <td>${rec.timeStartString}</td>
+                <td>${rec.timeEndString}</td>
+                <td>
+                                 <div class="action-container action">
+                                   
+                                        <button id="delete-btn" data-id="${rec.scheduleNumber}" class="action-btn">
+                                        <img src="/images/icons/bin.png" alt="delete-icon">
+                                        </button>
+
+                                        <button class="action-btn" id="edit-btn"
+                                                data-id="${rec.scheduleNumber}"
+                                                data-subj-id="${rec.subjectId}"
+                                                data-teacher-id="${rec.teacherId}"
+                                                data-sect-id="${rec.sectionId}"
+                                                data-day="${rec.day}"
+                                                class="action-btn">
+                                        <img src="/images/icons/compose.png" alt="edit-icon">
+                                        </button>
+                                
+                                </div>
+                </td>
+            </tr>`;
+                            attachedDeleteHandler(row);
+                        });
+                    } else {
+                        return response.text().then(message => {
+                            showErrorModal(message);
+                        });
+                    }
+                })
+                .catch(error => {
+                    showErrorModal(error.message);
+                });
+        });
+    }
+
+    async function populateSubjects(sectionId, row, selectedSub = 0) {
+        try {
+            const res = await fetch(`/subject/section/${sectionId}`);
+            const subjects = await res.json();
+            const select = row.querySelector(".subject-select");
+            subjects.forEach((subject) => {
+                //console.log(subject);
+                const opt = document.createElement("option");
+                opt.value = subject.subjectNumber;
+                opt.textContent = subject.subjectName;
+                if (selectedSub == subject.subjectNumber) {
+                    opt.selected = true;
+                }
+                select.appendChild(opt);
             });
+        } catch (err) {
+            //console.error("Error loading subjects:", err);
+        }
+    }
+
+    async function populateTeachers(row, id = 0) {
+        try {
+            const res = await fetch("/user/teachers");
+            const teachers = await res.json();
+            const select = row.querySelector(".teacher-select");
+            teachers.forEach((teacher) => {
+                const opt = document.createElement("option");
+                opt.value = teacher.staffId;
+                if (teacher.staffId == id) {
+                    opt.selected = true;
+                }
+                opt.textContent = teacher.fullName;
+                select.appendChild(opt);
+            });
+        } catch (err) {
+            //console.error("Error loading teachers:", err);
+        }
+    }
+
+    function attachDoubleClickDrag(row) {
+        row.addEventListener("dblclick", () => {
+            row.setAttribute("draggable", "true");
+            row.classList.add("dragging-enabled");
+        });
+
+        row.addEventListener("dragstart", (e) => {
+            if (row.getAttribute("draggable") !== "true") {
+                e.preventDefault();
+                return;
+            }
+            draggedRow = row;
+            row.classList.add("dragging");
+            e.dataTransfer.effectAllowed = "move";
+        });
+
+        row.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(tableBody, e.clientY);
+            if (!afterElement) {
+                tableBody.appendChild(draggedRow);
+            } else {
+                tableBody.insertBefore(draggedRow, afterElement);
+            }
+        });
+
+        row.addEventListener("dragend", () => {
+            if (draggedRow) {
+                draggedRow.classList.remove("dragging");
+                draggedRow.setAttribute("draggable", "false");
+                draggedRow.classList.remove("dragging-enabled");
+                draggedRow = null;
+            }
+        });
     }
 </script>
 

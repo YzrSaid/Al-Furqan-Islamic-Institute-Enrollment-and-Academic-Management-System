@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.CustomObjects.SubjectSectionCount;
 import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.Services.ScheduleServices;
@@ -12,13 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -48,60 +43,70 @@ public class ScheduleController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    
-    @GetMapping("/section/{sectionId}")
-    public ResponseEntity<List<ScheduleDTO>> getSchedulesBySection(@PathVariable int sectionId){
-        try{
-            return new ResponseEntity<>(scheduleService.getSchedulesBySection(sectionId),HttpStatus.OK);
-        }catch(NullPointerException npe){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
+
+    @GetMapping("/section")
+    public ResponseEntity<List<ScheduleDTO>> getSchedulesBySection(@RequestParam int sectionId){
+        return new ResponseEntity<>(scheduleService.getSchedulesBySection(sectionId),HttpStatus.OK);
     }
-    
-    @GetMapping("/section-subjects/{sectionId}")
-    public ResponseEntity<Map<Integer,ScheduleDTO>> getTeachersBySectionScheds(@PathVariable int sectionId){
+
+    @GetMapping("/section-subjects")
+    public ResponseEntity<List<EvaluationStatus>> getTest(@RequestParam(required = false) Integer sectionId){
         try{
-            return new ResponseEntity<>(scheduleService.getSubjectsUniqeTeacher(sectionId),HttpStatus.OK);
+            return new ResponseEntity<>(scheduleService.getSectionSubjects(sectionId),HttpStatus.OK);
         }catch(NullPointerException npe){
+            npe.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
     
     @PostMapping("/add")
-    public ResponseEntity<String> addSchedules(@RequestBody ScheduleDTO schedule){
+    public ResponseEntity<Object> addSchedules(@RequestBody ScheduleDTO schedule){
         try{
-            int result = scheduleService.addNewSchedule(schedule);
-            switch(result){
-                case 1:
-                    return new ResponseEntity<>("Conflict with the Teacher's Existing Schedule",HttpStatus.CONFLICT);
-                case 2:
-                    return new ResponseEntity<>("Conflict with the Section's Existing Schedule",HttpStatus.CONFLICT);
-                case 3:
-                    return new ResponseEntity<>("Someone is already handling this subject on this section",HttpStatus.CONFLICT);
-                default:
-                    return new ResponseEntity<>("Schedule Successfully Added",HttpStatus.OK);
-            }
+            Map<Integer,ScheduleDTO> res = scheduleService.addNewSchedule(schedule);
+            if (!res.isEmpty()) {
+                Integer result = res.keySet().iterator().next(); // Safely get first key
+                switch(result){
+                    case 1:
+                        return new ResponseEntity<>("Conflict with the Teacher's Existing Schedule",HttpStatus.CONFLICT);
+                    case 2:
+                        return new ResponseEntity<>("Conflict with the Section's Existing Schedule",HttpStatus.CONFLICT);
+                    case 3:
+                        return new ResponseEntity<>("Someone is already handling this subject on this section",HttpStatus.CONFLICT);
+                    default:
+                        return new ResponseEntity<>(res.get(result),HttpStatus.OK);
+                }
+            }else
+                throw new Exception();
         }catch(Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Server conflict.",HttpStatus.BAD_REQUEST);
         }
     }
     
     @PutMapping("/update")
-    public ResponseEntity<String> updateSchedule(@RequestBody ScheduleDTO schedDTO){
-        int result = scheduleService.updateSchedule(schedDTO);
-        
-        switch(result){
-            case 1:
-                return new ResponseEntity<>("Conflict with the Teacher's other existing schedule",HttpStatus.CONFLICT);
-            case 2:
-                return new ResponseEntity<>("Conflict with the Section's other existing schedule",HttpStatus.CONFLICT);
-            case 3:
-                return new ResponseEntity<>("Someone is already handling this subject on this section",HttpStatus.OK);
-            case 4:
-                return new ResponseEntity<>("Schedule Updated Successfully",HttpStatus.OK);
-            default:
-                return new ResponseEntity<>("Schedule Not Found",HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> updateSchedule(@RequestBody ScheduleDTO schedDTO){
+        try{
+            Map<Integer,ScheduleDTO> res = scheduleService.updateSchedule(schedDTO);
+            int result = res.keySet().iterator().next();
+            switch(result){
+                case 1:
+                    return new ResponseEntity<>("Conflict with the Teacher's other existing schedule",HttpStatus.CONFLICT);
+                case 2:
+                    return new ResponseEntity<>("Conflict with the Section's other existing schedule",HttpStatus.CONFLICT);
+                case 3:
+                    return new ResponseEntity<>("Someone is already handling this subject on this section",HttpStatus.OK);
+                case 4:
+                    return new ResponseEntity<>(res.get(result),HttpStatus.OK);
+                default:
+                    return new ResponseEntity<>("Schedule Not Found",HttpStatus.NOT_FOUND);
+            }
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>("Schedule not found",HttpStatus.NOT_FOUND);
+        }catch (UnknownError u){
+            return new ResponseEntity<>("Selected teacher not found",HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>("Server error",HttpStatus.CONFLICT);
         }
     }
     

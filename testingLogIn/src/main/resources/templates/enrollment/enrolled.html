@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
@@ -20,25 +12,28 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link" id="breadcrumb-container">
-            <h4>Enrolled</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/enrollment/enrolled">Enrollment - Enrolled</a>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                    <button onclick="getCurrentlyEnrolled()" class="search-btn">Search</button>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Enrolled</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/enrollment/enrolled" title="You're currently in this page.">Enrollment - Enrolled</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                        <button type="button" onclick="getCurrentlyEnrolled(1)" class="search-btn">Search</button>
+                    </div>
                 </div>
+
                 <div class="sort-container">
-                    <select name="sort" onchange="getCurrentlyEnrolled()" id="sort-select" class="sort-select">
+                    <select name="sort" onchange="getCurrentlyEnrolled(1)" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
                         <option value="StudentId">Student Id</option>
                         <option value="StudentName">Student Name</option>
@@ -48,9 +43,10 @@
             </div>
         </div>
 
+
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="errorMessage"></p>
                 <div class="modal-buttons">
                     <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
@@ -66,50 +62,39 @@
             <p id="successModalMessage"></p>
         </div>
 
-        <!-- Table -->
-        <table id="realginnas" class="listing-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Enrolled Grade Level & Section</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="student-type">New</div>
-                        </div>
-                    </td>
-                    <td id="eligibility">Qualified</td>
-                    <td>
-
-                        <div class="status-container">
-                            <div class="status" id="status-enrolled">Enrolled</div>
-
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="realginnas" class="listing-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Enrolled Grade Level & Section</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
         <div class="pagination-container">
-            <div id="pagination" class="pagination">
-                <button id="prevPage" disabled>&laquo;</button>
-                <div id="pageNumbers"></div>
-                <button id="nextPage">&raquo;</button>
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
             </div>
         </div>
-
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
@@ -120,14 +105,14 @@
 
         <!-- Modal for viewing grades -->
         <div id="viewGradesModal" class="view-grades-modal modal">
-            <div class="view-grades-modal-content">
+            <div class="view-grades scroll-lock">
                 <h2>Student Grades</h2>
 
-                <div class="half-width" id="view-grade-studId">
+                <div class="half-width view-studId" id="view-grade-studId">
                     <label for="student-id">Student ID:</label>
                     <h6 id="student-id">0001</h6>
                 </div>
-                <div class="half-width" id="view-grade-studName">
+                <div class="half-width view-studName" id="view-grade-studName">
                     <label for="student-name">Student Name:</label>
                     <h6 id="student-name">Martin Francisco</h6>
                 </div> <br>
@@ -209,9 +194,13 @@
                 }
             }
         });
-        getCurrentlyEnrolled();
+        getCurrentlyEnrolled(1);
     });
-    function getCurrentlyEnrolled(pageNo = 1, pageSize = 2) {
+    var totalItems;
+    var currentPage;
+    function getCurrentlyEnrolled(pageNo = 1) {
+        currentPage = pageNo;
+        const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
         const searchBy = document.getElementById("search-stud").value;
         const sortBy = document.getElementById("sort-select").value;
         fetch(`/enrollment/all/paged/ENROLLED?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
@@ -221,7 +210,7 @@
             })
             .then(data => {
                 const tableBody = document.querySelector("#realginnas tbody");
-                if (!tableBody) return console.error("Table body not found");
+                if (!tableBody) return //console.error("Table body not found");
 
                 tableBody.innerHTML = ""; // Clear previous data
 
@@ -234,34 +223,67 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                     <td>${rec.student.studentDisplayId || "N/A"}</td>
-                    <td>${rec.student.firstName} ${rec.student.lastName}</td>
+                    <td>${rec.student.fullName}</td>
                     <td>${rec.sectionToEnroll || "N/A"}</td>
                 `;
                     tableBody.appendChild(row);
                 });
-
-                updateEnrolledPagination(pageNo, pageSize, data.totalPages);
+                totalItems = data.totalElements || 0;
+                const totalPages = data.totalPages || 1;
+                updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
             })
             .catch(error => console.error("Error fetching enrolled students:", error));
     }
 
-    function updateEnrolledPagination(currentPage, pageSize, totalPages) {
-        const paginationContainer = document.querySelector("#pagination");
-        paginationContainer.innerHTML = "";
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+           // console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
 
-        if (totalPages <= 1) return;
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-        for (let i = 1; i <= totalPages; i++) {
-            const button = document.createElement("button");
-            button.innerText = i;
-            button.classList.add("pagination-button");
-            if (i === currentPage) button.classList.add("active");
-            button.addEventListener("click", () => {
-                getCurrentlyEnrolled(i, pageSize);
-            });
-            paginationContainer.appendChild(button);
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
         }
-    }
+
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                getCurrentlyEnrolled(currentPage);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                //console.log("Navigating to page:", currentPage);
+                getCurrentlyEnrolled(currentPage);
+            } else {
+                //console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                getCurrentlyEnrolled(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            //console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            getCurrentlyEnrolled(currentPage);
+        });
 </script>
 
 </html>

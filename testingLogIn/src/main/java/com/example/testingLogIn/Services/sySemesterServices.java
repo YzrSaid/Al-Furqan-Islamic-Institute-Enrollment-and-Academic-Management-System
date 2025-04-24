@@ -20,9 +20,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.example.testingLogIn.StatisticsModel.StatisticsServices;
 import com.example.testingLogIn.WebsiteConfiguration.SchoolProfile;
 import com.example.testingLogIn.WebsiteConfiguration.SchoolProfileRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 /**
  *
@@ -36,15 +38,19 @@ public class sySemesterServices {
     private final StudentRepo studentRepo;
     private final SchoolProfileRepo schoolProfileRepo;
     private final StudentSubjectGradeRepo ssgr;
+    private final SubjectRepo subjectRepo;
+    private final StatisticsServices statisticsServices;
 
     @Autowired
-    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo, RequiredPaymentsRepo reqFee, StudentRepo studentRepo, SchoolProfileRepo schoolProfileRepo, StudentSubjectGradeRepo ssgr) {
+    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo, RequiredPaymentsRepo reqFee, StudentRepo studentRepo, SchoolProfileRepo schoolProfileRepo, StudentSubjectGradeRepo ssgr, SubjectRepo subjectRepo, StatisticsServices statisticsServices) {
         this.semesterRepo = semesterRepo;
         this.syRepo = syRepo;
         this.reqFee = reqFee;
         this.studentRepo = studentRepo;
         this.schoolProfileRepo = schoolProfileRepo;
         this.ssgr = ssgr;
+        this.subjectRepo = subjectRepo;
+        this.statisticsServices = statisticsServices;
     }
 
     public void addSemesters(String schoolYearName){
@@ -90,7 +96,7 @@ public class sySemesterServices {
         
         return toReturn;
     }
-    
+    @CacheEvict(value = {"enrollmentPage","countStat","gradeLevelRates"},allEntries = true)
     public boolean activateSemester(int semNumber){
         SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
         if(sem == null)
@@ -100,10 +106,23 @@ public class sySemesterServices {
         sem.setEnrollmentDeadline(LocalDate.now().plusDays(30));
         sem.setActive(true);
         semesterRepo.save(sem);
+
+        ExecutorService dbExecutor = Executors.newFixedThreadPool(4);
+
+        CompletableFuture.runAsync(()->{
+            reqFee.setRequiredFeesActive();
+            subjectRepo.activeAll();
+            studentRepo.setNewStudentsToOld();
+            statisticsServices.setInitialCounts(sem);
+        },dbExecutor).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
         
         return true;
     }
-    
+
+    @CacheEvict(value = {"enrollmentPage","countStat","gradeLevelRates"},allEntries = true)
     public boolean deactivateSemester(int semNumber){
         SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
         if(sem == null)
@@ -114,42 +133,38 @@ public class sySemesterServices {
         
         return true;
     }
-    
-    public boolean finishSemester(int semNumber){
-        SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
-        if(sem == null)
-            return false;
-        
+    @CacheEvict(value = {"enrollmentPage","countStat","gradeLevelRates"},allEntries = true)
+    public int finishSemester(int semNumber){
+        SchoolYearSemester sem = semesterRepo.findById(semNumber).orElseThrow(() -> new NullPointerException("Semester Not Found"));
+
+        if(ssgr.countUngraded(semNumber).orElse(0L) > 0L)
+            return 1;
         sem.setActive(false);
         sem.setFinished(true);
+        CompletableFuture.runAsync(()->statisticsServices.setStudentPassingRecords(sem));
         semesterRepo.save(sem);
 
         ExecutorService dbExecutor = Executors.newFixedThreadPool(4);
 
-        CompletableFuture.runAsync(()->{
-            reqFee.setRequiredFeesActive();
-            studentRepo.setNewStudentsToOld();
-        },dbExecutor).exceptionally(ex -> {
-            System.err.print("Fee/student update failed"+ ex);
-            return null;
-        });
         GradeLevel graduateLevel = graduatingLevel();
         if(graduateLevel != null){
             CompletableFuture.runAsync(()->{
+                List<Student> graduated = new ArrayList<>();
                 List<Student> students = studentRepo.findStudentsByCurrentGradeLevel(graduateLevel.getLevelId());
                 students.forEach(student -> {
                     if(ssgr.didStudentPassed(student.getStudentId(), graduateLevel.getLevelId())){
                         student.setStatus(StudentStatus.GRADUATE);
                         student.setDataGraduated(LocalDate.now());
+                        graduated.add(student);
                     }
                 });
+                statisticsServices.setGraduatesInformation(graduated,sem);
                 studentRepo.saveAll(students);
             },dbExecutor).exceptionally(ex -> {
-                System.err.print("Fee/student update failed"+ ex);
                 return null;
             });;
         }
-        return true;
+        return 0;
     }
     
     private void disableAll(){

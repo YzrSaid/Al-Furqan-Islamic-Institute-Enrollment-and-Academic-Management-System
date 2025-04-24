@@ -1,8 +1,10 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.ModelDTO.StudentGradesPerSem;
 import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Repositories.SubjectRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 /**
@@ -40,16 +43,17 @@ public class StudentSubjectGradeServices {
     }
 
     @Async
+    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public void addStudentGrades(Enrollment enrollment){
-        subjectRepo.findAll().stream()
-                    .filter(subject ->  subject.isNotDeleted() && 
-                                        subject.getGradeLevel().getLevelId() == enrollment.getGradeLevelToEnroll().getLevelId())
-                    .forEach(subject ->{
+        subjectRepo.findActiveSubjectsNotDeletedByGradeLevel(enrollment.getGradeLevelToEnroll().getLevelId())
+                        .forEach(subject ->{
                         StudentSubjectGrade studSubGrade = StudentSubjectGrade.builder()
                                                             .student(enrollment.getStudent())
                                                             .subject(subject)
                                                             .section(enrollment.getSectionToEnroll())
                                                             .semester(enrollment.getSYSemester())
+                                                            .isNotDeleted(true)
+                                                            .isDropped(false)
                                                             .subjectGrade(null)
                                                             .build();
                         ssgRepo.save(studSubGrade);
@@ -95,24 +99,23 @@ public class StudentSubjectGradeServices {
         return subjectStudGrades;
     }
     
-    public Map<String,List<StudentSubjectGradeDTO>> getStudentGradesBySemester(int studentId){
-        List<StudentSubjectGrade> gradesList = ssgRepo.getGradesByStudent(studentId);
+    public List<StudentGradesPerSem> getStudentGradesBySemester(int studentId){
+        List<SchoolYearSemester> semAttended = ssgRepo.getStudentSemAttended(studentId);
+        List<StudentGradesPerSem> studentGrades = new ArrayList<>();
 
-        Map<String,List<StudentSubjectGradeDTO>> subjectStudGrades = new HashMap<>();
-        
-        gradesList
-                .forEach(studGrade -> {
-                    String gradeLevelAndSectionSem = studGrade.getSection().getLevel().getLevelName()+" - "+
-                            studGrade.getSection().getSectionName()+" : "+
-                            studGrade.getSemester().getSchoolYear().getSchoolYear()+"-"+studGrade.getSemester().getSem()+ " sem";
-                    if(!subjectStudGrades.containsKey(gradeLevelAndSectionSem))
-                        subjectStudGrades.put(gradeLevelAndSectionSem, new ArrayList<StudentSubjectGradeDTO>());
-                    subjectStudGrades.get(gradeLevelAndSectionSem).add(studGrade.DTOmapper());
-                });
-        
-        return subjectStudGrades;
+        for(SchoolYearSemester sem : semAttended){
+            StudentGradesPerSem semGrade = new StudentGradesPerSem();
+            semGrade.setSectionSemester(sem.toString());
+            semGrade.setGrades(ssgRepo.getGradesByStudent(studentId,sem.getSySemNumber())
+                    .stream().map(StudentSubjectGrade::DTOmapper).toList());
+            semGrade.setGradeSection(semGrade.getGrades().getFirst().getGradeAndSection());
+            studentGrades.add(semGrade);
+        }
+
+        return studentGrades;
     }
-    
+
+    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public boolean updateStudentGrade(StudentSubjectGradeDTO studGrade){
         StudentSubjectGrade studSubGrade = ssgRepo.findById(studGrade.getStudGradeId()).orElse(null);
         if(studSubGrade == null)

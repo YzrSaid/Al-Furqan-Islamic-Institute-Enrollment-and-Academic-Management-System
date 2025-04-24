@@ -11,6 +11,24 @@
     ],
     "axe/forms": "off",
     "axe/name-role-value": "off",
-    "meta-viewport": "off"
+    "meta-viewport": "off",
+    "no-inline-styles": "off",
+    "compat-api/html": "off",
+    "axe/text-alternatives": [
+      "default",
+      {
+        "document-title": "off"
+      }
+    ],
+    "compat-api/css": [
+      "default",
+      {
+        "ignore": [
+          "-webkit-overflow-scrolling",
+          "overscroll-behavior",
+          "overscroll-behavior: contain"
+        ]
+      }
+    ]
   }
 }

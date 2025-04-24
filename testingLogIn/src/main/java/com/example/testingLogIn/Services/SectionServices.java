@@ -1,6 +1,6 @@
 package com.example.testingLogIn.Services;
 
-import com.example.testingLogIn.CountersService.SectionStudentCountServices;
+import com.example.testingLogIn.CountersRepositories.SectionStudentCountServices;
 import com.example.testingLogIn.CustomComparator.SectionComparator;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
@@ -57,16 +57,11 @@ public class SectionServices {
     
     //FOR ADDING NEW SECTION
     public int addSection(SectionDTO sectionDTO){
-        UserModel user= getUserByFullName(sectionDTO.getAdviserName());
-        GradeLevel gradeLevel = getGradeLevel(sectionDTO.getGradeLevelName());
-        int result = user == null ?             1:
-                     gradeLevel == null ?       2:
-                     doesTeacherHaveAdvisory
-                                 (user) ?       3:
-                     getSectionByName
-        (sectionDTO.getSectionName()
-                .toLowerCase()) != null      ?  4:
-                                                5;
+        UserModel user= Optional.ofNullable(getTeacherById(sectionDTO.getAdviserId())).orElseThrow(()->new NullPointerException("Teacher Information Not Found"));
+        GradeLevel gradeLevel = Optional.ofNullable(getGradeLevel(sectionDTO.getGradeLevelName())).orElseThrow(()->new NullPointerException("Grade Level Information Not Found"));
+        if(getSectionByName(sectionDTO.getSectionName()) != null)
+            throw new IllegalArgumentException("Section name already exists");
+        int result = doesTeacherHaveAdvisory(user) ? 3: 5;
 
         if (result == 5) {
             Section newSection = Section.builder()
@@ -110,47 +105,42 @@ public class SectionServices {
     }
 
     public SectionDTO getSection(int sectionNumber){
-        Section sec = sectionRepo.findById(sectionNumber).orElse(null);
-        
-        if(sec != null && sec.isNotDeleted())
-            return sec.toSectionDTO();
-        
-        return null;                     
+        return sectionRepo.findById(sectionNumber)
+                .map(Section::toSectionDTO)
+                .orElseThrow(()->new NullPointerException("Section Record Not Found"));
     }
 
     //UPDATE SECTION RECORD
     public boolean updateSection(SectionDTO sectionDTO){
-        Section toUpdate = sectionRepo.findById(sectionDTO.getNumber()).orElse(null);
-        if(toUpdate != null){
-            toUpdate.setLevel(getGradeLevel(sectionDTO.getGradeLevelName()));
-            toUpdate.setAdviser(getUserByFullName(sectionDTO.getAdviserName()));
-            toUpdate.setSectionName(sectionDTO.getSectionName());
-            toUpdate.setCapacity(sectionDTO.getCapacity());
-            toUpdate.setNotDeleted(true);
-            sectionRepo.save(toUpdate);
-            
-            return true;
-        }
-        return false;
+        Section toUpdate = sectionRepo.findById(sectionDTO.getNumber()).orElseThrow(()->new NullPointerException("Section Record Not Found"));
+        Section otherSec = getSectionByName(sectionDTO.getSectionName());
+        if(otherSec != null && otherSec.getNumber() != toUpdate.getNumber())
+            throw new IllegalArgumentException("Section name already exists");
+
+        toUpdate.setLevel(getGradeLevel(sectionDTO.getGradeLevelName()));
+        toUpdate.setAdviser(getTeacherById(sectionDTO.getAdviserId()));
+        toUpdate.setSectionName(sectionDTO.getSectionName());
+        toUpdate.setCapacity(sectionDTO.getCapacity());
+        toUpdate.setNotDeleted(true);
+        sectionRepo.save(toUpdate);
+        return true;
     }
     
     //DELETING SECTION RECORD
     public boolean deleteSection(int sectionNumber){
         Section todelete = sectionRepo.findById(sectionNumber).orElse(null);
-        
         if(todelete != null && todelete.isNotDeleted()){
             todelete.setNotDeleted(false);
             sectionRepo.save(todelete);
             return true;
         }
-        return false;
+        throw new NullPointerException("Section Record Not Found");
     }
     
     //Return the List of Teachers that has no advisory class
     public List<UserDTO > getNoAdvisoryTeachers(){
         List<Integer> adviserStaffIds= new ArrayList<>();
-        sectionRepo.findAll().stream()
-                   .filter(Section::isNotDeleted)
+        sectionRepo.findByIsNotDeletedTrue()
                    .forEach(section -> adviserStaffIds.add(section.getAdviser().getStaffId()));
         
         return userRepo.findAll().stream()
@@ -160,7 +150,7 @@ public class SectionServices {
     }
     
     public SectionDTO getSectionByNameDTO(String sectionName){
-        return getSectionByName(sectionName).toSectionDTO();
+         return Optional.ofNullable(getSectionByName(sectionName)).map(Section::toSectionDTO).orElseThrow(()-> new NullPointerException("Section Record Not Found"));
     }
     
     public Section getSectionByName(String sectionName){
@@ -177,11 +167,8 @@ public class SectionServices {
                           .findFirst().orElse(null) !=null;
     }
     
-    private UserModel getUserByFullName(String teacherName){
-        return userRepo.findAll().stream()
-                       .filter(user -> teacherName.contains(user.getFirstname()) &&
-                                       teacherName.contains(user.getLastname()))
-                       .findFirst().orElse(null);
+    private UserModel getTeacherById(int staffId){
+        return userRepo.findById(staffId).orElse(null);
     }
     
     private GradeLevel getGradeLevel(String levelName){

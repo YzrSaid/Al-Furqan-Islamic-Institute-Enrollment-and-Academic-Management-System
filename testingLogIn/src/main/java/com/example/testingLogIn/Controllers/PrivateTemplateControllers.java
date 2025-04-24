@@ -19,28 +19,26 @@ public class PrivateTemplateControllers {
 
     @GetMapping("/h?me")
     public String getDashboard() {
-        return "dashboard";
+        if(userDetailsService.getCurrentlyLoggedInUser().getRole() != Role.STUDENT)
+            return "dashboard";
+
+        return "student-account/home";
     }
 
     // These are for the student account
 
-    @GetMapping("student/personal-profile")
+    @GetMapping("/personal-profile")
     public String getStudentAccountPersonalProfile() {
         return "student-account/personal-profile";
     }
-    @GetMapping("student/grades")
+    @GetMapping("/grades")
     public String getStudentAccountGrades() {
         return "student-account/grades";
     }
 
-    @GetMapping("student/class-schedule")
+    @GetMapping("/class-schedule")
     public String getStudentAccountSchedule() {
         return "student-account/class-schedule";
-    }
-
-    @GetMapping("student/home")
-    public String getStudentAccountHome() {
-        return "student-account/home";
     }
 
     @GetMapping("")
@@ -120,12 +118,12 @@ public class PrivateTemplateControllers {
         return "/maintenance/section-maintenance";
     }
 
-    @GetMapping("/maintenance/new-subjects")
+    @GetMapping("/maintenance/subjects")
     public String getNewSubjectMaintenance() {
         return "/maintenance/subjects";
     }
 
-    @GetMapping("/maintenance/subjects/{gradeLevelId}")
+    @GetMapping("/maintenance/subjects/{levelName}")
     public String getSubjectMaintenance() {
         return "/maintenance/subject-maintenance";
     }
@@ -135,12 +133,17 @@ public class PrivateTemplateControllers {
         return "/maintenance/fees-management";
     }
 
+    @GetMapping("/maintenance/distributable-management")
+    public String getDistributableManagement() {
+        return "/maintenance/distributable-management";
+    }
+
     @GetMapping("/maintenance/scholarship")
     public String getScholarship() {
         return "/maintenance/scholarship-maintenance";
     }
 
-
+    
     // these are for reports pages
 
     @GetMapping("/reports/academic-resources")
@@ -168,12 +171,31 @@ public class PrivateTemplateControllers {
         return "/reports/student-reports";
     }
 
-    @GetMapping("/reports/teacher")
+    @GetMapping("/reports/student/{studentName}")
+    public String getStudentReportSpecific() {
+        return "/reports/student-report-specific";
+    }
+
+    @GetMapping("/reports/user-and-staff")
     public String getTeacherReports() {
-        return "/reports/teacher-reports";
+        return "/reports/user-and-staff-reports";
+    }
+
+    @GetMapping("/reports/user-and-staff/{studentName}")
+    public String getTeacherReportsSpecific() {
+        return "/reports/user-and-staff-specific";
+    }
+
+    @GetMapping("/reports/scholarship")
+    public String getDiscountReports() {
+        return "/reports/discount-reports";
     }
 
     // these are for accounts pages
+    @GetMapping("/accounts/student-accounts")
+    public String getStudentAccountsPage() {
+        return "/accounts/student-accounts";
+    }
 
     @GetMapping("/accounts/verify-accounts")
     public String getAccountVerificationPage() {
@@ -241,5 +263,14 @@ public class PrivateTemplateControllers {
     @GetMapping("/schedule/sched-board/{secNumber}")
     public String getSchedBoard() {
         return "/schedule/sched-board";
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword(){
+        return "password-reset/forgot-password";
+    }
+    @GetMapping("/reset-password/{token}")
+    public String resetPassword(){
+        return "password-reset/reset-password";
     }
 }

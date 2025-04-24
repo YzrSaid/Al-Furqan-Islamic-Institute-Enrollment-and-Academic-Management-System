@@ -7,6 +7,7 @@ import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Repositories.StudentTransReqRepo;
 import com.example.testingLogIn.Repositories.TransfereeReqRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -32,6 +33,7 @@ public class TransferReqServices {
             return transfereeReqRepo.findByIsNotDeletedTrue();
         return transfereeReqRepo.findByIsNotDeletedFalse();
     }
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public int addNewRequirement(String requirementName){
         if(transfereeReqRepo.findUsingName("%"+requirementName.toLowerCase()+"%").orElse(null) == null){
             transfereeReqRepo.save(TransfereeRequirements.builder()
@@ -43,6 +45,7 @@ public class TransferReqServices {
 
         return 1;
     }
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean deleteRequirement(int requirementId){
         TransfereeRequirements req = transfereeReqRepo.findById(requirementId).orElseThrow(NullPointerException::new);
         req.setNotDeleted(false);
@@ -62,38 +65,15 @@ public class TransferReqServices {
     }
 
     // for manipulating the requirements complied by the transferee student
+    @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public boolean addingStudentRequirements(int studentId, List<Integer> requirementsId){
         Student student = studentRepo.findById(studentId).orElseThrow(NullPointerException::new);
-        List<StudentTransfereeRequirements> compiledReqs = studentTransReqRepo.findStudentRecords(studentId);
-        Map<Integer, StudentTransfereeRequirements> compiledReqIds = compiledReqs.stream()
-                .collect(Collectors.toMap(
-                        rec -> rec.getRequirement().getId(),
-                        rec -> rec
-                ));
-
-        for(Integer i: requirementsId){
-            StudentTransfereeRequirements str;
-            if(compiledReqIds.containsKey(i)){
-                str = compiledReqIds.get(i);
-                str.setNotDeleted(true);
-                compiledReqIds.remove(i);}
-            else{
-                TransfereeRequirements req = transfereeReqRepo.findById(i).orElse(null);
-                assert req != null;
-                str = StudentTransfereeRequirements.builder()
-                                .student(student)
-                                .requirement(req)
-                                .isNotDeleted(true)
-                                .build();
-            }
-            studentTransReqRepo.save(str);
-        }
-        compiledReqIds.values().iterator().forEachRemaining(
-                rec ->{
-                    rec.setNotDeleted(false);
-                    studentTransReqRepo.save(rec);
-                }
-        );
+        List<TransfereeRequirements> transfereeRequirements = transfereeReqRepo.findByIsNotDeletedTrue();
+        transfereeRequirements.forEach(requirement ->{
+            StudentTransfereeRequirements studReq = studentTransReqRepo.findStudentRecord(studentId,requirement.getId()).orElse(new StudentTransfereeRequirements(student,requirement));
+            studReq.setNotDeleted(requirementsId.contains(requirement.getId()));
+            studentTransReqRepo.save(studReq);
+        });
         return true;
     }
 

@@ -3,6 +3,7 @@ package com.example.testingLogIn.Repositories;
 import com.example.testingLogIn.CustomObjects.TotalPaid;
 import com.example.testingLogIn.Models.PaymentRecords;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,9 +57,9 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
             "WHERE stud.studentId = :studentId "+
             "AND rp.id = :reqPaymentId "+
             "AND (:semId IS NULL OR s.sySemNumber = :semId)")
-    Double totalPaidForSpecificFee(@Param("studentId") int studentId,
-                                   @Param("reqPaymentId") int reqPaymentId,
-                                   @Param("semId") Integer semId);
+    Optional<Double> totalPaidForSpecificFee(@Param("studentId") int studentId,
+                                             @Param("reqPaymentId") int reqPaymentId,
+                                             @Param("semId") Integer semId);
 
     @Query("SELECT pr from PaymentRecords pr "+
             "JOIN pr.transaction pt "+

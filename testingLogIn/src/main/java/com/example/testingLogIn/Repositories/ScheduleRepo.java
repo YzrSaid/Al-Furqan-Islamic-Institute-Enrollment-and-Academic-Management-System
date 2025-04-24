@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
+import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.CustomObjects.SubjectSectionCount;
 import com.example.testingLogIn.Models.Schedule;
 import java.time.DayOfWeek;

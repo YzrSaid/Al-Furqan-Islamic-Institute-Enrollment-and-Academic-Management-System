@@ -41,6 +41,7 @@ public class StudentDTO {
     private String guardianName;
     private String guardianAddress;
     private String guardianContactNum;
+    private String guardianOccupation;
 
     private String status;
     private boolean isNew;
@@ -54,4 +55,5 @@ public class StudentDTO {
     private String lastMadrasaYearCompleted;
     private String madrasaAddress;
     private List<Integer> transfereeRequirements;
+    private List<Integer> discountsAvailed;
 }

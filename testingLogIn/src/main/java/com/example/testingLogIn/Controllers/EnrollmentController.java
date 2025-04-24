@@ -1,16 +1,10 @@
 package com.example.testingLogIn.Controllers;
 
-import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
+import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
-import com.example.testingLogIn.CustomObjects.EnrollmentPaymentView;
-import com.example.testingLogIn.ModelDTO.StudentDTO;
-import com.example.testingLogIn.Models.Enrollment;
-import com.example.testingLogIn.PagedResponse.EnrollmentDTOPage;
-import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Services.EnrollmentServices;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -30,27 +24,28 @@ public class EnrollmentController {
     @PostMapping("/add/student/{studentId}")
     public ResponseEntity<String> addExistingStudentToListing(@PathVariable Integer studentId){
         try{
-            if(enrollmentService.addStudentToListing(studentId))
+            if(enrollmentService.addStudentToListing(studentId,null))
                 return new ResponseEntity<>("Student Successfully Added To Listing",HttpStatus.OK);
             else
-                return new ResponseEntity<>("Student Is Already In Enrollment Process",HttpStatus.CONFLICT);
+                return new ResponseEntity<>("Enrollment is now closed. Check back next semester!",HttpStatus.CONFLICT);
         }catch(NullPointerException npe){
-            return new ResponseEntity<>("Student Record Not Found",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No currently active semester",HttpStatus.NOT_FOUND);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("Transaction Failed",HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping("/all/paged/{status}")
-    public ResponseEntity<EnrollmentDTOPage> getEnrollmentRecordsByStatusPage(@PathVariable String status,
+    public ResponseEntity<PagedResponse> getEnrollmentRecordsByStatusPage(@PathVariable String status,
                                                                               @RequestParam(required = false,defaultValue = "1") Integer pageNo,
                                                                               @RequestParam(required = false,defaultValue = "10") Integer pageSize,
                                                                               @RequestParam(required = false) String sortBy,
                                                                               @RequestParam(required = false) String search){
         try{
             return new ResponseEntity<>(enrollmentService.getAllEnrollmentPage(status,pageNo,pageSize,sortBy,search),HttpStatus.OK);
-        }catch(Exception e){
-            e.printStackTrace();
+        }catch (NullPointerException npe){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
@@ -66,7 +61,7 @@ public class EnrollmentController {
     }
     
     @GetMapping("/paymentView/{enrollmentId}")
-    public ResponseEntity<EnrollmentPaymentView> getEnrollmentPaymentView(@PathVariable int enrollmentId){
+    public ResponseEntity<StudentPaymentForm> getEnrollmentPaymentView(@PathVariable int enrollmentId){
         try{
             return new ResponseEntity<>(enrollmentService.getStudentPaymentStatus(enrollmentId),HttpStatus.OK);
         }catch(Exception e){
@@ -98,6 +93,7 @@ public class EnrollmentController {
             return switch (result) {
                 case 1 -> new ResponseEntity<>("Enrollment Record Not Found",HttpStatus.NOT_FOUND);
                 case 2 -> new ResponseEntity<>("Section Record Not Found",HttpStatus.NOT_FOUND);
+                case 3 -> new ResponseEntity<>("Student is not qualified to the Grade Level",HttpStatus.NOT_FOUND);
                 default -> new ResponseEntity<>("Enrollment Record Successfully Moved To Payment",HttpStatus.OK);
             };
         }catch(Exception e){
@@ -125,7 +121,9 @@ public class EnrollmentController {
     public ResponseEntity<String> cancelEnrollment(@PathVariable int enrollmentId,
                                                    @RequestParam(required = false,defaultValue = "false") Boolean undo){
         try{
-            boolean result = enrollmentService.cancelEnrollment(enrollmentId,undo);
+            enrollmentService.cancelEnrollment(enrollmentId,undo);
+            if(undo)
+                return new ResponseEntity<>("Enrollment cancellation has been successfully undone",HttpStatus.OK);
             return new ResponseEntity<>("Enrollment Cancelled Successfully",HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.MultipleInteger;
 import com.example.testingLogIn.Models.TransfereeRequirements;
 import com.example.testingLogIn.Services.TransferReqServices;
 import lombok.AllArgsConstructor;
@@ -75,17 +76,17 @@ public class TransfereeRequirementsController {
             return new ResponseEntity<>("Server conflict. Contact Inoori Network",HttpStatus.CONFLICT);
         }
     }
-    @PostMapping("/add/student-requirements")
-    public ResponseEntity<String> addStudentTransfereeRequirements(@RequestBody StudentRequirementsSubmission submitted){
-        if(submitted == null)
-            return new ResponseEntity<>("Submitted an invalid information",HttpStatus.NOT_ACCEPTABLE);
+    @PostMapping("/add/student-requirements/{studentId}")
+    public ResponseEntity<String> addStudentTransfereeRequirements(@PathVariable int studentId,@RequestBody MultipleInteger ids){
         try{
-            transferReqServices.addingStudentRequirements(submitted.getStudentId(),submitted.getRequirementIds());
-            return new ResponseEntity<>("Student transferee requirements successfully added",HttpStatus.OK);
+            transferReqServices.addingStudentRequirements(studentId,ids.getIds());
+            return new ResponseEntity<>("Student transferee requirements updated successfully",HttpStatus.OK);
         }catch (NullPointerException npe){
+            npe.printStackTrace();
             return new ResponseEntity<>("Student record not found",HttpStatus.NOT_FOUND);
         }
         catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>("Server error. Contact Inoori Network",HttpStatus.CONFLICT);
         }
     }

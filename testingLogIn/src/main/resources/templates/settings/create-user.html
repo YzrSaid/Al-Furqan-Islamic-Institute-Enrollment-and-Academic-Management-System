@@ -1,17 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
+<!--<script th:src="@{/js/script.js}"></script>-->
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
 
@@ -20,118 +12,124 @@
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
-    <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
+    <div id="content" class="dashboard-container">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="text-link" id="breadcrumb-container">
-            <h4>Create User</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/settings/create-user">Settings - Create User</a>
-        </div>
-        <div class="create-user-container">
-            <div class="form-container">
-                <form action="/user/register" method="post" id="signup-form-large">
-                    <div class="input-group-half">
-                        <div class="input-group">
-                            <input class="input-group-input" type="text" name="firstname" id="firstname" placeholder=""
-                                required>
-                            <label class="input-group-label" for="firstname">First Name</label>
-                        </div>
-                        <div class="input-group">
-                            <input class="input-group-input" type="text" name="lastname" id="lastname" placeholder="">
-                            <label class="input-group-label" for="lastname">Last Name</label>
-                        </div>
+            <!-- Modal for confirmation -->
+            <div id="confirmationModal" class="modal">
+                <div class="modal-content scroll-lock">
+                    <p id="modalText"></p>
+                    <div class="modal-buttons">
+                        <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                        <button type="button" class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                     </div>
-                    <div class="input-group">
-                        <input class="input-group-input" type="email" name="username" id="email" placeholder=""
-                            required>
-                        <label class="input-group-label" for="email">Email</label>
-                    </div>
-                    <div class="input-group-half">
-                        <div class="input-group">
-                            <div class="account-type-div">
-                                <label class="normal-label" for="gender">Gender</label>
-                                <select name="gender" id="gender">
-                                    <option value="">Choose a gender</option>
-                                    <option value="MALE">Male</option>
-                                    <option value="FEMALE">Female</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <div class="account-type-div">
-                                <label class="normal-label" for="account-type">Account Type</label>
-                                <select name="role" id="account-type">
-                                    <option value="" disabled selected>Choose</option>
-                                    <!-- <option value="ADMIN">Admin</option> -->
-                                    <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
-                                    <option value="TEACHER">Teacher</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <div class="account-type-div">
-                            <label class="normal-label" for="address">Birthdate</label>
-                            <input type="date" id="birthdate" name="birthdate" required>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <input class="input-group-input" type="text" name="address" id="address" placeholder=""
-                            required>
-                        <label class="input-group-label" for="address">Address</label>
-                    </div>
-
-                    <div class="input-group">
-                        <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber"
-                            placeholder="" required>
-                        <label class="input-group-label" for="contactNumber">Contact Number</label>
-                    </div>
-                    <div class="input-group">
-                        <input class="input-group-input" type="password" name="password" id="password" required
-                            placeholder=" ">
-                        <label class="input-group-label" for="password">Password</label>
-                        <img th:src="@{/images/icons/hidden-pass.png}" alt="Show Password" class="toggle-password"
-                            id="togglePassword">
-                    </div>
-
-                    <button type="submit" id="login-btn">Sign Up</button>
-                </form>
-            </div>
-        </div>
-        <!-- Modal for confirmation -->
-        <div id="confirmationModal" class="modal">
-            <div class="modal-content">
-                <p id="modalText"></p>
-                <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
 
+        <div class="create-user-container">
+            <!-- Header Section (Logo and Title) -->
+            <div class="school-logo-container">
+                <img th:src="@{/images/al-furqanlogo.jpg}" alt="logo"> <br>
+            </div>
 
+            <h4>Registration Form</h4>
+
+            <!-- Form Section -->
+            <form id="signup-form-large">
+                <label class="normal-label" for="name">Full Name</label>
+                <div class="input-group-half">
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="firstname" id="firstname"
+                            placeholder="First Name" required>
+                    </div>
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="lastname" id="lastname"
+                            placeholder="Last Name">
+                    </div>
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="middlename" id="middlnamee"
+                            placeholder="Optional">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input class="input-group-input" type="email" name="username" id="email" placeholder="" required>
+                    <label class="input-group-label" for="email">Email</label>
+                </div>
+
+                <div class="input-group">
+                    <div class="account-type-div">
+                        <label class="normal-label" for="gender">Gender</label>
+                        <select name="gender" id="gender" required>
+                            <option value="">Choose a gender</option>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+                    <div class="account-type-div">
+                        <label class="normal-label" for="birthdate">Birthdate</label>
+                        <input type="date" id="birthdate" name="birthdate" required>
+                    </div>
+
+                </div>
+
+
+                <div class="input-group">
+                    <div class="account-type-div">
+                        <label class="normal-label" for="role">Role</label>
+                        <select name="role" id="role" required>
+                            <option value="TEACHER">Teacher</option>
+                            <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input class="input-group-input" type="text" name="address" id="address" placeholder="" required>
+                    <label class="input-group-label" for="address">Address</label>
+                </div>
+
+                <div class="input-group">
+                    <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber" placeholder=""
+                        required>
+                    <label class="input-group-label" for="contactNumber">Contact Number</label>
+                </div>
+
+                <div class="input-group">
+                    <input class="input-group-input" type="password" name="password" id="password" required
+                        placeholder=" ">
+                    <label class="input-group-label" for="password">Password</label>
+                </div>
+
+                <button type="submit" id="login-btn">Sign Up</button>
+            </form>
+        </div>
+
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
+        
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="errorMessage"></p>
                 <div class="modal-buttons">
                     <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
                 </div>
             </div>
         </div>
-
-        <!-- Success modal -->
-        <div id="successModal"
-            style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-     background: #218838; color: #ffffff; font-weight: bolder; padding: 30px; border-radius: 7px; text-align: center; z-index: 10000;">
-            <p id="successModalMessage"></p>
-        </div>
     </div>
-    <script th:src="@{/js/script.js}"></script>
 </body>
 <script>
     document.getElementById('signup-form-large').addEventListener('submit', function (event) {
@@ -140,8 +138,8 @@
         const form = event.target; // Define 'form' from the event target
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries()); // Convert FormData to JSON
-
-        fetch(form.action, { // Now 'form' is correctly defined
+        //console.log(data);
+        fetch("/user/register", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -160,7 +158,7 @@
                 }
             })
             .catch(error => {
-                showErrorModal("❌ An unexpected error occurred. Please try again.");
+                showErrorModal(error.message);
             });
     });
 

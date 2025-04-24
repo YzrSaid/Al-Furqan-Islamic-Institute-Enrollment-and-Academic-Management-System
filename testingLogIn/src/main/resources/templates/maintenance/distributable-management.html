@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <div class="text-link">
+                <h4>Distributable Management</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/maintenance/distributable-management">Maintenance - Distributable Management</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+                        
+                    </div>
+                    <!-- Add Fees Management Button -->
+                    <div class="add-something-btn-container">
+                        <button type="button" class="btn-confirm" id="addAFeeButton"
+                            data-open-modal="distributableManagementModal" title="Click to Add New Distributable">Add New Distributable</button>
+                    </div>
+                    </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+         <div class="table-wrapper">
+        <table id="lamesa" class="distributable-table main-table">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Grade Level</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table> <br> <br>
+        </div>
+
+          <!-- Modal for confirmation -->
+          <div id="confirmationModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="modalText"></p>
+                <p id="security-message" class="hidden">To continue, enter the admin password before proceeding.</p>
+
+                <div class="input-group hidden" id="admin-pass-form">
+                  <label for="adminPassword">Admin Password:</label>
+                  <input type="password" autocomplete="new-password" id="adminPassword" placeholder="Enter admin password" />
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
+
+        <!-- Modal for adding fees -->
+        <div id="distributableManagementModal" class="fees-management-modal modal">
+            <div class="fees-management-modal-content scroll-lock">
+                <h2>Add New Item</h2>
+                <form method="post" action="" id="feesManagementForm">
+                    <div class="payment-name-row">
+                        <label for="paymentName">Item Name:</label>
+                    </div>
+
+                    <!-- Input field below -->
+                    <input type="text" id="paymentName">
+                    <br><br>
+
+                    <h6>Grade Levels Required by this Payment:</h6>
+                    <div class="payment-container">
+                        <!-- Grade level checkboxes or inputs go here -->
+                    </div> <br>
+
+                    <div class="full-width-row">
+                        <!-- Checkbox beside the label -->
+                        <div>
+                            <label for="label">Distribute this item to current semester:</label><input type="checkbox" id="applyThisSem">
+                        </div>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="addDistributable"
+                                data-message="Are you sure you want to save this Fee?" id="confirmFee"
+                                data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="distributableManagementModal">Cancel</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <!-- Modal for editing fees -->
+        <div id="distributableManagementEditModal" class="fees-management-edit-modal modal">
+            <div class="fees-management-edit-modal-content scroll-lock">
+                <h2>Fee Information</h2>
+                <form method="post" action="" id="feesManagementForm">
+                    <label for="paymentName">Payment Name:</label>
+                    <input type="text" id="paymentNameEdit">
+                    <br><br>
+
+                    <h6>Grade Levels Required by this Payment:</h6>
+
+                    <!-- This container will be used for editing payments -->
+                    <div class="payment-container-edit">
+                        <!-- Dynamically populated checkboxes will go here -->
+                    </div>
+                    <div class="full-width-row">
+                        <!-- Checkbox beside the label -->
+                        <div>
+                            Distribute this item to current semester: <input type="checkbox" id="applyThisSemEdit">
+                        </div>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" id="editFeeButton" data-require-password="true" data-action="editDistributable"
+                            data-message="Are you sure you want to update this fee?">Edit</button>
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="distributableManagementEditModal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    // Function to enable inputs and checkboxes
+    window.enableFormInputs = function () {
+        // Enable all inputs, selects, checkboxes, and radio buttons
+        document.querySelectorAll('input, select').forEach((input) => {
+            if (input.tagName === "SELECT") {
+                input.disabled = false; // Enable selects
+            } else if (input.type === "checkbox" || input.type === "radio") {
+                input.disabled = false; // Enable checkboxes and radio buttons
+            } else {
+                input.readOnly = false; // Set text-based inputs as editable
+                input.disabled = false; // Enable other inputs like text, number, password, etc.
+            }
+        });
+    }
+    // Function to disable inputs and checkboxes after they are populated
+    window.disableFormInputs = function () {
+        // Disable all inputs, selects, checkboxes, and radio buttons
+        document.querySelectorAll('input, select').forEach((input) => {
+            if (input.tagName === "SELECT") {
+                input.disabled = true; // Disable selects
+            } else if (input.type === "checkbox" || input.type === "radio") {
+                input.disabled = true; // Disable checkboxes and radio buttons
+            } else {
+                input.readOnly = true; // Set other text-based inputs as readonly
+                input.disabled = true; // Disable other inputs like text, number, password, etc.
+            }
+        });
+    }
+    document.getElementById("addAFeeButton").addEventListener("click", function () {
+        fetchGradeLevels();
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchPayments();
+    });
+    function fetchPayments() {
+        fetch("/distributable/all")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                populateTable(data);
+            })
+            .catch(error => {
+               // console.error("Error fetching payments:", error);
+            });
+    }
+    function populateTable(distributables) {
+        //console.log(distributables);
+        const tableBody = document.querySelector("#lamesa tbody");
+        tableBody.innerHTML = "";
+
+        distributables.forEach(distributable => {
+            const row = document.createElement("tr");
+
+            //console.log(distributable);
+
+            row.innerHTML = `
+            <td>${distributable.itemName}</td>
+            <td>${distributable.gradeLevelList.map(gl => `${gl.levelName}`).join(", ")}</td>
+            <td>
+                <div class="action-container">
+                    <div class="action">
+
+                    <img class="edit-fee" data-id="${distributable.itemId}" data-name="${distributable.itemName}"
+                    data-grade-levels="${distributable.gradeLevelList.map(gl => `${gl.levelName}`).join(",")}"
+                    data-is-active = "${distributable.currentlyActive}"
+                    data-open-modal="distributableManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon" title="Click to Edit Distributable">
+                    
+                        <img data-open-modal="confirmationModal"  data-name="${distributable.itemId}" data-require-password="true" data-action="deleteDistributable"
+                                     data-message="Are you sure you want to delete this fee?" 
+                                     src="/images/icons/bin.png" alt="grade-level-delete-icon" title="Click to Delete">
+                        
+                        </div>
+                    
+                </div>
+            </td>
+        `;
+
+            tableBody.appendChild(row);
+        });
+    }
+    async function addDistributable() {
+        const paymentName = document.getElementById("paymentName").value.trim();
+        if (!paymentName) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        const selectedGradeLevels = Array.from(document.querySelectorAll(".payment input[type='checkbox']:checked"))
+            .map(checkbox => checkbox.value);
+        alert(selectedGradeLevels);
+        if (selectedGradeLevels.length === 0) {
+            alert("Please select at least one grade level.");
+            return;
+        }
+
+        const requestData = {
+            itemName: paymentName,
+            currentlyActive:document.getElementById("applyThisSem").checked,
+            gradeLevelIds: selectedGradeLevels
+        };
+       //console.log(requestData);
+        try {
+            const response = await fetch("/distributable/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            const responseData = await response.text();
+
+            if (response.ok) {
+                showSuccessModal("✅ Success: New distributable item has been added successfully!");
+            }
+        } catch (error) {
+            showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
+        }
+    }
+
+    function editDistributable() {
+        const paymentId = document.getElementById("distributableManagementEditModal").dataset.id;
+        const paymentName = document.getElementById("paymentNameEdit").value; // Get the updated payment name
+        const isCurrentlyActiveChecked = document.getElementById("applyThisSemEdit").checked;
+        // Get the selected grade levels
+        const selectedGradeLevels = [];
+        document.querySelectorAll("input[name='gradeLevels']:checked").forEach(checkbox => {
+            selectedGradeLevels.push(checkbox.value); // Add the selected grade level to the array
+        });
+        // Prepare the data to send in the request
+        const updatedFeeData = {
+            itemId: paymentId,
+            itemName: paymentName,
+            gradeLevelIds: selectedGradeLevels,
+            currentlyActive : isCurrentlyActiveChecked
+        };
+       // console.log(updatedFeeData);
+       fetch("/distributable/update", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedFeeData),
+        })
+        .then(response => {
+            if (!response.ok) {
+                // Parse error message from server (assuming it returns text/JSON)
+                return response.text().then(errorMessage => {
+                    throw new Error(errorMessage || "Distributable update failed");
+                });
+            }
+            return response.text(); // Only parse response if successful
+        })
+        .then(data => {
+            showSuccessModal(data); // Only runs for successful responses
+        })
+        .catch(error => {
+            showErrorModal(error.message || "❌ An error occurred. Please try later.");
+        });
+    }
+
+    let selectedPaymentName;
+
+    document.querySelector("#lamesa tbody").addEventListener("click", function (event) {
+        // Check if the clicked element is a delete button (image with data-action="deleteFee")
+        if (event.target && event.target.getAttribute("data-action") === "deleteDistributable") {
+            // Capture the payment name from the data-name attribute
+            selectedPaymentName = event.target.getAttribute("data-name");
+        }
+    });
+
+    function deleteDistributable() {
+        fetch(`/distributable/delete/${selectedPaymentName}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                showSuccessModal("✅ Success: Distributable item record has been deleted successfully!");
+            }else if (response.not_found) {
+                showErrorModal(`❌ Distributable record not found`);
+            }else{
+                showErrorModal(`❌ Server conflict`);
+            }
+        })
+        .catch(error => {
+            //console.error(error);
+            showErrorModal("❌ An error occurred while deleting the payment. Please try again later.");
+        });
+    }
+
+
+    function fetchGradeLevels() {
+        fetch("/gradelevel/all")
+            .then(response => response.json())
+            .then(data => {
+                const paymentContainer = document.querySelector(".payment-container");
+                paymentContainer.innerHTML = "";
+
+                data.forEach(gradeLevel => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("payment");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `grade-${gradeLevel.levelId}`;
+                    checkbox.name = "gradeLevels";
+                    checkbox.value = gradeLevel.levelId;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `grade-${gradeLevel.levelId}`;
+                    label.textContent = gradeLevel.levelName;
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    paymentContainer.appendChild(paymentDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
+    let selectedPaymentId;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.body.addEventListener("click", function (event) {
+            const target = event.target.closest("[data-open-modal='distributableManagementEditModal']"); // Find closest modal trigger
+
+            if (target) {
+                selectedPaymentId = target.getAttribute("data-id"); // Get the ID
+                const paymentName = target.getAttribute("data-name"); // Get the payment name
+                const gradeLevelNames = target.getAttribute("data-grade-levels").split(","); // Get the grade level names (as an array)
+                document.getElementById("paymentNameEdit").value = paymentName;
+
+                // Store the ID in the form
+                document.getElementById("distributableManagementEditModal").dataset.id = selectedPaymentId;
+                const isChecked = target.getAttribute("data-is-active") === true || target.getAttribute("data-is-active") === "true";
+                document.getElementById("applyThisSemEdit").checked = isChecked;
+
+                populateGradeLevelsForEdit(gradeLevelNames);
+            }
+        });
+    });
+
+    function populateGradeLevelsForEdit(gradeLevelNames, isUpdateMode = false) {
+        fetch("/gradelevel/all")
+            .then(response => response.json())
+            .then(gradeLevels => {
+                const paymentContainer = document.querySelector(".payment-container-edit");
+                paymentContainer.innerHTML = ""; // Clear previous data
+
+                gradeLevels.forEach(gradeLevel => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("payment");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `grade-${gradeLevel.levelId}`;
+                    checkbox.name = "gradeLevels";
+                    checkbox.value = gradeLevel.levelId;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `grade-${gradeLevel.levelId}`;
+                    label.textContent = gradeLevel.levelName;
+
+                    // Check if the grade level is selected for the current fee and mark the checkbox
+                    if (gradeLevelNames && gradeLevelNames.includes(gradeLevel.levelName)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    paymentContainer.appendChild(paymentDiv);
+                });
+
+                // After populating the checkboxes, now enable/disable form inputs based on the mode
+                if (isUpdateMode) {
+                    enableFormInputs();
+                } else {
+                    disableFormInputs();
+                }
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
+</script>
+
+</html>

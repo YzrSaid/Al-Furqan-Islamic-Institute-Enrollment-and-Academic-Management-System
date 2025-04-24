@@ -1,43 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link" id="breadcrumb-container">
-            <h4>Payment</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/enrollment/payment">Enrollment - Payment</a>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                    <button onclick="getOnPayments()" class="search-btn">Search</button>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Payment</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/enrollment/payment" title="You're currently in this page.">Enrollment - Payment</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                        <button type="button" onclick="getOnPayments(1)" class="search-btn">Search</button>
+                    </div>
                 </div>
                 <div class="sort-container">
-                    <select name="sort" onchange="getOnPayments()" id="sort-select" class="sort-select">
+                    <select name="sort" onchange="getOnPayments(1)" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
                         <option value="StudentId">Student Id</option>
                         <option value="StudentName">Student Name</option>
@@ -47,32 +42,41 @@
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="realginnas" class="payment-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Enrolling To</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="realginnas" class="payment-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Enrolling To</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
         <div class="pagination-container">
-            <div id="pagination" class="pagination">
-                <button id="prevPage" disabled>&laquo;</button>
-                <div id="pageNumbers"></div>
-                <button id="nextPage">&raquo;</button>
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
             </div>
         </div>
 
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
@@ -83,226 +87,204 @@
 
         <!-- Modal for listOfPaymentsModal -->
         <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
-            <div class="list-of-payments-modal-content">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="listOfPaymentsModal">&times;</span>
+            <div class="list-of-payments-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h2>List of Payments</h2>
 
-                <h2>List of Payments</h2>
+                    <div class="half-width">
+                        <label for="student-id">Student ID:</label>
+                        <h6 id="student-id"></h6>
+                    </div>
+                    <div class="half-width">
+                        <label for="student-name">Student Name:</label>
+                        <h6 id="student-name"></h6>
+                    </div> <br>
 
-                <div class="half-width">
-                    <label for="student-id">Student ID:</label>
-                    <h6 id="student-id"></h6>
+                    <!-- List of Payments Table -->
+                    <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Req. Amount</th>
+                                <th>Amount Paid</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                    <!-- Add Payment button -->
+                    <div class="modal-buttons" id="add-payment-btn">
+                        <button type="button" class="btn-confirm" id="add-payment" data-open-modal="addPaymentModal">Add
+                            Payment</button>
+                        <button type="button" class="btn-cancel" data-close-modal="listOfPaymentsModal">Close</button>
+                    </div>
                 </div>
-                <div class="half-width">
-                    <label for="student-name">Student Name:</label>
-                    <h6 id="student-name"></h6>
-                </div> <br>
-
-                <!-- List of Payments Table -->
-                <table id="table-ni-kharl" class="view-list-of-payments-table">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Req. Amount</th>
-                            <th>Amount Paid</th>
-                            <th>Balance</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-
-                <!-- Add Payment button -->
-                <div class="action" id="add-payment-btn">
-                    <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
-                        Payment</button>
-                </div>
-
             </div>
         </div>
         <!-- Receipt Modal -->
-        <div id="receiptModal" class="receipt-modal modal">
-            <div class="printable-area">
-                <div class="receipt-modal-content">
-                    <!-- Close Button -->
-                    <span class="close-modal no-print" data-close-modal="receiptModal">&times;</span>
-
-                    <!-- Receipt Header -->
-                    <div class="header-container-payment">
-                        <div class="left-header">
-                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
-                            <div class="school-info">
-                                <h3>AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
-                                <p>Talabaan, Zamboanga City</p>
-                                <p>Phone #: 09358268263</p>
-                            </div>
-                        </div>
-
-                        <div class="right-header">
-                            <div class="receipt-box">
-                                <h2>RECEIPT</h2>
-                            </div>
-                            <p>Semester & SY: <strong>1ST SEM | 2021-2022</strong></p>
+    <div id="receiptModal" class="receipt-modal modal">
+        <div class="printable-area">
+            <div class="receipt-modal-content scroll-lock">
+                <!-- Receipt Header -->
+                <div class="header-container-payment">
+                    <div class="left-header">
+                        <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        <div class="school-info">
+                            <h3>AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
+                            <p>Talabaan, Zamboanga City</p>
+                            <p>Phone #: 09358268263</p>
                         </div>
                     </div>
 
-                    <div class="separator-line"></div>
-
-                    <!-- Student Info -->
-                    <div class="payment-student-info-container" id="receipt-student-info">
-                        <div class="payment-student-info-row">
-                            <label for="receipt-student-id">Student ID:</label>
-                            <input type="text" id="receipt-student-id" placeholder="">
+                    <div class="right-header">
+                        <div class="receipt-box">
+                            <h2>RECEIPT</h2>
                         </div>
-
-                        <div class="payment-student-info-row">
-                            <label for="receipt-date">Date:</label>
-                            <input type="date" id="receipt-date">
-                        </div>
-
-                        <div class="payment-student-info-row">
-                            <label for="receipt-student-name">Student Name:</label>
-                            <input type="text" id="receipt-student-name" placeholder="">
-                        </div>
-
-                        <div class="payment-student-info-row">
-                            <label for="receipt-number">Receipt Number:</label>
-                            <input type="text" id="receipt-number" placeholder="">
-                        </div>
-                    </div>
-
-
-                    <!-- Payment Table -->
-                    <div id="receipt-table" class="receipt-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ITEM #</th>
-                                    <th>DESCRIPTION</th>
-                                    <th>AMOUNT</th>
-                                </tr>
-                            </thead>
-                            <tbody id="receipt-items">
-                                <tr>
-                                    <td>1</td>
-                                    <td>Tuition Fee</td>
-                                    <td>800.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Collected By Section -->
-                    <div id="staff-receiver" class="collector-info-container">
-                        <h6>Received/Collected By:</h6>
-                        <div class="collector-name-container">
-                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
-                        </div>
-                    </div>
-
-                    <!-- Print Button -->
-                    <div class="print-button">
-                        <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                        <p>Semester & SY: <strong>1ST SEM | 2021-2022</strong></p>
                     </div>
                 </div>
-            </div>
-        </div>
 
+                <div class="separator-line"></div>
 
-
-        <!-- Modal for addPaymentModal-->
-        <div id="addPaymentModal" class="add-payment-modal modal">
-            <div class="printable-area">
-                <div class="add-payment-modal-content">
-                    <!-- Close Button -->
-                    <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
-                    <div class="header-container">
-                        <h3>Payment Form</h3>
-                    </div> <br>
-
-                    <div class="payee-info-container" id="payee-info">
-                        <div class="half-payee">
-                            <div>
-                                <label for="student-id" id="label-id">Student ID:</label>
-                                <input type="text" id="payee-id" readonly>
-                            </div>
-                            <div>
-                                <label for="Date">Date:</label>
-                                <input type="date" id="date">
-                            </div>
+                <!-- Student Info -->
+                <div class="student-info-container">
+                    <div class="payment-student-info-container">
+                        <div class="half-width">
+                            <label id="receipt-student-id-label">Student ID:</label>
+                            <input type="text" id="receipt-student-id" readonly>
                         </div>
 
-                        <div class="full-width">
-                            <label for="payee-name">Student Name:</label>
-                            <input type="text" id="payee-name" readonly>
-                        </div>
-                        <div class="half-width half-payee">
-                            <div>
-                                <label for="semester" id="label-sem">Semester:</label>
-                                <input th:value="${currentSem}" type="text" id="semester" readonly>
-                            </div>
-                            <div>
-                                <label for="school-year">S.Y.</label>
-                                <input th:value="${currentSY}" type="text" id="school-year" readonly>
-                            </div>
-                        </div>
-                        <div class="full-width amount-container">
-                            <label for="amount" id="label-amount">Amount:</label>
-                            <div class="input-wrapper">
-                                <span class="currency-symbol">₱</span>
-                                <input type="number" max="0" id="payment-amount" placeholder="0.00">
-                            </div>
+                        <div class="half-width">
+                            <label>Date:</label>
+                            <input type="date" id="receipt-date" readonly>
                         </div>
                     </div>
-                    <div class="payment-wrapper">
-                        <label>Payment For:</label>
-                        <div class="payment-container-group">
-                            <!-- <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div>
-                            <div class="payment-item">
-                                <input type="checkbox" id="" name="payment" value="payment">
-                                <label for="payment">Book</label>
-                            </div> -->
-                        </div> <br>
-                    </div>
+                    <div class="payment-student-info-container">
+                        <div class="half-width">
+                            <label id="receipt-student-name-label">Student Name:</label>
+                            <input type="text" id="receipt-student-name" readonly>
+                        </div>
 
-
-                    <div id="staff-receiver" class="collector-info-container">
-                        <h6>Received/Collected By:</h6>
-                        <div class="collector-name-container">
-                            <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                            <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        <div class="half-width">
+                            <label id="receipt-number-label">Receipt Number:</label>
+                            <input type="text" id="receipt-number" readonly>
                         </div>
                     </div>
+                </div>
 
+                <div id="receipt-table" class="receipt-table main-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ITEM #</th>
+                                <th>DESCRIPTION</th>
+                                <th>AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receipt-items">
+                            <!-- <tr>
+                                <td>1</td>
+                                <td>Tuition Fee</td>
+                                <td>1,000.00</td>
+                                <td>-200.00</td>
+                                <td>800.00</td>
+                            </tr> -->
+                            <!-- Additional rows will be inserted dynamically if needed -->
+                        </tbody>
+                    </table>
+                </div>
 
-                    <div class="modal-buttons payment-modal-buttons">
-                        <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                            data-open-modal="confirmationModal" data-action="savePayment"
-                            data-message="Are you sure you want to save this payment?">Save Payment
-                        </button>
+                <!-- Collected By Section -->
+                <div id="staff-receiver" class="collector-info-container">
+                    <h6>Received/Collected By:</h6>
+                    <div class="collector-name-container">
+                        <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                        <p id="position" th:text="${userRole}"></p>
                     </div>
+                </div>
 
+                <!-- Print Button -->
+                <div class="modal-buttons">
+                    <button type="button" data-close-modal="receiptModal" class="btn-cancel">Close</button>
+                    <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
                 </div>
             </div>
         </div>
     </div>
 
+
+
+    <!-- Modal for addPaymentModal-->
+    <div id="addPaymentModal" class="add-payment-modal modal">
+        <div class="add-payment-modal-content scroll-lock">
+            <div class="modal-body">
+                <div class="header-container">
+                    <h3>Payment Form</h3>
+                </div> <br>
+
+                <div class="payee-info-container" id="payee-info">
+                    <div class="student-form-group">
+                        <label for="payee-id">Student ID:</label>
+                        <input type="text" id="payee-id" readonly>
+
+                        <label for="Date">Date:</label>
+                        <input type="date" id="date">
+                    </div>
+
+                    <div class="student-form-group">
+                        <label for="payee-name">Name:</label>
+                        <input type="text" id="payee-name" readonly>
+                    </div>
+                    <div class="student-form-group">
+                        <label for="semester">Semester:</label>
+                        <input th:value="${currentSem}" type="text" id="semester" readonly>
+
+                        <label for="school-year">S.Y.</label>
+                        <input th:value="${currentSY}" type="text" id="school-year" readonly>
+                    </div>
+                    <div class="student-form-group">
+                        <label for="amount" id="label-amount">Amount:</label>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">₱</span>
+                            <input type="number" max="0" id="payment-amount" placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-wrapper">
+                    <h6>Payment For:</h6>
+                    <div class="payment-container-group">
+
+                    </div> <br>
+                </div>
+
+
+                <div id="staff-receiver" class="collector-info-container">
+                    <h6>Received/Collected By:</h6>
+                    <div class="collector-name-container">
+                        <input th:value="${userFullName}" type="text" readonly id="collector-name">
+                        <p id="position" th:text="${userRole}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-buttons payment-modal-buttons">
+                <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                    data-open-modal="confirmationModal" data-action="savePayment"
+                    data-message="Are you sure you want to save this payment?" disabled>Please select a particular
+                </button>
+
+                <button type="button" class="btn-cancel" id="payment-closer" data-close-modal="addPaymentModal">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+
     <!-- Error Modal -->
     <div id="errorModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content scroll-lock">
             <p id="errorMessage"></p>
             <div class="modal-buttons">
                 <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
@@ -317,20 +299,21 @@
     <div id="successModal">
         <p id="successModalMessage"></p>
     </div>
-   
+
     <script>
         document.addEventListener("click", async function (event) {
-            const addButton = event.target.closest('.add-payment-btn');
-
+            const addButton = event.target.closest('#add-payment');
+            const paymentList = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
             if (addButton) {
                 // Retrieve student information
                 const studentName = document.querySelector("#student-name")?.textContent?.trim();
                 const studentId = document.querySelector("#student-id")?.textContent;
+                //console.log(studentId);
                 if (!studentName || !studentId) {
-                    console.error("Student information not found");
+                    //console.error("Student information not found");
                     return;
                 }
-
+                setUpPaymentForm();
                 // Populate modal fields
                 document.querySelector("#payee-name").value = studentName;
                 document.querySelector("#payee-id").value = studentId;
@@ -346,7 +329,7 @@
                     dateInput.value = formattedDate; // Correct local date
                     dateInput.readOnly = true;       // Make it readonly
                 } else {
-                    console.error("Date input field not found in the modal");
+                   // console.error("Date input field not found in the modal");
                 }
                 try {
                     let response = await fetch("/payments/grade/" + gradeLevelId);
@@ -356,7 +339,7 @@
 
                     let paymentList = document.getElementById("payment-list");
                     if (!paymentList) {
-                        console.error("Payment list dropdown not found");
+                        //console.error("Payment list dropdown not found");
                         return;
                     }
 
@@ -372,11 +355,16 @@
                         paymentList.appendChild(option);
                     });
                 } catch (error) {
-                    console.error("Error fetching payment list:", error);
+                    //console.error("Error fetching payment list:", error);
                 }
+            } else if (paymentList) {
+                const enrollmentId = paymentList.getAttribute("data-enrollment-id");
+                if (!enrollmentId) return //console.error("Enrollment Id Not Found");
+                gradeLevelId = paymentList.getAttribute("data-level-Id");
+                fetchPayments(enrollmentId);
             }
         });
-
+        var selectedStudent;
         function printReport() {
             window.print();
         }
@@ -401,13 +389,13 @@
                     }
                 }
             });
-            getOnPayments();
+            getOnPayments(1);
         });
         let currentPage = 0;
-        let currentPageSize = 0;
-        function getOnPayments(pageNo = 1, pageSize = 1) {
+        let totalItems = 0;
+        function getOnPayments(pageNo = 1) {
             currentPage = pageNo;
-            currentPageSize = pageSize;
+            const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
             const searchBy = document.getElementById("search-stud").value;
             const sortBy = document.getElementById("sort-select").value;
             fetch(`/enrollment/all/paged/PAYMENT?pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sortBy=${sortBy}`)
@@ -417,7 +405,7 @@
                 })
                 .then(data => {
                     const tableBody = document.querySelector("#realginnas tbody");
-                    if (!tableBody) return console.error("Table body not found");
+                    if (!tableBody) return //console.error("Table body not found");
 
                     tableBody.innerHTML = ""; // Clear previous data
 
@@ -425,7 +413,6 @@
                         tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
                         return;
                     }
-                    console.log(data);
                     data.content.forEach(rec => {
                         let row = document.createElement("tr");
 
@@ -433,6 +420,8 @@
                         let gradeSection = rec.student.currentGradeSection?.level?.levelName || "N/A";
                         let sectionToEnroll = rec.sectionToEnroll || "N/A";
                         let studentType = rec.student.new ? 'New Student' : 'Old Student';
+                        let displayStatus = rec.complete ? "COMPLETE" : "INCOMPLETE";
+                        let statusClass = getPaymentStatusClass(displayStatus);
 
                         let proceedBtn = rec.complete === true ? `
                             <a href="#"
@@ -445,7 +434,7 @@
                             </a>`
                             : `
                                 <a style="pointer-events: none; opacity: 0.5; color: gray;">
-                                   Bayarig minimum isa2 suss
+                                   Minimum payment is required to each fee/s
                                 </a>`;
 
                         // Build row content
@@ -456,72 +445,92 @@
                             <td>
                                 <div class="dropdown">
                                     <div class="status-container">
+                                        <div class="status ${statusClass}">${rec.complete ? "COMPLETE" : "INCOMPLETE"} </div>
                                         <button class="dropdown-status-btn">
                                             <i class="fas fa-chevron-down"></i>
                                         </button>
                                     </div>
                                     <div class="dropdown-status-content" id="dropdown-listing">
                                         <a href="#" class="action" data-open-modal="listOfPaymentsModal"
-                                           data-student-id="${rec.student.studentId}"
-                                           data-level-id="${rec.gradeLevelToEnrollId}"
-                                           data-enrollment-id="${rec.enrollmentId}">
+                                            data-student-id="${rec.student.studentId}"
+                                            data-level-id="${rec.gradeLevelToEnrollId}"
+                                            data-enrollment-id="${rec.enrollmentId}">
                                             View List of Payments
                                         </a>
                                         ${proceedBtn}
                                     </div>
                                 </div>
                             </td>
+
                         `;
                         <!--receiptModal
                         listOfPaymentsModal-->
                         tableBody.appendChild(row);
                     });
-                    console.log(data.totalPages);
-                    console.log("I am at page" + pageNo);
-                    updatePaymentPagination(pageNo, pageSize, data.totalPages);
+                    totalItems = data.totalElements || 0;
+                    const totalPages = data.totalPages || 1;
+                    updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
         }
 
-        function updatePaymentPagination(currentPage, pageSize, totalPages) {
-            const paginationContainer = document.querySelector("#pagination");
-            paginationContainer.innerHTML = ``;
+        //pagination JS code
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+            //console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
 
-            if (totalPages <= 1) return;
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-            for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement("button");
-                button.innerText = i;
-                button.classList.add("pagination-button");
-                if (i === currentPage) button.classList.add("active");
-                button.addEventListener("click", () => {
-                    getOnPayments(i, pageSize);
-                });
-                paginationContainer.appendChild(button);
-            }
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
         }
 
-        let studentId;
-        let gradeLevelId;
-        document.addEventListener("click", function (event) {
-            const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
-            const paymentBtn = event.target.closest('[data-open-modal="addPaymentModal"]');
-            if (viewListbtn) {
-                studentId = viewListbtn.getAttribute("data-student-id");
-                const enrollmentId = viewListbtn.getAttribute("data-enrollment-id");
-                gradeLevelId = viewListbtn.getAttribute("data-level-Id");
-                if (!enrollmentId) return console.error("Enrollment Id Not Found");
-                fetchPayments(enrollmentId);
-            } else if (paymentBtn) {
-                setUpPaymentForm();
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                getAssessments(currentPage);
             }
         });
 
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+               // console.log("Navigating to page:", currentPage);
+                getAssessments(currentPage);
+            } else {
+               // console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                getAssessments(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            //console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            getAssessments(currentPage);
+        });
+
+        var gradeLevelId;
         async function setUpPaymentForm() {
             paymentAmountInput.max = 0;
             paymentAmountInput.value = 0.0;
-            let response = await fetch(`/paymentrecord/form/${studentId}?gradeLevelId=${gradeLevelId}`);
-            if (!response.ok) throw new Error("wa nakita");
+            let response = await fetch(`/paymentrecord/form/${payerId}?gradeLevelId=${gradeLevelId}`);
+            if (!response.ok) throw new Error("Not found");
             let data = await response.json();
             const student = data.student;
             const studentname = document.querySelector("#payee-name");
@@ -534,8 +543,7 @@
             data.feesAndBalance.forEach(par => {
                 const paymentItem = document.createElement("div");
                 paymentItem.classList.add("payment-item");
-                console.log(par);
-                console.log(par.balance);
+
                 const input = document.createElement("input");
                 input.type = "checkbox";
                 input.name = par.fee.name;
@@ -554,11 +562,21 @@
             });
         }
 
+        const savePaymentBtn = document.getElementById("save-payment-btn");
+        document.getElementById("payment-amount").addEventListener('keyup', function (event) {
+            savePaymentBtn.textContent = "Save Payment";
+            savePaymentBtn.disabled = false;
+            if (parseFloat(this.value || 0) < parseFloat(this.min)) {
+                savePaymentBtn.textContent = `Minimum of P${this.min} is Required`;
+                savePaymentBtn.disabled = true;
+            }
+        });
         function handleCheckboxChange(event, balance) {
             const checkbox = event.target; // The checkbox that was clicked
             const value = checkbox.value; // The value of the checkbox
             const isChecked = checkbox.checked; // Whether the checkbox is checked or unchecked
             const currentMax = parseFloat(paymentAmountInput.max) || 0;
+            const checkedCheckboxes = document.querySelectorAll('.payment-item:checked');
             let newMax = 0;
             if (isChecked) {
                 newMax = currentMax + balance;
@@ -566,23 +584,30 @@
                 newMax = currentMax - balance;
             }
             paymentAmountInput.max = newMax;
+            paymentAmountInput.min = (newMax * 0.2);
             if (paymentAmountInput.value > newMax) {
                 paymentAmountInput.value = newMax;
+            }
+            if (newMax > 0) {
+                savePaymentBtn.textContent = "Enter Amount";
+                savePaymentBtn.disabled = true;
+            } else {
+                savePaymentBtn.textContent = "Please select a particular";
+                savePaymentBtn.disabled = true;
             }
         }
 
         function savePayment() {
             const feesSelectedId = getCheckedPaymentValues();
             const totalAmount = paymentAmountInput.value;
-
             if (totalAmount == 0) {
-                alert("DLi pwde wlay kay ibayad uys");
+                showErrorModal("Minimum amount is required");
                 return;
             } else if (feesSelectedId.length == 0) {
-                alert("Dapat naa ka pilion");
+                showErrorModal("Please select a particular");
                 return;
             }
-            const url = `/paymentrecord/add/all/${encodeURIComponent(studentId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(gradeLevelId)}`;
+            const url = `/paymentrecord/add/all/${encodeURIComponent(payerId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(gradeLevelId)}`;
             const obj = {
                 feesId: feesSelectedId
             };
@@ -628,19 +653,17 @@
                                 </tr>
                             </tfoot>`;
                     tableBody.appendChild(row);
-                    alert(`Page : ${currentPage} with size of ${currentPageSize}`);
-                    getOnPayments(currentPage, currentPageSize);
+                    getOnPayments(currentPage);
                     closeOpen();
                 })
                 .catch(error => {
-                    console.error("Error adding payment:", error);
+                    //console.error("Error adding payment:", error);
                     alert("Failed to add payment. Please try again.");
                 });
         }
 
         function closeOpen() {
             const button1 = document.createElement("button");
-            button1.setAttribute("data-close-modal", "addPaymentModal");
             button1.setAttribute("data-open-modal", "receiptModal");
             const button2 = document.createElement("button");
             button2.setAttribute("data-close-modal", "listOfPaymentsModal");
@@ -648,6 +671,7 @@
             document.body.appendChild(button2);
             button1.click();
             button2.click();
+            document.getElementById("payment-closer").click();
         }
 
         function getCheckedPaymentValues() {
@@ -670,10 +694,14 @@
             status = status.toLowerCase();
             if (status === "fully paid") {
                 return "paid-status";
-            } else if (status === "unpaid") {
+            } else if (status === "not paid") {
                 return "unpaid-status";
             } else if (status === "partially paid") {
-                return "partially-paid-status"
+                return "partially-paid-status";
+            } else if (status === "incomplete") {
+                return "incomplete-status";
+            } else if (status === "complete") {
+                return "complete-status";
             }
             return "";
         }
@@ -685,25 +713,30 @@
                 .then(epv => {
                     const studentname = document.querySelector("#student-name");
                     const studentDisplayId = document.querySelector("#student-id");
-                    if (!studentname || !studentId) return console.error("Dropdown for sections not found");
+                    if (!studentname || !studentDisplayId) return //console.error("Dropdown for sections not found");
 
-                    studentname.textContent = epv.studentFirstName + (epv.studentMiddleName ? ' ' + epv.studentMiddleName : '') + ' ' + epv.studentLastName;
+                    studentname.textContent = epv.student.fullName;
 
-                    studentDisplayId.textContent = epv.studentDisplayId;
-                    payerId = epv.studentId;
+                    studentDisplayId.textContent = epv.student.studentDisplayId;
+                    payerId = epv.student.studentId;
                     const tableBody = document.querySelector("#table-ni-kharl tbody");
-                    tableBody.innerHTML = "";
-                    epv.feeStatus.forEach(datas => {
+                    tableBody.innerHTML = `<tr><td colspan="5">All payments are complete. No outstanding charges</td></tr>`;
+                    if (epv.feesAndBalance.length === 0) { return; }
+                    tableBody.innerHTML = ``;
+                    epv.feesAndBalance.forEach(datas => {
+                        var status = datas.totalPaid < datas.totalRequired && datas.totalPaid === 0 ? "Not Paid" :
+                            datas.totalPaid > 0 && datas.totalPaid < datas.totalRequired ? "Partially Paid" :
+                                "Fully Paid";
                         const row = document.createElement("tr");
-                        const statusClass = getPaymentStatusClass(datas.status);
+                        const statusClass = getPaymentStatusClass(status);
                         row.innerHTML = `
-                            <td>${datas.feeName}</td>
-                            <td>${datas.requiredFee}</td>
+                            <td>${datas.fee.name}</td>
+                            <td>${datas.totalRequired}</td>
                             <td>${datas.totalPaid}</td>
                             <td>${datas.balance}</td>
                             <td>
                                 <div class="status-container">
-                                    <div class="status ${statusClass}">${datas.status}</div>
+                                    <div class="status ${statusClass}">${status}</div>
                                 </div>
                             </td>`;
                         tableBody.appendChild(row);
@@ -725,7 +758,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log("Student Balance:", data);
+                    //console.log("Student Balance:", data);
                     const paymentAmountInput = document.getElementById('payment-amount');
                     if (paymentAmountInput) {
                         paymentAmountInput.value = data; // Set the value of the input field
@@ -734,7 +767,7 @@
                     }
                 })
                 .catch(error => {
-                    console.error("Error fetching student balance:", error);
+                    //console.error("Error fetching student balance:", error);
                 });
         }
 
@@ -745,7 +778,7 @@
                 const enteredValue = parseFloat(this.value);
 
                 if (enteredValue > maxValue) {
-                    alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
+                    showErrorModal("Maximum amount is "+maxValue);
                     this.value = maxValue;
                 }
             });
@@ -760,19 +793,17 @@
             })
                 .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
                 .then(({ text, status }) => {
-                    console.log(`🔹 API Response (${status}): ${text}`);
-
                     if (status === 200) {
-                        alert("Show success message without reloading");
-                        getOnPayments(currentPage, currentPageSize);
+                        showSuccessModal(text);
+                        getOnPayments(currentPage);
                     } else {
-                        showErrorModal("❌ Error: Please try again!");
-                        getOnPayments(currentPage, currentPageSize)
+                        showErrorModal(text);
+                        getOnPayments(currentPage)
                     }
                 })
                 .catch(error => {
                     showErrorModal("❌ Error: Please try again!");
-                    getOnPayments(currentPage, currentPageSize)
+                    getOnPayments(currentPage)
                 });
         }
 

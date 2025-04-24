@@ -1,40 +1,35 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
-    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
-    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        <div class="text-link">
-            <h4>Grade Management</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Grade Management</p>
-        </div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+            <div class="text-link">
+                <h4>Grade Management</h4>
+                <p>Main</p>
+                <p>/</p>
+                <p>Grade Management</p>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+                    </div>
                 </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
@@ -47,25 +42,29 @@
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="lamesa" class="grade-management-table">
-            <thead>
-                <tr>
-                    <th>Subject Name</th>
-                    <th>Grade Level</th>
-                    <th>Number of section/s</th> <!--Rename to something that indicates how many sections a teacher is teaching with this subject-->
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="4">No Records Found</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="lamesa" class="grade-management-table main-table">
+                <thead>
+                    <tr>
+                        <th>Subject Name</th>
+                        <th>Grade Level</th>
+                        <th>Number of section/s</th>
+                        <!--Rename to something that indicates how many sections a teacher is teaching with this subject-->
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="4">No Records Found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
         <!-- Modal for status -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
@@ -91,7 +90,7 @@
                 tableBody.innerHTML = "";
 
                 data.forEach(sub => {
-                    console.log(sub);
+                    //console.log(sub);
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <tr>

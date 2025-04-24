@@ -34,22 +34,22 @@ public class StudentSubjectGrade {
     private int numberId;
     
     @ManyToOne
-    @JoinColumn(name = "student")
+    @JoinColumn(name = "student",nullable = false)
     private Student student;
     
     @ManyToOne
-    @JoinColumn(name = "subject")
+    @JoinColumn(name = "subject",nullable = false)
     private Subject subject;
     
     @ManyToOne
-    @JoinColumn(name = "section")
+    @JoinColumn(name = "section",nullable = false)
     private Section section;
     
     @ManyToOne
     @JoinColumn(name = "semester")
     private SchoolYearSemester semester;
     private Integer subjectGrade;
-
+    private boolean isNotDeleted;
     private boolean isDropped;
     
     public StudentSubjectGradeDTO DTOmapper(){

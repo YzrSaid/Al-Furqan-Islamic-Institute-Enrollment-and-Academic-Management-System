@@ -1,7 +1,7 @@
-package com.example.testingLogIn.CountersService;
+package com.example.testingLogIn.CountersRepositories;
 
+import com.example.testingLogIn.StatisticsModel.SectionStudentCountRepo;
 import com.example.testingLogIn.StatisticsModel.SectionStudentCount;
-import com.example.testingLogIn.CountersRepositories.SectionStudentCountRepo;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Section;

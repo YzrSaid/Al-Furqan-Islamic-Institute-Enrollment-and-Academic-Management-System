@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
-    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
-    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
@@ -20,54 +12,60 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link">
-            <h4>Verify Accounts</h4>
-            <a href="/home">Main</a>
-            <p>/</p>
-            <a href="/accounts/verify-accounts">Accounts - Verify Accounts</a>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+            <div class="text-link">
+                <h4>Verify Accounts</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/accounts/verify-accounts" title="You're currently in this page.">Accounts - Verify
+                    Accounts</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn" title="Search Account">Search</button>
+                    </div>
                 </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
-                        <option value="patient-number">Patient Number</option>
-                        <option value="patient-name">Patient Name</option>
-                        <option value="patient-sex">Sex</option>
+                        <option value="user-id">User ID</option>
+                        <option value="account-name">Name</option>
+                        <option value="account-email">Email</option>
+                        <option value="account-status">Status</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <table class="verify-accounts-table">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="accounts-table-body">
-            </tbody>
-        </table>
+
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table class="verify-accounts-table main-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="accounts-table-body">
+                </tbody>
+            </table>
+        </div>
+
 
         <!-- Modal for assigning account type/role to user -->
         <div id="addAccountTypeModal" class="add-account-type-modal modal">
-            <div class="add-account-type-modal-content">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="addAccountTypeModal">&times;</span>
+            <div class="add-account-type-modal-content scroll-lock">
 
                 <h2>Verify Account</h2>
 
@@ -93,10 +91,11 @@
                     <div class="modal-buttons">
                         <button type="button" class="btn-confirm" data-action="verifyAccount"
                             data-message="Are you sure you want to verify this account?"
-                            data-open-modal="confirmationModal">
+                            data-open-modal="confirmationModal" title="Confirm Button">
                             Confirm
                         </button>
-                        <button type="button" class="btn-cancel" data-close-modal="addAccountTypeModal">Cancel</button>
+                        <button type="button" class="btn-cancel" data-close-modal="addAccountTypeModal"
+                            title="Cancel Button">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -104,10 +103,10 @@
 
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="errorMessage"></p>
                 <div class="modal-buttons">
-                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                    <button class="error-btn-cancel" data-close-modal="errorModal" title="Close Button">Close</button>
                 </div>
             </div>
         </div>
@@ -122,11 +121,12 @@
 
         <!-- Confirmation Modal -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText">Are you sure?</p>
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
+                    <button type="button" id="confirmAction" class="btn-confirm" title="Confirm Button">Confirm</button>
+                    <button type="button" data-close-modal="confirmationModal" class="btn-cancel"
+                        title="Cancel Button">Cancel</button>
                 </div>
             </div>
         </div>
@@ -140,14 +140,14 @@
             tableBody.addEventListener("click", function (event) {
                 if (event.target.tagName === "IMG" && event.target.closest(".action")) {
                     selectedVerificationId = event.target.closest("tr").querySelector("td:first-child").textContent.trim();
-                    console.log("Selected Verification ID:", selectedVerificationId);
+                    //console.log("Selected Verification ID:", selectedVerificationId);
                 }
             });
 
             const roleSelect = document.getElementById("account-type");
             roleSelect.addEventListener("change", function () {
                 selectedRole = roleSelect.value;
-                console.log("Selected Role:", selectedRole);
+                //console.log("Selected Role:", selectedRole);
             });
         });
 
@@ -181,7 +181,7 @@
             };
 
             accounts.forEach(account => {
-                console.log(account); // Debugging
+               // console.log(account); // Debugging
                 const row = document.createElement("tr");
 
                 const statusClass = getAccountStatusClass(account.status);
@@ -229,7 +229,7 @@
                     document.getElementById("user-id").textContent = userId;
                     document.getElementById("user-name").textContent = userName;
                 } else {
-                    console.log("⚠️ User ID or Name missing!");
+                   // console.log("⚠️ User ID or Name missing!");
                 }
             }
         });
@@ -252,7 +252,7 @@
         function updateActionVisibility() {
             const rows = document.querySelectorAll(".verify-accounts-table tbody tr");
 
-            console.log(`Rows found: ${rows.length}`); // Debugging
+           // console.log(`Rows found: ${rows.length}`); // Debugging
 
             rows.forEach(row => {
                 let statusElement = row.querySelector(".status-container div");
@@ -260,7 +260,7 @@
 
                 if (statusElement && actionContainer) {
                     let status = statusElement.textContent.trim().toLowerCase();
-                    console.log(`Status found: ${status}`); // Debugging
+                   // console.log(`Status found: ${status}`); // Debugging
 
                     if (status === "pending") {
                         actionContainer.style.display = "flex";

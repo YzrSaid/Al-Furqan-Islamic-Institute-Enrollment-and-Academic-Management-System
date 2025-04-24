@@ -1,14 +1,17 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.CustomObjects.SubjectSectionCount;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.Models.Schedule;
+import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Subject;
 import com.example.testingLogIn.Repositories.ScheduleRepo;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
+import com.example.testingLogIn.Repositories.SubjectRepo;
 import com.example.testingLogIn.Repositories.sySemesterRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
@@ -30,33 +33,36 @@ public class ScheduleServices {
     private final SubjectServices subjectService;
     private final StudentSubjectGradeRepo ssgRepo;
     private final sySemesterRepo semRepo;
+    private final SubjectRepo subjectRepo;
 
     @Autowired
-    public ScheduleServices(ScheduleRepo scheduleRepo, UserRepo userRepo, SectionServices sectionService, SubjectServices subjectService, StudentSubjectGradeRepo ssgRepo, sySemesterRepo semRepo) {
+    public ScheduleServices(ScheduleRepo scheduleRepo, UserRepo userRepo, SectionServices sectionService, SubjectServices subjectService, StudentSubjectGradeRepo ssgRepo, sySemesterRepo semRepo, SubjectRepo subjectRepo) {
         this.scheduleRepo = scheduleRepo;
         this.userRepo = userRepo;
         this.sectionService = sectionService;
         this.subjectService = subjectService;
         this.ssgRepo = ssgRepo;
         this.semRepo = semRepo;
+        this.subjectRepo = subjectRepo;
     }
 
-    public int addNewSchedule(ScheduleDTO newSchedule){
-        UserModel teacher = getTeacherByName(newSchedule.getTeacherName().toLowerCase());
+    public Map<Integer,ScheduleDTO> addNewSchedule(ScheduleDTO newSchedule){
+        UserModel teacher = userRepo.findById(newSchedule.getTeacherId()).orElse(null);
         Section section = sectionService.getSectionById(newSchedule.getSectionId());
-        List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(subjectService.getByName(newSchedule.getSubject().toLowerCase()).getSubjectNumber()
-                                                                                            ,section.getNumber(),
-                                                                                            teacher.getStaffId());
+        List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(newSchedule.getSubjectId(),
+                                                                    section.getNumber(),
+                                                                    newSchedule.getTeacherId());
         if(isTeacherSchedConflict(teacher,newSchedule,true))
-            return 1;
+            return Map.of(1,new ScheduleDTO());
         else if(isSectionSchedConflict(section, newSchedule,true))
-            return 2;
+            return Map.of(2,new ScheduleDTO());
         else if(!res.isEmpty())
-            return 3;
-        scheduleRepo.save(ScheduleDTOtoSchedule(newSchedule));
-        
-        return 0;
+            return Map.of(3,new ScheduleDTO());
+        Schedule addedSchedule = scheduleRepo.save(ScheduleDTOtoSchedule(newSchedule));
+
+        return Map.of(0,addedSchedule.mapper());
     }
+
     public List<ScheduleDTO> getSchedulesByTeacher(String teacherName){
         UserModel teacher = getTeacherByName(teacherName.toLowerCase());
         if(teacher == null){
@@ -86,68 +92,70 @@ public class ScheduleServices {
 
         return null;
     }
-    
+
     public List<ScheduleDTO> getSchedulesBySection(int sectionNum){
         SectionDTO section = sectionService.getSection(sectionNum);
         if(section == null)
-            throw new NullPointerException();
-        
+            throw new NullPointerException("Section Information Not Found");
+
         return scheduleRepo.findSectionSchedules(section.getNumber()).stream()
-                            .sorted(Comparator
-                                .comparing(Schedule::getDay)
-                                .thenComparing(Schedule::getTimeStart))
-                            .map(Schedule::mapper)
-                            .toList();
+                .sorted(Comparator
+                        .comparing(Schedule::getDay)
+                        .thenComparing(Schedule::getTimeStart))
+                .map(Schedule::mapper)
+                .toList();
     }
-    
-    public Map<Integer,ScheduleDTO> getSubjectsUniqeTeacher(int sectionId){
-            SectionDTO section = sectionService.getSection(sectionId);
-            if(section == null)
-                throw new NullPointerException();
 
-            Map<Integer,ScheduleDTO> subjectTeachers = new HashMap<>();
-            List<Schedule> sectionScheds = scheduleRepo.findSectionSchedules(section.getNumber()).stream()
-                                                    .sorted(Comparator
-                                                    .comparing(Schedule::getDay)
-                                                    .thenComparing(Schedule::getTimeStart))
-                                                    .toList();
-
-            sectionScheds.forEach(sched -> {
-                if(!subjectTeachers.containsKey(sched.getSubject().getSubjectNumber()))
-                    subjectTeachers.put(sched.getSubject().getSubjectNumber(), sched.mapper());
-            });
-            for(Integer key : subjectTeachers.keySet()){
-                ScheduleDTO sched = subjectTeachers.get(key);
-                Integer toBeGraded = ssgRepo.getGradesBySectionSubjectSem(
-                        sched.getSectionId(),
-                        sched.getSubjectId(),
-                        semRepo.findCurrentActive().getSySemNumber()).size();
-                Integer graded = ssgRepo.getTotalGraded(
-                        sched.getSectionId(),
-                        sched.getSubjectId(),
-                        semRepo.findCurrentActive().getSySemNumber());
-                subjectTeachers.get(key).setGradedCount(graded);
-                subjectTeachers.get(key).setToBeGradedCount(toBeGraded);
-            }
-
-            return subjectTeachers;
+    public List<EvaluationStatus> getSectionSubjects(Integer sectionId){
+        SchoolYearSemester sem = semRepo.findCurrentActive();
+        int semId = Optional.ofNullable(sem).map(SchoolYearSemester::getSySemNumber).orElse(0);
+        if(semId == 0)
+            return null;
+        if(sectionId != null)
+            return ssgRepo.findSectionSubjects(sectionId,semId).stream()
+                    .peek(es -> {
+                        int sectionNum = es.getSection().getNumber();
+                        int subjectNum = es.getSubject().getSubjectNumber();
+                        es.setGradedCount(ssgRepo.getTotalGraded(
+                                sectionNum,
+                                subjectNum,
+                                semId));
+                        es.setTotalToBeGraded(ssgRepo.getGradesBySectionSubjectSem(
+                                sectionNum,
+                                subjectNum,
+                                semId).size());
+                    }).toList();
+        else
+            return ssgRepo.findWithUngradedGrades(semId).stream()
+                    .peek(es -> {
+                        int sectionNum = es.getSection().getNumber();
+                        int subjectNum = es.getSubject().getSubjectNumber();
+                        es.setGradedCount(ssgRepo.getTotalGraded(
+                                sectionNum,
+                                subjectNum,
+                                semId));
+                        es.setTotalToBeGraded(ssgRepo.getGradesBySectionSubjectSem(
+                                sectionNum,
+                                subjectNum,
+                                semId).size());
+                    }).toList();
     }
-    
-    public int updateSchedule(ScheduleDTO schedDTO){
-        Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElse(null);
-        UserModel t = getTeacherByName(schedDTO.getTeacherName().toLowerCase());
-        List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(subjectService.getByName(schedDTO.getSubject().toLowerCase()).getSubjectNumber()
+
+    public Map<Integer,ScheduleDTO> updateSchedule(ScheduleDTO schedDTO){
+        Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElseThrow(NullPointerException::new);
+        UserModel t = userRepo.findById(schedDTO.getTeacherId()).orElseThrow(UnknownError::new);
+        List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(schedDTO.getSubjectId()
                 ,toUpdate.getSection().getNumber(),t.getStaffId());
-        if(toUpdate != null && toUpdate.isNotDeleted()){
+        if(toUpdate.isNotDeleted()){
             Schedule updated = ScheduleDTOtoSchedule(schedDTO);
             UserModel teacher = updated.getTeacher();
             Section section = updated.getSection();
             if(isTeacherSchedConflict(teacher,schedDTO,false)){
-                return 1;
+                return Map.of(1,new ScheduleDTO());
             }else if(isSectionSchedConflict(section, schedDTO,false)){
-                return 2;
+                return Map.of(2,new ScheduleDTO());
             }else if(!res.isEmpty())
-                return 3;
+                return Map.of(3,new ScheduleDTO());
             
             toUpdate.setTeacher(updated.getTeacher());
             toUpdate.setSubject(updated.getSubject());
@@ -156,11 +164,11 @@ public class ScheduleServices {
             toUpdate.setTimeStart(updated.getTimeStart());
             toUpdate.setTimeEnd(updated.getTimeEnd());
             
-            scheduleRepo.save(toUpdate);
-            return 4;
+            Schedule updatedSched = scheduleRepo.save(toUpdate);
+            return Map.of(4,updatedSched.mapper());
             
         }
-        return 5;
+        return Map.of(5,new ScheduleDTO());
     }
     
     public boolean deleteSchedule(int schedNum){
@@ -208,8 +216,8 @@ public class ScheduleServices {
     }
     private Schedule ScheduleDTOtoSchedule(ScheduleDTO schedDTO){
         return Schedule.builder()
-                       .teacher(getTeacherByName(schedDTO.getTeacherName().toLowerCase()))
-                       .subject(subjectService.getByName(schedDTO.getSubject().toLowerCase()))
+                       .teacher(userRepo.findById(schedDTO.getTeacherId()).orElse(null))
+                       .subject(subjectRepo.findById(schedDTO.getSubjectId()).orElse(null))
                        .section(sectionService.getSectionById(schedDTO.getSectionId()))
                        .day(schedDTO.getDay())
                        .timeStart(schedDTO.getTimeStart())

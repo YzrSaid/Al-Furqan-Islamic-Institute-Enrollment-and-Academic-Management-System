@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
@@ -28,49 +20,54 @@
                 <h4>Manage Accounts</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/accounts/manage-accounts">Account - Manage Accounts</a>
+                <a href="/accounts/manage-accounts" title="You're currently in this page.">Account - Manage Accounts</a>
             </div>
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
+                        <button type="button" class="search-btn" title="Search Account">Search</button>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                            <option value="patient-number">Patient Number</option>
-                            <option value="patient-name">Patient Name</option>
-                            <option value="patient-sex">Sex</option>
-                        </select>
-                    </div>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="user-id">User ID</option>
+                        <option value="account-name">Name</option>
+                        <option value="account-email">Email</option>
+                        <option value="account-type">Account Type</option>
+                        <option value="account-status">Status</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- Table -->
-        <table class="verify-accounts-table">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Account Type</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="accounts-table-body">
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table class="verify-accounts-table main-table">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Account Type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="accounts-table-body">
+                </tbody>
+            </table>
+        </div>
+
 
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="errorMessage"></p>
                 <div class="modal-buttons">
-                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                    <button class="error-btn-cancel" data-close-modal="errorModal" title="Close">Close</button>
                 </div>
             </div>
         </div>
@@ -85,10 +82,10 @@
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button id="confirmAction" class="btn-confirm" title="Confirm Button">Confirm</button>
                     <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
@@ -97,7 +94,7 @@
         <!-- Modal for edit account -->
         <div class="my-account-container-wrapper">
             <div id="myAccountEditModal" class="my-account-edit-modal modal">
-                <div class="my-account-edit-modal-content">
+                <div class="my-account-edit-modal-content scroll-lock">
                     <h2>My Account Information</h2>
                     <form action="" id="myAccountEditForm">
                         <div class="half-width">
@@ -121,7 +118,7 @@
                                 <label for="last-name">Last Name:</label>
                                 <input type="text" id="last-name" value="Rizal" readonly>
                             </div>
-                        </div> <br>
+                        </div> <br> 
                         <div class="account-type">
                             <label for="account-type">Account Type:</label>
                             <select name="account-type" id="account-type">
@@ -133,11 +130,12 @@
 
                         <div class="modal-buttons">
                             <button type="button" class="btn-confirm" data-action="editMyAccount"
-                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit">
+                                data-message="Are you sure you want to update this record?" id="confirmMyAccountEdit"
+                                title="Confirm Account Edit">
                                 Edit
                             </button>
-                            <button type="button" class="btn-cancel"
-                                data-close-modal="myAccountEditModal">Close</button>
+                            <button type="button" class="btn-cancel" data-close-modal="myAccountEditModal"
+                                title="Close Button">Close</button>
                         </div>
                     </form>
                 </div>
@@ -147,7 +145,7 @@
         <!-- Modal for changing password -->
         <div class="my-account-container-wrapper">
             <div id="changePasswordModal" class="change-password-modal">
-                <div class="change-password-modal-content">
+                <div class="change-password-modal-content scroll-lock">
                     <h2>Change Password</h2>
                     <form action="" id="changePasswordForm">
                         <div class="change-pass-div">
@@ -171,7 +169,7 @@
                         </div>
                         <div class="modal-buttons change-pass-buttons">
                             <button type="button" class="btn-confirm" id="confirmChangePassword"
-                                data-action="change-password">Confirm</button>
+                                data-action="change-password" title="Confirm Change Password">Confirm</button>
                         </div>
                     </form>
                 </div>
@@ -211,7 +209,7 @@
         accounts.forEach(account => {
             const row = document.createElement("tr");
 
-            console.log(account);
+           // console.log(account);
 
             // ✅ Use the correct role format
             const readableRole = roleMapping[account.role] || account.role;
@@ -281,7 +279,7 @@
                 const row = event.target.closest("tr");
                 if (row) {
                     selectedManageAccountId = row.querySelector("td:first-child").textContent.trim();
-                    console.log("Selected Manage Account ID:", selectedManageAccountId);
+                   // console.log("Selected Manage Account ID:", selectedManageAccountId);
                 }
             }
         });

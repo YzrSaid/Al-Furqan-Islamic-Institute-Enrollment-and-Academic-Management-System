@@ -2,15 +2,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="../../static/css/styles.css">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -51,7 +43,7 @@
             <h4>Teacher Reports</h4>
             <a href="/home">Main</a>
             <p>/</p>
-            <a href="/reports/teacher">Reports - Teacher Reports</a>
+            <a href="/reports/teacher" title="You're currently in this page.">Reports - Teacher Reports</a>
         </div>
 
         <div class="search-div">

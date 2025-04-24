@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Custom Error Page</title>
-</head>
+<html>
+    <head th:replace="~{fragments/fragment :: commonHead}">
+    </head>
 <body>
-<h1>Oops! The requested resource was not found.</h1>
-<p th:text="${errorMessage}"></p>
+<h1>Oops! The requested resources was not found.</h1>
 <a href="/home">Return Home</a>
 </body>
 </html>

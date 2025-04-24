@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Repositories;
 
+import com.example.testingLogIn.CustomObjects.StudentHandler;
 import com.example.testingLogIn.Models.Student;
 
 import java.util.List;
@@ -21,16 +22,14 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
     @Query("SELECT COUNT(s) > 0 FROM Student s " +
         "WHERE s.isNotDeleted = true "+
         "AND (:studentId IS NULL OR s.studentId != :studentId) "+
-        "AND Lower(s.fullName) LIKE CONCAT('%',:lastName,'%') "+
-        "AND Lower(s.fullName) LIKE CONCAT('%',:firstName,'%') "+
-        "AND (:middleName IS NULL OR s.fullName LIKE CONCAT('%',:middleName,'%'))")
+        "AND Lower(s.fullName) = :fullName")
     boolean existsByNameIgnoreCaseAndNotDeleted(
         @Param("studentId") Integer studentId,
-        @Param("firstName") String firstName,
-        @Param("lastName") String lastName,
-        @Param("middleName") String middleName
+                            String fullName
     );
-    List<Student> findByIsNotDeletedTrue();
+
+    @Query("SELECT stud FROM Student stud WHERE LOWER(stud.fullName) LIKE :fullName")
+    Optional<Student> findByName(String fullName);
 
     Page<Student> findByIsNewTrue(Pageable pageable);//will replace the method below soon
     List<Student> findByIsNotDeletedTrueAndIsNewTrue();
@@ -38,10 +37,27 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
     List<Student> findByIsNotDeletedTrueAndIsNewFalse();
 
     @Query("SELECT s FROM Student s " +
-            "WHERE s.isNotDeleted = true " +
-            "AND (s.studentDisplayId LIKE CONCAT('%', :search, '%') " +
-            "OR s.fullName LIKE CONCAT('%', :search, '%')) ")
-    Page<Student> findByStudentDisplayIdOrName(@Param("search")String searching, Pageable pageable);
+            "WHERE (:isFullyPaid IS NULL OR s.studentBalance > 0) " +
+            "AND s.isNotDeleted = true " +
+            "AND (s.studentDisplayId LIKE :search " +
+            "OR LOWER(s.fullName) LIKE :search)")
+    Page<Student> findByStudentDisplayIdOrName(@Param("search")String searching, Pageable pageable, Boolean isFullyPaid);
+
+    @Query("""
+    SELECT s FROM Student s
+    LEFT JOIN FETCH s.currentGradeSection gs
+    LEFT JOIN FETCH gs.level l 
+    WHERE (:isFullPaid IS NULL OR s.studentBalance > 0)
+    AND (s.studentDisplayId LIKE :search 
+    OR LOWER(s.fullName) LIKE :search)
+    ORDER BY 
+        CASE 
+            WHEN gs IS NULL THEN 2 
+            ELSE 1 
+        END,
+        l.levelName ASC NULLS LAST
+    """)
+    Page<Student> findByStudentHandlerDisplayIdOrName(@Param("search")String searching, Pageable pageable, Boolean isFullPaid);
 
     List<Student> findByIsNotDeletedTrueAndIsTransfereeTrue();
     

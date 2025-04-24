@@ -2,8 +2,8 @@ package com.example.testingLogIn.Models;
 
 import com.example.testingLogIn.ModelDTO.SectionDTO;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,10 +22,12 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int number;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "gradeLevel")
     private GradeLevel level;
     
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "adviser")
     private UserModel adviser;
     

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <div class="text-link">
+                <h4>Scholarship Reports</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/reports/scholarship" title="You're currently in this page.">Reports - Scholarship Reports</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" id="search" placeholder="Search..." class="search-input" />
+                        <button type="button" onclick="setTableContent()" class="search-btn">Search</button>
+                    </div>
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="view-type" class="sort-select">
+                        <option value="true" selected>With Discount</option>
+                        <option value="false">Without Discount</option>
+                    </select>
+                    <select name="sort" id="item-type" class="sort-select">
+                        <option value="0" selected>All</option>
+                    </select>
+                    <button type="button" id="select-multiple" class="btn-neutral">Select Multiple</button>
+
+                    <input type="checkbox" id="select" style="display: none;">
+                    <button type="button" id="confirm-btn" style="display: none;"><img onclick="sendMultiple()"
+                            src="/images/icons/check.png" alt=""></button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+            <table id="table-ko" class="payment-report-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Grade Level</th>
+                        <th>Discount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3">No records found</td>
+                    </tr>
+                </tbody>
+            </table> <br> <br>
+        </div>
+
+
+
+        <div class="cancelBtnDiv">
+            <button type="button" onclick="resetDisplay()" id="btn-cancel" class="btn-cancel"
+                style="display: none;">Cancel</button>
+        </div>
+        <!-- Modal for confirmation -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="modalText"></p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setItemChoices();
+            setTableContent();
+            viewBy.hidden = true;
+        });
+        var selectMultiple = false;
+        document.getElementById("select-multiple").addEventListener('click', function () {
+            const btn = this;
+            const confirmBtn = document.getElementById("confirm-btn");
+            const label = btn.textContent.trim();
+            const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
+            const btnCancel = document.getElementById("btn-cancel");
+            const selectCheckbox = document.getElementById("select");
+
+            btn.classList.remove("btn-neutral");
+            btn.style.display = "none";
+            btn.innerHTML = crossIcon;
+            selectCheckbox.style.display = "inline-block";
+            confirmBtn.style.display = "inline-block";
+            btnCancel.style.display = "inline-block";
+
+            selectMultiple = true;
+            setTableContent();
+        });
+
+        document.getElementById("confirm-btn").addEventListener('click', function () {
+            var url;
+            if (viewBy.value === "false") {
+                url = `/discounts/add-student-discounts/${selectedItem}`;
+                alert(url);
+            }
+            else {
+                url = `/discounts/remove-student-discounts`;
+                alert(url);
+            }
+
+            const selectedItems = Array.from(document.querySelectorAll(".action-container input[type='checkbox']:checked"))
+                .map(checkbox => checkbox.value);
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ids: selectedItems
+                }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    alert(text);
+                    resetDisplay();
+                })
+                .catch(error => {
+                    //console.error('Error:', error);
+                });
+        });
+
+        document.getElementById("select").addEventListener('change', (event) => {
+            const checkedCheckboxes = Array.from(document.querySelectorAll(".action-container input[type='checkbox']"));
+            if (event.target.checked) {
+                checkedCheckboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+            } else {
+                checkedCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
+        });
+
+        function resetDisplay() {
+            const selectMultipleBtn = document.getElementById("select-multiple");
+            const confirmBtn = document.getElementById("confirm-btn");
+            const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
+            const btnCancel = document.getElementById("btn-cancel");
+            const selectCheckbox = document.getElementById("select");
+
+            selectMultiple = false;
+            selectCheckbox.checked = false;
+            confirmBtn.style.display = "none";
+            selectMultipleBtn.style.display = "inline-block"
+            selectMultipleBtn.classList.add("btn-neutral");
+            selectMultipleBtn.textContent = "Select Multiple";
+            selectCheckbox.style.display = "none";
+            btnCancel.style.display = "none";
+            setTableContent();
+        }
+
+        const viewBy = document.querySelector('#view-type');
+        viewBy.addEventListener('change', (event) => {
+            document.getElementById("select").checked = false;
+            setTableContent();
+        });
+        var selectedItem;
+        document.getElementById("item-type").addEventListener('change', (event) => {
+            selectedItem = event.target.value;
+            if (selectedItem === "0") {
+                viewBy.hidden = true;
+                document.getElementById("view-type").selectedIndex = 0;
+                changeHeader(true);
+            } else {
+                viewBy.hidden = false;
+                changeHeader(false);
+            }
+            document.getElementById("select").checked = false;
+            setTableContent();
+        });
+
+        function changeHeader(forAll) {
+            const tableHeader = document.querySelector("#table-ko thead");
+            if (forAll) {
+                tableHeader.innerHTML = `
+                <tr>
+                    <th>Student</th>
+                    <th>Grade Level</th>
+                    <th>Discount</th>
+                    <th>Select</th>
+                </tr>`;
+            } else {
+                tableHeader.innerHTML = `
+                <tr>
+                    <th>Student</th>
+                    <th>Grade Level</th>
+                    <th>Select</th>
+                </tr>`;
+            }
+        }
+
+        function setItemChoices() {
+            const itemChoices = document.getElementById("item-type");
+            fetch("/discounts/all")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.size === 0)
+                        return;
+
+                    data.forEach(discount => {
+                        const option = document.createElement("option");
+                        option.value = discount.discountId;
+                        option.textContent = discount.discountName;
+                        itemChoices.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    //console.error('Error:', error);
+                    // Handle errors here
+                });
+        }
+
+        async function setTableContent() {
+            try {
+                const search = document.getElementById("search").value.trim();
+                const discId = document.getElementById("item-type").value;
+                const isAvailed = discId === "0" ? true : document.getElementById("view-type").value === "true" ? true : false;
+                const response = await fetch(`/discounts/records?discountId=${discId}&isAvailed=${isAvailed}&search=${search}`);
+                if (!response.ok) {
+                    //console.error("Failed to fetch data:", response.status);
+                    return;
+                }
+                const data = await response.json();
+
+                const tableBody = document.querySelector("#table-ko tbody");
+                if (!tableBody) {
+                    //console.error("Table body not found");
+                    return;
+                }
+
+                tableBody.innerHTML = '';
+
+                if (!data.content || data.content.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
+                    return;
+                }
+
+                const fragment = document.createDocumentFragment();
+
+                data.content.forEach(studDis => {
+                    const checkBoxVal = studDis.notDeleted ? studDis.connectionId : studDis.studentId;
+                    const dataAction = studDis.notDeleted ? "deleteDiscount" : "addDiscount";
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                <td>${studDis.studentName}</td>
+                <td>${studDis.gradeLevel}</td>
+                ${discId === "0" ? `<td>${studDis.discountName}</td>` : ``}
+                <td>
+                    <div class="dropdown">
+                    ${selectMultiple ? `
+                        <div class="action-container action">
+                        <input type="checkbox" value=${checkBoxVal}>
+                        </div>` : `
+                        <button class="btn-cancel"
+                            data-action="${dataAction}" data-value="${checkBoxVal}">
+                        ${studDis.notDeleted ? "Remove Discount" : "Add Discount"}</button>`}
+                    </div>
+                </td>`;
+                    fragment.appendChild(row);
+                });
+
+                tableBody.appendChild(fragment);
+
+            } catch (error) {
+                //console.error("Error setting up tables:", error);
+                // Optional: Show user-friendly error message in UI
+                const tableBody = document.querySelector("#table-ko tbody");
+                if (tableBody) {
+                    tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
+                }
+            }
+        }
+
+        document.querySelector("#table-ko tbody").addEventListener("click", function (event) {
+            if (event.target && event.target.getAttribute("data-action") === "deleteDiscount") {
+                const val = event.target.getAttribute("data-value");
+                removeDiscount(val);
+            } if (event.target && event.target.getAttribute("data-action") === "addDiscount") {
+                const val = event.target.getAttribute("data-value");
+                addDiscount(val);
+            }
+        });
+
+        function removeDiscount(value) {
+            myPutMethod(`/discounts/remove-student-discount/${value}`);
+        }
+        function addDiscount(value) {
+            myPutMethod(`/discounts/add-student-discount/${selectedItem}/${value}`);
+        }
+        function myPutMethod(url) {
+            fetch(url, {
+                method: 'PUT'
+            })
+                .then(response => response.text())
+                .then(text => {
+                    alert(text);
+                    setTableContent();
+                })
+                .catch(error => {
+                    //console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
-    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
-    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
@@ -20,22 +12,30 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div class="text-link">
-            <h4 id="grade-level-and-section-name">Class List</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Class List</p>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+            <div class="text-link">
+                <h4 id="grade-level-and-section-name">Class List</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/class-list/students/Quran" title="You're currently in this page.">Class List - Class List -
+                    Students</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="report-main-btns-left back-btn">
+                        <button type="button" class="btn-back" onclick="history.back()" title="Back">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+                    </div>
                 </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
@@ -45,29 +45,32 @@
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="table-ba-to" class="verify-accounts-table">
-            <thead>
-                <tr>
-                    <th>Student Id</th>
-                    <th>Student Name</th>
-                    <th>Gender</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="3">No Records Found</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="table-ba-to" class="verify-accounts-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student Id</th>
+                        <th>Student Name</th>
+                        <th>Gender</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3">No Records Found</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
-                    <button id="confirmAction" class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-cancel" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -75,7 +78,7 @@
         <!-- Modal for edit account -->
         <div class="my-account-container-wrapper">
             <div id="myAccountEditModal" class="my-account-edit-modal modal">
-                <div class="my-account-edit-modal-content">
+                <div class="my-account-edit-modal-content scroll-lock">
                     <h2>My Account Information</h2>
                     <form action="" id="myAccountEditForm">
                         <div class="half-width">
@@ -125,7 +128,7 @@
         <!-- Modal for changing password -->
         <div class="my-account-container-wrapper">
             <div id="changePasswordModal" class="change-password-modal">
-                <div class="change-password-modal-content">
+                <div class="change-password-modal-content scroll-lock">
                     <h2>Change Password</h2>
                     <form action="" id="changePasswordForm">
                         <div class="change-pass-div">
@@ -172,7 +175,7 @@
             return;
         }
         const result = await response.json();
-        console.log(result);
+        // console.log(result);
         setUpTables(result.number);
     }
 
@@ -180,7 +183,7 @@
         fetch(`/section/students/${sectionId}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data.length);
+                // console.log(data.length);
                 if (data.length === 0) return;
                 const tableBody = document.querySelector("#table-ba-to tbody");
                 tableBody.innerHTML = ``;

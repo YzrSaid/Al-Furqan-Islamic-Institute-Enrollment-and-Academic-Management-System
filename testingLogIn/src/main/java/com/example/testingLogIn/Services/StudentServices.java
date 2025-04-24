@@ -1,19 +1,21 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.GradeLevel;
-import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Models.Student;
-import com.example.testingLogIn.PagedResponse.StudentDTOPage;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
+import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,17 +34,28 @@ public class StudentServices {
     private final EnrollmentServices enrollmentService;
     private final TransferReqServices transReqServices;
     private final GradeLevelRepo gradeLevelRepo;
+    private final DiscountsServices discountsServices;
+    private final CustomUserDetailsService userService;
 
     @Autowired
-    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices, EnrollmentServices enrollmentService, TransferReqServices transReqServices, GradeLevelRepo gradeLevelRepo) {
+    public StudentServices(StudentRepo studentRepo, SectionServices sectionServices, EnrollmentServices enrollmentService, TransferReqServices transReqServices, GradeLevelRepo gradeLevelRepo, DiscountsServices discountsServices, CustomUserDetailsService userService) {
         this.studentRepo = studentRepo;
         this.sectionServices = sectionServices;
         this.enrollmentService = enrollmentService;
         this.transReqServices = transReqServices;
         this.gradeLevelRepo = gradeLevelRepo;
+        this.discountsServices = discountsServices;
+        this.userService = userService;
     }
 
+    public StudentDTO getStudentBtName(String studentName){
+        studentName = NonModelServices.forLikeOperator(studentName);
+        return studentRepo.findByName(studentName).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
+    }
+
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean addStudent(StudentDTO student){
+        String fullName = student.getFirstName()+" "+ Optional.ofNullable(student.getMiddleName()).map(mn -> mn+" ").orElse(" ")+student.getLastName();
         GradeLevel gradeLevel = null;
         if(student.getLastGradeLevelId() != null)
             gradeLevel = gradeLevelRepo.findById(student.getLastGradeLevelId()).orElse(null);
@@ -52,7 +65,7 @@ public class StudentServices {
         for(int i=count.length() ; i<4 ; i++){
             count.insert(0, "0");
         }
-        if(doesStudentNameExist(student))
+        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(null,fullName))
             return false;
         else{
             Student newStudent = Student.builder()
@@ -69,6 +82,7 @@ public class StudentServices {
                                     .barangay(student.getAddress().getBarangay())
                                     .city(student.getAddress().getCity())
                                     .studentBalance(0)
+
                                     .motherName(student.getMotherName())
                                     .motherOccupation(student.getMotherOccupation())
                                     .fatherName(student.getFatherName())
@@ -76,6 +90,8 @@ public class StudentServices {
                                     .guardianName(student.getGuardianName())
                                     .guardianAddress(student.getGuardianAddress())
                                     .guardianContactNum(student.getGuardianContactNum())
+                                    .guardianOccupation(student.getGuardianOccupation())
+
                                     .status(StudentStatus.NEW)
                                     .isNew(true)
                                     .isNotDeleted(true)
@@ -87,17 +103,14 @@ public class StudentServices {
                                     .madrasaAddress(student.getMadrasaAddress())
                                     .build();
             Student newSavedStudent = studentRepo.save(newStudent);
-            enrollmentService.addStudentToListing(newSavedStudent.getStudentId());
+            enrollmentService.addStudentToListing(null,newSavedStudent);
+            userService.registerStudent(newSavedStudent);
+            if(!student.getDiscountsAvailed().isEmpty())
+                CompletableFuture.runAsync(() -> discountsServices.addStudentDiscounts(newSavedStudent.getStudentId(),student.getDiscountsAvailed()));
             if(newSavedStudent.isTransferee())
-                transReqServices.addingStudentRequirements(newSavedStudent.getStudentId(),student.getTransfereeRequirements());
+                CompletableFuture.runAsync(() ->transReqServices.addingStudentRequirements(newSavedStudent.getStudentId(),student.getTransfereeRequirements()));
             return true;
         }
-    }
-    
-    public List<StudentDTO> getAllStudent(){
-        return studentRepo.findByIsNotDeletedTrue().stream()
-                            .map(Student::DTOmapper)
-                            .toList();
     }
     
     public List<StudentDTO> getNewStudents(){
@@ -118,51 +131,47 @@ public class StudentServices {
                             .toList();
     }
     
-    public Student getStudent(int studentId){
-        return studentRepo.findById(studentId).orElse(null);
+    public StudentDTO getStudent(int studentId){
+        return studentRepo.findById(studentId).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
     }
-    
-    public boolean updateStudent(StudentDTO stud){
-        String sectionName = stud.getCurrentGradeSection().substring(stud.getCurrentGradeSection().indexOf("-")+1);
-        GradeLevel gradeLevel = gradeLevelRepo.findById(stud.getLastGradeLevelId()).orElse(null);
-        Section section = sectionServices.getSectionByName(sectionName);
-        Student toUpdate = getStudent(stud.getStudentId());
-        if(toUpdate == null)
-            throw new NullPointerException();                    //checks if a student with not the same ID has the same name
-        else if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(stud.getStudentId(),stud.getFirstName(),stud.getLastName(),stud.getMiddleName()))
-            return false;
-        else{
-            toUpdate.setFirstName(stud.getFirstName());
-            toUpdate.setLastName(stud.getLastName());
-            toUpdate.setMiddleName(stud.getMiddleName());
-            toUpdate.setFullName(stud.getFirstName()+" "+ Optional.ofNullable(stud.getMiddleName()).map(mn -> mn+" ").orElse(" ")+stud.getLastName());
-            toUpdate.setCellphoneNum(stud.getCellphoneNum());
-            toUpdate.setGender(stud.getGender());
-            toUpdate.setStreet(stud.getAddress().getStreet());
-            toUpdate.setBarangay(stud.getAddress().getBarangay());
-            toUpdate.setCity(stud.getAddress().getCity());
-            toUpdate.setBirthdate(stud.getBirthdate());
-            toUpdate.setBirthPlace(stud.getBirthPlace());
-            toUpdate.setCurrentGradeSection(section);
-            
-            toUpdate.setMotherName(stud.getMotherName());
-            toUpdate.setMotherOccupation(stud.getMotherOccupation());
-            toUpdate.setFatherName(stud.getFatherName());
-            toUpdate.setMotherOccupation(stud.getMotherOccupation());
-            toUpdate.setGuardianName(stud.getGuardianName());
-            toUpdate.setGuardianAddress(stud.getGuardianAddress());
-            toUpdate.setGuardianContactNum(stud.getGuardianContactNum());
-            
-            toUpdate.setScholar(stud.isScholar());
-            toUpdate.setTransferee(stud.isTransferee());
-            toUpdate.setMadrasaName(stud.getMadrasaName());
-            toUpdate.setMadrasaAddress(stud.getMadrasaAddress());
-            toUpdate.setLastGradeLevelCompleted(gradeLevel);
-            toUpdate.setLastMadrasaYearCompleted(stud.getLastGradeLevelCompleted());
-            
-            studentRepo.save(toUpdate);
-            return true;
-        }
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    public String updateStudent(int studentId, StudentDTO stud){
+        String fullName = stud.getFirstName()+" "+ Optional.ofNullable(stud.getMiddleName()).map(mn -> mn+" ").orElse(" ")+stud.getLastName();
+        Student toUpdate = studentRepo.findById(studentId).orElseThrow(()->new NullPointerException("Student record not found"));
+        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(studentId,fullName.toLowerCase()))//checks if a student with not the same ID has the same name
+            throw new IllegalArgumentException("Student Full Name Already Exists");
+
+        toUpdate.setFirstName(stud.getFirstName());
+        toUpdate.setLastName(stud.getLastName());
+        toUpdate.setMiddleName(stud.getMiddleName());
+        toUpdate.setFullName(fullName);
+        toUpdate.setCellphoneNum(stud.getCellphoneNum());
+        toUpdate.setGender(stud.getGender());
+        toUpdate.setStreet(stud.getAddress().getStreet());
+        toUpdate.setBarangay(stud.getAddress().getBarangay());
+        toUpdate.setCity(stud.getAddress().getCity());
+        toUpdate.setBirthdate(stud.getBirthdate());
+        toUpdate.setBirthPlace(stud.getBirthPlace());
+
+        toUpdate.setMotherName(stud.getMotherName());
+        toUpdate.setMotherOccupation(stud.getMotherOccupation());
+        toUpdate.setFatherName(stud.getFatherName());
+        toUpdate.setMotherOccupation(stud.getMotherOccupation());
+        toUpdate.setGuardianName(stud.getGuardianName());
+        toUpdate.setGuardianAddress(stud.getGuardianAddress());
+        toUpdate.setGuardianContactNum(stud.getGuardianContactNum());
+        toUpdate.setGuardianOccupation(stud.getGuardianOccupation());
+
+        toUpdate.setScholar(stud.isScholar());
+        toUpdate.setTransferee(stud.isTransferee());
+        toUpdate.setMadrasaName(stud.getMadrasaName());
+        toUpdate.setMadrasaAddress(stud.getMadrasaAddress());
+        toUpdate.setLastGradeLevelCompleted(gradeLevelRepo.findById(stud.getLastGradeLevelId()).orElse(null));
+        toUpdate.setLastMadrasaYearCompleted(stud.getLastGradeLevelCompleted());
+        toUpdate.setLastMadrasaYearCompleted(stud.getLastMadrasaYearCompleted());
+        studentRepo.save(toUpdate);
+
+        return fullName;
     }
             
     public boolean deleteStudent(int studentId){
@@ -174,45 +183,24 @@ public class StudentServices {
         }
         return false;
     }
-    
-    private boolean doesStudentNameExist(StudentDTO student){
-        return studentRepo.existsByNameIgnoreCaseAndNotDeleted(
-                null,
-                student.getFirstName(),
-                student.getLastName(),
-                student.getMiddleName());
-    }
 
-    public StudentDTOPage getStudentPage(String studentType, String condition, int pageNo, int pageSize){
-        Sort sort = condition.equalsIgnoreCase("asc") ?
-                Sort.by(Sort.Order.asc("studentDisplayId")) :
-                Sort.by(Sort.Order.desc("studentDisplayId"));
-
-        Page<StudentDTO> studentPage = null;
-        if(studentType.equalsIgnoreCase("new"))
-            studentPage = studentRepo.findByIsNewTrue(PageRequest.of(pageNo-1,pageSize,sort)).map(Student::DTOmapper);
-        else
-            studentPage = studentRepo.findByIsNewFalse(PageRequest.of(pageNo-1,pageSize,sort)).map(Student::DTOmapper);
-
-        return StudentDTOPage.builder()
-                .content(studentPage.getContent())
-                .pageNo(pageNo)
-                .pageSize(pageSize)
-                .totalElements(studentPage.getTotalElements())
-                .totalPages(studentPage.getTotalPages())
-                .isLast(studentPage.isLast())
-                .build();
-    }
-
-    public StudentDTOPage getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize){
+    public PagedResponse getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize, Boolean isFullyPaid){
+        word = NonModelServices.forLikeOperator(word);
         Pageable pageable = PageRequest.of(pageNo-1,pageSize,orderBy(sortBy));
-        Page<StudentDTO> studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable)
-                                                    .map(Student::DTOmapper);
-        return StudentDTOPage.builder()
+        Page<StudentDTO> studentPage;
+
+        if(sortBy.equalsIgnoreCase("gradelevel"))
+            studentPage = studentRepo.findByStudentHandlerDisplayIdOrName(word,pageable,isFullyPaid)
+                    .map(Student::DTOmapper);
+        else
+            studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable,isFullyPaid)
+                    .map(Student::DTOmapper);
+
+        return PagedResponse.builder()
                             .content(studentPage.getContent())
                             .pageNo(pageNo)
                             .pageSize(pageSize)
-                            .totalElements(studentPage.getNumberOfElements())
+                            .totalElements(studentPage.getTotalElements())
                             .totalPages(studentPage.getTotalPages())
                             .isLast(studentPage.isLast())
                             .build();
@@ -226,8 +214,7 @@ public class StudentServices {
         else if(condition.equalsIgnoreCase("studentname"))
             return Sort.by(Sort.Order.asc("s.fullName"));
         else
-            return Sort.by(Sort.Order.asc("s.studentDisplayId"));
+            return Sort.by(Sort.Order.asc("s.status"));
     }
-
 
 }

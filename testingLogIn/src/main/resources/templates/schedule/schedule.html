@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css}">
-    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
-    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css}">
-    <script th:src="@{https://kit.fontawesome.com/a076d05399.js}"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}" defer></script>
 <script th:src="@{/js/sidebar.js}" defer></script>
@@ -25,55 +17,60 @@
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
             <div class="text-link" id="breadcrumb-container">
-                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+                <h4>Schedule</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/schedule">Maintenance - Schedule</a>
+                <a href="/schedule" title="You're currently in this page.">Maintenance - Schedule</a>
             </div>
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
+                        <button type="button" class="search-btn">Search</button>
                     </div>
-                    <div class="sort-container">
-                        <select name="sort" id="sort-select" class="sort-select">
-                            <option value="" disabled selected>Sort</option>
-                        </select>
-                    </div>
+                </div>
+
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="table-ba-to" class="verify-accounts-table">
-            <thead>
-                <tr>
-                    <th>Grade Level</th>
-                    <th>Section</th>
-                    <th>Students</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Grade 1</td>
-                    <td>Malunggay</td>
-                    <td>30</td>
-                    <td>
-                        <div class="action-container">
-                            <a href="/schedules/sched-board" class="view-sched">View Schedule</a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table> <br> <br>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="table-ba-to" class="verify-accounts-table main-table">
+                <thead>
+                    <tr>
+                        <th>Grade Level</th>
+                        <th>Section</th>
+                        <th>Students</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr>
+                        <td>Grade 1</td>
+                        <td>Malunggay</td>
+                        <td>30</td>
+                        <td>
+                            <div class="action-container">
+                                <a href="/schedules/sched-board" class="view-sched">View Schedule</a>
+                            </div>
+                        </td>
+                    </tr> -->
+                </tbody>
+            </table> <br> <br>
+        </div>
+
+
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content scroll-lock">
                 <p id="modalText"></p>
                 <div class="modal-buttons">
                     <button id="confirmAction" class="btn-confirm">Confirm</button>
@@ -85,7 +82,7 @@
         <!-- Modal for edit account -->
         <div class="my-account-container-wrapper">
             <div id="myAccountEditModal" class="my-account-edit-modal modal">
-                <div class="my-account-edit-modal-content">
+                <div class="my-account-edit-modal-content scroll-lock">
                     <h2>My Account Information</h2>
                     <form action="" id="myAccountEditForm">
                         <div class="half-width">
@@ -135,7 +132,7 @@
         <!-- Modal for changing password -->
         <div class="my-account-container-wrapper">
             <div id="changePasswordModal" class="change-password-modal">
-                <div class="change-password-modal-content">
+                <div class="change-password-modal-content scroll-lock">
                     <h2>Change Password</h2>
                     <form action="" id="changePasswordForm">
                         <div class="change-pass-div">
@@ -185,7 +182,7 @@
                 tableBody.innerHTML = "";
 
                 data.forEach(rec => {
-                    console.log(rec);
+                    //console.log(rec);
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <tr>
@@ -203,7 +200,7 @@
                 });
             })
             .catch(error => {
-                console.error("Error fetching data:", error);
+                //console.error("Error fetching data:", error);
             });
     }
 </script>

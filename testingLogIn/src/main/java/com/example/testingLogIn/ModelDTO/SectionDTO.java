@@ -14,6 +14,7 @@ public class SectionDTO {
     private int number;
     private String gradeLevelName;
     private String  adviserName;
+    private int adviserId;
     private String sectionName;
     private int capacity;
     private Integer studentEnrolledCount;

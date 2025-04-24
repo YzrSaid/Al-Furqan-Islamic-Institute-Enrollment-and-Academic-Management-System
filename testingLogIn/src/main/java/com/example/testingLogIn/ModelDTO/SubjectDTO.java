@@ -11,9 +11,10 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class SubjectDTO {
-    
     private int subjectNumber;
     private String gradeLevel;
+    private int levelId;
     private String subjectName;
     private boolean isNotDeleted;
+    private boolean willApplyNow;
 }

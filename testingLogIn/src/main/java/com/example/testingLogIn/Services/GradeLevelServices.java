@@ -3,38 +3,43 @@ package com.example.testingLogIn.Services;
 import com.example.testingLogIn.ModelDTO.GradeLevelDTO;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.GradeLevel;
+import com.example.testingLogIn.Models.SchoolYearSemester;
+import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
-import java.util.ArrayList;
-import java.util.HashSet;
+
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class GradeLevelServices {
 
     @Autowired
-    GradeLevelRepo gradeLevelRepo;
+    private GradeLevelRepo gradeLevelRepo;
+    @Autowired
+    private sySemesterServices semesterServices;
+    @Autowired
+    private EnrollmentRepo enrollmentRepo;
 
-    public boolean addNewGradeLevel(String levelName, String preRequisite) {
+    public void addNewGradeLevel(String levelName, String preRequisite) {
         GradeLevel pre = null;
         if (!preRequisite.equalsIgnoreCase("NONE")) {
             pre = getByName(preRequisite);
             if (pre == null)
                 throw new NullPointerException();
         }
-        if (getByNameNew(levelName) == null ) {
-            GradeLevel newGrade = new GradeLevel();
-            newGrade.setNotDeleted(true);
-            newGrade.setLevelName(levelName);
-            newGrade.setPreRequisite(pre);
-            gradeLevelRepo.save(newGrade);
-            return true;
-        } else
-            return false;
+        if (getByNameNew(levelName) != null )
+            throw new IllegalArgumentException("Grade level name already exists");
+
+        GradeLevel newGrade = new GradeLevel();
+        newGrade.setNotDeleted(true);
+        newGrade.setLevelName(levelName);
+        newGrade.setPreRequisite(pre);
+        gradeLevelRepo.save(newGrade);
     }
 
     public List<GradeLevelDTO> getAllGradeLevelsDTO() {
@@ -70,44 +75,39 @@ public class GradeLevelServices {
     }
 
     public GradeLevelDTO getGradeLevelDTO(int levelId) {
-        return gradeLevelRepo.findAll().stream()
-                .filter(gradelvl -> gradelvl.getLevelId() == levelId && gradelvl.isNotDeleted())
-                .map(GradeLevel::mapperDTO)
-                .findFirst().orElse(null);
+        return gradeLevelRepo.findById(levelId).map(GradeLevel::mapperDTO)
+                .orElseThrow(()->new NullPointerException("Grade Level not found"));
     }
     public GradeLevel getGradeLevel(int levelId) {
-        return gradeLevelRepo.findAll().stream()
-                .filter(gradelvl -> gradelvl.getLevelId() == levelId && gradelvl.isNotDeleted())
-                .findFirst().orElse(null);
+        return gradeLevelRepo.findByIdNotDeleted(levelId)
+                .orElseThrow(()->new NullPointerException("Grade Level not found"));
     }
 
-    public boolean updateGradeLevel(GradeLevelDTO gradeLevel) {
+    @CacheEvict(value = "enrollmentPage",allEntries = true)
+    public void updateGradeLevel(GradeLevelDTO gradeLevel) {
         String preReqWord = gradeLevel.getPreRequisite();
         GradeLevel newPreRequisite = preReqWord.equalsIgnoreCase("NONE") ? null
                 : gradeLevelRepo.findById(Integer.valueOf(preReqWord)).orElse(null);
 
-        GradeLevel updated = gradeLevelRepo.findById(gradeLevel.getLevelId()).orElse(null);
-        if (updated != null) {
+        GradeLevel updated = gradeLevelRepo.findByIdNotDeleted(gradeLevel.getLevelId())
+                .orElseThrow(()->new NullPointerException("Grade Level not found"));
             updated.setLevelName(gradeLevel.getLevelName());
             updated.setPreRequisite(newPreRequisite);
             gradeLevelRepo.save(updated);
-            return true;
-        } else
-            return false;
     }
 
-    public boolean deleteGradeLevel(int levelId) {
-        GradeLevel todelete = gradeLevelRepo.findAll().stream()
-                .filter(gradeL -> gradeL.isNotDeleted() &&
-                        gradeL.getLevelId() == levelId)
-                .findFirst().orElse(null);
+    public void deleteGradeLevel(int levelId) {
+        GradeLevel todelete = gradeLevelRepo.findByIdNotDeleted(levelId)
+                .orElseThrow(()->new NullPointerException(("Grade Level not found")));
 
-        if (todelete != null) {
-            todelete.setNotDeleted(false);
-            gradeLevelRepo.save(todelete);
-            return true;
-        } else
-            return false;
+        int semId = Optional.ofNullable(semesterServices.getCurrentActive())
+                .map(SchoolYearSemester::getSySemNumber).orElse(0);
+
+        if(enrollmentRepo.countGradeLevelAndSection(semId,levelId,null).orElse(0L) > 0L)
+            throw new IllegalArgumentException("Deletion not allowed: This grade level is part of active enrollments");
+
+        todelete.setNotDeleted(false);
+        gradeLevelRepo.save(todelete);
     }
 
     public List<GradeLevelDTO> preRequisiteOfPreRequisite(int gradeLevelId){

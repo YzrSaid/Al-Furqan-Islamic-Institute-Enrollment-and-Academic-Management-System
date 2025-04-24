@@ -3,6 +3,7 @@ package com.example.testingLogIn.WebsiteSecurityConfiguration;
 import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.UserDTO;
+import com.example.testingLogIn.Models.Student;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(indexes = {@Index(name = "idx_user_name", columnList = "username")})
 public class UserModel implements UserDetails {
 
     @Id
@@ -49,6 +51,10 @@ public class UserModel implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private LocalDate birthdate;
+
+    @OneToOne
+    @JoinColumn(name = "student")
+    private Student student;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

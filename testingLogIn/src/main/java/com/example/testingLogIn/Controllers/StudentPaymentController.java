@@ -2,20 +2,11 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.CustomObjects.PaymentObject;
 import com.example.testingLogIn.CustomObjects.StudentPaymentForm;
-import com.example.testingLogIn.ModelDTO.PaymentRecordDTO;
-import com.example.testingLogIn.ModelDTO.PaymentTransactionDTO;
-import com.example.testingLogIn.Models.PaymentTransaction;
-import com.example.testingLogIn.PagedResponse.PaymentTransactionDTOPage;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Repositories.PaymentTransactionRepo;
 import com.example.testingLogIn.Services.PaymentRecordService;
-import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -65,10 +56,10 @@ public class StudentPaymentController{
     }
 
     @GetMapping("/transactions/all")
-    public ResponseEntity<PaymentTransactionDTOPage> getAllTransactions(@RequestParam(required = false) Integer pageNum,
-                                                                        @RequestParam(required = false,defaultValue = "10") Integer pageSize,
-                                                                        @RequestParam(required = false,defaultValue = "Transaction") String particular,
-                                                                        @RequestParam(required = false,defaultValue = "") String q){
+    public ResponseEntity<PagedResponse> getAllTransactions(@RequestParam(required = false) Integer pageNum,
+                                                            @RequestParam(required = false,defaultValue = "10") Integer pageSize,
+                                                            @RequestParam(required = false,defaultValue = "Transaction") String particular,
+                                                            @RequestParam(required = false,defaultValue = "") String q){
         try {
             return new ResponseEntity<>(paymentService.getTransactions(pageNum, pageSize, particular, q), HttpStatus.OK);
         }catch(Exception e){
@@ -90,11 +81,16 @@ public class StudentPaymentController{
 
     //NEW STUDENT PAYMENT FORM
     @GetMapping("/form/{studentId}")                                                    //if gradeLevelId = false (for all time debt) else if gradeLevelId has value, it is for the enrollment Payment form
-    public ResponseEntity<StudentPaymentForm> getPaymentForm(@PathVariable int studentId,@RequestParam(required = false) Integer gradeLevelId){
-        try{
-            return new ResponseEntity<>(paymentService.getStudentPaymentForm(studentId,gradeLevelId),HttpStatus.OK);
-        }catch(Exception e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> getPaymentForm(@PathVariable int studentId,
+                                            @RequestParam(required = false) Integer gradeLevelId,
+                                            @RequestParam(defaultValue = "false",required = false) boolean forBreakDown,
+                                            @RequestParam(defaultValue = "1",required = false) int pageNo,
+                                            @RequestParam(defaultValue = "3",required = false) int pageSize,
+                                            @RequestParam(defaultValue = "false", required = false) boolean forPayment){
+        if(gradeLevelId != null){
+            return new ResponseEntity<>(paymentService.enrollmentPaymentForm(studentId,gradeLevelId),HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(paymentService.getStudentPaymentForm(studentId,forBreakDown,pageNo,pageSize,forPayment),HttpStatus.OK);
         }
     }
 

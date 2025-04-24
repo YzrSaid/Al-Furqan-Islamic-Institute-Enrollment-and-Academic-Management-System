@@ -1,44 +1,39 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
-        <div th:replace="~{fragments/fragment :: topbar}"></div>
-        
-        <div id="theTextLink" class="text-link">
-            <h4>Science</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Grade Management</p>
-            <p>/</p>
-            <p id="grade-and-section">Grade 1 - Rose</p>
-            <p>/</p>
-            <p>Science</p>
-        </div>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-        <div class="search-div">
-            <!-- Searchbox and sort btn -->
-            <div class="search">
-                <div class="search-container">
-                    <input type="text" placeholder="Search..." class="search-input" />
-                    <button class="search-btn">Search</button>
+            <div id="theTextLink" class="text-link">
+                <h4>Science</h4>
+                <p>Main</p>
+                <p>/</p>
+                <p>Grade Management</p>
+                <p>/</p>
+                <p id="grade-and-section">Grade 1 - Rose</p>
+                <p>/</p>
+                <p>Science</p>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+                    </div>
                 </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
@@ -51,42 +46,38 @@
             </div>
         </div>
 
-        <!-- Table -->
-        <table id="restaurant-table" class="grade-per-subject-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Grade</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Science</td>
-                    <td>Raven Timpanco</td>
-                    <td><input type="text" name="student-grade" id="student-grade" readonly></td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="action-container action">
-                                <a href=""><img src="/images/icons/add-button.png" alt="add-icon"></a>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="restaurant-table" class="grade-per-subject-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Grade</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr>
+                        <td>Science</td>
+                        <td>Raven Timpanco</td>
+                        <td><input type="text" name="student-grade" id="student-grade" readonly></td>
+                        <td>
+                            <div class="dropdown">
+                                <div class="action-container action">
+                                    <a href=""><img src="/images/icons/add-button.png" alt="add-icon"></a>
+                                </div>
+                               
+                                <div class="action-container action">
+                                    <a href=""><img src="/images/icons/check.png" alt="save-icon"></a>
+                                </div>
                             </div>
+                        </td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
 
-                            <div class="action-container action">
-                                <a href=""><img src="/images/icons/compose.png" alt="edit-icon"></a>
-                            </div>
-
-                            <div class="action-container action">
-                                <a href=""><img src="/images/icons/bin.png" alt="delete-icon"></a>
-                            </div>
-                            <div class="action-container action">
-                                <a href=""><img src="/images/icons/check.png" alt="save-icon"></a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
         <!-- Save Button -->
         <!-- <div class="add-something-btn-container">
             <button class="add-something-btn" id="save-grade-btn" data-open-modal="confirmationModal">Save Grade</button>
@@ -119,7 +110,7 @@
                 let subjectName;
                 let sectionName;
                 data.forEach(rec => {
-                    console.log(rec);
+                    //console.log(rec);
                     if (!subjectName && rec.subjectName) {
                         subjectName = rec.subjectName;
                     }
@@ -132,25 +123,29 @@
                     <tr>
                         <td>${rec.studentId}</td>
                         <td>${rec.studentLastName}, ${rec.studentFirstName} ${rec.studentMiddleName}</td>
-                        <td><input type="number" min="1" max="100" name="student-grade" class="student-grade" value="${rec.subjectGrade}" id="student-grade-${rec.studGradeId}"></td>`;
+                        <td><input type="number" min="1" max="100" name="student-grade" class="student-grade" value="${rec.subjectGrade ?? ''}" id="student-grade-${rec.studGradeId}" readonly></td>`;
                     if (rec.subjectGrade === null) {
                         row.innerHTML += `
-                                    <td>
-                                            <div class="action-container action">
-                                                <a href="#" class="save-grade" data-grade-id="${rec.studGradeId}">
-                                                    <img src="/images/icons/check.png" alt="save-icon">
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            `;
+                        <td>
+                            <div class="action-container action">
+                                <a href="#" class="add-grade" data-grade-id="${rec.studGradeId}">
+                                    <img src="/images/icons/add-button.png" alt="add-icon">
+                                </a>
+                                <a href="#" class="cancel-edit" data-grade-id="${rec.studGradeId}" style="display: none;">
+                                    <img src="/images/icons/cross.png" alt="cancel-icon">
+                                </a>
+                                 <a href="#" class="save-grade" data-grade-id="${rec.studGradeId}" style="display: none;">
+                                    <img src="/images/icons/check.png" alt="save-icon">
+                                </a>
+                            </div>
+                        </td>
+                    `;
                     } else {
                         row.innerHTML += `
                                     <td>
                                         <div class="dropdown">
                                             <div class="action-container action">
-                                                <a href=""><img src="/images/icons/compose.png" alt="edit-icon"></a>
+                                              
                                             </div>
                                         </div>
                                     </td>
@@ -185,13 +180,85 @@
                 });
             })
             .catch(error => {
-                console.error("Error fetching data:", error);
+                //console.error("Error fetching data:", error);
             });
     }
 
-    function saveGrade(gradeId, subGrade) {
-        console.log("Grade ID:", gradeId);
-        console.log("Grade Value:", subGrade);
+    document.addEventListener("click", function (e) {
+        if (e.target.closest(".add-grade")) {
+            e.preventDefault();
+            const row = e.target.closest("tr");
+            const input = row.querySelector(".student-grade");
+            const saveBtn = row.querySelector(".save-grade");
+            const cancelBtn = row.querySelector(".cancel-edit");
+            const addBtn = row.querySelector(".add-grade");
+
+            input.removeAttribute("readonly");
+            input.dataset.originalValue = input.value;
+            input.focus();
+            saveBtn.style.display = "inline-block";
+            cancelBtn.style.display = "inline-block";
+            addBtn.style.display = "none";
+        }
+
+        if (e.target.closest(".edit-grade")) {
+            e.preventDefault();
+            const row = e.target.closest("tr");
+            const input = row.querySelector(".student-grade");
+            const saveBtn = row.querySelector(".save-grade");
+            const cancelBtn = row.querySelector(".cancel-edit");
+            const editBtn = row.querySelector(".edit-grade");
+
+            input.removeAttribute("readonly");
+            input.dataset.originalValue = input.value;
+            input.focus();
+            saveBtn.style.display = "inline-block";
+            cancelBtn.style.display = "inline-block";
+            editBtn.style.display = "none";
+        }
+
+        if (e.target.closest(".cancel-edit")) {
+            e.preventDefault();
+            const row = e.target.closest("tr");
+            const input = row.querySelector(".student-grade");
+            const editBtn = row.querySelector(".edit-grade");
+            const saveBtn = row.querySelector(".save-grade");
+            const cancelBtn = row.querySelector(".cancel-edit");
+            const addBtn = row.querySelector(".add-grade");
+
+            input.value = input.dataset.originalValue || '';
+            input.setAttribute("readonly", true);
+            saveBtn.style.display = "none";
+            cancelBtn.style.display = "none";
+
+            if (editBtn) editBtn.style.display = "inline-block";
+            if (addBtn) addBtn.style.display = "inline-block";
+        }
+
+        if (e.target.closest(".save-grade")) {
+            e.preventDefault();
+            const row = e.target.closest("tr");
+            const input = row.querySelector(".student-grade");
+            const gradeId = e.target.closest("a").dataset.gradeId;
+            const newValue = input.value;
+
+            saveGrade(gradeId, newValue, input, row);
+        }
+    });
+
+    function saveGrade(gradeId, subGrade, inputElement, rowElement) {
+        const trimmed = subGrade.trim();
+
+        if (trimmed === "") {
+            showErrorModal("❌ Error: Please enter a grade.");
+            return;
+        }
+
+        const grade = Number(trimmed);
+        if (isNaN(grade) || grade < 1 || grade > 100) {
+            showErrorModal("❌ Error: Grade must be between 1 and 100.");
+            return;
+        }
 
         fetch('/student-grades/save', {
             method: 'PUT',
@@ -200,22 +267,31 @@
             },
             body: JSON.stringify({
                 studGradeId: gradeId,
-                subjectGrade: subGrade
+                subjectGrade: grade
             }),
         })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                return response.text(); // Parse the response as plain text
+                return response.text();
             })
             .then(data => {
-                console.log('Success:', data); // Log the plain text response
-                window.location.reload(); // Reload the page
+                // Success
+                inputElement.setAttribute("readonly", true);
+                rowElement.querySelector(".save-grade").style.display = "none";
+                rowElement.querySelector(".cancel-edit").style.display = "none";
+
+                const editBtn = rowElement.querySelector(".edit-grade");
+                const addBtn = rowElement.querySelector(".add-grade");
+
+                if (editBtn) editBtn.style.display = "inline-block";
+                if (addBtn) addBtn.style.display = "inline-block";
+
+                showSuccessModal("✅ Grade saved successfully!");
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to save grade. Please try again.'); // Show an error message to the user
+                showErrorModal("❌ Failed to save grade. Please try again.");
             });
     }
 </script>

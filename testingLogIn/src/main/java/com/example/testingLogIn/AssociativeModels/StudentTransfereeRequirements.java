@@ -31,4 +31,9 @@ public class StudentTransfereeRequirements {
 
     private boolean isNotDeleted;
 
+    public StudentTransfereeRequirements(Student student, TransfereeRequirements requirement){
+        this.requirement = requirement;
+        this.student = student;
+        isNotDeleted = true;
+    }
 }

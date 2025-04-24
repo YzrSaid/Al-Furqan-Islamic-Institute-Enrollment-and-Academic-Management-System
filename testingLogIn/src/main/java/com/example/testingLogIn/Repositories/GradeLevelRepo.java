@@ -26,4 +26,11 @@ public interface GradeLevelRepo extends JpaRepository<GradeLevel,Integer> {
             "WHERE gl.isNotDeleted = TRUE "+
             "AND gl.preRequisite.levelId = :preRequisiteId")
     Optional<GradeLevel> findSuccessorOnly(@Param("preRequisiteId") int preRequisiteId);
+
+    @Query("""
+            SELECT gl FROM GradeLevel gl
+            WHERE gl.levelId = :levelId
+            AND gl.isNotDeleted
+            """)
+    Optional<GradeLevel> findByIdNotDeleted(int levelId);
 }

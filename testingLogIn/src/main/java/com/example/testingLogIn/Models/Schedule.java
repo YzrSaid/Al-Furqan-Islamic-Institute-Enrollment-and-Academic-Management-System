@@ -46,7 +46,8 @@ public class Schedule {
     public ScheduleDTO mapper(){
         return ScheduleDTO.builder()
                             .scheduleNumber(scheduleNumber)
-                            .teacherName(teacher.getFirstname()+" "+teacher.getLastname())
+                            .teacherName(teacher.getFullName())
+                            .teacherId(teacher.getStaffId())
                             .subjectId(subject.getSubjectNumber())
                             .subject(subject.getSubjectName())
 

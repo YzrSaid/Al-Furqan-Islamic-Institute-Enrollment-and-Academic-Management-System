@@ -1,22 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Furqan Islamic Institute Incorporated</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <script type="text/javascript" th:src="@{/js/publicip.js}"></script>
+<head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
 
 <body>
-    <!-- Sidebar -->
+    <!-- Sidebar (ADMIN) -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
@@ -25,433 +16,300 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link" id="breadcrumb-container">
                 <h4>Listing</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/enrollment/listing">Enrollment - Listing</a>
+                <a href="/enrollment/listing" title="You're currently in this page.">Enrollment - Listing</a>
             </div>
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
-                <div class="search">
+                <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
-                        <button onclick="goList(1,1)" class="search-btn">Search</button>
+                        <button type="button" onclick="goList(1)" class="search-btn">Search</button>
+                    </div>
+
+                    <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
+                    <div class="menu-container">
+                        <button type="button" class="menu-btn" aria-label="More options">
+                            <span class="menu-icon">⋮</span>
+                        </button>
+                        <div class="menu-dropdown">
+                            <button type="button" class="menu-item" data-open-modal="newStudentModal"
+                                title="Add New Student">Add New Student</button>
+                            <div class="menu-sort-container">
+                                <select title="sort" name="sort" onchange="goList(1)" id="sort-select"
+                                    class="sort-select">
+                                    <option value="All" selected>All</option>
+                                    <option value="Listing">Listing</option>
+                                    <option value="Assessment">Assessment</option>
+                                    <option value="Payment">Payment</option>
+                                    <option value="Enrolled">Enrolled</option>
+                                    <option value="Not_registered">Not listed</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button class="new-student" data-open-modal="newStudentModal">NEW STUDENT</button>
+                        <button type="button" class="btn-confirm" data-open-modal="newStudentModal"
+                            title="Add New Student">Add New Student</button>
                     </div>
+                </div>
 
-                    <div class="sort-container">
-                        <select title="sort" name="sort" onchange="goList(1,1)" id="sort-select" class="sort-select">
-                            <option value="All" selected>All</option>
-                            <option value="Listing">Listing</option>
-                            <option value="Assessment">Assessment</option>
-                            <option value="Payment">Payment</option>
-                            <option value="Enrolled">Enrolled</option>
-                            <option value="Not_registered">Wala sa listing</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                    </div>
+                <div class="sort-container">
+                    <select title="sort" name="sort" onchange="goList(1)" id="sort-select" class="sort-select">
+                        <option value="All" selected>All</option>
+                        <option value="Listing">Listing</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Payment">Payment</option>
+                        <option value="Enrolled">Enrolled</option>
+                        <option value="Not_registered">Not listed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-
-        <!-- Table -->
-        <table id="lamesa" class="listing-table">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Student Name</th>
-                    <th>Enrolling to</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <div class="status" id="status-registration"></div>
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i> <!-- Icon is the button -->
-                                </button>
-                            </div>
-                            <div class="dropdown-status-content" id="dropdown-listing">
-                                <a href="#" data-action="listingAddGradeLevel"
-                                    data-open-modal="gradeLevelModal">Proceed</a>
-                                <a href="#" data-action="cancelRegistration" data-open-modal="confirmationModal"
-                                    data-message="Are you sure you want to cancel this registration?">Cancel
-                                    Registration</a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="lamesa" class="listing-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Enrolling to</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
         <!-- Pagination -->
         <div class="pagination-container">
-            <div id="pagination" class="pagination">
-                <button id="prevPage" disabled>&laquo;</button>
-                <div id="pageNumbers"></div>
-                <button id="nextPage">&raquo;</button>
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
             </div>
         </div>
 
         <!-- Modal for student information -->
         <div id="studentInformationModal" class="student-information-modal modal">
-            <!-- Close Button -->
-            <span class="close-modal exit-btn" data-close-modal="studentInformationModal">&times;</span>
-            <div class="student-information-modal-content">
-                <h1>Student Information</h1>
-                <form method="" action="" id="studentInformationForm">
-                    <div class="header">
-                        <div class="half-unique">
-                            <label for="student-id">Student ID: </label>
-                            <input type="text" id="student-id">
-                        </div> <br>
+            <div class="student-information-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h1>Student Information</h1>
+                    <form method="" action="" id="studentInformationForm">
+                        <div class="header">
+                            <div class="half-unique">
+                                <label for="student-id">Student ID: </label>
+                                <input type="text" readonly class="student-id-report" id="student-id">
+                            </div> <br>
 
-                        <div class="other-info-container">
-                            <div class="half-other-info" id="stud-type-row">
-                                <label for="stud-type">Student Type:</label>
-                                <h6 id="stud-type">New</h6>
-                            </div>
+                            <div class="other-info-container">
+                                <div class="half-other-info" id="stud-type-row">
+                                    <label for="stud-type">Student Type:</label>
+                                    <h6 id="stud-type">New</h6>
+                                </div>
+                                <div class="checkbox-container">
+                                    <div class="checkbox">
+                                        <label for="scholar">Scholar:</label>
+                                        <h6 id="isScholar">Yes</h6>
 
-                            <div class="half-other-info" id="scholar-row">
-                                <label for="type">Scholar:</label>
-                                <h6>YES</h6>
-                            </div>
+                                        <button type="button" id="dropdown-scholar"> <img
+                                                src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                        </button>
 
-                            <div class="half-other-info" id="transferee-row">
-                                <label for="type">Transferee:</label>
-                                <h6>NO</h6>
+                                        <div id="scholar-popover" name="add-discount" class="styled-popover">
+                                            <div id="discounts-rec" class="checkbox-transferee-reqs-group">
+                                                <!--Ibutang ang mga transferee requiremetns dri-->
+                                            </div> <br>
+                                            <div>
+                                                <button type="button" style="width: 100%;"
+                                                    data-open-modal="confirmationModal" data-action="editDiscounts"
+                                                    data-message="Are you sure you want to update the student discounts?"
+                                                    class="btn-confirm">Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="checkbox">
+                                        <label for="isTransferee">Transferee:</label>
+                                        <input type="checkbox" id="isTransferee">
+
+                                        <button type="button" id="dropdown-transferee"> <img
+                                                src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                        </button>
+
+                                        <!-- Popover lives right below the button now -->
+                                        <div id="transferee-popover" name="add-transferee-req" class="styled-popover">
+                                            <!-- Transferee Requirements Section -->
+                                            <div class="transferee-requirements">
+                                                <h6>Requirements:</h6>
+                                                <div id="transfereeReq-rec" class="checkbox-transferee-reqs-group">
+                                                    <!--Ibutang ang mga transferee requiremetns dri-->
+                                                </div> <br>
+
+                                                <!-- Update Button -->
+                                                <div>
+                                                    <button type="button" style="width: 100%;"
+                                                        data-open-modal="confirmationModal"
+                                                        data-action="updateRequirements"
+                                                        data-message="Are you sure you want to update the transferee requirements?"
+                                                        class="btn-confirm">Update</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div style="display: flex; align-content: center; justify-items: left;">
-                        <h2>Personal Information</h2>
-                    </div>
+                        <div style="display: flex; align-content: center; justify-items: left;">
+                            <h2>Personal Information</h2>
+                        </div>
 
-                    <div class="container">
-                        <div class="row">
-                            <div class="column1">
-                                <div>
-                                    <label for="name">Name</label>
-                                    <div class="student-form-group half">
-                                        <input type="text" id="firstName">
-                                        <input type="text" id="middleName">
-                                        <input type="text" id="lastName">
+                        <div class="container">
+                            <div class="row">
+                                <div class="column1">
+                                    <div>
+                                        <label for="name">Name</label>
+                                        <div class="student-form-group half">
+                                            <input readonly type="text" class="name" id="firstName">
+                                            <input readonly type="text" class="name" id="middleName">
+                                            <input readonly type="text" class="name" id="lastName">
+                                        </div>
+                                        <div class="small-text">
+                                            <p class="first-name-p">First</p>
+                                            <p class="middle-name-p">Middle</p>
+                                            <p class="last-name-p">Last</p>
+                                        </div>
                                     </div>
-                                    <div class="small-text">
-                                        <p>First</p>
-                                        <p>Middle</p>
-                                        <p>Last</p>
+                                </div>
+                                <div class="column2">
+                                    <div class="student-form-group half-stud-info-small">
+                                        <label for="gender">Gender:</label>
+                                        <input readonly type="text" class="gender" id="gender">
+
+                                        <label for="birthdate">Birthdate:</label>
+                                        <input type="date" class="birthdate" id="birthdate" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="column1">
+                                    <div class="student-form-group">
+                                        <div>
+                                            <label for="address">Address:</label>
+                                            <div class="student-form-group address-div half-unique">
+                                                <input readonly type="text" class="address" id="street" required
+                                                    placeholder="Street">
+                                                <input readonly type="text" class="address" id="barangay" required
+                                                    placeholder="Barangay">
+                                                <input readonly type="text" class="address" id="city" required
+                                                    placeholder="City">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="column2">
+                                    <label>Place of Birth:</label>
+                                    <div class="student-form-group">
+                                        <input readonly type="text" id="placeOfBirth" class="place-of-birth">
                                     </div>
                                 </div>
                             </div>
-                            <div class="column2">
-                                <!-- Gender, BDate, and Scholar -->
-                                <div class="student-form-group half-stud-info-small" style="margin-bottom: 0px;">
-                                    <label for="gender">Gender:</label>
-                                    <input type="text" id="gender" style="width: 80px;">
+                        </div>
 
-                                    <label for="birthdate">Birthdate:</label>
-                                    <input type="date" id="birthdate" readonly style="width: 120px;">
-                                </div>
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>Additional Information</h2>
+                        </div>
+
+                        <div>
+                            <h6>Father's Information</h6>
+                            <div class="student-form-group address-div">
+                                <label for="fatherName">Name:</label>
+                                <input readonly type="text" class="parent-name" id="fatherName">
+
+                                <label for="fatherOccupation">Occupation:</label>
+                                <input readonly type="text" class="parent-occupation" id="fatherOccupation">
+                            </div> <br>
+                        </div>
+                        <div>
+                            <h6>Mother's Information</h6>
+                            <div class="student-form-group address-div">
+                                <label for="motherName">Name:</label>
+                                <input readonly type="text" class="parent-name" id="motherName">
+
+                                <label for="motherOccupation">Occupation:</label>
+                                <input readonly type="text" class="parent-occupation" id="motherOccupation">
+                            </div> <br>
+                        </div>
+
+                        <h6>Guardian's Information</h6>
+                        <div class="student-form-group address-div">
+                            <label for="guardianName">Name:</label>
+                            <input readonly type="text" class="parent-name" id="guardianName">
+
+                            <label for="guardianOccupation">Occupation:</label>
+                            <input readonly type="text" class="parent-occupation" id="guardianOccupation">
+                        </div> <br>
+
+                        <div class="student-form-group address-div">
+                            <label for="guardianContactNumber">Contact Number:</label>
+                            <input readonly type="text" class="guardian-number" id="guardianContactNumber">
+
+                            <label for="guardianAddress">Address:</label>
+                            <input readonly type="text" class="guardian-address" id="guardianAddress">
+                        </div> <br>
+
+
+                        <div class="transferee-section">
+                            <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                                <h2>For Transferees Only</h2>
                             </div>
 
                             <div class="student-form-group">
-                                <div>
-                                    <label for="address">Address:</label>
-                                    <div class="student-form-group half-unique">
-                                        <input type="text" id="street" required placeholder="Street">
-                                        <input type="text" id="barangay" required placeholder="Barangay">
-                                        <input type="text" id="city" required placeholder="City">
-                                    </div>
-                                </div>
+                                <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
+                                <input readonly type="text" id="lastGradeLevelCompleted">
 
-                                <div>
-                                    <label>Place of Birth:</label>
-                                    <div class="student-form-group">
-                                        <input type="text" id="placeOfBirth" class="place-of-birth"
-                                            style="width: 390px;">
-                                    </div>
-                                </div>
-                            </div>
+                                <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed:</label>
+                                <input readonly type="text" id="lastMadrasaYearCompleted">
+                            </div> <br>
+
+                            <div class="student-form-group">
+                                <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                                <input readonly type="text" id="madrasaNameLastAttended">
+                            </div> <br>
+
+                            <div class="student-form-group">
+                                <label for="madrasaAddress">Madrasa Address:</label>
+                                <input readonly type="text" id="madrasaAddress">
+                            </div> <br>
                         </div>
-                    </div>
+                    </form>
+                </div>
 
-                    <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                        <h2>Additional Information</h2>
-                    </div>
-
-                    <div>
-                        <h6>Father's Information</h6>
-                        <div class="student-form-group">
-                            <label for="fatherName">Name:</label>
-                            <input type="text" id="fatherName">
-
-                            <label for="fatherOccupation">Occupation:</label>
-                            <input type="text" id="fatherOccupation">
-                        </div> <br>
-                    </div>
-                    <div>
-                        <h6>Mother's Information</h6>
-                        <div class="student-form-group">
-                            <label for="motherName">Name:</label>
-                            <input type="text" id="motherName">
-
-                            <label for="motherOccupation">Occupation:</label>
-                            <input type="text" id="motherOccupation">
-                        </div> <br>
-                    </div>
-
-                    <h6>Guardian's Information</h6>
-                    <div class="student-form-group">
-                        <label for="guardianName">Name:</label>
-                        <input type="text" id="guardianName">
-
-                        <label for="guardianOccupation">Occupation:</label>
-                        <input type="text" id="guardianOccupation">
-                    </div> <br>
-
-                    <div class="student-form-group">
-                        <label for="guardianContactNumber">Contact Number:</label>
-                        <input type="text" id="guardianContactNumber" style="width: 385px;">
-
-                        <label for="guardianAddress">Address:</label>
-                        <input type="text" id="guardianAddress" style="width: 355px;">
-                    </div> <br>
-
-                    <div class="transferee-section">
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                            <h2>For Transferees Only</h2>
-                        </div>
-
-                        <!-- Transferee Requirements Section -->
-                        <div class="transferee-requirements">
-                            <h4>Requirements</h4>
-                            <div id="transReqRecord" class="checkbox-transferee-reqs-group">
-                                <!--naka check na daan ang mga filled-->
-                            </div>
-
-                            <!-- Update Button -->
-                            <div style="margin-top: 15px;">
-                                <button type="button" data-action="editGradeLevel"
-                                    data-message="Are you sure you want to update this grade level?"
-                                    id="updateRequirementsBtn" class="btn-confirm">Update</button>
-                            </div>
-                        </div>
-
-                        <div class="student-form-group">
-                            <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                            <input type="text" id="lastGradeLevelCompleted">
-
-                            <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                            <input type="text" id="lastMadrasaYearCompleted">
-                        </div> <br>
-
-                        <div class="student-form-group">
-                            <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                            <input type="text" id="madrasaNameLastAttended">
-                        </div> <br>
-
-                        <div class="student-form-group">
-                            <label for="madrasaAddress">Madrasa Address:</label>
-                            <input type="text" id="madrasaAddress">
-                        </div> <br>
-                    </div>
-
-                    <div style="display: flex; gap: 365px;">
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                            <h2>Financial Information</h2>
-                        </div>
-
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                            <h2>Book Distribution</h2>
-                        </div>
-                    </div>
-
-                    <div class="container-two">
-                        <div class="column-main">
-                            <p>Recent Transactions</p>
-                            <div class="table-container">
-                                <table class="mini-table" id="payment-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Book</td>
-                                            <td><span>P</span>2,000</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="status-payments">Unpaid</div>
-                                                </div>
-                                            </td>
-                                            <td>February 12, 2025</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin: 0px;">
-                                <div style="display: flex; gap: 10px;">
-                                    <h6>Balance:</h6>
-                                    <h6>1, 000</h6>
-                                </div>
-                                <button id="transaction-record-btn">View Record</button>
-                            </div>
-
-                        </div>
-
-                        <div class="column-main">
-                            <p>Recent Distributions</p>
-                            <div class="table-container">
-                                <table class="mini-table" id="distribution-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Grade Level</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Grade 1</td>
-                                            <td>February 12, 2025</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="status-distribution">Completed</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div> <br>
-
-                    <div>
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
-                            <h2>Grades</h2>
-                        </div>
-                    </div>
-
-                    <div class="container-two">
-                        <div class="column-main">
-                            <div class="table-container">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>School Year:</label>
-                                        <h6 id="sy">2025-2026</h6>
-                                    </div>
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>Semester:</label>
-                                        <h6 id="sem">1st Semester</h6>
-                                    </div>
-                                </div>
-                                <table class="mini-table" id="grades-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                            <th>Remarks</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <td>English</td>
-                                            <td>78</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="grade-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr id="average-row">
-                                            <td>Average</td>
-                                            <td>90</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="average-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="column-main">
-                            <div class="table-container">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>School Year:</label>
-                                        <h6 id="sy">2025-2026</h6>
-                                    </div>
-                                    <div style="display: flex; gap: 8px;">
-                                        <label>Semester:</label>
-                                        <h6 id="sem">1st Semester</h6>
-                                    </div>
-                                </div>
-                                <table class="mini-table" id="grades-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                            <th>Remarks</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <td>English</td>
-                                            <td>78</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="grade-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr id="average-row">
-                                            <td>Average</td>
-                                            <td>90</td>
-                                            <td>
-                                                <div class="status-container">
-                                                    <div class="status" id="average-remarks">Pass</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-cancel"
-                            data-close-modal="studentInformationModal">Close</button>
-                    </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" data-close-modal="studentInformationModal">Close</button>
+                </div>
             </div>
             </form>
         </div>
@@ -459,11 +317,11 @@
 
     <!-- Modal for confirmation -->
     <div id="confirmationModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content scroll-lock">
             <p id="modalText"></p>
-            <div class="modal-buttons">
-                <button id="confirmAction" class="btn-confirm">Confirm</button>
-                <button class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+            <div class="confirmation-modal-buttons">
+                <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
             </div>
         </div>
     </div>
@@ -471,105 +329,106 @@
 
     <!-- Modal for adding a section to what grade level it will be enrolled to (assessment) -->
     <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
-        <div class="add-grade-level-assessment-modal-content">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="addGradeLevelAssessmentModal">&times;</span>
+        <div class="add-grade-level-assessment-modal-content scroll-lock">
+            <div class="modal-body">
+                <h2>Promote To</h2>
 
-            <h2>Promote To</h2>
+                <label for="grade-level">Grade Level:</label>
+                <input type="text" id="grade-level" readonly>
 
-            <label for="grade-level">Grade Level:</label>
-            <input type="text" id="grade-level" readonly>
-
-            <label for="section">Section:</label>
-            <select name="section" id="section">
-                <option value="" disabled selected>Choose</option>
-            </select>
+                <label for="section">Section:</label>
+                <select name="section" id="section">
+                    <option value="" disabled selected>Choose</option>
+                </select>
 
 
-            <div class="modal-buttons">
-                <button type="button" class="btn-confirm" data-action="proceedToPayment"
-                    data-message="Are you sure you want to proceed with payment?" id=""
-                    data-open-modal="confirmationModal">
-                    Confirm
-                </button>
-                <button type="button" class="btn-cancel" data-close-modal="addGradeLevelAssessmentModal">Cancel</button>
+                <div class="modal-buttons"
+                    style="display: flex;justify-content: center;align-items: center;gap: 24px;margin-top: 1rem;flex-wrap: wrap;width: 100%;">
+                    <button type="button" class="btn-cancel"
+                        data-close-modal="addGradeLevelAssessmentModal">Cancel</button><button type="button"
+                        class="btn-confirm" data-action="proceedToPayment"
+                        data-message="Are you sure you want to proceed with payment?"
+                        data-open-modal="confirmationModal" title="Confirm Button">
+                        Confirm
+                    </button>
+
+                </div>
+
             </div>
         </div>
     </div>
 
     <!-- Modal for listOfPaymentsModal -->
     <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
-        <div class="list-of-payments-modal-content">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="listOfPaymentsModal">&times;</span>
+        <div class="list-of-payments-modal-content scroll-lock">
+            <div class="modal-body">
+                <h2>List of Payments</h2>
 
-            <h2>List of Payments</h2>
+                <div class="half-width">
+                    <label for="student-id-list">Student ID:</label>
+                    <h6 id="student-id-list"></h6>
+                </div>
+                <div class="half-width">
+                    <label for="student-name">Student Name:</label>
+                    <h6 id="student-name"></h6>
+                </div> <br>
 
-            <div class="half-width">
-                <label for="student-id-list">Student ID:</label>
-                <h6 id="student-id-list"></h6>
+                <!-- List of Payments Table -->
+
+                <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Req. Amount</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
-            <div class="half-width">
-                <label for="student-name">Student Name:</label>
-                <h6 id="student-name"></h6>
-            </div> <br>
-
-            <!-- List of Payments Table -->
-            <table id="table-ni-kharl" class="view-list-of-payments-table">
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Req. Amount</th>
-                        <th>Amount Paid</th>
-                        <th>Balance</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-
             <!-- Add Payment button -->
-            <div class="action" id="add-payment-btn">
-                <button type="button" id="open-add-payment-modal" data-open-modal="addPaymentModal">Add
+            <div class="modal-buttons" id="add-payment-btn">
+                <button type="button" class="btn-confirm" data-open-modal="addPaymentModal">Add
                     Payment</button>
+                <button type="button" class="btn-cancel" data-close-modal="listOfPaymentsModal">Close</button>
             </div>
-
         </div>
     </div>
 
 
     <!-- Modal for listing add grade level -->
     <div id="gradeLevelModal" class="grade-level-modal modal">
-        <div class="grade-level-modal-content">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="gradeLevelModal">&times;</span>
-
-            <h2>Enroll To</h2>
-            <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
-                <label for="levelName">Grade Level Name:</label>
-                <select name="levelName" id="levelName">
-                    <option value="" disabled>Choose a Grade Level</option>
-                </select>
-                <br><br>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-confirm" data-action="proceedAssessment"
-                        data-message="Are you sure you want to proceed this registration from Listing to Assessment?"
-                        id="confirmGradeLevel" data-open-modal="confirmationModal">
-                        Confirm
-                    </button>
-                    <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
-                </div>
-            </form>
+        <div class="grade-level-modal-content scroll-lock">
+            <div class="modal-body">
+                <h2>Enroll To</h2>
+                <form method="post" action="/gradelevelmaintenance/add" id="gradeLevelForm">
+                    <label for="levelName">Grade Level Name:</label>
+                    <select name="levelName" id="levelName">
+                        <option value="" disabled>Choose a Grade Level</option>
+                    </select>
+                    <br><br>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="proceedAssessment"
+                            data-message="Are you sure you want to proceed this registration from Listing to Assessment?"
+                            id="confirmGradeLevel" data-open-modal="confirmationModal">
+                            Confirm
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelModal">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Error Modal -->
     <div id="errorModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content scroll-lock">
             <p id="errorMessage"></p>
             <div class="modal-buttons">
-                <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                <button type="button" class="error-btn-cancel" data-close-modal="errorModal">Close</button>
             </div>
         </div>
     </div>
@@ -585,9 +444,7 @@
 
     <!-- Modal for adding a a section to what grade level it will be enrolled to (assessment) -->
     <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
-        <div class="add-grade-level-assessment-modal-content">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="addGradeLevelAssessmentModal">&times;</span>
+        <div class="add-grade-level-assessment-modal-content scroll-lock">
 
             <h2>Promote To</h2>
 
@@ -613,69 +470,25 @@
 
     <!-- Modal for viewing grades -->
     <div id="viewGradesModal" class="view-grades-modal modal">
-        <div class="view-grades-modal-content">
-            <!-- Close Button -->
-            <span class="close-modal" data-close-modal="viewGradesModal">&times;</span>
+        <div class="view-grades-modal-content scroll-lock">
+            <div class="modal-body">
+                <h2>Student Grades</h2>
 
-            <h2>Student Grades</h2>
+                <div class="half-width view-studId" id="view-grade-studId">
+                    <label for="student-grade-id">Student ID:</label>
+                    <h6 id="student-grade-id"></h6>
+                </div>
+                <div class="half-width view-studName" id="view-grade-studName">
+                    <label for="student-grade-name">Student Name:</label>
+                    <h6 id="student-grade-name">Martin Francisco</h6>
+                </div> <br>
 
-            <div class="half-width" id="view-grade-studId">
-                <label for="student-grade-id">Student ID:</label>
-                <h6 id="student-grade-id"></h6>
+                <!-- Grades Table -->
+                <div id="preRequisite-grades"></div>
             </div>
-            <div class="half-width" id="view-grade-studName">
-                <label for="student-grade-name">Student Name:</label>
-                <h6 id="student-grade-name">Martin Francisco</h6>
-            </div> <br>
-
-            <!-- Grades Table -->
-            <table id="lamesaa" class="view-grades-table">
-                <thead>
-                    <tr>
-                        <th>Subject ID</th>
-                        <th>Subject</th>
-                        <th>Grade</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td>001</td>
-                        <td>English</td>
-                        <td>78</td>
-                        <td>
-                            <div class="status-container">
-                                <div class="status" id="grade-remarks">Pass</div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr id="average-row">
-                        <td colspan="2">Average</td>
-                        <td>90</td>
-                        <td>
-                            <div class="status-container">
-                                <div class="status" id="average-remarks">Pass</div>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- <div class="half-width" id="view-grade-average">
-                <label for="grade-average">Final Average:</label>
-                <input type="text" id="average-input" readonly value="90">
-            </div>
-            
-            <div class="half-width" id="view-grade-remarks">
-                <label for="grade-average">Remarks:</label>
-                <div class="status-container">
-                    <div class="status" id="grade-remarks">Pass</div>
-                </div>  
-            </div> -->
 
             <!-- Close button -->
-            <div class="close-button" id="view-grades-close-btn">
+            <div class="modal-buttons">
                 <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
                     id="close-button">Close</button>
             </div>
@@ -684,151 +497,175 @@
 
     <!-- Modal for New/Transferee Student Enrollment -->
     <div id="newStudentModal" class="student-modal modal">
-        <!-- Close Button -->
-        <span class="close-modal exit-btn" data-close-modal="newStudentModal">&times;</span>
-
-        <div class="student-modal-content">
-            <h2>Student Information</h2>
-            <form id="studentForm">
-                <div class="header">
-                    <h5>Personal Information</h5>
-                </div>
-
-                <div class="student-form-group">
-                    <label for="studentFirstName">First Name:</label>
-                    <input type="text" name="firstname" id="studentFirstName" required>
-
-                    <label for="studentLastName">Last Name:</label>
-                    <input type="text" name="lastname" id="studentLastName" required>
-
-                    <label for="studentMiddleName">Middle Name:</label>
-                    <input type="text" name="middlename" id="studentMiddleName" placeholder="Optional">
-                </div> <br>
-
-                <div class="student-form-group">
-                    <label for="gender">Gender:</label>
-                    <select id="studgender" required>
-                        <option value="" disabled selected>Select Gender</option>
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
-                    </select>
-
-                    <label for="birthdate">Birthdate:</label>
-                    <input type="date" id="studbirthdate" required>
-
-                    <div class="checkbox">
-                        <label for="scholar">Scholar:</label>
-                        <input type="checkbox" id="scholar">
+        <div class="student-modal-content scroll-lock">
+            <div class="modal-body">
+                <h1>Student Information</h1>
+                <form id="studentForm">
+                    <div class="header">
+                        <h5>Personal Information</h5>
                     </div>
 
-                    <div class="checkbox">
-                        <label for="isTransferee">Transferee:</label>
-                        <input type="checkbox" id="isTransferee">
-                    </div>
-                </div> <br>
+                    <div class="student-form-group address-div fullName">
+                        <div>
+                            <label for="studentFirstName">First Name:</label>
+                            <input type="text" name="firstname" class="name" id="studentFirstName" required>
+                        </div>
+                        <div>
+                            <label for="studentMiddleName">Middle Name:</label>
+                            <input type="text" name="middlename" class="name" id="studentMiddleName"
+                                placeholder="Optional">
+                        </div>
+                        <div>
+                            <label for="studentLastName">Last Name:</label>
+                            <input type="text" name="lastname" class="name" id="studentLastName" required>
+                        </div>
+                    </div> <br>
 
-                <div class="student-form-group">
-                    <label>Place of Birth:</label>
-                    <input type="text" id="studplaceOfBirth" class="place-of-birth">
-                </div> <br>
+                    <div class="student-form-group address-div">
+                        <label for="gender">Gender:</label>
+                        <select id="studgender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                        </select>
 
-                <div>
-                    <label for="studaddress">Address:</label>
-                    <div id="studaddress" class="student-form-group">
-                        <input type="text" id="studstreet" required placeholder="Street">
-                        <input type="text" id="studbarangay" required placeholder="Barangay">
-                        <input type="text" id="studcity" required placeholder="City">
-                    </div>
-                </div> <br> <br>
+                        <label for="birthdate">Birthdate:</label>
+                        <input type="date" id="studbirthdate" required>
 
-                <h5>Parent's/Guardian's Information</h5>
+                        <div class="checkbox-container">
+                            <div class="checkbox">
+                                <label for="scholar">Scholar:</label>
+                                <input type="checkbox" id="scholar">
 
-                <h6>Father's Information</h6>
-                <div class="student-form-group">
-                    <label for="studfatherName">Name:</label>
-                    <input type="text" name="fatherName" id="studfatherName" required>
+                                <button type="button" id="dropdown-add-scholar"> <img src="/images/icons/arrow-down.png"
+                                        alt="dropdown-icon">
+                                </button>
 
-                    <label for="studfatherOccupation">Occupation:</label>
-                    <input type="text" id="studfatherOccupation">
-                </div> <br>
+                                <!-- Popover lives right below the button now -->
+                                <div id="add-scholar-popover" name="add-discount" class="styled-popover">
+                                </div>
+                            </div>
 
-                <h6>Mother's Information</h6>
-                <div class="student-form-group">
-                    <label for="studmotherName">Name:</label>
-                    <input type="text" id="studmotherName" required>
+                            <div class="checkbox">
+                                <label for="isTransfereeRec">Transferee:</label>
+                                <input type="checkbox" id="isTransfereeRec">
 
-                    <label for="studmotherOccupation">Occupation:</label>
-                    <input type="text" id="studmotherOccupation">
-                </div> <br>
+                                <button type="button" id="dropdown-add-transferee"> <img
+                                        src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                </button>
 
-                <h6>Guardian's Information</h6>
-                <div class="student-form-group">
-                    <label for="studguardianName">Name:</label>
-                    <input type="text" id="studguardianName">
+                                <!-- Popover lives right below the button now -->
+                                <div id="add-transferee-popover" name="add-transferee-req" class="styled-popover">
+                                    <!-- Transferee Requirements Section -->
+                                    <div class="transferee-requirements">
+                                        <div id="transfereeReq" class="checkbox-transferee-reqs-group">
+                                            <!--Ibutang ang mga transferee requiremetns dri-->
+                                        </div>
+                                    </div>
+                                </div>
 
-                    <label for="studguardianOccupation">Occupation:</label>
-                    <input type="text" id="studguardianOccupation">
-                </div> <br>
-
-                <div class="student-form-group">
-                    <label for="studguardianContactNumber">Contact Number:</label>
-                    <input type="text" id="studguardianContactNumber">
-
-                    <label for="studguardianAddress">Address:</label>
-                    <input type="text" id="studguardianAddress">
-                </div> <br>
-
-                <!-- Transferee Fields -->
-                <div id="transfereeFields">
-                    <h5>For Transferees Only</h5>
-
-                    <div class="transferee-requirements">
-                        <h4>Requirements</h4>
-                        <div id="transfereeReq" class="checkbox-transferee-reqs-group">
-                            <!--Ibutang ang mga transferee requiremetns dri-->
+                            </div>
                         </div>
 
-                        <div class="student-form-group">
-                            <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
-                            <select id="lastGradeLevelIdCompleted">
-                                <option value="">RANDOM</option>
-                            </select>
+                    </div> <br>
 
-                            <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
-                            <input type="text" id="lastMadrasaYearCompleted" readonly>
-                        </div> <br>
+                    <div class="student-form-group">
+                        <label>Place of Birth:</label>
+                        <input required type="text" id="studplaceOfBirth" class="place-of-birth">
+                    </div> <br>
 
-                        <div class="student-form-group">
-                            <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                            <input type="text" id="madrasaNameLastAttended" readonly>
-                        </div> <br>
+                    <div>
+                        <label for="studaddress">Address:</label>
+                        <div id="studaddress" class="student-form-group">
+                            <input type="text" id="studstreet" required placeholder="Street">
+                            <input type="text" id="studbarangay" required placeholder="Barangay">
+                            <input type="text" id="studcity" required placeholder="City">
+                        </div>
+                    </div> <br> <br>
 
-                        <div class="student-form-group">
-                            <label for="madrasaAddress">Madrasa Address:</label>
-                            <input type="text" id="madrasaAddress" readonly style="width: 8px;">
-                        </div> <br>
+                    <h5>Parent's/Guardian's Information</h5>
+
+                    <h6>Father's Information</h6>
+                    <div class="student-form-group address-div">
+                        <label for="studfatherName">Name:</label>
+                        <input required type="text" name="fatherName" class="parent-name" id="studfatherName">
+
+                        <label for="studfatherOccupation">Occupation:</label>
+                        <input required type="text" class="parent-occupation" id="studfatherOccupation">
+                    </div> <br>
+
+                    <h6>Mother's Information</h6>
+                    <div class="student-form-group address-div">
+                        <label for="studmotherName">Name:</label>
+                        <input required type="text" class="parent-name" id="studmotherName">
+
+                        <label for="studmotherOccupation">Occupation:</label>
+                        <input required type="text" class="parent-occupation" id="studmotherOccupation">
+                    </div> <br>
+
+                    <h6>Guardian's Information</h6>
+                    <div class="student-form-group address-div">
+                        <label for="studguardianName">Name:</label>
+                        <input required type="text" class="parent-name" id="studguardianName">
+
+                        <label for="studguardianOccupation">Occupation:</label>
+                        <input required type="text" class="parent-occupation" id="studguardianOccupation">
+                    </div> <br>
+
+                    <div class="student-form-group address-div">
+                        <label for="studguardianContactNumber">Contact Number:</label>
+                        <input required type="text" class="guardian-number" id="studguardianContactNumber">
+
+                        <label for="studguardianAddress">Address:</label>
+                        <input required type="text" class="guardian-address" id="studguardianAddress">
+                    </div> <br>
+
+                    <!-- Transferee Fields -->
+                    <div class="transferee-section" id="transfereeFields">
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>For Transferees Only</h2>
+                        </div>
+
+                        <div class="transferee-requirements">
+                            <div class="student-form-group">
+                                <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
+                                <select id="lastGradeLevelIdCompleted" class="lastGradeLevelCompletedSelect">
+                                </select>
+
+                                <label for="studlastMadrasaYearCompleted">Last Madrasa Year Completed:</label>
+                                <input type="text" id="studlastMadrasaYearCompleted">
+
+                            </div> <br>
+
+                            <div class="student-form-group">
+                                <label for="studmadrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                                <input type="text" id="studmadrasaNameLastAttended">
+                            </div> <br>
+
+                            <div class="student-form-group">
+                                <label for="studmadrasaAddress">Madrasa Address:</label>
+                                <input type="text" id="studmadrasaAddress">
+                            </div> <br>
+                        </div>
                     </div>
-                </div>
+                </form>
+            </div>
 
-                <div class="modal-buttons">
-                    <button type="button" data-action="" class="btn-confirm" id="confirmStudent"
-                        data-open-modal="confirmationModal"
-                        data-message="Are you sure you want to add this student?">Confirm</button>
+            <div class="modal-buttons">
+                <button type="button" class="btn-confirm" id="confirmStudent" data-open-modal="confirmationModal"
+                    data-message="Are you sure you want to add this student?">Confirm</button>
 
-                    <button type="button" class="btn-cancel" id="cancelStudent"
-                        data-close-modal="newStudentModal">Cancel</button>
-                </div>
-            </form>
+                <button type="button" class="btn-cancel" id="cancelStudent"
+                    data-close-modal="newStudentModal">Cancel</button>
+            </div>
+
         </div>
     </div>
 
     <!-- Receipt Modal -->
     <div id="receiptModal" class="receipt-modal modal">
         <div class="printable-area">
-            <div class="receipt-modal-content">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="receiptModal">&times;</span>
-
+            <div class="receipt-modal-content scroll-lock">
                 <!-- Receipt Header -->
                 <div class="header-container-payment">
                     <div class="left-header">
@@ -876,7 +713,7 @@
                     </div>
                 </div>
 
-                <div id="receipt-table" class="receipt-table">
+                <div id="receipt-table" class="receipt-table main-table">
                     <table>
                         <thead>
                             <tr>
@@ -898,23 +735,19 @@
                     </table>
                 </div>
 
-                <!-- Total Amount -->
-                <div class="total-container">
-                    <p>Total Amount Due: <strong>₱ 800.00</strong></p>
-                </div>
-
                 <!-- Collected By Section -->
                 <div id="staff-receiver" class="collector-info-container">
                     <h6>Received/Collected By:</h6>
                     <div class="collector-name-container">
                         <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                        <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        <p id="position" th:text="${userRole}"></p>
                     </div>
                 </div>
 
                 <!-- Print Button -->
                 <div class="modal-buttons">
-                    <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                    <button type="button" data-close-modal="receiptModal" class="btn-cancel">Close</button>
+                    <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
                 </div>
             </div>
         </div>
@@ -923,41 +756,33 @@
 
     <!-- Modal for addPaymentModal-->
     <div id="addPaymentModal" class="add-payment-modal modal">
-        <div class="printable-area">
-            <div class="add-payment-modal-content">
-                <!-- Close Button -->
-                <span class="close-modal" data-close-modal="addPaymentModal">&times;</span>
+        <div class="add-payment-modal-content scroll-lock">
+            <div class="modal-body">
                 <div class="header-container">
                     <h3>Payment Form</h3>
                 </div> <br>
 
                 <div class="payee-info-container" id="payee-info">
-                    <div class="half-width half-payee">
-                        <div>
-                            <label for="student-id" id="label-id">Student ID:</label>
-                            <input type="text" id="payee-id" readonly>
-                        </div>
-                        <div>
-                            <label for="Date">Date:</label>
-                            <input type="date" id="date">
-                        </div>
+                    <div class="student-form-group">
+                        <label for="payee-id">Student ID:</label>
+                        <input type="text" id="payee-id" readonly>
+
+                        <label for="Date">Date:</label>
+                        <input type="date" id="date">
                     </div>
 
-                    <div class="full-width">
-                        <label for="payee-name">Student Name:</label>
+                    <div class="student-form-group">
+                        <label for="payee-name">Name:</label>
                         <input type="text" id="payee-name" readonly>
                     </div>
-                    <div class="half-width half-payee">
-                        <div>
-                            <label for="semester" id="label-sem">Semester:</label>
-                            <input th:value="${currentSem}" type="text" id="semester" readonly>
-                        </div>
-                        <div>
-                            <label for="school-year">S.Y.</label>
-                            <input th:value="${currentSY}" type="text" id="school-year" readonly>
-                        </div>
+                    <div class="student-form-group">
+                        <label for="semester">Semester:</label>
+                        <input th:value="${currentSem}" type="text" id="semester" readonly>
+
+                        <label for="school-year">S.Y.</label>
+                        <input th:value="${currentSY}" type="text" id="school-year" readonly>
                     </div>
-                    <div class="full-width amount-container">
+                    <div class="student-form-group">
                         <label for="amount" id="label-amount">Amount:</label>
                         <div class="input-wrapper">
                             <span class="currency-symbol">₱</span>
@@ -968,22 +793,7 @@
                 <div class="payment-wrapper">
                     <h6>Payment For:</h6>
                     <div class="payment-container-group">
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
-                        <div class="payment-item">
-                            <input type="checkbox" id="" name="payment" value="payment">
-                            <label for="payment">Book</label>
-                        </div>
+
                     </div> <br>
                 </div>
 
@@ -992,27 +802,37 @@
                     <h6>Received/Collected By:</h6>
                     <div class="collector-name-container">
                         <input th:value="${userFullName}" type="text" readonly id="collector-name">
-                        <p id="position" th:text="${userRole}">Enrollment Staff</p>
+                        <p id="position" th:text="${userRole}"></p>
                     </div>
                 </div>
+            </div>
 
+            <div class="modal-buttons payment-modal-buttons">
+                <button id="save-payment-btn" class="btn-confirm no-print" type="button"
+                    data-open-modal="confirmationModal" data-action="savePayment"
+                    data-message="Are you sure you want to save this payment?">Save Payment
+                </button>
 
-                <div class="modal-buttons payment-modal-buttons">
-                    <button class="no-print" onclick="printReport()">Print Report</button>
-
-                    <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                        data-open-modal="confirmationModal" data-action="savePayment"
-                        data-message="Are you sure you want to save this payment?">Save Payment
-                    </button>
-                </div>
-
+                <button type="button" id="payment-closer" class="btn-cancel"
+                    data-close-modal="addPaymentModal">Cancel</button>
             </div>
         </div>
-    </div>
+
     </div>
 </body>
 
 <script>
+    // // this is for the popover for the scholar
+    // const dropdownScholarBtn = document.getElementById("dropdown-scholar");
+    // const popover = document.getElementById("scholar-popover");
+
+    // dropdownScholarBtn.addEventListener("click", function () {
+    //     if (popover.matches(":popover-open")) {
+    //         popover.hidePopover();
+    //     } else {
+    //         popover.showPopover();
+    //     }
+    // });
 
     function proceedToPayment(enrollmentIdLet, sectionNumberLet) {
         sectionNumberLet = document.querySelector("#section").value;
@@ -1022,7 +842,7 @@
         }
 
         const apiUrl = `/enrollment/add/payment/${enrollmentIdLet}/${sectionNumberLet}`;
-        console.log(`🔄 Sending request to: ${apiUrl}`);
+        // console.log(`🔄 Sending request to: ${apiUrl}`);
 
         fetch(apiUrl, {
             method: "PUT",
@@ -1030,12 +850,11 @@
         })
             .then(response => response.text().then(text => ({ text, status: response.status })))
             .then(({ text, status }) => {
-                console.log(`🔹 API Response (${status}): ${text}`);
+                // console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-                    // <!--                    showSuccessModal("✅ Success: New student has been added successfully!");-->
-                    // <!--                    location.reload(); // Reloads the page-->
-                    goList(currentPageNo, currentPageSize);
+                    showSuccessModal("✅ Success: New student has been added successfully!", false);
+                    goList(currentPage);
                 } else {
                     showErrorModal("❌ Error:" + text);
                 }
@@ -1056,14 +875,15 @@
                 // Get the selected section number value
                 sectionNumberLet = document.querySelector("#section").value;
 
-                console.log("Enrollment ID:", enrollmentIdLet);
-                console.log("Selected Section:", sectionNumberLet);
+                // console.log("Enrollment ID:", enrollmentIdLet);
+                // console.log("Selected Section:", sectionNumberLet);
             }
         });
         goList();
         fetchGradeLevelsForm();
+        preRequisiteGradesDiv = document.getElementById("preRequisite-grades");
     });
-
+    var preRequisiteGradesDiv;
     async function fetchGradeLevelsForm() {
         const gradeLevels = document.getElementById("lastGradeLevelIdCompleted");
         const response = await fetch("/gradelevel/all");
@@ -1095,30 +915,32 @@
         fetch(`/enrollment/paymentView/${enrollmentId}`)
             .then(res => res.json())
             .then(epv => {
-                console.log('The object is', epv);
                 const studentname = document.querySelector("#student-name");
                 const studentId = document.querySelector("#student-id-list");
-                if (!studentname || !studentId) return console.error("Dropdown for sections not found");
+                if (!studentname || !studentId) return //console.error("Dropdown for sections not found");
 
-                studentname.textContent = epv.studentFirstName + (epv.studentMiddleName ? ' ' + epv.studentMiddleName : '') + ' ' + epv.studentLastName;
-                studentId.textContent = epv.studentDisplayId;
-                payerId = epv.studentId;
+                studentname.textContent = epv.student.fullName;
 
+                studentId.textContent = epv.student.studentDisplayId;
+                payerId = epv.student.studentId;
                 const tableBody = document.querySelector("#table-ni-kharl tbody");
                 tableBody.innerHTML = "";
-                epv.feeStatus.forEach(datas => {
+                epv.feesAndBalance.forEach(datas => {
+                    var status = datas.totalPaid < datas.totalRequired && datas.totalPaid === 0 ? "Unpaid" :
+                        datas.totalPaid > 0 && datas.totalPaid < datas.totalRequired ? "Partially Paid" :
+                            "Fully Paid";
                     const row = document.createElement("tr");
-                    const statusClass = getPaymentStatusClass(datas.status);
+                    const statusClass = getPaymentStatusClass(status);
                     row.innerHTML = `
-                            <td>${datas.feeName}</td>
-                            <td>${datas.requiredFee}</td>
-                            <td>${datas.totalPaid}</td>
-                            <td>${datas.balance}</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status ${statusClass}">${datas.status}</div>
-                                </div>
-                            </td>`;
+                        <td>${datas.fee.name}</td>
+                        <td>${datas.totalRequired}</td>
+                        <td>${datas.totalPaid}</td>
+                        <td>${datas.balance}</td>
+                        <td>
+                            <div class="status-container">
+                                <div class="status ${statusClass}">${status}</div>
+                            </div>
+                        </td>`;
                     tableBody.appendChild(row);
                 });
             })
@@ -1136,13 +958,12 @@
             } else if (isTransferee && !isLevelIdNull) {
                 url = `/gradelevel/for-transferee/${currentLevelId}`;
             }
-            alert(url);
             const response = await fetch(url);
             if (!response.ok) throw new Error("Failed to fetch grade levels");
             const data = await response.json();
             populateGradeLevelDropdown(data);
         } catch (error) {
-            console.error("Error fetching grade levels:", error);
+            // console.error("Error fetching grade levels:", error);
         }
     }
 
@@ -1168,10 +989,10 @@
         const feesSelectedId = getCheckedPaymentValues();
         const totalAmount = paymentAmountInput.value;
         if (totalAmount == 0) {
-            alert("DLi pwde wlay kay ibayad uys");
+            showErrorModal("Ammount cannot be P0");
             return;
         } else if (feesSelectedId.length == 0) {
-            alert("Dapat naa ka pilion");
+            showErrorModal("Choose a particular");
             return;
         }
         const url = `/paymentrecord/add/all/${encodeURIComponent(payerStudentId)}/${encodeURIComponent(totalAmount)}?gradeLevel=${encodeURIComponent(payLevelToEnrollId)}`;
@@ -1220,18 +1041,16 @@
                             </tr>
                         </tfoot>`;
                 tableBody.appendChild(row);
-                goList(currentPageNo, currentPageSize);
+                goList(currentPage);
                 closeOpen();
             })
             .catch(error => {
-                console.error("Error adding payment:", error);
-                alert("Failed to add payment. Please try again.");
+                showErrorModal("Failed to add payment transaction. Please try again.");
             });
     }
 
     function closeOpen() {
         const button1 = document.createElement("button");
-        button1.setAttribute("data-close-modal", "addPaymentModal");
         button1.setAttribute("data-open-modal", "receiptModal");
         const button2 = document.createElement("button");
         button2.setAttribute("data-close-modal", "listOfPaymentsModal");
@@ -1239,6 +1058,7 @@
         document.body.appendChild(button2);
         button1.click();
         button2.click();
+        document.getElementById("payment-closer").click();
     }
 
     // < !--document.addEventListener("DOMContentLoaded", function () {
@@ -1257,7 +1077,7 @@
 
     function proceedToEnrolled(enrollmentIdLet) {
         const apiUrl = `/enrollment/add/enrolled/${enrollmentIdLet}`;
-        console.log(`🔄 Sending request to: ${apiUrl}`);
+        // console.log(`🔄 Sending request to: ${apiUrl}`);
 
         fetch(apiUrl, {
             method: "PUT",
@@ -1265,12 +1085,12 @@
         })
             .then(response => response.text().then(text => ({ text, status: response.status }))) // Get text & status
             .then(({ text, status }) => {
-                console.log(`🔹 API Response (${status}): ${text}`);
+                // console.log(`🔹 API Response (${status}): ${text}`);
 
                 if (status === 200) {
-                    // <!--                    showSuccessModal("✅ Success: Student successfully enrolled!");-->
-                    // <!--                    location.reload(); // Reloads the page after successful enrollment-->
-                    goList(currentPageNo, currentPageSize);
+                    showSuccessModal("✅ Success: Student successfully enrolled!", false);
+                    location.reload();
+                    goList(currentPage);
                 } else {
                     // showErrorModal("❌ Error: " + text);
                     location.reload();
@@ -1282,9 +1102,8 @@
             });
     }
 
-    async function proceedToAssessment(enrollmentIdLet) {
+    async function proceedToAssessment() {
         const gradeLevelId = document.getElementById("levelName").value;
-
         if (!gradeLevelId) {
             showErrorModal("❌ Error: Please select a grade level!");
             return;
@@ -1299,7 +1118,8 @@
             const result = await response.text();
 
             if (response.ok) {
-                goList(currentPageNo, currentPageSize);
+                showSuccessModal(result, false);
+                goList(currentPage);
             } else {
                 showErrorModal("❌ Error: Transaction failed. Please try again!");
             }
@@ -1309,7 +1129,6 @@
     }
 
     function addExistingStudent(studentId) {
-        alert(studentId);
         fetch('/enrollment/add/student/' + studentId, {
             method: 'POST',
             headers: {
@@ -1319,9 +1138,8 @@
             .then(response => {
                 return response.text().then(message => {
                     if (response.ok) {
-                        goList(currentPageNo, currentPageSize);
-                        // <!--                        showSuccessModal(message);-->
-                        // <!--                        window.location.reload(); // Reload the page-->
+                        goList(currentPage);
+                        showSuccessModal(message, false);
                     } else {
                         showErrorModal(message);
                     }
@@ -1354,7 +1172,12 @@
         document.querySelectorAll("input[name='transferRequirements']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
-
+        // console.log(selectedTransReq);
+        const selectedDiscounts = [];
+        document.querySelectorAll("input[name='studDiscounts']:checked").forEach(checkbox => {
+            selectedDiscounts.push(checkbox.value);
+        });
+        // console.log(selectedTransReq);
         const birthplace =
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
@@ -1367,7 +1190,7 @@
             middleName: document.getElementById("studentMiddleName")?.value?.trim() || null,
             gender: document.getElementById("studgender").value || null,
             birthdate: document.getElementById("studbirthdate").value || null,
-            birthPlace: birthplace, // Use the extracted birthPlace variable
+            birthPlace: birthplace,
             address: {
                 street: document.getElementById("studstreet")?.value?.trim(),
                 barangay: document.getElementById("studbarangay")?.value?.trim(),
@@ -1382,12 +1205,13 @@
             guardianOccupation: document.getElementById("studguardianOccupation")?.value?.trim() || null,
             guardianContactNum: document.getElementById("studguardianContactNumber")?.value?.trim() || null,
             guardianAddress: document.getElementById("studguardianAddress")?.value?.trim() || null,
-            transferee: document.getElementById("isTransferee").checked,
+            transferee: document.getElementById("isTransfereeRec").checked,
             lastGradeLevelId: document.getElementById("lastGradeLevelIdCompleted").options[document.getElementById("lastGradeLevelIdCompleted").selectedIndex].value,
-            lastMadrasaYearCompleted: document.getElementById("lastMadrasaYearCompleted")?.value?.trim() || null,
-            madrasaNameLastAttended: document.getElementById("madrasaNameLastAttended")?.value?.trim() || null,
-            madrasaAddress: document.getElementById("madrasaAddress")?.value?.trim() || null,
-            transfereeRequirements: selectedTransReq
+            lastMadrasaYearCompleted: document.getElementById("studlastMadrasaYearCompleted")?.value?.trim() || null,
+            madrasaName: document.getElementById("studmadrasaNameLastAttended")?.value?.trim() || null,
+            madrasaAddress: document.getElementById("studmadrasaAddress")?.value?.trim() || null,
+            transfereeRequirements: selectedTransReq,
+            discountsAvailed: selectedDiscounts
         };
 
         fetch(actionUrl, {
@@ -1407,45 +1231,52 @@
                 showSuccessModal("✅ Success: New transferee has been added successfully!");
             })
             .catch(error => {
-                showErrorModal("❌ Error: please try again!");
+                showErrorModal(error);
             });
     }
     function changeView() {
-        goList(1, 1);
+        goList(1);
     }
 
     var currentStat = "";
-    var currentPageNo = 0;
-    var currentPageSize = 0;
+    var currentPage = 0;
+    let totalItems = 0;
     var currentStat = "";
-    function goList(pageNo = 1, pageSize = 10) {
+    async function goList(pageNo = 1) {
         const search = document.getElementById("search-stud").value;
         currentStat = document.getElementById("sort-select").value;
-        currentPageNo = pageNo;
-        currentPageSize = pageSize;
+        currentPage = pageNo;
+        const tableBody = document.querySelector("#lamesa tbody");
+        const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
         fetch(`/enrollment/all/paged/${currentStat}?pageNo=${pageNo}&pageSize=${pageSize}&search=${search}`)
             .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch enrollment records");
+                tableBody.innerHTML = `<tr><td colspan="4">No records found.</td></tr>`;
+                if (res.status === 404) {
+                    showErrorModal("No currently active semester");
+                    return;
+                }
+                else if (!res.ok) throw new Error("Failed to fetch enrollment records");
                 return res.json();
             })
             .then(data => {
-                const tableBody = document.querySelector("#lamesa tbody");
+                if (data.content.length === 0) { return; }
                 tableBody.innerHTML = "";
-
                 data.content.forEach(enr => {
-                    const studentJson = encodeURIComponent(JSON.stringify(enr.student));
                     const row = document.createElement("tr");
                     row.setAttribute("data-enrollment-id", enr.enrollmentId);
                     row.classList.add("clickable-row");
+                    if (enr.notDeleted === false) {
+                        row.classList.add("enrollment-cancelled");  // This will make the row red with opacity
+                    }
 
                     const displayStatus = enr.enrollmentStatus === "NOT_REGISTERED" ? "UNREGISTERED" : enr.enrollmentStatus;
 
                     let dropdownContent = `
                     <a href="#" class="viewRecordButton" data-enrollment-id="${enr.enrollmentId}"
-                    data-open-modal="studentInformationModal" onclick="displayStud(decodeURIComponent('${studentJson}'))"> View Record </a>`
-                        + getDropdownContent(enr);
+                    data-open-modal="studentInformationModal" onclick="displayStud(${enr.student.studentId})"> View Record </a>` +
+                        getDropdownContent(enr);
 
-                    const statusClass = getEnrollmentStatusClass(displayStatus);
+                    const statusClass = getEnrollmentStatusClass(displayStatus, enr.notDeleted);
 
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId}</td>
@@ -1465,12 +1296,13 @@
                     } else {
                         row.innerHTML += `<td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
                     }
+
                     const status = enr.notDeleted === false ? "CANCELLED" : enr.enrollmentStatus;
                     row.innerHTML += `
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
-                                <div class="status ${statusClass}" id="status-registration">${enr.enrollmentStatus} ${enr.notDeleted === false ? "(CANCELLED)" : ""}</div> <!-- Modified display -->
+                               <div class="status ${statusClass}" id="status-registration">${displayStatus}</div>
                                 <button class="dropdown-status-btn">
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
@@ -1484,7 +1316,6 @@
                     tableBody.appendChild(row);
                 });
 
-
                 document.querySelectorAll(".grade-level-dropdown").forEach(selectTag => {
                     var currentLevelId = selectTag.getAttribute("data-current-grade-Id");
                     var isStudentNew = selectTag.getAttribute("data-isStudent-new");
@@ -1494,15 +1325,19 @@
                     fetchGradeLevels(selectedGrade, selectTag, isStudentNew, currentLevelId, isTransferee);
                 });
 
-                updatePagination(status, pageNo, pageSize, data.totalPages);
+                totalItems = data.totalElements || 0;
+                const totalPages = data.totalPages || 1;
+                updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
             })
             .catch(error => console.error("Error:", error));
     }
 
-
     // this function is to control the color of the status color
-    function getEnrollmentStatusClass(status) {
+    function getEnrollmentStatusClass(status, isCancelled) {
         status = status.toLowerCase();
+        if (!isCancelled) {
+            return "enrollment-cancelled";
+        }
         switch (status) {
             case "listing":
                 return "listing-status";
@@ -1527,16 +1362,15 @@
             });
 
             if (response.ok) {
-                const result = await response.text(); // Parse the response as text
-                alert(result);
-                goList(currentPageNo, currentPageSize);
+                showSuccessModal("Enrolling Grade Level successfully updated", false);
+                goList(currentPage);
             } else {
                 const errorMessage = await response.text();
-                alert(errorMessage);
+                showErrorModal(errorMessage);
             }
         } catch (error) {
-            console.error("Error proceeding to assessment:", error);
-            alert("Transaction failed. Try again.");
+            // console.error("Error proceeding to assessment:", error);
+            showErrorModal("Transaction failed. Try again.");
         }
     }
 
@@ -1562,7 +1396,7 @@
             })
             .then(gradeLevels => {
                 if (!Array.isArray(gradeLevels) || gradeLevels.length === 0) {
-                    console.warn("No grade levels received or data is not an array.");
+                    // console.warn("No grade levels received or data is not an array.");
                     return;
                 }
 
@@ -1572,7 +1406,7 @@
 
                 gradeLevels.forEach((grade, index) => {
                     if (!grade.levelId || !grade.levelName) {
-                        console.warn(`Invalid grade level at index ${index}:`, grade);
+                        // console.warn(`Invalid grade level at index ${index}:`, grade);
                         return;
                     }
 
@@ -1588,23 +1422,35 @@
                 });
 
                 if (!foundMatch) {
-                    console.warn(`⚠️ No matching grade level found for selectedGrade: ${selectedGrade}`);
+                    //console.warn(`⚠️ No matching grade level found for selectedGrade: ${selectedGrade}`);
                 }
                 selectTag.setAttribute("onChange", originalOnChange);
             })
             .catch(error => console.error("Error fetching grade levels:", error));
     }
 
-    async function cancelEnrollment(enrollmentToCancel, backToNormal) {//ctrl here
-        let response = await fetch(`/enrollment/cancel/${enrollmentToCancel}?undo=${backToNormal}`);
-        if (!response.ok) throw new Error("wa nakita");
-        alert(await response.text());
-        goList(currentPageNo, currentPageSize);
+    async function cancelEnrollment(enrollmentToCancel, backToNormal) {
+        try {
+            let response = await fetch(`/enrollment/cancel/${enrollmentToCancel}?undo=${backToNormal}`);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                showErrorModal("❌ Error: " + errorText);
+                return;
+            }
+
+            const successText = await response.text();
+            showSuccessModal("✅ Success: " + successText, false);
+            goList(currentPage);
+        } catch (error) {
+            showErrorModal("❌ Error: " + error.message);
+        }
     }
+
 
     function getDropdownContent(enr) {
         if (enr.notDeleted === false || enr.notDeleted === "false") {
-            return `<a href="#" data-enrollment-id="${enr.enrollmentId}" data-action="undoCancel">Ibalik sa dati T_T</a>`;
+            return `<a href="#" data-enrollment-id="${enr.enrollmentId}" data-action="undoCancel">Undo cancellation</a>`;
         }
         switch (enr.enrollmentStatus) {
             case "LISTING":
@@ -1646,7 +1492,7 @@
                     <a href="#" data-action="cancelRegistration"
                         data-enrollment-id="${enr.enrollmentId}"> Cancel Registration </a>
                 ` : `<a style="pointer-events: none; opacity: 0.5; color: gray;">
-                       Bayarig minimum isa2 suss
+                       Minimum payment is required to each fee/s
                     </a>`}
             `;
             case "ENROLLED":
@@ -1657,42 +1503,109 @@
         }
     }
 
-    function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
-        console.log(reqIds);
-        fetch("/trans-req/all")
+    function fetchDiscounts(popoverId = "add-scholar-popover", discIds = []) {
+        const popover = document.getElementById(popoverId);
+        if (!popover) return //console.error(`Element with ID ${popoverId} not found.`);
+
+        popover.innerHTML = ``;
+
+        fetch("/discounts/all")
             .then(response => response.json())
             .then(data => {
-                const reqContainer = document.getElementById(divId);
-                reqContainer.innerHTML = "";
-                data.forEach(transReq => {
+                // Create and append the heading
+                const heading = document.createElement("h6");
+                heading.textContent = "Scholarship Types:";
+                popover.appendChild(heading);
+
+                const discountWrapper = document.createElement("div");
+                discountWrapper.classList.add("checkbox-container-popover");
+
+                data.forEach(disc => {
                     const paymentDiv = document.createElement("div");
                     paymentDiv.classList.add("checkbox-each");
 
                     const checkbox = document.createElement("input");
                     checkbox.type = "checkbox";
-                    checkbox.id = `transReq-${transReq.levelId}`;
+                    checkbox.id = `disc-${disc.discountId}`;
+                    checkbox.name = "studDiscounts";
+                    checkbox.value = disc.discountId;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `disc-${disc.discountId}`;
+                    label.textContent = disc.discountName;
+
+                    if (discIds.includes(disc.discountId)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    discountWrapper.appendChild(paymentDiv);
+                });
+
+                popover.appendChild(discountWrapper);
+            })
+            .catch(error => console.error("Error fetching discounts:", error));
+    }
+
+
+
+    function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
+        fetch("/trans-req/all")
+            .then(response => response.json())
+            .then(data => {
+                const reqContainer = document.getElementById(divId);
+                reqContainer.innerHTML = "";
+
+                const reqWrapper = document.createElement("div");
+                reqWrapper.classList.add("checkbox-container-popover");
+
+                data.forEach(transReq => {
+                    // Create and append the heading
+                    const heading = document.createElement("h6");
+                    heading.textContent = "Requirements:";
+                    popover.appendChild(heading);
+
+                    //console.log(transReq);
+                    const reqDiv = document.createElement("div");
+                    reqDiv.classList.add("checkbox-each");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `transReq-${transReq.id}`;
                     checkbox.name = "transferRequirements";
                     checkbox.value = transReq.id;
 
                     const label = document.createElement("label");
-                    label.htmlFor = `transReq-${transReq.idd}`;
+                    label.htmlFor = `transReq-${transReq.id}`;
                     label.textContent = transReq.name;
 
                     if (reqIds.includes(transReq.id)) {
                         checkbox.checked = true;
                     }
 
-                    paymentDiv.appendChild(checkbox);
-                    paymentDiv.appendChild(label);
-                    reqContainer.appendChild(paymentDiv);
+                    reqDiv.appendChild(checkbox);
+                    reqDiv.appendChild(label);
+                    reqWrapper.appendChild(reqDiv);
                 });
+
+                reqContainer.appendChild(reqWrapper);
             })
-            .catch(error => console.error("Error fetching grade levels:", error));
+            .catch(error => console.error("Error fetching transfer requirements:", error));
     }
 
-    function displayStud(std) {//viewing student info(for ctrl-f)
-        const studentProf = JSON.parse(std);
-        console.log(studentProf);
+
+
+    var toUpdateRecStudent;
+    async function displayStud(studentId) {
+        const response = await fetch(`/students/find-student/${studentId}`);
+        if (!response.ok) { return; }
+        const studentProf = await response.json();
+        toUpdateRecStudent = studentId;
+        document.getElementById("stud-type").textContent = studentProf.status;
+        document.getElementById("isTransferee").checked = studentProf.transferee;
+        document.getElementById("isScholar").textContent = studentProf.discountsAvailed > 0 ? "YES" : "NO";
+
         document.getElementById("student-id").value = studentProf.studentDisplayId;
         document.getElementById("firstName").value = studentProf.firstName;
         document.getElementById("middleName").value = studentProf.middleName;
@@ -1700,71 +1613,140 @@
         document.getElementById("gender").value = studentProf.gender;
         document.getElementById("birthdate").value = studentProf.birthdate;
         document.getElementById("placeOfBirth").value = studentProf.birthPlace;
+        document.getElementById("street").value = studentProf.address.street;
+        document.getElementById("barangay").value = studentProf.address.barangay;
+        document.getElementById("city").value = studentProf.address.city;
+
         document.getElementById("fatherName").value = studentProf.fatherName;
         document.getElementById("fatherOccupation").value = studentProf.fatherOccupation;
         document.getElementById("motherName").value = studentProf.motherName;
         document.getElementById("motherOccupation").value = studentProf.motherOccupation;
-        document.getElementById("stud-type").textContent = studentProf.new ? "NEW" : "OLD";
-        document.getElementById("street").value = studentProf.address.street;
-        document.getElementById("barangay").value = studentProf.address.barangay;
-        document.getElementById("city").value = studentProf.address.city;
+        document.getElementById("guardianName").value = studentProf.guardianName;
+        document.getElementById("guardianOccupation").value = studentProf.fatherOccupation;
+        document.getElementById("guardianContactNumber").value = studentProf.guardianContactNum;
+        document.getElementById("guardianAddress").value = studentProf.guardianAddress;
+
+
         document.getElementById("lastGradeLevelCompleted").value = studentProf.currentGradeLevel ? studentProf.currentGradeLevel.levelName : 'None';
         document.getElementById("lastMadrasaYearCompleted").value = studentProf.lastMadrasaYearCompleted;
         document.getElementById("madrasaNameLastAttended").value = studentProf.madrasaName;
         document.getElementById("madrasaAddress").value = studentProf.madrasaAddress;
-        console.log(studentProf.transfereeRequirements);
-        fetchTransRequirements("transReqRecord", studentProf.transfereeRequirements);
+        fetchTransRequirements("transfereeReq-rec", studentProf.transfereeRequirements);
+        fetchDiscounts("discounts-rec", studentProf.discountsAvailed);
+
+        toggleTransfereeSection(studentProf.transferee);
     }
 
-    function updatePagination(status, currentPage, pageSize, totalPages) {
-        const paginationContainer = document.querySelector("#pagination");
-        paginationContainer.innerHTML = "";
+    function updateDiscounts() {
+        const selectedTransReq = [];
+        document.querySelectorAll("#discounts-rec input[name='studDiscounts']:checked").forEach(checkbox => {
+            selectedTransReq.push(checkbox.value);
+        });
+        fetch(`/discounts/add-student-discounts/${toUpdateRecStudent}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ids: selectedTransReq
+            }),
+        })
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        showSuccessModal(message, false);
+                        displayStud(toUpdateRecStudent);
+                        goList(currentPage);
+                    } else {
+                        showErrorModal(message); // Show the error message if the response is not ok
+                    }
+                });
+            })
+            .catch(error => {
+                showErrorModal(error.message || "An unexpected error occurred."); // Show an error modal in case of failure
+            });
+    }
 
-        if (totalPages <= 1) return;
+    function updateRequirements() {
+        const selectedTransReq = [];
+        document.querySelectorAll("#transfereeReq-rec input[name='transferRequirements']:checked").forEach(checkbox => {
+            selectedTransReq.push(checkbox.value);
+        });
+        fetch(`/trans-req/add/student-requirements/${toUpdateRecStudent}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ids: selectedTransReq
+            }),
+        })
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        showSuccessModal(message, false);
+                        displayStud(toUpdateRecStudent);
+                        goList(currentPage);
+                    } else {
+                        showErrorModal(message); // Show the error message if the response is not ok
+                    }
+                });
+            })
+            .catch(error => {
+                showErrorModal(error.message || "An unexpected error occurred."); // Show an error modal in case of failure
+            });
+    }
 
-        const maxVisiblePages = 3;
-        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    //pagination JS code
+    function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
 
-        // Adjust if near the beginning or end
-        if (endPage - startPage + 1 < maxVisiblePages) {
-            startPage = Math.max(1, endPage - maxVisiblePages + 1);
-        }
+        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById("pageInput").value = currentPage;
+        document.getElementById("pageInput").min = 1;
+        document.getElementById("pageInput").max = totalPages;
+        document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-        // Left Arrow
+        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+    }
+
+    document.getElementById("prevPage").addEventListener("click", () => {
         if (currentPage > 1) {
-            const prevButton = document.createElement("button");
-            prevButton.innerText = "<";
-            prevButton.classList.add("pagination-button");
-            prevButton.addEventListener("click", () => {
-                goList(currentPage - 1, pageSize);
-            });
-            paginationContainer.appendChild(prevButton);
+            currentPage--;
+            goList(currentPage);
         }
+    });
 
-        // Page Numbers
-        for (let i = startPage; i <= endPage; i++) {
-            const button = document.createElement("button");
-            button.innerText = i;
-            button.classList.add("pagination-button");
-            if (i === currentPage) button.classList.add("active");
-            button.addEventListener("click", () => {
-                goList(i, pageSize);
-            });
-            paginationContainer.appendChild(button);
+    document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < document.getElementById("pageInput").max) {
+            currentPage++;
+            // console.log("Navigating to page:", currentPage);
+            goList(currentPage);
+        } else {
+            // console.log("Cannot navigate to next page");
         }
+    });
 
-        // Right Arrow
-        if (currentPage < totalPages) {
-            const nextButton = document.createElement("button");
-            nextButton.innerText = ">";
-            nextButton.classList.add("pagination-button");
-            nextButton.addEventListener("click", () => {
-                goList(currentPage + 1, pageSize);
-            });
-            paginationContainer.appendChild(nextButton);
+    document.getElementById("pageInput").addEventListener("change", (e) => {
+        const totalPages = parseInt(document.getElementById("pageInput").max);
+        let page = parseInt(e.target.value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            goList(currentPage);
+        } else {
+            e.target.value = currentPage;
         }
-    }
+    });
+
+    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        //console.log("pageSizeSelector changed", { value: e.target.value });
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        goList(currentPage);
+    });
+
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -1773,31 +1755,16 @@
             modal.style.opacity = "1";
             modal.style.pointerEvents = "auto";
         }
-
-        // Call toggleTransfereeSection only if it's the studentInformationModal
-        if (modalId === "studentInformationModal") {
-            toggleTransfereeSection(modalId);
-        }
     }
 
-
     // This will show and hide the transferee section if the student is a transferee or not
-    function toggleTransfereeSection() {
-        const transfereeRow = document.querySelector("#transferee-row h6");
+    function toggleTransfereeSection(isTransferee) {
         const transfereeSections = document.querySelectorAll(".transferee-section");
-
-        if (!transfereeRow) {
-            console.log("❌ Element #transferee-row h6 not found.");
-            return;
-        }
-
-        console.log("✅ Found #transferee-row h6 with text:", transfereeRow.textContent.trim());
-
-        if (transfereeRow.textContent.trim().toUpperCase() === "YES") {
-            console.log("✅ YES detected, showing transferee sections.");
+        if (isTransferee) {
+            //console.log("✅ YES detected, showing transferee sections.");
             transfereeSections.forEach(section => section.style.display = "block");
         } else {
-            console.log("❌ NO detected, hiding transferee sections.");
+            // console.log("❌ NO detected, hiding transferee sections.");
             transfereeSections.forEach(section => section.style.display = "none");
         }
     }
@@ -1815,7 +1782,6 @@
         const cancelReg = target.closest('[data-action="cancelRegistration"]');
         const undoCancellation = target.closest('[data-action="undoCancel"]');
         if (cancelReg) {
-            alert("Cancelling");
             const enrollmentIdCancel = cancelReg.getAttribute("data-enrollment-id");
             cancelEnrollment(enrollmentIdCancel, false);
         } else if (undoCancellation) {
@@ -1828,22 +1794,21 @@
             if (enrollmentIdElement) {
                 enrollmentIdLet = enrollmentIdElement.trim();
             } else {
-                alert("⚠️ Enrollment ID not found.");
+                showErrorModal("⚠️ Enrollment ID not found.");
             }
         }
         else if (paymentBtn) {
-            alert("Will set up payment form");
             setUpPaymentForm();
         }
         else if (paymentList) {
             const enrollmentId = paymentList.getAttribute("data-enrollment-id");
-            if (!enrollmentId) return console.error("Enrollment Id Not Found");
+            if (!enrollmentId) return //console.error("Enrollment Id Not Found");
             payerStudentId = paymentList.getAttribute("data-student-id");
             payLevelToEnrollId = paymentList.getAttribute("data-level-Id");
             fetchPayments(enrollmentId);
         }
         if (target.classList.contains("viewRecordButton")) {
-            console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
+            //console.log(`🔍 View Record for Enrollment ID: ${enrollmentId}`);
             openModal("studentInformationModal");
         }
         if (target.classList.contains("proceedButton")) {
@@ -1854,12 +1819,12 @@
             viewStudentGrade(target);
         }
         if (target.classList.contains("viewPaymentsButton")) {
-            console.log(`💰 Viewing Payments for Enrollment ID: ${enrollmentId}`);
+            //console.log(`💰 Viewing Payments for Enrollment ID: ${enrollmentId}`);
             openModal("listOfPaymentsModal");
         }
         if (proceedButton) {
             const gradeLevel = proceedButton.getAttribute("data-grade-level-id");
-            if (!gradeLevel) return console.error("Grade level not found for section selection");
+            if (!gradeLevel) return //console.error("Grade level not found for section selection");
             const gradeLevelInput = document.querySelector("#grade-level");
             if (gradeLevelInput) {
                 gradeLevelInput.value = gradeLevel;
@@ -1897,7 +1862,7 @@
             const enteredValue = parseFloat(this.value);
 
             if (enteredValue > maxValue) {
-                alert(maxValue + ' nalang imong need bayaran, di na pwde musobra sussss');
+                showErrorModal("Maximum amount is " + maxValue);
                 this.value = maxValue;
             }
         });
@@ -1920,8 +1885,8 @@
         data.feesAndBalance.forEach(par => {
             const paymentItem = document.createElement("div");
             paymentItem.classList.add("payment-item");
-            console.log(par);
-            console.log(par.balance);
+            // console.log(par);
+            // console.log(par.balance);
             const input = document.createElement("input");
             input.type = "checkbox";
             input.name = par.fee.name;
@@ -1945,16 +1910,14 @@
         const preRequisiteId = target.getAttribute("data-prerequisite");
         document.getElementById("student-grade-name").textContent = target.getAttribute("data-stud-name");
         document.getElementById("student-grade-id").textContent = target.getAttribute("data-displayId");
-        const tableBody = document.querySelector("#lamesaa tbody");
-        tableBody.innerHTML = `<td colspan="4">No Records Found</td>`;
         if (preRequisiteId === "null") {
             return;
         }
 
         if (!studentId) {
-            console.error(
-                "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
-            );
+            //    console.error(
+            //         "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
+            //     );
             return;
         }
 
@@ -1962,40 +1925,85 @@
             .then((response) => response.json())
             .then((data) => {
                 const studentGradesMap = new Map(Object.entries(data.content));
+                preRequisiteGradesDiv.innerHTML = `
+                        <table class="view-grades-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Subject ID</th>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td colspan="3">No Records Found</td>
+                            </tr>
+                        </tbody>
+                    </table>`;
                 if (studentGradesMap.size === 0) {
                     return;
                 }
-                tableBody.innerHTML = "";
+                preRequisiteGradesDiv.innerHTML = ``;
+                let count = 0; // make sure this is defined above the forEach
+                let rowContainer;
+
                 studentGradesMap.forEach((values, key) => {
-                    const keyRow = document.createElement("tr");
-                    keyRow.innerHTML = `<td colspan="3"><strong>${key}</strong></td>`;
-                    tableBody.appendChild(keyRow);
                     let gradeTotal = 0;
                     let gradeCount = 0;
+                    let gradesRow = ``;
+
                     values.forEach((grade) => {
                         gradeTotal += grade.subjectGrade === null ? 0 : grade.subjectGrade;
                         gradeCount++;
-
-                        const gradeRow = document.createElement("tr");
-                        gradeRow.innerHTML = `
-                            <td>${grade.subjectName}</td>
-                            <td>${grade.subjectName}</td>
-                            <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
-                        `;
-                        tableBody.appendChild(gradeRow);
+                        gradesRow += `
+        <tr>
+            <td>${grade.subjectName}</td>
+            <td>${grade.subjectName}</td>
+            <td>${grade.subjectGrade === null ? 'N/A' : grade.subjectGrade}</td>
+        </tr>`;
                     });
 
-                    // Calculate the average grade after the loop is finished
-                    const avg = gradeCount > 0 ? gradeTotal / gradeCount : 0; // Avoid division by 0
+                    let avg = gradeTotal / gradeCount;
 
-                    // Create the average row (this should be done outside the loop)
-                    const averageRow = document.createElement("tr");
-                    averageRow.id = "average-row";
-                    averageRow.innerHTML = `
-                            <td colspan="2">Average</td>
-                            <td>${avg.toFixed(2)}</td>`;
-                    // Append the average row after all grade rows have been appended
-                    tableBody.appendChild(averageRow);
+                    // Format the key: "Grade 1 - Section 2 : 2025-2026-Second sem"
+                    const [sectionPart, rest] = key.split(":");
+                    const restParts = rest.trim().split("-");
+                    const sy = `${restParts[0]}-${restParts[1]}`;
+                    const sem = restParts.slice(2).join(" ").replace(/\bfirst\b/i, "1st").replace(/\bsecond\b/i, "2nd");
+                    const formattedHeader = `${sectionPart.trim()} | SY: ${sy} (${sem})`;
+
+
+                    const gradeWrapper = document.createElement("div");
+                    gradeWrapper.className = "grade-wrapper";
+                    gradeWrapper.innerHTML = `
+        <h6 class="grades-header">${formattedHeader}</h6>
+        <table class="view-grades-table main-table">
+            <thead>
+                <tr>
+                    <th>Subject ID</th>
+                    <th>Subject</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${gradesRow}
+                <tr>
+                    <td colspan="2">Average</td>
+                    <td>${avg.toFixed(2)}</td>
+                </tr>
+            </tbody>
+        </table>`;
+
+                    // Group every 2 wrappers in a row
+                    if (count % 2 === 0) {
+                        rowContainer = document.createElement("div");
+                        rowContainer.className = "grades-row";
+                        preRequisiteGradesDiv.appendChild(rowContainer);
+                    }
+
+                    rowContainer.appendChild(gradeWrapper);
+                    count++;
                 });
             })
             .catch((error) => console.error("Error fetching grade level:", error));
@@ -2007,7 +2015,7 @@
             .then(res => res.json())
             .then(sections => {
                 const selectTag = document.querySelector("#section"); // Modal select tag
-                if (!selectTag) return console.error("Dropdown for sections not found");
+                if (!selectTag) return //console.error("Dropdown for sections not found");
 
                 selectTag.innerHTML = `<option value="">Select Section</option>`; // Default option
 
@@ -2027,7 +2035,7 @@
             const studentName = document.querySelector("#student-name")?.textContent?.trim();
             const studentId = document.querySelector("#student-id-list")?.textContent;
             if (!studentName || !studentId) {
-                console.error("Student information not found");
+                //console.error("Student information not found");
                 return;
             }
 
@@ -2045,7 +2053,7 @@
                 dateInput.value = formattedDate; // Correct local date
                 dateInput.readOnly = true;       // Make it readonly
             } else {
-                console.error("Date input field not found in the modal");
+                // console.error("Date input field not found in the modal");
             }
 
 
@@ -2059,7 +2067,7 @@
                 document.getElementById("school-year").value = data.schoolYear.schoolYear;
 
             } catch (error) {
-                console.error("Error fetching current active school year:", error);
+                // console.error("Error fetching current active school year:", error);
             }
 
             // Fetch and populate payment list
@@ -2079,10 +2087,64 @@
                 });
 
             } catch (error) {
-                console.error("Error fetching payment list:", error);
+                //console.error("Error fetching payment list:", error);
             }
         }
     });
+
+    // this will hide and unhide the transferee-section when user checks and unchecks the checkbox
+    document.addEventListener("DOMContentLoaded", function () {
+        const transfereeCheckbox = document.getElementById("isTransfereeRec");
+        const transfereeFields = document.getElementById("transfereeFields");
+        const requiredInputs = transfereeFields.querySelectorAll("input, select, textarea");
+
+        transfereeCheckbox.addEventListener("change", function () {
+            if (this.checked) {
+                fetchTransRequirements();
+                transfereeFields.style.display = "block";
+                requiredInputs.forEach(input => {
+                    input.setAttribute("required", "required");
+                });
+            } else {
+                document.getElementById("transfereeReq").innerHTML = ``;
+                transfereeFields.style.display = "none";
+                requiredInputs.forEach(input => {
+                    input.removeAttribute("required");
+                });
+            }
+        });
+        document.getElementById("add-scholar-popover").innerHTML = ``;
+        const isScholarship = document.getElementById("scholar");
+        isScholarship.addEventListener("change", function () {
+            if (this.checked) {
+                fetchDiscounts();
+            } else {
+                document.getElementById("add-scholar-popover").innerHTML = ``;
+            }
+        });
+    });
+
+    // this will validate the last madrasa year completed (it must only submit 2 succeeding years e.g. 2012-2013)
+    function validateMadrasaYear() {
+        const madrasaYearInput = document.getElementById("studlastMadrasaYearCompleted").value.trim();
+        const regex = /^(\d{4})-(\d{4})$/;
+        const match = madrasaYearInput.match(regex);
+
+        if (!match) {
+            showErrorModal("❌ Error: " + "Invalid format! Please enter the Madrasa year in YYYY-YYYY format.");
+            return false;
+        }
+
+        const startYear = parseInt(match[1], 10);
+        const endYear = parseInt(match[2], 10);
+
+        if (endYear !== startYear + 1) {
+            showErrorModal("❌ Error: " + "Invalid year range! The second year must be exactly one year after the first.");
+            return false;
+        }
+
+        return true;
+    }
 </script>
 
 </html>

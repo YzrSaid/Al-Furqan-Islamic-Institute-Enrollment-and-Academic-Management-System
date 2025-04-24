@@ -62,11 +62,12 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
                 "WHEN e.isNotDeleted = FALSE THEN 'CANCELLED' "+
                 "ELSE e.enrollmentStatus END) = :status) "+
             "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%') " +
-            "OR stud.studentDisplayId LIKE CONCAT('%',:search,'%'))")
-    Page<EnrollmentHandler> findStudentsEnrollment(@Param("status")            EnrollmentStatus status,
-                                    @Param("activeSemNumber")   int activeSemNumber,
-                                    @Param("search")            String search,
-                                                                Pageable pageable);
+            "OR stud.studentDisplayId LIKE CONCAT('%',:search,'%')) " +
+            "AND stud.status != 'GRADUATE'")
+    Page<EnrollmentHandler> findStudentsEnrollment(@Param("status") EnrollmentStatus status,
+                                        @Param("activeSemNumber")   int activeSemNumber,
+                                        @Param("search")            String search,
+                                                                    Pageable pageable);
 
     @Query("SELECT e.student FROM Enrollment e " +
             "JOIN e.SYSemester sem " +
@@ -85,5 +86,17 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
             "AND e.enrollmentStatus = 'ENROLLED'")
     List<Student> getCurrentlyEnrolledToGrade(@Param("gradeId") int gradeId,
                                          @Param("semId") int semId);
+
+    @Query("""
+            SELECT COUNT(e) FROM Enrollment e
+            LEFT JOIN e.gradeLevelToEnroll gl
+            LEFT JOIN e.sectionToEnroll sec
+            JOIN e.SYSemester sem
+            WHERE sem.sySemNumber = :semId
+            AND e.isNotDeleted
+            AND (:levelId IS NULL OR gl.levelId = :levelId)
+            AND (:sectionId IS NULL OR sec.number = :sectionId)
+            """)
+    Optional<Long> countGradeLevelAndSection(int semId, Integer levelId, Integer sectionId);
 
 }

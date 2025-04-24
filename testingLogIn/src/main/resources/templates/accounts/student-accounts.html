@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Student Accounts</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/reports/student-accounts" title="You're currently in this page.">Accounts - Student Accounts</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                        <button type="button" onclick="getCurrentlyEnrolled(1)" class="search-btn">Search</button>
+                    </div>
+                </div>
+
+                <div class="sort-container">
+                    <select name="sort" onchange="getCurrentlyEnrolled(1)" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="StudentId">Student Id</option>
+                        <option value="StudentName">Student Name</option>
+                        <option value="GradeLevel">Enrolling Grade Level</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
+
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="realginnas" class="listing-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student Id</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
+            </div>
+        </div>
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="modalText">Are you sure?</p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button data-close-modal="confirmationModal" class="btn-close-confirm">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for viewing grades -->
+        <div id="viewGradesModal" class="view-grades-modal modal">
+            <div class="view-grades scroll-lock">
+                <h2>Student Grades</h2>
+
+                <div class="half-width view-studId" id="view-grade-studId">
+                    <label for="student-id">Student ID:</label>
+                    <h6 id="student-id">0001</h6>
+                </div>
+                <div class="half-width view-studName" id="view-grade-studName">
+                    <label for="student-name">Student Name:</label>
+                    <h6 id="student-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- Grades Table -->
+                <table class="view-grades-table">
+                    <thead>
+                        <tr>
+                            <th>Subject ID</th>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status" id="grade-remarks">Pass</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr id="average-row">
+                            <td colspan="2">Average</td>
+                            <td>90</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status" id="average-remarks">Pass</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- <div class="half-width" id="view-grade-average">
+                    <label for="grade-average">Final Average:</label>
+                    <input type="text" id="average-input" readonly value="90">
+                </div>
+                
+                <div class="half-width" id="view-grade-remarks">
+                    <label for="grade-average">Remarks:</label>
+                    <div class="status-container">
+                        <div class="status" id="grade-remarks">Pass</div>
+                    </div>  
+                </div> -->
+
+                <!-- Close button -->
+                <div class="close-button" id="view-grades-close-btn">
+                    <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
+                        id="close-button">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "/images/icons/greater-than.png";
+                }
+            }
+        });
+        getCurrentlyEnrolled(1);
+    });
+    var currentPage;
+    async function getCurrentlyEnrolled(pageNo = 1) {
+        var tableBody = document.querySelector("#realginnas tbody");
+        tableBody.innerHTML = ``;
+        currentPage = pageNo;
+        const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
+        const searchBy = document.getElementById("search-stud").value;
+        const sortBy = document.getElementById("sort-select").value;
+
+        const response = await fetch(`/user/student-accounts?pageNo=${pageNo}&pageSize=${pageSize}&q=${searchBy}`);
+        if(response.ok){
+            const data = await response.json();
+            if (!data || !data.content || data.content.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='4'>No enrolled students found.</td></tr>";
+            }else{
+                data.content.forEach(info => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${info.studentDisplayId || "N/A"}</td>
+                        <td>${info.studentFullName || "N/A"}</td>
+                        <td>${info.userName}</td>
+                        <td>${info.password || "N/A"}</td>`;
+                    tableBody.appendChild(row);
+                });
+                var totalItems = data.totalElements || 0;
+                const totalPages = data.totalPages || 1;
+                updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
+            }
+        }else{
+            tableBody.innerHTML = `<tr><td colspan="4">No records found</td></tr>`;
+        }
+    }
+
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+           // console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
+
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
+
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+        }
+
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                getCurrentlyEnrolled(currentPage);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                //console.log("Navigating to page:", currentPage);
+                getCurrentlyEnrolled(currentPage);
+            } else {
+               // console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                getCurrentlyEnrolled(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+           // console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            getCurrentlyEnrolled(currentPage);
+        });
+</script>
+
+</html>

@@ -32,9 +32,10 @@ public class RequiredPaymentController {
     @PostMapping("/add")
     public ResponseEntity<String> addRequiredPayments(@RequestBody RequiredPaymentsDTO reqPayments) {
         try {
-            if (reqPaymentService.addNewPayments(reqPayments) == 0)
+            int result = reqPaymentService.addNewPayments(reqPayments);
+            if (result == 0)
                 return new ResponseEntity<>("New payment added successfully", HttpStatus.OK);
-            if (reqPaymentService.addNewPayments(reqPayments) == 1)
+            if (result == 1)
                 return new ResponseEntity<>("New payment added successfully\n"+
                         "The Distributable name \"" + reqPayments.getName() + "\" already exists.", HttpStatus.OK);
             else
@@ -83,14 +84,15 @@ public class RequiredPaymentController {
         }
     }
 
-    @DeleteMapping("/delete/{paymentName}")
-    public ResponseEntity<String> deleteRequiredPayment(@PathVariable String paymentName) {
+    @DeleteMapping("/delete/{feeId}")
+    public ResponseEntity<String> deleteRequiredPayment(@PathVariable int feeId) {
         try {
-            reqPaymentService.deleteRequiredPayment(paymentName);
-            return new ResponseEntity<>("Payment \"" + paymentName + "\" deleted successfully", HttpStatus.OK);
+            reqPaymentService.deleteRequiredPayment(feeId);
+            return new ResponseEntity<>("Payment deleted successfully", HttpStatus.OK);
         } catch (NullPointerException npe) {
-            return new ResponseEntity<>("Payment \"" + paymentName + "\" was not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Payment was not found", HttpStatus.NOT_FOUND);
         }catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>("Process Failed", HttpStatus.CONFLICT);
         }
     }

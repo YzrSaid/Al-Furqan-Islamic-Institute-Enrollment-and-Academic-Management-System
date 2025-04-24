@@ -1,21 +1,18 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.Enums.RegistrationStatus;
+import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.AccountRegister;
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Services.AccountRegisterServices;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RequestMapping("/user")
 @Controller
@@ -37,6 +34,28 @@ public class UserAccountController {
     @GetMapping("/current-logged-in")
     public ResponseEntity<UserDTO> getCurrentUserDTO(){
         return new ResponseEntity<>(customUserDetailsService.getCurrentlyLoggedInUserDTO(),HttpStatus.OK);
+    }
+
+    @GetMapping("/student-accounts")
+    public ResponseEntity<PagedResponse> getStudentAccounts(@RequestParam(defaultValue = "1",required = false) int pageNo,
+                                                            @RequestParam(defaultValue = "10",required = false) int pageSize,
+                                                            @RequestParam(defaultValue = "") String q){
+        try{
+            return new ResponseEntity<>(customUserDetailsService.getStudentAccounts(pageNo,pageSize,q),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+    //get the currently logged student info
+    @GetMapping("/student/my-info")
+    public ResponseEntity<StudentDTO> getLoggedStudentInfo(){
+        try{
+            return new ResponseEntity<>(customUserDetailsService.getCurrentlyLoggedInStudent(), HttpStatus.OK);
+        }catch (NullPointerException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
     
     @PostMapping("/register")

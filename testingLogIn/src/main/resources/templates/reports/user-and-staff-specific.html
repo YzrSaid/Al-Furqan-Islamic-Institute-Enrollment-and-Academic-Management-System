@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <div class="text-link" id="breadcrumb-container">
+                <h4>User & Staff Reports</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/reports/user-and-staff">Reports - Student Reports</a>
+                <p>/</p>
+                <a href="/reports/user-and-staff/{studentName}" title="You're currently on this page.">Reynolds
+                    Perkins</a>
+            </div>
+
+            <div class="report-main-btns">
+                <div class="report-main-btns-left back-btn">
+                    <button type="button" class="btn-back" onclick="history.back()" title="Back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+
+                <div class="report-main-btns-right">
+                    <button type="button" class="btn-gray" id="editStudInfo"
+                        data-open-modal="staffInformationEditModal">Edit</button>
+                    <button type="button" class="btn-neutral" id="printGrade"
+                        data-open-modal="studentInformationPrintModal">Print</button>
+                    <button type="button" class="btn-neutral" data-open-modal="changePasswordModal">Change
+                        Password</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="modalText">Are you sure?</p>
+                <div class="confirmation-modal-buttons">
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- viewClaimedResourcesModal -->
+        <div id="viewClaimedResourcesModal" class="view-claimed-resources-modal modal">
+            <div class="view-claimed-resources-modal-content scroll-lock">
+                <h2>Claimed Resources</h2>
+
+                <div class="half-width view-studId" id="">
+                    <label for="student-grade-id">Student ID:</label>
+                    <h6 id="student-grade-id"></h6>
+                </div>
+                <div class="half-width view-studName" id="">
+                    <label for="student-grade-name">Student Name:</label>
+                    <h6 id="student-grade-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- Table -->
+                <div class="table-wrapper-printable">
+                    <table id="claimed-res-table" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Grade Level</th>
+                                <th>Date Received</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <!-- Close button -->
+                <div class="modal-buttons">
+                    <button type="button" data-close-modal="viewClaimedResourcesModal" class="btn-cancel"
+                        id="close-button">Close</button>
+
+                    <button type="button" onclick="printClaimedResources()" class="print-btn">Print Record</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- viewPastTransactionsModal -->
+        <div id="viewPastTransactionsModal" class="view-past-transactions-modal modal">
+            <div class="view-past-transactions-modal-content scroll-lock">
+                <h2>Past Transactions</h2>
+
+                <div class="half-width view-studId" id="">
+                    <label for="student-grade-id">Student ID:</label>
+                    <h6 id="student-grade-id"></h6>
+                </div>
+                <div class="half-width view-studName" id="">
+                    <label for="student-grade-name">Student Name:</label>
+                    <h6 id="student-grade-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- Table -->
+                <div class="table-wrapper-printable">
+                    <table id="past-trans-table" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Date Paid</th>
+                                <th>Transaction No.</th>
+                                <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <!-- Close button -->
+                <div class="modal-buttons">
+                    <button type="button" data-close-modal="viewPastTransactionsModal" class="btn-cancel"
+                        id="close-button">Close</button>
+
+                    <button type="button" onclick="printIndividTransactions()" class="print-btn">Print Record</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- individTransactionPrintModal -->
+        <div id="individTransactionsPrintModal" class="all-transactions-print-modal modal">
+            <div class="printable-area-transactions">
+                <div class="all-transactions-print-modal-content scroll-lock">
+                    <!-- Report Header -->
+                    <div class="header-container-print">
+
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        </div>
+                        <div class="middle-header">
+                            <div class="school-info-print">
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+                    <!-- Student Info -->
+
+                    <h3 class="report-title"><strong>Payments and Transactions Report</strong></h3>
+
+                    <!-- Table -->
+                    <table id="individ-trans-table-printable" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Student Name</th>
+                                <th>Date Paid</th>
+                                <th>Transaction No.</th>
+                                <th>Amount Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                    <div class="printable-footer">
+                        Date Printed: <strong>4/1/2020</strong>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="allTransactionsPrintModal">Close</button>
+
+                        <button type="button" onclick="printReceipt()" class="print-btn">Print Record</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- individClaimedResourcesPrintModal -->
+        <div id="individClaimedResourcesPrintModal" class="all-transactions-print-modal modal">
+            <div class="printable-area-claimed-resources">
+                <div class="all-transactions-print-modal-content scroll-lock">
+                    <!-- Report Header -->
+                    <div class="header-container-print">
+
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        </div>
+                        <div class="middle-header">
+                            <div class="school-info-print">
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator-line"></div>
+                    <!-- Student Info -->
+
+                    <h3 class="report-title"><strong>Payments and Transactions Report</strong></h3>
+
+                    <!-- Table -->
+                    <table id="claimed-res-table-printable" class="printable-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Grade Level</th>
+                                <th>Date Received</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                    <div class="printable-footer">
+                        Date Printed: <strong>4/1/2020</strong>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="allTransactionsPrintModal">Close</button>
+
+                        <button type="button" onclick="printReceipt()" class="print-btn">Print Record</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for editing the student information -->
+        <div id="staffInformationEditModal" class="staff-information-edit-modal modal">
+            <div class="staff-information-edit-modal-content">
+                <div class="modal-body">
+                    <h1>Staff Information</h1>
+                    <form method="" action="" id="staffInformationEditForm">
+                        <div class="header">
+                            <div class="half-unique">
+                                <label for="student-id">Staff ID: </label>
+                                <input readonly type="text" class="staff-id-report" id="staff-id-edit">
+                            </div> <br>
+
+                            <div class="other-info-container">
+                                <div class="half-other-info" id="staff-type-row">
+                                    <label for="staff-type">Account Type/Role:</label>
+                                    <select name="role" id="role-edit" required>
+                                        <option value="TEACHER">Teacher</option>
+                                        <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
+                                    </select>
+                                </div>
+
+                                <div class="half-other-info" id="staff-status-row">
+                                    <label for="staff-status">Status:</label>
+                                    <select name="status" id="status-edit" required>
+                                        <option value="UNRESTRICTED">Unrestricted</option>
+                                        <option value="RESTRICTED">Restricted</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-content: center; justify-items: left;">
+                            <h2>Personal Information</h2>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="column1">
+                                    <div>
+                                        <label for="name">Name</label>
+                                        <div class="student-form-group half">
+                                            <input type="text" required class="name" id="firstNameEdit">
+                                            <input type="text" required class="name" id="middleNameEdit">
+                                            <input type="text" required class="name" id="lastNameEdit">
+                                        </div>
+                                        <div class="small-text">
+                                            <p>First</p>
+                                            <p>Middle</p>
+                                            <p>Last</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column2">
+                                    <!-- Gender, BDate, and Scholar -->
+                                    <div class="student-form-group half-stud-info-small">
+                                        <label for="gender-edit">Gender:</label>
+                                        <select name="gender-edit" title="Gender" class="gender" id="gender-edit"
+                                            required>
+                                            <option value="MALE">Male</option>
+                                            <option value="FEMALE">Female</option>
+                                        </select>
+
+                                        <label for="birthdate">Birthdate:</label>
+                                        <input required type="date" class="birthdate" id="birthdate-edit">
+                                    </div>
+                                </div>
+
+                                <div class="column1">
+                                    <label for="address">Address:</label>
+                                    <div class="student-form-group">
+                                        <input type="text" id="staff-address-edit" required placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="column2">
+                                    <div class="student-form-group">
+                                        <label>Email:</label>
+                                        <input required type="email" class="place-of-birth" id="staff-email-edit">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" data-action="editStaffReport" class="btn-confirm" id="confirmStaffReportEdit"
+                        data-message="Are you sure you want to update this record?">Edit</button>
+
+                    <button type="button" class="btn-cancel" id="cancelStudent"
+                        data-close-modal="staffInformationEditModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for staff information -->
+        <div id="staffInformationContainer" class="staff-information-container">
+            <div class="staff-information-container-content">
+                <h1>Staff Information</h1>
+                <form method="" action="" id="studentInformationForm">
+                    <div class="header">
+                        <div class="half-unique">
+                            <label for="student-id">Staff ID: </label>
+                            <input readonly type="text" id="student-id">
+                        </div> <br>
+
+                        <div class="other-info-container">
+                            <div class="half-other-info" id="staff-type-row">
+                                <label for="staff-type">Account Type/Role:</label>
+                                <h6 id="staff-type">Teacher</h6>
+                            </div>
+
+                            <div class="half-other-info" id="staff-status-row">
+                                <label for="staff-status">Status:</label>
+                                <h6 id="staff-status">Unrestricted</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-content: center; justify-items: left;">
+                        <h2>Personal Information</h2>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="column1">
+                                <div>
+                                    <label for="name">Name</label>
+                                    <div class="student-form-group half">
+                                        <input readonly type="text" id="firstName">
+                                        <input readonly type="text" id="middleName">
+                                        <input readonly type="text" id="lastName">
+                                    </div>
+                                    <div class="small-text">
+                                        <p>First</p>
+                                        <p>Middle</p>
+                                        <p>Last</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column2">
+                                <!-- Gender, BDate, and Scholar -->
+                                <div class="student-form-group half-stud-info-small">
+                                    <label for="gender">Gender:</label>
+                                    <input readonly type="text" id="gender">
+
+                                    <label for="birthdate">Birthdate:</label>
+                                    <input readonly required type="date" class="birthdate" id="birthdate-report">
+                                </div>
+                            </div>
+
+                            <div class="column1">
+                                <label for="address">Address:</label>
+                                <div class="student-form-group">
+                                    <input readonly type="text" id="staff-address" required placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="column2">
+                                <div class="student-form-group">
+                                    <label>Email:</label>
+                                    <input readonly type="email" class="place-of-birth-report" id="staff-email">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const path = window.location.pathname;
+        const wordArray = (path.split("/"));
+        const studentName = ((wordArray[wordArray.length - 1]));
+        // findStudent(studentName);
+    });
+    var studentId;
+    async function findStudent(studentName) {
+        const response = await fetch(`/students/find-student/name/${studentName}`);
+        if (!response.ok) { alert("student record no found"); }
+        const student = await response.json();
+
+        document.getElementById("stud-type").textContent = student.status;
+        document.getElementById("transferee").textContent = (student.transferee === "true" || student.transferee) ? "YES" : "NO";
+        document.getElementById("student-id").value = student.studentDisplayId;
+        document.getElementById("firstName").value = student.firstName;
+        document.getElementById("middleName").value = student.middleName;
+        document.getElementById("lastName").value = student.lastName;
+        document.getElementById("gender").value = student.gender;
+        document.getElementById("birthdate").value = student.birthdate;
+        document.getElementById("placeOfBirth").value = student.birthPlace;
+
+        document.getElementById("fatherName").value = student.fatherName;
+        document.getElementById("fatherOccupation").value = student.fatherOccupation;
+        document.getElementById("motherName").value = student.motherName;
+        document.getElementById("motherOccupation").value = student.motherOccupation;
+        document.getElementById("guardianName").value = student.guardianName;
+        document.getElementById("guardianOccupation").value = student.fatherOccupation;
+        document.getElementById("guardianContactNumber").value = student.guardianContactNum;
+        document.getElementById("guardianAddress").value = student.guardianAddress;
+
+        document.getElementById("street").value = student.address.street;
+        document.getElementById("barangay").value = student.address.barangay;
+        document.getElementById("city").value = student.address.city;
+        document.getElementById("lastGradeLevelCompleted").value = student.currentGradeLevel ? student.currentGradeLevel.levelName : 'None';
+        document.getElementById("lastMadrasaYearCompleted").value = student.lastMadrasaYearCompleted;
+        document.getElementById("madrasaNameLastAttended").value = student.madrasaName;
+        document.getElementById("madrasaAddress").value = student.madrasaAddress;
+        fetchTransRequirements("transReqRecord", student.transfereeRequirements);
+
+        studentId = student.studentId;
+        fetchRemainingFees();
+        setStudentGrades();
+        setUpDistribution(student.fullName)
+    }
+    async function setStudentGrades() {
+        const response = await fetch(`/student-grades/student/${studentId}`);
+        if (!response.ok) { return; }
+
+        const grades = await response.json();
+        const gradesview = document.getElementById("grades-container");
+        gradesview.innerHTML = ""; // clear previous content
+
+        // 👉 Check if no grades were returned
+        if (!grades || grades.length === 0) {
+            gradesview.innerHTML = `
+            <div class="no-records-message">
+                <p>No grade records found for this student.<p>
+            </div>`;
+            return;
+        }
+
+        grades.forEach(sem => {
+            var allFilled = true;
+            let gradesRow = '';
+            let totalGrade = 0;
+            let count = 0;
+
+            sem.grades.forEach(grade => {
+                if (allFilled) {
+                    allFilled = grade.subjectGrade;
+                }
+                totalGrade += grade.subjectGrade;
+                count++;
+                gradesRow += `
+                <tr>
+                    <td>${grade.subjectName}</td>
+                    <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status" id="grade-remarks">
+                                ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
+                            </div>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+
+            const average = totalGrade / count;
+
+            const semesterFormatted = sem.sectionSemester.includes("First semester")
+                ? sem.sectionSemester.replace("First semester", "1st Sem")
+                : sem.sectionSemester.includes("Second semester")
+                    ? sem.sectionSemester.replace("Second semester", "2nd Sem")
+                    : sem.sectionSemester;
+
+            const row = document.createElement("div");
+            row.classList.add("column-main");
+
+            row.innerHTML = `
+            <div class="table-container">
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="grade-table-header">
+                        <div>
+                            <label>SY & Sem:</label>
+                            <h6 id="sy">${semesterFormatted}</h6>
+                        </div>
+                        <div>
+                            <label>Level:</label>
+                            <h6>${sem.gradeSection}</h6>
+                        </div>
+                    </div>
+                </div> <br>
+                <table class="mini-table" id="grades-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${gradesRow}
+                        <tr id="average-row">
+                            <td>Average</td>
+                            <td>${allFilled ? average : ""}</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status">
+                                        <div class="average-remarks">
+                                            ${average === "N/A" || !allFilled ? "" : (average > 49 ? "PASSED" : "FAILED")}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>`;
+
+            gradesview.appendChild(row);
+        });
+    }
+
+
+    async function setUpDistribution(fullName) {
+        try {
+            const claimed = false;
+            const response = await fetch(`/distributable/student-distribution/all?isClaimed=false&student=${fullName}&itemType=0&sortBy=none`);
+            if (!response.ok) {
+                //console.error("Failed to fetch data:", response.status);
+                return;
+            }
+
+            const data = await response.json();
+
+            const tableBody = document.querySelector("#distribution-table tbody");
+            if (!tableBody) {
+                //console.error("Table body not found");
+                return;
+            }
+
+            // Clear existing rows
+            tableBody.innerHTML = '';
+
+            if (!data.content || data.content.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="3">No records found</td></tr>`;
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+
+            data.content.forEach(studDis => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${studDis.itemName || 'N/A'}</td>
+                    <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
+                    <td>
+                        <div class="dropdown">
+                            <div class="action-container action">
+                                <button
+                                    data-open-modal="confirmationModal" class="add-something-btn"
+                                    data-action="itemDistributed"
+                                    data-message="Confirm item is distributed to the student"
+                                    data-item-id="${studDis.distId}">Distribute
+                                </button>
+                            </div>
+                        </div>
+                    </td>`;
+                fragment.appendChild(row);
+            });
+
+            tableBody.appendChild(fragment);
+
+        } catch (error) {
+            const tableBody = document.querySelector("#table-ko tbody");
+            if (tableBody) {
+                tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
+            }
+        }
+    }
+
+    function confirmDistribution() {
+        fetch(`/distributable/student-distribution/received/${selectedDistId}`, {
+            method: 'PUT'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(msg => {
+                showSuccessModal(msg);
+            })
+            .catch(error => {
+                //console.error('Error:', error);
+            });
+    }
+
+    var selectedDistId;
+    document.body.addEventListener("click", function (event) {
+        const target = event.target.closest("[data-open-modal='confirmationModal']");
+        if (target) {
+            selectedDistId = target.getAttribute("data-item-id");
+        }
+    });
+
+    async function fetchRemainingFees() {
+        //console.log(`/paymentrecord/form/${studentId}`);
+        const feesTable = document.querySelector("#payment-table tbody");
+        const response = await fetch(`/paymentrecord/form/${studentId}`);
+        if (!response.ok) { return; }
+
+        const remainingFees = await response.json();
+
+        feesTable.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
+        if (remainingFees.feesAndBalance.length === 0) { return; }
+        feesTable.innerHTML = ``;
+        document.getElementById("total-balance").textContent = `P${remainingFees.totalFee}`;
+        remainingFees.feesAndBalance.forEach(data => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${data.fee.name}</td>
+                <td>${data.totalRequired}</td>
+                <td>${data.totalPaid}</td>
+                <td>
+                    <div class="status-container">
+                        <div class="status" id="status-payments">${data.totalPaid > 0 ? "Partially Paid" : "Not Paid"}</div>
+                    </div>
+                </td>
+                <td><span>P</span>${data.balance}</td>`;
+            feesTable.appendChild(row);
+        });
+    }
+
+    function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
+        fetch("/trans-req/all")
+            .then(response => response.json())
+            .then(data => {
+                const reqContainer = document.getElementById(divId);
+                reqContainer.innerHTML = "";
+                data.forEach(transReq => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("checkbox-each");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `transReq-${transReq.levelId}`;
+                    checkbox.name = "transferRequirements";
+                    checkbox.value = transReq.id;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `transReq-${transReq.idd}`;
+                    label.textContent = transReq.name;
+
+                    if (reqIds.includes(transReq.id)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    reqContainer.appendChild(paymentDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+</script>
+
+</html>

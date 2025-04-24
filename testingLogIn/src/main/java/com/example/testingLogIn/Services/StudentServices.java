@@ -170,6 +170,7 @@ public class StudentServices {
         toUpdate.setLastMadrasaYearCompleted(stud.getLastGradeLevelCompleted());
         toUpdate.setLastMadrasaYearCompleted(stud.getLastMadrasaYearCompleted());
         studentRepo.save(toUpdate);
+        userService.updateStudentAccount(toUpdate.DTOmapper());
 
         return fullName;
     }

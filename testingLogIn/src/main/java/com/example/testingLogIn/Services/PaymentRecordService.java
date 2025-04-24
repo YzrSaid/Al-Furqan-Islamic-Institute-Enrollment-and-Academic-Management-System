@@ -73,7 +73,8 @@ public class PaymentRecordService {
         this.studFeesRepo = studFeesRepo;
     }
     //NEW WAY OF PAYING
-    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
+    @CacheEvict(value = {"enrollmentPage"//,"studPaymentForm"
+    },allEntries = true)
     public PaymentTransactionDTO addPaymentAutoAllocate(int studentId, Integer gradeLevelId, double amount, List<Integer> feesId){
         PaymentTransaction transaction = generateTransaction();
         Student student = studentRepo.findById(studentId).orElse(null);
@@ -147,9 +148,9 @@ public class PaymentRecordService {
         return tran.DTOmapper();
     }
 
-    @Cacheable(
-            value = "studPaymentForm",
-            key = "#studentId + #pageNo + #pageSize")
+//    @Cacheable(
+//            value = "studPaymentForm",
+//            key = "#studentId + #pageNo + #pageSize")
     public Object getStudentPaymentForm(int studentId, boolean forBreakDown, int pageNo, int pageSize, boolean forPayment){
         Student student = studentRepo.findById(studentId).orElse(null);
         assert student != null;
@@ -161,15 +162,20 @@ public class PaymentRecordService {
             double totalPaidAmount = paymentRepo.totalPaidForSpecificFee(studentId, sfl.getFee().getId(), null).orElse(0.0);//(studentId,feeId,null)
             double totalFeeBalance = studFeesRepo.totalPerFeesByStudent(studentId, sfl.getFee().getId());
             double remainingBalance = NonModelServices.adjustDecimal(totalFeeBalance - totalPaidAmount);
-            if (remainingBalance > 0 || (forBreakDown && (/*totalPaidAmount +*/ totalFeeBalance) > 0)) {
+            if (remainingBalance > 0 && !forBreakDown) {
                 totalRemaining+=remainingBalance;
+                studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance,NonModelServices.adjustDecimal(totalPaidAmount),totalFeeBalance));
+            }else if(forBreakDown && totalFeeBalance > 0 && remainingBalance == 0){
+                totalRemaining+=remainingBalance;
+                System.out.println(remainingBalance);
                 studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance,NonModelServices.adjustDecimal(totalPaidAmount),totalFeeBalance));
             }
         }
         studentPaymentForm.setTotalFee(totalRemaining);
 
-        if(forPayment)
-            return studentPaymentForm;
+        if(forPayment){
+            System.out.println("Returning form");
+            return studentPaymentForm;}
 
         double totalPage = Math.ceil((float) studentPaymentForm.getFeesAndBalance().size() /pageSize);
         int totalElements = studentPaymentForm.getFeesAndBalance().size();
@@ -241,7 +247,8 @@ public class PaymentRecordService {
         return transactionRepo.findById(referenceId).map(PaymentTransaction::DTOmapper).orElse(null);
     }
 
-    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
+    @CacheEvict(value = {"enrollmentPage"//,"studPaymentForm"
+    },allEntries = true)
     public boolean voidThePayment(String transactionId){
         PaymentTransaction transaction = transactionRepo.findById(transactionId).orElseThrow(NullPointerException::new);
         Student stud = transaction.getStudent();

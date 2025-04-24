@@ -123,6 +123,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         });
     }
 
+    public void updateStudentAccount(StudentDTO student){
+        UserModel studentUser = userRepo.findStudentAccount(student.getStudentId()).orElse(null);
+        if(studentUser != null){
+            studentUser.setFirstname(student.getFirstName());
+            studentUser.setMiddlename(student.getMiddleName());
+            studentUser.setLastname(student.getLastName());
+            studentUser.setFullName(student.getFullName());
+            userRepo.save(studentUser);
+        }
+    }
+
     public boolean usernameExist(String username) {
         return userRepo.findByUsername(username) != null;
     }
@@ -174,9 +185,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             int id = ((UserModel)authentication.getPrincipal()).getStudent().getStudentId();
-            return studentRepo.findById(id).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
+            return studentRepo.findById(id).map(Student::DTOmapper).orElseThrow(()->new NullPointerException("Account Not Found"));
         }
-        return null;
+
+        throw new NullPointerException("Account Not Found");
     }
     
     public UserDTO getCurrentlyLoggedInUserDTO(){

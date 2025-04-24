@@ -111,7 +111,6 @@ public class StudentSubjectGradeServices {
             semGrade.setGradeSection(semGrade.getGrades().getFirst().getGradeAndSection());
             studentGrades.add(semGrade);
         }
-
         return studentGrades;
     }
 

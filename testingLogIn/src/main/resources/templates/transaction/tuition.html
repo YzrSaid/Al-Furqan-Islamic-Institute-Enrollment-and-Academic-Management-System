@@ -267,7 +267,7 @@
                 </div>
                 <!-- Add Payment button -->
                 <div class="modal-buttons" id="add-payment-btn">
-                    <button type="button" class="btn-confirm" data-open-modal="addPaymentModal">Add
+                    <button type="button" class="btn-confirm" id="addPaymentBtn" data-open-modal="addPaymentModal">Add
                         Payment</button>
                     <button type="button" class="btn-cancel" data-close-modal="listOfPaymentsModal">Close</button>
                 </div>
@@ -418,7 +418,7 @@
 
                 <div class="modal-buttons payment-modal-buttons">
                     <button id="save-payment-btn" class="btn-confirm no-print" type="button"
-                        data-open-modal="confirmationModal" data-action="savePayment"
+                        data-open-modal="confirmationModal" data-action="savePaymentTrans"
                         data-message="Are you sure you want to save this payment?">Save Payment
                     </button>
 
@@ -968,7 +968,7 @@
                         <td>${payForm.totalFee}</td>`;
                     tableBody.appendChild(row);
 
-                    document.getElementById("open-add-payment-modal").onclick = function () {
+                    document.getElementById("addPaymentBtn").onclick = function () {
                         setUpForm(JSON.stringify(payForm));
                     };
                 })

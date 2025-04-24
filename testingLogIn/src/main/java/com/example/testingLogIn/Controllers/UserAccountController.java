@@ -1,9 +1,15 @@
 package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.Enums.RegistrationStatus;
+import com.example.testingLogIn.ModelDTO.ScheduleDTO;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
+import com.example.testingLogIn.ModelDTO.StudentGradesPerSem;
 import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.CustomObjects.PagedResponse;
+import com.example.testingLogIn.Models.Schedule;
+import com.example.testingLogIn.Models.Section;
+import com.example.testingLogIn.Services.ScheduleServices;
+import com.example.testingLogIn.Services.StudentSubjectGradeServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Services.AccountRegisterServices;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/user")
 @Controller
@@ -22,6 +29,10 @@ public class UserAccountController {
     private CustomUserDetailsService customUserDetailsService;
     @Autowired
     private AccountRegisterServices accountRegisterService;
+    @Autowired
+    private StudentSubjectGradeServices subjectGradeServices;
+    @Autowired
+    private ScheduleServices scheduleServices;
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -49,13 +60,19 @@ public class UserAccountController {
     //get the currently logged student info
     @GetMapping("/student/my-info")
     public ResponseEntity<StudentDTO> getLoggedStudentInfo(){
-        try{
-            return new ResponseEntity<>(customUserDetailsService.getCurrentlyLoggedInStudent(), HttpStatus.OK);
-        }catch (NullPointerException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        return new ResponseEntity<>(customUserDetailsService.getCurrentlyLoggedInStudent(), HttpStatus.OK);
+    }
+
+    @GetMapping("/student/my-schedules")
+    public ResponseEntity<List<ScheduleDTO>> getLoggedStudentGrades(){
+        int sectionId = Optional.ofNullable(customUserDetailsService.getCurrentlyLoggedInUser().getStudent().getCurrentGradeSection()).map(Section::getNumber).orElse(0);
+        return new ResponseEntity<>(scheduleServices.getSchedulesBySection(sectionId), HttpStatus.OK);
+    }
+
+    @GetMapping("/student/my-grades")
+    public ResponseEntity<List<StudentGradesPerSem>> getLoggedStudentSchedules(){
+        int studentId = customUserDetailsService.getCurrentlyLoggedInUser().getStudent().getStudentId();
+        return new ResponseEntity<>(subjectGradeServices.getStudentGradesBySemester(studentId), HttpStatus.OK);
     }
     
     @PostMapping("/register")

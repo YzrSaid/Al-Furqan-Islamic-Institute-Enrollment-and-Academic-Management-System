@@ -4,71 +4,302 @@
 <head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="text-center">
-            <div class="school-logo">
-                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
-            </div> <br>
-            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
-                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
-            </p> <br>
-            <div class="welcome-div">
-                <p>
-                    Welcome,
-                    <span class="account-text">SAID, MOHAMMAD ALDRIN NAWADIL!</span>
-                </p>
-
-            </div>
-        </div>
-
-        <a href="home" class="sidebar-icons menu" onclick="clearSubmenus()">
-            <img th:src="@{/images/icons/home.png}" alt="Dashboard Icon"> Home
-        </a>
-
-        <a href="personal-profile" class="sidebar-icons">
-            <img th:src="@{/images/icons/account.png}" alt="Grade Icon"> My Personal Profile
-        </a>
-
-        <a href="grades" class="active sidebar-icons">
-            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grades
-        </a>
-
-        <a href="class-schedule" class="sidebar-icons">
-            <img th:src="@{/images/icons/schedule.png}" alt="Grade Icon"> Class Schedule
-        </a>
-    </div>
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <div class="topbar">
-            <div class="main-topbar">
-                <span class="hamburger" onclick="toggleSidebar()">
-                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
-                </span>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Personal Profile</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/personal-profile" id="studName" title="You're currently on this page.">Reynolds Perkins</a>
             </div>
-            <div class="dropdown-logout">
-                <div class="user-icon dropdown-logout-toggle">
-                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
-                        alt="User Icon">
-                    <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <!-- <h6><span th:text="(${userRole})"></span></h6> -->
-                        <h6><span>STUDENT</span></h6>
-                        <a href="/logout">Log Out</a>
+
+        </div>
+
+        <div id="studentInformationContainer" class="student-information-container">
+            <div class="student-information-container-content">
+                <h1>Student Grades</h1>
+                <form method="" action="" id="studentInformationForm">
+                    <!-- <div class="header">
+                        <div class="half-unique">
+                            <label for="student-id">Student ID: </label>
+                            <input readonly type="text" class="student-id-report" id="student-id">
+                        </div> <br>
+                    </div> -->
+                    <div id="grades-container">
+
+                    </div>
+                </form>
+            </div>
+
+            <!-- Grade Print Modal -->
+            <div id="gradePrintModal" class="grade-print-dal modal">
+                <div class="printable-area">
+                    <div class="grade-print-modal-content scroll-lock">
+
+                        <!-- Report Header -->
+                        <div class="header-container-print">
+
+                            <div class="left-header">
+                                <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                            </div>
+                            <div class="middle-header">
+                                <div class="school-info-print">
+                                    <h3 th:text="${schoolName}"></h3>
+                                    <p th:text="${schoolAddress}"></p>
+                                    <p th:text="${schoolEmail}"></p>
+                                    <p th:text="${schoolNum}"></p>
+                                    <h3 class="report-type"><strong>Grade Form</strong></h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="separator-line"></div>
+                        <!-- Student Info -->
+                        <table border="1" cellspacing="0" cellpadding="6"
+                            style="width: 100%; margin-top: -30px; font-family: Arial, sans-serif; border-collapse: collapse;">
+                            <!-- Student Info Section -->
+                            <tr class="stud-info-section">
+                                <td colspan="6">
+                                    <div class="student-info-container-printable">
+                                        <div class="payment-student-info-row">
+                                            <label for="receipt-student-id">Student ID:</label>
+                                            <input type="text" class="print-inputs" id="receipt-student-id"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="payment-student-info-row">
+                                            <label for="receipt-date">Date:</label>
+                                            <input type="date" class="print-inputs" id="receipt-date">
+                                        </div>
+
+                                        <div class="payment-student-info-row">
+                                            <label for="receipt-student-name">Student Name:</label>
+                                            <input type="text" class="print-inputs" id="receipt-student-name"
+                                                placeholder="">
+                                        </div>
+
+                                        <div class="payment-student-info-row">
+                                            <label for="sy-and-sem">SY & Sem:</label>
+                                            <input type="text" class="print-inputs" id="current-sy-and-sem"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Grade Table Header -->
+                            <tr class="grade-header">
+                                <th>Subject</th>
+                                <th>1st Sem</th>
+                                <th>2nd Sem</th>
+                                <th>Final</th>
+                                <th>Remarks</th>
+                            </tr>
+
+                            <!-- Grade Table Rows (No inner borders) -->
+                            <tr class="grade-row">
+                                <td>READING AND WRITING</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>PAGBASA AT PAGSUSURI NG IBAT IBANG TEKSTO TUNGO SA P</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>21ST CENTURY LITERATURE FROM THE PHILIPPINES AND THE W</td>
+                                <td>78</td>
+                                <td>77</td>
+                                <td>77.5</td>
+                                <td>Passed</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>HOUSEKEEPING</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>STATISTICS AND PROBABILITY</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>PHYSICAL EDUCATION AND HEALTH</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr class="grade-row">
+                                <td>PHYSICAL SCIENCE</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                        </table>
+
+                        <div class="printable-footer">
+                            Date Printed: <strong>4/1/2020</strong>
+                        </div>
+
+                        <!-- Print Button -->
+                        <div class="modal-buttons">
+                            <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+                    <!-- Error Modal -->
+            <div id="errorModal" class="modal">
+                <div class="modal-content scroll-lock">
+                    <p id="errorMessage"></p>
+                    <div class="modal-buttons">
+                        <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Background overlay -->
+            <div id="successModalOverlay"></div>
+
+            <!-- Success modal -->
+            <div id="successModal">
+                <p id="successModalMessage"></p>
+            </div>
+
         </div>
-        <div class="text-link">
-            <h4>Grades</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Grades</p>
-        </div> <br>
     </div>
 </body>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setStudentGrades();
+    });
+
+     async function setStudentGrades() {
+        const response = await fetch("/user/student/my-grades");
+        if (!response.ok) { return; }
+
+        const grades = await response.json();
+        const gradesview = document.getElementById("grades-container");
+        gradesview.innerHTML = ""; // clear previous content
+        if (!grades || grades.length === 0) {
+            gradesview.innerHTML = `
+            <div class="no-records-message">
+                <p>No grade records found for this student.<p>
+            </div>`;
+            return;
+        }
+
+        for (let i = 0; i < grades.length; i += 2) {
+            const containerTwo = document.createElement("div");
+            containerTwo.classList.add("container-two");
+
+            for (let j = i; j < i + 2 && j < grades.length; j++) {
+                const sem = grades[j];
+                let allFilled = true;
+                let gradesRow = '';
+                let totalGrade = 0;
+                let count = 0;
+
+                sem.grades.forEach(grade => {
+                    if (allFilled) {
+                        allFilled = grade.subjectGrade;
+                    }
+                    totalGrade += grade.subjectGrade;
+                    count++;
+                    gradesRow += `
+                        <tr>
+                            <td>${grade.subjectName}</td>
+                            <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status" id="grade-remarks">
+                                        ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+
+                const average = totalGrade / count;
+
+                const semesterFormatted = sem.sectionSemester.includes("First semester")
+                    ? sem.sectionSemester.replace("First semester", "1st Sem")
+                    : sem.sectionSemester.includes("Second semester")
+                        ? sem.sectionSemester.replace("Second semester", "2nd Sem")
+                        : sem.sectionSemester;
+
+                const columnMain = document.createElement("div");
+                columnMain.classList.add("column-main");
+
+                columnMain.innerHTML = `
+                        <div class="table-container">
+                            <div style="display: flex; justify-content: space-between;">
+                                <div class="grade-table-header">
+                                    <div>
+                                        <label>SY & Sem:</label>
+                                        <h6 id="sy">${semesterFormatted}</h6>
+                                    </div>
+                                    <div>
+                                        <label>Level:</label>
+                                        <h6>${sem.gradeSection}</h6>
+                                    </div>
+                                </div>
+                            </div> <br>
+                            <table class="grades-mini-table" id="grades-mini-table">
+                                <thead>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Grade</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${gradesRow}
+                                    <tr id="average-row">
+                                        <td>Average</td>
+                                        <td>${allFilled ? average : ""}</td>
+                                        <td>
+                                            <div class="status-container">
+                                                <div class="status">
+                                                    <div class="average-remarks">
+                                                        ${average === "N/A" || !allFilled ? "" : (average > 49 ? "PASSED" : "FAILED")}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>`;
+                containerTwo.appendChild(columnMain);
+            }
+
+            gradesview.appendChild(containerTwo);
+            gradesview.appendChild(document.createElement("br")); // Optional line break
+        }
+
+    }
+</script>
 </html>

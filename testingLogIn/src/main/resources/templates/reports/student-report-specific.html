@@ -1267,7 +1267,6 @@
     }
 
     async function fetchRemainingFees(currentPage=1) {
-        //console.log(`/paymentrecord/form/${studentId}`);
         const feesTable = document.querySelector("#payment-mini-table tbody");
         const response = await fetch(`/paymentrecord/form/${studentId}?pageNo=${currentPage}`);
         if (!response.ok) { 
@@ -1434,27 +1433,27 @@
     }
 
     function updatePaginationUI(paginationKey, currentPage, pageSize, totalItems, totalPages) {
-    const config = paginationConfigs[paginationKey];
-    if (!config) return;
+        const config = paginationConfigs[paginationKey];
+        if (!config) return;
 
-    const { elements } = config;
-    const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-    const end = Math.min(currentPage * pageSize, totalItems);
+        const { elements } = config;
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
 
-    // Update UI elements
-    document.getElementById(elements.itemRange).textContent = `${start}–${end} of ${totalItems}`;
-    document.getElementById(elements.pageInput).value = currentPage;
-    document.getElementById(elements.pageInput).min = 1;
-    document.getElementById(elements.pageInput).max = totalPages;
-    document.getElementById(elements.totalPages).textContent = `of ${totalPages}`;
+        // Update UI elements
+        document.getElementById(elements.itemRange).textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById(elements.pageInput).value = currentPage;
+        document.getElementById(elements.pageInput).min = 1;
+        document.getElementById(elements.pageInput).max = totalPages;
+        document.getElementById(elements.totalPages).textContent = `of ${totalPages}`;
 
-    // Update button states
-    document.getElementById(elements.prevPage).disabled = currentPage <= 1 || totalPages === 0;
-    document.getElementById(elements.nextPage).disabled = currentPage >= totalPages || totalPages === 0;
+        // Update button states
+        document.getElementById(elements.prevPage).disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById(elements.nextPage).disabled = currentPage >= totalPages || totalPages === 0;
 
-    // Update current page in config
-    config.currentPage = currentPage;
-}
+        // Update current page in config
+        config.currentPage = currentPage;
+    }
 
 const paginationConfigs = {
     'DistU': {

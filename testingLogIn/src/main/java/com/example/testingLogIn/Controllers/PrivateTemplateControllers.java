@@ -41,6 +41,11 @@ public class PrivateTemplateControllers {
         return "student-account/class-schedule";
     }
 
+    @GetMapping("/balance")
+    public String getStudentBalanceView() {
+        return "student-account/student-balance";
+    }
+
     @GetMapping("")
     public String getDashboardzz() {
         return "dashboard";

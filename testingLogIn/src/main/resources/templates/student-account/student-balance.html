@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<script th:src="@{/js/script.js}" defer></script>
+<script th:src="@{/js/sidebar.js}" defer></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+        </div>
+
+
+        <div id="studentInformationContainer" class="student-information-container">
+            <div class="student-information-container-content">
+                <h1>Balance Record</h1>
+                <form method="" action="" id="studentInformationForm">
+                    <div class="container-two">
+                        <div class="column-main">
+                            <p>Remaining Balance</p>
+                            <div class="table-container">
+                                <table class="mini-table main-table" id="payment-mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Req. Amount</th>
+                                            <th>Paid</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                                <!-- Pagination -->
+                                <div class="pagination-container">
+                                    <div class="pagination-controls">
+                                        <span id="itemRangeUFee">1–10 of 37</span>
+                                        <button type="button" id="prevPageUFee">«</button>
+                                        <input type="number" id="pageInputUFee" min="1" value="1">
+                                        <span id="totalPagesUFee">of 4</span>
+                                        <button type="button" id="nextPageUFee">»</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="column-main">
+                            <p>Fully Paid Fees</p>
+                            <div class="table-wrapper-printable">
+                                <table id="past-trans-table" class="printable-table main-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Particular</th>
+                                            <th>Total Amount</th>
+                                            <th>Total Paid</th>
+                                            <th>Balance</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                                <!-- Pagination -->
+                                <div class="pagination-container">
+                                    <div class="pagination-controls">
+                                        <span id="itemRangePFee">1–10 of 37</span>
+                                        <button type="button" id="prevPagePFee">«</button>
+                                        <input type="number" id="pageInputPFee" min="1" value="1">
+                                        <span id="totalPagesPFee">of 4</span>
+                                        <button type="button" id="nextPagePFee">»</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchRemainingFees();
+        fetchAllTimeFees();
+    });
+    var studentId = 2;
+    async function fetchAllTimeFees(currentPage=1) {
+        const feesTable = document.querySelector("#past-trans-table tbody");
+        const response = await fetch(`/paymentrecord/form/${studentId}?forBreakDown=true&pageNo=${currentPage}&pageSize=7`);
+        if (!response.ok) { 
+            updatePaginationUI("PFee",1,0,0,0);
+            return; }
+
+        const remainingFees = await response.json();
+        feesTable.innerHTML = `<tr><td colspan="5">No records found</td></tr>`;
+        if (remainingFees.content.length === 0) { 
+            updatePaginationUI("PFee",1,0,0,0);
+            return; }
+        feesTable.innerHTML = ``;
+        remainingFees.content.forEach(data => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${data.fee.name}</td>
+                <td>${data.totalRequired}</td>
+                <td>${data.totalPaid}</td>
+                <td><span>P</span>${data.balance}</td>
+                <td>
+                    <div class="status-container">
+                        <div class="status" id="status-payments">${data.totalPaid > 0 && data.totalPaid<data.totalRequired ? "Partially Paid" :
+                                                                    data.balance === 0 ? "Fully Paid" : data.balance<0 ? "For Refund" :"Not Paid"}</div>
+                    </div>
+                </td>`;
+            feesTable.appendChild(row);
+            updatePaginationUI("PFee",currentPage,remainingFees.pageSize,remainingFees.totalElements,remainingFees.totalPages);
+        });
+    }
+
+    async function fetchRemainingFees(currentPage=1) {
+        const feesTable = document.querySelector("#payment-mini-table tbody");
+        const response = await fetch(`/paymentrecord/form/${studentId}?pageNo=${currentPage}`);
+        if (!response.ok) { 
+            updatePaginationUI("UFee",1,0,0,0);
+            return; }
+
+        const remainingFees = await response.json();
+        feesTable.innerHTML = `<tr><td colspan="5">No records found</td></tr>`;
+        if (remainingFees.content.length === 0) { 
+            updatePaginationUI("UFee",1,0,0,0);
+            return; }
+        feesTable.innerHTML = ``;
+        remainingFees.content.forEach(data => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${data.fee.name}</td>
+                <td>${data.totalRequired}</td>
+                <td>${data.totalPaid}</td>
+                <td><span>P</span>${data.balance}</td>
+                <td>
+                    <div class="status-container">
+                        <div class="status" id="status-payments">${data.totalPaid > 0 ? "Partially Paid" : "Not Paid"}</div>
+                    </div>
+                </td>`;
+            feesTable.appendChild(row);
+            updatePaginationUI("UFee",currentPage,remainingFees.pageSize,remainingFees.totalElements,remainingFees.totalPages);
+        });
+    }
+
+    function updatePaginationUI(paginationKey, currentPage, pageSize, totalItems, totalPages) {
+        const config = paginationConfigs[paginationKey];
+        if (!config) return;
+
+        const { elements } = config;
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
+
+        // Update UI elements
+        document.getElementById(elements.itemRange).textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById(elements.pageInput).value = currentPage;
+        document.getElementById(elements.pageInput).min = 1;
+        document.getElementById(elements.pageInput).max = totalPages;
+        document.getElementById(elements.totalPages).textContent = `of ${totalPages}`;
+
+        // Update button states
+        document.getElementById(elements.prevPage).disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById(elements.nextPage).disabled = currentPage >= totalPages || totalPages === 0;
+
+        // Update current page in config
+        config.currentPage = currentPage;
+    }
+    const paginationConfigs = {   
+    'UFee': {
+        currentPage: 1,
+        setUpFunction: fetchRemainingFees,
+        elements: {
+            itemRange: "itemRangeUFee",
+            pageInput: "pageInputUFee",
+            totalPages: "totalPagesUFee",
+            prevPage: "prevPageUFee",
+            nextPage: "nextPageUFee"}
+    },
+    'PFee': {
+        currentPage: 1,
+        setUpFunction: fetchAllTimeFees,
+        elements: {
+            itemRange: "itemRangePFee",
+            pageInput: "pageInputPFee",
+            totalPages: "totalPagesPFee",
+            prevPage: "prevPagePFee",
+            nextPage: "nextPagePFee"}
+    }
+};
+
+function initializePaginationListeners() {
+    Object.keys(paginationConfigs).forEach(key => {
+        const config = paginationConfigs[key];
+        const { elements, setUpFunction } = config;
+
+        // Previous page button
+        document.getElementById(elements.prevPage).addEventListener("click", () => {
+            if (config.currentPage > 1) {
+                config.currentPage--;
+                setUpFunction(config.currentPage);
+            }
+        });
+
+        // Next page button
+        document.getElementById(elements.nextPage).addEventListener("click", () => {
+            const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+            if (config.currentPage < totalPages) {
+                config.currentPage++;
+                setUpFunction(config.currentPage);
+            }
+        });
+
+        // Page input change
+        document.getElementById(elements.pageInput).addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                config.currentPage = page;
+                setUpFunction(config.currentPage);
+            } else {
+                e.target.value = config.currentPage;
+            }
+        });
+    });
+}   
+document.addEventListener("DOMContentLoaded", initializePaginationListeners);
+</script>
+
+</html>

@@ -7,11 +7,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface UserRepo extends JpaRepository<UserModel, Integer> {
     @Query("SELECT u FROM UserModel u "+
            "WHERE u.isNotDeleted = true "+
            "AND LOWER(u.username) = LOWER(:username)")
     UserModel findByUsername(@Param("username")String username);
+
+    @Query("""
+           SELECT usr FROM UserModel usr
+           JOIN usr.student stud
+           WHERE stud.studentId = :studentId
+            """)
+    Optional<UserModel> findStudentAccount(int studentId);
 
     @Query("SELECT staff FROM UserModel staff " +
             "WHERE LOWER(staff.fullName) LIKE :search")

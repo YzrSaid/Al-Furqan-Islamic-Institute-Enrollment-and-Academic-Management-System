@@ -4,71 +4,332 @@
 <head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
 <body>
     <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="text-center">
-            <div class="school-logo">
-                <img th:src="@{/images/al-furqanlogo.jpg}" alt="School Logo">
-            </div> <br>
-            <p th:if="${currentSY != 'NOT FOUND' and currentSem != 'NOT FOUND'}"
-                th:text="|S.Y ${currentSY} - ${currentSem} Sem|" class="mt-2">
-            </p> <br>
-            <div class="welcome-div">
-                <p>
-                    Welcome,
-                    <span class="account-text">SAID, MOHAMMAD ALDRIN NAWADIL!</span>
-                </p>
-
-            </div>
-        </div>
-
-        <a href="home" class="sidebar-icons menu" onclick="clearSubmenus()">
-            <img th:src="@{/images/icons/home.png}" alt="Dashboard Icon"> Home
-        </a>
-
-        <a href="personal-profile" class="active sidebar-icons">
-            <img th:src="@{/images/icons/account.png}" alt="Grade Icon"> My Personal Profile
-        </a>
-
-        <a href="grades" class="sidebar-icons">
-            <img th:src="@{/images/icons/data-entry_icon.png}" alt="Grade Icon"> Grades
-        </a>
-
-        <a href="class-schedule.html" class="sidebar-icons">
-            <img th:src="@{/images/icons/schedule.png}" alt="Grade Icon"> Class Schedule
-        </a>
-    </div>
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <div class="topbar">
-            <div class="main-topbar">
-                <span class="hamburger" onclick="toggleSidebar()">
-                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
-                </span>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Personal Profile</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/personal-profile" id="studName" title="You're currently on this page.">Reynolds Perkins</a>
             </div>
-            <div class="dropdown-logout">
-                <div class="user-icon dropdown-logout-toggle">
-                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
-                        alt="User Icon">
-                    <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <!-- <h6><span th:text="(${userRole})"></span></h6> -->
-                        <h6><span>STUDENT</span></h6>
-                        <a href="/logout">Log Out</a>
-                    </div>
+
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="modalText">Are you sure?</p>
+                <div class="confirmation-modal-buttons">
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" data-close-modal="confirmationModal" class="btn-cancel">Cancel</button>
                 </div>
             </div>
         </div>
-        <div class="text-link">
-            <h4>Personal Profile</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Personal Profile</p>
-        </div> <br>
+
+        <div id="studentInformationContainer" class="student-information-container">
+            <div class="student-information-container-content">
+                <h1>Student Information</h1>
+                <form method="" action="" id="studentInformationForm">
+                    <div class="header">
+                        <div class="half-unique">
+                            <label for="student-id">Student ID: </label>
+                            <input readonly type="text" class="student-id-report" id="student-id">
+                        </div> <br>
+
+                        <div class="checkbox-container other-info-container">
+                            <div class="checkbox">
+                                <label for="isScholar">Scholar:</label>
+                                <h6 id="isScholar">Yes</h6>
+
+                                <button type="button" id="dropdown-report-scholar"> <img
+                                        src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                </button>
+
+                                <div id="report-scholar-popover" name="add-discount" class="styled-popover">
+                                    <div id="discounts-rec" class="checkbox-transferee-reqs-group">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="checkbox">
+                                <label for="isTransferee">Transferee:</label>
+                                <input type="checkbox" id="isTransferee">
+
+                                <button type="button" id="dropdown-report-transferee"> <img
+                                        src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                </button>
+
+
+                                <div id="report-transferee-popover" name="add-transferee-req" class="styled-popover">
+
+                                    <div class="transferee-requirements">
+                                        <h6>Requirements:</h6>
+                                        <div id="transfereeReq" class="checkbox-transferee-reqs-group">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-content: center; justify-items: left;">
+                        <h2>Personal Information</h2>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="column1">
+                                <div>
+                                    <label for="name">Name</label>
+                                    <div class="student-form-group half">
+                                        <input readonly type="text" class="name" id="firstName">
+                                        <input readonly type="text" class="name" id="middleName">
+                                        <input readonly type="text" class="name" id="lastName">
+                                    </div>
+                                    <div class="small-text">
+                                        <p>First</p>
+                                        <p>Middle</p>
+                                        <p>Last</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column2">
+                                <div class="student-form-group half-stud-info-small">
+                                    <label for="gender">Gender:</label>
+                                    <input readonly type="text" class="gender" id="gender">
+
+                                    <label for="birthdate">Birthdate:</label>
+                                    <input readonly required type="date" class="birthdate" id="birthdate-report">
+                                </div>
+                            </div>
+
+                            <div class="column1">
+                                <div class="student-form-group">
+                                    <div>
+                                        <label for="address">Address:</label>
+                                        <div class="student-form-group half-unique">
+                                            <input readonly type="text" class="address" id="street" required
+                                                placeholder="Street">
+                                            <input readonly type="text" class="address" id="barangay" required
+                                                placeholder="Barangay">
+                                            <input readonly type="text" class="address" id="city" required
+                                                placeholder="City">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column2">
+                                <label>Place of Birth:</label>
+                                <div class="student-form-group">
+                                    <input readonly type="text" id="placeOfBirth" class="place-of-birth-report">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                        <h2>Additional Information</h2>
+                    </div>
+
+                    <div>
+                        <h6>Father's Information</h6>
+                        <div class="student-form-group">
+                            <label for="fatherName">Name:</label>
+                            <input readonly type="text" class="parent-name" id="fatherName">
+
+                            <label for="fatherOccupation">Occupation:</label>
+                            <input readonly type="text" class="parent-occupation" id="fatherOccupation">
+                        </div> <br>
+                    </div>
+                    <div>
+                        <h6>Mother's Information</h6>
+                        <div class="student-form-group">
+                            <label for="motherName">Name:</label>
+                            <input readonly type="text" class="parent-name" id="motherName">
+
+                            <label for="motherOccupation">Occupation:</label>
+                            <input readonly type="text" class="parent-occupation" id="motherOccupation">
+                        </div> <br>
+                    </div>
+
+                    <h6>Guardian's Information</h6>
+                    <div class="student-form-group">
+                        <label for="guardianName">Name:</label>
+                        <input readonly type="text" class="parent-name" id="guardianName">
+
+                        <label for="guardianOccupation">Occupation:</label>
+                        <input readonly type="text" class="parent-occupation" id="guardianOccupation">
+                    </div> <br>
+
+                    <div class="student-form-group">
+                        <label for="guardianContactNumber">Contact Number:</label>
+                        <input readonly type="text" class="guardian-number" id="guardianContactNumber">
+
+                        <label for="guardianAddress">Address:</label>
+                        <input readonly type="text" class="guardian-address" id="guardianAddress">
+                    </div> <br>
+
+                    <div class="transferee-section" id="transfereeFields">
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>For Transferees Only</h2>
+                        </div>
+                        <div class="student-form-group">
+                            <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
+                            <input readonly type="text" id="lastGradeLevelCompleted">
+
+                            <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
+                            <input readonly type="text" id="lastMadrasaYearCompleted">
+                        </div> <br>
+
+                        <div class="student-form-group">
+                            <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                            <input readonly type="text" id="madrasaNameLastAttended">
+                        </div> <br>
+
+                        <div class="student-form-group">
+                            <label for="madrasaAddress">Madrasa Address:</label>
+                            <input readonly type="text" id="madrasaAddress">
+                        </div> <br>
+                    </div>
+        </div>
     </div>
+</div>
 </body>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setUpProfile();
+    });
+
+    async function setUpProfile() {
+        const response = await fetch("/user/student/my-info");
+        if (!response.ok) { alert("student record no found"); }
+        student = await response.json();
+
+        //document.getElementById("stud-type").textContent = student.status;
+        document.getElementById("isTransferee").checked = student.transferee;
+        if(student.transferee){
+            document.getElementById("transfereeFields").style.display = "block";
+        }
+        document.getElementById("isScholar").textContent =student.discountsAvailed > 0 ? "YES" : "NO";
+
+        document.getElementById("student-id").value = student.studentDisplayId;
+        document.getElementById("firstName").value = student.firstName;
+        document.getElementById("middleName").value = student.middleName;
+        document.getElementById("lastName").value = student.lastName;
+        document.getElementById("gender").value = student.gender;
+        document.getElementById("birthdate-report").value = student.birthdate;
+        document.getElementById("placeOfBirth").value = student.birthPlace;
+        document.getElementById("fatherName").value = student.fatherName;
+        document.getElementById("fatherOccupation").value = student.fatherOccupation;
+        document.getElementById("motherName").value = student.motherName;
+        document.getElementById("motherOccupation").value = student.motherOccupation;
+        document.getElementById("guardianName").value = student.guardianName;
+        document.getElementById("guardianOccupation").value = student.fatherOccupation;
+        document.getElementById("guardianContactNumber").value = student.guardianContactNum;
+        document.getElementById("guardianAddress").value = student.guardianAddress;
+
+        document.getElementById("street").value = student.address.street;
+        document.getElementById("barangay").value = student.address.barangay;
+        document.getElementById("city").value = student.address.city;
+        document.getElementById("lastGradeLevelCompleted").value = student.currentGradeLevel ? student.currentGradeLevel.levelName : 'None';
+        document.getElementById("lastMadrasaYearCompleted").value = student.lastMadrasaYearCompleted;
+        document.getElementById("madrasaNameLastAttended").value = student.madrasaName;
+        document.getElementById("madrasaAddress").value = student.madrasaAddress;
+
+        fetchTransRequirements(student.transfereeRequirements);
+        studentId = student.studentId;
+        fetchDiscounts(student.discountsAvailed);
+    }
+
+    function fetchTransRequirements(reqIds = [],divId = "transfereeReq") {
+        fetch("/trans-req/all")
+            .then(response => response.json())
+            .then(data => {
+                const reqContainer = document.getElementById(divId);
+                reqContainer.innerHTML = "";
+                data.forEach(transReq => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("checkbox-each");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `transReq-${transReq.levelId}`;
+                    checkbox.name = "transferRequirements";
+                    checkbox.value = transReq.id;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `transReq-${transReq.idd}`;
+                    label.textContent = transReq.name;
+
+                    if (reqIds.includes(transReq.id)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    reqContainer.appendChild(paymentDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
+    function fetchDiscounts(discIds = [], popoverId = "discounts-rec") {
+        const popover = document.getElementById(popoverId);
+        if (!popover) return //console.error(`Element with ID ${popoverId} not found.`);
+
+        popover.innerHTML = ``;
+
+        fetch("/discounts/all")
+            .then(response => response.json())
+            .then(data => {
+                // Create and append the heading
+                const heading = document.createElement("h6");
+                heading.textContent = "Scholarship Types:";
+                popover.appendChild(heading);
+
+                const discountWrapper = document.createElement("div");
+                discountWrapper.classList.add("checkbox-container-popover");
+
+                data.forEach(disc => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("checkbox-each");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `disc-${disc.discountId}`;
+                    checkbox.name = "studDiscounts";
+                    checkbox.value = disc.discountId;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `disc-${disc.discountId}`;
+                    label.textContent = disc.discountName;
+
+                    if (discIds.includes(disc.discountId)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    discountWrapper.appendChild(paymentDiv);
+                });
+
+                popover.appendChild(discountWrapper);
+            })
+            .catch(error => console.error("Error fetching discounts:", error));
+    }
+</script>
 </html>

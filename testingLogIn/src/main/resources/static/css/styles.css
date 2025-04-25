@@ -4867,7 +4867,6 @@ a {
   position: fixed;
   top: 0;
   left: 0;
-  width: 320px;
   height: 100vh;
   height: 100dvh;
   background-color: #fff;
@@ -5033,7 +5032,6 @@ a {
     position: fixed;
     top: 0;
     left: 0;
-    width: 320px;
     height: 100vh;
     background-color: #fff;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
@@ -5147,10 +5145,15 @@ a {
   /* Sidebar */
   #sidebar {
     position: fixed;
-    width: 80%;
+    width: 70%;
     max-width: 320px;
     transform: translateX(-100%);
     z-index: 1000;
+    height: 100dvh !important;
+  }
+
+  #sidebar a .welcome-div {
+    font-size: 15px;
   }
 
   #sidebar.show-floating {
@@ -5181,9 +5184,11 @@ a {
     height: 30px;
   }
 
+  
+
   body.sidebar-active .hamburger {
-    left: calc(100% - 50px);
-    top: -25px;
+    position: absolute;
+    top: 0px;
     z-index: 1003;
     background-color: #fff;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.2),
@@ -5738,7 +5743,7 @@ a {
     position: fixed;
     top: 0;
     left: 0;
-    width: 320px;
+    max-width: 320px;
     height: 100vh;
     background-color: #fff;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);

@@ -2915,3 +2915,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+function positionHamburger() {
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.querySelector(".hamburger");
+  
+    if (sidebar && hamburger) {
+      const sidebarWidth = sidebar.offsetWidth;
+      hamburger.style.left = `${sidebarWidth}px`;
+    }
+  }
+  
+  // Run on sidebar open
+  positionHamburger();
+  
+  // Also re-run on resize for responsiveness
+  window.addEventListener("resize", positionHamburger);
+  

@@ -4,56 +4,47 @@
 <head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
+
 <body>
     <!-- Sidebar -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <div class="topbar">
-            <div class="main-topbar">
-                <span class="hamburger" onclick="toggleSidebar()">
-                    <img th:src="@{/images/icons/burger_menu_icon.png}" alt="Menu">
-                </span>
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-                <span class="institute-name">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</span>
-            </div>
-            <div class="dropdown-logout">
-                <div class="user-icon dropdown-logout-toggle">
-                    <img th:src="@{/images/icons/account.png}" onclick="toggleDropdown('dropdownUserIcon')"
-                        alt="User Icon">
-                    <div id="dropdownUserIcon" class="dropdown-logout-content">
-                        <h6><span th:text="(${userRole})"></span></h6>
-                        <a href="/logout">Log Out</a>
-                    </div>
-                </div>
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+            <div class="text-link">
+                <h4>Home</h4>
             </div>
         </div>
-        <div class="text-link">
-            <h4>Home</h4>
-            <p>Main</p>
-            <p>/</p>
-            <p>Home</p>
-        </div> <br>
 
-        <div class="welcome-card-div">
-            <div class="col-md-10">
-                <div class="card p-3 shadow-sm welcome-card">
+        <div class="welcome-card-wrapper">
+            <div class="welcome-card-div">
+                <div class="welcome-card">
                     <h2 class="welcome-salutation">Welcome to Your Student Portal!</h2>
                     <p>
                         This portal offers a secure and user-friendly platform for managing your
                         academic activities.
                         Beyond enrollment, students can also view their grades, check their schedule, and access
                         their profile with ease.
-
-                        The system operates under strict principles of integrity, security, and responsible usage Any unauthorized access, misuse, or tampering with the system is strictly prohibited.
+    
+                        The system operates under strict principles of integrity, security, and responsible usage
+                        Any unauthorized access, misuse, or tampering with the system is strictly prohibited.
                     </p>
                     <p>
-                        For assistance or inquiries, you may also visit us at the Enrollment Office for further support.
+                        For assistance or inquiries, you may also visit us at the Enrollment Office for further
+                        support.
                     </p>
                 </div>
             </div>
         </div>
+
+      
     </div>
 </body>
 <script>
@@ -61,11 +52,11 @@
         getMyInfo();
     });
 
-    async function getMyInfo(){
-    //console.log("getting info");
+    async function getMyInfo() {
+        //console.log("getting info");
         const response = await fetch("/user/student/my-info");
 
-        if(response.ok){
+        if (response.ok) {
             const result = await response.json();
             //console.log(result);
         }

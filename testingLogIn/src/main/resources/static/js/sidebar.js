@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Highlight main menu link
     document.querySelectorAll(".sidebar-icons").forEach((link) => {
       const linkPath = link.getAttribute("data-path");
+
+      console.log(linkPath);
   
       if (currentPath.startsWith(linkPath)) {
         link.classList.add("active");

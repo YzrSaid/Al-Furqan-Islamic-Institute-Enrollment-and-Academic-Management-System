@@ -112,6 +112,9 @@ function toggleSidebar() {
   const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
   const isMobile = window.innerWidth <= 768;
 
+  // NEW: Get the welcome card container
+  const welcomeCardDiv = document.querySelector(".welcome-card-div");
+
   if (isCollapsed) {
     // Open sidebar
     sidebar.classList.remove("collapsed-sidebar");
@@ -124,6 +127,9 @@ function toggleSidebar() {
       content.classList.remove("collapsed-content");
       content.style.marginLeft = "320px";
     }
+
+    // Align left when sidebar is open
+    welcomeCardDiv.classList.remove("center-card");
   } else {
     // Close sidebar
     sidebar.classList.add("collapsed-sidebar");
@@ -136,6 +142,9 @@ function toggleSidebar() {
       content.classList.add("collapsed-content");
       content.style.marginLeft = "0";
     }
+
+    // Center card when sidebar is closed
+    welcomeCardDiv.classList.add("center-card");
   }
 }
 
@@ -843,8 +852,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         break;
       case "deleteGradeLevel":
-        if (await validateAdminPassword()){
-          deleteGradeLevel();}
+        if (await validateAdminPassword()) {
+          deleteGradeLevel();
+        }
         break;
       case "makeSchoolYearInactive":
         actionUrl = "/school-year/inactivate";
@@ -919,7 +929,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         break;
       case "editSubject":
-        if (validateForm("subjectEditForm","⚠️ Please fill in all required fields!")) {
+        if (
+          validateForm(
+            "subjectEditForm",
+            "⚠️ Please fill in all required fields!"
+          )
+        ) {
           if (await validateAdminPassword()) {
             editSubject();
             closeConfirmationModal();
@@ -2649,22 +2664,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const buttonTop = button.offsetTop;
     const buttonLeft = button.offsetLeft;
     const buttonHeight = button.offsetHeight;
-  
+
     const modalContent = document.querySelector(
       ".student-modal-content, .student-information-container-content"
     );
     const modalHeight = modalContent.clientHeight;
     const modalWidth = modalContent.clientWidth;
-  
+
     const popoverHeight = popover.offsetHeight || 100;
     const popoverWidth = popover.offsetWidth || 200;
-  
+
     let top = buttonTop + buttonHeight + 5 + popoverOffset;
-  
+
     if (top + popoverHeight > modalHeight) {
       top = buttonTop - popoverHeight - 5;
     }
-  
+
     if (top < 0) {
       closePopover(popover);
       return;
@@ -2672,18 +2687,17 @@ document.addEventListener("DOMContentLoaded", function () {
       openPopover(popover);
       popover.style.pointerEvents = "auto";
     }
-  
+
     // 🧠 Check if it overflows left
     let left = buttonLeft - popoverWidth + popoverLeftOffset;
     if (left < 0) {
       // Overflowing left, move to right of button
       left = buttonLeft + button.offsetWidth + 5; // Add a little space
     }
-  
+
     popover.style.top = `${top}px`;
     popover.style.left = `${left}px`;
   }
-  
 
   // Open popover when any button is clicked
   buttons.forEach(({ buttonId, popoverId }) => {
@@ -2720,56 +2734,65 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //This is for Modal Buttons (Cancel and Confirm)
 document.addEventListener("DOMContentLoaded", function () {
-  const modalButtonsContainers = document.querySelectorAll(
-    ".modal-buttons, .confirmation-modal-buttons, .basic-modal-buttons"
-  );
-
-  modalButtonsContainers.forEach((container) => {
-    const cancelBtn = container.querySelector(
-      ".btn-cancel, .btn-close-confirm, .error-btn-cancel"
+    const modalButtonsContainers = document.querySelectorAll(
+      ".modal-buttons, .confirmation-modal-buttons, .basic-modal-buttons"
     );
-    const confirmBtn = container.querySelector(".btn-confirm");
-
-    const parentModal = container.closest(".modal");
-    const isConfirmation =
-      parentModal && parentModal.id === "confirmationModal";
-    const isErrorModal = parentModal && parentModal.id === "errorModal";
-
-    // Apply base styles
-    container.style.display = "flex";
-    container.style.flexWrap = "wrap";
-    container.style.width = "100%";
-    container.style.marginTop = "1rem";
-
-    // Alignment logic
-    if (isErrorModal) {
-      container.style.justifyContent = "center";
-    } else {
-      container.style.justifyContent = isConfirmation ? "center" : "flex-end";
-    }
-
-    // Gap logic
-    const updateGap = () => {
-      if (isConfirmation) {
-        container.style.columnGap = window.innerWidth <= 480 ? "32px" : "40px";
-      } else {
-        container.style.columnGap = window.innerWidth <= 480 ? "16px" : "24px";
+  
+    modalButtonsContainers.forEach((container) => {
+      const cancelBtn = container.querySelector(
+        ".btn-cancel, .btn-close-confirm, .error-btn-cancel"
+      );
+      const confirmBtn = container.querySelector(".btn-confirm");
+  
+      const parentModal = container.closest(".modal");
+      const isConfirmation =
+        parentModal && parentModal.id === "confirmationModal";
+      const isErrorModal = parentModal && parentModal.id === "errorModal";
+  
+      // Apply base styles
+      container.style.display = "flex";
+      container.style.flexWrap = "wrap";
+      container.style.width = "100%";
+      container.style.marginTop = "1rem";
+  
+      const updateLayout = () => {
+        const isMobile = window.innerWidth < 768;
+  
+        // Alignment logic
+        if (isMobile) {
+          container.style.justifyContent = "space-between";
+        } else {
+          if (isErrorModal) {
+            container.style.justifyContent = "center";
+          } else {
+            container.style.justifyContent = isConfirmation ? "center" : "flex-end";
+          }
+        }
+  
+        // Gap logic
+        if (isConfirmation) {
+          container.style.columnGap = isMobile ? "32px" : "40px";
+        } else {
+          container.style.columnGap = isMobile ? "16px" : "24px";
+        }
+      };
+  
+      // Initial layout + listen to resize
+      updateLayout();
+      window.addEventListener("resize", updateLayout);
+  
+      // Button reordering
+      if (
+        !isErrorModal &&
+        cancelBtn &&
+        confirmBtn &&
+        cancelBtn.nextElementSibling !== confirmBtn
+      ) {
+        container.insertBefore(cancelBtn, confirmBtn);
       }
-    };
-    updateGap();
-    window.addEventListener("resize", updateGap);
-
-    // Button reordering: Cancel on the left, Confirm on the right (if both buttons exist)
-    if (
-      !isErrorModal &&
-      cancelBtn &&
-      confirmBtn &&
-      cancelBtn.nextElementSibling !== confirmBtn
-    ) {
-      container.insertBefore(cancelBtn, confirmBtn);
-    }
+    });
   });
-});
+  
 
 document.addEventListener("DOMContentLoaded", () => {
   const requiredInputs = document.querySelectorAll(
@@ -2878,17 +2901,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const menuBtn = document.querySelector(".menu-btn");
-    const menuDropdown = document.querySelector(".menu-dropdown");
+  const menuBtn = document.querySelector(".menu-btn");
+  const menuDropdown = document.querySelector(".menu-dropdown");
 
-    menuBtn.addEventListener("click", () => {
-        menuDropdown.classList.toggle("show");
-    });
+  menuBtn.addEventListener("click", () => {
+    menuDropdown.classList.toggle("show");
+  });
 
-    // Close the dropdown when clicking outside
-    document.addEventListener("click", (e) => {
-        if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
-            menuDropdown.classList.remove("show");
-        }
-    });
+  // Close the dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+      menuDropdown.classList.remove("show");
+    }
+  });
 });

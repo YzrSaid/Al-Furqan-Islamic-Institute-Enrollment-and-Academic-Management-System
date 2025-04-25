@@ -17,6 +17,6 @@ public interface TransfereeReqRepo extends CrudRepository<TransfereeRequirements
 
     @Query("SELECT req from  TransfereeRequirements req " +
             "WHERE req.isNotDeleted " +
-            "AND LOWER(req.name) LIKE = :reqName")
+            "AND LOWER(req.name) = :reqName")
     Optional<TransfereeRequirements> findUsingName(@Param("reqName") String reqName);
 }

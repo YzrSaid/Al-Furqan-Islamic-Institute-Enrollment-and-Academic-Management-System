@@ -27,13 +27,13 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         String errorMessage;
         if (exception instanceof UsernameNotFoundException ua) {
-            errorMessage = "Username does not exist.";
+            errorMessage = "This account does not exist.";
         } else if (exception instanceof BadCredentialsException bc) {
             String username = request.getParameter("username");
             if (isUsernameValid(username)) {
-                errorMessage = "Incorrect password.";
+                errorMessage = "Incorrect password. Please try again.";
             } else {
-                errorMessage = "Username does not exist.";
+                errorMessage = "This account does not exist.";
             }
         } else if(exception instanceof AccountStatusException){
             errorMessage = exception.getMessage();

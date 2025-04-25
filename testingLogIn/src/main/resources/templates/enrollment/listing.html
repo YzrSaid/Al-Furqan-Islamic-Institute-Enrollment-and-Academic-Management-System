@@ -190,42 +190,51 @@
                                 <div class="column1">
                                     <div>
                                         <label for="name">Name</label>
-                                        <div class="student-form-group half">
-                                            <input readonly type="text" class="name" id="firstName">
-                                            <input readonly type="text" class="name" id="middleName">
-                                            <input readonly type="text" class="name" id="lastName">
-                                        </div>
-                                        <div class="small-text">
-                                            <p class="first-name-p">First</p>
-                                            <p class="middle-name-p">Middle</p>
-                                            <p class="last-name-p">Last</p>
+                                        <div class="student-form-group">
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="firstName">
+                                                <p class="small-text first-name-p">First</p>
+                                            </div>
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="middleName">
+                                                <p class="small-text middle-name-p">Middle</p>
+                                            </div>
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="lastName">
+                                                <p class="small-text last-name-p">Last</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="column2">
-                                    <div class="student-form-group half-stud-info-small">
+                                    <div class="student-form-group">
+
                                         <label for="gender">Gender:</label>
                                         <input readonly type="text" class="gender" id="gender">
 
                                         <label for="birthdate">Birthdate:</label>
                                         <input type="date" class="birthdate" id="birthdate" readonly>
+
                                     </div>
                                 </div>
 
                                 <div class="column1">
-                                    <div class="student-form-group">
-                                        <div>
-                                            <label for="address">Address:</label>
-                                            <div class="student-form-group address-div half-unique">
-                                                <input readonly type="text" class="address" id="street" required
-                                                    placeholder="Street">
-                                                <input readonly type="text" class="address" id="barangay" required
-                                                    placeholder="Barangay">
-                                                <input readonly type="text" class="address" id="city" required
-                                                    placeholder="City">
+                                    <div>
+                                        <div class="student-form-group">
+                                            <div>
+                                                <label for="address">Address:</label>
+                                                <div class="student-form-group address-div half-unique">
+                                                    <input readonly type="text" class="address" id="street" required
+                                                        placeholder="Street">
+                                                    <input readonly type="text" class="address" id="barangay" required
+                                                        placeholder="Barangay">
+                                                    <input readonly type="text" class="address" id="city" required
+                                                        placeholder="City">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
 
 
@@ -374,20 +383,21 @@
                 </div> <br>
 
                 <!-- List of Payments Table -->
-
-                <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Req. Amount</th>
-                            <th>Amount Paid</th>
-                            <th>Balance</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                <div class="table-wrapper-modal">
+                    <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Req. Amount</th>
+                                <th>Amount Paid</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- Add Payment button -->
             <div class="modal-buttons" id="add-payment-btn">
@@ -425,7 +435,7 @@
 
     <!-- Error Modal -->
     <div id="errorModal" class="modal">
-        <div class="modal-content scroll-lock">
+        <div class="modal-content error-modal scroll-lock">
             <p id="errorMessage"></p>
             <div class="modal-buttons">
                 <button type="button" class="error-btn-cancel" data-close-modal="errorModal">Close</button>
@@ -576,10 +586,10 @@
 
                     <div>
                         <label for="studaddress">Address:</label>
-                        <div id="studaddress" class="student-form-group">
-                            <input type="text" id="studstreet" required placeholder="Street">
-                            <input type="text" id="studbarangay" required placeholder="Barangay">
-                            <input type="text" id="studcity" required placeholder="City">
+                        <div id="studaddress" class="student-form-group address-div">
+                            <input type="text"  id="studstreet" required placeholder="Street">
+                            <input type="text"  id="studbarangay" required placeholder="Barangay">
+                            <input type="text"  id="studcity" required placeholder="City">
                         </div>
                     </div> <br> <br>
 
@@ -762,99 +772,40 @@
                     <h3>Payment Form</h3>
                 </div> <br>
 
-                <div class="payment-mode-toggle">
-                    <h6>Payment Modes:</h6>
-                    <div class="mode-switch" id="modeSwitch">
-                        <div class="mode-option active" data-mode="distribute">Distribute</div>
-                        <div class="mode-option" data-mode="itemize">Itemize</div>
-                    </div>
-                </div>
-
                 <div class="payee-info-container" id="payee-info">
-                    <div class="student-form-group">
-
+                    <div class="student-form-group address-div">
                         <label for="payee-id">Student ID:</label>
                         <input type="text" id="payee-id" readonly>
 
-
                         <label for="Date">Date:</label>
                         <input type="date" id="date">
-
                     </div>
 
-                    <div class="student-form-group">
+                    <div class="student-form-group address-div">
                         <label for="payee-name">Name:</label>
                         <input type="text" id="payee-name" readonly>
                     </div>
-                    <div class="student-form-group">
-
+                    <div class="student-form-group address-div">
                         <label for="semester">Semester:</label>
                         <input th:value="${currentSem}" type="text" id="semester" readonly>
 
-
                         <label for="school-year">S.Y.</label>
                         <input th:value="${currentSY}" type="text" id="school-year" readonly>
-
                     </div>
-                </div> <br>
-
-                <div id="itemized-payment-section" style="display: none;">
-                    <h6>Itemized Payments:</h6>
-
-                    <div class="itemized-form">
-                        <label for="fee-type">Select Fee:</label>
-                        <select id="fee-type">
-                            <option value="">-- Choose Particular --</option>
-                            <option value="Tuition">Tuition</option>
-                            <option value="Books">Books</option>
-                            <option value="Miscellaneous">Miscellaneous</option>
-                            <!-- Add more options as needed -->
-                        </select>
-
-                        <label for="payment-type">Payment Type:</label>
-                        <select id="payment-type">
-                            <option value="partial">Partial</option>
-                            <option value="full">Full</option>
-                        </select>
-
-                        <button type="button" id="add-fee-btn" class="btn-confirm">Add to List</button>
-                    </div>
-
-                    <table id="itemized-list" class="itemized-table main-table">
-                        <thead>
-                            <tr>
-                                <th>Particular</th>
-                                <th>Type</th>
-                                <th>Amount</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Dynamically added rows here -->
-                        </tbody>
-                    </table>
                 </div>
-
                 <div class="payment-wrapper">
                     <h6>Payment For:</h6>
                     <div class="payment-container-group">
 
                     </div> <br>
-
-                    <label for="payment-type">Payment Type:</label>
-                    <select id="payment-type">
-                        <option value="partial">Partial</option>
-                        <option value="full">Full</option>
-                    </select>
                 </div>
 
-                <div class="amount-container">
+                <div class="payment-amount-container">
                     <div class="student-form-group">
                         <label for="amount" id="label-amount">Amount:</label>
                         <input type="number" max="0" id="payment-amount" placeholder="0.00">
                     </div>
-                </div>
-
+                </div> <br>
 
                 <div id="staff-receiver" class="collector-info-container">
                     <h6>Received/Collected By:</h6>
@@ -1926,35 +1877,25 @@
         });
     }
     async function setUpPaymentForm() {
-        const paymentAmountInput = document.getElementById("payment-amount");
         paymentAmountInput.max = 0;
         paymentAmountInput.value = 0.0;
-
-        const response = await fetch(`/paymentrecord/form/${payerStudentId}?gradeLevelId=${payLevelToEnrollId}`);
+        let response = await fetch(`/paymentrecord/form/${payerStudentId}?gradeLevelId=${payLevelToEnrollId}`);
         if (!response.ok) throw new Error("wa nakita");
-
-        const data = await response.json();
+        let data = await response.json();
         const student = data.student;
 
-        // Fill in student info
         const studentname = document.querySelector("#payee-name");
         const studentDisplayId = document.querySelector("#payee-id");
         studentname.value = student.fullName;
         studentDisplayId.value = student.studentDisplayId;
 
-        // Clear and populate checkbox section
         const paymentContainer = document.querySelector(".payment-container-group");
         paymentContainer.innerHTML = '';
-
-        // Clear and populate fee dropdown
-        const feeSelect = document.getElementById("fee-type");
-        feeSelect.innerHTML = '<option value="">-- Select Fee --</option>';
-
         data.feesAndBalance.forEach(par => {
-            // Create checkbox item
             const paymentItem = document.createElement("div");
             paymentItem.classList.add("payment-item");
-
+            // console.log(par);
+            // console.log(par.balance);
             const input = document.createElement("input");
             input.type = "checkbox";
             input.name = par.fee.name;
@@ -1963,22 +1904,15 @@
                 handleCheckboxChange(event, par.balance);
             });
 
-            const label = document.createElement("label");
+            let label = document.createElement("label");
             label.textContent = par.fee.name;
             label.setAttribute("for", par.fee.name);
 
             paymentItem.appendChild(input);
             paymentItem.appendChild(label);
             paymentContainer.appendChild(paymentItem);
-
-            // Create option for fee dropdown
-            const option = document.createElement("option");
-            option.value = par.fee.id;
-            option.textContent = par.fee.name;
-            feeSelect.appendChild(option);
         });
     }
-
 
     function viewStudentGrade(target) {
         const studentId = target.dataset.id;
@@ -2220,44 +2154,6 @@
 
         return true;
     }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const distributeMode = document.getElementById("distributeMode");
-        const itemizeMode = document.getElementById("itemizeMode");
-        const amountGroup = document.getElementById("label-amount").parentElement;
-        const itemizedSection = document.getElementById("itemized-payment-section");
-
-        distributeMode.addEventListener("change", function () {
-            amountGroup.style.display = "block";
-            itemizedSection.style.display = "none";
-        });
-
-        itemizeMode.addEventListener("change", function () {
-            amountGroup.style.display = "none";
-            itemizedSection.style.display = "block";
-        });
-    });
-
-    document.querySelectorAll(".mode-option").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll(".mode-option").forEach((b) => b.classList.remove("active"));
-            btn.classList.add("active");
-
-            const mode = btn.dataset.mode;
-            const itemized = document.getElementById("itemized-payment-section");
-            const wrapper = document.querySelector(".payment-wrapper");
-
-            if (mode === "itemize") {
-                itemized.style.display = "block";
-                wrapper.style.display = "none";
-            } else {
-                itemized.style.display = "none";
-                wrapper.style.display = "block";
-            }
-        });
-    });
-
-
 </script>
 
 </html>

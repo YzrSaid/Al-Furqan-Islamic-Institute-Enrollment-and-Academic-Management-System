@@ -57,7 +57,7 @@ public class UserAccountController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
-    //get the currently logged student info
+
     @GetMapping("/student/my-info")
     public ResponseEntity<StudentDTO> getLoggedStudentInfo(){
         return new ResponseEntity<>(customUserDetailsService.getCurrentlyLoggedInStudent(), HttpStatus.OK);
@@ -80,10 +80,9 @@ public class UserAccountController {
         if(customUserDetailsService.usernameExist(toRegister.getUsername()))
             return new ResponseEntity<>("Email Already Taken",HttpStatus.CONFLICT);
         else{
-            customUserDetailsService.registerNewUser(toRegister);
-            toRegister.setStatus(RegistrationStatus.APPROVED);
+            toRegister.setStatus(RegistrationStatus.PENDING);
             accountRegisterService.registerAccount(toRegister);
-            return new ResponseEntity<>("Account Registered Successfully",HttpStatus.OK);
+            return new ResponseEntity<>("Account confirmation has been sent successfully",HttpStatus.OK);
         }
     }
     @PutMapping("/restrict/{id}")

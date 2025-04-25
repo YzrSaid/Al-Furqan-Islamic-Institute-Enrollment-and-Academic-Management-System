@@ -40,40 +40,31 @@ public class TransfereeRequirementsController {
         if(reqName == null || reqName.equalsIgnoreCase(""))
             return new ResponseEntity<>("Requirement name cannot be empty",HttpStatus.NOT_ACCEPTABLE);
         try{
-            int result = transferReqServices.addNewRequirement(reqName);
-            if(result == 1)
-                return new ResponseEntity<>("Requirement name already exists",HttpStatus.NOT_ACCEPTABLE);
+            transferReqServices.addNewRequirement(reqName);
             return new ResponseEntity<>("New transferee requirement successfully added",HttpStatus.OK);
         }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Server conflict",HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Server error",HttpStatus.CONFLICT);
         }
     }
     @PutMapping("/update/{requirementId}")
     public ResponseEntity<String> updateRequirementName(@PathVariable int requirementId,
                                                         @RequestParam(defaultValue = "") String newName){
         if(newName == null || newName.equalsIgnoreCase("".trim()))
-            return new ResponseEntity<>("Invalid requirement name",HttpStatus.NOT_ACCEPTABLE);
+            throw new IllegalArgumentException("Invalid requirement name");
         try{
-            if(transferReqServices.updateName(requirementId,newName))
-                return new ResponseEntity<>("Transferee requirement updated successfully",HttpStatus.OK);
-
-            return new ResponseEntity<>("Another transferee requirements is using the name \"?\"".replace("?",newName),HttpStatus.NOT_ACCEPTABLE);
-        }catch (NullPointerException npe){
-            return new ResponseEntity<>("The transferee requirement to be updated was not found. Try again",HttpStatus.NOT_FOUND);
+            transferReqServices.updateName(requirementId,newName);
+            return new ResponseEntity<>("Transferee requirement updated successfully",HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("Server conflict. Contact Inoori Network",HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Server conflict",HttpStatus.CONFLICT);
         }
     }
     @DeleteMapping("/delete/{requirementId}")
     public ResponseEntity<String> deleteRequirement(@PathVariable int requirementId){
         try{
-                transferReqServices.deleteRequirement(requirementId);
-                return new ResponseEntity<>("Transferee requirement deleted successfully",HttpStatus.OK);
-        }catch (NullPointerException npe){
-            return new ResponseEntity<>("The transferee requirement to be deleted was not found. Try again",HttpStatus.NOT_FOUND);
+            transferReqServices.deleteRequirement(requirementId);
+            return new ResponseEntity<>("Transferee requirement deleted successfully",HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("Server conflict. Contact Inoori Network",HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Server error",HttpStatus.CONFLICT);
         }
     }
     @PostMapping("/add/student-requirements/{studentId}")
@@ -81,13 +72,8 @@ public class TransfereeRequirementsController {
         try{
             transferReqServices.addingStudentRequirements(studentId,ids.getIds());
             return new ResponseEntity<>("Student transferee requirements updated successfully",HttpStatus.OK);
-        }catch (NullPointerException npe){
-            npe.printStackTrace();
-            return new ResponseEntity<>("Student record not found",HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Server error. Contact Inoori Network",HttpStatus.CONFLICT);
+        }catch (Exception e){
+            return new ResponseEntity<>("Server error",HttpStatus.CONFLICT);
         }
     }
 }

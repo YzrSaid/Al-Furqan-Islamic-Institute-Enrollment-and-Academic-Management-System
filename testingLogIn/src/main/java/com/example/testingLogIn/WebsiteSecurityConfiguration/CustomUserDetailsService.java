@@ -2,12 +2,17 @@ package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
 import com.example.testingLogIn.AssociativeModels.StudentPassword;
 import com.example.testingLogIn.CustomObjects.StudentAccount;
+import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.CustomObjects.PagedResponse;
+import com.example.testingLogIn.PasswordResetPackage.AccountConfirmTokenRepo;
+import com.example.testingLogIn.PasswordResetPackage.AccountConfirmationToken;
+import com.example.testingLogIn.PasswordResetPackage.EmailService;
+import com.example.testingLogIn.Repositories.AccountRegisterRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 import com.example.testingLogIn.Services.NonModelServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidKeyException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -31,12 +37,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+
+    private final UserRepo userRepo;
+    private final StudentPasswordRepo studentPasswordRepo;
+    private final StudentRepo studentRepo;
+    private final AccountConfirmTokenRepo confirmTokenRepo;
+    private final EmailService emailService;
+    private final AccountRegisterRepo accountRegisterRepo;
+
     @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private StudentPasswordRepo studentPasswordRepo;
-    @Autowired
-    private StudentRepo studentRepo;
+    public CustomUserDetailsService(UserRepo userRepo, StudentPasswordRepo studentPasswordRepo, StudentRepo studentRepo, AccountConfirmTokenRepo confirmTokenRepo, EmailService emailService, AccountRegisterRepo accountRegisterRepo) {
+        this.userRepo = userRepo;
+        this.studentPasswordRepo = studentPasswordRepo;
+        this.studentRepo = studentRepo;
+        this.confirmTokenRepo = confirmTokenRepo;
+        this.emailService = emailService;
+        this.accountRegisterRepo = accountRegisterRepo;
+    }
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
 
@@ -100,9 +117,26 @@ public class CustomUserDetailsService implements UserDetailsService {
                           .toList();
     }
 
-    public boolean registerNewUser(AccountRegister accountRegister) {
-        userRepo.save(AccountRegToUserModel(accountRegister));
-        return true;
+    public void registerNewUser(String token, String password) {
+        AccountConfirmationToken tokenAct = confirmTokenRepo.findByToken(token)
+                .orElseThrow(()->new NullPointerException("Invalid Token"));
+
+        AccountRegister account = tokenAct.getAccountRegister();
+        if(usernameExist(account.getUsername())) {
+            throw new IllegalArgumentException("Email Address is Already Used by an Existing User");
+        }else if(account.getStatus() == RegistrationStatus.REJECTED){
+            throw new IllegalArgumentException("Account is already rejected");
+        }else if(tokenAct.getExpiryDate().isBefore(LocalDateTime.now()))
+            throw new IllegalArgumentException("Account Confirmation Transaction is Expired. Contact the renew the account confirmation process");
+
+        userRepo.save(AccountRegToUserModel(tokenAct.getAccountRegister(), password));
+
+        CompletableFuture.runAsync(()-> {
+            emailService.registrationComplete(tokenAct.getAccountRegister().getUsername());
+            account.setStatus(RegistrationStatus.APPROVED);
+            accountRegisterRepo.save(account);
+            confirmTokenRepo.deleteUserTokens(account.getUsername());
+        });
     }
 
     public void registerStudent(Student student){
@@ -199,7 +233,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return null;
     }
 
-    private UserModel AccountRegToUserModel(AccountRegister accountRegister) {
+    private UserModel AccountRegToUserModel(AccountRegister accountRegister,String password) {
         String fullName = accountRegister.getFirstname()+" "+ Optional.ofNullable(accountRegister.getMiddlename()).map(s-> s+" ").orElse("") + accountRegister.getLastname();
         return UserModel.builder()
                 .isNotRestricted(true)
@@ -213,7 +247,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .birthdate(accountRegister.getBirthdate())
                 .gender(accountRegister.getGender())
                 .username(accountRegister.getUsername())
-                .password(encoder.encode(accountRegister.getPassword()))
+                .password(encoder.encode(password))
                 .build();
     }
 }

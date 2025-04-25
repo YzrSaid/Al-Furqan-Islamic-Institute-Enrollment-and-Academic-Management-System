@@ -46,23 +46,13 @@ public class AccountRegisterController {
         }
     }
     
-    @PutMapping("/confirm/{id}/{role}")
-    public ResponseEntity<String> confirmAccountRegistration(@PathVariable int id,@PathVariable String role){
-        Role staffRole = role.equalsIgnoreCase("teacher") ? Role.TEACHER : Role.ENROLLMENT_STAFF;
+    @PutMapping("/confirm/{token}/{password}")
+    public ResponseEntity<String> confirmAccountRegistration(@PathVariable String token, @PathVariable String password){
         try{
-            AccountRegister accountToConfirm = accountRegisterServices.getAccount(id);
-
-        if(accountToConfirm == null){
-            return new ResponseEntity<>("Account Not Found",HttpStatus.NOT_FOUND);
-
-        }else if(customUserDetailsService.usernameExist(accountToConfirm.getUsername()))
-            return new ResponseEntity<>("Email Already Taken",HttpStatus.NOT_ACCEPTABLE);
-        else{
-            accountToConfirm.setRole(staffRole);
-            customUserDetailsService.registerNewUser(accountToConfirm);
-            accountToConfirm.setStatus(RegistrationStatus.APPROVED);
-            accountRegisterServices.registerAccount(accountToConfirm);
-            return new ResponseEntity<>("Account Successfully Added",HttpStatus.OK);}
+            System.out.println(token);
+            System.out.println(password);
+            customUserDetailsService.registerNewUser(token,password);
+            return new ResponseEntity<>("Account Registration is Now Complete",HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>("Process Error",HttpStatus.CONFLICT);
         }

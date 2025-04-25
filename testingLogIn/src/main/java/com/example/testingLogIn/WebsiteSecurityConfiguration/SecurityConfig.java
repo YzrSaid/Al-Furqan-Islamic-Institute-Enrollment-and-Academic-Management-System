@@ -34,7 +34,7 @@ public class SecurityConfig {
         return  http.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(req -> req
                         .requestMatchers("/css/**", "/website-logo", "/website-cover",
-                                            "/images/**","/js/*","/signing","/register/add","/authentication/**","/forgot-password","/reset-password/{token}").permitAll()
+                                            "/images/**","/js/*","/signing","/register/add","/authentication/**","/forgot-password","/reset-password/{token}","/account-confirmation/{token}","/register/confirm/{toke}/{password}").permitAll()
                         .requestMatchers("/reports/*","/enrollment/**","/transaction/**").hasAnyAuthority("ADMIN","ENROLLMENT_STAFF")
                         .requestMatchers("/schedule/**","/grade-management/**","/class-list/**").hasAnyAuthority("ADMIN","TEACHER")
                         .requestMatchers("/maintenance/**","/settings/**","/accounts/student-accounts","/accounts/verify-accounts","/accounts/manage-accounts").hasAnyAuthority("ADMIN")

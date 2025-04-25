@@ -101,13 +101,6 @@
                         required>
                     <label class="input-group-label" for="contactNumber">Contact Number</label>
                 </div>
-
-                <div class="input-group">
-                    <input class="input-group-input" type="password" name="password" id="password" required
-                        placeholder=" ">
-                    <label class="input-group-label" for="password">Password</label>
-                </div>
-
                 <button type="submit" id="login-btn">Sign Up</button>
             </form>
         </div>
@@ -138,7 +131,6 @@
         const form = event.target; // Define 'form' from the event target
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries()); // Convert FormData to JSON
-        //console.log(data);
         fetch("/user/register", {
             method: 'POST',
             headers: {
@@ -149,7 +141,7 @@
             .then(response => {
                 if (response.ok) {
                     return response.text().then(text => {
-                        showSuccessModal("✅ Account has been created successfully!");
+                        showSuccessModal(text);
                     });
                 } else {
                     return response.text().then(text => {

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragment :: commonHead}">
+    <meta charset="UTF-8">
+    <title>Enter New Password</title>
+</head>
+<script th:src="@{/js/script.js}"></script>
+<body>
+<div class="wrapper">
+    <div id="left-login-block">
+        <img th:src="@{/website-cover}" alt="bg">
+    </div>
+
+    <div id="right-login-block">
+        <div id="signup-header">
+            <img th:src="@{/website-logo}" alt="logo" id="school-logo" class="school-logo-reset-password"><br><br><br>
+            <h2 style="font-weight: bold;">Confirm Your Account Registration</h2>
+            <p class="forgot-password-text">Please enter your account password</p>
+        </div>
+
+        <form id="reset-form">
+            <div class="input-group">
+                <input class="input-group-input" type="password" id="password" name="password" placeholder=" " required>
+                <label class="input-group-label" for="password">New Password</label>
+                <img src="/images/icons/hidden-pass.png"
+                     alt="Show Password"
+                     class="toggle-password"
+                     id="toggleResetPassword">
+            </div>
+            <button type="submit" id="login-btn">Confirm Account</button>
+        </form>
+
+
+        <h4 id="signup-link"><a href="/login">Back to Login</a></h4>
+    </div>
+
+    <div id="errorModal" class="modal">
+        <div class="modal-content scroll-lock">
+            <p id="errorMessage"></p>
+            <div class="modal-buttons">
+                <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- Background overlay -->
+    <div id="successModalOverlay"></div>
+
+    <!-- Success modal -->
+    <div id="successModal">
+        <p id="successModalMessage"></p>
+    </div>
+</div>
+</body>
+<style>
+
+    .input-group {
+        margin-top: -15px;
+    }
+    .wrapper {
+        display: flex;
+        min-height: 100vh;
+        background-color: #f4f4f9;
+    }
+
+    #left-login-block {
+        flex: 1;
+        background-image: url('your-image-path');
+        background-size: cover;
+        background-position: center;
+    }
+
+    #right-login-block {
+        background-color: rgb(255, 255, 255);
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #signup-header {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: -75px;
+        text-align: center;
+    }
+
+    #school-logo {
+        margin-bottom: 18px;
+        height: 120px;
+        width: 120px;
+        object-fit: cover;
+        position: relative;
+        margin-top: -90px;
+        z-index: 2;
+        border-radius: 50%;
+        background: white;
+    }
+
+    #signup-header h2 {
+        margin-top: -40px;
+        margin-bottom: 8px;
+        font-size: 24px;
+        color: #333;
+    }
+
+    #signup-header p {
+        margin: 0 0 24px 0;
+        font-size: 14px;
+        color: #555;
+    }
+
+
+    .input-group {
+        margin-bottom: 16px;
+        width: 100%;
+        position: relative;
+    }
+
+
+    .input-group-input {
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid #333;
+        padding: 8px 0;
+        font-size: 16px;
+        outline: none;
+        background: transparent;
+        color: #333;
+    }
+
+
+    .input-group-input::placeholder {
+        color: transparent;
+    }
+
+    .input-group-input:focus::placeholder {
+        color: transparent;
+    }
+
+
+    .input-group-input:focus {
+        border-bottom: 2px solid rgb(4, 210, 9);
+    }
+
+    /* Label for Input Fields */
+    .input-group-label {
+        position: absolute;
+        top: 12px;
+        left: 0;
+        font-size: 14px;
+        color: rgb(30, 30, 30);
+        transition: all 0.3s ease;
+    }
+
+    /* Label behavior when input is focused or filled */
+    .input-group-input:focus + .input-group-label,
+    .input-group-input:not(:placeholder-shown) + .input-group-label {
+        top: -8px;
+        left: 0;
+        font-size: 12px;
+        color: rgb(4, 210, 9);
+    }
+
+    /* Reset Password Button */
+    #login-btn {
+        width: 100%;
+        padding: 10px 10px;
+        background-color: rgb(4, 210, 9); /* Green background like the login button */
+        color: white;
+        font-weight: 700;
+        font-size: 17px;
+        outline: none;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    /* Button Hover Effect */
+    #login-btn:hover {
+        background-color: rgb(3, 175, 8); /* Darker green for hover effect */
+    }
+
+    /* "Back to Login" Link */
+    #signup-link {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    #signup-link a {
+        font-weight: 600;
+        color: rgb(30, 30, 30);
+        text-decoration: underline;
+    }
+
+    #signup-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+</html>
+
+<script>
+    document.getElementById("reset-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const newPassword = document.getElementById("password").value;
+        const path = window.location.pathname;
+        const parts = path.split('/');
+        const token = parts[parts.length - 1];
+        fetch(`/register/confirm/${token}/${newPassword}`, {
+            method: 'PUT'
+        })
+            .then(response => {
+                return response.text().then(message => {
+                    if (response.ok) {
+                        showSuccessModal(message,false);
+                        setTimeout(() => {
+                            window.location.href = "/login";
+                        }, 2000);
+                    } else {
+                        showErrorModal(message);
+                    }
+                });
+            })
+            .catch(error => {
+                showErrorModal("Server error");
+            });
+    });
+
+document.addEventListener("DOMContentLoaded", function () {
+const toggle = document.getElementById("toggleResetPassword");
+const passwordField = document.getElementById("password");
+
+// Debugging output to check if elements are found
+console.log(toggle, passwordField); // Check if these elements are properly selected
+
+let isVisible = false;
+
+    if (!toggle || !passwordField) {
+      console.warn("Toggle icon or password field not found.");
+      return;
+    }
+
+toggle.addEventListener("click", function () {
+  isVisible = !isVisible;
+
+  passwordField.type = isVisible ? "text" : "password";
+
+  toggle.src = isVisible
+    ? "/images/icons/eye.png"
+    : "/images/icons/hidden-pass.png";
+
+  toggle.title = isVisible ? "Hide Password" : "Show Password";
+  toggle.alt = isVisible ? "Hide Password" : "Show Password";
+});
+});
+</script>
+</html>

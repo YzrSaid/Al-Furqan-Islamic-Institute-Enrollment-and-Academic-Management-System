@@ -35,12 +35,14 @@ public class PasswordResetController {
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam String email) {
         UserModel user = userRepository.findByUsername(email);
+        if(user == null)
+            throw new NullPointerException("Username not found");
 
         CompletableFuture.runAsync(()->tokenRepository.deleteSomeTokens(LocalDateTime.now()));
 
         if(user.getRole().equals(Role.STUDENT))
             return new ResponseEntity<>("Please contact admin for your account password",HttpStatus.NOT_ACCEPTABLE);
-        if(user != null){
+        else{
             String token = TokenGenerator.generateToken();
             PasswordResetToken resetToken = new PasswordResetToken();
             resetToken.setToken(token);
@@ -51,8 +53,6 @@ public class PasswordResetController {
             emailService.sendPasswordResetEmail(user.getUsername(),token);
 
             return ResponseEntity.ok("Password reset email sent");
-        }else{
-            return new ResponseEntity<>("Username not found",HttpStatus.NOT_FOUND);
         }
     }
 

@@ -7,140 +7,140 @@
 <script th:src="@{/js/sidebar.js}" defer></script>
 
 <body>
-    <!-- Sidebar -->
-    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+<!-- Sidebar -->
+<div th:replace="~{fragments/fragment :: sidebar}"></div>
 
-    <!-- Topbar with Hamburger & User Icon -->
-    <div class="dashboard-container" id="content">
-        <div class="sticky-header">
-            <!-- Topbar -->
-            <div th:replace="~{fragments/fragment :: topbar}"></div>
-            <!-- Overlay -->
-            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+<!-- Topbar with Hamburger & User Icon -->
+<div class="dashboard-container" id="content">
+    <div class="sticky-header">
+        <!-- Topbar -->
+        <div th:replace="~{fragments/fragment :: topbar}"></div>
+        <!-- Overlay -->
+        <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
-            <div class="text-link">
-                <h4>Dashboard</h4>
+        <div class="text-link">
+            <h4>Dashboard</h4>
+        </div>
+    </div>
+
+    <div class="analytics-container">
+        <div class="sort-btns-container">
+            <div class="sort-year">
+                <label for="school-year">Year</label>
+                <select name="year" onchange="setCounts(),setChartContents(),setGradesChart()" id="school-year">
+                    <option value="0" selected>All Time</option>
+                </select>
+            </div>
+            <div class="sort-semester">
+                <label for="semester-sort">Semester</label>
+                <select name="semester" onchange="setCounts(),setChartContents(),setGradesChart()" id="semester-sort">
+                    <option selected>All</option>
+                    <option value="First">First</option>
+                    <option value="Second">Second</option>
+                </select>
+            </div>
+        </div>
+        <div class="chart-box">
+            <div class="card-container">
+                <div class="card-grid">
+                    <a href="/enrollment/enrolled" class="card-link">
+                        <div class="card">
+                            <h3 class="card-title" id="num-enrolled">95</h3>
+                            <p class="card-label">Enrolled</p>
+                        </div>
+                    </a>
+
+                    <a href="/enrollment/listing" class="card-link">
+                        <div class="card">
+                            <h3 class="card-title" id="num-pre-enrolled">24</h3>
+                            <p class="card-label">Pre-Enrolled</p>
+                        </div>
+                    </a>
+
+                    <a href="/reports/student" class="card-link">
+                        <div class="card">
+                            <h3 class="card-title" id="graduates-student">100</h3>
+                            <p class="card-label">Graduates</p>
+                        </div>
+                    </a>
+
+                    <div class="card-row-center">
+                        <a href="/reports/teacher" class="card-link">
+                            <div class="card">
+                                <h3 class="card-title" id="num-dropped">21</h3>
+                                <p class="card-label">Failed</p>
+                            </div>
+                        </a>
+
+                        <a href="/maintenance/section" class="card-link">
+                            <div class="card">
+                                <h3 class="card-title" id="num-retained">5</h3>
+                                <p class="card-label">Passed</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chart-box-graph">
+            <div class="graph-container">
+                <div class="title">
+                    <h6 id="graphTitle">Enrollment by Gender</h6>
+                    <div class="filter-container">
+                        <label for="filter">Filter:</label>
+                        <select id="filter">
+                            <option value="gender" selected>Gender</option>
+                            <option value="ethnicity">Ethnicity</option>
+                            <option value="age">Age</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="graph">
+                    <canvas id="enrollmentChart"></canvas>
+                </div>
             </div>
         </div>
 
-        <div class="analytics-container">
-            <div class="sort-btns-container">
-                <div class="sort-year">
-                    <label for="school-year">Year</label>
-                    <select name="year" onchange="setCounts(),setChartContents(),setGradesChart()" id="school-year">
-                        <option value="0" selected>All Time</option>
-                    </select>
-                </div>
-                <div class="sort-semester">
-                    <label for="semester-sort">Semester</label>
-                    <select name="semester" onchange="setCounts(),setChartContents(),setGradesChart()" id="semester-sort">
-                        <option selected>All</option>
-                        <option value="First">First</option>
-                        <option value="Second">Second</option>
-                    </select>
-                </div>
-            </div>
-            <div class="chart-box">
-                <div class="card-container">
-                    <div class="card-grid">
-                        <a href="/enrollment/enrolled" class="card-link">
-                            <div class="card">
-                                <h3 class="card-title" id="num-enrolled">95</h3>
-                                <p class="card-label">Enrolled</p>
-                            </div>
-                        </a>
-
-                        <a href="/enrollment/listing" class="card-link">
-                            <div class="card">
-                                <h3 class="card-title" id="num-pre-enrolled">24</h3>
-                                <p class="card-label">Pre-Enrolled</p>
-                            </div>
-                        </a>
-
-                        <a href="/reports/student" class="card-link">
-                            <div class="card">
-                                <h3 class="card-title" id="graduates-student">100</h3>
-                                <p class="card-label">Graduates</p>
-                            </div>
-                        </a>
-                      
-                        <div class="card-row-center">
-                            <a href="/reports/teacher" class="card-link">
-                                <div class="card">
-                                    <h3 class="card-title" id="num-dropped">21</h3>
-                                    <p class="card-label">Failed</p>
-                                </div>
-                            </a>
-
-                            <a href="/maintenance/section" class="card-link">
-                                <div class="card">
-                                    <h3 class="card-title" id="num-retained">5</h3>
-                                    <p class="card-label">Passed</p>
-                                </div>
-                            </a>
-                        </div>
+        <div class="chart-box-bar">
+            <div class="bar-graph-container">
+                <div class="title-row-bar">
+                    <h6 id="barGraphTitle">Subject Rates</h6>
+                    <div class="filter-container-bar">
+                        <label for="sort-bar-graph">Filter:</label>
+                        <select onchange="setGradesChart()" name="sort" id="grade-levels">
+                            <option value="0" selected>None</option>
+                        </select>
                     </div>
+                </div>
+
+                <div class="bar-graph">
+                    <canvas id="subjectRateChart"></canvas>
                 </div>
             </div>
-            <div class="chart-box-graph">
-                <div class="graph-container">
-                    <div class="title">
-                        <h6 id="graphTitle">Enrollment by Gender</h6>
-                        <div class="filter-container">
-                            <label for="filter">Filter:</label>
-                            <select id="filter">
-                                <option value="gender" selected>Gender</option>
-                                <option value="ethnicity">Ethnicity</option>
-                                <option value="age">Age</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="graph">
-                        <canvas id="enrollmentChart"></canvas>
+        </div>
+
+        <div class="chart-box-graph">
+            <div class="bar-graph-container">
+                <div class="title-row-graph">
+                    <h6 id="barGraphTitle">Grade Level Rates</h6>
+                    <div class="filter-container-graph">
+                        <label for="sort-bar-graph">Filter:</label>
+                        <select name="sort" onchange="setChartContents()" id="sort-bar-graph">
+                            <option value="failed" selected>Failing Rates</option>
+                            <option value="passed">Passing Rates</option>
+                        </select>
                     </div>
                 </div>
-            </div>
 
-            <div class="chart-box-bar">
-                <div class="bar-graph-container">
-                    <div class="title-row-bar">
-                        <h6 id="barGraphTitle">Subject Rates</h6>
-                        <div class="filter-container-bar">
-                            <label for="sort-bar-graph">Filter:</label>
-                            <select onchange="setGradesChart()" name="sort" id="grade-levels">
-                                <option value="0" selected>None</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="bar-graph">
-                        <canvas id="subjectRateChart"></canvas>
-                    </div>
+                <div class="bar-graph">
+                    <canvas id="retentionChart"></canvas>
                 </div>
             </div>
-
-            <div class="chart-box-graph">
-                <div class="bar-graph-container">
-                    <div class="title-row-graph">
-                        <h6 id="barGraphTitle">Grade Level Rates</h6>
-                        <div class="filter-container-graph">
-                            <label for="sort-bar-graph">Filter:</label>
-                            <select name="sort" onchange="setChartContents()" id="sort-bar-graph">
-                                <option value="failed" selected>Failing Rates</option>
-                                <option value="passed">Passing Rates</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="bar-graph">
-                        <canvas id="retentionChart"></canvas>
-                    </div>
-                </div>
-            </div>
+        </div>
 
 
-        </div> <br>
-    </div>
+    </div> <br>
+</div>
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {

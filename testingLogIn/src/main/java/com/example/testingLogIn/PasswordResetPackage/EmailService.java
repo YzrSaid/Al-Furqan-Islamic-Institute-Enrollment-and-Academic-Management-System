@@ -1,9 +1,11 @@
 package com.example.testingLogIn.PasswordResetPackage;
 
 import com.example.testingLogIn.ModelDTO.UserDTO;
+import com.example.testingLogIn.WebsiteConfiguration.WebsiteConfigurationServices;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
@@ -15,6 +17,9 @@ public class EmailService {
     private final Authenticator authenticator;
     private final Session session;
     private final String username;
+    private final String websiteAddress = "192.168.168.226:8082";
+    @Autowired
+    private WebsiteConfigurationServices webService;
     public EmailService(){
         username = "customerservicealfurqanislamic@gmail.com";
         String password = "xlfp ycim vsoz zizu";
@@ -54,10 +59,11 @@ public class EmailService {
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipientEmail));
             message.setSubject("Password Reset Request");
-            String resetLink = "http://212.85.25.40:8080/reset-password/" + token;
+            String resetLink = "http://"+websiteAddress+"/confirm-account/" + token;
 
             // HTML email content
-            String htmlContent = "<h3>Password Reset</h3>"
+            String htmlContent = 
+                    "<h3>Password Reset</h3>"
                     + "<p>We received a request to reset your password. Click the link below:</p>"
                     + "<p><a href=\""+resetLink+"\">"+" Reset Password </a></p>"
                     + "<p>This link will expire in 24 hours.</p>"
@@ -68,5 +74,61 @@ public class EmailService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to send email", e);
         }
+    }
+
+    public void sendAccountConfirmation(String recipientEmail, String token) {
+        String websiteName = webService.getName();
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(recipientEmail));
+            message.setSubject("Your account confirmation for "+websiteName);
+            String htmlContent = getString(recipientEmail, token);
+            message.setContent(htmlContent, "text/html; charset=utf-8");
+            Transport.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
+
+    public void registrationComplete(String recipientEmail){
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(recipientEmail));
+            message.setSubject("Account Registration Complete");
+            String htmlContent = "<p>Pag log in na</p>";
+            message.setContent(htmlContent, "text/html; charset=utf-8");
+            Transport.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
+
+    private String getString(String recipientEmail, String token) {
+        String schoolEmail = webService.getEmail();
+        String confirmLink = "http://"+websiteAddress+"/account-confirmation/" + token;
+        String websiteName = webService.getName();
+
+       return """
+                <h3>Hello receiver,</h3>
+                <p>Our staff has created an account for you on websiteName using this email address as your login credential.</p>
+                </br>
+                <p>To activate your account and set a password, please click below:</p>
+                <p><a href="confirmLink">Activate Account</a></p>
+                <p>This link will expire in 24 hours.</p>
+                </br>
+                <p>If you did not register on websiteName, please ignore this email or contact our support team at</p>
+                <p>schoolEmail</p>
+                </br>
+                <p>Thanks,</p>
+                <p>websiteName Team</p>
+                """
+                .replace("receiver", recipientEmail)
+                .replace("confirmLink",confirmLink)
+                .replace("schoolEmail",schoolEmail)
+                .replace("websiteName",websiteName);
     }
 }

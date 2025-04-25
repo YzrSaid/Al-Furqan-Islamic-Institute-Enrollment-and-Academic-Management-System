@@ -1,6 +1,8 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Models.AccountRegister;
+import com.example.testingLogIn.PasswordResetPackage.AccountConfirmationService;
 import com.example.testingLogIn.Repositories.AccountRegisterRepo;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,14 +14,22 @@ public class AccountRegisterServices {
 
     @Autowired
     AccountRegisterRepo accountRegisterRepo;
+    @Autowired
+    AccountConfirmationService accountConfirmation;
 
     public AccountRegister getAccount(int id){
         return accountRegisterRepo.findById(id).orElse(null);
     }
     
     public boolean registerAccount(AccountRegister accountRegister){
-        accountRegisterRepo.save(accountRegister);
-        return true;
+        AccountRegister regAccount = accountRegisterRepo.findByUserName(accountRegister.getUsername().toLowerCase()).orElse(null);
+        if(regAccount == null || regAccount.getStatus() != RegistrationStatus.PENDING){
+            AccountRegister account = accountRegisterRepo.save(accountRegister);
+            accountConfirmation.registerAccountToken(account);
+            return true;
+        }else
+            throw new IllegalArgumentException("Account email has a pending confirmation request");
+
     }
     
     public boolean deleteAccountRegistration(int id){

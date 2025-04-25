@@ -1478,14 +1478,17 @@ table td {
   padding: 5px 0px;
   border-radius: 5px;
   font-weight: 500;
-  width: 145px;
+  width: 160px;
   font-size: 13px;
   text-align: center;
   height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 20px;
 }
+
+
 
 /* this is the color style for the status in the listing */
 .listing-status,
@@ -1841,9 +1844,7 @@ table td {
   padding: 40px 60px;
 }
 
-#errorModal .modal-buttons {
-    justify-content: center !important;
-}
+
 
 .confirmation-modal-buttons,
 .basic-modal-buttons {
@@ -2140,9 +2141,13 @@ input.guardian-address {
   width: 385px;
 }
 
+.student-form-group.stud-email.address-div {
+    width: 30% !important;
+}
+
 .student-form-group .place-of-birth {
   min-width: 375px;
-  width: 100%;
+  width: 53%;
   max-width: 905px;
 }
 
@@ -3413,6 +3418,7 @@ input.address,
   margin-right: 0;
   width: fit-content;
   padding: 10px 40px;
+  background-color: #007bff;
 }
 
 .collector-name-container {
@@ -4014,8 +4020,8 @@ input.staff-id-report {
   font-size: 15px;
   display: none;
   position: fixed;
-  bottom: 20px; /* changed from top */
-  right: 20px; /* move to lower-right */
+  bottom: 20px; 
+  right: 20px;
   background: #218838;
   color: #ffffff;
   font-weight: bold;
@@ -5070,6 +5076,17 @@ a {
 
 /* Mobile Styles */
 @media (max-width: 767px) {
+    .view-grades-modal-content {
+        min-height: 50dvh;
+        max-height: 70dvh;
+    }
+    #successModal {
+        width: 100%;
+        padding: 20px;
+        bottom: 0;
+        right: 0;
+        font-size: 13.5px;
+    }
   .modal-content {
     width: 75%;
   }
@@ -5136,11 +5153,15 @@ a {
   }
   .listing-table th:nth-child(3),
   .listing-table td:nth-child(3) {
-    width: 25%;
+    width: 30%;
   }
   .listing-table th:nth-child(4),
   .listing-table td:nth-child(4) {
-    width: 15%;
+    width: 5%;
+  }
+  .listing-table select {
+    min-width: 150px;
+    max-height: 200px;
   }
   /* Sidebar */
   #sidebar {
@@ -5327,7 +5348,7 @@ a {
     overflow-x: auto;
   }
   .status-container {
-    gap: 20px;
+    gap: 20px !important;
   }
   .pagination-container span,
   .pagination-controls input,
@@ -5569,6 +5590,24 @@ a {
     /* min-width: 200px; */
   }
 
+  .student-information-modal-content, .list-of-payments-modal-content {
+    width: 100%;
+    min-height: 50dvh;
+    max-height: 80dvh;
+  }
+
+  .grade-level-modal-content, .add-grade-level-assessment-modal-content {
+    width: 80%;
+  }
+  .add-grade-level-assessment-modal-content {
+    min-height: 45dvh !important;
+    max-height: 50dvh !important;
+  }
+  .grade-level-modal-content {
+    min-height: 35dvh !important;
+    max-height: 40dvh !important;
+  }
+
   .checkbox input {
     min-width: none !important;
   }
@@ -5579,7 +5618,7 @@ a {
   .student-modal h1,
   .staff-information-container h1,
   .staff-information-edit-modal-content h1 {
-    font-size: 20px;
+    font-size: 25px;
     font-weight: bold;
     text-align: center;
     margin-bottom: 30px;
@@ -5587,12 +5626,6 @@ a {
   }
 
   /* Listing */
-  .student-information-modal-content,
-  .list-of-payments-modal-content {
-    width: 100%;
-    height: 80dvh;
-  }
-
   .add-payment-modal-content {
     width: 85%;
   }
@@ -5602,11 +5635,12 @@ a {
   }
 
   .modal-buttons {
-    padding: 40px !important;
+    padding: 20px !important;
   }
 
   #errorModal .modal-buttons {
     padding: 20px !important;
+    justify-content: center !important;
   }
 
   .search-div {

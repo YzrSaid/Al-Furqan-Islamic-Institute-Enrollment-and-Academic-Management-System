@@ -111,8 +111,7 @@ function toggleSidebar() {
   const body = document.body;
   const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
   const isMobile = window.innerWidth <= 768;
-
-  // NEW: Get the welcome card container
+  
   const welcomeCardDiv = document.querySelector(".welcome-card-div");
 
   if (isCollapsed) {
@@ -128,8 +127,16 @@ function toggleSidebar() {
       content.style.marginLeft = "320px";
     }
 
+    // Run on sidebar open
+    positionHamburger();
+
     // Align left when sidebar is open
-    welcomeCardDiv.classList.remove("center-card");
+    if (!welcomeCardDiv) {
+        return;
+    } else {
+        welcomeCardDiv.classList.remove("center-card");
+    }
+    
   } else {
     // Close sidebar
     sidebar.classList.add("collapsed-sidebar");
@@ -144,7 +151,12 @@ function toggleSidebar() {
     }
 
     // Center card when sidebar is closed
-    welcomeCardDiv.classList.add("center-card");
+    if (!welcomeCardDiv) {
+        return;
+    } else {
+        welcomeCardDiv.classList.add("center-card");
+    }
+   
   }
 }
 
@@ -154,9 +166,14 @@ window.addEventListener("resize", () => {
   const content = document.getElementById("content");
   const body = document.body;
   const isMobile = window.innerWidth <= 768;
-
+  
   if (isMobile) {
-    sidebar.classList.add("collapsed-sidebar");
+    if (!sidebar){
+        return;
+    } else {
+        sidebar.classList.add("collapsed-sidebar");
+    }
+   
     sidebar.classList.remove("show-floating");
     content.style.marginLeft = "0";
     content.classList.add("collapsed-content");
@@ -1213,7 +1230,7 @@ document.addEventListener("DOMContentLoaded", function () {
       errorModal.style.visibility = "visible";
       errorModal.style.opacity = "1";
     } else {
-      alert(`⚠️ ${message}`);
+      alert(`⚠️ Oops! Something went wrong. Please refresh or try again.`);
     }
   };
   window.showSuccessModal = function (message, reload = true) {
@@ -1243,6 +1260,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (reload) {
           location.reload();
         }
+
       }, 1500); // 1.5 seconds
     } else {
       showErrorModal(
@@ -1256,7 +1274,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let modalId = this.getAttribute("data-close-modal");
       let modal = document.getElementById(modalId);
 
-      if (modal && modalId != "errorModal") {
+      if (modalId != "errorModal") {
         closeConfirmationModal();
         resetValidationErrors();
         clearForm();
@@ -2734,65 +2752,66 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //This is for Modal Buttons (Cancel and Confirm)
 document.addEventListener("DOMContentLoaded", function () {
-    const modalButtonsContainers = document.querySelectorAll(
-      ".modal-buttons, .confirmation-modal-buttons, .basic-modal-buttons"
+  const modalButtonsContainers = document.querySelectorAll(
+    ".modal-buttons, .confirmation-modal-buttons, .basic-modal-buttons"
+  );
+
+  modalButtonsContainers.forEach((container) => {
+    const cancelBtn = container.querySelector(
+      ".btn-cancel, .btn-close-confirm, .error-btn-cancel"
     );
-  
-    modalButtonsContainers.forEach((container) => {
-      const cancelBtn = container.querySelector(
-        ".btn-cancel, .btn-close-confirm, .error-btn-cancel"
-      );
-      const confirmBtn = container.querySelector(".btn-confirm");
-  
-      const parentModal = container.closest(".modal");
-      const isConfirmation =
-        parentModal && parentModal.id === "confirmationModal";
-      const isErrorModal = parentModal && parentModal.id === "errorModal";
-  
-      // Apply base styles
-      container.style.display = "flex";
-      container.style.flexWrap = "wrap";
-      container.style.width = "100%";
-      container.style.marginTop = "1rem";
-  
-      const updateLayout = () => {
-        const isMobile = window.innerWidth < 768;
-  
-        // Alignment logic
-        if (isMobile) {
-          container.style.justifyContent = "space-between";
+    const confirmBtn = container.querySelector(".btn-confirm");
+
+    const parentModal = container.closest(".modal");
+    const isConfirmation =
+      parentModal && parentModal.id === "confirmationModal";
+    const isErrorModal = parentModal && parentModal.id === "errorModal";
+
+    // Apply base styles
+    container.style.display = "flex";
+    container.style.flexWrap = "wrap";
+    container.style.width = "100%";
+    container.style.marginTop = "1rem";
+
+    const updateLayout = () => {
+      const isMobile = window.innerWidth < 768;
+
+      // Alignment logic
+      if (isMobile) {
+        container.style.justifyContent = "space-between";
+      } else {
+        if (isErrorModal) {
+          container.style.justifyContent = "center";
         } else {
-          if (isErrorModal) {
-            container.style.justifyContent = "center";
-          } else {
-            container.style.justifyContent = isConfirmation ? "center" : "flex-end";
-          }
+          container.style.justifyContent = isConfirmation
+            ? "center"
+            : "flex-end";
         }
-  
-        // Gap logic
-        if (isConfirmation) {
-          container.style.columnGap = isMobile ? "32px" : "40px";
-        } else {
-          container.style.columnGap = isMobile ? "16px" : "24px";
-        }
-      };
-  
-      // Initial layout + listen to resize
-      updateLayout();
-      window.addEventListener("resize", updateLayout);
-  
-      // Button reordering
-      if (
-        !isErrorModal &&
-        cancelBtn &&
-        confirmBtn &&
-        cancelBtn.nextElementSibling !== confirmBtn
-      ) {
-        container.insertBefore(cancelBtn, confirmBtn);
       }
-    });
+
+      // Gap logic
+      if (isConfirmation) {
+        container.style.columnGap = isMobile ? "32px" : "40px";
+      } else {
+        container.style.columnGap = isMobile ? "16px" : "24px";
+      }
+    };
+
+    // Initial layout + listen to resize
+    updateLayout();
+    window.addEventListener("resize", updateLayout);
+
+    // Button reordering
+    if (
+      !isErrorModal &&
+      cancelBtn &&
+      confirmBtn &&
+      cancelBtn.nextElementSibling !== confirmBtn
+    ) {
+      container.insertBefore(cancelBtn, confirmBtn);
+    }
   });
-  
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   const requiredInputs = document.querySelectorAll(
@@ -2917,18 +2936,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function positionHamburger() {
-    const sidebar = document.getElementById("sidebar");
-    const hamburger = document.querySelector(".hamburger");
-  
-    if (sidebar && hamburger) {
-      const sidebarWidth = sidebar.offsetWidth;
-      hamburger.style.left = `${sidebarWidth}px`;
-    }
+  const sidebar = document.getElementById("sidebar");
+  const hamburger = document.querySelector(".hamburger");
+
+  if (sidebar && hamburger) {
+    const sidebarWidth = sidebar.offsetWidth;
+    hamburger.style.left = `${sidebarWidth}px`;
   }
-  
-  // Run on sidebar open
-  positionHamburger();
-  
-  // Also re-run on resize for responsiveness
-  window.addEventListener("resize", positionHamburger);
-  
+}
+
+// Also re-run on resize for responsiveness
+window.addEventListener("resize", positionHamburger);

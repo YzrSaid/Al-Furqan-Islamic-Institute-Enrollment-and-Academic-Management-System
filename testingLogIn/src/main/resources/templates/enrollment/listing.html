@@ -208,13 +208,11 @@
                                 </div>
                                 <div class="column2">
                                     <div class="student-form-group">
-
                                         <label for="gender">Gender:</label>
                                         <input readonly type="text" class="gender" id="gender">
 
                                         <label for="birthdate">Birthdate:</label>
                                         <input type="date" class="birthdate" id="birthdate" readonly>
-
                                     </div>
                                 </div>
 
@@ -249,6 +247,14 @@
 
                         <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
                             <h2>Additional Information</h2>
+                        </div>
+
+                        <div>
+                            <h6>Student Email: (Optional)</h6>
+                            <div class="student-form-group stud-email address-div">
+                                <label for="stud-email">Email:</label>
+                                <input type="email" readonly class="parent-occupation">
+                            </div> <br>
                         </div>
 
                         <div>
@@ -494,7 +500,9 @@
                 </div> <br>
 
                 <!-- Grades Table -->
-                <div id="preRequisite-grades"></div>
+                <div id="preRequisite-grades">
+
+                </div>
             </div>
 
             <!-- Close button -->
@@ -582,14 +590,17 @@
                     <div class="student-form-group">
                         <label>Place of Birth:</label>
                         <input required type="text" id="studplaceOfBirth" class="place-of-birth">
+
+                        <label for="email">Email:</label>
+                        <input type="email" id="studEmail" class="name" placeholder="Optional">
                     </div> <br>
 
                     <div>
                         <label for="studaddress">Address:</label>
                         <div id="studaddress" class="student-form-group address-div">
-                            <input type="text"  id="studstreet" required placeholder="Street">
-                            <input type="text"  id="studbarangay" required placeholder="Barangay">
-                            <input type="text"  id="studcity" required placeholder="City">
+                            <input type="text" id="studstreet" required placeholder="Street">
+                            <input type="text" id="studbarangay" required placeholder="Barangay">
+                            <input type="text" id="studcity" required placeholder="City">
                         </div>
                     </div> <br> <br>
 
@@ -743,7 +754,7 @@
                             <!-- Additional rows will be inserted dynamically if needed -->
                         </tbody>
                     </table>
-                </div>
+                </div> <br>
 
                 <!-- Collected By Section -->
                 <div id="staff-receiver" class="collector-info-container">
@@ -1098,16 +1109,13 @@
 
                 if (status === 200) {
                     showSuccessModal("✅ Success: Student successfully enrolled!", false);
-                    location.reload();
-                    goList(currentPage);
+                    goList(currentPage);    
                 } else {
-                    // showErrorModal("❌ Error: " + text);
-                    location.reload();
+                    showErrorModal("❌ Error: " + text);
                 }
             })
             .catch(error => {
-                // showErrorModal("❌ Error: " + text);
-                location.reload();
+                showErrorModal("❌ Error: " + text);
             });
     }
 
@@ -1311,10 +1319,12 @@
                     <td>
                         <div class="dropdown">
                             <div class="status-container">
-                               <div class="status ${statusClass}" id="status-registration">${displayStatus}</div>
-                                <button class="dropdown-status-btn">
+                               <div class="status ${statusClass}" id="status-registration"><span>${displayStatus}</span>
+                                 <button class="dropdown-status-btn">
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
+                                </div>
+                               
                             </div>
                             <div class="dropdown-status-content" id="dropdown-listing">
                                 ${dropdownContent}
@@ -1919,6 +1929,7 @@
         const preRequisiteId = target.getAttribute("data-prerequisite");
         document.getElementById("student-grade-name").textContent = target.getAttribute("data-stud-name");
         document.getElementById("student-grade-id").textContent = target.getAttribute("data-displayId");
+        
         if (preRequisiteId === "null") {
             return;
         }

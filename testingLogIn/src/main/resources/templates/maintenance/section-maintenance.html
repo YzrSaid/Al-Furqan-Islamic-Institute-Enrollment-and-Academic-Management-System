@@ -440,9 +440,6 @@
     function deleteSectionNow() {
         fetch(`/section/delete/${selectedSectionId}`, {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            }
         })
             .then(response => {
                 if (!response.ok) {
@@ -454,7 +451,7 @@
                 showSuccessModal("✅ Success: This record has been deleted successfully!");
             })
             .catch(error => {
-                showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
+                showErrorModal(`❌ ${error.message}`);
             });
     }
 </script>

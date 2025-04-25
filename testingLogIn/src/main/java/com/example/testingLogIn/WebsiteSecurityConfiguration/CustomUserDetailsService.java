@@ -100,10 +100,19 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .build();
     }
 
-    public List<UserDTO> getAllUsers() {
-        return userRepo.findAll().stream()
-                .map(UserModel::mapperDTO)
-                .toList();
+    public PagedResponse getAllUsers(String role, String name, int pageNo, int pageSize, boolean isNotRestricted) {
+        Role userRole = role.equalsIgnoreCase("all") ? null :
+                        role.equalsIgnoreCase("STUDENT") ? Role.STUDENT :
+                         Role.ENROLLMENT_STAFF;
+        Page<UserDTO> userPage = userRepo.findUsersByPageRole(userRole,NonModelServices.forLikeOperator(name),isNotRestricted,PageRequest.of(pageNo-1,pageSize))
+                .map(UserModel::mapperDTO);
+        return PagedResponse.builder()
+                .content(userPage.getContent())
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(userPage.getTotalElements())
+                .totalPages(userPage.getTotalPages())
+                .build();
     }
 
     public UserModel getuser(int staffId) {

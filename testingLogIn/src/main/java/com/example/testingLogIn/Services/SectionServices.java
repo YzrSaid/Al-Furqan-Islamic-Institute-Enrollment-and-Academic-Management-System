@@ -30,17 +30,15 @@ public class SectionServices {
     private final GradeLevelRepo gradeRepo;
     private final SectionRepo sectionRepo;
     private final UserRepo userRepo;
-    private final ScheduleRepo schedRepo;
     private final sySemesterRepo semRepo;
     private final EnrollmentServices enrollmentServices;
     private final SectionStudentCountServices sscService;
 
     @Autowired
-    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo, ScheduleRepo schedRepo, sySemesterRepo semRepo, EnrollmentServices enrollmentServices, SectionStudentCountServices sscService) {
+    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo, sySemesterRepo semRepo, EnrollmentServices enrollmentServices, SectionStudentCountServices sscService) {
         this.gradeRepo = gradeRepo;
         this.sectionRepo = sectionRepo;
         this.userRepo = userRepo;
-        this.schedRepo = schedRepo;
         this.semRepo = semRepo;
         this.enrollmentServices = enrollmentServices;
         this.sscService = sscService;
@@ -48,8 +46,8 @@ public class SectionServices {
     //Get by Grade Level Name
     public List<SectionDTO> getSectionsByLevel(String gradeLevel){
         return sectionRepo.findAll().stream()
-                          .filter(section -> section.getLevel().getLevelName().toLowerCase()
-                                                    .equals(gradeLevel.toLowerCase())
+                          .filter(section -> section.getLevel().getLevelName()
+                                                    .equalsIgnoreCase(gradeLevel)
                                             && section.isNotDeleted())
                             .map(Section::toSectionDTO)
                             .collect(Collectors.toList());
@@ -126,14 +124,16 @@ public class SectionServices {
     }
     
     //DELETING SECTION RECORD
-    public boolean deleteSection(int sectionNumber){
+    public void deleteSection(int sectionNumber){
+        System.out.println(sectionNumber);
         Section todelete = sectionRepo.findById(sectionNumber).orElse(null);
-        if(todelete != null && todelete.isNotDeleted()){
-            todelete.setNotDeleted(false);
-            sectionRepo.save(todelete);
-            return true;
-        }
-        throw new NullPointerException("Section Record Not Found");
+        if(todelete == null || !todelete.isNotDeleted())
+            throw new NullPointerException("Section Record not found");
+        else if(enrollmentServices.getSectionTransactionCount(sectionNumber) > 0)
+            throw new IllegalArgumentException("Deletion not allowed: This section is part of an active enrollment transaction");
+
+        todelete.setNotDeleted(false);
+        sectionRepo.save(todelete);
     }
     
     //Return the List of Teachers that has no advisory class

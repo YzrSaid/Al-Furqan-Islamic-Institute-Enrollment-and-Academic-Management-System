@@ -153,7 +153,7 @@ public class sySemesterServices {
                 List<Student> graduated = new ArrayList<>();
                 List<Student> students = studentRepo.findStudentsByCurrentGradeLevel(graduateLevel.getLevelId());
                 students.forEach(student -> {
-                    if(ssgr.didStudentPassed(student.getStudentId(), graduateLevel.getLevelId())){
+                    if(ssgr.didStudentPassed(student.getStudentId(), graduateLevel.getLevelId(),graduateLevel.getDuration())){
                         student.setStatus(StudentStatus.GRADUATE);
                         student.setDataGraduated(LocalDate.now());
                         graduated.add(student);

@@ -68,9 +68,8 @@ public class GradeLevelControllers {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addGradeLevel(@RequestParam String levelName,
-                                                @RequestParam String preRequisite) {
-        gradeLevelServices.addNewGradeLevel(levelName, preRequisite);
+    public ResponseEntity<String> addGradeLevel(@RequestBody GradeLevelDTO newGradeLevel) {
+        gradeLevelServices.addNewGradeLevel(newGradeLevel);
         return new ResponseEntity<>("New Grade Level Added Successfully", HttpStatus.OK);
     }
 

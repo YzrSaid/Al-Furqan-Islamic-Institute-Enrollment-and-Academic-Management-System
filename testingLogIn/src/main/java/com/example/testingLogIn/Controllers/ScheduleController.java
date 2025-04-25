@@ -133,7 +133,7 @@ public class ScheduleController {
         try {
             return new ResponseEntity<>(scheduleService.getSectionsBySubject(subjectId), HttpStatus.OK);
         }catch(NullPointerException e){
-            return new ResponseEntity<>("Mini wala mn kay subject in ani nga ginatudlo. Hala hacker ka!!!",HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("You do not have this subject in your current teaching schedule. Please check your assigned subjects or contact the administrator for clarification.",HttpStatus.UNAUTHORIZED);
         }
     }
 }

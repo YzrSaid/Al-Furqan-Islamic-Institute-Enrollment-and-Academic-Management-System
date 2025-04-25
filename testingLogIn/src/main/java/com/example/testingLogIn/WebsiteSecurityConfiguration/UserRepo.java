@@ -1,6 +1,7 @@
 package com.example.testingLogIn.WebsiteSecurityConfiguration;
 
 import com.example.testingLogIn.CustomObjects.StudentAccount;
+import com.example.testingLogIn.Enums.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,4 +34,13 @@ public interface UserRepo extends JpaRepository<UserModel, Integer> {
             "AND (stud.studentDisplayId LIKE :search " +
             "OR LOWER(stud.fullName) LIKE :search)")
     Page<StudentAccount> findStudentAccounts(String search, Pageable pageable);
+
+    @Query("""
+           SELECT user FROM UserModel user
+           WHERE user.isNotRestricted = :isNotRestricted
+           AND user.role != 'ADMIN'
+           AND (:role IS NULL OR user.role = :role)
+           AND LOWER(user.fullName) LIKE :name
+           """)
+    Page<UserModel> findUsersByPageRole(Role role, String name, boolean isNotRestricted, Pageable pageable);
 }

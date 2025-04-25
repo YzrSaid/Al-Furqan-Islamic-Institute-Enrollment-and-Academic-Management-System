@@ -35,8 +35,12 @@ public class UserAccountController {
     private ScheduleServices scheduleServices;
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        return new ResponseEntity<>(customUserDetailsService.getAllUsers(), HttpStatus.OK);}
+    public ResponseEntity<PagedResponse> getAllUsers(@RequestParam(defaultValue = "1",required = false) int pageNo,
+                                                     @RequestParam(defaultValue = "10", required = false) int pageSize,
+                                                     @RequestParam(defaultValue = "All",required = false) String accType,
+                                                     @RequestParam(defaultValue = "",required = false) String q,
+                                                     @RequestParam(defaultValue = "true",required = false) boolean isNotRestricted) {
+        return new ResponseEntity<>(customUserDetailsService.getAllUsers(accType, q, pageNo, pageSize, isNotRestricted), HttpStatus.OK);}
     
     @GetMapping("/teachers")
     public ResponseEntity<List<UserDTO>> getAllTeachers() {
@@ -54,6 +58,7 @@ public class UserAccountController {
         try{
             return new ResponseEntity<>(customUserDetailsService.getStudentAccounts(pageNo,pageSize,q),HttpStatus.OK);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

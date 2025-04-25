@@ -24,21 +24,21 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGrade, Integer> {
-    
-    @Query("SELECT CASE WHEN EXISTS ( " +
-           "SELECT 1 FROM StudentSubjectGrade sg " +
-            "JOIN sg.student stud "+
-            "JOIN sg.section.level lvl "+
-            "JOIN sg.semester sem "+
+
+    @Query("SELECT CASE WHEN COUNT(DISTINCT sem) >= :duration THEN true ELSE false END " +
+            "FROM StudentSubjectGrade sg " +
+            "JOIN sg.student stud " +
+            "JOIN sg.section.level lvl " +
+            "JOIN sg.semester sem " +
             "WHERE sg.isNotDeleted " +
             "AND stud.studentId = :studentId " +
             "AND lvl.levelId = :gradeLevelId " +
             "GROUP BY sem " +
-            "HAVING AVG(COALESCE(sg.subjectGrade,0)) > 49" +
-           ") THEN true ELSE false END")
+            "HAVING AVG(COALESCE(sg.subjectGrade,0)) > 49")
     boolean didStudentPassed(
-        @Param("studentId") int studentId,
-        @Param("gradeLevelId") int gradeLevelId);
+            @Param("studentId") int studentId,
+            @Param("gradeLevelId") int gradeLevelId,
+            @Param("duration") int duration);
 
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
             "JOIN sg.section sec "+

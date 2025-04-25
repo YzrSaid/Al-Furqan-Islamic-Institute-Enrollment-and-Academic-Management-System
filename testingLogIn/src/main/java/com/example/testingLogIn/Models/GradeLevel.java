@@ -30,6 +30,7 @@ public class GradeLevel implements Serializable {
     private int levelId;
     private String levelName;
     private boolean isNotDeleted;
+    private int duration;
 
     @ManyToOne
     @JoinColumn(name = "preRequisite", nullable = true)
@@ -48,6 +49,7 @@ public class GradeLevel implements Serializable {
                 count++;
         }
         return GradeLevelDTO.builder()
+                            .semDuration(duration)
                             .isNotDeleted(isNotDeleted)
                             .levelId(levelId)
                             .levelName(levelName)

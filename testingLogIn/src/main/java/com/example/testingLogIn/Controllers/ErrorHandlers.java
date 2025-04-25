@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import org.springframework.beans.PropertyAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -46,6 +47,11 @@ public class ErrorHandlers {
     public RedirectView templateException(TemplateInputException nrfe, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", "The requested resource was not found.");
         return new RedirectView("/home"); // Redirect to a custom error page
+    }
+
+    @ExceptionHandler(PropertyAccessException.class)
+    public ResponseEntity<String> illegalPropertyAccess(){
+        return new ResponseEntity<>("Unable to access the specified property. Please ensure all necessary data is properly set and accessible.",HttpStatus.NOT_ACCEPTABLE);
     }
 
 //    @ExceptionHandler(Exception.class)

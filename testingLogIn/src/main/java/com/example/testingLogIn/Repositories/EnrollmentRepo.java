@@ -99,4 +99,13 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
             """)
     Optional<Long> countGradeLevelAndSection(int semId, Integer levelId, Integer sectionId);
 
+    @Query("""
+           SELECT COUNT(e) FROM Enrollment e
+           JOIN e.SYSemester sem
+           JOIN e.sectionToEnroll section
+           WHERE sem.sySemNumber = :semId
+           AND section.number = :sectionId
+           """)
+    Optional<Integer> countSectionTransaction(int sectionId, int semId);
+
 }

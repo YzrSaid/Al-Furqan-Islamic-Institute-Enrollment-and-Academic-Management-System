@@ -98,9 +98,10 @@ public class EnrollmentServices {
             enrollmentRecord.setRemarks(null);
             boolean isQualified = true;
             if (!(student.getStatus() == StudentStatus.NEW) && gradeLevelToEnroll.getPreRequisite() != null) {
-                int nextLevelPreReqId = gradeLevelToEnroll.getPreRequisite().getLevelId();
+                GradeLevel preReq = gradeLevelToEnroll.getPreRequisite();
+                int nextLevelPreReqId = preReq.getLevelId();
                 isQualified = ssgService.didStudentPassed(student.getStudentId(),
-                        nextLevelPreReqId);
+                        nextLevelPreReqId,preReq.getDuration());
 
                 if (student.getCurrentGradeSection().getLevel().getLevelId() == gradeLevelToEnroll.getLevelId())
                     isQualified = true;
@@ -255,6 +256,13 @@ public class EnrollmentServices {
         return enrollmentRepo.countCurrentlyEnrolled(sectionId,actvSemId).stream()
                 .map(Student::DTOmapper)
                 .collect(Collectors.toList());
+    }
+
+    public int getSectionTransactionCount(int sectionId){
+        int semId = Optional.ofNullable(sySemRepo.findCurrentActive()).map(SchoolYearSemester::getSySemNumber).orElse(0);
+        if(semId == 0)
+            return 0;
+        return enrollmentRepo.countSectionTransaction(sectionId,semId).orElse(0);
     }
 
     private EnrollmentDTO isComplete(Enrollment e) {

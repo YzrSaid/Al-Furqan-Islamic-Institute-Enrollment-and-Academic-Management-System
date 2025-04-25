@@ -85,6 +85,16 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Integer>{
             AND s.subject.subjectNumber = :subjectId
             """)
     List<Schedule> findSubjectSectionSchedule(@Param("subjectId") int subjectId, @Param("sectionId") int sectionId, @Param("teacherId") int teacherId);//check if subject is being taught by another teacher
+
+    @Query("""
+            SELECT s FROM Schedule s
+            WHERE s.isNotDeleted
+            AND s.section.number = :sectionId
+            AND s.section.isNotDeleted
+            AND s.teacher.staffId = :teacherId
+            AND s.subject.subjectNumber = :subjectId
+            """)
+    List<Schedule> findTeacherSectionSubjectSchedule(int subjectId, int sectionId, int teacherId);
     
     @Query("""
             SELECT COUNT(DISTINCT s.subject.subjectNumber) FROM Schedule s

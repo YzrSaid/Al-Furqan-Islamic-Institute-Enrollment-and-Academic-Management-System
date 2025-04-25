@@ -25,20 +25,21 @@ public class GradeLevelServices {
     @Autowired
     private EnrollmentRepo enrollmentRepo;
 
-    public void addNewGradeLevel(String levelName, String preRequisite) {
+    public void addNewGradeLevel(GradeLevelDTO newLvl) {
         GradeLevel pre = null;
-        if (!preRequisite.equalsIgnoreCase("NONE")) {
-            pre = getByName(preRequisite);
+        if (!newLvl.getPreRequisite().equalsIgnoreCase("NONE")) {
+            pre = getByName(newLvl.getPreRequisite());
             if (pre == null)
                 throw new NullPointerException();
         }
-        if (getByNameNew(levelName) != null )
+        if (getByNameNew(newLvl.getLevelName()) != null )
             throw new IllegalArgumentException("Grade level name already exists");
 
         GradeLevel newGrade = new GradeLevel();
         newGrade.setNotDeleted(true);
-        newGrade.setLevelName(levelName);
+        newGrade.setLevelName(newLvl.getLevelName());
         newGrade.setPreRequisite(pre);
+        newGrade.setDuration(newLvl.getSemDuration());
         gradeLevelRepo.save(newGrade);
     }
 
@@ -93,6 +94,7 @@ public class GradeLevelServices {
                 .orElseThrow(()->new NullPointerException("Grade Level not found"));
             updated.setLevelName(gradeLevel.getLevelName());
             updated.setPreRequisite(newPreRequisite);
+            updated.setDuration(gradeLevel.getSemDuration());
             gradeLevelRepo.save(updated);
     }
 
@@ -104,7 +106,7 @@ public class GradeLevelServices {
                 .map(SchoolYearSemester::getSySemNumber).orElse(0);
 
         if(enrollmentRepo.countGradeLevelAndSection(semId,levelId,null).orElse(0L) > 0L)
-            throw new IllegalArgumentException("Deletion not allowed: This grade level is part of active enrollments");
+            throw new IllegalArgumentException("Deletion not allowed: This grade level is part of an active enrollment transaction");
 
         todelete.setNotDeleted(false);
         gradeLevelRepo.save(todelete);

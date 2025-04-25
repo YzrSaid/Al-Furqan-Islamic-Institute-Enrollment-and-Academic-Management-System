@@ -302,7 +302,70 @@
         </div>
     </div>
 
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Book Distribution Reports</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/reports/academic-resources" title="You're currently in this page.">Reports - Book Distribution Reports</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="search">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." class="search-input" />
+                        <button class="search-btn">Search</button>
+                    </div>
+                    <div class="sort-container">
+                        <select name="sort" id="sort-select" class="sort-select">
+                            <option value="" disabled selected>Sort</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FIll here with the returned page -->
+    </div>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+  // Get all sidebar links
+  const sidebarLinks = document.querySelectorAll('.sidebar-icons');
+
+  // Add click event listener to each link
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', function(event) {
+      event.preventDefault(); // Prevent default navigation
+
+      const url = this.getAttribute('href');
+      // Fetch the content from the URL
+      fetch(url)
+        .then(response => response.text())
+        .then(html => {
+        alert(url);
+          // Find the main content in the returned HTML
+          // This depends on how your pages are structured
+          // You might need to extract specific content from the response
+
+          // Insert the content into your container
+          document.querySelector('#content > div:last-child').innerHTML = html;
+
+          // Update the URL without reloading the page (optional)
+          history.pushState({}, '', url);
+        })
+        .catch(error => {
+          console.error('Error loading page content:', error);
+        });
+    });
+  });
+});
+</script>
 
 </html>

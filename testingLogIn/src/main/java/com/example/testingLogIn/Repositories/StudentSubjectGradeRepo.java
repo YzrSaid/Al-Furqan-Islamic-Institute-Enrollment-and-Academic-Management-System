@@ -96,18 +96,18 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             @Param("semId") int semId);
 
     @Query("""
-    SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher,sg.section,sg.subject)
-    FROM StudentSubjectGrade sg
-    LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber AND s.isNotDeleted
-    LEFT JOIN s.teacher t
-    WHERE sg.section.number = :sectionNum
-    AND sg.semester.sySemNumber = :semId
-    GROUP BY s.teacher, sg.subject, sg.section.number
-    """)
+            SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher,sg.section,sg.subject)
+            FROM StudentSubjectGrade sg
+            LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber AND s.isNotDeleted
+            LEFT JOIN s.teacher t
+            WHERE sg.section.number = :sectionNum
+            AND sg.semester.sySemNumber = :semId
+            GROUP BY s.teacher, sg.subject, sg.section.number
+            """)
     List<EvaluationStatus> findSectionSubjects(@Param("sectionNum") Integer sectionNum, int semId);
 
     @Query("""
-    SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher,sg.section,sg.subject)
+    SELECT NEW com.example.testingLogIn.CustomObjects.EvaluationStatus(s.teacher, sg.section, sg.subject)
     FROM StudentSubjectGrade sg
     LEFT JOIN Schedule s ON sg.subject.subjectNumber = s.subject.subjectNumber AND s.isNotDeleted
     LEFT JOIN s.teacher t
@@ -117,7 +117,7 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     AND sub.isNotDeleted
     AND sub.isCurrentlyActive
     AND sg.semester.sySemNumber = :semId
-    GROUP BY sg.section.number, sg.subject
+    GROUP BY s.teacher, sg.section, sg.subject
     """)
     List<EvaluationStatus> findWithUngradedGrades(int semId);
 

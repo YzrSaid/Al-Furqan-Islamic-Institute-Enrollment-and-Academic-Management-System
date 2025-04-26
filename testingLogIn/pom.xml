@@ -10,8 +10,7 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>Alfurqan</artifactId>
-    <version>1</version>
+    <artifactId>ROOT</artifactId>
     <packaging>war</packaging>
     <name>testingLogIn</name>
     <description>Demo project for Spring Boot</description>

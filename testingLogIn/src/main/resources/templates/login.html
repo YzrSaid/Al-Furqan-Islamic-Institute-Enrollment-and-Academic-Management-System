@@ -16,7 +16,7 @@
             <p th:text="${param.error}"></p>
         </div>
 
-        <form action="/login" method="post" id="login-form">
+        <form   action="/login" method="post" id="login-form">
             <div class="input-group">
                 <input class="input-group-input" type="email" name="username" id="username" required placeholder=" ">
                 <label class="input-group-label" for="username">Email</label>
@@ -54,12 +54,12 @@
 
 <script>
 document.getElementById('login-form').addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
 
     const form = event.target;
     const formData = new FormData(form);
 
-    fetch(form.action, {
+    fetch("/user-login", {
         method: 'POST',
         body: formData
     })
@@ -73,8 +73,7 @@ document.getElementById('login-form').addEventListener('submit', function (event
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert(error.message);
+        showErrorModal('Error:', error);
     });
 });
 

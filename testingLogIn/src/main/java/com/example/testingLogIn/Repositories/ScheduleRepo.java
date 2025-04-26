@@ -106,25 +106,26 @@ public interface ScheduleRepo extends JpaRepository<Schedule, Integer>{
             AND sec.number = :sectionId
             """)
     Integer getUniqueSubjectCountBySection(@Param("sectionId") int sectionId);
-    
+
     @Query("""
-           SELECT NEW com.example.testingLogIn.CustomObjects.SubjectSectionCount(sc.subject,COUNT(DISTINCT sc.section)) FROM Schedule sc
-           WHERE sc.isNotDeleted = TRUE
-           AND sc.section.isNotDeleted
-           AND sc.teacher.staffId = :teacherId
-           GROUP BY sc.subject
-           """)
+       SELECT NEW com.example.testingLogIn.CustomObjects.SubjectSectionCount(sc.subject, COUNT(DISTINCT sc.section)) 
+       FROM Schedule sc
+       WHERE sc.isNotDeleted = TRUE
+       AND sc.section.isNotDeleted
+       AND sc.teacher.staffId = :teacherId
+       GROUP BY sc.subject, sc.subject.subjectNumber, sc.subject.subjectName
+       """)
     List<SubjectSectionCount> findTeacherSubjectAndSectionCount(@Param("teacherId") int teacherId);
-    
+
     @Query("""
-           SELECT sc FROM Schedule sc
-           JOIN sc.subject subj
-           WHERE sc.isNotDeleted = TRUE
-           AND sc.section.isNotDeleted
-           AND sc.teacher.staffId = :teacherId
-           AND subj.subjectNumber = :subjectId
-           GROUP BY sc.section
-           """)
+       SELECT sc FROM Schedule sc
+       JOIN sc.subject subj
+       WHERE sc.isNotDeleted = TRUE
+       AND sc.section.isNotDeleted
+       AND sc.teacher.staffId = :teacherId
+       AND subj.subjectNumber = :subjectId
+       GROUP BY sc.section, sc.id, sc.isNotDeleted, sc.subject, sc.teacher
+       """)
     List<Schedule> findByTeacherSubject(@Param("teacherId") int teacherId, @Param("subjectId") int subjectId);
 
     @Query("""

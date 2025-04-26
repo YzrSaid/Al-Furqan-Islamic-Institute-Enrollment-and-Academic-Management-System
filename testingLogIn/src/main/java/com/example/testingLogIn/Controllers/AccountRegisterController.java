@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Enums.Role;
 import com.example.testingLogIn.Models.AccountRegister;
@@ -37,20 +38,21 @@ public class AccountRegisterController {
         }
     }
     
-    @GetMapping("/{status}")
-    public ResponseEntity<List<AccountRegister>> getAccounts(@PathVariable String status){
+    @GetMapping("")
+    public ResponseEntity<PagedResponse> getAccounts(@RequestParam String status,
+                                                     @RequestParam(defaultValue = "1", required = false)int pageNo,
+                                                     @RequestParam(defaultValue = "10", required = false) int pageSize,
+                                                     @RequestParam(defaultValue = "", required = false) String q){
         try{
-            return new ResponseEntity<>(accountRegisterServices.getAccounts(status),HttpStatus.OK);
+            return new ResponseEntity<>(accountRegisterServices.getAccounts(status,q,pageNo,pageSize),HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>(List.of(),HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
     
     @PutMapping("/confirm/{token}/{password}")
     public ResponseEntity<String> confirmAccountRegistration(@PathVariable String token, @PathVariable String password){
         try{
-            System.out.println(token);
-            System.out.println(password);
             customUserDetailsService.registerNewUser(token,password);
             return new ResponseEntity<>("Account Registration is Now Complete",HttpStatus.OK);
         }catch(Exception e){

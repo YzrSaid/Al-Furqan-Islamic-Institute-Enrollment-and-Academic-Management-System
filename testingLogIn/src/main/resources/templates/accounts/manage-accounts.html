@@ -203,7 +203,6 @@
 
     function fetchUserAccounts(currentPage = 1) {
         var accType = document.getElementById("view-by").value;
-        alert(accType);
         var pageSize = document.getElementById("pageSizeSelector").value;
         var search = document.getElementById("search").value;
         fetch(`/user/all?pageNo=${currentPage}&pageSize=${pageSize}&q=${search}&accType=${accType}`) // Fetch all users

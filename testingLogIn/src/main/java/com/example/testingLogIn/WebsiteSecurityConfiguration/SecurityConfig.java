@@ -34,7 +34,8 @@ public class SecurityConfig {
         return  http.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(req -> req
                         .requestMatchers("/css/**", "/website-logo", "/website-cover",
-                                            "/images/**","/js/**","/signing","/register/add","/authentication/**","/forgot-password","/reset-password/{token}","/account-confirmation/{token}","/register/confirm/{toke}/{password}").permitAll()
+                                            "/images/**","/js/**","/signing","/register/add","/authentication/**","/forgot-password","/reset-password/{token}"
+                                            ,"/account-confirmation/{token}","/register/confirm/{toke}/{password}").permitAll()
                         .requestMatchers("/reports/*","/enrollment/**","/transaction/**").hasAnyAuthority("ADMIN","ENROLLMENT_STAFF")
                         .requestMatchers("/schedule/**","/grade-management/**","/class-list/**").hasAnyAuthority("ADMIN","TEACHER")
                         .requestMatchers("/maintenance/**","/settings/**","/accounts/student-accounts","/accounts/verify-accounts","/accounts/manage-accounts").hasAnyAuthority("ADMIN")
@@ -42,7 +43,8 @@ public class SecurityConfig {
                         .requestMatchers("/class-schedule","/personal-profile","/grades").hasAnyAuthority("STUDENT")
                         .anyRequest().authenticated()
                     )
-                    .formLogin(form -> form.loginPage("/login").permitAll()
+                    .formLogin(form -> form.loginPage("/")
+                            .loginProcessingUrl("/user-login").permitAll()
                             .defaultSuccessUrl("/home", true)
                             .failureHandler(customAuthenticationFailureHandler))  // Custom login page
                     .httpBasic(Customizer.withDefaults())  // Enable basic authentication (for Postman)

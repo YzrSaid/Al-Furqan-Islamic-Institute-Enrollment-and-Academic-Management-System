@@ -31,17 +31,16 @@
                 <!-- Searchbox and sort btn -->
                 <div class="left-section">
                     <div class="search-container">
-                        <input type="text" placeholder="Search..." class="search-input" />
-                        <button type="button" class="search-btn" title="Search Account">Search</button>
+                        <input type="text" id="search" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn" onclick="fetchAccounts()" title="Search Account">Search</button>
                     </div>
                 </div>
                 <div class="sort-container">
-                    <select name="sort" id="sort-select" class="sort-select">
-                        <option value="" disabled selected>Sort</option>
-                        <option value="user-id">User ID</option>
-                        <option value="account-name">Name</option>
-                        <option value="account-email">Email</option>
-                        <option value="account-status">Status</option>
+                    <select name="sort" onclick="fetchAccounts()" id="sort-select" class="sort-select">
+                        <option value="All" selected>All</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approveed</option>
+                        <option value="Rejected">Rejected</option>
                     </select>
                 </div>
             </div>
@@ -53,9 +52,9 @@
             <table class="verify-accounts-table main-table">
                 <thead>
                     <tr>
-                        <th>User ID</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Position</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -63,44 +62,21 @@
                 <tbody id="accounts-table-body">
                 </tbody>
             </table>
-        </div>
 
-
-        <!-- Modal for assigning account type/role to user -->
-        <div id="addAccountTypeModal" class="add-account-type-modal modal">
-            <div class="add-account-type-modal-content scroll-lock">
-
-                <h2>Verify Account</h2>
-
-                <!-- Account information -->
-                <div class="half-width">
-                    <label for="student-id">User ID:</label>
-                    <h6 id="user-id"></h6>
-                </div>
-                <div class="half-width">
-                    <label for="student-name">User Name:</label>
-                    <h6 id="user-name"></h6>
-                </div> <br>
-
-                <form method="post" action="/gradelevelmaintenance/add">
-                    <label for="account-type">Account Type/Role:</label>
-                    <select name="account-type" id="account-type">
-                        <option value="" disabled selected>Choose an Account Type </option>
-                        <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
-                        <option value="TEACHER">Teacher</option>
+                    <!-- Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-controls">
+                    <span id="itemRange">1–10 of 37</span>
+                    <select id="pageSizeSelector">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
                     </select>
-                    <br><br>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="verifyAccount"
-                            data-message="Are you sure you want to verify this account?"
-                            data-open-modal="confirmationModal" title="Confirm Button">
-                            Confirm
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="addAccountTypeModal"
-                            title="Cancel Button">Cancel</button>
-                    </div>
-                </form>
+                    <button type="button" id="prevPage">«</button>
+                    <input type="number" id="pageInput" min="1" value="1">
+                    <span id="totalPages">of 4</span>
+                    <button type="button" id="nextPage">»</button>
+                </div>
             </div>
         </div>
 
@@ -137,40 +113,84 @@
 
     <script>
         let selectedVerificationId = null;
-        let selectedRole = null;
         document.addEventListener("DOMContentLoaded", function () {
-            const tableBody = document.getElementById("accounts-table-body");
-            tableBody.addEventListener("click", function (event) {
-                if (event.target.tagName === "IMG" && event.target.closest(".action")) {
-                    selectedVerificationId = event.target.closest("tr").querySelector("td:first-child").textContent.trim();
-                    //console.log("Selected Verification ID:", selectedVerificationId);
-                }
-            });
-
-            const roleSelect = document.getElementById("account-type");
-            roleSelect.addEventListener("change", function () {
-                selectedRole = roleSelect.value;
-                //console.log("Selected Role:", selectedRole);
-            });
+            document.addEventListener('click', function(event) {
+            if (event.target.matches('[data-action="rejectAccount"]')) {
+                selectedVerificationId = event.target.getAttribute('data-account-id');
+            }});
+            fetchAccounts(1);
         });
 
+        var currentPage;
+        function fetchAccounts(currentPages = 1) {
+            currentPage = currentPages;
+            var pageSize = document.getElementById("pageSizeSelector").value;
+            var search = document.getElementById("search").value;
+            var type = document.getElementById("sort-select").value;
 
-        document.addEventListener("DOMContentLoaded", function () {
-            fetchAccounts();
-        });
-
-
-        function fetchAccounts() {
-            Promise.all([
-                fetch('/register/APPROVED').then(response => response.json()),
-                fetch('/register/REJECTED').then(response => response.json()),
-                fetch('/register/PENDING').then(response => response.json())
-            ])
-                .then(([approvedAccounts, rejectedAccounts, pendingAccounts]) => {
-                    const allAccounts = [...approvedAccounts, ...rejectedAccounts, ...pendingAccounts]; // Merge both
-                    populateTable(allAccounts);
+            fetch(`/register?pageNo=${currentPages}&pageSize=${pageSize}&status=${type}&q=${search}`)
+                .then(response => {
+                    if (!response.ok) {
+                        updatePaginationUI(0, 0, 0, 0);
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
                 })
-                .catch(error => console.error('Error fetching accounts:', error));
+                .then(page => {
+                    if(page.content.length === 0){
+                        updatePaginationUI(0, 0, 0, 0);
+                        throw new Error(`Empty table`);
+                    }
+                    const tableBody = document.getElementById("accounts-table-body");
+                    tableBody.innerHTML = "";
+
+                    const roleMapping = {
+                        "ENROLLMENT_STAFF": "Enrollment Staff",
+                        "TEACHER": "Teacher",
+                        "ADMIN": "Admin"
+                    };
+
+                    page.content.forEach(account => {
+                        const row = document.createElement("tr");
+                        const fullName = [account.firstname, account.middlename, account.lastname]
+                            .filter(name => name && name.trim() !== '')
+                            .join(' ');
+
+                        const statusClass = getAccountStatusClass(account.status);
+                        const readableRole = roleMapping[account.role] || account.role;
+
+                        row.innerHTML = `
+                            <td>${fullName}</td>
+                            <td>${account.username}</td>
+                            <td>${readableRole}</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status ${statusClass}">${account.status || 'Pending'}</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-container dropdown-status-content-verify">
+                                    <div class="action">
+                                        <button data-action="rejectAccount" 
+                                            data-account-id="${account.id}"
+                                            data-message="Are you sure you want to reject this account?" 
+                                            data-open-modal="confirmationModal" 
+                                            src="/images/icons/cross.png" 
+                                            alt="Reject">Reject Account </button>
+                                    </div>
+                                </div>
+                            </td>`;
+
+                        tableBody.appendChild(row);
+                    });
+                    updatePaginationUI(currentPage,page.pageSize,page.totalElements, page.totalPages);
+                    updateActionVisibility();
+                })
+                .catch(error => {
+                    console.error("Error fetching account data:", error);
+                    const tableBody = document.getElementById("accounts-table-body");
+                    tableBody.innerHTML = `<tr><td colspan="5" class="error-message">No records found</td></tr>`;
+                });
         }
         function populateTable(accounts) {
             const tableBody = document.getElementById("accounts-table-body");
@@ -188,54 +208,46 @@
                 const row = document.createElement("tr");
 
                 const statusClass = getAccountStatusClass(account.status);
-
-                // Ensure status class is formatted correctly
-                // const statusClass = account.status.toLowerCase().replace(/\s+/g, '-');
-
-                // Convert role to a more readable format
                 const readableRole = roleMapping[account.role] || account.role;
 
                 row.innerHTML = `
-            <td>${account.id}</td>
-            <td>${account.firstname} ${account.middlename} ${account.lastname}</td>
-            <td>${account.username}</td>
-            <td>
-                <div class="status-container">
-                    <div class="status ${statusClass}">${account.status}</div>
-                </div>
-            </td>
-            <td>
-                <div class="action-container dropdown-status-content-verify">
-                    <div class="action">
-                        <img data-action="verifyAccount" user-name="${account.firstname} ${account.middlename} ${account.lastname}" user-id="${account.id}" data-open-modal="addAccountTypeModal" src="/images/icons/check.png" alt="Verify">
-                    </div>
-                    <div class="action">
-                        <img data-action="rejectAccount" data-message="Are you sure you want to reject this account?" data-open-modal="confirmationModal" src="/images/icons/cross.png" alt="Reject">
-                    </div>
-                </div>
-            </td>
-        `;
+                    <td>${account.id}</td>
+                    <td>${account.firstname} ${account.middlename} ${account.lastname}</td>
+                    <td>${account.username}</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status ${statusClass}">${account.status}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-container dropdown-status-content-verify">
+                            <div class="action">
+                                <img data-action="rejectAccount" data-message="Are you sure you want to reject this account?" data-open-modal="confirmationModal" src="/images/icons/cross.png" alt="Reject">
+                            </div>
+                        </div>
+                    </td>
+                `;
 
                 tableBody.appendChild(row);
             });
             updateActionVisibility();
         }
 
-        document.addEventListener("click", (event) => {
-            const icon = event.target.closest("[data-action='verifyAccount']");
+        // document.addEventListener("click", (event) => {
+        //     const icon = event.target.closest("[data-action='verifyAccount']");
 
-            if (icon) {
-                const userId = icon.getAttribute("user-id");
-                const userName = icon.getAttribute("user-name");
+        //     if (icon) {
+        //         const userId = icon.getAttribute("user-id");
+        //         const userName = icon.getAttribute("user-name");
 
-                if (userId && userName) {
-                    document.getElementById("user-id").textContent = userId;
-                    document.getElementById("user-name").textContent = userName;
-                } else {
-                   // console.log("⚠️ User ID or Name missing!");
-                }
-            }
-        });
+        //         if (userId && userName) {
+        //             document.getElementById("user-id").textContent = userId;
+        //             document.getElementById("user-name").textContent = userName;
+        //         } else {
+        //            // console.log("⚠️ User ID or Name missing!");
+        //         }
+        //     }
+        // });
 
         function getAccountStatusClass(status) {
             status = status.toLowerCase();
@@ -274,48 +286,64 @@
             });
         }
 
-        function verifyAccount() {
-            if (!selectedVerificationId) {
-                showErrorModal("❌ Error: Please select an account to verify.");
-                return;
-            }
-
-            if (!selectedRole) {
-                showErrorModal("❌ Error: Please select an account type/role.");
-                return;
-            }
-
-            const apiUrl = `/register/confirm/${selectedVerificationId}/${selectedRole}`;
-
-            fetch(apiUrl, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    } else {
-                        throw new Error(`Failed: ${response.status}`);
-                    }
-                })
-                .then(message => {
-                    showSuccessModal("✅ Success: Account successfully verified!");
-                })
-                .catch(error => {
-                    showErrorModal("❌ Error: " + error.message);
-                });
-        }
-
         function rejectAccount(selectedVerificationId) {
             fetch(`/register/reject/${selectedVerificationId}`, { method: 'PUT' })
                 .then(response => response.text())
                 .then(message => {
                     showSuccessModal("✅ Success: Account successfully rejected!");
                 })
-                .catch(error => console.error('Error rejecting account:', error));
+                .catch(error => console.error('Error rejecting account'));
         }
+
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+        // console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
+
+        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById("pageInput").value = currentPage;
+        document.getElementById("pageInput").min = 1;
+        document.getElementById("pageInput").max = totalPages;
+        document.getElementById("totalPages").textContent = `of ${totalPages}`;
+
+        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+    }
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            fetchAccounts(currentPage);
+        }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < document.getElementById("pageInput").max) {
+            currentPage++;
+            //console.log("Navigating to page:", currentPage);
+            fetchAccounts(currentPage);
+        } else {
+            // console.log("Cannot navigate to next page");
+        }
+    });
+
+    document.getElementById("pageInput").addEventListener("change", (e) => {
+        const totalPages = parseInt(document.getElementById("pageInput").max);
+        let page = parseInt(e.target.value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            fetchAccounts(currentPage);
+        } else {
+            e.target.value = currentPage;
+        }
+    });
+
+    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        // console.log("pageSizeSelector changed", { value: e.target.value });
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        fetchAccounts(currentPage);
+    });
     </script>
 </body>
 

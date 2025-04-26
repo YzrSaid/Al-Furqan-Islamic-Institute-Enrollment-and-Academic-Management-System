@@ -869,10 +869,8 @@
         })
             .then(response => response.text().then(text => ({ text, status: response.status })))
             .then(({ text, status }) => {
-                // console.log(`🔹 API Response (${status}): ${text}`);
-
                 if (status === 200) {
-                    showSuccessModal("✅ Success: New student has been added successfully!", false);
+                    showSuccessModal(`✅ ${text}`, false);
                     goList(currentPage);
                 } else {
                     showErrorModal("❌ Error:" + text);
@@ -1244,7 +1242,7 @@
                 return response.text();
             })
             .then(text => {
-                showSuccessModal("✅ Success: New transferee has been added successfully!");
+                showSuccessModal("✅ Success: New student has been added successfully!");
             })
             .catch(error => {
                 showErrorModal(error);

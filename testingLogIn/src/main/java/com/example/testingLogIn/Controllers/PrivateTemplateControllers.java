@@ -14,8 +14,7 @@ public class PrivateTemplateControllers {
     private final CustomUserDetailsService userDetailsService;
     @Autowired
     public PrivateTemplateControllers(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+        this.userDetailsService = userDetailsService;}
 
     @GetMapping("/h?me")
     public String getDashboard() {
@@ -51,12 +50,7 @@ public class PrivateTemplateControllers {
         return "student-account/resources";
     }
 
-    @GetMapping("")
-    public String getDashboardzz() {
-        return "dashboard";
-    }
-
-    @GetMapping("settings/create-user")
+    @GetMapping("/accounts/create-user")
     public String getCreateUser() {
         return "settings/create-user";
     }
@@ -264,16 +258,11 @@ public class PrivateTemplateControllers {
         if(userDetailsService.getCurrentlyLoggedInUser().getRole() == Role.ADMIN)
             return "/schedule/schedule";
 
-        return "/schedule/teacherSched/sched-board-teacher";
+        return "/schedule/TeacherSched/sched-board-teacher";
     }
 
     @GetMapping("/schedule/sched-board/{secNumber}")
     public String getSchedBoard() {
         return "/schedule/sched-board";
-    }
-
-    @GetMapping("/fragment")
-    public String frag(){
-        return "fragments/fragment";
     }
 }

@@ -974,9 +974,6 @@ document.addEventListener("DOMContentLoaded", function () {
       case "editTeacher":
         alert("Edit Teacher");
         break;
-      case "verifyAccount":
-        verifyAccount(selectedVerificationId, selectedRole);
-        break;
       case "rejectAccount":
         rejectAccount(selectedVerificationId);
         break;

@@ -24,7 +24,6 @@ import java.util.Optional;
 @RequestMapping("/user")
 @Controller
 public class UserAccountController {
-
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
     @Autowired

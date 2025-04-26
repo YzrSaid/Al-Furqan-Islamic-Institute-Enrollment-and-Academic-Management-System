@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Enums.RegistrationStatus;
 import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.PasswordResetPackage.AccountConfirmationService;
@@ -7,6 +8,8 @@ import com.example.testingLogIn.Repositories.AccountRegisterRepo;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,9 +46,20 @@ public class AccountRegisterServices {
         }
     }
     
-    public List<AccountRegister> getAccounts(String status){
-        return accountRegisterRepo.findAll().stream()
-                                  .filter(account -> account.getStatus().toString().equalsIgnoreCase(status))
-                                  .collect(Collectors.toList());
+    public PagedResponse getAccounts(String status, String search, int pageNo, int pageSize){
+        RegistrationStatus regStatus = status.equalsIgnoreCase("all") ? null :
+                                        status.equalsIgnoreCase("approved") ? RegistrationStatus.APPROVED :
+                                        status.equalsIgnoreCase("rejected") ? RegistrationStatus.REJECTED :
+                                                                                          RegistrationStatus.PENDING;
+        search = NonModelServices.forLikeOperator(search);
+        Page<AccountRegister> registerPage = accountRegisterRepo.accountRegisterPage(search,regStatus, PageRequest.of(pageNo - 1, pageSize));
+
+        return PagedResponse.builder()
+                .content(registerPage.getContent())
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(registerPage.getTotalElements())
+                .totalPages(registerPage.getTotalPages())
+                .build();
     }
 }

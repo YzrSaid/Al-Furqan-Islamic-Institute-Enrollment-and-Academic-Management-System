@@ -17,7 +17,7 @@ public class EmailService {
     private final Authenticator authenticator;
     private final Session session;
     private final String username;
-    private final String websiteAddress = "192.168.168.226:8082";
+    private final String websiteAddress = "www.alfurqan-islamic-institute.site";
     @Autowired
     private WebsiteConfigurationServices webService;
     public EmailService(){
@@ -59,8 +59,8 @@ public class EmailService {
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipientEmail));
             message.setSubject("Password Reset Request");
-            String resetLink = "http://"+websiteAddress+"/confirm-account/" + token;
-
+            String resetLink = "http://"+websiteAddress+"/reset-password/" + token;
+            System.out.println(resetLink);
             // HTML email content
             String htmlContent = 
                     "<h3>Password Reset</h3>"

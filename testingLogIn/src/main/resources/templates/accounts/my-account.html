@@ -35,7 +35,7 @@
                     <div class="header">
                         <div class="half-unique">
                             <label for="student-id">Staff ID: </label>
-                            <input readonly type="text" id="student-id">
+                            <input readonly type="text" id="student-id-rec">
                         </div> <br>
 
                         <div class="other-info-container">
@@ -61,9 +61,9 @@
                                 <div>
                                     <label for="name">Name</label>
                                     <div class="student-form-group half">
-                                        <input readonly type="text" id="firstName">
-                                        <input readonly type="text" id="middleName">
-                                        <input readonly type="text" id="lastName">
+                                        <input readonly type="text" id="firstNameRec">
+                                        <input readonly type="text" id="middleNameRec">
+                                        <input readonly type="text" id="lastNameRec">
                                     </div>
                                     <div class="small-text">
                                         <p>First</p>
@@ -76,24 +76,24 @@
                                 <!-- Gender, BDate, and Scholar -->
                                 <div class="student-form-group half-stud-info-small">
                                     <label for="gender">Gender:</label>
-                                    <input readonly type="text" id="gender">
+                                    <input readonly type="text" id="genderRec">
 
                                     <label for="birthdate">Birthdate:</label>
-                                    <input readonly required type="date" id="birthdate-report">
+                                    <input readonly required type="date" id="birthdate-report-rec">
                                 </div>
                             </div>
 
                             <div class="column1">
                                 <label for="address">Address:</label>
                                 <div class="student-form-group">
-                                    <input readonly type="text" id="staff-address" required placeholder="">
+                                    <input readonly type="text" id="staff-address-rec" required placeholder="">
                                 </div>
                             </div>
 
                             <div class="column2">
                                 <div class="student-form-group">
                                     <label>Email:</label>
-                                    <input readonly type="email" class="place-of-birth-report" id="staff-email">
+                                    <input readonly type="email" class="place-of-birth-report" id="staff-email-rec">
                                 </div>
                             </div>
                         </div>
@@ -244,5 +244,35 @@
         </div>
     </div>
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        getMyInfo();
+    });
+
+    async function getMyInfo(){
+        const response = await fetch("/user/current-logged-in");
+
+        if(!response.ok){
+            showErrorModal("Your account profile failed to load");
+            setTimeout(()=>{
+                window.location.href="/home";
+            })
+        }
+
+        const user = await response.json();
+
+        console.log(user);
+        document.getElementById("firstNameRec").value = user.firstname;
+        document.getElementById("middleNameRec").value = user.middlename;
+        document.getElementById("lastNameRec").value = user.lastname;
+        document.getElementById("genderRec").value = user.gender;
+        document.getElementById("birthdate-report-rec").value = user.birthdate;
+        document.getElementById("staff-address-rec").value = user.address;
+        alert(user.address);
+        document.getElementById("staff-email-rec").value = user.username;
+        document.getElementById("staff-type").textContent = user.role;
+    }
+</script>
 
 </html>

@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import com.example.testingLogIn.StatisticsModel.StatisticsServices;
+import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,9 +39,10 @@ public class EnrollmentServices {
     private final DistributableServices distributableServices;
     private final PaymentRecordService paymentRecordService;
     private final StatisticsServices statisticsServices;
+    private final CustomUserDetailsService userService;
 
     @Autowired
-    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, DistributableServices distributableServices, PaymentRecordService paymentRecordService, StatisticsServices statisticsServices) {
+    public EnrollmentServices(EnrollmentRepo enrollmentRepo, StudentRepo studentRepo, SectionRepo sectionRepo, sySemesterRepo sySemRepo, GradeLevelRepo gradeLevelRepo, StudentSubjectGradeServices ssgService, GradeLevelRequiredFeeRepo gradelvlReqFeesRepo, StudentFeesListService studFeeListService, DiscountsServices discService, SectionStudentCountServices sscService, PaymentRecordService paymentService, DistributableServices distributableServices, PaymentRecordService paymentRecordService, StatisticsServices statisticsServices, CustomUserDetailsService userService) {
         this.enrollmentRepo = enrollmentRepo;
         this.studentRepo = studentRepo;
         this.sectionRepo = sectionRepo;
@@ -55,6 +57,7 @@ public class EnrollmentServices {
         this.distributableServices = distributableServices;
         this.paymentRecordService = paymentRecordService;
         this.statisticsServices = statisticsServices;
+        this.userService = userService;
     }
 
     @CacheEvict(value = "enrollmentPage",allEntries = true)
@@ -163,6 +166,9 @@ public class EnrollmentServices {
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
             studentRepo.save(student);
 
+            if(student.isNew())
+                CompletableFuture.runAsync(()->userService.registerStudent(student));
+
             CompletableFuture<Void> updateSection = CompletableFuture.runAsync(()-> sscService.updateSectionIfExist(enrollmentRecord));
             CompletableFuture<Void> updateStudent = CompletableFuture.runAsync(() -> studentRepo.save(student));
             CompletableFuture<Void> addStudentGrades = CompletableFuture.runAsync(() -> ssgService.addStudentGrades(enrollmentRecord));
@@ -192,17 +198,24 @@ public class EnrollmentServices {
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = Optional.of(sySemRepo.findCurrentActive().getSySemNumber()).orElseThrow(NullPointerException::new);
         Page<EnrollmentHandler> enrollmentPage = enrollmentRepo.findStudentsEnrollment(estatus,sem,search,pageable);
-        List<EnrollmentDTO> pageContent = enrollmentPage.getContent().stream().map(enrollmentHandler -> {
-            Enrollment enrollment = enrollmentHandler.getEnrollment();
-            StudentDTO student = Optional.ofNullable(enrollmentHandler.getStudent()).map(Student::DTOmapper).orElse(null);
-            if(enrollment != null){
-                if(enrollment.getEnrollmentStatus().equals(EnrollmentStatus.PAYMENT))
-                    return new EnrollmentDTO(isComplete(enrollment),student);
+        List<EnrollmentDTO> pageContent;
+        if(estatus == EnrollmentStatus.ENROLLED){
+            pageContent = enrollmentRepo.findEnrolledStatus(sem,NonModelServices.forLikeOperator(search),pageable)
+                    .map(Enrollment::DTOmapper).toList();
+        }else{
+            pageContent = enrollmentPage.getContent().stream().map(enrollmentHandler -> {
+                Enrollment enrollment = enrollmentHandler.getEnrollment();
+                StudentDTO student = Optional.ofNullable(enrollmentHandler.getStudent()).map(Student::DTOmapper).orElse(null);
+                if(enrollment != null){
+                    if(enrollment.getEnrollmentStatus().equals(EnrollmentStatus.PAYMENT))
+                        return new EnrollmentDTO(isComplete(enrollment),student);
 
-                return new EnrollmentDTO(enrollment.DTOmapper(),student);
-            }
-            return new EnrollmentDTO(null,student);
-        }).toList();
+                    return new EnrollmentDTO(enrollment.DTOmapper(),student);
+                }
+                return new EnrollmentDTO(null,student);
+            }).toList();
+        }
+
         return PagedResponse.builder()
                 .content(pageContent)
                 .pageNo(enrollmentPage.getNumber())

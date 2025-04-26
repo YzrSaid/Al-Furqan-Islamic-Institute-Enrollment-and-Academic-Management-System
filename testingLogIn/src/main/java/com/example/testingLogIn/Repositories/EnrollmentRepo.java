@@ -51,23 +51,37 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
         @Param("studentId") int studentId,
         @Param("activeSemNumber") int activeSemNumber);
 
-    @Query("SELECT NEW com.example.testingLogIn.CustomObjects.EnrollmentHandler(e,stud) from Student stud " +
-            "LEFT JOIN Enrollment e " +
-            "ON e.student.studentId = stud.studentId " +
-            "AND (stud.status = 'OLD' OR stud.status = 'NEW') " +
-            "AND e.SYSemester.sySemNumber = :activeSemNumber "+
-            "WHERE (:status IS NULL OR " +
-                "(CASE " +
-                "WHEN e.student IS NULL THEN 'NOT_REGISTERED' " +
-                "WHEN e.isNotDeleted = FALSE THEN 'CANCELLED' "+
-                "ELSE e.enrollmentStatus END) = :status) "+
-            "AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%') " +
-            "OR stud.studentDisplayId LIKE CONCAT('%',:search,'%')) " +
-            "AND stud.status != 'GRADUATE'")
+    @Query("""
+            SELECT NEW com.example.testingLogIn.CustomObjects.EnrollmentHandler(e,stud) from Student stud
+            LEFT JOIN Enrollment e
+            ON e.student.studentId = stud.studentId
+            AND (stud.status = 'OLD' OR stud.status = 'NEW')
+            AND e.SYSemester.sySemNumber = :activeSemNumber
+            WHERE (:status IS NULL OR
+                (CASE
+                WHEN e.student IS NULL THEN 'NOT_REGISTERED'
+                WHEN e.isNotDeleted = FALSE THEN 'CANCELLED'
+                ELSE e.enrollmentStatus END) = :status)
+            AND e.enrollmentStatus != 'ENROLLED'
+            AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%')
+            OR stud.studentDisplayId LIKE CONCAT('%',:search,'%'))
+            AND stud.status != 'GRADUATE'
+            """)
     Page<EnrollmentHandler> findStudentsEnrollment(@Param("status") EnrollmentStatus status,
                                         @Param("activeSemNumber")   int activeSemNumber,
                                         @Param("search")            String search,
                                                                     Pageable pageable);
+
+
+    @Query("""
+           SELECT e FROM Enrollment e
+           JOIN e.student stud
+           WHERE e.enrollmentStatus = 'ENROLLED'
+           AND e.SYSemester.sySemNumber = :activeSemNumber
+           AND (LOWER(stud.fullName) LIKE :search
+           OR stud.studentDisplayId LIKE :search)
+           """)
+    Page<Enrollment> findEnrolledStatus(int activeSemNumber, String search, Pageable pageable);
 
     @Query("SELECT e.student FROM Enrollment e " +
             "JOIN e.SYSemester sem " +

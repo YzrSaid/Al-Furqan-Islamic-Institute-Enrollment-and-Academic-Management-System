@@ -86,7 +86,7 @@
                             <div class="column1">
                                 <label for="address">Address:</label>
                                 <div class="student-form-group">
-                                    <input readonly type="text" id="staff-address-rec" required placeholder="">
+                                    <input readonly type="text" id="staff-address-rec" placeholder="">
                                 </div>
                             </div>
 
@@ -272,6 +272,7 @@
         alert(user.address);
         document.getElementById("staff-email-rec").value = user.username;
         document.getElementById("staff-type").textContent = user.role;
+        document.getElementById("student-id-rec").textContent = user.staffDisplayId;
     }
 </script>
 

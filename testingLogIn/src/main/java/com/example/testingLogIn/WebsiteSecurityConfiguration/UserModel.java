@@ -52,6 +52,8 @@ public class UserModel implements UserDetails {
     private Gender gender;
     private LocalDate birthdate;
 
+    private String staffDisplayId;
+
     @OneToOne
     @JoinColumn(name = "student")
     private Student student;
@@ -102,6 +104,7 @@ public class UserModel implements UserDetails {
                 .birthdate(birthdate)
                 .gender(gender)
                 .staffId(staffId)
+                .staffDisplayId(staffDisplayId)
                 .role(role)
                 .isNotDeleted(isNotDeleted)
                 .isNotRestricted(isNotRestricted)

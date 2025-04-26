@@ -43,4 +43,10 @@ public interface UserRepo extends JpaRepository<UserModel, Integer> {
            AND LOWER(user.fullName) LIKE :name
            """)
     Page<UserModel> findUsersByPageRole(Role role, String name, boolean isNotRestricted, Pageable pageable);
+
+    @Query("""
+           SELECT COUNT(user) FROM UserModel user
+           WHERE user.role = :role
+           """)
+    Optional<Integer> countStaffByRoles(Role role);
 }

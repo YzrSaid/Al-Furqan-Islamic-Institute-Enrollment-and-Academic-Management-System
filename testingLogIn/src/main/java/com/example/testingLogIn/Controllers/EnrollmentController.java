@@ -46,6 +46,7 @@ public class EnrollmentController {
         }catch (NullPointerException npe){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

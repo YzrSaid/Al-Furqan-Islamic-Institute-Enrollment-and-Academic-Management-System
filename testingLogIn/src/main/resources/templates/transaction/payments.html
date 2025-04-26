@@ -769,7 +769,8 @@
         }
 
         function savePaymentTrans() {
-            const feesSelectedId = getCheckedPaymentValues();
+            var feesSelectedId = getCheckedPaymentValues();
+            feesSelectedId = feesSelectedId.filter(item => item !== 'on');
             const totalAmount = paymentAmountInput.value;
 
             if (totalAmount == 0) {
@@ -784,6 +785,7 @@
             const obj = {
                 feesId: feesSelectedId
             };
+            console.log(obj);
             fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -906,9 +908,8 @@
         if (paymentAmountInput) {
             paymentAmountInput.addEventListener('input', function () {
                 const maxValue = parseFloat(this.max);
+                const minValue = parseFloat(this.min);
                 const enteredValue = parseFloat(this.value);
-
-                // Check if any payment checkbox is checked
                 const anyChecked = document.querySelector('.payment-container-group input[type="checkbox"]:checked');
 
                 if (!anyChecked) {
@@ -920,6 +921,9 @@
                 if (enteredValue > maxValue) {
                     showErrorModal("Maximum amount is " + maxValue);
                     this.value = maxValue;
+                }else if(enteredValue < minValue){
+                    showErrorModal("Manimum amount is " + minValue);
+                    this.value = minValue;
                 }
             });
         }
@@ -1192,6 +1196,7 @@
             });
 
             paymentAmountInput.max = total.toFixed(2);
+            paymentAmountInput.min = (total * .2).toFixed(2);
         }
 
 

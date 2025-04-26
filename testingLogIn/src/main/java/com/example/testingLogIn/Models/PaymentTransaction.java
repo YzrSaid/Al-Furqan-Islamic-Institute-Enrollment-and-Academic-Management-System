@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Builder
 @Data
@@ -50,7 +51,7 @@ public class PaymentTransaction {
                 .receivedBy(staff.getFullName())
                 .studentName(student.getFullName())
                 .date(dateReceived)
-                .SYSemester(SYSem.toString())
+                .SYSemester(Optional.ofNullable(SYSem).map(SchoolYearSemester::toString).orElse("N/A"))
                 .totalAmount(totalAmount)
                 .particulars(new ArrayList<>())
                 .build();

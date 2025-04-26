@@ -17,6 +17,7 @@ import lombok.*;
 @NoArgsConstructor
 public class UserDTO {
     private int staffId;
+    private String staffDisplayId;
     private String username;
     private boolean isNotRestricted;
 

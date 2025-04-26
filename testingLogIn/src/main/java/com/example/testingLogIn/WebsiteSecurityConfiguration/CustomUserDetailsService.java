@@ -25,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidKeyException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -252,11 +253,21 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .middlename(accountRegister.getMiddlename())
                 .fullName(fullName)
                 .role(accountRegister.getRole())
+                .staffDisplayId(staffAccountgenerator(accountRegister.getRole()))
                 .address(accountRegister.getAddress())
                 .birthdate(accountRegister.getBirthdate())
                 .gender(accountRegister.getGender())
                 .username(accountRegister.getUsername())
                 .password(encoder.encode(password))
                 .build();
+    }
+
+    private String staffAccountgenerator(Role role){
+        String yearRegistered = LocalDate.now().getYear()+"";
+        String identifier = role.equals(Role.ENROLLMENT_STAFF) ? "ENR" :
+                            "TEA";
+        int roleCount = userRepo.countStaffByRoles(role).orElse(0) + 1;
+        String filler = roleCount < 10 ? "00"+roleCount : roleCount < 100 ? "0"+roleCount : roleCount+"";
+        return yearRegistered + identifier + roleCount;
     }
 }

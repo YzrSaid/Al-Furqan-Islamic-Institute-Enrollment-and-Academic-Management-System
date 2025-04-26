@@ -104,7 +104,6 @@ public class StudentServices {
                                     .build();
             Student newSavedStudent = studentRepo.save(newStudent);
             enrollmentService.addStudentToListing(null,newSavedStudent);
-            userService.registerStudent(newSavedStudent);
             if(!student.getDiscountsAvailed().isEmpty())
                 CompletableFuture.runAsync(() -> discountsServices.addStudentDiscounts(newSavedStudent.getStudentId(),student.getDiscountsAvailed()));
             if(newSavedStudent.isTransferee())

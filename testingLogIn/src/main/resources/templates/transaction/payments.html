@@ -312,16 +312,18 @@
         <div id="receiptModal" class="receipt-modal modal">
             <div class="printable-area">
                 <div class="receipt-modal-content scroll-lock">
-                    <span class="close-modal no-print" data-close-modal="receiptModal">&times;</span>
-
                     <!-- Receipt Header -->
                     <div class="header-container-payment">
                         <div class="left-header">
-                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                            <!-- Dynamic School Logo -->
+                            <img th:src="@{/website-logo}" alt="School Logo" class="school-logo-payment">
+
+                            <!-- Dynamic School Information -->
                             <div class="school-info">
-                                <h3>AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
-                                <p>Talabaan, Zamboanga City</p>
-                                <p>Phone #: 09358268263</p>
+                                <h3 th:text="${schoolName}">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
+                                <p th:text="${schoolAddress}">Talabaan, Zamboanga City</p>
+                                <p th:text="'Phone #: ' + ${schoolNum}">Phone #: 09358268263</p>
+                                <p th:text="'Email: ' + ${schoolEmail}">Email: example@school.com</p>
                             </div>
                         </div>
 
@@ -329,7 +331,9 @@
                             <div class="receipt-box">
                                 <h2>RECEIPT</h2>
                             </div>
-                            <p>Semester & SY: <strong>1ST SEM | 2021-2022</strong></p>
+                            <!-- Dynamic Semester and School Year -->
+                            <p>Semester & SY: <strong th:text="${currentSem} + ' | ' + ${currentSY}">1ST SEM |
+                                    2021-2022</strong></p>
                         </div>
                     </div>
 
@@ -389,8 +393,9 @@
                     </div>
 
                     <!-- Print Button -->
-                    <div class="print-button">
-                        <button onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+                    <div class="modal-buttons">
+                        <button type="button" data-close-modal="receiptModal" class="btn-cancel">Close</button>
+                        <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
                     </div>
                 </div>
             </div>
@@ -427,11 +432,7 @@
                             <input th:value="${currentSY}" type="text" id="school-year" readonly>
                         </div>
                         <div class="student-form-group">
-                            <label for="amount" id="label-amount">Amount:</label>
-                            <div class="input-wrapper">
-                                <span class="currency-symbol">₱</span>
-                                <input type="number" max="0" id="payment-amount" placeholder="0.00">
-                            </div>
+                            <div class="full-payment-container"></div>
                         </div>
                     </div>
                     <div class="payment-wrapper">
@@ -440,6 +441,13 @@
 
                         </div> <br>
                     </div>
+
+                    <div class="payment-amount-container">
+                        <div class="student-form-group">
+                            <label for="amount" id="label-amount">Amount:</label>
+                            <input type="number" max="0" id="payment-amount" placeholder="0.00">
+                        </div>
+                    </div> <br>
 
 
                     <div id="staff-receiver" class="collector-info-container">
@@ -514,7 +522,7 @@
                 }
                 try {
                     let response = await fetch("/payments/grade/" + gradeLevelId);
-                    if (!response.ok) throw new Error("Failed to fetch required payments");
+                    if (!response.ok) throw new Error("Failed to fetch payment balance");
 
                     let data = await response.json();
 
@@ -900,12 +908,22 @@
                 const maxValue = parseFloat(this.max);
                 const enteredValue = parseFloat(this.value);
 
+                // Check if any payment checkbox is checked
+                const anyChecked = document.querySelector('.payment-container-group input[type="checkbox"]:checked');
+
+                if (!anyChecked) {
+                    showErrorModal("Kindly select a payment first.");
+                    this.value = ''; // Clear the input
+                    return;
+                }
+
                 if (enteredValue > maxValue) {
                     showErrorModal("Maximum amount is " + maxValue);
                     this.value = maxValue;
                 }
             });
         }
+
 
         function voidPaymentTransaction(transactionId) {
             fetch("/paymentrecord/void_payment?transaction=" + transactionId)
@@ -1065,36 +1083,155 @@
             document.querySelector("#payee-name").value = student.fullName;
             document.querySelector("#payee-id").value = student.studentDisplayId;
             studentId = student.studentId;
+
             const paymentContainer = document.querySelector(".payment-container-group");
             paymentContainer.innerHTML = '';
+
+            const paymentWrapper = document.querySelector(".payment-wrapper");
+
+            // (1) Add "Full Payment" checkbox after the header-container and before the payment-wrapper
+            if (!document.getElementById("full-payment-checkbox")) {
+                const fullPaymentDiv = document.createElement("div");
+                fullPaymentDiv.classList.add("full-payment-checkbox");
+
+                const fullPaymentLabel = document.createElement("label");
+                fullPaymentLabel.setAttribute("for", "full-payment-checkbox");
+                fullPaymentLabel.textContent = "Full Payment:";
+
+                const fullPaymentInput = document.createElement("input");
+                fullPaymentInput.type = "checkbox";
+                fullPaymentInput.id = "full-payment-checkbox";
+                fullPaymentInput.addEventListener("change", (e) => {
+                    updateFullPayment();
+                    toggleAmountReadonly(e.target.checked);
+                });
+
+                fullPaymentDiv.appendChild(fullPaymentLabel);
+                fullPaymentDiv.appendChild(fullPaymentInput);
+
+                paymentWrapper.parentNode.insertBefore(fullPaymentDiv, paymentWrapper);
+            }
+
+            // (2) Add individual payments
             theForm.feesAndBalance.forEach(par => {
                 const paymentItem = document.createElement("div");
                 paymentItem.classList.add("payment-item");
+
+                const label = document.createElement("label");
+                label.classList.add("payment-label");
+
                 const input = document.createElement("input");
                 input.type = "checkbox";
+                input.classList.add("payment-checkbox");
                 input.name = par.fee.name;
                 input.value = par.fee.id;
-                input.addEventListener("change", (event) => {
-                    handleCheckboxChange(event, par.balance);
+                input.dataset.amount = par.balance;
+                input.addEventListener("change", () => {
+                    updateFullPayment();
+                    updateSelectAllStatus();
+                    recalculateTotalSelectedAmount();
+                    adjustMaxAmountBasedOnBalance(input);
                 });
 
-                let label = document.createElement("label");
-                label.textContent = par.fee.name;
-                label.setAttribute("for", par.fee.name);
+                const amountFormatted = `₱${Number(par.balance).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+                const labelText = `${par.fee.name} (${amountFormatted})`;
 
-                paymentItem.appendChild(input);
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(labelText));
+
                 paymentItem.appendChild(label);
                 paymentContainer.appendChild(paymentItem);
             });
-        }
 
-        function handlePrintOption(value) {
-            if (value === "all") {
-                document.querySelector('[data-open-modal="allResourcesPrintModal"]').click();
-            } else if (value === "voided") {
-                document.querySelector('[data-open-modal="claimedResourcesPrintModal"]').click();
+            // (3) Add "Select All" as the last item
+            const selectAllItem = document.createElement("div");
+            selectAllItem.classList.add("payment-item");
+
+            const selectAllLabel = document.createElement("label");
+            selectAllLabel.classList.add("payment-label");
+
+            const selectAllInput = document.createElement("input");
+            selectAllInput.type = "checkbox";
+            selectAllInput.id = "select-all";
+            selectAllInput.classList.add("payment-checkbox");
+            selectAllInput.addEventListener("change", (e) => {
+                const isChecked = e.target.checked;
+                const checkboxes = paymentContainer.querySelectorAll('input.payment-checkbox:not(#select-all)');
+                checkboxes.forEach(cb => {
+                    cb.checked = isChecked;
+                });
+                updateFullPayment();
+                recalculateTotalSelectedAmount();
+            });
+
+            selectAllLabel.appendChild(selectAllInput);
+            selectAllLabel.appendChild(document.createTextNode("Select All"));
+            selectAllItem.appendChild(selectAllLabel);
+            paymentContainer.appendChild(selectAllItem);
+
+            // Function to adjust the max value of the payment amount input based on the balance
+            function adjustMaxAmountBasedOnBalance(checkbox) {
+                const paymentAmountInput = document.querySelector("#payment-amount"); // Assuming you have an input with id 'payment-amount'
+                if (checkbox.checked) {
+                    const amount = Number(checkbox.dataset.amount);
+                    paymentAmountInput.max = amount;
+                } else {
+                    paymentAmountInput.max = 0;
+                }
             }
         }
+
+
+        function recalculateTotalSelectedAmount() {
+            const paymentAmountInput = document.getElementById("payment-amount");
+            const checkboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
+
+            let total = 0;
+            checkboxes.forEach(cb => {
+                total += parseFloat(cb.dataset.amount);
+            });
+
+            paymentAmountInput.max = total.toFixed(2);
+        }
+
+
+        // Function to update Amount when Full Payment is checked
+        function updateFullPayment() {
+            const fullPaymentCheckbox = document.getElementById("full-payment-checkbox");
+            const paymentAmountInput = document.getElementById("payment-amount");
+            const checkboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
+
+            if (fullPaymentCheckbox && fullPaymentCheckbox.checked) {
+                let total = 0;
+                checkboxes.forEach(cb => {
+                    total += parseFloat(cb.dataset.amount);
+                });
+                paymentAmountInput.value = total.toFixed(2);
+            } else {
+                paymentAmountInput.value = "";
+            }
+        }
+
+        // Function to enable/disable readonly based on Full Payment checkbox
+        function toggleAmountReadonly(isChecked) {
+            const paymentAmountInput = document.getElementById("payment-amount");
+            if (isChecked) {
+                paymentAmountInput.setAttribute("readonly", "true");
+            } else {
+                paymentAmountInput.removeAttribute("readonly");
+            }
+        }
+
+        // Function to update "Select All" checkbox status
+        function updateSelectAllStatus() {
+            const selectAll = document.getElementById("select-all");
+            const allCheckboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:not(#select-all)");
+            const checkedCheckboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
+
+            selectAll.checked = allCheckboxes.length === checkedCheckboxes.length;
+        }
+
+
     </script>
 </body>
 

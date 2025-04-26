@@ -66,6 +66,15 @@ body {
   border-radius: 50%;
 }
 
+.school-logo-payment {
+  width: 100px;
+  height: 100px;
+  margin-right: 15px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 #left-login-block {
   background-color: rgb(101, 224, 104);
   width: 60%;
@@ -2271,9 +2280,8 @@ input.guardian-address {
 }
 
 .payment-amount-container {
-  width: 55%;
+  width: 100%;
   display: flex;
-  justify-self: right;
 }
 #payee-info {
   display: flex;
@@ -3628,7 +3636,7 @@ td[rowspan] {
   width: 100%;
   min-height: 100px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   flex-direction: column;
   gap: 5px;
 }
@@ -3662,6 +3670,27 @@ td[rowspan] {
   margin-top: 30px;
   padding: 0 35px;
 }
+
+.full-payment-container {
+  padding: 0 35px;
+}
+
+.full-payment-checkbox {
+  display: flex;
+  align-items: center;
+  margin-left: 30px;
+  width: 100% !important;
+  padding: 0 5px;
+}
+.full-payment-checkbox input {
+  width: 50px !important;
+  min-width: 50px;
+}
+.full-payment-text {
+  font-weight: bold;
+  font-size: 12px;
+}
+
 .payment {
   display: flex;
   align-items: center;
@@ -4106,13 +4135,6 @@ input.staff-id-report {
 .separator-line {
   border-bottom: 3px solid #000;
   width: 100%;
-}
-
-.school-logo-payment {
-  width: 100px;
-  height: auto;
-  margin-right: 15px;
-  margin-bottom: 20px;
 }
 
 .school-info h3 {
@@ -5085,17 +5107,17 @@ a {
 
 /* Mobile Styles */
 @media (max-width: 767px) {
-    .basic-modal-buttons.for-mobile {
-        display: flex;
-        justify-content: center !important;
-    }
-    .container-two {
-        display: flex;
-        flex-direction: column;
-    }
-    .column-main {
-        width: 100% !important;
-    }
+  .basic-modal-buttons.for-mobile {
+    display: flex;
+    justify-content: center !important;
+  }
+  .container-two {
+    display: flex;
+    flex-direction: column;
+  }
+  .column-main {
+    width: 100% !important;
+  }
   .payment label {
     font-size: 12px !important;
   }
@@ -5616,7 +5638,8 @@ a {
     justify-self: left;
   }
 
-  .student-form-group .place-of-birth, .place-of-birth-report {
+  .student-form-group .place-of-birth,
+  .place-of-birth-report {
     min-width: 200px;
     width: 100%;
     max-width: 400px;
@@ -5649,7 +5672,7 @@ a {
     width: 20% !important;
   }
 
-  .student-information-modal-content{
+  .student-information-modal-content {
     width: 100%;
     min-height: 50dvh;
     max-height: 80dvh;

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0//css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/css/all.min.css}">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- Font Awesome for icons -->
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css?v=2}">
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -48,8 +48,8 @@
             </a>
             <div class="submenu" id="enrollment-submenu">
                 <a href="/enrollment/listing" class="submenu-item" data-path="/enrollment/listing">Listing/Register</a>
-                <a href="/enrollment/assessment" class="submenu-item" data-path="/enrollment/assessment">Assessment</a>
-                <a href="/enrollment/payment" class="submenu-item" data-path="/enrollment/payment">Payment</a>
+                <!-- <a href="/enrollment/assessment" class="submenu-item" data-path="/enrollment/assessment">Assessment</a>
+                <a href="/enrollment/payment" class="submenu-item" data-path="/enrollment/payment">Payment</a> -->
                 <a href="/enrollment/enrolled" class="submenu-item" data-path="/enrollment/enrolled">Enrolled</a>
             </div>
 
@@ -96,7 +96,7 @@
                     data-path="/maintenance/fees-management">Fees
                     Management</a>
                 <a href="/maintenance/distributable-management" class="submenu-item"
-                    data-path="/maintenance/distributable-management">Distributable Management</a>
+                    data-path="/maintenance/distributable-management">Distributable Item Management</a>
                 <a href="/maintenance/scholarship" class="submenu-item"
                     data-path="/maintenance/scholarship">Scholarships</a>
             </div>
@@ -134,17 +134,15 @@
                 <a th:href="@{/accounts/my-account}" class="submenu-item" data-path="/accounts/my-account">My
                     Account</a>
             </div>
-
-
+         
             <!-- Settings -->
-            <a href="#" class="sidebar-icons" onclick="toggleSubMenu('settings-submenu', event)">
-                <img th:src="@{/images/icons/settings.png}" alt="Settings Icon"> Settings
-                <span class="arrow-icon"><img th:src="@{/images/icons/arrow-down.png}" alt="arrow-down"></span>
+            <a href="/settings/school-settings" class="sidebar-icons" onclick="clearSubmenus()" data-path="/settings/school-settings">
+                <img th:src="@{/images/icons/settings.png}" alt="Settings Icon"> School Settings
             </a>
-            <div class="submenu" id="settings-submenu">
+            <!-- <div class="submenu" id="settings-submenu">
                 <a href="/settings/school-settings" class="submenu-item" data-path="/settings/school-settings">School
                     Settings</a>
-            </div>
+            </div> -->
         </div>
 
         <!-- TEACHER Sidebar -->
@@ -190,8 +188,8 @@
             </a>
             <div class="submenu" id="enrollment-submenu">
                 <a href="/enrollment/listing" class="submenu-item" data-path="/enrollment/listing">Listing/Register</a>
-                <a href="/enrollment/assessment" class="submenu-item" data-path="/enrollment/assessment">Assessment</a>
-                <a href="/enrollment/payment" class="submenu-item" data-path="/enrollment/payment">Payment</a>
+                <!-- <a href="/enrollment/assessment" class="submenu-item" data-path="/enrollment/assessment">Assessment</a>
+                <a href="/enrollment/payment" class="submenu-item" data-path="/enrollment/payment">Payment</a> -->
                 <a href="/enrollment/enrolled" class="submenu-item" data-path="/enrollment/enrolled">Enrolled</a>
             </div>
 

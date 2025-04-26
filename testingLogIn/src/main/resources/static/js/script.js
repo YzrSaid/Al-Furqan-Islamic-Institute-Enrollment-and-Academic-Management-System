@@ -111,7 +111,7 @@ function toggleSidebar() {
   const body = document.body;
   const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
   const isMobile = window.innerWidth <= 768;
-  
+
   const welcomeCardDiv = document.querySelector(".welcome-card-div");
 
   if (isCollapsed) {
@@ -132,11 +132,10 @@ function toggleSidebar() {
 
     // Align left when sidebar is open
     if (!welcomeCardDiv) {
-        return;
+      return;
     } else {
-        welcomeCardDiv.classList.remove("center-card");
+      welcomeCardDiv.classList.remove("center-card");
     }
-    
   } else {
     // Close sidebar
     sidebar.classList.add("collapsed-sidebar");
@@ -152,11 +151,10 @@ function toggleSidebar() {
 
     // Center card when sidebar is closed
     if (!welcomeCardDiv) {
-        return;
+      return;
     } else {
-        welcomeCardDiv.classList.add("center-card");
+      welcomeCardDiv.classList.add("center-card");
     }
-   
   }
 }
 
@@ -166,14 +164,14 @@ window.addEventListener("resize", () => {
   const content = document.getElementById("content");
   const body = document.body;
   const isMobile = window.innerWidth <= 768;
-  
+
   if (isMobile) {
-    if (!sidebar){
-        return;
+    if (!sidebar) {
+      return;
     } else {
-        sidebar.classList.add("collapsed-sidebar");
+      sidebar.classList.add("collapsed-sidebar");
     }
-   
+
     sidebar.classList.remove("show-floating");
     content.style.marginLeft = "0";
     content.classList.add("collapsed-content");
@@ -659,7 +657,7 @@ document.addEventListener("DOMContentLoaded", function () {
       //     console.log("yawa2");
       //   }
     } else if (
-      modalId.inclues("edit") &&
+      modalId.includes("edit") &&
       (modalId = "studentInformationEditModal")
     ) {
       const confirmBtn = document.getElementById("confirmStudentReportEdit");
@@ -923,20 +921,23 @@ document.addEventListener("DOMContentLoaded", function () {
       case "editSection":
         // This case is for editing subject level
         if (
-            validateForm("sectionEditForm", "⚠️ Please fill in all required fields!")
-          ) {
-            if (await validateAdminPassword()) {
-              editSection();
-              closeConfirmationModal();
-            }
+          validateForm(
+            "sectionEditForm",
+            "⚠️ Please fill in all required fields!"
+          )
+        ) {
+          if (await validateAdminPassword()) {
+            editSection();
+            closeConfirmationModal();
           }
+        }
         break;
       case "deleteSection":
         // This case is for editing subject level
-            if (await validateAdminPassword()) {
-              deleteSectionNow();
-              closeConfirmationModal();
-            }
+        if (await validateAdminPassword()) {
+          deleteSectionNow();
+          closeConfirmationModal();
+        }
         break;
       case "addSubject":
         // This case is for adding subject level
@@ -1262,7 +1263,6 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (reload) {
           location.reload();
         }
-
       }, 1500); // 1.5 seconds
     } else {
       showErrorModal(
@@ -1594,6 +1594,12 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.getElementById("scheduleBody");
   const addRowBtn = document.getElementById("addRowBtn");
+ 
+
+  // Add button click
+  if (!addRowBtn || !tableBody) {
+    return; // Exit early if elements are missing
+  }
 
   let draggedRow = null;
 
@@ -2093,8 +2099,11 @@ function clearForm() {
 document.addEventListener("DOMContentLoaded", () => {
   const transfereeCheckbox = document.getElementById("isTransferee");
   const transfereeFields = document.getElementById("transfereeFields");
+  if (!transfereeCheckbox || !transfereeFields) return;
+
   const transfereeInputs = transfereeFields.querySelectorAll("input");
-  if (!transfereeCheckbox || !transfereeFields || !transfereeInputs) return;
+  if (!transfereeInputs.length) return;
+
 
   // Toggle visibility and readonly state
   transfereeCheckbox.addEventListener("change", () => {
@@ -2135,6 +2144,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initially disable all checkboxes
   checkboxes.forEach((checkbox) => (checkbox.disabled = true));
 
+  if (!updateBtn){
+    return;
+  }
+
+   // Initially disable all checkboxes
+   checkboxes.forEach((checkbox) => (checkbox.disabled = true));
+   
   // Toggle function on button click
   updateBtn.addEventListener("click", () => {
     const isDisabled = checkboxes[0].disabled; // Check the current state

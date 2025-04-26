@@ -745,23 +745,39 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>ITEM #</th>
-                                <th>DESCRIPTION</th>
-                                <th>AMOUNT</th>
+                                <th>Item #</th>
+                                <th>Description</th>
+                                <th>Req. Amount</th>
+                                <th>Discount</th>
+                                <th>Balance</th>
+                                <th>Amount Due</th>
                             </tr>
                         </thead>
                         <tbody id="receipt-items">
-                            <!-- <tr>
-                                <td>1</td>
-                                <td>Tuition Fee</td>
-                                <td>1,000.00</td>
-                                <td>-200.00</td>
-                                <td>800.00</td>
-                            </tr> -->
-                            <!-- Additional rows will be inserted dynamically if needed -->
+                            <!-- Rows will be inserted dynamically -->
                         </tbody>
+                        <tfoot id="receipt-footer">
+                            <!-- Footer will be populated dynamically -->
+                            <tr>
+                                <td colspan="5" style="text-align: right; border: none;">Total Amount Due:</td>
+                                <td style="border: 1px solid black; text-align: center; vertical-align: middle;">
+                                    <div id="total-amount-due">₱ 0.00</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" style="text-align: right; border: none;">Total Amount Paid:</td>
+                                <td style="border: 1px solid black; text-align: center; vertical-align: middle;">
+                                    <div id="total-amount-paid">₱ 0.00</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" style="text-align: right; border: none; font-weight: bold;">Remaining Balance:</td>
+                                <td style="border: 1px solid black; text-align: center; font-weight: bold;" id="remaining-balance">₱ 0.00</td>
+                            </tr>
+                        </tfoot>
                     </table>
-                </div> <br>
+                </div>
+                <br>
 
                 <!-- Collected By Section -->
                 <div id="staff-receiver" class="collector-info-container">
@@ -1059,24 +1075,24 @@
                 receipt.particulars.forEach(dat => {
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                <tr>
                     <td>${i++}</td>
                     <td>${dat.feeName}</td>
-                    <td>${dat.amountPaid}</td>
-                </tr>`;
+                    <td>₱ ${parseFloat(dat.requestedAmount).toFixed(2)}</td>
+                    <td>₱ ${parseFloat(dat.discount).toFixed(2)}</td>
+                    <td>₱ ${parseFloat(dat.balance).toFixed(2)}</td>
+                    <td>₱ ${parseFloat(dat.amountDue).toFixed(2)}</td>
+                `;
                     tableBody.appendChild(row);
                 });
 
-                // Add the total amount row
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                <tfoot>
-                    <tr>
-                        <td colspan="2">Total Amount Paid:</td>
-                        <td>₱ ${receipt.totalAmount}</td>
-                    </tr>
-                </tfoot>`;
-                tableBody.appendChild(row);
+                // Update the footer amounts
+                const totalAmountDueElement = document.getElementById("total-amount-due");
+                const totalAmountPaidElement = document.getElementById("total-amount-paid");
+                const remainingBalanceElement = document.getElementById("remaining-balance");
+
+                totalAmountDueElement.innerText = `₱ ${parseFloat(receipt.totalAmountDue).toFixed(2)}`;
+                totalAmountPaidElement.innerText = `₱ ${parseFloat(receipt.totalAmountPaid).toFixed(2)}`;
+                remainingBalanceElement.innerText = `₱ ${parseFloat(receipt.remainingBalance).toFixed(2)}`;
 
                 // Proceed with the next steps after saving
                 goList(currentPage);
@@ -1545,6 +1561,9 @@
                 ` : `<a style="pointer-events: none; opacity: 0.5; color: gray;">
                        Minimum payment is required to each fee/s
                     </a>`}
+            `;
+            case "ENROLLED":
+                return `
             `;
             default:
                 return `<p>No actions available</p>`;

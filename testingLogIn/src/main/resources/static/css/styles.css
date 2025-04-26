@@ -1051,14 +1051,26 @@ select option[value=""] {
 
 .receipt-table th:nth-child(1),
 .receipt-table td:nth-child(1) {
-  width: 15%;
+  width: 5%;
 }
 .receipt-table th:nth-child(2),
 .receipt-table td:nth-child(2) {
-  width: 60%;
+  width: 20%;
 }
 .receipt-table th:nth-child(3),
 .receipt-table td:nth-child(3) {
+  width: 15%;
+}
+.receipt-table th:nth-child(4),
+.receipt-table td:nth-child(4) {
+  width: 15%;
+}
+.receipt-table th:nth-child(5),
+.receipt-table td:nth-child(5) {
+  width: 15%;
+}
+.receipt-table th:nth-child(6),
+.receipt-table td:nth-child(6) {
   width: 25%;
 }
 
@@ -4296,8 +4308,8 @@ input.staff-id-report {
 }
 
 .receipt-table tfoot {
-  background-color: #575859;
-  color: #fff;
+  background-color: #ffffff !important;
+  color: black;
   font-weight: bold;
 }
 

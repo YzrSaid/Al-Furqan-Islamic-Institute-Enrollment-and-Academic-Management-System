@@ -308,17 +308,13 @@
                 </div>
             </div>
         </div>
-        <!-- Receipt Modal -->
         <div id="receiptModal" class="receipt-modal modal">
             <div class="printable-area">
                 <div class="receipt-modal-content scroll-lock">
                     <!-- Receipt Header -->
                     <div class="header-container-payment">
                         <div class="left-header">
-                            <!-- Dynamic School Logo -->
                             <img th:src="@{/website-logo}" alt="School Logo" class="school-logo-payment">
-
-                            <!-- Dynamic School Information -->
                             <div class="school-info">
                                 <h3 th:text="${schoolName}">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
                                 <p th:text="${schoolAddress}">Talabaan, Zamboanga City</p>
@@ -326,12 +322,10 @@
                                 <p th:text="'Email: ' + ${schoolEmail}">Email: example@school.com</p>
                             </div>
                         </div>
-
                         <div class="right-header">
                             <div class="receipt-box">
                                 <h2>RECEIPT</h2>
                             </div>
-                            <!-- Dynamic Semester and School Year -->
                             <p>Semester & SY: <strong th:text="${currentSem} + ' | ' + ${currentSY}">1ST SEM |
                                     2021-2022</strong></p>
                         </div>
@@ -345,43 +339,60 @@
                             <label for="receipt-student-id">Student ID:</label>
                             <input type="text" id="receipt-student-id" placeholder="">
                         </div>
-
                         <div class="payment-student-info-row">
                             <label for="receipt-date">Date:</label>
                             <input type="date" id="receipt-date">
                         </div>
-
                         <div class="payment-student-info-row">
                             <label for="receipt-student-name">Student Name:</label>
                             <input type="text" id="receipt-student-name" placeholder="">
                         </div>
-
                         <div class="payment-student-info-row">
                             <label for="receipt-number">Receipt Number:</label>
                             <input type="text" id="receipt-number" placeholder="">
                         </div>
                     </div>
 
-
                     <!-- Payment Table -->
                     <div id="receipt-table" class="receipt-table main-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>ITEM #</th>
-                                    <th>DESCRIPTION</th>
-                                    <th>AMOUNT</th>
+                                    <th>#</th>
+                                    <th>Description</th>
+                                    <th>Req. Amount</th>
+                                    <th>Discount</th>
+                                    <th>Balance</th>
+                                    <th>Amount Due</th>
                                 </tr>
                             </thead>
                             <tbody id="receipt-items">
-                                <tr>
-                                    <td>1</td>
-                                    <td>Tuition Fee</td>
-                                    <td>800.00</td>
-                                </tr>
+                                <!-- Rows will be filled dynamically -->
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5" style="text-align: right; border: none;">Total Amount Due:</td>
+                                    <td style="border: 1px solid black; text-align: center; vertical-align: middle;">
+                                        <div id="total-amount-due">₱ 0.00</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" style="text-align: right; border: none;">Total Amount Paid:</td>
+                                    <td style="border: 1px solid black; text-align: center; vertical-align: middle;">
+                                        <div id="total-amount-paid">₱ 0.00</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" style="text-align: right; border: none; font-weight: bold;">
+                                        Remaining Balance:</td>
+                                    <td style="border: 1px solid black; text-align: center; font-weight: bold;"
+                                        id="remaining-balance">₱ 0.00</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
+
+
 
                     <!-- Collected By Section -->
                     <div id="staff-receiver" class="collector-info-container">
@@ -400,6 +411,7 @@
                 </div>
             </div>
         </div>
+
 
 
 
@@ -818,38 +830,44 @@
         function viewTheReceipt(receipt) {
             console.log(receipt);
             receipt = JSON.parse(receipt);
+
             document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
             document.getElementById("receipt-date").value = receipt.date;
             document.getElementById("receipt-student-name").value = receipt.studentName;
             document.getElementById("receipt-number").value = receipt.transactionReference;
-            document.getElementById("receipt-number").value = receipt.transactionReference;
 
-            const tableBody = document.querySelector("#receipt-table tbody");
+            const tableBody = document.getElementById("receipt-items");
             tableBody.innerHTML = "";
+
             let i = 1;
+            let totalDue = 0;
+
             receipt.particulars.forEach(dat => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-            <tr>
-                <td>${i++}</td>
-                <td>${dat.feeName}</td>
-                <td>${dat.amountPaid}</td>
-            </tr>`;
+            <td>${i++}</td>
+            <td>${dat.feeName}</td>
+            <td>₱ ${parseFloat(dat.requestedAmount).toFixed(2)}</td>
+            <td>₱ ${parseFloat(dat.discountAmount).toFixed(2)}</td>
+            <td>₱ ${parseFloat(dat.balance).toFixed(2)}</td>
+            <td>₱ ${parseFloat(dat.amountPaid).toFixed(2)}</td>
+        `;
                 tableBody.appendChild(row);
+
+                totalDue += parseFloat(dat.amountPaid);
             });
-            const row = document.createElement("tr");
-            row.innerHTML = `
-            <tfoot>
-                <tr>
-                    <td colspan="2">Total Amount Paid:
-                    </td>
-                    <td>₱ ${receipt.totalAmount}</td>
-                </tr>
-            </tfoot>`;
-            tableBody.appendChild(row);
-            getRecords(currentPage);
-            closeOpen();
+
+            const totalAmountDueElement = document.getElementById("total-amount-due");
+            const totalAmountPaidElement = document.getElementById("total-amount-paid");
+            const remainingBalanceElement = document.getElementById("remaining-balance");
+
+            // Populate the amounts in separate divs
+            totalAmountDueElement.innerText = `₱ ${totalDue.toFixed(2)}`;
+            totalAmountPaidElement.innerText = `₱ ${parseFloat(receipt.totalAmount).toFixed(2)}`;
+            remainingBalanceElement.innerText = `₱ ${(totalDue - parseFloat(receipt.totalAmount)).toFixed(2)}`;
         }
+
+
 
         function closeOpen() {
             const button1 = document.createElement("button");

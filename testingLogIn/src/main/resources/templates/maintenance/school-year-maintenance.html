@@ -137,22 +137,24 @@
             <div class="list-of-payments-modal-content scroll-lock">
                 <div class="modal-body">
                     <h2>Grade Evaluation Status</h2>
-                    <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
-                        <thead>
-                            <tr>
-                                <th>Teacher</th>
-                                <th>Subject</th>
-                                <th>Graded Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-
-                    <!-- Add Payment button -->
-                    <div class="action" id="add-payment-btn">
-                        <button type="button" id="open-add-payment-modal" data-close-modal="evaluations">Close</button>
+                    <div class="table-wrapper">
+                        <table id="table-ni-kharl" class="view-list-of-payments-table main-table">
+                            <thead>
+                                <tr>
+                                    <th>Teacher</th>
+                                    <th>Subject</th>
+                                    <th>Graded Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
+                </div>
+
+                <!-- Add Payment button -->
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" data-close-modal="evaluations">Close</button>
                 </div>
             </div>
         </div>

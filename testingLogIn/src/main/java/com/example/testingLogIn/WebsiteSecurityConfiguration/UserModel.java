@@ -94,6 +94,22 @@ public class UserModel implements UserDetails {
     }
     
     public UserDTO mapperDTO(){
+        if(role.equals(Role.STUDENT))
+            return UserDTO.builder()
+                    .username(username)
+                    .firstname(student.getFirstName())
+                    .middlename(student.getMiddleName())
+                    .lastname(student.getLastName())
+                    .fullName(student.getFullName())
+                    .birthdate(student.getBirthdate())
+                    .gender(student.getGender())
+                    .staffDisplayId(student.getStudentDisplayId())
+                    .role(role)
+                    .staffDisplayId(student.getStudentDisplayId())
+                    .isNotDeleted(isNotDeleted)
+                    .isNotRestricted(isNotRestricted)
+                    .build();
+
         return UserDTO.builder()
                 .username(username)
                 .firstname(firstname)

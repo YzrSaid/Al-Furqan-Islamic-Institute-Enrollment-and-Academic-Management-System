@@ -178,6 +178,22 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
     }
 
+    public void updateMyAccountStaff(UserDTO updated){
+        UserModel user = getCurrentlyLoggedInUser();
+        if(user == null)
+            throw new NullPointerException("Account not found");
+
+        user.setFullName(updated.getFirstname()+" "+Optional.ofNullable(updated.getMiddlename()).map(s -> s+" ")+updated.getLastname());
+        user.setFirstname(updated.getFirstname());
+        user.setLastname((updated.getLastname()));
+        user.setMiddlename(updated.getMiddlename());
+        user.setGender(updated.getGender());
+        user.setBirthdate(updated.getBirthdate());
+        user.setAddress(updated.getAddress());
+
+        userRepo.save(user);
+    }
+
     public boolean usernameExist(String username) {
         return userRepo.findByUsername(username) != null;
     }

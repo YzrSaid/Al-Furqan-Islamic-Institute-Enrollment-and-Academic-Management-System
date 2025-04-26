@@ -978,6 +978,9 @@ document.addEventListener("DOMContentLoaded", function () {
       case "rejectAccount":
         rejectAccount(selectedVerificationId);
         break;
+      case "updateThisAccount":
+        updateMyAccount();
+        break;
       case "restrictAccount":
         restrictUser(selectedManageAccountId);
         break;

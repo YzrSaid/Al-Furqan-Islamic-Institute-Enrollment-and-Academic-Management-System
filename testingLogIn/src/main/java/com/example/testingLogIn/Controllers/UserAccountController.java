@@ -50,6 +50,12 @@ public class UserAccountController {
         return new ResponseEntity<>(customUserDetailsService.getCurrentlyLoggedInUserDTO(),HttpStatus.OK);
     }
 
+    @PutMapping("/update/my-info")
+    public ResponseEntity<String> updateCurrentUserAccount(@RequestBody UserDTO updated){
+        customUserDetailsService.updateMyAccountStaff(updated);
+        return new ResponseEntity<>("Account updated successfully",HttpStatus.OK);
+    }
+
     @GetMapping("/student-accounts")
     public ResponseEntity<PagedResponse> getStudentAccounts(@RequestParam(defaultValue = "1",required = false) int pageNo,
                                                             @RequestParam(defaultValue = "10",required = false) int pageSize,

@@ -136,9 +136,9 @@
                                     <div>
                                         <label for="name">Name</label>
                                         <div class="student-form-group half">
-                                            <input readonly type="text" id="firstName">
-                                            <input readonly type="text" id="middleName">
-                                            <input readonly type="text" id="lastName">
+                                            <input type="text" name="firstname" required id="firstName">
+                                            <input type="text" name="middlename" required id="middleName">
+                                            <input type="text" name="lastname" required id="lastName">
                                         </div>
                                         <div class="small-text">
                                             <p>First</p>
@@ -157,14 +157,14 @@
                                         </select>
 
                                         <label for="birthdate">Birthdate:</label>
-                                        <input readonly required type="date" id="birthdate-report">
+                                        <input required type="date" name="birthdate" id="birthdate-report">
                                     </div>
                                 </div>
 
                                 <div class="column1">
                                     <label for="address">Address:</label>
                                     <div class="student-form-group">
-                                        <input readonly type="text" id="staff-address" required placeholder="">
+                                        <input type="text" id="staff-address" name="address" required placeholder="">
                                     </div>
                                 </div>
 
@@ -183,9 +183,9 @@
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="button" data-action="" class="btn-confirm" id="confirmStudent"
+                    <button type="button" onclick="updateMyAccount()" class="btn-confirm" id="confirmStudent"
                         data-open-modal="confirmationModal"
-                        data-message="Are you sure you want to add this student?">Confirm</button>
+                        data-message="Are you sure you want to update your profile?">Confirm</button>
 
                     <button type="button" class="btn-cancel" id="cancelStudent"
                         data-close-modal="studentInformationEditModal">Cancel</button>
@@ -204,43 +204,21 @@
             </div>
         </div>
 
-        <!-- Modal for changing password -->
-        <div class="my-account-container-wrapper">
-            <div id="changePasswordModal" class="change-password-modal modal">
-                <div class="change-password-modal-content scroll-lock">
-                    <h2>Change Password</h2>
-                    <form action="" id="changePasswordForm">
-                        <div class="change-pass-div">
-                            <label for="current-passowrd">Current Password</label>
-                            <input type="password" id="current-password">
-                        </div>
-                        <div class="change-pass-div">
-                            <label for="new-password">New Password</label>
-                            <input type="password" id="new-password">
-                        </div>
-                        <div class="change-pass-div">
-                            <ul>
-                                <li>Must be 8 characters</li>
-                                <li>Must contain a spacial character</li>
-                                <li>Must contain upper and lower case</li>
-                            </ul>
-                        </div>
-                        <div class="change-pass-div">
-                            <label for="confirm-password">Confirm Password</label>
-                            <input type="password" id="confirm-password">
-                        </div>
-                        <div class="modal-buttons">
-                            <button type="button" class="btn-confirm"
-                                data-action="changePassword" data-open-modal="confirmationModal"
-                                data-message="Are you sure you want update the password for this account?"
-                                title="Confirm Button">Confirm</button>
-
-                            <button type="button" class="btn-cancel"
-                                data-close-modal="changePasswordModal">Cancel</button>
-                        </div>
-                    </form>
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button type="button" class="error-btn-cancel" data-close-modal="errorModal">Close</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
         </div>
     </div>
 </body>
@@ -261,19 +239,51 @@
         }
 
         const user = await response.json();
+        updateContents(["firstNameRec","middleNameRec","lastNameRec","genderRec","birthdate-report-rec",
+        "staff-address-rec","staff-email-rec","student-id-rec","staff-type"],user);
 
-        console.log(user);
-        document.getElementById("firstNameRec").value = user.firstname;
-        document.getElementById("middleNameRec").value = user.middlename;
-        document.getElementById("lastNameRec").value = user.lastname;
-        document.getElementById("genderRec").value = user.gender;
-        document.getElementById("birthdate-report-rec").value = user.birthdate;
-        document.getElementById("staff-address-rec").value = user.address;
-        alert(user.address);
-        document.getElementById("staff-email-rec").value = user.username;
-        document.getElementById("staff-type").textContent = user.role;
-        document.getElementById("student-id-rec").textContent = user.staffDisplayId;
+        updateContents(["firstName","middleName","lastName","gender","birthdate-report",
+        "staff-address","staff-email","student-id"],user);
     }
+
+    function updateContents(ids,user){
+        document.getElementById(ids[0]).value = user.firstname;
+        document.getElementById(ids[1]).value = user.middlename;
+        document.getElementById(ids[2]).value = user.lastname;
+        document.getElementById(ids[3]).value = user.gender;
+        document.getElementById(ids[4]).value = user.birthdate;
+        document.getElementById(ids[5]).value = user.address;
+        document.getElementById(ids[6]).value = user.username;
+        document.getElementById(ids[7]).value = user.staffDisplayId;
+        if(ids.length == 9){
+            document.getElementById(ids[8]).textContent = user.role;}
+    }
+
+    function updateMyAccount(){
+        const form = document.getElementById("staffInformationEditForm");
+        const formData = new FormData(form);
+        const formObject = Object.fromEntries(formData.entries());
+        console.log(formObject);
+        fetch('/user/update/my-info',{
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formObject)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {throw new error(text)});
+            }
+            return response.text(); // 👈 expects plain text response
+        })
+        .then(text => {
+            showSuccessModal(text);
+        })
+        .catch(error => {
+            showErrorModal("There was a problem with the PUT request:", error);
+        });
+}
 </script>
 
 </html>

@@ -899,6 +899,7 @@ body {
   padding: 10px 20px;
   background: none;
   border: none;
+  border-bottom: 0.5px solid #333;
   text-align: left;
   font-size: 14px;
   cursor: pointer;
@@ -1488,8 +1489,6 @@ table td {
   gap: 20px;
 }
 
-
-
 /* this is the color style for the status in the listing */
 .listing-status,
 .assessment-status,
@@ -1503,6 +1502,10 @@ table td {
 .incomplete-status {
   font-weight: bolder;
   font-size: 15px;
+}
+.not-qualified-status,
+.incomplete-status {
+  color: #c93342;
 }
 .listing-status {
   color: #ffc107;
@@ -1522,9 +1525,7 @@ table td {
   color: black;
 }
 /* Apply to the whole row (tr) when it's canceled */
-.enrollment-cancelled,
-.not-qualified-status,
-.incomplete-status {
+.enrollment-cancelled {
   color: rgb(122, 5, 5);
 }
 
@@ -1844,8 +1845,6 @@ table td {
   padding: 40px 60px;
 }
 
-
-
 .confirmation-modal-buttons,
 .basic-modal-buttons {
   bottom: 0;
@@ -1988,6 +1987,7 @@ table td {
 .error-btn-cancel {
   background-color: #dc3545;
 }
+
 .btn-cancel:hover,
 .error-btn-cancel {
   background-color: #c93342;
@@ -2142,7 +2142,7 @@ input.guardian-address {
 }
 
 .student-form-group.stud-email.address-div {
-    width: 30% !important;
+  width: 30%;
 }
 
 .student-form-group .place-of-birth {
@@ -2303,7 +2303,8 @@ input.guardian-address {
   border-right: 1px solid transparent;
 }
 
-.payment-container {
+.payment-container,
+.payment-container-edit {
   background-color: #e6f4e6;
   padding: 15px;
   border-radius: 8px;
@@ -2527,6 +2528,8 @@ input[type="checkbox"] {
 .list-of-payments-modal h2,
 .fees-management-modal-content h2,
 .fees-management-edit-modal-content h2,
+.distributable-management-modal-content h2,
+.distributable-management-edit-modal-content h2,
 .add-payment-modal h2,
 .view-book-modal h2,
 .receipt-modal h2,
@@ -2621,6 +2624,8 @@ input[type="checkbox"] {
 .add-payment-modal-content label,
 .fees-management-modal-content label,
 .fees-management-edit-modal-content label,
+.distributable-management-modal-content label,
+.distributable-management-edit-modal-content label,
 .student-information-modal-content label,
 .student-information-container-content label,
 .student-information-edit-modal-content label,
@@ -2661,6 +2666,8 @@ input[type="checkbox"] {
 .change-password-modal-content input,
 .view-grades-modal-content input,
 .fees-management-modal-content input,
+.distributable-management-modal-content input,
+.distributable-management-edit-modal-content input,
 .view-book-modal-content input,
 .add-grade-level-assessment-modal-content input,
 .list-of-payments-modal-content input,
@@ -2681,6 +2688,8 @@ input[type="checkbox"] {
 .listing-table select,
 .assessment-table select,
 .fees-management-modal-content select,
+.distributable-management-modal-content select,
+.distributable-management-edit-modal-content select,
 .grade-level-edit-modal-content select,
 .section-edit-modal-content select,
 .subject-edit-modal-content select,
@@ -2720,7 +2729,9 @@ input[type="checkbox"] {
 #pageSizeSelector,
 #pageInput,
 #pageSizeSelectorStud,
-#pageInputStud {
+#pageInputStud,
+#pageInputUFee,
+#pageInputDistU {
   width: 50px;
   height: 35px;
   padding: 0 6px;
@@ -2742,6 +2753,8 @@ input[type="checkbox"] {
 .add-grade-level-assessment-modal,
 .school-year-modal,
 .fees-management-modal,
+.distributable-management-modal,
+.distributable-management-edit-modal,
 .fees-management-edit-modal,
 .student-information-modal,
 .add-account-type-modal,
@@ -2773,6 +2786,8 @@ input[type="checkbox"] {
 .school-year-modal.show,
 .fees-management-modal.show,
 .fees-management-edit-modal.show,
+.distributable-management-modal.show,
+.distributable-management-edit-modal.show,
 .add-grade-level-assessment-modal.show,
 .student-information-modal.show,
 .add-account-type-modal.show,
@@ -2814,6 +2829,7 @@ input[type="checkbox"] {
   width: 1140px;
   text-align: left;
   position: relative;
+  margin-bottom: 20px;
 }
 
 .student-information-edit-modal-content,
@@ -2846,9 +2862,10 @@ input[type="checkbox"] {
 }
 
 .fees-management-modal-content,
-.fees-management-edit-modal-content {
+.fees-management-edit-modal-content,
+.distributable-management-modal-content,
+.distributable-management-edit-modal-content {
   background: white !important;
-  padding: 30px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
@@ -2947,7 +2964,6 @@ input[type="checkbox"] {
 .subject-modal-content,
 .subject-edit-modal-content {
   background: white !important;
-  padding: 30px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
@@ -2983,7 +2999,6 @@ input[type="checkbox"] {
 .section-edit-modal-content,
 .add-account-type-modal-content {
   background: white !important;
-  padding: 30px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 600px;
@@ -3023,7 +3038,6 @@ input[type="checkbox"] {
 
 .grade-level-edit-modal-content {
   background: white !important;
-  padding: 30px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 700px;
@@ -3418,7 +3432,6 @@ input.address,
   margin-right: 0;
   width: fit-content;
   padding: 10px 40px;
-  background-color: #007bff;
 }
 
 .collector-name-container {
@@ -3602,7 +3615,8 @@ td[rowspan] {
   cursor: pointer;
 }
 
-.payment-container {
+.payment-container,
+.payment-container-edit {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
@@ -3648,12 +3662,6 @@ td[rowspan] {
   margin-top: 30px;
   padding: 0 35px;
 }
-
-.payment-container-edit {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
 .payment {
   display: flex;
   align-items: center;
@@ -3669,7 +3677,6 @@ td[rowspan] {
 }
 
 .payment label {
-  font-size: 14px;
   font-weight: bold;
   flex-grow: 1;
   text-align: left;
@@ -3826,6 +3833,8 @@ input.staff-id-report {
 .table-container {
   padding: 0px 0px 20px 0px;
   max-height: 400px;
+  overflow-y: auto;
+  overflow-x: auto;
   width: 100%;
   border: none;
 }
@@ -4020,7 +4029,7 @@ input.staff-id-report {
   font-size: 15px;
   display: none;
   position: fixed;
-  bottom: 20px; 
+  bottom: 20px;
   right: 20px;
   background: #218838;
   color: #ffffff;
@@ -4813,7 +4822,7 @@ select + p {
   padding: 0 20px;
   justify-content: end;
 }
-#inside-modal {
+.inside-modal {
   padding: 0;
 }
 
@@ -5076,19 +5085,54 @@ a {
 
 /* Mobile Styles */
 @media (max-width: 767px) {
-    .view-grades-modal-content {
-        min-height: 50dvh;
-        max-height: 70dvh;
+    .basic-modal-buttons.for-mobile {
+        display: flex;
+        justify-content: center !important;
     }
-    #successModal {
-        width: 100%;
-        padding: 20px;
-        bottom: 0;
-        right: 0;
-        font-size: 13.5px;
+    .container-two {
+        display: flex;
+        flex-direction: column;
     }
+    .column-main {
+        width: 100% !important;
+    }
+  .payment label {
+    font-size: 12px !important;
+  }
+  .full-width-row label {
+    font-size: 12px !important;
+  }
+  .student-modal-content {
+    width: 100%;
+    min-height: 85dvh;
+    max-height: 90dvh;
+  }
+
+  .view-grades-modal-content {
+    width: 100%;
+    min-height: 50dvh;
+    max-height: 70dvh;
+  }
+  .list-of-payments-modal-content {
+    width: 100%;
+    height: 65dvh !important;
+  }
+  .stud-email {
+    width: 100% !important;
+  }
+  #successModal {
+    width: 100%;
+    padding: 20px;
+    bottom: 0;
+    right: 0;
+    font-size: 13.5px;
+  }
   .modal-content {
     width: 75%;
+  }
+
+  .modal-content.admin-confirmation {
+    width: 90% !important;
   }
 
   .input-label-pair {
@@ -5204,8 +5248,6 @@ a {
     width: 30px;
     height: 30px;
   }
-
-  
 
   body.sidebar-active .hamburger {
     position: absolute;
@@ -5339,12 +5381,14 @@ a {
   .table-wrapper {
     width: 100%;
     min-height: 40dvh;
+    max-height: 50dvh;
     overflow-x: auto;
+    overflow-y: auto;
     padding: 0 15px;
   }
   .table-wrapper-modal {
     width: 100%;
-    min-height: 40dvh;
+    min-height: 30dvh;
     overflow-x: auto;
   }
   .status-container {
@@ -5358,7 +5402,9 @@ a {
   .text-link {
     gap: 20px;
     width: 100%;
-    overflow-y: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .text-link h4 {
@@ -5419,6 +5465,8 @@ a {
   .list-of-payments-modal h2,
   .fees-management-modal-content h2,
   .fees-management-edit-modal-content h2,
+  .distributable-management-modal-content h2,
+  .distributable-management-edit-modal-content h2,
   .add-payment-modal h2,
   .view-book-modal h2,
   .receipt-modal h2,
@@ -5449,6 +5497,7 @@ a {
   }
   .header .half-unique {
     width: 100%;
+    gap: 0;
   }
   .header .half-unique label {
     width: 50%;
@@ -5470,7 +5519,7 @@ a {
     gap: 10px;
     min-width: 50px;
   }
-  
+
   input.name,
   #studentFirstName,
   #studbirthdate,
@@ -5567,7 +5616,7 @@ a {
     justify-self: left;
   }
 
-  .student-form-group .place-of-birth {
+  .student-form-group .place-of-birth, .place-of-birth-report {
     min-width: 200px;
     width: 100%;
     max-width: 400px;
@@ -5584,26 +5633,75 @@ a {
 
   /* For all inputs inside any container */
   .student-information-modal-content input,
-  .address-div input {
+  .address-div input,
+  .student-information-container-content input {
     width: 100% !important;
     max-width: 400px;
     /* min-width: 200px; */
   }
 
-  .student-information-modal-content, .list-of-payments-modal-content {
+  #pageInputUFee,
+  #pageInputDistU {
+    width: 50px !important;
+  }
+
+  #disc-1 {
+    width: 20% !important;
+  }
+
+  .student-information-modal-content{
     width: 100%;
     min-height: 50dvh;
     max-height: 80dvh;
   }
 
-  .grade-level-modal-content, .add-grade-level-assessment-modal-content {
+  .student-information-container-content,
+  .staff-information-container-content {
+    width: 100%;
+    min-height: 50dvh;
+    max-height: 80dvh;
+  }
+
+  .grade-level-modal-content,
+  .add-grade-level-assessment-modal-content,
+  .school-year-modal-content,
+  .grade-level-edit-modal-content,
+  .subject-modal-content,
+  .subject-edit-modal-content,
+  .section-modal-content,
+  .section-edit-modal-content,
+  .fees-management-modal-content,
+  .fees-management-edit-modal-content,
+  .distributable-management-modal-content,
+  .distributable-management-edit-modal-content,
+  .scholarship-modal-content,
+  .scholarship-edit-modal-content {
     width: 80%;
   }
-  .add-grade-level-assessment-modal-content {
+
+  .distributable-management-modal-content,
+  .distributable-management-edit-modal-content {
+    min-height: 67dvh !important;
+    max-height: 69dvh !important;
+  }
+
+  .section-modal-content,
+  .section-edit-modal-content,
+  .scholarship-modal-content,
+  .scholarship-edit-modal-content {
+    min-height: 60dvh;
+    max-height: 65dvh;
+  }
+
+  .add-grade-level-assessment-modal-content,
+  .grade-level-edit-modal-content,
+  .subject-edit-modal-content,
+  .subject-modal-content {
     min-height: 45dvh !important;
     max-height: 50dvh !important;
   }
-  .grade-level-modal-content {
+  .grade-level-modal-content,
+  .school-year-modal-content {
     min-height: 35dvh !important;
     max-height: 40dvh !important;
   }
@@ -5635,7 +5733,10 @@ a {
   }
 
   .modal-buttons {
-    padding: 20px !important;
+    padding: 30px !important;
+  }
+  .modal-buttons.not-single {
+    justify-content: space-between !important;
   }
 
   #errorModal .modal-buttons {
@@ -5671,9 +5772,11 @@ a {
     margin-left: auto;
   }
 
-  .enrollment-buttons {
+  .enrollment-buttons,
+  .add-something-btn-container {
     display: none;
   }
+
   .menu-dropdown {
     width: auto;
   }

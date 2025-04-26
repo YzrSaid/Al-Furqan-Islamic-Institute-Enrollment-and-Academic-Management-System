@@ -921,17 +921,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         break;
       case "editSection":
-        // This case is for adding subject level
-        if (!validateForm("sectionEditForm")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
-          editSection();
-          closeConfirmationModal();
-        }
+        // This case is for editing subject level
+        if (
+            validateForm("sectionEditForm", "⚠️ Please fill in all required fields!")
+          ) {
+            if (await validateAdminPassword()) {
+              editSection();
+              closeConfirmationModal();
+            }
+          }
         break;
       case "deleteSection":
-        deleteSectionNow();
+        // This case is for editing subject level
+            if (await validateAdminPassword()) {
+              deleteSectionNow();
+              closeConfirmationModal();
+            }
         break;
       case "addSubject":
         // This case is for adding subject level
@@ -1274,7 +1279,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let modalId = this.getAttribute("data-close-modal");
       let modal = document.getElementById(modalId);
 
-      if (modalId != "errorModal") {
+      if (modalId != "errorModal" && modalId != "confirmationModal") {
         closeConfirmationModal();
         resetValidationErrors();
         clearForm();
@@ -2710,7 +2715,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let left = buttonLeft - popoverWidth + popoverLeftOffset;
     if (left < 0) {
       // Overflowing left, move to right of button
-      left = buttonLeft + button.offsetWidth + 5; // Add a little space
+      left = buttonLeft + button.offsetWidth - 100; // Add a little space
     }
 
     popover.style.top = `${top}px`;

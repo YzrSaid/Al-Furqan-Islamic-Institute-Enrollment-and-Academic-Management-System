@@ -38,29 +38,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   
     // Update breadcrumb on load
-    updateBreadcrumb(currentPath);
+    // updateBreadcrumb(currentPath);
   });
   
-  // New breadcrumb logic
-  function updateBreadcrumb(path) {
-    const breadcrumbContainer = document.querySelector(".text-link");
-    breadcrumbContainer.innerHTML = ''; // Clear previous breadcrumb
+  // breadcrumb logic
+//   function updateBreadcrumb(path) {
+//     const breadcrumbContainer = document.querySelector(".text-link");
+//     breadcrumbContainer.innerHTML = ''; // Clear previous breadcrumb
   
-    const breadcrumbItems = path.split('/').filter(item => item.length > 0);
+//     const breadcrumbItems = path.split('/').filter(item => item.length > 0);
   
-    if (breadcrumbItems.length === 0) return;
+//     if (breadcrumbItems.length === 0) return;
   
-    const capitalizedLastItem = breadcrumbItems[breadcrumbItems.length - 1].charAt(0).toUpperCase() +
-      breadcrumbItems[breadcrumbItems.length - 1].slice(1);
+//     const capitalizedLastItem = breadcrumbItems[breadcrumbItems.length - 1].charAt(0).toUpperCase() +
+//       breadcrumbItems[breadcrumbItems.length - 1].slice(1);
   
-    let breadcrumbHTML = `<h4>${capitalizedLastItem}</h4>`;
-    breadcrumbItems.forEach((item, index) => {
-      if (index !== 0) breadcrumbHTML += `<p>/</p>`;
-      breadcrumbHTML += `<p><a href="${path.substring(0, path.indexOf(item) + item.length)}">${item.charAt(0).toUpperCase() + item.slice(1)}</a></p>`;
-    });
+//     let breadcrumbHTML = `<h4>${capitalizedLastItem}</h4>`;
+//     breadcrumbItems.forEach((item, index) => {
+//       if (index !== 0) breadcrumbHTML += `<p>/</p>`;
+//       breadcrumbHTML += `<p><a href="${path.substring(0, path.indexOf(item) + item.length)}">${item.charAt(0).toUpperCase() + item.slice(1)}</a></p>`;
+//     });
   
-    breadcrumbContainer.innerHTML = breadcrumbHTML;
-  }
+//     breadcrumbContainer.innerHTML = breadcrumbHTML;
+//   }
   
   // Only attach click handlers to items with a valid path
   document.querySelectorAll('.sidebar-icons, .submenu-item').forEach(function (link) {
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (path && path !== "#") {
       link.addEventListener('click', function (event) {
         event.preventDefault();
-        updateBreadcrumb(path);
+        // updateBreadcrumb(path);
         window.location.href = path;
       });
     }

@@ -232,9 +232,7 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
-
 
                                 <div class="column2">
                                     <label>Place of Birth:</label>
@@ -245,7 +243,7 @@
                             </div>
                         </div>
 
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                        <div style="display: flex; align-content: center; justify-items: left;">
                             <h2>Additional Information</h2>
                         </div>
 
@@ -293,11 +291,11 @@
 
                             <label for="guardianAddress">Address:</label>
                             <input readonly type="text" class="guardian-address" id="guardianAddress">
-                        </div> <br>
+                        </div> 
 
 
                         <div class="transferee-section">
-                            <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <div style="display: flex; align-content: center; justify-items: left;">
                                 <h2>For Transferees Only</h2>
                             </div>
 
@@ -406,7 +404,7 @@
                 </div>
             </div>
             <!-- Add Payment button -->
-            <div class="modal-buttons" id="add-payment-btn">
+            <div class="modal-buttons not-single" id="add-payment-btn">
                 <button type="button" class="btn-confirm" data-open-modal="addPaymentModal">Add
                     Payment</button>
                 <button type="button" class="btn-cancel" data-close-modal="listOfPaymentsModal">Close</button>
@@ -520,7 +518,7 @@
                 <h1>Student Information</h1>
                 <form id="studentForm">
                     <div class="header">
-                        <h5>Personal Information</h5>
+                        <h2>Personal Information</h2>
                     </div>
 
                     <div class="student-form-group address-div fullName">
@@ -602,9 +600,11 @@
                             <input type="text" id="studbarangay" required placeholder="Barangay">
                             <input type="text" id="studcity" required placeholder="City">
                         </div>
-                    </div> <br> <br>
+                    </div> <br>
 
-                    <h5>Parent's/Guardian's Information</h5>
+                    <div style="display: flex; align-content: center; justify-items: left;">
+                        <h2>Parent's/Guardian's Information</h2>
+                    </div>
 
                     <h6>Father's Information</h6>
                     <div class="student-form-group address-div">
@@ -639,11 +639,11 @@
 
                         <label for="studguardianAddress">Address:</label>
                         <input required type="text" class="guardian-address" id="studguardianAddress">
-                    </div> <br>
+                    </div>
 
                     <!-- Transferee Fields -->
-                    <div class="transferee-section" id="transfereeFields">
-                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                    <div class="transferee-section" id="transfereeFields"> <br>
+                        <div style="display: flex; align-content: center; justify-items: left;">
                             <h2>For Transferees Only</h2>
                         </div>
 
@@ -666,7 +666,7 @@
                             <div class="student-form-group">
                                 <label for="studmadrasaAddress">Madrasa Address:</label>
                                 <input type="text" id="studmadrasaAddress">
-                            </div> <br>
+                            </div> 
                         </div>
                     </div>
                 </form>
@@ -679,7 +679,6 @@
                 <button type="button" class="btn-cancel" id="cancelStudent"
                     data-close-modal="newStudentModal">Cancel</button>
             </div>
-
         </div>
     </div>
 

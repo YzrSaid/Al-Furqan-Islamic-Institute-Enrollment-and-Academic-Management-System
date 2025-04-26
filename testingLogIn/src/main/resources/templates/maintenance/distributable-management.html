@@ -16,6 +16,9 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link">
                 <h4>Distributable Management</h4>
                 <a href="/home">Main</a>
@@ -29,14 +32,33 @@
                     <div class="search-container">
                         <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
                         <button type="button" class="search-btn">Search</button>
-                        
+
                     </div>
+
+                      <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
+                      <div class="menu-container">
+                        <button type="button" class="menu-btn" aria-label="More options">
+                            <span class="menu-icon">⋮</span>
+                        </button>
+                        <div class="menu-dropdown">
+                            <button type="button" class="menu-item" data-open-modal="distributableManagementModal"
+                                title="Add New Distributable">Add New Distributable</button>
+                            <div class="menu-sort-container">
+                                <select title="sort" name="sort" onchange="goList(1)" id="sort-select"
+                                    class="sort-select">
+                                    <option value="All" selected>All</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Add Fees Management Button -->
                     <div class="add-something-btn-container">
                         <button type="button" class="btn-confirm" id="addAFeeButton"
-                            data-open-modal="distributableManagementModal" title="Click to Add New Distributable">Add New Distributable</button>
+                            data-open-modal="distributableManagementModal" title="Click to Add New Distributable">Add
+                            New Distributable</button>
                     </div>
-                    </div>
+                </div>
                 <div class="sort-container">
                     <select name="sort" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
@@ -49,32 +71,33 @@
         </div>
 
         <!-- Table -->
-         <div class="table-wrapper">
-        <table id="lamesa" class="distributable-table main-table">
-            <thead>
-                <tr>
-                    <th>Item Name</th>
-                    <th>Grade Level</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table> <br> <br>
+        <div class="table-wrapper">
+            <table id="lamesa" class="distributable-table main-table">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Grade Level</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> <br> <br>
         </div>
 
-          <!-- Modal for confirmation -->
-          <div id="confirmationModal" class="modal">
-            <div class="modal-content scroll-lock">
+        <!-- Modal for confirmation -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content admin-confirmation scroll-lock">
                 <p id="modalText"></p>
-                <p id="security-message" class="hidden">To continue, enter the admin password before proceeding.</p>
+                <p id="security-message" class="hidden">To continue, enter the admin password.</p>
 
                 <div class="input-group hidden" id="admin-pass-form">
-                  <label for="adminPassword">Admin Password:</label>
-                  <input type="password" autocomplete="new-password" id="adminPassword" placeholder="Enter admin password" />
+                    <label for="adminPassword">Admin Password:</label>
+                    <input type="password" autocomplete="new-password" id="adminPassword"
+                        placeholder="Enter admin password" />
                 </div>
 
-                <div class="modal-buttons">
+                <div class="modal-buttons not-single">
                     <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
                     <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
@@ -99,71 +122,76 @@
         </div>
 
         <!-- Modal for adding fees -->
-        <div id="distributableManagementModal" class="fees-management-modal modal">
-            <div class="fees-management-modal-content scroll-lock">
-                <h2>Add New Item</h2>
-                <form method="post" action="" id="feesManagementForm">
-                    <div class="payment-name-row">
-                        <label for="paymentName">Item Name:</label>
-                    </div>
-
-                    <!-- Input field below -->
-                    <input type="text" id="paymentName">
-                    <br><br>
-
-                    <h6>Grade Levels Required by this Payment:</h6>
-                    <div class="payment-container">
-                        <!-- Grade level checkboxes or inputs go here -->
-                    </div> <br>
-
-                    <div class="full-width-row">
-                        <!-- Checkbox beside the label -->
-                        <div>
-                            <label for="label">Distribute this item to current semester:</label><input type="checkbox" id="applyThisSem">
+        <div id="distributableManagementModal" class="distributable-management-modal modal">
+            <div class="distributable-management-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h2>Add New Item</h2>
+                    <form method="post" action="" id="feesManagementForm">
+                        <div class="payment-name-row">
+                            <label for="paymentName">Item Name:</label>
                         </div>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addDistributable"
-                                data-message="Are you sure you want to save this Fee?" id="confirmFee"
-                                data-open-modal="confirmationModal">
-                            Confirm
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="distributableManagementModal">Cancel</button>
-                    </div>
-                </form>
-
+    
+                        <!-- Input field below -->
+                        <input type="text" id="paymentName">
+                        <br><br>
+    
+                        <label><strong>Grade Levels Required by this Item:</strong></label>
+                        <div class="payment-container">
+                            <!-- Grade level checkboxes or inputs go here -->
+                        </div> <br>
+    
+                        <div class="full-width-row">
+                            <!-- Checkbox beside the label -->
+                            <div>
+                                <label for="label">Distribute this item to current semester:</label><input type="checkbox"
+                                    id="applyThisSem">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-buttons not-single">
+                    <button type="button" class="btn-confirm" data-action="addDistributable"
+                        data-message="Are you sure you want to save this Fee?" id="confirmFee"
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                    <button type="button" class="btn-cancel"
+                        data-close-modal="distributableManagementModal">Cancel</button>
+                </div>
             </div>
         </div>
         <!-- Modal for editing fees -->
-        <div id="distributableManagementEditModal" class="fees-management-edit-modal modal">
-            <div class="fees-management-edit-modal-content scroll-lock">
-                <h2>Fee Information</h2>
-                <form method="post" action="" id="feesManagementForm">
-                    <label for="paymentName">Payment Name:</label>
-                    <input type="text" id="paymentNameEdit">
-                    <br><br>
-
-                    <h6>Grade Levels Required by this Payment:</h6>
-
-                    <!-- This container will be used for editing payments -->
-                    <div class="payment-container-edit">
-                        <!-- Dynamically populated checkboxes will go here -->
-                    </div>
-                    <div class="full-width-row">
-                        <!-- Checkbox beside the label -->
-                        <div>
-                            Distribute this item to current semester: <input type="checkbox" id="applyThisSemEdit">
+        <div id="distributableManagementEditModal" class="distributable-management-edit-modal modal">
+            <div class="distributable-management-edit-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h2>Fee Information</h2>
+                    <form method="post" action="" id="feesManagementForm">
+                        <label for="paymentName">Payment Name:</label>
+                        <input type="text" id="paymentNameEdit">
+                        <br><br>
+    
+                        <label><strong>Grade Levels Required by this Payment</strong></label>
+    
+                        <!-- This container will be used for editing payments -->
+                        <div class="payment-container-edit">
+                            <!-- Dynamically populated checkboxes will go here -->
+                        </div> <br>
+                        <div class="full-width-row">
+                            <!-- Checkbox beside the label -->
+                            <div>
+                                <label for="label">Distribute this item to current semester:</label><input type="checkbox"
+                                    id="applyThisSem">
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="editFeeButton" data-require-password="true" data-action="editDistributable"
-                            data-message="Are you sure you want to update this fee?">Edit</button>
-                        <button type="button" class="btn-cancel"
-                            data-close-modal="distributableManagementEditModal">Cancel</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                <div class="modal-buttons not-single">
+                    <button type="button" class="btn-confirm" id="editFeeButton" data-require-password="true"
+                        data-action="editDistributable"
+                        data-message="Are you sure you want to update this fee?">Edit</button>
+                    <button type="button" class="btn-cancel"
+                        data-close-modal="distributableManagementEditModal">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
@@ -217,7 +245,7 @@
                 populateTable(data);
             })
             .catch(error => {
-               // console.error("Error fetching payments:", error);
+                // console.error("Error fetching payments:", error);
             });
     }
     function populateTable(distributables) {
@@ -272,10 +300,10 @@
 
         const requestData = {
             itemName: paymentName,
-            currentlyActive:document.getElementById("applyThisSem").checked,
+            currentlyActive: document.getElementById("applyThisSem").checked,
             gradeLevelIds: selectedGradeLevels
         };
-       //console.log(requestData);
+        //console.log(requestData);
         try {
             const response = await fetch("/distributable/add", {
                 method: "POST",
@@ -309,29 +337,29 @@
             itemId: paymentId,
             itemName: paymentName,
             gradeLevelIds: selectedGradeLevels,
-            currentlyActive : isCurrentlyActiveChecked
+            currentlyActive: isCurrentlyActiveChecked
         };
-       // console.log(updatedFeeData);
-       fetch("/distributable/update", {
+        // console.log(updatedFeeData);
+        fetch("/distributable/update", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedFeeData),
         })
-        .then(response => {
-            if (!response.ok) {
-                // Parse error message from server (assuming it returns text/JSON)
-                return response.text().then(errorMessage => {
-                    throw new Error(errorMessage || "Distributable update failed");
-                });
-            }
-            return response.text(); // Only parse response if successful
-        })
-        .then(data => {
-            showSuccessModal(data); // Only runs for successful responses
-        })
-        .catch(error => {
-            showErrorModal(error.message || "❌ An error occurred. Please try later.");
-        });
+            .then(response => {
+                if (!response.ok) {
+                    // Parse error message from server (assuming it returns text/JSON)
+                    return response.text().then(errorMessage => {
+                        throw new Error(errorMessage || "Distributable update failed");
+                    });
+                }
+                return response.text(); // Only parse response if successful
+            })
+            .then(data => {
+                showSuccessModal(data); // Only runs for successful responses
+            })
+            .catch(error => {
+                showErrorModal(error.message || "❌ An error occurred. Please try later.");
+            });
     }
 
     let selectedPaymentName;
@@ -351,19 +379,19 @@
                 "Content-Type": "application/json",
             },
         })
-        .then(response => {
-            if (response.ok) {
-                showSuccessModal("✅ Success: Distributable item record has been deleted successfully!");
-            }else if (response.not_found) {
-                showErrorModal(`❌ Distributable record not found`);
-            }else{
-                showErrorModal(`❌ Server conflict`);
-            }
-        })
-        .catch(error => {
-            //console.error(error);
-            showErrorModal("❌ An error occurred while deleting the payment. Please try again later.");
-        });
+            .then(response => {
+                if (response.ok) {
+                    showSuccessModal("✅ Success: Distributable item record has been deleted successfully!");
+                } else if (response.not_found) {
+                    showErrorModal(`❌ Distributable record not found`);
+                } else {
+                    showErrorModal(`❌ Server conflict`);
+                }
+            })
+            .catch(error => {
+                //console.error(error);
+                showErrorModal("❌ An error occurred while deleting the payment. Please try again later.");
+            });
     }
 
 

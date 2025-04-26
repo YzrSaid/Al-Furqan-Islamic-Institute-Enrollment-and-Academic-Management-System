@@ -17,6 +17,9 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link">
                 <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
                 <p>Main</p>
@@ -32,46 +35,48 @@
                 <h4 id="adviser">Sir Jisun</h4>
             </div>
 
-
-            <table id="paragas-eatery-table" class="sched-table main-table">
-                <thead>
-                    <tr>
-                        <th>Subject</th>
-                        <th>Teacher</th>
-                        <th>Day</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="scheduleBody">
-                    <tr class="sched-row hidden-row">
-                        <td>
-                            <select name="subject">
-                                <option value="" disabled selected>Choose a subject</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="teacher">
-                                <option value="" disabled selected>Choose a teacher</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="days">
-                                <option value="" disabled selected>Choose a day</option>
-                                <option value="Saturday">Saturday</option>
-                                <option value="Sunday">Sunday</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="time">
-                        </td>
-                        <td>
-                            <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
-                        </td>
-                    </tr>
-                </tbody>
-            </table> <br>
+            <div class="table-wrapper-modal">
+                <table id="paragas-eatery-table" class="sched-table main-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Teacher</th>
+                            <th>Day</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody">
+                        <tr class="sched-row hidden-row">
+                            <td>
+                                <select name="subject">
+                                    <option value="" disabled selected>Choose a subject</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="teacher">
+                                    <option value="" disabled selected>Choose a teacher</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="days">
+                                    <option value="" disabled selected>Choose a day</option>
+                                    <option value="Saturday">Saturday</option>
+                                    <option value="Sunday">Sunday</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="time">
+                            </td>
+                            <td>
+                                <img class="delete-row" th:src="@{/images/icons/cross.png}" alt="">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table> <br>
+            </div>
+          
         </div>
 
         <div class="btn-container">

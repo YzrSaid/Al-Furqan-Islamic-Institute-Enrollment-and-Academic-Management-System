@@ -16,6 +16,9 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link">
                 <h4>Subjects</h4>
                 <a href="/home">Main</a>
@@ -29,7 +32,7 @@
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
+                        <button type="button" class="search-btn">Search</button>
                     </div>
                     
                 </div>

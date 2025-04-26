@@ -12,9 +12,12 @@
 
     <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
-        <!-- Topbar -->
         <div class="sticky-header">
+            <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+             <!-- Overlay -->
+             <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
             <div class="text-link" id="breadcrumb-container">
                 <h4>Assessment</h4>

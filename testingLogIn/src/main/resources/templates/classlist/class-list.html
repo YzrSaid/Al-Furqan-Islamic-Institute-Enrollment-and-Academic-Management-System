@@ -16,11 +16,14 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link" id="breadcrumb-container">
                 <h4 id="grade-level-and-section-name">Class List</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/class-list" title="You're currently in this page.">Class List - Class List</a>
+                <a href="/class-list" title="You're currently in this page.">Class List</a>
             </div>
 
             <div class="search-div">

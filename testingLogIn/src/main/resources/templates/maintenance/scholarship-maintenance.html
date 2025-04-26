@@ -17,6 +17,9 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link" id="breadcrumb-container">
                 <h4>Maintenance</h4>
                 <a href="/home">Main</a>
@@ -30,6 +33,26 @@
                     <div class="search-container">
                         <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
                         <button type="button" class="search-btn">Search</button>
+
+                        <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
+                        <div class="menu-container">
+                            <button type="button" class="menu-btn" aria-label="More options">
+                                <span class="menu-icon">⋮</span>
+                            </button>
+                            <div class="menu-dropdown">
+                                <button type="button" class="menu-item" data-open-modal="scholarshipModal"
+                                    title="Add Scholarship Type">Add Scholarship Type</button>
+                                <a href="/reports/scholarship"><button type="button" class="menu-item"
+                                        title="Click to View Reports">View Reports</button></a>
+                                <div class="menu-sort-container">
+                                    <select title="sort" name="sort" onchange="goList(1)" id="sort-select"
+                                        class="sort-select">
+                                        <option value="All" selected>All</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Add scholarship discount Button -->
                         <div class="add-something-btn-container">
                             <button type="button" class="btn-confirm" id="openScholarshipModal"
@@ -74,10 +97,9 @@
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content scroll-lock">
+            <div class="modal-content admin-confirmation scroll-lock">
                 <p id="modalText"></p>
-                <p id="security-message" class="hidden">To continue, enter the admin password before
-                    proceeding.</p>
+                <p id="security-message" class="hidden">To continue, enter the admin password.</p>
 
                 <div class="input-group hidden" id="admin-pass-form">
                     <label for="adminPassword">Admin Password:</label>
@@ -85,12 +107,13 @@
                         placeholder="Enter admin password" />
                 </div>
 
-                <div class="modal-buttons">
+                <div class="modal-buttons not-single">
                     <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
                     <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
             </div>
         </div>
+
 
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
@@ -138,11 +161,9 @@
                                     name="amountDiscount">
                             </div>
                         </div> <br>
-
-
                     </form>
                 </div>
-                <div class="modal-buttons">
+                <div class="modal-buttons not-single">
                     <button type="button" class="btn-confirm" data-action="addShcholarshipType"
                         data-message="Are you sure you want to add this scholarship type/name?"
                         data-open-modal="confirmationModal">
@@ -157,40 +178,40 @@
         <!-- Modal for editing the scholarship type -->
         <div id="scholarshipEditModal" class="scholarship-edit-modal modal">
             <div class="scholarship-edit-modal-content scroll-lock">
-
-                <h2>Scholarship Type Information</h2>
-                <form method="" action="" id="scholarshipEditForm">
-                    <label for="scholarshipNameEdit">Scholarship Type/Name:</label>
-                    <input type="text" id="scholarshipNameEdit" name="scholarshipNameEdit" readonly required>
-                    <br><br>
-
-                    <label for="scholarshipAmountEdit">Amount</label>
-                    <input type="number" id="scholarshipAmountEdit" required>
-
-                    <div class="full-width-row">
-                        <!-- Radio button for fixed amount -->
-                        <div class="radio-label">
-                            Fixed Amount: <input type="radio" value="fixedamount" id="fixedAmountDiscount"
-                                name="amountDiscount">
+                <div class="modal-body">
+                    <h2>Scholarship Type Information</h2>
+                    <form method="" action="" id="scholarshipEditForm">
+                        <label for="scholarshipNameEdit">Scholarship Type/Name:</label>
+                        <input type="text" id="scholarshipNameEdit" name="scholarshipNameEdit" readonly required>
+                        <br><br>
+    
+                        <label for="scholarshipAmountEdit">Amount</label>
+                        <input type="number" id="scholarshipAmountEdit" required>
+    
+                        <div class="full-width-row">
+                            <!-- Radio button for fixed amount -->
+                            <div class="radio-label">
+                                Fixed Amount: <input type="radio" value="fixedamount" id="fixedAmountDiscount"
+                                    name="amountDiscount">
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="full-width-row">
-                        <!-- Radio button for fixed amount -->
-                        <div class="radio-label">
-                            Percentage: <input type="radio" value="percentage" id="percentageAmountDiscount"
-                                name="amountDiscount">
-                        </div>
-                    </div> <br>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-require-password="true"
-                            data-action="editScholarshipType"
-                            data-message="Are you sure you want to update this scholarship information?"
-                            id="confirmGradeLevelEdit">Edit</button>
-                        <button type="button" class="btn-cancel" data-close-modal="scholarshipEditModal">Close</button>
-                    </div>
-                </form>
+    
+                        <div class="full-width-row">
+                            <!-- Radio button for fixed amount -->
+                            <div class="radio-label">
+                                Percentage: <input type="radio" value="percentage" id="percentageAmountDiscount"
+                                    name="amountDiscount">
+                            </div>
+                        </div> <br>
+                    </form>
+                </div>
+                <div class="modal-buttons not-single">
+                    <button type="button" class="btn-confirm" data-require-password="true"
+                        data-action="editScholarshipType"
+                        data-message="Are you sure you want to update this scholarship information?"
+                        id="confirmGradeLevelEdit">Edit</button>
+                    <button type="button" class="btn-cancel" data-close-modal="scholarshipEditModal">Close</button>
+                </div>
             </div>
         </div>
 

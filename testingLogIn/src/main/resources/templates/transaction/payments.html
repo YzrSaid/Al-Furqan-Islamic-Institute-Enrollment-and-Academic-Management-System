@@ -16,6 +16,10 @@
         <div class="sticky-header">
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link">
                 <h4>Payment Transactions</h4>
                 <a href="/home">Main</a>
@@ -31,12 +35,43 @@
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
                         <button type="button" onclick="getRecords(1)" class="search-btn">Search</button>
 
+                        <!-- Three-dot menu (shown on mobile only) -->
+                        <div class="menu-container mobile-only">
+                            <button type="button" class="menu-btn" aria-label="More options">
+                                <span class="menu-icon">⋮</span>
+                            </button>
+                            <div class="menu-dropdown">
+                                <!-- Add Payment -->
+                                <button type="button" class="menu-item" onclick="viewStudents(1)"
+                                    data-open-modal="viewStudentListModal">
+                                    Add Payment
+                                </button>
+
+                                <!-- Print Options as Select -->
+                                <div class="menu-sort-container">
+                                    <select name="print" id="print-select-mobile" class="sort-select"
+                                        onchange="handlePrintOption(this.value)">
+                                        <option disabled selected>Print Options</option>
+                                        <option value="all">All Transactions</option>
+                                        <option value="voided">Voided Transactions</option>
+                                    </select>
+                                </div>
+
+                                <!-- Sort Dropdown -->
+                                <div class="menu-sort-container">
+                                    <select name="sort" onchange="getRecords(1)" id="sort-select-mobile"
+                                        class="sort-select">
+                                        <option value="Transaction" selected>Transaction</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div class="add-something-btn-container add-something-dropdown">
                             <button type="button" class="btn-confirm" onclick="viewStudents(1)"
                                 id="openViewStudentListModal" data-open-modal="viewStudentListModal">Add
                                 Payment</button>
-
-
                             <button type="button" class="add-something-btn">
                                 <span style="display:none;">Print</span>
                                 <i class="fas fa-print"></i>
@@ -212,7 +247,7 @@
                     </table>
                     <!-- Pagination -->
                     <div class="pagination-container">
-                        <div class="pagination-controls" id="inside-modal">
+                        <div class="pagination-controls inside-modal">
                             <span id="itemRangeStud">1–10 of 37</span>
                             <select id="pageSizeSelectorStud">
                                 <option value="10" selected>10</option>
@@ -1051,6 +1086,14 @@
                 paymentItem.appendChild(label);
                 paymentContainer.appendChild(paymentItem);
             });
+        }
+
+        function handlePrintOption(value) {
+            if (value === "all") {
+                document.querySelector('[data-open-modal="allResourcesPrintModal"]').click();
+            } else if (value === "voided") {
+                document.querySelector('[data-open-modal="claimedResourcesPrintModal"]').click();
+            }
         }
     </script>
 </body>

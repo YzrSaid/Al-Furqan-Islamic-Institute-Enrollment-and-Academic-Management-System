@@ -16,14 +16,10 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-            <div class="text-link" id="breadcrumb-container">
-                <div class="back-btn">
-                    <button type="button" onclick="history.back()" title="Back">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                </div>
-              
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
+            <div class="text-link" id="breadcrumb-container">
                 <h4 id="grade-level-heading"></h4>
                 <a href="/home">Main</a>
                 <p>/</p>
@@ -35,13 +31,31 @@
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
                 <div class="left-section">
+                    <div class="back-btn">
+                        <button type="button" onclick="history.back()" title="Back">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                  
                     <div class="search-container">
-                        <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
-                        <!-- add school year button -->
-                        <div class="add-something-btn-container">
-                            <button type="button" class="btn-confirm" id="openSubjectModal" data-open-modal="subjectModal">Add Subject</button>
+                        <input type="text" autocomplete="new-password"  placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+                    </div>
+
+                     <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
+                     <div class="menu-container">
+                        <button type="button" class="menu-btn" aria-label="More options">
+                            <span class="menu-icon">⋮</span>
+                        </button>
+                        <div class="menu-dropdown">
+                            <button type="button" class="menu-item" data-open-modal="subjectModal"
+                                title="Add New Student">Add Subject</button>
                         </div>
+                    </div>
+
+                     <!-- add school year button -->
+                     <div class="add-something-btn-container">
+                        <button type="button" class="btn-confirm" id="openSubjectModal" data-open-modal="subjectModal">Add Subject</button>
                     </div>
 
                 </div>
@@ -73,16 +87,16 @@
 
           <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content scroll-lock">
+            <div class="modal-content admin-confirmation scroll-lock">
                 <p id="modalText"></p>
-                <p id="security-message" class="hidden">To continue, enter the admin password before proceeding.</p>
+                <p id="security-message" class="hidden">To continue, enter the admin password.</p>
 
                 <div class="input-group hidden" id="admin-pass-form">
                   <label for="adminPassword">Admin Password:</label>
                   <input type="password" autocomplete="new-password" id="adminPassword" placeholder="Enter admin password" />
                 </div>
 
-                <div class="modal-buttons">
+                <div class="modal-buttons not-single">
                     <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
                     <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
@@ -112,66 +126,69 @@
         <!-- Modal for adding subject -->
         <div id="subjectModal" class="subject-modal modal">
             <div class="subject-modal-content scroll-lock">
-
-                <h2>Add New Subject</h2>
-                <form id="subjectForm">
-                    <div>
-                        <label for="subject-name">Subject Name:</label>
-                        <input type="text" id="subject-name" required>
-
-                    </div>
-                    <div>
-                        <label for="assigned-grade-level">Grade Level:</label>
-                        <input id="assigned-grade-level" type="text" readonly>
-                    </div>
-                    <div class="full-width-row">
+                <div class="modal-body">
+                    <h2>Add New Subject</h2>
+                    <form id="subjectForm">
                         <div>
-                            <label for="label">Apply this subject to current semester:</label> <input type="checkbox" id="applyThisSem">
+                            <label for="subject-name">Subject Name:</label>
+                            <input type="text" id="subject-name" required>
+    
                         </div>
-                    </div>
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addSubject"
-                            data-message="Are you sure you want to add this subject?"
-                            data-require-password="true" id="confirmSubject"
-                            data-open-modal="confirmationModal">
-                            Confirm
-                        </button>
-                        <button type="button" data-close-modal="subjectModal" class="btn-cancel">Cancel</button>
-                    </div>
-                </form>
+                        <div>
+                            <label for="assigned-grade-level">Grade Level:</label>
+                            <input id="assigned-grade-level" type="text" readonly>
+                        </div>
+                        <div class="full-width-row">
+                            <div>
+                                <label for="label">Apply this subject to current semester:</label> <input type="checkbox" id="applyThisSem">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-buttons not-single">
+                    <button type="button" class="btn-confirm" data-action="addSubject"
+                        data-message="Are you sure you want to add this subject?"
+                        data-require-password="true" id="confirmSubject"
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                    <button type="button" data-close-modal="subjectModal" class="btn-cancel">Cancel</button>
+                </div>
             </div>
         </div>
 
         <!-- Modal for editing a subject -->
         <div id="subjectEditModal" class="subject-edit-modal modal">
             <div class="subject-edit-modal-content scroll-lock">
-
-                <h2>Subject Information</h2>
-                <form id="subjectEditForm">
-                    <div>
-                        <label for="subject-name">Subject Name:</label>
-                        <input type="text" id="subject-name-edit" required>
-
-                    </div>
-                    <div>
-                        <label for="assigned-grade-level">Grade Level:</label>
-                        <select name="assigned-grade-level" id="assigned-grade-level-edit">
-                            <option value="" disabled selected>Select grade level</option>
-                        </select>
-                    </div>
-                    <div class="full-width-row">
+                <div class="modal-body">
+                    <h2>Subject Information</h2>
+                    <form id="subjectEditForm">
                         <div>
-                            Currently Active: <input type="checkbox" id="applyThisSemEdit" readonly>
+                            <label for="subject-name">Subject Name:</label>
+                            <input type="text" id="subject-name-edit" required>
+    
                         </div>
-                    </div>
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-require-password="true"  data-action="editSubject"
-                            data-message="Are you sure you want to update this subject?" id="confirmSubjectEdit">
-                            Edit
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="subjectEditModal">Close</button>
-                    </div>
-                </form>
+                        <div>
+                            <label for="assigned-grade-level">Grade Level:</label>
+                            <select name="assigned-grade-level" id="assigned-grade-level-edit">
+                                <option value="" disabled selected>Select grade level</option>
+                            </select>
+                        </div>
+                        <div class="full-width-row">
+                            <div>
+                                <label for="label">Currently Active:</label> <input type="checkbox" id="applyThisSemEdit" readonly>
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+                <div class="modal-buttons not-single">
+                    <button type="button" class="btn-confirm" data-require-password="true"  data-action="editSubject"
+                        data-message="Are you sure you want to update this subject?" id="confirmSubjectEdit">
+                        Edit
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="subjectEditModal">Close</button>
+                </div>
             </div>
         </div>
     </div>

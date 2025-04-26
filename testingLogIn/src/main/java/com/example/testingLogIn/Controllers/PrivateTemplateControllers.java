@@ -93,9 +93,9 @@ public class PrivateTemplateControllers {
 
     // these are for transaction pages
 
-    @GetMapping("/transaction/tuition")
-    public String getTuition() {
-        return "/transaction/tuition";
+    @GetMapping("/transaction/payments")
+    public String getPayments() {
+        return "/transaction/payments";
     }
 
     @GetMapping("/transaction/academic-resources")

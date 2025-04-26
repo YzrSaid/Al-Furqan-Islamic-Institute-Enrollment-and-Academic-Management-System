@@ -16,6 +16,9 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link" id="breadcrumb-container">
                 <h4>Student Reports</h4>
                 <a href="/home">Main</a>
@@ -82,7 +85,7 @@
                         </tbody>
                     </table>
                     <div class="pagination-container">
-                        <div class="pagination-controls">
+                        <div class="pagination-controls inside-modal">
                             <span id="itemRangeDistC">1–10 of 37</span>
                             <button type="button" id="prevPageDistC">«</button>
                             <input type="number" id="pageInputDistC" min="1" value="1">
@@ -133,7 +136,7 @@
                     </table>
                     <!-- Pagination -->
                     <div class="pagination-container">
-                        <div class="pagination-controls">
+                        <div class="pagination-controls inside-modal">
                             <span id="itemRangePFee">1–10 of 37</span>
                             <button type="button" id="prevPagePFee">«</button>
                             <input type="number" id="pageInputPFee" min="1" value="1">
@@ -287,16 +290,20 @@
                             <div class="row">
                                 <div class="column1">
                                     <div>
-                                        <label for="name-edit">Name</label>
-                                        <div class="student-form-group half">
-                                            <input name="firstName" type="text" required class="name" id="firstNameEdit">
-                                            <input name="middleName" type="text" required class="name" id="middleNameEdit">
-                                            <input name="lastName" type="text" required class="name" id="lastNameEdit">
-                                        </div>
-                                        <div class="small-text">
-                                            <p>First</p>
-                                            <p>Middle</p>
-                                            <p>Last</p>
+                                        <label for="name">Name</label>
+                                        <div class="student-form-group">
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="firstNameEdit">
+                                                <p class="small-text first-name-p">First</p>
+                                            </div>
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="middleNameEdit">
+                                                <p class="small-text middle-name-p">Middle</p>
+                                            </div>
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="lastNameEdit">
+                                                <p class="small-text last-name-p">Last</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -437,8 +444,9 @@
                             <label for="student-id">Student ID: </label>
                             <input readonly type="text" class="student-id-report" id="student-id">
                         </div> <br>
+                        
 
-                        <div class="checkbox-container other-info-container">
+                        <div class="checkbox-container">
                             <div class="checkbox">
                                 <label for="isScholar">Scholar:</label>
                                 <h6 id="isScholar">Yes</h6>
@@ -497,21 +505,25 @@
                             <div class="column1">
                                 <div>
                                     <label for="name">Name</label>
-                                    <div class="student-form-group half">
-                                        <input readonly type="text" class="name" id="firstName">
-                                        <input readonly type="text" class="name" id="middleName">
-                                        <input readonly type="text" class="name" id="lastName">
-                                    </div>
-                                    <div class="small-text">
-                                        <p>First</p>
-                                        <p>Middle</p>
-                                        <p>Last</p>
+                                    <div class="student-form-group">
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="firstName">
+                                            <p class="small-text first-name-p">First</p>
+                                        </div>
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="middleName">
+                                            <p class="small-text middle-name-p">Middle</p>
+                                        </div>
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="lastName">
+                                            <p class="small-text last-name-p">Last</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="column2">
                                 <!-- Gender, BDate, and Scholar -->
-                                <div class="student-form-group half-stud-info-small">
+                                <div class="student-form-group">
                                     <label for="gender">Gender:</label>
                                     <input readonly type="text" class="gender" id="gender">
 
@@ -521,16 +533,18 @@
                             </div>
 
                             <div class="column1">
-                                <div class="student-form-group">
-                                    <div>
-                                        <label for="address">Address:</label>
-                                        <div class="student-form-group half-unique">
-                                            <input readonly type="text" class="address" id="street" required
-                                                placeholder="Street">
-                                            <input readonly type="text" class="address" id="barangay" required
-                                                placeholder="Barangay">
-                                            <input readonly type="text" class="address" id="city" required
-                                                placeholder="City">
+                                <div>
+                                    <div class="student-form-group">
+                                        <div>
+                                            <label for="address">Address:</label>
+                                            <div class="student-form-group address-div half-unique">
+                                                <input readonly type="text" class="address" id="street" required
+                                                    placeholder="Street">
+                                                <input readonly type="text" class="address" id="barangay" required
+                                                    placeholder="Barangay">
+                                                <input readonly type="text" class="address" id="city" required
+                                                    placeholder="City">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -618,18 +632,18 @@
                         </div> <br>
                     </div>
 
-
-                    <div class="report-header">
+                    <!-- <div class="report-header">
                         <div class="report-header-item">
                             <h2>Balance Information</h2>
                         </div>
                         <div class="report-header-item">
                             <h2>Resources Distribution</h2>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="container-two">
                         <div class="column-main">
+                            <h2>Balance Information</h2>
                             <p>Remaining Balance</p>
                             <div class="table-container">
                                 <table class="mini-table" id="payment-mini-table">
@@ -648,7 +662,7 @@
 
                                 <!-- Pagination -->
                                 <div class="pagination-container">
-                                    <div class="pagination-controls">
+                                    <div class="pagination-controls inside-modal">
                                         <span id="itemRangeUFee">1–10 of 37</span>
                                         <button type="button" id="prevPageUFee">«</button>
                                         <input type="number" id="pageInputUFee" min="1" value="1">
@@ -663,11 +677,12 @@
                                 <h6 id="total-balance">P0</h6>
                                 <button type="button" onclick="fetchAllTimeFees()" class="btn-confirm" data-open-modal="viewPastTransactionsModal"
                                     id="transaction-record-btn">View Fully Paid</button>
-                            </div>
+                            </div> <br>
 
                         </div>
 
                         <div class="column-main">
+                            <h2>Resources Distribution</h2>
                             <p>Unclaimed Resources</p>
                             <div class="table-container">
                                 <table class="mini-table" id="distribution-mini-table">
@@ -680,13 +695,23 @@
                                     <tbody>
                                     </tbody>
                                 </table>
+                                <!-- Pagination -->
+                                <div class="pagination-container">
+                                    <div class="pagination-controls inside-modal">
+                                        <span id="itemRangeDistU">1–10 of 37</span>
+                                        <button type="button" id="prevPageDistU">«</button>
+                                        <input type="number" id="pageInputDistU" min="1" value="1">
+                                        <span id="totalPagesDistU">of 4</span>
+                                        <button type="button" id="nextPageDistU">»</button>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="basic-modal-buttons">
+                            <div class="basic-modal-buttons for-mobile">
                                 <button onclick="fetchDistributedItems()" type="button" class="btn-confirm" data-open-modal="viewClaimedResourcesModal"
                                     id="unclaimed-resources-btn">View Claimed
                                     Resources</button>
-                            </div>
+                            </div> <br>
                         </div>
                     </div> <br>
 
@@ -711,10 +736,8 @@
                             </div>
                         </div>
                     </div>
-
                     <div id="grades-container">
-
-                    </div>
+                    </div> 
                 </form>
             </div>
 

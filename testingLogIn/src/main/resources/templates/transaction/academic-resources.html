@@ -17,11 +17,15 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link">
                 <h4>Resources Distribution</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/transaction/academic-resources" title="You're currently in this page.">Transaction - Resources Distribution</a>
+                <a href="/transaction/academic-resources" title="You're currently in this page.">Transaction - Resources
+                    Distribution</a>
             </div>
 
             <div class="search-div">
@@ -475,7 +479,7 @@
                 })
                 .then(msg => {
                     setUpTables();
-                    showSuccessModal(msg,false);
+                    showSuccessModal(msg, false);
                 })
                 .catch(error => {
                     console.error('Error:', error);

@@ -16,6 +16,9 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link">
                 <h4>Fees Management</h4>
                 <a href="/home">Main</a>
@@ -31,6 +34,24 @@
                         <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
                         <button type="button" class="search-btn">Search</button>
                     </div>
+
+                    <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
+                    <div class="menu-container">
+                        <button type="button" class="menu-btn" aria-label="More options">
+                            <span class="menu-icon">⋮</span>
+                        </button>
+                        <div class="menu-dropdown">
+                            <button type="button" class="menu-item" data-open-modal="feesManagementModal"
+                                title="Add a Fee">Add a Fee</button>
+                            <div class="menu-sort-container">
+                                <select title="sort" name="sort" onchange="goList(1)" id="sort-select"
+                                    class="sort-select">
+                                    <option value="" disabled selected>Sort</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Add Fees Management Button -->
                     <div class="add-something-btn-container">
                         <button type="button" class="btn-confirm" id="addAFeeButton"
@@ -68,17 +89,17 @@
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content scroll-lock">
+            <div class="modal-content admin-confirmation scroll-lock">
                 <p id="modalText"></p>
-                <p id="security-message" class="hidden">To continue, enter the admin password before
-                    proceeding.</p>
+                <p id="security-message" class="hidden">To continue, enter the admin password.</p>
 
                 <div class="input-group hidden" id="admin-pass-form">
                     <label for="adminPassword">Admin Password:</label>
-                    <input type="password" autocomplete="new-password" id="adminPassword" placeholder="Enter admin password" />
+                    <input type="password" autocomplete="new-password" id="adminPassword"
+                        placeholder="Enter admin password" />
                 </div>
 
-                <div class="modal-buttons">
+                <div class="modal-buttons not-single">
                     <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
                     <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
@@ -105,52 +126,52 @@
         <!-- Modal for adding fees -->
         <div id="feesManagementModal" class="fees-management-modal modal">
             <div class="fees-management-modal-content scroll-lock">
-
-                <h2>Add New Fee</h2>
-                <form method="post" action="" id="feesManagementForm">
-                    <div class="payment-name-row">
-                        <label for="paymentName">Payment Name:</label>
-                    </div>
-
-                    <!-- Input field below -->
-                    <input type="text" id="paymentName">
-                    <br><br>
-
-                    <label for="amount">Amount</label>
-                    <input type="number" id="amount">
-                    <br>
-
-                    <div class="full-width-row">
-                        <div>
-                            <!-- Checkbox beside the label -->
-                            <label for="label">Distributable</label><input type="checkbox" id="distributable">
+                <div class="modal-body">
+                    <h2>Add New Fee</h2>
+                    <form method="post" action="" id="feesManagementForm">
+                        <div class="payment-name-row">
+                            <label for="paymentName">Payment Name:</label>
                         </div>
 
-                    </div>
+                        <!-- Input field below -->
+                        <input type="text" id="paymentName">
+                        <br><br>
 
-                    <div class="full-width-row">
-                        <div>
-                            <label for="label">Apply this fee to current semester:</label><input type="checkbox"
-                                id="applyThisSem">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount">
+                        <br>
+
+                        <div class="full-width-row">
+                            <div>
+                                <!-- Checkbox beside the label -->
+                                <label for="label">Distributable</label><input type="checkbox" id="distributable">
+                            </div>
+
                         </div>
-                    </div> <br>
 
-                    <h6>Grade Levels Required by this Payment:</h6>
-                    <div class="payment-container">
-                        <!-- Grade level checkboxes or inputs go here -->
-                    </div>
+                        <div class="full-width-row">
+                            <div>
+                                <label for="label">Apply this fee to current semester:</label><input type="checkbox"
+                                    id="applyThisSem">
+                            </div>
+                        </div> <br>
 
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-cancel" data-close-modal="feesManagementModal">Cancel</button>
-                        <button type="button" class="btn-confirm" data-action="addFee"
-                            data-message="Are you sure you want to save this Fee?" id="confirmFee"
-                            data-open-modal="confirmationModal">
-                            Confirm
-                        </button>
+                        <label><strong>Grade Levels Required by this Payment:</strong></label>
+                        <div class="payment-container">
+                            <!-- Grade level checkboxes or inputs go here -->
+                        </div>
 
-                    </div>
-                </form>
+                    </form>
+                </div>
 
+                <div class="modal-buttons not-single">
+                    <button type="button" class="btn-cancel" data-close-modal="feesManagementModal">Cancel</button>
+                    <button type="button" class="btn-confirm" data-action="addFee"
+                        data-message="Are you sure you want to save this Fee?" id="confirmFee"
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -190,34 +211,38 @@
         <!-- Modal for editing fees -->
         <div id="feesManagementEditModal" class="fees-management-edit-modal modal">
             <div class="fees-management-edit-modal-content scroll-lock">
-                <h2>Fee Information</h2>
-                <form method="post" action="" id="feesManagementForm">
-                    <label for="paymentName">Payment Name:</label>
-                    <input type="text" id="paymentNameEdit">
-                    <br><br>
-
-                    <label for="amount">Amount</label>
-                    <input type="number" id="amountEdit"> <br><br>
-
-                    <h6>Grade Levels Required by this Payment:</h6>
-
-                    <!-- This container will be used for editing payments -->
-                    <div class="payment-container-edit">
-                        <!-- Dynamically populated checkboxes will go here -->
-                    </div>
-                    <div class="full-width-row">
-                        <div>
-                            The following fee applies to the current semester: <input type="checkbox" id="applyThisSemEdit">
+                <div class="modal-body">
+                    <h2>Fee Information</h2>
+                    <form method="post" action="" id="feesManagementForm">
+                        <label for="paymentName">Payment Name:</label>
+                        <input type="text" id="paymentNameEdit">
+                        <br><br>
+    
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amountEdit"> <br><br>
+    
+                        <label><strong>Grade Levels Required by this Payment:</strong></label>
+    
+                        <!-- This container will be used for editing payments -->
+                        <div class="payment-container-edit">
+                            <!-- Dynamically populated checkboxes will go here -->
                         </div>
-                    </div>
+                        <div class="full-width-row">
+                            <div>
+                                <label for="label">Will be applied to the current semester:</label><input type="checkbox"
+                                    id="applyThisSemEdit">
+                            </div>
+                        </div>
+                    </form>
 
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" id="editFeeButton" data-require-password="true" data-action="editFee"
-                            data-message="Are you sure you want to update this fee?">Edit</button>
+                    <div class="modal-buttons not-single">
+                        <button type="button" class="btn-confirm" id="editFeeButton" data-require-password="true"
+                            data-action="editFee" data-message="Are you sure you want to update this fee?">Edit</button>
                         <button type="button" class="btn-cancel"
                             data-close-modal="feesManagementEditModal">Cancel</button>
                     </div>
-                </form>
+                </div>
+                
             </div>
         </div>
 
@@ -363,7 +388,7 @@
             distributable: isDistributable,
             willApplyNow: willApplyThisSem
         };
-       // console.log(requestData);
+        // console.log(requestData);
 
         try {
             const response = await fetch("/payments/add", {
@@ -378,7 +403,7 @@
 
             if (response.ok) {
                 showSuccessModal(responseData);
-            }else{
+            } else {
                 showErrorModal(responseData);
             }
         } catch (error) {
@@ -406,9 +431,9 @@
             willApplyNow: willApplyThisSem
         };
 
-       // console.log(updatedFeeData);
+        // console.log(updatedFeeData);
 
-       // console.log("Updated Fee Data:", updatedFeeData); // Debugging
+        // console.log("Updated Fee Data:", updatedFeeData); // Debugging
 
         fetch(`/payments/update/${paymentId}`, {
             method: "PUT",
@@ -454,7 +479,7 @@
         })
             .then(response => response.text())  // Get the response as plain text
             .then(data => {
-               // console.log(data);  // Log the response for debugging
+                // console.log(data);  // Log the response for debugging
 
                 // Show a success message if the payment was deleted
                 if (data.includes("deleted successfully")) {
@@ -513,8 +538,8 @@
                 const gradeLevelNames = target.getAttribute("data-grade-levels").split(","); // Get the grade level names (as an array)
                 var val = target.getAttribute("data-isActive");
                 var isActive = val === "true" || val;
-               // console.log("Selected Payment ID:", selectedPaymentId); // Debugging
-               // console.log("Grade Level Names:", gradeLevelNames); // Debugging
+                // console.log("Selected Payment ID:", selectedPaymentId); // Debugging
+                // console.log("Grade Level Names:", gradeLevelNames); // Debugging
 
                 // Set the payment name and amount in the form
                 document.getElementById("paymentNameEdit").value = paymentName;

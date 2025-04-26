@@ -16,6 +16,9 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link" id="breadcrumb-container">
                 <h4>Maintenance</h4>
                 <a href="/home">Main</a>
@@ -29,6 +32,19 @@
                     <div class="search-container">
                         <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
                         <button type="button" class="search-btn">Search</button>
+
+                        <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
+                        <div class="menu-container">
+                            <button type="button" class="menu-btn" aria-label="More options">
+                                <span class="menu-icon">⋮</span>
+                            </button>
+                            <div class="menu-dropdown">
+                                <button type="button" class="menu-item" data-open-modal="gradeLevelModal"
+                                    title="Add New Student">Add New Grade Level</button>
+                               
+                            </div>
+                        </div>
+
                         <!-- Add Grade Level Button -->
                         <div class="add-something-btn-container">
                             <button type="button" class="btn-confirm" id="openGradeLevelModal"
@@ -61,9 +77,9 @@
 
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content scroll-lock">
+            <div class="modal-content admin-confirmation scroll-lock">
                 <p id="modalText"></p>
-                <p id="security-message" class="hidden">To continue, enter the admin password before proceeding.</p>
+                <p id="security-message" class="hidden">To continue, enter the admin password.</p>
 
                 <div class="input-group hidden" id="admin-pass-form">
                     <label for="adminPassword">Admin Password:</label>
@@ -120,7 +136,6 @@
                             <input type="radio" name="duration" value="2" id="dur2">
                             2 semester
                         </label><br>
-
                     </form>
                 </div>
                 <div class="modal-buttons">
@@ -138,36 +153,30 @@
         <!-- Modal for editing the grade level -->
         <div id="gradeLevelEditModal" class="grade-level-edit-modal modal">
             <div class="grade-level-edit-modal-content scroll-lock">
-                <h2>Grade Level Information</h2>
-                <form method="" action="" id="gradeLevelEditForm">
-                    <label for="levelName">Grade Level Name:</label>
-                    <input type="text" id="levelNameEdit" name="levelName" readonly required>
-                    <br><br>
-
-                    <label for="pre-req">Pre-Requisite Grade Level</label>
-                    <select name="pre-req" id="pre-req-grade-level-edit">
-                        <option value="" disabled>Choose a pre-requisite</option>
-                        <option value="NONE">None</option>
-                    </select>
-
-                    <label>
-                        <input type="radio"  name="durationEdit" value="1" id="durEdit1"required>
-                        1 semester
-                      </label>
-                      <label>
-                        <input type="radio" name="durationEdit" value="2" id="durEdit2">
-                        2 semester
-                    </label><br>
-
-                    <div class="modal-buttons">
-                        <button type="button" data-require-password="true" class="btn-confirm btn-confirm-report"
-                            data-action="editGradeLevel"
-                            data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
-                            Edit
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
-                    </div>
-                </form>
+                <div class="modal-body">
+                    <h2>Grade Level Information</h2>
+                    <form method="" action="" id="gradeLevelEditForm">
+                        <label for="levelName">Grade Level Name:</label>
+                        <input type="text" id="levelNameEdit" name="levelName" readonly required>
+                        <br><br>
+    
+                        <label for="pre-req">Pre-Requisite Grade Level</label>
+                        <select name="pre-req" id="pre-req-grade-level-edit">
+                            <option value="" disabled>Choose a pre-requisite</option>
+                            <option value="NONE">None</option>
+                        </select>
+    
+                    </form>
+                </div>
+                
+                <div class="modal-buttons not-single">
+                    <button type="button" data-require-password="true" class="btn-confirm btn-confirm-report"
+                        data-action="editGradeLevel"
+                        data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
+                        Edit
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
+                </div>
             </div>
         </div>
 

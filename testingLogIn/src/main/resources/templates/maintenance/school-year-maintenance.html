@@ -16,6 +16,9 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
             <div class="text-link" id="breadcrumb-container">
                 <h4>School Year</h4>
                 <a href="/home">Main</a>
@@ -30,12 +33,25 @@
                         <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
                         <button type="button" class="search-btn">Search</button>
 
+                        <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
+                        <div class="menu-container">
+                            <button type="button" class="menu-btn" aria-label="More options">
+                                <span class="menu-icon">⋮</span>
+                            </button>
+                            <div class="menu-dropdown">
+                                <button type="button" class="menu-item" data-open-modal="schoolYearModal"
+                                    title="Add New Student">Add School Year</button>
+                            </div>
+                        </div>
+                        <!-- Add School Year Button -->
+                        <div class="add-something-btn-container">
+                            <button type="button" class="btn-confirm" id="openSchoolYearModal"
+                                data-open-modal="schoolYearModal" title="Click to Add School Year">Add School
+                                Year</button>
+                        </div>
+
                     </div>
-                    <!-- Add School Year Button -->
-                    <div class="add-something-btn-container">
-                        <button type="button" class="btn-confirm" id="openSchoolYearModal"
-                            data-open-modal="schoolYearModal" title="Click to Add School Year">Add School Year</button>
-                    </div>
+
 
                 </div>
             </div>
@@ -60,10 +76,9 @@
         </div>
         <!-- Modal for confirmation -->
         <div id="confirmationModal" class="modal">
-            <div class="modal-content scroll-lock">
+            <div class="modal-content admin-confirmation scroll-lock">
                 <p id="modalText"></p>
-                <p id="security-message" class="hidden">To continue, enter the admin password before
-                    proceeding.</p>
+                <p id="security-message" class="hidden">To continue, enter the admin password.</p>
 
                 <div class="input-group hidden" id="admin-pass-form">
                     <label for="adminPassword">Admin Password:</label>
@@ -71,7 +86,7 @@
                         placeholder="Enter admin password" />
                 </div>
 
-                <div class="modal-buttons">
+                <div class="modal-buttons not-single">
                     <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
                     <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
                 </div>
@@ -99,23 +114,22 @@
         <!-- Modal for Adding School Year -->
         <div id="schoolYearModal" class="school-year-modal modal">
             <div class="school-year-modal-content scroll-lock">
-
-                <h2>Add New School Year</h2>
-                <form method="post" id="schoolYearForm">
-                    <label for="school-year-name">School Year:</label>
-                    <input type="text" id="schoolYearName" required placeholder="YYYY-YYYY" pattern="\d{4}-\d{4}"
-                        title="Format: YYYY-YYYY">
-
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addSchoolYear"
-                            data-message="Are you sure you want to add this school year?" id="confirmSchoolYear"
-                            data-open-modal="confirmationModal">
-                            Confirm
-                        </button>
-                        <button type="button" data-close-modal="schoolYearModal" class="btn-cancel">Cancel</button>
-                    </div>
-                </form>
+                <div class="modal-body">
+                    <h2>Add New School Year</h2>
+                    <form method="post" id="schoolYearForm">
+                        <label for="school-year-name">School Year:</label>
+                        <input type="text" id="schoolYearName" required placeholder="YYYY-YYYY" pattern="\d{4}-\d{4}"
+                            title="Format: YYYY-YYYY">
+                    </form>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" data-action="addSchoolYear"
+                        data-message="Are you sure you want to add this school year?" id="confirmSchoolYear"
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                    <button type="button" data-close-modal="schoolYearModal" class="btn-cancel">Cancel</button>
+                </div>
             </div>
         </div>
 
@@ -202,8 +216,8 @@
             fetch("/semester/all").then(response => response.json())
         ])
             .then(([schoolYears, semesters]) => {
-               // console.log("Fetched school years:", schoolYears);
-               // console.log("Fetched semesters:", semesters);
+                // console.log("Fetched school years:", schoolYears);
+                // console.log("Fetched semesters:", semesters);
 
                 const semesterArray = Object.values(semesters).flat();
 
@@ -370,7 +384,7 @@
         document.querySelectorAll(".status").forEach(statusElement => {
             const statusText = statusElement.textContent.trim().toUpperCase();
             const statusId = statusElement.id;
-           // console.log(`Status ID: ${statusId}, Text: ${statusText}`);
+            // console.log(`Status ID: ${statusId}, Text: ${statusText}`);
 
             if (statusText === "INACTIVE") {
                 statusElement.style.backgroundColor = "transparent";
@@ -444,7 +458,7 @@
             semNumber = event.target.getAttribute("data-semid");
 
             if (!semNumber) {
-               // console.error("Semester number is not set!");
+                // console.error("Semester number is not set!");
             } else {
                 //console.log("Semester number set:", semNumber);
             }
@@ -532,7 +546,7 @@
 
     function activateSemester() {
         if (!semNumber) {
-           // console.error("Semester number is not set.");
+            // console.error("Semester number is not set.");
             //console.log(semNumber);
             return;
         }

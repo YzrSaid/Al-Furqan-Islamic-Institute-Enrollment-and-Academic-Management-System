@@ -5,6 +5,7 @@ import com.example.testingLogIn.ModelDTO.StudentGradesPerSem;
 import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
+import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Repositories.ScheduleRepo;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
@@ -21,6 +22,9 @@ import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 /**
  *
@@ -31,21 +35,27 @@ public class StudentSubjectGradeServices {
     private final StudentSubjectGradeRepo ssgRepo;
     private final SubjectRepo subjectRepo;
     private final sySemesterRepo semRepo;
-    private final CustomUserDetailsService userService;
     private final ScheduleRepo scheduleRepo;
 
-    public StudentSubjectGradeServices(StudentSubjectGradeRepo ssgRepo, SubjectRepo subjectRepo, sySemesterRepo semRepo, CustomUserDetailsService userService,
-                                       ScheduleRepo scheduleRepo) {
+    @Autowired
+    public StudentSubjectGradeServices(StudentSubjectGradeRepo ssgRepo, SubjectRepo subjectRepo, sySemesterRepo semRepo, ScheduleRepo scheduleRepo) {
         this.ssgRepo = ssgRepo;
         this.subjectRepo = subjectRepo;
         this.semRepo = semRepo;
-        this.userService = userService;
         this.scheduleRepo = scheduleRepo;
     }
 
     public boolean didStudentPassed(int studentId, int gradeLevelId, int duration){
         try{
-            return ssgRepo.didStudentPassed(studentId, gradeLevelId, duration);
+            System.out.println(duration);
+            if(duration == 1)
+                return ssgRepo.didStudentPassed(studentId, gradeLevelId);
+
+            for(SchoolYear sy : ssgRepo.findStudentUniqueAttendedSchoolYear(studentId, gradeLevelId)){
+                if(ssgRepo.countPassedSemesters(studentId,gradeLevelId,sy.getSchoolYearNum()).size() >=2)
+                    return true;
+            }
+            return false;
         }catch(AopInvocationException aie){
             return false;
         }
@@ -70,8 +80,13 @@ public class StudentSubjectGradeServices {
     }
     
     public List<StudentSubjectGradeDTO> getStudentsGradeBySectionSubject(int sectionId,int subjectId){
-        UserModel currentUser = userService.getCurrentlyLoggedInUser();
-        if(currentUser.getRole() != Role.ADMIN)
+        UserModel currentUser = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            currentUser = (UserModel)authentication.getPrincipal();
+        }
+
+        if(currentUser != null && currentUser.getRole() != Role.ADMIN)
             if(scheduleRepo.findTeacherSectionSubjectSchedule(subjectId, sectionId, currentUser.getStaffId()).isEmpty())
                 throw new IllegalArgumentException("You do not have this subject in your current teaching schedule. Please check your assigned subjects or contact the administrator for clarification.");
 

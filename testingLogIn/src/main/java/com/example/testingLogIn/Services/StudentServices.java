@@ -95,7 +95,7 @@ public class StudentServices {
                                     .status(StudentStatus.NEW)
                                     .isNew(true)
                                     .isNotDeleted(true)
-                                    .isScholar(student.isScholar())
+                                    .isScholar(!student.getDiscountsAvailed().isEmpty())
                                     .isTransferee(student.isTransferee())
                                     .madrasaName(student.getMadrasaName())
                                     .lastGradeLevelCompleted(gradeLevel)

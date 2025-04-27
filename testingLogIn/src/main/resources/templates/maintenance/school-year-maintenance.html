@@ -531,7 +531,7 @@
 
                         // 🚫 **Block activation if any semester is unfinished**
                         if (!firstSemFinished || !secondSemFinished) {
-                            alert(`You cannot activate this semester because ${latestActiveSY} still has an unfinished semester. Finish both semesters first!`);
+                            showErrorModal(`You cannot activate this semester because ${latestActiveSY} still has an unfinished semester. Finish both semesters first!`);
                             resolve(false);
                             return;
                         }
@@ -640,7 +640,6 @@
         })
             .then(response => response.text())
             .then(data => {
-                alert(data);
                 if (data.includes("Successfully")) {
                     location.reload();
                 }
@@ -655,7 +654,6 @@
         })
             .then(response => response.text())
             .then(data => {
-                alert(data);
                 if (data.includes("Deleted")) {
                     location.reload();
                 }

@@ -129,11 +129,11 @@
                             <option value="NONE">None</option>
                         </select>
                         <label>
-                            <input type="radio"  name="duration" value="1" id="dur1"required>
+                            <input type="radio"  name="duration" value="1">
                             1 semester
                           </label>
                           <label>
-                            <input type="radio" name="duration" value="2" id="dur2">
+                            <input type="radio" name="duration" value="2">
                             2 semester
                         </label><br>
                     </form>
@@ -165,7 +165,14 @@
                             <option value="" disabled>Choose a pre-requisite</option>
                             <option value="NONE">None</option>
                         </select>
-    
+                        <label>
+                            <input type="radio"  name="durationEdit" value="1" id="durEdit1"required>
+                            1 semester
+                          </label>
+                          <label>
+                            <input type="radio" name="durationEdit" value="2" id="durEdit2">
+                            2 semester
+                        </label><br>
                     </form>
                 </div>
                 
@@ -264,7 +271,7 @@
 
             document.getElementById("durEdit1").checked = true;
             if(duration === 2){
-                document.getElementById("durEdit1").checked = true;
+                document.getElementById("durEdit2").checked = true;
             }
 
             fetch("/gradelevel/no-successor-grade-level")
@@ -427,8 +434,6 @@
                 preRequisite: prereq,
                 semDuration : duration
             };
-
-            console.log(gradeLevelData);
 
             fetch("/gradelevel/update-grade-level", {
                 method: "PUT",

@@ -8,6 +8,7 @@ import com.example.testingLogIn.CustomObjects.EvaluationStatus;
 import com.example.testingLogIn.CustomObjects.FailedStudents;
 import com.example.testingLogIn.CustomObjects.PassedStudents;
 import com.example.testingLogIn.Enums.Semester;
+import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Models.Subject;
@@ -37,8 +38,25 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             "HAVING AVG(COALESCE(sg.subjectGrade,0)) > 49")
     boolean didStudentPassed(
             @Param("studentId") int studentId,
+            @Param("gradeLevelId") int gradeLevelId);
+
+    @Query("""
+    SELECT sg
+    FROM StudentSubjectGrade sg
+    JOIN sg.student s
+    JOIN sg.section.level l
+    JOIN sg.semester sem
+    WHERE sg.isNotDeleted = TRUE
+    AND sem.schoolYear.schoolYearNum = :schoolYearNum
+    AND s.studentId = :studentId
+    AND l.levelId = :gradeLevelId
+    GROUP BY sem
+    HAVING AVG(COALESCE(sg.subjectGrade, 0)) > 49
+    """)
+    List<StudentSubjectGrade> countPassedSemesters(
+            @Param("studentId") int studentId,
             @Param("gradeLevelId") int gradeLevelId,
-            @Param("duration") int duration);
+            @Param("schoolYearNum") int schoolYearNum);
 
     @Query("SELECT sg FROM StudentSubjectGrade sg "+
             "JOIN sg.section sec "+
@@ -199,4 +217,15 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             GROUP BY ssg.subject
             """)
     List<Subject> findSemesterUniqueSubjects(Integer sy, Semester sem, int levelId);
+
+    @Query("""
+           SELECT sg.semester.schoolYear FROM StudentSubjectGrade sg
+           JOIN sg.section.level gl
+           JOIN sg.semester semester
+           JOIN sg.student student
+           WHERE gl.levelId = :levelId
+           AND student.studentId = :studentId
+           GROUP BY semester.schoolYear.schoolYearNum
+           """)
+    List<SchoolYear> findStudentUniqueAttendedSchoolYear(int studentId, int levelId);
 }

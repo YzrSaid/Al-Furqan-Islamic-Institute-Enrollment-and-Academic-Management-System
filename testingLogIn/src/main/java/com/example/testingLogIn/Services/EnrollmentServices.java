@@ -60,7 +60,6 @@ public class EnrollmentServices {
         this.userService = userService;
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean addStudentToListing(Integer studentId,Student newstudent) {
         Student student = newstudent;
         SchoolYearSemester currentSem = Optional.ofNullable(sySemRepo.findCurrentActive()).orElseThrow(NullPointerException::new);
@@ -78,14 +77,12 @@ public class EnrollmentServices {
         return true;
     }
 
-    @CacheEvict(value = {"enrollmentPage","countStat"},allEntries = true)
     public void cancelEnrollment(int enrollmentId, boolean undoCancel){
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElseThrow(NullPointerException::new);
         enrollmentRecord.setNotDeleted(undoCancel);
         enrollmentRepo.save(enrollmentRecord);
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public int addToAssessment(int enrollmentId, int gradeLevelId) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         GradeLevel gradeLevelToEnroll = gradeLevelRepo.findById(gradeLevelId).orElse(null);
@@ -124,7 +121,6 @@ public class EnrollmentServices {
         }
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public int addToPayment(int enrollmentId, int sectionNumber) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         Section section = sectionRepo.findById(sectionNumber).orElse(null);
@@ -144,7 +140,6 @@ public class EnrollmentServices {
         }
     }
 
-    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
     public int addToEnrolled(int enrollmentId) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         if (enrollmentRecord == null || !enrollmentRecord.isNotDeleted())
@@ -183,11 +178,6 @@ public class EnrollmentServices {
         }
     }
 
-    @Cacheable(
-            value = "enrollmentPage",
-            key = "#status + #pageNo + #pageSize",  // status becomes part of the cache key
-            condition = "(#search == null || #search.isEmpty())"
-    )
     public PagedResponse getAllEnrollmentPage(String status,Integer pageNo,Integer pageSize,String sort ,String search) {
         Pageable pageable;
         if(sort == null || sort.trim().isEmpty())
@@ -197,12 +187,21 @@ public class EnrollmentServices {
 
         EnrollmentStatus estatus = getEnrollmentStatus(status);
         int sem = Optional.of(sySemRepo.findCurrentActive().getSySemNumber()).orElseThrow(NullPointerException::new);
-        Page<EnrollmentHandler> enrollmentPage = enrollmentRepo.findStudentsEnrollment(estatus,sem,search,pageable);
+        Page<EnrollmentHandler> enrollmentPage;
         List<EnrollmentDTO> pageContent;
         if(estatus == EnrollmentStatus.ENROLLED){
-            pageContent = enrollmentRepo.findEnrolledStatus(sem,NonModelServices.forLikeOperator(search),pageable)
-                    .map(Enrollment::DTOmapper).toList();
+            Page<Enrollment> enrPage = enrollmentRepo.findEnrolledStatus(sem,NonModelServices.forLikeOperator(search),pageable);
+            pageContent = enrPage.getContent().stream().map(Enrollment::DTOmapper).toList();
+
+            return PagedResponse.builder()
+                    .content(pageContent)
+                    .pageNo(pageNo)
+                    .pageSize(pageSize)
+                    .totalPages(enrPage.getTotalPages())
+                    .totalElements(enrPage.getTotalElements())
+                    .build();
         }else{
+            enrollmentPage = enrollmentRepo.findStudentsEnrollment(estatus,sem,search,pageable);
             pageContent = enrollmentPage.getContent().stream().map(enrollmentHandler -> {
                 Enrollment enrollment = enrollmentHandler.getEnrollment();
                 StudentDTO student = Optional.ofNullable(enrollmentHandler.getStudent()).map(Student::DTOmapper).orElse(null);
@@ -214,15 +213,15 @@ public class EnrollmentServices {
                 }
                 return new EnrollmentDTO(null,student);
             }).toList();
+            return PagedResponse.builder()
+                    .content(pageContent)
+                    .pageNo(enrollmentPage.getNumber())
+                    .pageSize(enrollmentPage.getSize())
+                    .totalPages(enrollmentPage.getTotalPages())
+                    .totalElements(enrollmentPage.getTotalElements())
+                    .build();
         }
 
-        return PagedResponse.builder()
-                .content(pageContent)
-                .pageNo(enrollmentPage.getNumber())
-                .pageSize(enrollmentPage.getSize())
-                .totalPages(enrollmentPage.getTotalPages())
-                .totalElements(enrollmentPage.getTotalElements())
-                .build();
     }
 
     private Sort sortBy(String sort){

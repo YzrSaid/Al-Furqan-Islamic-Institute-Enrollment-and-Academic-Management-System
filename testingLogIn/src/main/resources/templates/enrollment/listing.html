@@ -40,7 +40,7 @@
                             <span class="menu-icon">⋮</span>
                         </button>
                         <div class="menu-dropdown">
-                            <button type="button" class="menu-item" data-open-modal="newStudentModal"
+                            <button type="button" class="menu-item" onclick="fetchDiscounts()" data-open-modal="newStudentModal"
                                 title="Add New Student">Add New Student</button>
                             <div class="menu-sort-container">
                                 <select title="sort" name="sort" onchange="goList(1)" id="sort-select"
@@ -59,7 +59,7 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button type="button" class="btn-confirm" data-open-modal="newStudentModal"
+                        <button type="button" class="btn-confirm" onclick="fetchDiscounts()" data-open-modal="newStudentModal"
                             title="Add New Student">Add New Student</button>
                     </div>
                 </div>
@@ -551,8 +551,7 @@
 
                         <div class="checkbox-container">
                             <div class="checkbox">
-                                <label for="scholar">Scholar:</label>
-                                <input type="checkbox" id="scholar">
+                                <label for="scholar">Scholarships:</label>
 
                                 <button type="button" id="dropdown-add-scholar"> <img src="/images/icons/arrow-down.png"
                                         alt="dropdown-icon">
@@ -1090,8 +1089,10 @@
                 });
 
                 // Update the footer amounts
+                console.log("mag erro kaha?");
                 const totalAmountDueElement = document.getElementById("total-amount-due");
                 const totalAmountPaidElement = document.getElementById("total-amount-paid");
+                console.log("wala nag error");
                 const remainingBalanceElement = document.getElementById("remaining-balance");
 
                 totalAmountDueElement.innerText = `₱ ${parseFloat(receipt.totalAmountDue).toFixed(2)}`;
@@ -1218,10 +1219,6 @@
                 showErrorModal(message);
             });
     }
-    document.getElementById("scholar").addEventListener("change", function () {
-        this.checked;
-    });
-
     // this is for adding new student/transferee if the checkbox for transferee is checked then it will set the value of data-action attribute to that value
     // document.addEventListener('DOMContentLoaded', () => {
     //     const confirmButton = document.getElementById('confirmStudent');
@@ -1246,14 +1243,13 @@
         document.querySelectorAll("input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedDiscounts.push(checkbox.value);
         });
-        // console.log(selectedTransReq);
+        
         const birthplace =
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
             null;
 
         const studentData = {
-            scholar: document.getElementById("scholar").checked,
             firstName: document.getElementById("studentFirstName").value.trim(),
             lastName: document.getElementById("studentLastName").value.trim(),
             middleName: document.getElementById("studentMiddleName")?.value?.trim() || null,
@@ -1328,6 +1324,7 @@
                 return res.json();
             })
             .then(data => {
+                console.log(data);
                 if (data.content.length === 0) { return; }
                 tableBody.innerHTML = "";
                 data.content.forEach(enr => {
@@ -1577,7 +1574,7 @@
     function fetchDiscounts(popoverId = "add-scholar-popover", discIds = []) {
         const popover = document.getElementById(popoverId);
         if (!popover) return //console.error(`Element with ID ${popoverId} not found.`);
-
+        
         popover.innerHTML = ``;
 
         fetch("/discounts/all")
@@ -1635,7 +1632,7 @@
                     // Create and append the heading
                     const heading = document.createElement("h6");
                     heading.textContent = "Requirements:";
-                    popover.appendChild(heading);
+                    reqContainer.appendChild(heading);
 
                     //console.log(transReq);
                     const reqDiv = document.createElement("div");
@@ -2099,7 +2096,7 @@
         });
     }
 
-    const preRequisiteGradesDiv = document.getElementById("preRequisite-grades");
+    var preRequisiteGradesDiv = document.getElementById("preRequisite-grades");
     // var preRequisiteGradesDiv;
     function viewStudentGrade(target) {
         const studentId = target.dataset.id;
@@ -2334,15 +2331,15 @@
                 });
             }
         });
-        document.getElementById("add-scholar-popover").innerHTML = ``;
-        const isScholarship = document.getElementById("scholar");
-        isScholarship.addEventListener("change", function () {
-            if (this.checked) {
-                fetchDiscounts();
-            } else {
-                document.getElementById("add-scholar-popover").innerHTML = ``;
-            }
-        });
+        // document.getElementById("add-scholar-popover").innerHTML = ``;
+        // const isScholarship = document.getElementById("scholar");
+        // isScholarship.addEventListener("change", function () {
+        //     if (this.checked) {
+        //         fetchDiscounts();
+        //     } else {
+        //         document.getElementById("add-scholar-popover").innerHTML = ``;
+        //     }
+        // });
     });
 
     function validateSchoolYear() {

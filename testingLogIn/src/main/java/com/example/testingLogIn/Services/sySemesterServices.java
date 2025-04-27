@@ -40,9 +40,10 @@ public class sySemesterServices {
     private final StudentSubjectGradeRepo ssgr;
     private final SubjectRepo subjectRepo;
     private final StatisticsServices statisticsServices;
+    private final StudentSubjectGradeServices ssgService;
 
     @Autowired
-    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo, RequiredPaymentsRepo reqFee, StudentRepo studentRepo, SchoolProfileRepo schoolProfileRepo, StudentSubjectGradeRepo ssgr, SubjectRepo subjectRepo, StatisticsServices statisticsServices) {
+    public sySemesterServices(sySemesterRepo semesterRepo, SchoolYearRepo syRepo, RequiredPaymentsRepo reqFee, StudentRepo studentRepo, SchoolProfileRepo schoolProfileRepo, StudentSubjectGradeRepo ssgr, SubjectRepo subjectRepo, StatisticsServices statisticsServices, StudentSubjectGradeServices ssgService) {
         this.semesterRepo = semesterRepo;
         this.syRepo = syRepo;
         this.reqFee = reqFee;
@@ -51,6 +52,7 @@ public class sySemesterServices {
         this.ssgr = ssgr;
         this.subjectRepo = subjectRepo;
         this.statisticsServices = statisticsServices;
+        this.ssgService = ssgService;
     }
 
     public void addSemesters(String schoolYearName){
@@ -114,7 +116,6 @@ public class sySemesterServices {
             subjectRepo.activeAll();
             studentRepo.setNewStudentsToOld();
             statisticsServices.setInitialCounts(sem);
-            studentRepo.setAllUnEnrolled();
         },dbExecutor).exceptionally(ex -> {
             ex.printStackTrace();
             return null;
@@ -153,7 +154,7 @@ public class sySemesterServices {
                 List<Student> graduated = new ArrayList<>();
                 List<Student> students = studentRepo.findStudentsByCurrentGradeLevel(graduateLevel.getLevelId());
                 students.forEach(student -> {
-                    if(ssgr.didStudentPassed(student.getStudentId(), graduateLevel.getLevelId(),graduateLevel.getDuration())){
+                    if(ssgService.didStudentPassed(student.getStudentId(), graduateLevel.getLevelId(), graduateLevel.getDuration())){
                         student.setStatus(StudentStatus.GRADUATE);
                         student.setDataGraduated(LocalDate.now());
                         graduated.add(student);
@@ -161,7 +162,6 @@ public class sySemesterServices {
                 });
                 statisticsServices.setGraduatesInformation(graduated,sem);
                 studentRepo.saveAll(students);
-                studentRepo.setAllUnEnrolled();
             },dbExecutor).exceptionally(ex -> null);;
         }
         return 0;

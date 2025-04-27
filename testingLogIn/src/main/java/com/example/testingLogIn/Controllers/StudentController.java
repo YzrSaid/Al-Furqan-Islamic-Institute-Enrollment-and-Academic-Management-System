@@ -2,6 +2,8 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.ModelDTO.StudentDTO;
+import com.example.testingLogIn.Models.SchoolYear;
+import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Services.StudentServices;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

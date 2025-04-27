@@ -18,8 +18,7 @@ import lombok.*;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
 public class SchoolYearSemester {
     

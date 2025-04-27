@@ -62,7 +62,10 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
                 WHEN e.student IS NULL THEN 'NOT_REGISTERED'
                 WHEN e.isNotDeleted = FALSE THEN 'CANCELLED'
                 ELSE e.enrollmentStatus END) = :status)
-            AND e.enrollmentStatus != 'ENROLLED'
+            AND (CASE
+                WHEN e.student IS NULL THEN 'NOT_REGISTERED'
+                WHEN e.isNotDeleted = FALSE THEN 'CANCELLED'
+                ELSE e.enrollmentStatus END) != 'ENROLLED'
             AND (:search IS NULL OR stud.fullName LIKE CONCAT('%',:search,'%')
             OR stud.studentDisplayId LIKE CONCAT('%',:search,'%'))
             AND stud.status != 'GRADUATE'

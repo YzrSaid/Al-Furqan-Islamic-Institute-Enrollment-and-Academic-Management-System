@@ -12,9 +12,7 @@ import lombok.*;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 public class SchoolYear {
     @Id

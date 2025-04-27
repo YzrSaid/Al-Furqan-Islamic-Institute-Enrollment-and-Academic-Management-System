@@ -209,7 +209,7 @@
             .then(response => {
                 //console.log(response.status);
                 if (!response.ok) {
-                    alert("Grade Level Not Found");
+                   // alert("Grade Level Not Found");
                     window.location.href = "/maintenance/new-subjects";
                 }
                 return response.json();

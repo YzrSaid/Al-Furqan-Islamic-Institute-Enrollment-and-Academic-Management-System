@@ -704,6 +704,128 @@
             })
             .catch(error => console.error("Error fetching grade levels:", error));
     }
+
+    document.getElementById('savePdf').addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const testContent = document.getElementById("staffPrint");
+
+        // Get the dimensions of the modal content
+        const contentWidth = testContent.offsetWidth;
+        const contentHeight = testContent.offsetHeight;
+
+        // Get the PDF page width and height
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        // Calculate scale factor to fit the content within the page width
+        let scaleFactor = pageWidth / contentWidth;
+
+        // If the content's scaled height exceeds the page height, adjust the scale
+        const scaledHeight = contentHeight * scaleFactor;
+        if (scaledHeight > pageHeight) {
+            const heightScaleFactor = pageHeight / contentHeight;
+            scaleFactor = heightScaleFactor;
+        }
+
+        // Calculate the scaled width and height
+        const scaledWidth = contentWidth * scaleFactor;
+        const scaledHeightFinal = contentHeight * scaleFactor;
+
+        // Calculate horizontal and vertical positioning to center the content
+        const offsetX = (pageWidth - scaledWidth) / 2;  // Horizontal centering
+        const offsetY = (pageHeight - scaledHeightFinal) / 4;  // Vertical centering
+
+        // Add a small margin for top positioning (e.g., 10 units)
+        const topMargin = 0;
+        const adjustedOffsetY = offsetY + topMargin;
+
+        console.log('Content Width:', contentWidth);
+        console.log('Content Height:', contentHeight);
+        console.log('Scaled Width:', scaledWidth);
+        console.log('Scaled Height:', scaledHeightFinal);
+        console.log('Offset X:', offsetX);
+        console.log('Offset Y:', offsetY);
+        doc.html(testContent, {
+            callback: function (doc) {
+                // Save the PDF after rendering and centering the content
+                doc.save('staff-report.pdf');
+            },
+            x: offsetX,  // Set the X position to center the content
+            y: adjustedOffsetY,  // Adjusted Y position with added margin
+            width: scaledWidth,  // Use the scaled width
+            height: scaledHeightFinal, // Use the scaled height
+            windowWidth: document.body.scrollWidth  // Ensure content fits within the page width
+        });
+    });
+
+    document.getElementById('printStaff').addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const testContent = document.getElementById("staffPrint");
+
+        // Temporarily show the modal content for PDF generation
+        testContent.style.display = 'flex';
+        testContent.style.position = 'absolute';  // Ensure it's positioned in the page
+        testContent.style.zIndex = '9999';  // Ensure it's above other elements
+
+        // Get the dimensions of the modal content
+        const contentWidth = testContent.offsetWidth;
+        const contentHeight = testContent.offsetHeight;
+
+        // Get the PDF page width and height
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        // Calculate scale factor to fit the content within the page width
+        let scaleFactor = pageWidth / contentWidth;
+
+        // If the content's scaled height exceeds the page height, adjust the scale
+        const scaledHeight = contentHeight * scaleFactor;
+        if (scaledHeight > pageHeight) {
+            const heightScaleFactor = pageHeight / contentHeight;
+            scaleFactor = heightScaleFactor;
+        }
+
+        // Calculate the scaled width and height
+        const scaledWidth = contentWidth * scaleFactor;
+        const scaledHeightFinal = contentHeight * scaleFactor;
+
+        // Calculate horizontal and vertical positioning to center the content
+        const offsetX = (pageWidth - scaledWidth) / 2;  // Horizontal centering
+        const offsetY = (pageHeight - scaledHeightFinal) / 13;  // Vertical centering
+
+        // Add a small margin for top positioning (e.g., 10 units)
+        const topMargin = 0;
+        const adjustedOffsetY = offsetY + topMargin;
+
+        console.log('Content Width:', contentWidth);
+        console.log('Content Height:', contentHeight);
+        console.log('Scaled Width:', scaledWidth);
+        console.log('Scaled Height:', scaledHeightFinal);
+        console.log('Offset X:', offsetX);
+        console.log('Offset Y:', offsetY);
+
+        doc.html(testContent, {
+            callback: function (doc) {
+                // Open the print window for printing (no save)
+                doc.autoPrint();
+                window.open(doc.output('bloburl'), '_blank');
+
+                // Re-hide the content after printing
+                testContent.style.display = 'none';  // Re-hide the modal after printing
+                testContent.style.position = 'static';   // Restore the position
+                testContent.style.zIndex = '';  // Remove any specific z-index
+            },
+            x: offsetX,  // Set the X position to center the content
+            y: adjustedOffsetY,  // Adjusted Y position with added margin
+            width: scaledWidth,  // Use the scaled width
+            height: scaledHeightFinal, // Use the scaled height
+            windowWidth: document.body.scrollWidth  // Ensure content fits within the page width
+        });
+    });
 </script>
 
 </html>

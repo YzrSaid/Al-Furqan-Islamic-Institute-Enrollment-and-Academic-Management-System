@@ -60,15 +60,19 @@
                             <div class="column1">
                                 <div>
                                     <label for="name">Name</label>
-                                    <div class="student-form-group half">
-                                        <input readonly type="text" id="firstNameRec">
-                                        <input readonly type="text" id="middleNameRec">
-                                        <input readonly type="text" id="lastNameRec">
-                                    </div>
-                                    <div class="small-text">
-                                        <p>First</p>
-                                        <p>Middle</p>
-                                        <p>Last</p>
+                                    <div class="student-form-group">
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="firstNameRec">
+                                            <p class="small-text first-name-p">First</p>
+                                        </div>
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="middleNameRec">
+                                            <p class="small-text middle-name-p">Middle</p>
+                                        </div>
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="lastNameRec">
+                                            <p class="small-text last-name-p">Last</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -106,8 +110,8 @@
             <div class="report-main-btns-right">
                 <button type="button" class="btn-gray" id="editStudInfo"
                     data-open-modal="studentInformationEditModal">Edit</button>
-                <button type="button" class="btn-neutral" data-open-modal="changePasswordModal">Change
-                    Password</button>
+                <!-- <button type="button" class="btn-neutral" data-open-modal="changePasswordModal">Change
+                    Password</button> -->
             </div>
         </div>
 

@@ -892,7 +892,6 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "clearSched":
         window.clearSched();
-        alert("Schedule cleared successfully!");
         break;
       case "makeSchoolYearActive":
         actionUrl = "/school-year/activate";
@@ -976,7 +975,6 @@ document.addEventListener("DOMContentLoaded", function () {
         addTeacher();
         break;
       case "editTeacher":
-        alert("Edit Teacher");
         break;
       case "rejectAccount":
         rejectAccount(selectedVerificationId);
@@ -1015,11 +1013,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         break;
       case "changePassword":
-        alert("Password for this account has been changed successfully!");
         break;
       case "saveSched":
-        // code
-        alert("Schedule Saved Successfully!");
         break;
       case "activateSemester":
         // if (!canActivateSemester(semNumber)) {
@@ -1058,7 +1053,6 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           // Only validate Madrasa year if transferee is checked
           if (!validateSchoolYear()) {
-            alert("malii");
             showErrorModal(
               "❌ Error: Invalid format! Please enter the school year in YYYY-YYYY format."
             );
@@ -1162,7 +1156,6 @@ document.addEventListener("DOMContentLoaded", function () {
         updateStudentRecord();
         break;
       default:
-        alert("Unknown action: " + action);
         return;
     }
   }

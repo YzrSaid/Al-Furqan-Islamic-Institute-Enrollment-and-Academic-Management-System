@@ -2061,9 +2061,9 @@
     }
 
     // Function to show error modal (you should define this somewhere)
-    function showErrorModal(message) {
-        alert(message); // Simple, or replace with your fancy modal
-    }
+    // function showErrorModal(message) {
+    //     alert(message); // Simple, or replace with your fancy modal
+    // }
 
     // Validate input amount
     const paymentAmountInput = document.getElementById("payment-amount");
@@ -2335,12 +2335,12 @@
 
     function validateSchoolYear() {
         const transfereeCheckbox = document.getElementById("isTransferee");
-        const schoolYearInput = document.getElementById("studlastMadrasaYearCompleted");
+        const schoolYearInput = document.getElementById("studlastMadrasaYearCompleted").value;
 
         // Only validate if transferee checkbox is checked AND input is visible
-        if (!transfereeCheckbox.checked || schoolYearInput.style.display === "none") {
-            return true; // Skip validation if not a transferee
-        }
+        // if (!transfereeCheckbox.checked || schoolYearInput.style.display === "none") {
+        //     return true; // Skip validation if not a transferee
+        // }
         const regex = /^(\d{4})-(\d{4})$/;
         const match = schoolYearInput.match(regex);
 
@@ -2373,7 +2373,6 @@
         // 2. Verify elements exist
         if (!modalEl || !modalBody) {
             console.error("Modal elements missing!", { modalEl, modalBody });
-            alert("FALLBACK ERROR: " + message);
             return;
         }
 

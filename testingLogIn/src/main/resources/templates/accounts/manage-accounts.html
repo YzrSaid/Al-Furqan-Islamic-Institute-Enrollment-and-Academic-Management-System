@@ -36,12 +36,19 @@
                     </div>
                 </div>
                 <div class="sort-container">
+                    <select name="sort" id="is-restricted" onchange="fetchUserAccounts()" class="sort-select">
+                        <option value="true" selected>Not Restricted</option>
+                        <option value="false">Restricted</option>
+                    </select>
+                </div>
+                <div class="sort-container">
                     <select name="sort" id="view-by" onchange="fetchUserAccounts()" class="sort-select">
                         <option value="All" disabled selected>Account Type</option>
                         <option value="All">All</option>
                         <option value="STUDENT">Student</option>
                         <option value="TEACHER">Teacher</option>
                         <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
+                        <option value="RESTRICTED">Restricted</option>
                     </select>
                 </div>
             </div>
@@ -52,7 +59,6 @@
             <table class="verify-accounts-table main-table">
                 <thead>
                     <tr>
-                        <th>User ID</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Account Type</th>
@@ -203,10 +209,11 @@
     });
 
     function fetchUserAccounts(currentPage = 1) {
+        var isNotRestricted = document.getElementById("is-restricted").value;
         var accType = document.getElementById("view-by").value;
         var pageSize = document.getElementById("pageSizeSelector").value;
         var search = document.getElementById("search").value;
-        fetch(`/user/all?pageNo=${currentPage}&pageSize=${pageSize}&q=${search}&accType=${accType}`) // Fetch all users
+        fetch(`/user/all?pageNo=${currentPage}&pageSize=${pageSize}&q=${search}&accType=${accType}&isNotRestricted=${isNotRestricted}`) // Fetch all users
             .then(response => response.json())
             .then(users => {
                 populateTable(users); // Populate the table only with non-super admin users
@@ -224,6 +231,10 @@
             "ADMIN": "Admin",
             "STUDENT": "Student"
         };
+
+        if(accounts.content.length === 0){
+            tableBody.innerHTML = "<td colspan='3'>No records found</td>";
+        }
 
         accounts.content.forEach(account => {
             const row = document.createElement("tr");
@@ -243,9 +254,8 @@
 
             // ✅ Use the new color function
             const statusClass = getAccountStatusClass(statusText);
-
+            console.log(account);
             row.innerHTML = `
-            <td>${account.staffId}</td>
             <td>${account.firstname} ${account.lastname}</td>
             <td>${account.username}</td>
             <td>${readableRole}</td> <!-- Use the mapped role -->
@@ -262,20 +272,26 @@
                         <div class="dropdown-status-content">
                             <a href="#" data-action="${oppositeAction}"
                                 data-message="${confirmationMessage}"
+                                data-id='${account.staffId}'
                                 data-open-modal="confirmationModal">
                                 ${oppositeActionText}
                             </a>
-                            <a href="#" data-open-modal="myAccountEditModal">Edit Account</a>
                         </div>
                     
                 </div>
-            </td>
-        `;
+            </td>`;
 
             tableBody.appendChild(row);
         });
         updatePaginationUI('DistU', accounts.pageNo, accounts.pageSize, accounts.totalElements, accounts.totalPages);
     }
+    var selectedUser = 0;
+    document.body.addEventListener("click", function (event) {
+        const target = event.target.closest("[data-open-modal='confirmationModal']");
+        if(target){
+            selectedUser = target.getAttribute("data-id");
+        }
+    });
 
     function getAccountStatusClass(status) {
         status = status.toLowerCase();
@@ -323,7 +339,6 @@
         })
             .then(response => response.text())
             .then(data => {
-                alert(data);
                 if (data.includes("Successfully")) {
                     location.reload();
                 }
@@ -362,8 +377,8 @@
         //     .catch(error => console.error('Error processing account action:', error));
     }
 
-    function unrestrictUser(userId) {
-        fetch(`/user/unrestrict/${userId}`, { method: 'PUT' })
+    function unrestrictUser() {
+        fetch(`/user/unrestrict/${selectedUser}`, { method: 'PUT' })
             .then(response => response.text())
             .then(message => {
                 showSuccessModal("✅ Success: Account has been unrestricted successfully!");
@@ -374,8 +389,8 @@
     }
 
 
-    function restrictUser(userId) {
-        fetch(`/user/restrict/${userId}`, { method: 'PUT' })
+    function restrictUser() {
+        fetch(`/user/restrict/${selectedUser}`, { method: 'PUT' })
             .then(response => response.text())
             .then(message => {
                 showSuccessModal("✅ Success: Account has been restricted successfully!");

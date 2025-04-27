@@ -104,6 +104,7 @@ public class UserModel implements UserDetails {
                     .birthdate(student.getBirthdate())
                     .gender(student.getGender())
                     .staffDisplayId(student.getStudentDisplayId())
+                    .staffId(staffId)
                     .role(role)
                     .staffDisplayId(student.getStudentDisplayId())
                     .isNotDeleted(isNotDeleted)

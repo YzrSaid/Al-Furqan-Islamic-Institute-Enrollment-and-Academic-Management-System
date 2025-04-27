@@ -33,7 +33,6 @@ public class StudentPaymentController{
         try{
             return new ResponseEntity<>(paymentService.addPaymentAutoAllocate(studentId,gradeLevel,amount,po.getFeesId()),HttpStatus.OK);
         }catch(Exception e){
-            e.printStackTrace();
             return new ResponseEntity<>("Compilation Error. Report to SlimFordy",HttpStatus.CONFLICT);
         }
     }

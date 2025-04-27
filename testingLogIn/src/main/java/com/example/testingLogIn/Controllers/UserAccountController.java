@@ -8,6 +8,7 @@ import com.example.testingLogIn.Models.AccountRegister;
 import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Models.Schedule;
 import com.example.testingLogIn.Models.Section;
+import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Services.ScheduleServices;
 import com.example.testingLogIn.Services.StudentSubjectGradeServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
@@ -75,7 +76,8 @@ public class UserAccountController {
 
     @GetMapping("/student/my-schedules")
     public ResponseEntity<List<ScheduleDTO>> getLoggedStudentGrades(){
-        int sectionId = Optional.ofNullable(customUserDetailsService.getCurrentlyLoggedInUser().getStudent().getCurrentGradeSection()).map(Section::getNumber).orElse(0);
+        Student stud = customUserDetailsService.getCurrentlyLoggedInUser().getStudent();
+        int sectionId = stud.isEnrolled() ? stud.getCurrentGradeSection().getNumber() : 0;
         return new ResponseEntity<>(scheduleServices.getSchedulesBySection(sectionId), HttpStatus.OK);
     }
 

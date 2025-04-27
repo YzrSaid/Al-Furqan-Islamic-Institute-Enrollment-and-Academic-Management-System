@@ -24,6 +24,7 @@ public class StudentDTO {
     private String lastName;
     private String middleName;
     private String fullName;
+    private String email;
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private LocalDate birthdate;

@@ -351,7 +351,7 @@
                             <h6>Student Email: (Optional)</h6>
                             <div class="student-form-group stud-email address-div">
                                 <label for="stud-email">Email:</label>
-                                <input type="email" readonly class="parent-occupation">
+                                <input type="email" id="studentEmailEdit" readonly class="parent-occupation">
                             </div> <br>
                         </div>
 
@@ -573,7 +573,7 @@
                         <h6>Student Email: (Optional)</h6>
                         <div class="student-form-group stud-email address-div">
                             <label for="stud-email">Email:</label>
-                            <input type="email" readonly class="parent-occupation">
+                            <input type="email" id="studentEmail" readonly class="parent-occupation">
                         </div> <br>
                     </div>
 
@@ -854,7 +854,7 @@
                         <h6>Student Email: (Optional)</h6>
                         <div class="student-form-group stud-email address-div">
                             <label for="stud-email">Email:</label>
-                            <input type="email" readonly class="parent-occupation">
+                            <input type="email" id="studentEmail" readonly class="parent-occupation">
                         </div> <br>
                     </div>
 
@@ -1091,8 +1091,6 @@
 
         student = await response.json();
 
-        console.log(student);
-
 
         // Original fields and their respective print counterparts
         document.getElementById("student-id").value = student.studentDisplayId;
@@ -1162,6 +1160,8 @@
         document.getElementById("madrasaAddress").value = student.madrasaAddress;
         document.getElementById("madrasaAddress-print").value = student.madrasaAddress;
 
+        document.getElementById("studentEmail").value = student.email;
+
         // Call other methods to set up the UI
         setNameIdText();
         fetchTransRequirements(student.transfereeRequirements);
@@ -1214,6 +1214,7 @@
         document.getElementById("guardianOccupationEdit").value = student.fatherOccupation;
         document.getElementById("guardianContactNumberEdit").value = student.guardianContactNum;
         document.getElementById("guardianAddressEdit").value = student.guardianAddress;
+        document.getElementById("studentEmailEdit").value = student.email;
 
         document.getElementById("street-edit").value = student.address.street;
         document.getElementById("barangay-edit").value = student.address.barangay;

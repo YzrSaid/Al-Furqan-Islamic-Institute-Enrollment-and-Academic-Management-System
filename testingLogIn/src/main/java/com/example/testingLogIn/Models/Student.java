@@ -35,6 +35,7 @@ public class Student{
     private String lastName;
     private String middleName;
     private String fullName;
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -45,6 +46,7 @@ public class Student{
     private String cellphoneNum;
     private String birthPlace;
     private double studentBalance;
+    private boolean isEnrolled;
     
     @ManyToOne
     @JsonIgnore

@@ -73,8 +73,9 @@ public class StudentServices {
                                     .firstName(student.getFirstName())
                                     .lastName(student.getLastName())
                                     .middleName(student.getMiddleName())
-                                    .fullName(student.getFirstName()+" "+ Optional.ofNullable(student.getMiddleName()).map(mn -> mn+" ").orElse(" ")+student.getLastName())
+                                    .fullName(student.getFirstName()+" "+ Optional.ofNullable(student.getMiddleName()).map(mn -> mn+" ").orElse("")+student.getLastName())
                                     .gender(student.getGender())
+                                    .email(student.getEmail())
                                     .birthPlace(student.getBirthPlace())
                                     .birthdate(student.getBirthdate())
                                     .cellphoneNum(student.getCellphoneNum())
@@ -151,6 +152,7 @@ public class StudentServices {
         toUpdate.setCity(stud.getAddress().getCity());
         toUpdate.setBirthdate(stud.getBirthdate());
         toUpdate.setBirthPlace(stud.getBirthPlace());
+        toUpdate.setEmail(stud.getEmail());
 
         toUpdate.setMotherName(stud.getMotherName());
         toUpdate.setMotherOccupation(stud.getMotherOccupation());

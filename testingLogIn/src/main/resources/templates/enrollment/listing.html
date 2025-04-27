@@ -268,7 +268,7 @@
                             <h6>Student Email: (Optional)</h6>
                             <div class="student-form-group stud-email address-div">
                                 <label for="stud-email">Email:</label>
-                                <input type="email" readonly class="parent-occupation">
+                                <input type="email" id="studentEmail" readonly class="parent-occupation">
                             </div> <br>
                         </div>
 
@@ -1238,6 +1238,7 @@
             middleName: document.getElementById("studentMiddleName")?.value?.trim() || null,
             gender: document.getElementById("studgender").value || null,
             birthdate: document.getElementById("studbirthdate").value || null,
+            email : document.getElementById("studEmail").value || null,
             birthPlace: birthplace,
             address: {
                 street: document.getElementById("studstreet")?.value?.trim(),
@@ -1669,6 +1670,7 @@
         document.getElementById("street").value = studentProf.address.street;
         document.getElementById("barangay").value = studentProf.address.barangay;
         document.getElementById("city").value = studentProf.address.city;
+        document.getElementById("studentEmail").value = studentProf.email;
 
         document.getElementById("fatherName").value = studentProf.fatherName;
         document.getElementById("fatherOccupation").value = studentProf.fatherOccupation;

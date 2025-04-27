@@ -159,6 +159,7 @@ public class EnrollmentServices {
             double newBalance=student.getStudentBalance() + toAdd;
             student.setStudentBalance(newBalance);
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
+            student.setEnrolled(true);
             studentRepo.save(student);
 
             if(student.getStatus() == StudentStatus.NEW)

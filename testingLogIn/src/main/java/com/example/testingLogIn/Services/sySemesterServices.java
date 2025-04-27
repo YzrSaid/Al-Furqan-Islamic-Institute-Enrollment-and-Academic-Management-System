@@ -141,7 +141,9 @@ public class sySemesterServices {
             return 1;
         sem.setActive(false);
         sem.setFinished(true);
-        CompletableFuture.runAsync(()->statisticsServices.setStudentPassingRecords(sem));
+        CompletableFuture.runAsync(()->{
+            studentRepo.setAllUnEnrolled();
+            statisticsServices.setStudentPassingRecords(sem);});
         semesterRepo.save(sem);
 
         ExecutorService dbExecutor = Executors.newFixedThreadPool(4);

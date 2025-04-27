@@ -95,4 +95,19 @@ public class StatisticsController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
+
+    @GetMapping("/passing-statistics")
+    public ResponseEntity<PagedResponse> getPassingRecords(@RequestParam(required = false,defaultValue = "1") int pageNo,
+                                                           @RequestParam(required = false,defaultValue = "10") int pageSize,
+                                                           @RequestParam(required = false) String search,
+                                                           @RequestParam(required = false) Integer sy,
+                                                           @RequestParam(required = false) String sem,
+                                                           @RequestParam Integer levelId,
+                                                           @RequestParam(required = false) Boolean didPassed){
+        try{
+            return new ResponseEntity<>(statisticsServices.getStudentsPassingRecords(search, sy, sem, pageNo, pageSize,didPassed,levelId),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
 }

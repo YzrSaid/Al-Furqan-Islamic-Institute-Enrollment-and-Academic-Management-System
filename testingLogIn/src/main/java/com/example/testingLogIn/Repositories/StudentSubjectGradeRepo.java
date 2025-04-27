@@ -154,7 +154,7 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     void updateSubjectGradeStatus(int subjectId, int semId,boolean status);
 
     @Query("""
-            SELECT NEW com.example.testingLogIn.CustomObjects.PassedStudents(stud, ssg.section.level) 
+            SELECT NEW com.example.testingLogIn.CustomObjects.PassedStudents(stud, ssg.section,AVG(COALESCE(ssg.subjectGrade, 0)))
             FROM StudentSubjectGrade ssg
             JOIN ssg.student stud
             JOIN ssg.section.level lvl
@@ -166,7 +166,7 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
     List<PassedStudents> findPassedStudents(int semId, Integer levelId);
 
     @Query("""
-            SELECT NEW com.example.testingLogIn.CustomObjects.FailedStudents(stud, ssg.section.level) 
+            SELECT NEW com.example.testingLogIn.CustomObjects.FailedStudents(stud, ssg.section,AVG(COALESCE(ssg.subjectGrade, 0)))
             FROM StudentSubjectGrade ssg
             JOIN ssg.student stud
             JOIN ssg.section.level lvl

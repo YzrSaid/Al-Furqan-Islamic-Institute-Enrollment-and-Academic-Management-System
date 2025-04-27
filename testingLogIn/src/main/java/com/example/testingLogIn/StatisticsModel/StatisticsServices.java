@@ -99,9 +99,10 @@ public class StatisticsServices {
 
     public void setStudentPassingRecords(SchoolYearSemester sem){
         List<StudentPassingRecord> studentRetainedList = studentSubjectGradeRepo.findFailedStudents(sem.getSySemNumber(),null)
-                                                        .stream().map(ssg -> new StudentPassingRecord(false,sem,ssg.getGradeLevel(),ssg.getStudent())).toList();
+                                                        .stream().map(ssg -> new StudentPassingRecord(false,sem,ssg.getSection(),ssg.getStudent(),ssg.getAverage())).toList();
         List<StudentPassingRecord> studentPassedList = studentSubjectGradeRepo.findPassedStudents(sem.getSySemNumber(),null)
-                .stream().map(ssg -> new StudentPassingRecord(true,sem,ssg.getGradeLevel(),ssg.getStudent())).toList();
+                                                        .stream().map(ssg -> new StudentPassingRecord(true,sem,ssg.getSection(),ssg.getStudent(),ssg.getAverage())).toList();
+
         studentPassingRecordRepo.saveAll(studentPassedList);
         studentPassingRecordRepo.saveAll(studentRetainedList);
         retainedCountRepo.updateCount(sem.getSySemNumber(), studentRetainedList.size());
@@ -160,7 +161,9 @@ public class StatisticsServices {
     public PagedResponse getGraduateStudents(String search, Integer sy, String sem, int pageNo, int pageSize){
         sy = sy == 0 ? null : sy;
         Semester semester = getSemFromString(sem);
-        Page<GraduateStudents> gradStudPage = graduateStudentsRepo.getGraduatesPage(NonModelServices.forLikeOperator(search),sy,semester,PageRequest.of(pageNo - 1, pageSize));
+        search = NonModelServices.forLikeOperator(search);
+
+        Page<GraduateStudents> gradStudPage = graduateStudentsRepo.getGraduatesPage(search,sy,semester,PageRequest.of(pageNo - 1, pageSize));
 
         return PagedResponse.builder()
                 .content(gradStudPage.getContent())
@@ -168,6 +171,24 @@ public class StatisticsServices {
                 .pageSize(pageSize)
                 .totalElements(gradStudPage.getTotalElements())
                 .totalPages(gradStudPage.getTotalPages())
+                .build();
+    }
+
+    public PagedResponse getStudentsPassingRecords(String search, Integer sy, String sem, int pageNo, int pageSize, Boolean didPassed, Integer levelId){
+
+        search = NonModelServices.forLikeOperator(search);
+        levelId = levelId == 0 ? null : levelId;
+        sy = sy == 0 ? null : sy;
+        Semester semester = getSemFromString(sem);
+
+        Page<StudentPassingRecord> sprPage = studentPassingRecordRepo.getPassingRecords(search, sy, semester,didPassed,levelId,PageRequest.of(pageNo - 1, pageSize));
+
+        return PagedResponse.builder()
+                .content(sprPage.getContent())
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(sprPage.getTotalElements())
+                .totalPages(sprPage.getTotalPages())
                 .build();
     }
 

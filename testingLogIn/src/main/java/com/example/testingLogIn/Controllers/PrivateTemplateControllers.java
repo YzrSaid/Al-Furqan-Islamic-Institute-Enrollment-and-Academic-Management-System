@@ -274,4 +274,9 @@ public class PrivateTemplateControllers {
     public String graduatetStatistics(){
         return "/statistics/graduates-records";
     }
+
+    @GetMapping("/statistics/passing-records")
+    public String passingStatistics(){
+        return "/statistics/passing-records";
+    }
 }

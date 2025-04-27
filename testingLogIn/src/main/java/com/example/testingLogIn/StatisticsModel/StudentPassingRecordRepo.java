@@ -2,6 +2,8 @@ package com.example.testingLogIn.StatisticsModel;
 
 import com.example.testingLogIn.Enums.Semester;
 import com.example.testingLogIn.Models.GradeLevel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -30,4 +32,18 @@ public interface StudentPassingRecordRepo extends CrudRepository<StudentPassingR
             GROUP BY spc.gradeLevel
             """)
     List<GradeLevel> getUniqueGradeLevels(Integer sy, Semester sem, boolean didPassed);
+
+    @Query("""
+           SELECT spd FROM StudentPassingRecord spd
+           JOIN spd.student stud
+           JOIN spd.sem sem
+           JOIN spd.gradeLevel gl
+           WHERE (:sy IS NULL OR sem.schoolYear.schoolYearNum = :sy)
+           AND (:levelId IS NULL OR gl.levelId = :levelId)
+           AND (:passed IS NULL OR spd.didPassed = :passed)
+           AND (:sem IS NULL OR sem.sem = :sem)
+           AND (LOWER(stud.fullName) LIKE :search
+           OR stud.studentDisplayId LIKE :search)
+           """)
+    Page<StudentPassingRecord> getPassingRecords(String search, Integer sy, Semester sem,Boolean passed,Integer levelId, Pageable pageable);
 }

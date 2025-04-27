@@ -40,7 +40,7 @@
                             <span class="menu-icon">⋮</span>
                         </button>
                         <div class="menu-dropdown">
-                            <button type="button" class="menu-item" onclick="fetchDiscounts()" data-open-modal="newStudentModal"
+                            <button type="button" class="menu-item" data-open-modal="newStudentModal"
                                 title="Add New Student">Add New Student</button>
                             <div class="menu-sort-container">
                                 <select title="sort" name="sort" onchange="goList(1)" id="sort-select"
@@ -59,7 +59,7 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button type="button" class="btn-confirm" onclick="fetchDiscounts()" data-open-modal="newStudentModal"
+                        <button type="button" class="btn-confirm" data-open-modal="newStudentModal"
                             title="Add New Student">Add New Student</button>
                     </div>
                 </div>
@@ -77,277 +77,272 @@
             </div>
         </div>
 
-        <div id="inner-content">
-            <div class="table-wrapper">
-                <!-- Table -->
-                <table id="lamesa" class="listing-table main-table">
-                    <thead>
-                        <tr>
-                            <th>Student ID</th>
-                            <th>Student Name</th>
-                            <th>Enrolling to</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="lamesa" class="listing-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>Enrolling to</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
             </div>
-            <!-- Pagination -->
-            <div class="pagination-container">
-                <div class="pagination-controls">
-                    <span id="itemRange">1–10 of 37</span>
-                    <select id="pageSizeSelector">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                    </select>
-                    <button type="button" id="prevPage">«</button>
-                    <input type="number" id="pageInput" min="1" value="1">
-                    <span id="totalPages">of 4</span>
-                    <button type="button" id="nextPage">»</button>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
                 </div>
             </div>
+        </div>
 
-            <!-- Error Modal -->
-            <div id="errorModal" class="modal">
-                <div class="modal-content scroll-lock">
-                    <p id="errorMessage"></p>
-                    <div class="modal-buttons">
-                        <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
-                    </div>
-                </div>
-            </div>
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
 
-            <!-- Background overlay -->
-            <div id="successModalOverlay"></div>
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
 
-            <!-- Success modal -->
-            <div id="successModal">
-                <p id="successModalMessage"></p>
-            </div>
+        <!-- Modal for student information -->
+        <div id="studentInformationModal" class="student-information-modal modal">
+            <div class="student-information-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h1>Student Information</h1>
+                    <form method="" action="" id="studentInformationForm">
+                        <div class="header">
+                            <div class="half-unique">
+                                <label for="student-id">Student ID: </label>
+                                <input type="text" readonly class="student-id-report" id="student-id">
+                            </div> <br>
 
-            <!-- Modal for student information -->
-            <div id="studentInformationModal" class="student-information-modal modal">
-                <div class="student-information-modal-content scroll-lock">
-                    <div class="modal-body">
-                        <h1>Student Information</h1>
-                        <form method="" action="" id="studentInformationForm">
-                            <div class="header">
-                                <div class="half-unique">
-                                    <label for="student-id">Student ID: </label>
-                                    <input type="text" readonly class="student-id-report" id="student-id">
-                                </div> <br>
+                            <div class="other-info-container">
+                                <div class="half-other-info" id="stud-type-row">
+                                    <label for="stud-type">Student Type:</label>
+                                    <h6 id="stud-type">New</h6>
+                                </div>
+                                <div class="checkbox-container">
+                                    <div class="checkbox">
+                                        <label for="scholar">Scholar:</label>
+                                        <h6 id="isScholar"></h6>
 
-                                <div class="other-info-container">
-                                    <div class="half-other-info" id="stud-type-row">
-                                        <label for="stud-type">Student Type:</label>
-                                        <h6 id="stud-type">New</h6>
+                                        <button type="button" id="dropdown-scholar"> <img
+                                                src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                        </button>
+
+                                        <div id="scholar-popover" name="add-discount" class="styled-popover">
+                                            <div id="discounts-rec" class="checkbox-transferee-reqs-group">
+                                                <!--Ibutang ang mga transferee requiremetns dri-->
+                                            </div> <br>
+                                            <div>
+                                                <button type="button" style="width: 100%;"
+                                                    data-open-modal="confirmationModal" data-action="editDiscounts"
+                                                    data-message="Are you sure you want to update the student discounts?"
+                                                    class="btn-confirm">Update</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="checkbox-container">
-                                        <div class="checkbox">
-                                            <label for="scholar">Scholar:</label>
-                                            <h6 id="isScholar"></h6>
 
-                                            <button type="button" id="dropdown-scholar"> <img
-                                                    src="/images/icons/arrow-down.png" alt="dropdown-icon">
-                                            </button>
+                                    <div class="checkbox">
+                                        <label for="isTransferee">Transferee:</label>
+                                        <input disabled type="checkbox" id="isTransferee">
 
-                                            <div id="scholar-popover" name="add-discount" class="styled-popover">
-                                                <div id="discounts-rec" class="checkbox-transferee-reqs-group">
+                                        <button type="button" id="dropdown-transferee"> <img
+                                                src="/images/icons/arrow-down.png" alt="dropdown-icon">
+                                        </button>
+
+                                        <!-- Popover lives right below the button now -->
+                                        <div id="transferee-popover" name="add-transferee-req" class="styled-popover">
+                                            <!-- Transferee Requirements Section -->
+                                            <div class="transferee-requirements">
+                                                <h6>Requirements:</h6>
+                                                <div id="transfereeReq-rec" class="checkbox-transferee-reqs-group">
                                                     <!--Ibutang ang mga transferee requiremetns dri-->
                                                 </div> <br>
+
+                                                <!-- Update Button -->
                                                 <div>
                                                     <button type="button" style="width: 100%;"
-                                                        data-open-modal="confirmationModal" data-action="editDiscounts"
-                                                        data-message="Are you sure you want to update the student discounts?"
+                                                        data-open-modal="confirmationModal"
+                                                        data-action="updateRequirements"
+                                                        data-message="Are you sure you want to update the transferee requirements?"
                                                         class="btn-confirm">Update</button>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="checkbox">
-                                            <label for="isTransferee">Transferee:</label>
-                                            <input disabled type="checkbox" id="isTransferee">
-
-                                            <button type="button" id="dropdown-transferee"> <img
-                                                    src="/images/icons/arrow-down.png" alt="dropdown-icon">
-                                            </button>
-
-                                            <!-- Popover lives right below the button now -->
-                                            <div id="transferee-popover" name="add-transferee-req"
-                                                class="styled-popover">
-                                                <!-- Transferee Requirements Section -->
-                                                <div class="transferee-requirements">
-                                                    <h6>Requirements:</h6>
-                                                    <div id="transfereeReq-rec" class="checkbox-transferee-reqs-group">
-                                                        <!--Ibutang ang mga transferee requiremetns dri-->
-                                                    </div> <br>
-
-                                                    <!-- Update Button -->
-                                                    <div>
-                                                        <button type="button" style="width: 100%;"
-                                                            data-open-modal="confirmationModal"
-                                                            data-action="updateRequirements"
-                                                            data-message="Are you sure you want to update the transferee requirements?"
-                                                            class="btn-confirm">Update</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div style="display: flex; align-content: center; justify-items: left;">
-                                <h2>Personal Information</h2>
-                            </div>
+                        <div style="display: flex; align-content: center; justify-items: left;">
+                            <h2>Personal Information</h2>
+                        </div>
 
-                            <div class="container">
-                                <div class="row">
-                                    <div class="column1">
-                                        <div>
-                                            <label for="name">Name</label>
-                                            <div class="student-form-group">
-                                                <div class="input-label-pair">
-                                                    <input readonly type="text" id="firstName">
-                                                    <p class="small-text first-name-p">First</p>
-                                                </div>
-                                                <div class="input-label-pair">
-                                                    <input readonly type="text" id="middleName">
-                                                    <p class="small-text middle-name-p">Middle</p>
-                                                </div>
-                                                <div class="input-label-pair">
-                                                    <input readonly type="text" id="lastName">
-                                                    <p class="small-text last-name-p">Last</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="column2">
+                        <div class="container">
+                            <div class="row">
+                                <div class="column1">
+                                    <div>
+                                        <label for="name">Name</label>
                                         <div class="student-form-group">
-                                            <label for="gender">Gender:</label>
-                                            <input readonly type="text" class="gender" id="gender">
-
-                                            <label for="birthdate">Birthdate:</label>
-                                            <input type="date" class="birthdate" id="birthdate" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="column1">
-                                        <div>
-                                            <div class="student-form-group">
-                                                <div>
-                                                    <label for="address">Address:</label>
-                                                    <div class="student-form-group address-div half-unique">
-                                                        <input readonly type="text" class="address" id="street" required
-                                                            placeholder="Street">
-                                                        <input readonly type="text" class="address" id="barangay"
-                                                            required placeholder="Barangay">
-                                                        <input readonly type="text" class="address" id="city" required
-                                                            placeholder="City">
-                                                    </div>
-                                                </div>
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="firstName">
+                                                <p class="small-text first-name-p">First</p>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="column2">
-                                        <label>Place of Birth:</label>
-                                        <div class="student-form-group">
-                                            <input readonly type="text" id="placeOfBirth" class="place-of-birth">
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="middleName">
+                                                <p class="small-text middle-name-p">Middle</p>
+                                            </div>
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="lastName">
+                                                <p class="small-text last-name-p">Last</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="column2">
+                                    <div class="student-form-group">
+                                        <label for="gender">Gender:</label>
+                                        <input readonly type="text" class="gender" id="gender">
+
+                                        <label for="birthdate">Birthdate:</label>
+                                        <input type="date" class="birthdate" id="birthdate" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="column1">
+                                    <div>
+                                        <div class="student-form-group">
+                                            <div>
+                                                <label for="address">Address:</label>
+                                                <div class="student-form-group address-div half-unique">
+                                                    <input readonly type="text" class="address" id="street" required
+                                                        placeholder="Street">
+                                                    <input readonly type="text" class="address" id="barangay" required
+                                                        placeholder="Barangay">
+                                                    <input readonly type="text" class="address" id="city" required
+                                                        placeholder="City">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="column2">
+                                    <label>Place of Birth:</label>
+                                    <div class="student-form-group">
+                                        <input readonly type="text" id="placeOfBirth" class="place-of-birth">
+                                    </div>
+                                </div>
                             </div>
+                        </div>
 
-                            <div style="display: flex; align-content: center; justify-items: left;">
-                                <h2>Additional Information</h2>
-                            </div>
+                        <div style="display: flex; align-content: center; justify-items: left;">
+                            <h2>Additional Information</h2>
+                        </div>
 
-                            <div>
-                                <h6>Student Email: (Optional)</h6>
-                                <div class="student-form-group stud-email address-div">
-                                    <label for="stud-email">Email:</label>
-                                    <input type="email" readonly class="parent-occupation">
-                                </div> <br>
-                            </div>
+                        <div>
+                            <h6>Student Email: (Optional)</h6>
+                            <div class="student-form-group stud-email address-div">
+                                <label for="stud-email">Email:</label>
+                                <input type="email" readonly class="parent-occupation">
+                            </div> <br>
+                        </div>
 
-                            <div>
-                                <h6>Father's Information</h6>
-                                <div class="student-form-group address-div">
-                                    <label for="fatherName">Name:</label>
-                                    <input readonly type="text" class="parent-name" id="fatherName">
-
-                                    <label for="fatherOccupation">Occupation:</label>
-                                    <input readonly type="text" class="parent-occupation" id="fatherOccupation">
-                                </div> <br>
-                            </div>
-                            <div>
-                                <h6>Mother's Information</h6>
-                                <div class="student-form-group address-div">
-                                    <label for="motherName">Name:</label>
-                                    <input readonly type="text" class="parent-name" id="motherName">
-
-                                    <label for="motherOccupation">Occupation:</label>
-                                    <input readonly type="text" class="parent-occupation" id="motherOccupation">
-                                </div> <br>
-                            </div>
-
-                            <h6>Guardian's Information</h6>
+                        <div>
+                            <h6>Father's Information</h6>
                             <div class="student-form-group address-div">
-                                <label for="guardianName">Name:</label>
-                                <input readonly type="text" class="parent-name" id="guardianName">
+                                <label for="fatherName">Name:</label>
+                                <input readonly type="text" class="parent-name" id="fatherName">
 
-                                <label for="guardianOccupation">Occupation:</label>
-                                <input readonly type="text" class="parent-occupation" id="guardianOccupation">
+                                <label for="fatherOccupation">Occupation:</label>
+                                <input readonly type="text" class="parent-occupation" id="fatherOccupation">
+                            </div> <br>
+                        </div>
+                        <div>
+                            <h6>Mother's Information</h6>
+                            <div class="student-form-group address-div">
+                                <label for="motherName">Name:</label>
+                                <input readonly type="text" class="parent-name" id="motherName">
+
+                                <label for="motherOccupation">Occupation:</label>
+                                <input readonly type="text" class="parent-occupation" id="motherOccupation">
+                            </div> <br>
+                        </div>
+
+                        <h6>Guardian's Information</h6>
+                        <div class="student-form-group address-div">
+                            <label for="guardianName">Name:</label>
+                            <input readonly type="text" class="parent-name" id="guardianName">
+
+                            <label for="guardianOccupation">Occupation:</label>
+                            <input readonly type="text" class="parent-occupation" id="guardianOccupation">
+                        </div> <br>
+
+                        <div class="student-form-group address-div">
+                            <label for="guardianContactNumber">Contact Number:</label>
+                            <input readonly type="text" class="guardian-number" id="guardianContactNumber">
+
+                            <label for="guardianAddress">Address:</label>
+                            <input readonly type="text" class="guardian-address" id="guardianAddress">
+                        </div>
+
+
+                        <div class="transferee-section">
+                            <div style="display: flex; align-content: center; justify-items: left;">
+                                <h2>For Transferees Only</h2>
+                            </div>
+
+                            <div class="student-form-group">
+                                <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
+                                <input readonly type="text" id="lastGradeLevelCompleted">
+
+                                <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed:</label>
+                                <input readonly type="text" id="lastMadrasaYearCompleted">
                             </div> <br>
 
-                            <div class="student-form-group address-div">
-                                <label for="guardianContactNumber">Contact Number:</label>
-                                <input readonly type="text" class="guardian-number" id="guardianContactNumber">
+                            <div class="student-form-group">
+                                <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                                <input readonly type="text" id="madrasaNameLastAttended">
+                            </div> <br>
 
-                                <label for="guardianAddress">Address:</label>
-                                <input readonly type="text" class="guardian-address" id="guardianAddress">
-                            </div>
-
-
-                            <div class="transferee-section">
-                                <div style="display: flex; align-content: center; justify-items: left;">
-                                    <h2>For Transferees Only</h2>
-                                </div>
-
-                                <div class="student-form-group">
-                                    <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
-                                    <input readonly type="text" id="lastGradeLevelCompleted">
-
-                                    <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed:</label>
-                                    <input readonly type="text" id="lastMadrasaYearCompleted">
-                                </div> <br>
-
-                                <div class="student-form-group">
-                                    <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                                    <input readonly type="text" id="madrasaNameLastAttended">
-                                </div> <br>
-
-                                <div class="student-form-group">
-                                    <label for="madrasaAddress">Madrasa Address:</label>
-                                    <input readonly type="text" id="madrasaAddress">
-                                </div> <br>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-cancel"
-                            data-close-modal="studentInformationModal">Close</button>
-                    </div>
+                            <div class="student-form-group">
+                                <label for="madrasaAddress">Madrasa Address:</label>
+                                <input readonly type="text" id="madrasaAddress">
+                            </div> <br>
+                        </div>
+                    </form>
                 </div>
-                </form>
-            </div>
-        </div>
 
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" data-close-modal="studentInformationModal">Close</button>
+                </div>
+            </div>
+            </form>
+        </div>
     </div>
 
     <!-- Modal for confirmation -->
@@ -556,7 +551,8 @@
 
                         <div class="checkbox-container">
                             <div class="checkbox">
-                                <label for="scholar">Scholarships:</label>
+                                <label for="scholar">Scholar:</label>
+                                <input type="checkbox" id="scholar">
 
                                 <button type="button" id="dropdown-add-scholar"> <img src="/images/icons/arrow-down.png"
                                         alt="dropdown-icon">
@@ -1095,10 +1091,8 @@
                 });
 
                 // Update the footer amounts
-                console.log("mag erro kaha?");
                 const totalAmountDueElement = document.getElementById("total-amount-due");
                 const totalAmountPaidElement = document.getElementById("total-amount-paid");
-                console.log("wala nag error");
                 const remainingBalanceElement = document.getElementById("remaining-balance");
 
                 totalAmountDueElement.innerText = `₱ ${parseFloat(receipt.totalAmountDue).toFixed(2)}`;
@@ -1225,6 +1219,10 @@
                 showErrorModal(message);
             });
     }
+    document.getElementById("scholar").addEventListener("change", function () {
+        this.checked;
+    });
+
     // this is for adding new student/transferee if the checkbox for transferee is checked then it will set the value of data-action attribute to that value
     // document.addEventListener('DOMContentLoaded', () => {
     //     const confirmButton = document.getElementById('confirmStudent');
@@ -1249,13 +1247,14 @@
         document.querySelectorAll("input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedDiscounts.push(checkbox.value);
         });
-        
+        // console.log(selectedTransReq);
         const birthplace =
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
             document.getElementById("studplaceOfBirth")?.value?.trim() ||
             null;
 
         const studentData = {
+            // scholar: document.getElementById("scholar").checked,
             firstName: document.getElementById("studentFirstName").value.trim(),
             lastName: document.getElementById("studentLastName").value.trim(),
             middleName: document.getElementById("studentMiddleName")?.value?.trim() || null,
@@ -1294,6 +1293,7 @@
         })
             .then(response => {
                 if (!response.ok) {
+                    // return;
                     return response.text().then(text => { throw new Error(text); });
                 }
                 return response.text();
@@ -1303,6 +1303,7 @@
             })
             .catch(error => {
                 showErrorModal(error);
+                return;
             });
     }
     function changeView() {
@@ -1331,7 +1332,6 @@
                 return res.json();
             })
             .then(data => {
-                console.log(data);
                 if (data.content.length === 0) { return; }
                 tableBody.innerHTML = "";
                 data.content.forEach(enr => {
@@ -1581,7 +1581,7 @@
     function fetchDiscounts(popoverId = "add-scholar-popover", discIds = []) {
         const popover = document.getElementById(popoverId);
         if (!popover) return //console.error(`Element with ID ${popoverId} not found.`);
-        
+
         popover.innerHTML = ``;
 
         fetch("/discounts/all")
@@ -1639,7 +1639,7 @@
                     // Create and append the heading
                     const heading = document.createElement("h6");
                     heading.textContent = "Requirements:";
-                    reqContainer.appendChild(heading);
+                    popover.appendChild(heading);
 
                     //console.log(transReq);
                     const reqDiv = document.createElement("div");
@@ -1917,6 +1917,7 @@
         }
     });
 
+
     function recalculateTotalSelectedAmount() {
         const paymentAmountInput = document.getElementById("payment-amount");
         const checkboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
@@ -1930,6 +1931,7 @@
         paymentAmountInput.min = (total*.2).toFixed(2);
         paymentAmountInput.value = Math.max(parseFloat(paymentAmountInput.value), paymentAmountInput.min); // Enforce minimum value
     }
+
 
     async function setUpPaymentForm() {
         paymentAmountInput.max = 0;
@@ -1994,6 +1996,7 @@
                 recalculateTotalSelectedAmount();
             });
 
+
             const amountFormatted = `₱${Number(par.balance).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
             const labelText = `${par.fee.name} (${amountFormatted})`;
 
@@ -2033,29 +2036,15 @@
         selectAllItem.appendChild(selectAllLabel);
         paymentContainer.appendChild(selectAllItem);
 
-        // Check for invalid input on "paymentAmountInput"
         paymentAmountInput.addEventListener("input", function () {
             const checkedCheckboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
 
             if (checkedCheckboxes.length === 0) {
-                showErrorModal("Please select a payment first!");
-                paymentAmountInput.value = ''; // Empty the value
-            } else {
-                let value = parseFloat(paymentAmountInput.value);
-
-                // Check for invalid input
-                if (value <= 0 || isNaN(value) || value < paymentAmountInput.min) {
-                    showErrorModal("Invalid payment amount. Please enter a valid value.");
-                    paymentAmountInput.value = ''; // Empty the value
-                } else if (value > paymentAmountInput.max) {
-                    showErrorModal("Amount exceeds the maximum allowed payment.");
-                    paymentAmountInput.value = ''; // Empty the value
-                }
+                showErrorModal("Please select a payment first!")
+                paymentAmountInput.value = '';
             }
         });
     }
-
-
 
     // Function to update Amount when Full Payment is checked
     function updateFullPayment() {
@@ -2119,7 +2108,7 @@
         });
     }
 
-    var preRequisiteGradesDiv = document.getElementById("preRequisite-grades");
+    const preRequisiteGradesDiv = document.getElementById("preRequisite-grades");
     // var preRequisiteGradesDiv;
     function viewStudentGrade(target) {
         const studentId = target.dataset.id;
@@ -2354,32 +2343,32 @@
                 });
             }
         });
-        // document.getElementById("add-scholar-popover").innerHTML = ``;
-        // const isScholarship = document.getElementById("scholar");
-        // isScholarship.addEventListener("change", function () {
-        //     if (this.checked) {
-        //         fetchDiscounts();
-        //     } else {
-        //         document.getElementById("add-scholar-popover").innerHTML = ``;
-        //     }
-        // });
+        document.getElementById("add-scholar-popover").innerHTML = ``;
+        const isScholarship = document.getElementById("scholar");
+        isScholarship.addEventListener("change", function () {
+            if (this.checked) {
+                fetchDiscounts();
+            } else {
+                document.getElementById("add-scholar-popover").innerHTML = ``;
+            }
+        });
     });
 
     function validateSchoolYear() {
         const transfereeCheckbox = document.getElementById("isTransferee");
-        const schoolYearInput = document.getElementById("studlastMadrasaYearCompleted");
-
-        // Only validate if transferee checkbox is checked AND input is visible
-        if (!transfereeCheckbox.checked || schoolYearInput.style.display === "none") {
-            return true; // Skip validation if not a transferee
-        }
-
-        const value = schoolYearInput.value.trim();
+    const schoolYearInput = document.getElementById("studlastMadrasaYearCompleted");
+    
+    // Only validate if transferee checkbox is checked AND input is visible
+    if (!transfereeCheckbox.checked || schoolYearInput.style.display === "none") {
+        return true; // Skip validation if not a transferee
+    }
         const regex = /^(\d{4})-(\d{4})$/;
-        const match = value.match(regex);
+        const match = schoolYearInput.match(regex);
 
         if (!match) {
-            showErrorModal("❌ Error: Invalid format! Please enter the school year in YYYY-YYYY format.");
+            setTimeout(() => {
+                showErrorModal("❌ Error: Invalid format! Please enter the school year in YYYY-YYYY format.");
+            }, 50);
             return false;
         }
 
@@ -2387,7 +2376,9 @@
         const endYear = parseInt(match[2], 10);
 
         if (endYear !== startYear + 1) {
-            showErrorModal("❌ Error: Invalid school year range! The second year must be exactly one year after the first.");
+            setTimeout(() => {
+                showErrorModal("❌ Error: Invalid school year range! The second year must be exactly one year after the first.");
+            }, 50);
             return false;
         }
 

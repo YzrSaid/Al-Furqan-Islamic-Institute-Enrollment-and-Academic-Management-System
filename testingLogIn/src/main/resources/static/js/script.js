@@ -126,7 +126,7 @@ function toggleSidebar() {
     } else {
       content.classList.remove("collapsed-content");
       content.style.marginLeft = "320px";
-    //   innerContent.style.padding = "0 1.25rem";
+      //   innerContent.style.padding = "0 1.25rem";
     }
 
     // Run on sidebar open
@@ -149,7 +149,7 @@ function toggleSidebar() {
     } else {
       content.classList.add("collapsed-content");
       content.style.marginLeft = "0";
-    //   innerContent.style.padding = "0 4rem"
+      //   innerContent.style.padding = "0 4rem"
     }
 
     // Center card when sidebar is closed
@@ -773,6 +773,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   async function handleConfirmAction(action, event) {
+    event.preventDefault();
+    if (!action){
+        console.log("no action");
+    }
     console.log("Action triggered:", action);
     if (event && typeof event.preventDefault === "function") {
       event.preventDefault();
@@ -1056,16 +1060,20 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!validateForm("studentForm")) {
           showErrorModal("⚠️ Please fill in all required fields!");
           return;
+        } else {
+          // Only validate Madrasa year if transferee is checked
+          if (!validateSchoolYear()) {
+            alert("malii");
+            showErrorModal(
+              "❌ Error: Invalid format! Please enter the school year in YYYY-YYYY format."
+            );
+            return;
+          } else {
+            transfereeAddListing();
+            // closeConfirmationModal();
+          }
         }
 
-        // Only validate Madrasa year if transferee is checked
-        const isTransferee = document.getElementById("isTransferee").checked;
-        if (isTransferee && !validateSchoolYear()) {
-          return; // Error message already shown by validateSchoolYear()
-        }
-
-        transfereeAddListing();
-        closeConfirmationModal();
         break;
       //      case "studAddListing":
       //        // This case is for adding new student to the listing/registration
@@ -1086,7 +1094,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "proceedToPayment":
         proceedToPayment(enrollmentIdLet, sectionNumberLet);
-        toggleModal("gradeLevelModal", false);
+        toggleModal("addGradeLevelAssessmentModal", false);
         break;
       case "proceedToEnrolled":
         proceedToEnrolled(enrollmentIdLet);
@@ -1242,22 +1250,30 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   window.showErrorModal = function (message) {
+    console.log("showErrorModal called with message:", message); // Debugging line
     const errorModal = document.getElementById("errorModal");
     const errorMessage = document.getElementById("errorMessage");
 
     if (errorModal && errorMessage) {
       errorMessage.textContent = message;
       errorModal.classList.remove("show");
-      void errorModal.offsetWidth;
+      void errorModal.offsetWidth; // Reflow to reset animation
       errorModal.classList.add("show");
-
-      // Ensure visibility and opacity are reset
       errorModal.style.visibility = "visible";
       errorModal.style.opacity = "1";
+
+      console.log("Modal should be visible now!"); // Debugging line
+
+      // Optional: Close the modal when the "Close" button is clicked
+      const closeBtn = errorModal.querySelector(".error-btn-cancel");
+      closeBtn.addEventListener("click", function () {
+        errorModal.classList.remove("show");
+      });
     } else {
       alert(`⚠️ Oops! Something went wrong. Please refresh or try again.`);
     }
   };
+
   window.showSuccessModal = function (message, reload = true) {
     const modal = document.getElementById("successModal");
     const modalMessage = document.getElementById("successModalMessage");
@@ -1298,7 +1314,11 @@ document.addEventListener("DOMContentLoaded", function () {
       let modalId = this.getAttribute("data-close-modal");
       let modal = document.getElementById(modalId);
 
-      if (modalId != "errorModal" && modalId != "confirmationModal") {
+      if (
+        modalId != "errorModal" &&
+        modalId != "confirmationModal" &&
+        modalId != "shortError"
+      ) {
         closeConfirmationModal();
         resetValidationErrors();
         clearForm();
@@ -1417,6 +1437,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Handle Edit/Update button inside Edit Modals
     if (target.matches(".btn-confirm")) {
       const modal = target.closest(".modal");
+      if (!modal) return; // <-- Prevent error if modal is not found
+
       const inputs = modal.querySelectorAll("input, textarea, select");
       const cancelBtn = modal.querySelector(".btn-cancel");
 

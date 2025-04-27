@@ -1,10 +1,12 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/fragment :: commonHead}">
 </head>
 <script th:src="@{/js/script.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <body>
     <!-- Sidebar -->
@@ -38,8 +40,8 @@
                 <div class="report-main-btns-right">
                     <button onclick="setUpEditForm()" type="button" class="btn-gray" id="editStudInfo"
                         data-open-modal="studentInformationEditModal">Edit</button>
-                    <button type="button" class="btn-neutral" id="printGrade"
-                        data-open-modal="studentInformationPrintModal">Print</button>
+                    <button type="button" class="btn-neutral" id="savePdf">Save PDF</button>
+                    <button type="button" class="btn-neutral" id="printStud">Print</button>
                 </div>
 
             </div>
@@ -100,8 +102,6 @@
                 <div class="modal-buttons">
                     <button type="button" data-close-modal="viewClaimedResourcesModal" class="btn-cancel"
                         id="close-button">Close</button>
-
-                    <button type="button" onclick="printClaimedResources()" class="print-btn">Print Record</button>
                 </div>
             </div>
         </div>
@@ -151,8 +151,6 @@
                 <div class="modal-buttons">
                     <button type="button" data-close-modal="viewPastTransactionsModal" class="btn-cancel"
                         id="close-button">Close</button>
-
-                    <button type="button" onclick="printIndividTransactions()" class="print-btn">Print Record</button>
                 </div>
             </div>
         </div>
@@ -316,7 +314,8 @@
                                         </select>
 
                                         <label for="birthdate-edit">Birthdate:</label>
-                                        <input required name="birthdate" type="date" class="birthdate" id="birthdate-edit">
+                                        <input required name="birthdate" type="date" class="birthdate"
+                                            id="birthdate-edit">
                                     </div>
                                 </div>
 
@@ -326,8 +325,8 @@
                                         <div class="student-form-group half-unique">
                                             <input name=street type="text" class="address" id="street-edit" required
                                                 placeholder="Street">
-                                            <input name="barangay" type="text" class="address" id="barangay-edit" required
-                                                placeholder="Barangay">
+                                            <input name="barangay" type="text" class="address" id="barangay-edit"
+                                                required placeholder="Barangay">
                                             <input name="city" type="text" class="address" id="city-edit" required
                                                 placeholder="City">
                                         </div>
@@ -336,7 +335,8 @@
                                     <div>
                                         <label>Place of Birth:</label>
                                         <div class="student-form-group">
-                                            <input name="birthPlace" type="text" required id="placeOfBirthEdit" class="place-of-birth-report">
+                                            <input name="birthPlace" type="text" required id="placeOfBirthEdit"
+                                                class="place-of-birth-report">
                                         </div>
                                     </div>
                                 </div>
@@ -362,7 +362,8 @@
                                 <input name="fatherName" type="text" class="parent-name" required id="fatherNameEdit">
 
                                 <label for="fatherOccupationEdit">Occupation:</label>
-                                <input name="fatherOccupation" type="text" class="parent-occupation" required id="fatherOccupationEdit">
+                                <input name="fatherOccupation" type="text" class="parent-occupation" required
+                                    id="fatherOccupationEdit">
                             </div> <br>
                         </div>
                         <div>
@@ -372,7 +373,8 @@
                                 <input name="motherName" type="text" class="parent-name" required id="motherNameEdit">
 
                                 <label for="motherOccupationEdit">Occupation:</label>
-                                <input name="motherOccupation" type="text" class="parent-occupation" required id="motherOccupationEdit">
+                                <input name="motherOccupation" type="text" class="parent-occupation" required
+                                    id="motherOccupationEdit">
                             </div> <br>
                         </div>
 
@@ -382,15 +384,18 @@
                             <input name="guardianName" type="text" class="parent-name" required id="guardianNameEdit">
 
                             <label for="guardianOccupationEdit">Occupation:</label>
-                            <input name="guardianOccupation" type="text" class="parent-occupation" required id="guardianOccupationEdit">
+                            <input name="guardianOccupation" type="text" class="parent-occupation" required
+                                id="guardianOccupationEdit">
                         </div> <br>
 
                         <div class="student-form-group">
                             <label for="guardianContactNumberEdit">Contact Number:</label>
-                            <input name="guardianContactNum" type="text" class="guardian-number" required id="guardianContactNumberEdit">
+                            <input name="guardianContactNum" type="text" class="guardian-number" required
+                                id="guardianContactNumberEdit">
 
                             <label for="guardianAddressEdit">Address:</label>
-                            <input name="guardianAddress"type="text" class="guardian-address" required id="guardianAddressEdit">
+                            <input name="guardianAddress" type="text" class="guardian-address" required
+                                id="guardianAddressEdit">
                         </div> <br>
 
                         <div class="transferee-section" id="transfereeEditFields">
@@ -405,26 +410,27 @@
                                 </select>
 
                                 <label for="lastMadrasaYearCompletedEdit">Last Madrasa Year Completed</label>
-                                <input name="lastMadrasaYearCompleted"type="text" required id="lastMadrasaYearCompletedEdit">
+                                <input name="lastMadrasaYearCompleted" type="text" required
+                                    id="lastMadrasaYearCompletedEdit">
                             </div> <br>
 
                             <div class="student-form-group">
                                 <label for="madrasaNameLastAttendedEdit">Madrasa Name Last Attended:</label>
-                                <input name="madrasaName"type="text" required id="madrasaNameLastAttendedEdit">
+                                <input name="madrasaName" type="text" required id="madrasaNameLastAttendedEdit">
                             </div> <br>
 
-                            <div class="student-form-group">    
+                            <div class="student-form-group">
                                 <label for="madrasaAddressEdit">Madrasa Address:</label>
-                                <input name="madrasaAddress"type="text" required id="madrasaAddressEdit">
+                                <input name="madrasaAddress" type="text" required id="madrasaAddressEdit">
                             </div> <br>
                         </div>
                     </form>
                 </div>
-                
+
 
                 <div class="modal-buttons">
-                    <button type="button" id="confirmStudentReportEdit" class="btn-confirm" data-action="editStudentReport"
-                        data-open-modal="confirmationModal"
+                    <button type="button" id="confirmStudentReportEdit" class="btn-confirm"
+                        data-action="editStudentReport" data-open-modal="confirmationModal"
                         data-message="Are you sure you want to update this student record?">Save Changes</button>
 
                     <button type="button" class="btn-cancel"
@@ -444,7 +450,7 @@
                             <label for="student-id">Student ID: </label>
                             <input readonly type="text" class="student-id-report" id="student-id">
                         </div> <br>
-                        
+
 
                         <div class="checkbox-container">
                             <div class="checkbox">
@@ -459,8 +465,8 @@
                                     <div id="discounts-rec" class="checkbox-transferee-reqs-group">
                                     </div>
                                     <div>
-                                        <button type="button" style="width: 100%;"
-                                            data-open-modal="confirmationModal" data-action="editDiscounts"
+                                        <button type="button" style="width: 100%;" data-open-modal="confirmationModal"
+                                            data-action="editDiscounts"
                                             data-message="Are you sure you want to update the student discounts?"
                                             class="btn-confirm">Update</button>
                                     </div>
@@ -675,8 +681,9 @@
                             <div class="basic-modal-buttons">
                                 <h6>Balance:</h6>
                                 <h6 id="total-balance">P0</h6>
-                                <button type="button" onclick="fetchAllTimeFees()" class="btn-confirm" data-open-modal="viewPastTransactionsModal"
-                                    id="transaction-record-btn">View Fully Paid</button>
+                                <button type="button" onclick="fetchAllTimeFees()" class="btn-confirm"
+                                    data-open-modal="viewPastTransactionsModal" id="transaction-record-btn">View Fully
+                                    Paid</button>
                             </div> <br>
 
                         </div>
@@ -708,8 +715,9 @@
                             </div>
 
                             <div class="basic-modal-buttons for-mobile">
-                                <button onclick="fetchDistributedItems()" type="button" class="btn-confirm" data-open-modal="viewClaimedResourcesModal"
-                                    id="unclaimed-resources-btn">View Claimed
+                                <button onclick="fetchDistributedItems()" type="button" class="btn-confirm"
+                                    data-open-modal="viewClaimedResourcesModal" id="unclaimed-resources-btn">View
+                                    Claimed
                                     Resources</button>
                             </div> <br>
                         </div>
@@ -718,176 +726,294 @@
 
                     <div class="header-stud-info-half">
                         <h2>Grades</h2>
-                        <div class="action">
-                            <div class="dropdown">
 
-                                <button type="button" class="dropdown-print-btn" onclick="toggleDropdown(event)">
-                                    Print
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
+                        <button type="button" class="btn-gray" data-open-modal="gradePrintModal">
+                            Print
+                        </button>
 
-                                <div class="dropdown-status-content normal-mob-text" id="dropdown-print-options">
-                                    <a href="#" class="action" data-open-modal="gradePrintModal">All</a>
-                                    <a href="#" class="action" data-open-modal="gradePrintModal">Semester 1</a>
-                                    <a href="#" class="action" data-open-modal="gradePrintModal">Semester 2</a>
-                                    <a href="#" class="action" data-open-modal="gradePrintModal">School Year
-                                        2023-2024</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </div> <br>
                     <div id="grades-container">
-                    </div> 
+
+                    </div>
                 </form>
             </div>
 
-            <!-- Grade Print Modal -->
-            <div id="gradePrintModal" class="grade-print-dal modal">
-                <div class="printable-area">
-                    <div class="grade-print-modal-content scroll-lock">
+        </div>
 
-                        <!-- Report Header -->
-                        <div class="header-container-print">
 
-                            <div class="left-header">
-                                <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+        <div id="studPrint" class="student-information-container">
+            <div class="student-information-container-content">
+                <!-- Report Header -->
+                <div class="header-container-print">
+
+                    <div class="left-header">
+                        <img th:src="@{/website-logo}" alt="School Logo" class="school-logo-payment">
+                    </div>
+                    <div class="middle-header-big">
+                        <div class="school-info-print-big">
+                            <h3 th:text="${schoolName}"></h3>
+                            <p th:text="${schoolAddress}"></p>
+                            <p th:text="${schoolEmail}"></p>
+                            <p th:text="${schoolNum}"></p>
+                            <h3 class="report-type"><strong>Student Report</strong></h3>
+                        </div> <br>
+                    </div>
+                </div>
+
+                <div class="separator-line"></div>
+                <h1>Student Information</h1>
+                <form method="" action="" id="studentInformationForm">
+                    <div class="header">
+                        <div class="half-unique">
+                            <label for="student-id">Student ID: </label>
+                            <input readonly type="text" class="student-id-report" id="student-id-print">
+                        </div> <br>
+
+                        <div class="checkbox-container">
+                            <div class="checkbox">
+                                <label for="isScholar">Scholar:</label>
+                                <h6 id="isScholar-print">Yes</h6>
                             </div>
-                            <div class="middle-header">
-                                <div class="school-info-print">
-                                    <h3 th:text="${schoolName}"></h3>
-                                    <p th:text="${schoolAddress}"></p>
-                                    <p th:text="${schoolEmail}"></p>
-                                    <p th:text="${schoolNum}"></p>
-                                    <h3 class="report-type"><strong>Grade Form</strong></h3>
+
+                            <div class="checkbox">
+                                <label for="isTransferee">Transferee:</label>
+                                <input type="checkbox" id="isTransferee-print">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-content: center; justify-items: left;">
+                        <h2>Personal Information</h2>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="column1">
+                                <div>
+                                    <label for="name">Name</label>
+                                    <div class="student-form-group">
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="firstName-print">
+                                            <p class="small-text first-name-p">First</p>
+                                        </div>
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="middleName-print">
+                                            <p class="small-text middle-name-p">Middle</p>
+                                        </div>
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="lastName-print">
+                                            <p class="small-text last-name-p">Last</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column2">
+                                <div class="student-form-group">
+                                    <label for="gender">Gender:</label>
+                                    <input readonly type="text" class="gender" id="gender-print">
+
+                                    <label for="birthdate">Birthdate:</label>
+                                    <input readonly required type="date" class="birthdate" id="birthdate-report-print">
+                                </div>
+                            </div>
+
+                            <div class="column1">
+                                <div>
+                                    <div class="student-form-group">
+                                        <div>
+                                            <label for="address">Address:</label>
+                                            <div class="student-form-group address-div half-unique">
+                                                <input readonly type="text" class="address" id="street-print" required
+                                                    placeholder="Street">
+                                                <input readonly type="text" class="address" id="barangay-print" required
+                                                    placeholder="Barangay">
+                                                <input readonly type="text" class="address" id="city-print" required
+                                                    placeholder="City">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column2">
+                                <label>Place of Birth:</label>
+                                <div class="student-form-group">
+                                    <input readonly type="text" id="placeOfBirth-print" class="place-of-birth-report">
                                 </div>
                             </div>
                         </div>
-
-                        <div class="separator-line"></div>
-                        <!-- Student Info -->
-                        <table border="1" cellspacing="0" cellpadding="6"
-                            style="width: 100%; margin-top: -30px; font-family: Arial, sans-serif; border-collapse: collapse;">
-                            <!-- Student Info Section -->
-                            <tr class="stud-info-section">
-                                <td colspan="6">
-                                    <div class="student-info-container-printable">
-                                        <div class="payment-student-info-row">
-                                            <label for="receipt-student-id">Student ID:</label>
-                                            <input type="text" class="print-inputs" id="receipt-student-id"
-                                                placeholder="">
-                                        </div>
-
-                                        <div class="payment-student-info-row">
-                                            <label for="receipt-date">Date:</label>
-                                            <input type="date" class="print-inputs" id="receipt-date">
-                                        </div>
-
-                                        <div class="payment-student-info-row">
-                                            <label for="receipt-student-name">Student Name:</label>
-                                            <input type="text" class="print-inputs" id="receipt-student-name"
-                                                placeholder="">
-                                        </div>
-
-                                        <div class="payment-student-info-row">
-                                            <label for="sy-and-sem">SY & Sem:</label>
-                                            <input type="text" class="print-inputs" id="current-sy-and-sem"
-                                                placeholder="">
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Grade Table Header -->
-                            <tr class="grade-header">
-                                <th>Subject</th>
-                                <th>1st Sem</th>
-                                <th>2nd Sem</th>
-                                <th>Final</th>
-                                <th>Remarks</th>
-                            </tr>
-
-                            <!-- Grade Table Rows (No inner borders) -->
-                            <tr class="grade-row">
-                                <td>READING AND WRITING</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>PAGBASA AT PAGSUSURI NG IBAT IBANG TEKSTO TUNGO SA P</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>21ST CENTURY LITERATURE FROM THE PHILIPPINES AND THE W</td>
-                                <td>78</td>
-                                <td>77</td>
-                                <td>77.5</td>
-                                <td>Passed</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>HOUSEKEEPING</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>STATISTICS AND PROBABILITY</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>PHYSICAL EDUCATION AND HEALTH</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                            <tr class="grade-row">
-                                <td>PHYSICAL SCIENCE</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                            </tr>
-                        </table>
-
-                        <div class="printable-footer">
-                            Date Printed: <strong>4/1/2020</strong>
-                        </div>
-
-                        <!-- Print Button -->
-                        <div class="modal-buttons">
-                            <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
-                        </div>
                     </div>
-                </div>
-            </div>
 
-                    <!-- Error Modal -->
-            <div id="errorModal" class="modal">
-                <div class="modal-content scroll-lock">
-                    <p id="errorMessage"></p>
-                    <div class="modal-buttons">
-                        <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                    <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                        <h2>Additional Information</h2>
                     </div>
-                </div>
-            </div>
-            <!-- Background overlay -->
-            <div id="successModalOverlay"></div>
 
-            <!-- Success modal -->
-            <div id="successModal">
-                <p id="successModalMessage"></p>
-            </div>
+                    <div>
+                        <h6>Student Email: (Optional)</h6>
+                        <div class="student-form-group stud-email address-div">
+                            <label for="stud-email">Email:</label>
+                            <input type="email" readonly class="parent-occupation">
+                        </div> <br>
+                    </div>
 
+                    <div>
+                        <h6>Father's Information</h6>
+                        <div class="student-form-group">
+                            <label for="fatherName">Name:</label>
+                            <input readonly type="text" class="parent-name" id="fatherName-print">
+
+                            <label for="fatherOccupation">Occupation:</label>
+                            <input readonly type="text" class="parent-occupation" id="fatherOccupation-print">
+                        </div> <br>
+                    </div>
+
+                    <div>
+                        <h6>Mother's Information</h6>
+                        <div class="student-form-group">
+                            <label for="motherName">Name:</label>
+                            <input readonly type="text" class="parent-name" id="motherName-print">
+
+                            <label for="motherOccupation">Occupation:</label>
+                            <input readonly type="text" class="parent-occupation" id="motherOccupation-print">
+                        </div> <br>
+                    </div>
+
+                    <h6>Guardian's Information</h6>
+                    <div class="student-form-group">
+                        <label for="guardianName">Name:</label>
+                        <input readonly type="text" class="parent-name" id="guardianName-print">
+
+                        <label for="guardianOccupation">Occupation:</label>
+                        <input readonly type="text" class="parent-occupation" id="guardianOccupation-print">
+                    </div> <br>
+
+                    <div class="student-form-group">
+                        <label for="guardianContactNumber">Contact Number:</label>
+                        <input readonly type="text" class="guardian-number" id="guardianContactNumber-print">
+
+                        <label for="guardianAddress">Address:</label>
+                        <input readonly type="text" class="guardian-address" id="guardianAddress-print">
+                    </div> <br>
+
+                    <div class="transferee-section" id="transfereeFields">
+                        <div style="display: flex; align-content: center; justify-items: left; margin-top: 20px;">
+                            <h2>For Transferees Only</h2>
+                        </div>
+                        <div class="student-form-group">
+                            <label for="lastGradeLevelCompleted">Last Grade Level Completed:</label>
+                            <input readonly type="text" id="lastGradeLevelCompleted-print">
+
+                            <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed</label>
+                            <input readonly type="text" id="lastMadrasaYearCompleted-print">
+                        </div> <br>
+
+                        <div class="student-form-group">
+                            <label for="madrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                            <input readonly type="text" id="madrasaNameLastAttended-print">
+                        </div> <br>
+
+                        <div class="student-form-group">
+                            <label for="madrasaAddress">Madrasa Address:</label>
+                            <input readonly type="text" id="madrasaAddress-print">
+                        </div> <br>
+                    </div>
+                </form>
+            </div>
         </div>
+
+
+        <!-- Grade Print Modal -->
+
+        <div id="gradePrintModal" class="grade-print-dal modal">
+            <div class="printable-area">
+                <div class="grade-print-modal-content scroll-lock">
+
+                    <!-- Report Header -->
+                    <div class="header-container-print">
+                        <div class="left-header">
+                            <img src="/images/al-furqanlogo.jpg" alt="School Logo" class="school-logo-payment">
+                        </div>
+                        <div class="middle-header">
+                            <div class="school-info-print">
+                                <h3 th:text="${schoolName}"></h3>
+                                <p th:text="${schoolAddress}"></p>
+                                <p th:text="${schoolEmail}"></p>
+                                <p th:text="${schoolNum}"></p>
+                                <h3 class="report-type"><strong>Grade Form</strong></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="separator-line"></div>
+
+                    <!-- Student Info -->
+                    <!-- Student Info - MOVED OUTSIDE THE TABLE -->
+                    <div class="student-info-container-printable">
+                        <div class="payment-student-info-row">
+                            <label>Student ID:</label>
+                            <span id="receipt-student-id" class="print-value"></span>
+                        </div>
+                        <div class="payment-student-info-row">
+                            <label>Date:</label>
+                            <span id="receipt-date" class="print-value"></span>
+                        </div>
+                        <div class="payment-student-info-row">
+                            <label>Student Name:</label>
+                            <span id="receipt-student-name" class="print-value"></span>
+                        </div>
+                        <div class="payment-student-info-row">
+                            <label>SY & Sem:</label>
+                            <span id="current-sy-and-sem" class="print-value"></span>
+                        </div>
+                    </div>
+
+                    <!-- Grade Table - SIMPLIFIED STRUCTURE -->
+                    <div class="table-wrapper-modal">
+                        <table border="1" cellspacing="0" cellpadding="6" class="grade-table main-table">
+                            <thead>
+                                <tr class="grade-header">
+                                    <th>Subject</th>
+                                    <th>Grade</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="grades-table-body">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+
+
+                    <!-- Print Button -->
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel" data-close-modal="gradePrintModal">Cancel</button>
+                        <button type="button" onclick="printReceipt()" class="print-btn">PRINT RECEIPT</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content scroll-lock">
+            <p id="errorMessage"></p>
+            <div class="modal-buttons">
+                <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+            </div>
+        </div>
+    </div>
+    <!-- Background overlay -->
+    <div id="successModalOverlay"></div>
+
+    <!-- Success modal -->
+    <div id="successModal">
+        <p id="successModalMessage"></p>
+    </div>
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -895,12 +1021,32 @@
         const wordArray = (path.split("/"));
         const studentName = ((wordArray[wordArray.length - 1]));
         findStudent(studentName);
-        
+
+
+
         const transfereeCheckbox = document.getElementById("isTransferee");
+        const transfereeCheckboxPrint = document.getElementById("isTransferee-print");
+
         const transfereeFields = document.getElementById("transfereeFields");
         const requiredInputs = transfereeFields.querySelectorAll("input, select, textarea");
 
         transfereeCheckbox.addEventListener("change", function () {
+            if (this.checked) {
+                fetchTransRequirements();
+                transfereeFields.style.display = "block";
+                requiredInputs.forEach(input => {
+                    input.setAttribute("required", "required");
+                });
+            } else {
+                document.getElementById("transfereeReq").innerHTML = ``;
+                transfereeFields.style.display = "none";
+                requiredInputs.forEach(input => {
+                    input.removeAttribute("required");
+                });
+            }
+        });
+
+        transfereeCheckboxPrint.addEventListener("change", function () {
             if (this.checked) {
                 fetchTransRequirements();
                 transfereeFields.style.display = "block";
@@ -938,60 +1084,107 @@
     var studentId;
     async function findStudent(studentName) {
         const response = await fetch(`/students/find-student/name/${studentName}`);
-        if (!response.ok) { alert("student record no found"); }
+        if (!response.ok) {
+            alert("student record not found");
+            return;
+        }
+
         student = await response.json();
 
-        //document.getElementById("stud-type").textContent = student.status;
-        document.getElementById("isTransferee").checked = student.transferee;
-        if(student.transferee){
-            document.getElementById("transfereeFields").style.display = "block";
-        }
-        document.getElementById("isScholar").textContent =student.discountsAvailed > 0 ? "YES" : "NO";
+        console.log(student);
 
+
+        // Original fields and their respective print counterparts
         document.getElementById("student-id").value = student.studentDisplayId;
+        document.getElementById("student-id-print").value = student.studentDisplayId;
+
+
         document.getElementById("firstName").value = student.firstName;
+        document.getElementById("firstName-print").value = student.firstName;
+
         document.getElementById("middleName").value = student.middleName;
+        document.getElementById("middleName-print").value = student.middleName;
+
         document.getElementById("lastName").value = student.lastName;
+        document.getElementById("lastName-print").value = student.lastName;
+
         document.getElementById("gender").value = student.gender;
+        document.getElementById("gender-print").value = student.gender;
+
         document.getElementById("birthdate-report").value = student.birthdate;
+        document.getElementById("birthdate-report-print").value = student.birthdate;
+
         document.getElementById("placeOfBirth").value = student.birthPlace;
+        document.getElementById("placeOfBirth-print").value = student.birthPlace;
+
         document.getElementById("fatherName").value = student.fatherName;
+        document.getElementById("fatherName-print").value = student.fatherName;
+
         document.getElementById("fatherOccupation").value = student.fatherOccupation;
+        document.getElementById("fatherOccupation-print").value = student.fatherOccupation;
+
         document.getElementById("motherName").value = student.motherName;
+        document.getElementById("motherName-print").value = student.motherName;
+
         document.getElementById("motherOccupation").value = student.motherOccupation;
+        document.getElementById("motherOccupation-print").value = student.motherOccupation;
+
         document.getElementById("guardianName").value = student.guardianName;
+        document.getElementById("guardianName-print").value = student.guardianName;
+
         document.getElementById("guardianOccupation").value = student.fatherOccupation;
+        document.getElementById("guardianOccupation-print").value = student.fatherOccupation;
+
         document.getElementById("guardianContactNumber").value = student.guardianContactNum;
+        document.getElementById("guardianContactNumber-print").value = student.guardianContactNum;
+
         document.getElementById("guardianAddress").value = student.guardianAddress;
+        document.getElementById("guardianAddress-print").value = student.guardianAddress;
 
         document.getElementById("street").value = student.address.street;
-        document.getElementById("barangay").value = student.address.barangay;
-        document.getElementById("city").value = student.address.city;
-        document.getElementById("lastGradeLevelCompleted").value = student.currentGradeLevel ? student.currentGradeLevel.levelName : 'None';
-        document.getElementById("lastMadrasaYearCompleted").value = student.lastMadrasaYearCompleted;
-        document.getElementById("madrasaNameLastAttended").value = student.madrasaName;
-        document.getElementById("madrasaAddress").value = student.madrasaAddress;
+        document.getElementById("street-print").value = student.address.street;
 
+        document.getElementById("barangay").value = student.address.barangay;
+        document.getElementById("barangay-print").value = student.address.barangay;
+
+        document.getElementById("city").value = student.address.city;
+        document.getElementById("city-print").value = student.address.city;
+
+        document.getElementById("lastGradeLevelCompleted").value = student.currentGradeLevel ? student.currentGradeLevel.levelName : 'None';
+        document.getElementById("lastGradeLevelCompleted-print").value = student.currentGradeLevel ? student.currentGradeLevel.levelName : 'None';
+
+        document.getElementById("lastMadrasaYearCompleted").value = student.lastMadrasaYearCompleted;
+        document.getElementById("lastMadrasaYearCompleted-print").value = student.lastMadrasaYearCompleted;
+
+        document.getElementById("madrasaNameLastAttended").value = student.madrasaName;
+        document.getElementById("madrasaNameLastAttended-print").value = student.madrasaName;
+
+        document.getElementById("madrasaAddress").value = student.madrasaAddress;
+        document.getElementById("madrasaAddress-print").value = student.madrasaAddress;
+
+        // Call other methods to set up the UI
         setNameIdText();
         fetchTransRequirements(student.transfereeRequirements);
         studentId = student.studentId;
+
         fetchRemainingFees();
         setStudentGrades();
         setUpDistribution();
         fetchDiscounts(student.discountsAvailed);
     }
 
-    async function setGradeLevels(elementId,selectedLvl){
+
+    async function setGradeLevels(elementId, selectedLvl) {
         const response = await fetch("/gradelevel/all");
         var gradeOption = document.getElementById(elementId);
         gradeOption.innerHTML = "<option value='0'>None</option>";
-        if(response.ok){
+        if (response.ok) {
             const gradeLevels = await response.json();
-            gradeLevels.forEach(gradeLevel =>{
+            gradeLevels.forEach(gradeLevel => {
                 var option = document.createElement("option");
                 option.textContent = gradeLevel.levelName;
                 option.value = gradeLevel.levelId;
-                if(selectedLvl === gradeLevel.levelId){
+                if (selectedLvl === gradeLevel.levelId) {
                     console.log("true");
                     option.selected = true;
                 }
@@ -1001,10 +1194,10 @@
         }
     }
 
-    function setUpEditForm(){
+    function setUpEditForm() {
         document.getElementById("student-id-edit").value = student.studentDisplayId;
         document.getElementById("isTransferee-edit").checked = student.transferee;
-        if(student.transferee){
+        if (student.transferee) {
             document.getElementById("transfereeEditFields").style.display = "block";
         }
         document.getElementById("firstNameEdit").value = student.firstName;
@@ -1025,11 +1218,12 @@
         document.getElementById("street-edit").value = student.address.street;
         document.getElementById("barangay-edit").value = student.address.barangay;
         document.getElementById("city-edit").value = student.address.city;
-        setGradeLevels("lastGradeLevelCompletedEdit",(student.lastGradeLevelCompleted ? student.lastGradeLevelCompleted.levelId : 0));
+        setGradeLevels("lastGradeLevelCompletedEdit", (student.lastGradeLevelCompleted ? student.lastGradeLevelCompleted.levelId : 0));
         document.getElementById("lastMadrasaYearCompletedEdit").value = student.lastMadrasaYearCompleted;
         document.getElementById("madrasaNameLastAttendedEdit").value = student.madrasaName;
         document.getElementById("madrasaAddressEdit").value = student.madrasaAddress;
     }
+
 
     async function setStudentGrades() {
         const response = await fetch(`/student-grades/student/${studentId}`);
@@ -1037,15 +1231,20 @@
 
         const grades = await response.json();
         const gradesview = document.getElementById("grades-container");
-        gradesview.innerHTML = ""; // clear previous content
+        gradesview.innerHTML = ""; // Clear previous content
+
         if (!grades || grades.length === 0) {
             gradesview.innerHTML = `
-            <div class="no-records-message">
-                <p>No grade records found for this student.<p>
-            </div>`;
+        <div class="no-records-message">
+            <p>No grade records found for this student.</p>
+        </div>`;
             return;
         }
 
+        // Populate the grade print modal
+        populateGradePrintModal(grades, student);
+
+        // Continue with the grades view logic
         for (let i = 0; i < grades.length; i += 2) {
             const containerTwo = document.createElement("div");
             containerTwo.classList.add("container-two");
@@ -1064,21 +1263,20 @@
                     totalGrade += grade.subjectGrade;
                     count++;
                     gradesRow += `
-            <tr>
-                <td>${grade.subjectName}</td>
-                <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
-                <td>
-                    <div class="status-container">
-                        <div class="status" id="grade-remarks">
-                            ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
+                <tr>
+                    <td>${grade.subjectName}</td>
+                    <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
+                    <td>
+                        <div class="status-container">
+                            <div class="status" id="grade-remarks">
+                                ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
+                            </div>
                         </div>
-                    </div>
-                </td>
-            </tr>`;
+                    </td>
+                </tr>`;
                 });
 
                 const average = totalGrade / count;
-
                 const semesterFormatted = sem.sectionSemester.includes("First semester")
                     ? sem.sectionSemester.replace("First semester", "1st Sem")
                     : sem.sectionSemester.includes("Second semester")
@@ -1127,8 +1325,7 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        `;
+            </div>`;
 
                 containerTwo.appendChild(columnMain);
             }
@@ -1136,10 +1333,58 @@
             gradesview.appendChild(containerTwo);
             gradesview.appendChild(document.createElement("br")); // Optional line break
         }
-
     }
 
-    async function updateStudentRecord(){
+    function populateGradePrintModal(grades, student) {
+        // Get all elements
+        const studentIdEl = document.getElementById("receipt-student-id");
+        const studentNameEl = document.getElementById("receipt-student-name");
+        const dateEl = document.getElementById("receipt-date");
+        const sySemEl = document.getElementById("current-sy-and-sem");
+        const tbody = document.getElementById("grades-table-body");
+
+        // Clear previous grades
+        tbody.innerHTML = "";
+
+        // Populate student info (using textContent instead of value for spans)
+        studentIdEl.textContent = student.studentDisplayId || "N/A";
+        studentNameEl.textContent = `${student.firstName || ""} ${student.lastName || ""}`.trim();
+        dateEl.textContent = new Date().toLocaleDateString();
+
+        // Get SY & Sem from first grade record
+        if (grades && grades.length > 0) {
+            const firstSem = grades[0];
+            const sy = firstSem.schoolYear;
+            const sem = firstSem.sectionSemester
+            sySemEl.textContent = `${sem}`;
+        }
+
+        // Populate grades
+        if (!grades || grades.length === 0) {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td colspan="3" style="text-align:center;">No grades available</td>`;
+            tbody.appendChild(row);
+            return;
+        }
+
+        grades.forEach(semester => {
+            semester.grades.forEach(grade => {
+                const row = document.createElement("tr");
+                row.className = "grade-row";
+
+                const passed = grade.subjectGrade > 49 ? "PASSED" : "FAILED";
+
+                row.innerHTML = `
+                <td>${grade.subjectName || "N/A"}</td>
+                <td>${grade.subjectGrade || "N/A"}</td>
+                <td>${grade.subjectGrade ? passed : "N/A"}</td>
+            `;
+                tbody.appendChild(row);
+            });
+        });
+    }
+
+    async function updateStudentRecord() {
         const form = document.getElementById('studentInformationFormEdit');
 
         const formData = new FormData(form);
@@ -1148,25 +1393,25 @@
         const formDataObject = Object.fromEntries(formData.entries());
         formDataObject.address = {
             street: form.elements['street'].value,
-            barangay : form.elements['barangay'].value,
-            city : form.elements['city'].value
+            barangay: form.elements['barangay'].value,
+            city: form.elements['city'].value
         };
 
         formDataObject.transferee = form.elements[`amITransferee`].value === "on";
 
-        const response = await fetch(`/students/update/${studentId}`,{
-            method : "PUT",
-            headers : { "Content-Type": "application/json" },
-            body : JSON.stringify(formDataObject)
+        const response = await fetch(`/students/update/${studentId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formDataObject)
         });
 
         const msgresult = await response.text();
-        if(response.ok){
-            showSuccessModal("Student Profile Updated Successfully",false);
+        if (response.ok) {
+            showSuccessModal("Student Profile Updated Successfully", false);
             setTimeout(() => {
-                window.location.href=`/reports/student/${msgresult}`;
+                window.location.href = `/reports/student/${msgresult}`;
             }, 2000);
-        }else{
+        } else {
             showErrorModal(msgresult);
         }
     }
@@ -1178,7 +1423,7 @@
             currentDisPage = currentPage;
             const response = await fetch(`/distributable/student-distribution/all?pageSize=3&pageNo=${currentPage}&isClaimed=false&student=${student.fullName}&itemType=0&sortBy=none`);
             if (!response.ok) {
-                updatePaginationUI("DistU",1,0,0,0);
+                updatePaginationUI("DistU", 1, 0, 0, 0);
                 return;
             }
 
@@ -1186,7 +1431,7 @@
 
             const tableBody = document.querySelector("#distribution-mini-table tbody");
             if (!tableBody) {
-                updatePaginationUI("DistU",1,0,0,0);
+                updatePaginationUI("DistU", 1, 0, 0, 0);
                 return;
             }
 
@@ -1195,7 +1440,7 @@
 
             if (!data.content || data.content.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="2">No records found</td></tr>`;
-                updatePaginationUI("DistU",1,0,0,0);
+                updatePaginationUI("DistU", 1, 0, 0, 0);
                 return;
             }
 
@@ -1209,7 +1454,7 @@
                 fragment.appendChild(row);
             });
             tableBody.appendChild(fragment);
-            updatePaginationUI("DistU",currentDisPage,data.pageSize,data.totalElements,data.totalPages);
+            updatePaginationUI("DistU", currentDisPage, data.pageSize, data.totalElements, data.totalPages);
 
         } catch (error) {
             const tableBody = document.querySelector("#table-ko tbody");
@@ -1227,19 +1472,21 @@
         }
     });
 
-    async function fetchAllTimeFees(currentPage=1) {
+    async function fetchAllTimeFees(currentPage = 1) {
         const feesTable = document.querySelector("#past-trans-table tbody");
         const response = await fetch(`/paymentrecord/form/${studentId}?forBreakDown=true&pageNo=${currentPage}&pageSize=7`);
-        if (!response.ok) { 
-            updatePaginationUI("PFee",1,0,0,0);
-            return; }
+        if (!response.ok) {
+            updatePaginationUI("PFee", 1, 0, 0, 0);
+            return;
+        }
 
         const remainingFees = await response.json();
 
         feesTable.innerHTML = `<tr><td colspan="4">No records found</td></tr>`;
-        if (remainingFees.content.length === 0) { 
-            updatePaginationUI("PFee",1,0,0,0);
-            return; }
+        if (remainingFees.content.length === 0) {
+            updatePaginationUI("PFee", 1, 0, 0, 0);
+            return;
+        }
         feesTable.innerHTML = ``;
         remainingFees.content.forEach(data => {
             const row = document.createElement("tr");
@@ -1249,36 +1496,43 @@
                 <td>${data.totalPaid}</td>
                 <td>
                     <div class="status-container">
-                        <div class="status" id="status-payments">${data.totalPaid > 0 && data.totalPaid<data.totalRequired ? "Partially Paid" :
-                                                                    data.balance === 0 ? "Fully Paid" : data.balance<0 ? "For Refund" :"Not Paid"}</div>
+                        <div class="status" id="status-payments">${data.totalPaid > 0 && data.totalPaid < data.totalRequired ? "Partially Paid" :
+                    data.balance === 0 ? "Fully Paid" : data.balance < 0 ? "For Refund" : "Not Paid"}</div>
                     </div>
                 </td>`;
             feesTable.appendChild(row);
-            updatePaginationUI("PFee",currentPage,remainingFees.pageSize,remainingFees.totalElements,remainingFees.totalPages);
+            updatePaginationUI("PFee", currentPage, remainingFees.pageSize, remainingFees.totalElements, remainingFees.totalPages);
         });
     }
 
-    function setNameIdText(){
-        document.getElementById("studName").innerHTML=`<a href="/reports/student/${student.fullName}" id="studName" title="You're currently on this page.">${student.fullName}</a>`;
-        document.getElementById("student-grade-id").textContent=student.studentDisplayId;
-        document.getElementById("student-grade-name").textContent=student.fullName;
-        document.getElementById("student-resources-name").textContent=student.studentDisplayId;
-        document.getElementById("student-resources-id").textContent=student.fullName;
+    function setNameIdText() {
+        if (!student) {
+            console.error("Student data is missing!");
+            return;
+        }
+
+        document.getElementById("studName").textContent = student.fullName;
+
+        document.getElementById("student-grade-id").textContent = student.studentDisplayId;
+        document.getElementById("student-grade-name").textContent = student.fullName;
+        document.getElementById("student-resources-name").textContent = student.studentDisplayId;
+        document.getElementById("student-resources-id").textContent = student.fullName;
         document.getElementById("total-balance").textContent = `₱${student.balanceAmount}`;
     }
 
+
     //go here
-    async function fetchDistributedItems(currentPage=1){
+    async function fetchDistributedItems(currentPage = 1) {
         const response = await fetch(`/distributable/student-distribution/all?pageSize=10&isClaimed=true&student=${student.fullName}&pageNo=${currentPage}&itemType=0&sortBy=none`);
-        if(response.ok){
+        if (response.ok) {
             const distributed = await response.json();
             var claimedTable = document.querySelector("#claimed-res-table tbody")
             claimedTable.innerHTML = "<tr><td colspan='3'>No records found.</td></tr>";
-            if(distributed.content.length === 0){
-                updatePaginationUI("DistC",1,0,0,0);
+            if (distributed.content.length === 0) {
+                updatePaginationUI("DistC", 1, 0, 0, 0);
                 return;
             }
-            claimedTable.innerHTML="";
+            claimedTable.innerHTML = "";
             const fragment = document.createDocumentFragment();
             distributed.content.forEach(item => {
                 const row = document.createElement("tr");
@@ -1289,24 +1543,26 @@
                 fragment.appendChild(row);
             });
             claimedTable.appendChild(fragment);
-            updatePaginationUI("DistC",distributed.pageNo,distributed.pageSize,distributed.totalElements,distributed.totalPages);
+            updatePaginationUI("DistC", distributed.pageNo, distributed.pageSize, distributed.totalElements, distributed.totalPages);
         }
     }
 
-    async function fetchRemainingFees(currentPage=1) {
+    async function fetchRemainingFees(currentPage = 1) {
         const feesTable = document.querySelector("#payment-mini-table tbody");
         const response = await fetch(`/paymentrecord/form/${studentId}?pageNo=${currentPage}`);
-        if (!response.ok) { 
-            updatePaginationUI("UFee",1,0,0,0);
-            return; }
+        if (!response.ok) {
+            updatePaginationUI("UFee", 1, 0, 0, 0);
+            return;
+        }
 
         const remainingFees = await response.json();
         console.log(remainingFees);
 
         feesTable.innerHTML = `<tr><td colspan="5">No records found</td></tr>`;
-        if (remainingFees.content.length === 0) { 
-            updatePaginationUI("UFee",1,0,0,0);
-            return; }
+        if (remainingFees.content.length === 0) {
+            updatePaginationUI("UFee", 1, 0, 0, 0);
+            return;
+        }
         feesTable.innerHTML = ``;
         remainingFees.content.forEach(data => {
             const row = document.createElement("tr");
@@ -1321,7 +1577,7 @@
                     </div>
                 </td>`;
             feesTable.appendChild(row);
-            updatePaginationUI("UFee",currentPage,remainingFees.pageSize,remainingFees.totalElements,remainingFees.totalPages);
+            updatePaginationUI("UFee", currentPage, remainingFees.pageSize, remainingFees.totalElements, remainingFees.totalPages);
         });
     }
 
@@ -1358,7 +1614,7 @@
         document.querySelectorAll("#discounts-rec input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
-        alert(selectedTransReq+" ang sulod");
+        alert(selectedTransReq + " ang sulod");
         fetch(`/discounts/add-student-discounts/${studentId}`, {
             method: 'POST',
             headers: {
@@ -1427,7 +1683,7 @@
             .catch(error => console.error("Error fetching discounts:", error));
     }
 
-    function fetchTransRequirements(reqIds = [],divId = "transfereeReq") {
+    function fetchTransRequirements(reqIds = [], divId = "transfereeReq") {
         fetch("/trans-req/all")
             .then(response => response.json())
             .then(data => {
@@ -1482,87 +1738,360 @@
         config.currentPage = currentPage;
     }
 
-const paginationConfigs = {
-    'DistU': {
-        currentPage: 1,
-        setUpFunction: setUpDistribution,
-        elements: {
-            itemRange: "itemRangeDistU",
-            pageInput: "pageInputDistU",
-            totalPages: "totalPagesDistU",
-            prevPage: "prevPageDistU",
-            nextPage: "nextPageDistU"
+    const paginationConfigs = {
+        'DistU': {
+            currentPage: 1,
+            setUpFunction: setUpDistribution,
+            elements: {
+                itemRange: "itemRangeDistU",
+                pageInput: "pageInputDistU",
+                totalPages: "totalPagesDistU",
+                prevPage: "prevPageDistU",
+                nextPage: "nextPageDistU"
+            }
+        },
+        'DistC': {
+            currentPage: 1,
+            setUpFunction: fetchDistributedItems,
+            elements: {
+                itemRange: "itemRangeDistC",
+                pageInput: "pageInputDistC",
+                totalPages: "totalPagesDistC",
+                prevPage: "prevPageDistC",
+                nextPage: "nextPageDistC"
+            }
+        },
+        'UFee': {
+            currentPage: 1,
+            setUpFunction: fetchRemainingFees,
+            elements: {
+                itemRange: "itemRangeUFee",
+                pageInput: "pageInputUFee",
+                totalPages: "totalPagesUFee",
+                prevPage: "prevPageUFee",
+                nextPage: "nextPageUFee"
+            }
+        },
+        'PFee': {
+            currentPage: 1,
+            setUpFunction: fetchAllTimeFees,
+            elements: {
+                itemRange: "itemRangePFee",
+                pageInput: "pageInputPFee",
+                totalPages: "totalPagesPFee",
+                prevPage: "prevPagePFee",
+                nextPage: "nextPagePFee"
+            }
         }
-    },
-    'DistC': {
-        currentPage: 1,
-        setUpFunction: fetchDistributedItems,
-        elements: {
-            itemRange: "itemRangeDistC",
-            pageInput: "pageInputDistC",
-            totalPages: "totalPagesDistC",
-            prevPage: "prevPageDistC",
-            nextPage: "nextPageDistC"
-        } 
-    },    
-    'UFee': {
-        currentPage: 1,
-        setUpFunction: fetchRemainingFees,
-        elements: {
-            itemRange: "itemRangeUFee",
-            pageInput: "pageInputUFee",
-            totalPages: "totalPagesUFee",
-            prevPage: "prevPageUFee",
-            nextPage: "nextPageUFee"}
-    },
-    'PFee': {
-        currentPage: 1,
-        setUpFunction: fetchAllTimeFees,
-        elements: {
-            itemRange: "itemRangePFee",
-            pageInput: "pageInputPFee",
-            totalPages: "totalPagesPFee",
-            prevPage: "prevPagePFee",
-            nextPage: "nextPagePFee"}
+    };
+
+    function initializePaginationListeners() {
+        Object.keys(paginationConfigs).forEach(key => {
+            const config = paginationConfigs[key];
+            const { elements, setUpFunction } = config;
+
+            // Previous page button
+            document.getElementById(elements.prevPage).addEventListener("click", () => {
+                if (config.currentPage > 1) {
+                    config.currentPage--;
+                    setUpFunction(config.currentPage);
+                }
+            });
+
+            // Next page button
+            document.getElementById(elements.nextPage).addEventListener("click", () => {
+                const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+                if (config.currentPage < totalPages) {
+                    config.currentPage++;
+                    setUpFunction(config.currentPage);
+                }
+            });
+
+            // Page input change
+            document.getElementById(elements.pageInput).addEventListener("change", (e) => {
+                const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+                let page = parseInt(e.target.value);
+                if (page >= 1 && page <= totalPages) {
+                    config.currentPage = page;
+                    setUpFunction(config.currentPage);
+                } else {
+                    e.target.value = config.currentPage;
+                }
+            });
+        });
     }
-};
+    document.addEventListener("DOMContentLoaded", initializePaginationListeners);
 
-function initializePaginationListeners() {
-    Object.keys(paginationConfigs).forEach(key => {
-        const config = paginationConfigs[key];
-        const { elements, setUpFunction } = config;
 
-        // Previous page button
-        document.getElementById(elements.prevPage).addEventListener("click", () => {
-            if (config.currentPage > 1) {
-                config.currentPage--;
-                setUpFunction(config.currentPage);
-            }
-        });
+    // document.getElementById('saveAsPdf').addEventListener('click', () => {
+    //     const { jsPDF } = window.jspdf;
+    //     const doc = new jsPDF();
 
-        // Next page button
-        document.getElementById(elements.nextPage).addEventListener("click", () => {
-            const totalPages = parseInt(document.getElementById(elements.pageInput).max);
-            if (config.currentPage < totalPages) {
-                config.currentPage++;
-                setUpFunction(config.currentPage);
-            }
-        });
+    //     const modalContent = document.getElementById("studentInformationContainer");
 
-        // Page input change
-        document.getElementById(elements.pageInput).addEventListener("change", (e) => {
-            const totalPages = parseInt(document.getElementById(elements.pageInput).max);
-            let page = parseInt(e.target.value);
-            if (page >= 1 && page <= totalPages) {
-                config.currentPage = page;
-                setUpFunction(config.currentPage);
-            } else {
-                e.target.value = config.currentPage;
-            }
+    //     if (!modalContent) {
+    //         console.error("Modal content not found");
+    //         return;
+    //     }
+
+    //     html2canvas(modalContent, {
+    //         onrendered: function (canvas) {
+    //             const imgData = canvas.toDataURL("image/png");
+    //             doc.addImage(imgData, 'PNG', 10, 10, 180, 0); // Adjust the size accordingly
+
+    //             // Save the generated PDF to the user's machine
+    //             doc.save('modal-content.pdf'); // This will download the file without prompting the print dialog
+    //         }
+    //     });
+    // });
+    //     document.getElementById('printStud').addEventListener('click', async () => {
+    //     try {
+    //         const { jsPDF } = window.jspdf;
+    //         const doc = new jsPDF({
+    //             orientation: 'portrait',
+    //             unit: 'mm',
+    //             format: 'a4'
+    //         });
+
+    //         const contentElement = document.getElementById("studPrint");
+
+    //         // Apply temporary styles for printing
+    //         const originalStyles = contentElement.style.cssText;
+    //         contentElement.style.width = '210mm';
+    //         contentElement.style.overflow = 'visible';
+    //         contentElement.style.padding = '10mm';
+
+    //         // Use html2canvas to capture the content
+    //         const canvas = await html2canvas(contentElement, {
+    //             scale: 2, // Higher resolution for better quality
+    //             logging: true, // Helpful for debugging
+    //             useCORS: true, // Important for external images
+    //             scrollX: 0,
+    //             scrollY: 0,
+    //             windowWidth: contentElement.scrollWidth,
+    //             windowHeight: contentElement.scrollHeight
+    //         });
+
+    //         // Restore original styles
+    //         contentElement.style.cssText = originalStyles;
+
+    //         // Convert canvas to image data
+    //         const imgData = canvas.toDataURL('image/png');
+
+    //         // Calculate dimensions
+    //         const pageWidth = doc.internal.pageSize.getWidth();
+    //         const pageHeight = doc.internal.pageSize.getHeight();
+
+    //         const imgWidth = canvas.width;
+    //         const imgHeight = canvas.height;
+    //         const ratio = imgWidth / imgHeight;
+
+    //         // Calculate dimensions to fit the page with margins
+    //         let width = pageWidth - 20; // 10mm margins on each side
+    //         let height = width / ratio;
+
+    //         // If still too tall, adjust
+    //         if (height > pageHeight - 20) {
+    //             height = pageHeight - 20;
+    //             width = height * ratio;
+    //         }
+
+    //         // Add image to PDF with 10mm margins
+    //         doc.addImage(imgData, 'PNG', 
+    //             10, // x margin (left)
+    //             10, // y margin (top)
+    //             width,
+    //             height
+    //         );
+
+    //         // Save the PDF
+    //         doc.save('student-report.pdf');
+
+    //     } catch (error) {
+    //         console.error('Error generating PDF:', error);
+    //         alert('Error generating PDF. Please check console for details.');
+    //     }
+    // });
+
+    // document.getElementById('printStud').addEventListener('click', () => {
+    //     const { jsPDF } = window.jspdf;
+    //     const doc = new jsPDF();
+
+    //     const testContent = document.getElementById("studPrint");
+
+    //     // Get the dimensions of the modal content
+    //     const contentWidth = testContent.offsetWidth;
+    //     const contentHeight = testContent.offsetHeight;
+
+    //     // Get the PDF page width and height
+    //     const pageWidth = doc.internal.pageSize.getWidth();
+    //     const pageHeight = doc.internal.pageSize.getHeight();
+
+    //     // Calculate scale factor to fit the content within the page width and height
+    //     let scaleFactorWidth = pageWidth / contentWidth;
+    //     let scaleFactorHeight = pageHeight / contentHeight;
+
+    //     // Use the smaller scale factor to ensure the content fits both width and height
+    //     let scaleFactor = Math.min(scaleFactorWidth, scaleFactorHeight);
+
+    //     // Calculate the scaled width and height
+    //     const scaledWidth = contentWidth * scaleFactor;
+    //     const scaledHeight = contentHeight * scaleFactor;
+
+    //     // Calculate horizontal and vertical positioning to center the content
+    //     const offsetX = (pageWidth - scaledWidth) / 2;  // Horizontal centering
+
+    //     // Adjust the vertical positioning to move the content up slightly if needed
+    //     const offsetY = (pageHeight - scaledHeight) / 2 - 10;  // Vertical centering with slight upward shift
+
+    //     // Add some debugging to verify values
+    //     console.log('Content Width:', contentWidth);
+    //     console.log('Content Height:', contentHeight);
+    //     console.log('Scaled Width:', scaledWidth);
+    //     console.log('Scaled Height:', scaledHeight);
+    //     console.log('Offset X:', offsetX);
+    //     console.log('Offset Y:', offsetY);
+
+    //     doc.html(testContent, {
+    //         callback: function (doc) {
+    //             // Save the PDF after rendering and adjusting the position
+    //             doc.save('student-report.pdf');
+    //         },
+    //         x: offsetX,  // Set the X position to center the content
+    //         y: offsetY,  // Adjusted Y position with slight upward shift
+    //         width: scaledWidth,  // Use the scaled width
+    //         height: scaledHeight, // Use the scaled height
+    //         windowWidth: document.body.scrollWidth  // Ensure content fits within the page width
+    //     });
+    // });
+
+
+    document.getElementById('savePdf').addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const testContent = document.getElementById("studPrint");
+
+        // Get the dimensions of the modal content
+        const contentWidth = testContent.offsetWidth;
+        const contentHeight = testContent.offsetHeight;
+
+        // Get the PDF page width and height
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        // Calculate scale factor to fit the content within the page width
+        let scaleFactor = pageWidth / contentWidth;
+
+        // If the content's scaled height exceeds the page height, adjust the scale
+        const scaledHeight = contentHeight * scaleFactor;
+        if (scaledHeight > pageHeight) {
+            const heightScaleFactor = pageHeight / contentHeight;
+            scaleFactor = heightScaleFactor;
+        }
+
+        // Calculate the scaled width and height
+        const scaledWidth = contentWidth * scaleFactor;
+        const scaledHeightFinal = contentHeight * scaleFactor;
+
+        // Calculate horizontal and vertical positioning to center the content
+        const offsetX = (pageWidth - scaledWidth) / 2;  // Horizontal centering
+        const offsetY = (pageHeight - scaledHeightFinal) / 4;  // Vertical centering
+
+        // Add a small margin for top positioning (e.g., 10 units)
+        const topMargin = 0;
+        const adjustedOffsetY = offsetY + topMargin;
+
+        console.log('Content Width:', contentWidth);
+        console.log('Content Height:', contentHeight);
+        console.log('Scaled Width:', scaledWidth);
+        console.log('Scaled Height:', scaledHeightFinal);
+        console.log('Offset X:', offsetX);
+        console.log('Offset Y:', offsetY);
+        doc.html(testContent, {
+            callback: function (doc) {
+                // Save the PDF after rendering and centering the content
+                doc.save('student-report.pdf');
+            },
+            x: offsetX,  // Set the X position to center the content
+            y: adjustedOffsetY,  // Adjusted Y position with added margin
+            width: scaledWidth,  // Use the scaled width
+            height: scaledHeightFinal, // Use the scaled height
+            windowWidth: document.body.scrollWidth  // Ensure content fits within the page width
         });
     });
-}   
-document.addEventListener("DOMContentLoaded", initializePaginationListeners);
+
+    document.getElementById('printStud').addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const testContent = document.getElementById("studPrint");
+
+        // Temporarily show the modal content for PDF generation
+        testContent.style.display = 'flex';
+        testContent.style.position = 'absolute';  // Ensure it's positioned in the page
+        testContent.style.zIndex = '9999';  // Ensure it's above other elements
+
+        // Get the dimensions of the modal content
+        const contentWidth = testContent.offsetWidth;
+        const contentHeight = testContent.offsetHeight;
+
+        // Get the PDF page width and height
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        // Calculate scale factor to fit the content within the page width
+        let scaleFactor = pageWidth / contentWidth;
+
+        // If the content's scaled height exceeds the page height, adjust the scale
+        const scaledHeight = contentHeight * scaleFactor;
+        if (scaledHeight > pageHeight) {
+            const heightScaleFactor = pageHeight / contentHeight;
+            scaleFactor = heightScaleFactor;
+        }
+
+        // Calculate the scaled width and height
+        const scaledWidth = contentWidth * scaleFactor;
+        const scaledHeightFinal = contentHeight * scaleFactor;
+
+        // Calculate horizontal and vertical positioning to center the content
+        const offsetX = (pageWidth - scaledWidth) / 2;  // Horizontal centering
+        const offsetY = (pageHeight - scaledHeightFinal) / 13;  // Vertical centering
+
+        // Add a small margin for top positioning (e.g., 10 units)
+        const topMargin = 0;
+        const adjustedOffsetY = offsetY + topMargin;
+
+        console.log('Content Width:', contentWidth);
+        console.log('Content Height:', contentHeight);
+        console.log('Scaled Width:', scaledWidth);
+        console.log('Scaled Height:', scaledHeightFinal);
+        console.log('Offset X:', offsetX);
+        console.log('Offset Y:', offsetY);
+
+        doc.html(testContent, {
+            callback: function (doc) {
+                // Open the print window for printing (no save)
+                doc.autoPrint();
+                window.open(doc.output('bloburl'), '_blank');
+
+                // Re-hide the content after printing
+                testContent.style.display = 'none';  // Re-hide the modal after printing
+                testContent.style.position = 'static';   // Restore the position
+                testContent.style.zIndex = '';  // Remove any specific z-index
+            },
+            x: offsetX,  // Set the X position to center the content
+            y: adjustedOffsetY,  // Adjusted Y position with added margin
+            width: scaledWidth,  // Use the scaled width
+            height: scaledHeightFinal, // Use the scaled height
+            windowWidth: document.body.scrollWidth  // Ensure content fits within the page width
+        });
+    });
+
+
+
+
+
 </script>
 
 </html>

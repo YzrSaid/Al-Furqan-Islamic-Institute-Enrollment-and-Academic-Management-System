@@ -2,6 +2,7 @@ package com.example.testingLogIn.StatisticsModel;
 
 import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Enums.Semester;
+import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Services.SubjectServices;
 import jakarta.persistence.Cacheable;
@@ -27,9 +28,22 @@ public class StatisticsController {
                         semester.equalsIgnoreCase("second") ? Semester.Second :
                         null;
         try{
-            return new ResponseEntity<>(statisticsServices.getCounts(schoolYear,sem,semester), HttpStatus.OK);
+            return new ResponseEntity<>(statisticsServices.getCounts(schoolYear,sem), HttpStatus.OK);
         }catch (Exception e){
-            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/gender-rates")
+    public ResponseEntity<GradeLevelRates> getGenderRates(@RequestParam(required = false) Integer schoolYear,
+                                                          @RequestParam(required = false) String semester){
+        Semester sem =  semester.equalsIgnoreCase("first") ? Semester.First :
+                semester.equalsIgnoreCase("second") ? Semester.Second :
+                        null;
+        schoolYear = schoolYear==0? null :schoolYear;
+        try{
+            return new ResponseEntity<>(statisticsServices.getGenderCounts(schoolYear,sem), HttpStatus.OK);
+        }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

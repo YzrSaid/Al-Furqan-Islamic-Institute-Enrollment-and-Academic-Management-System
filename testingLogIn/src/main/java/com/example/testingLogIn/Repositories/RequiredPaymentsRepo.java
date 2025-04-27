@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,6 +21,14 @@ public interface RequiredPaymentsRepo extends JpaRepository<RequiredFees, Intege
     @Query("SELECT rp FROM RequiredFees rp " +
             "WHERE LOWER(rp.name) LIKE :paymentName")
     Optional<RequiredFees> findByName(@Param("paymentName") String paymentName);
+
+    @Query("""
+           SELECT rf FROM RequiredFees rf
+           WHERE rf.isNotDeleted
+           AND LOWER(rf.name) = :name
+           AND rf.id != :id
+           """)
+    List<RequiredFees> findSameNameDiffId(String name, int id);
 
     @Modifying
     @Transactional

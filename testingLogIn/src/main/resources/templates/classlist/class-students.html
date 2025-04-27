@@ -174,7 +174,7 @@
     async function fetchSectionInfo(sectionName) {
         const response = await fetch(`/section?sectionName=${sectionName}`);
         if (!response.ok) {
-            alert("Section Invalid.");
+            //alert("Section Invalid.");
             return;
         }
         const result = await response.json();

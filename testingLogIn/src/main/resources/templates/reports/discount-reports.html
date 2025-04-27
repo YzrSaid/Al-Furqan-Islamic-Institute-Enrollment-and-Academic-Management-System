@@ -142,6 +142,11 @@
 
             const selectedItems = Array.from(document.querySelectorAll(".action-container input[type='checkbox']:checked"))
                 .map(checkbox => checkbox.value);
+
+            if(selectedItems.length == 0){
+                showErrorModal("No item/s selected");
+                return;
+            }
             fetch(url, {
                 method: 'PUT',
                 headers: {

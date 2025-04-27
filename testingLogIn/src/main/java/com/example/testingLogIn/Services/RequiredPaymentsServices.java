@@ -145,11 +145,13 @@ public class RequiredPaymentsServices {
                         .toList();
     }
 
-    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
     public boolean updatePayment(int feeId, RequiredPaymentsDTO updated){
         RequiredFees toUpdate = reqPaymentsRepo.findById(feeId).orElse(null);
         assert toUpdate != null;
-        boolean isActiveBefore = toUpdate.isCurrentlyActive();
+
+        if(!reqPaymentsRepo.findSameNameDiffId(updated.getName(),feeId).isEmpty())
+            throw new IllegalArgumentException("Required fee name is already used");
+
         toUpdate.setCurrentlyActive(updated.isWillApplyNow());
         toUpdate.setName(updated.getName());
         toUpdate.setRequiredAmount(updated.getRequiredAmount());

@@ -1059,7 +1059,7 @@
                     totalPaid += dat.amountPaid;
                     row.innerHTML = `
                     <td>${dat.feeName}</td>
-                    <td>₱ ${parseFloat(dat.fee.requiredAmount).toFixed(2)}</td>
+                    <td>₱ ${parseFloat(dat.requiredAmount).toFixed(2)}</td>
                     <td>₱ ${parseFloat(dat.discount).toFixed(2)}</td>
                     <td>₱ ${parseFloat(dat.balance).toFixed(2)}</td>
                     <td>₱ ${parseFloat(dat.amountPaid).toFixed(2)}</td>
@@ -1081,6 +1081,7 @@
                 closeOpen();
             })
             .catch(error => {
+                console.log(error);
                 showErrorModal("Failed to add payment transaction. Please try again.");
             });
     }
@@ -1981,7 +1982,8 @@
             label.appendChild(document.createTextNode(labelText));
 
             paymentItem.appendChild(label);
-            paymentContainer.appendChild(paymentItem);
+            if(par.balance > 0){
+                paymentContainer.appendChild(paymentItem);}
         });
 
         // (3) Add "Select All" as last item
@@ -2060,7 +2062,7 @@
 
     // Function to show error modal (you should define this somewhere)
     function showErrorModal(message) {
-        alert(message); // Simple, or replace with your fancy modal
+        //alert(message); // Simple, or replace with your fancy modal
     }
 
     // Validate input amount
@@ -2371,7 +2373,7 @@
         // 2. Verify elements exist
         if (!modalEl || !modalBody) {
             console.error("Modal elements missing!", { modalEl, modalBody });
-            alert("FALLBACK ERROR: " + message);
+           // alert("FALLBACK ERROR: " + message);
             return;
         }
 

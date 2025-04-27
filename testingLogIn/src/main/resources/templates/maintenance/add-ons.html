@@ -369,7 +369,7 @@
         const isDistributable = document.getElementById("distributable").checked;
 
         if (!paymentName || !amount) {
-            //alert("Please fill in all fields.");
+            alert("Please fill in all fields.");
             return;
         }
 
@@ -377,7 +377,7 @@
             .map(checkbox => checkbox.value);
 
         if (selectedGradeLevels.length === 0) {
-            //alert("Please select at least one grade level.");
+            alert("Please select at least one grade level.");
             return;
         }
 
@@ -422,7 +422,7 @@
         document.querySelectorAll("input[name='gradeLevels']:checked").forEach(checkbox => {
             selectedGradeLevels.push(checkbox.value); // Add the selected grade level to the array
         });
-        //alert(selectedGradeLevels);
+        alert(selectedGradeLevels);
         const updatedFeeData = {
             id: paymentId,
             name: paymentName,

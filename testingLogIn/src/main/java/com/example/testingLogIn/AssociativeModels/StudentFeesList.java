@@ -1,5 +1,6 @@
 package com.example.testingLogIn.AssociativeModels;
 
+import com.example.testingLogIn.Models.AddOns;
 import com.example.testingLogIn.Models.RequiredFees;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
@@ -26,6 +27,12 @@ public class StudentFeesList {
     @ManyToOne
     @JoinColumn(name="fee")
     private RequiredFees fee;
+
+
+    @ManyToOne
+    @JoinColumn(name = "addOn")
+    private AddOns addOns;
+
     private double amount;
     private double discount;
 

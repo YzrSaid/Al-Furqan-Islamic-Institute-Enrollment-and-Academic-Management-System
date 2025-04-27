@@ -108,6 +108,24 @@
             </div>
         </div>
 
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
+
         <!-- Modal for student information -->
         <div id="studentInformationModal" class="student-information-modal modal">
             <div class="student-information-modal-content scroll-lock">
@@ -128,7 +146,7 @@
                                 <div class="checkbox-container">
                                     <div class="checkbox">
                                         <label for="scholar">Scholar:</label>
-                                        <h6 id="isScholar">Yes</h6>
+                                        <h6 id="isScholar"></h6>
 
                                         <button type="button" id="dropdown-scholar"> <img
                                                 src="/images/icons/arrow-down.png" alt="dropdown-icon">
@@ -149,7 +167,7 @@
 
                                     <div class="checkbox">
                                         <label for="isTransferee">Transferee:</label>
-                                        <input type="checkbox" id="isTransferee">
+                                        <input disabled type="checkbox" id="isTransferee">
 
                                         <button type="button" id="dropdown-transferee"> <img
                                                 src="/images/icons/arrow-down.png" alt="dropdown-icon">
@@ -437,23 +455,6 @@
         </div>
     </div>
 
-    <!-- Error Modal -->
-    <div id="errorModal" class="modal">
-        <div class="modal-content error-modal scroll-lock">
-            <p id="errorMessage"></p>
-            <div class="modal-buttons">
-                <button type="button" class="error-btn-cancel" data-close-modal="errorModal">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Background overlay -->
-    <div id="successModalOverlay"></div>
-
-    <!-- Success modal -->
-    <div id="successModal">
-        <p id="successModalMessage"></p>
-    </div>
 
 
     <!-- Modal for adding a a section to what grade level it will be enrolled to (assessment) -->
@@ -494,7 +495,7 @@
                 </div>
                 <div class="half-width view-studName" id="view-grade-studName">
                     <label for="student-grade-name">Student Name:</label>
-                    <h6 id="student-grade-name">Martin Francisco</h6>
+                    <h6 id="student-grade-name"></h6>
                 </div> <br>
 
                 <!-- Grades Table -->
@@ -673,7 +674,8 @@
             </div>
 
             <div class="modal-buttons">
-                <button type="button" class="btn-confirm" id="confirmStudent" data-open-modal="confirmationModal"
+                <button type="button" class="btn-confirm" data-action="transfereeAddListing" id="confirmStudent"
+                    data-open-modal="confirmationModal"
                     data-message="Are you sure you want to add this student?">Confirm</button>
 
                 <button type="button" class="btn-cancel" id="cancelStudent"
@@ -771,8 +773,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="5" style="text-align: right; border: none; font-weight: bold;">Remaining Balance:</td>
-                                <td style="border: 1px solid black; text-align: center; font-weight: bold;" id="remaining-balance">₱ 0.00</td>
+                                <td colspan="5" style="text-align: right; border: none; font-weight: bold;">Remaining
+                                    Balance:</td>
+                                <td style="border: 1px solid black; text-align: center; font-weight: bold;"
+                                    id="remaining-balance">₱ 0.00</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -932,7 +936,7 @@
         fetchGradeLevelsForm();
         preRequisiteGradesDiv = document.getElementById("preRequisite-grades");
     });
-    var preRequisiteGradesDiv;
+
     async function fetchGradeLevelsForm() {
         const gradeLevels = document.getElementById("lastGradeLevelIdCompleted");
         const response = await fetch("/gradelevel/all");
@@ -1219,15 +1223,15 @@
     });
 
     // this is for adding new student/transferee if the checkbox for transferee is checked then it will set the value of data-action attribute to that value
-    document.addEventListener('DOMContentLoaded', () => {
-        const confirmButton = document.getElementById('confirmStudent');
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     const confirmButton = document.getElementById('confirmStudent');
 
-        confirmButton.addEventListener('click', () => {
-            const isTransferee = document.getElementById("isTransferee").checked;
-            confirmButton.setAttribute("data-action", "transfereeAddListing");
+    //     confirmButton.addEventListener('click', () => {
+    //         const isTransferee = document.getElementById("isTransferee").checked;
+    //         confirmButton.setAttribute("data-action", "transfereeAddListing");
 
-        });
-    });
+    //     });
+    // });
 
     function transfereeAddListing() {
         const actionUrl = "/students/add"; // Update with your actual API endpoint
@@ -1827,12 +1831,15 @@
     // This will show and hide the transferee section if the student is a transferee or not
     function toggleTransfereeSection(isTransferee) {
         const transfereeSections = document.querySelectorAll(".transferee-section");
+        const madrasaYearInput = document.getElementById("studlastMadrasaYearCompleted");
         if (isTransferee) {
             //console.log("✅ YES detected, showing transferee sections.");
             transfereeSections.forEach(section => section.style.display = "block");
+            madrasaYearInput.required = true;
         } else {
             // console.log("❌ NO detected, hiding transferee sections.");
             transfereeSections.forEach(section => section.style.display = "none");
+            madrasaYearInput.required = false;
         }
     }
     let payerStudentId;
@@ -2092,20 +2099,43 @@
         });
     }
 
+    const preRequisiteGradesDiv = document.getElementById("preRequisite-grades");
+    // var preRequisiteGradesDiv;
     function viewStudentGrade(target) {
         const studentId = target.dataset.id;
         const preRequisiteId = target.getAttribute("data-prerequisite");
         document.getElementById("student-grade-name").textContent = target.getAttribute("data-stud-name");
         document.getElementById("student-grade-id").textContent = target.getAttribute("data-displayId");
 
+        // Clear previous content
+        preRequisiteGradesDiv.innerHTML = '';
+
         if (preRequisiteId === "null") {
+            // Show message for new students
+            preRequisiteGradesDiv.innerHTML = `
+        <div class="alert alert-info">
+            This is a new student with no prerequisite grades to display.
+        </div>
+        <table class="view-grades-table main-table">
+            <thead>
+                <tr>
+                    <th>Subject ID</th>
+                    <th>Subject</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3">No records available</td>
+                </tr>
+            </tbody>
+        </table>`;
             return;
         }
 
         if (!studentId) {
-            //    console.error(
-            //         "Error: gradeLevelId is undefined! Make sure data-id is set in HTML."
-            //     );
+            // console.error("Error: Student ID is undefined!");
+            showErrorModal("Cannot load student's information. Try Again.");
             return;
         }
 
@@ -2113,27 +2143,30 @@
             .then((response) => response.json())
             .then((data) => {
                 const studentGradesMap = new Map(Object.entries(data.content));
-                preRequisiteGradesDiv.innerHTML = `
-                        <table class="view-grades-table main-table">
-                        <thead>
-                            <tr>
-                                <th>Subject ID</th>
-                                <th>Subject</th>
-                                <th>Grade</th>
-                            </tr>
-                        </thead>
 
-                        <tbody>
-                            <tr>
-                                <td colspan="3">No Records Found</td>
-                            </tr>
-                        </tbody>
-                    </table>`;
+                // First check if the map is empty
                 if (studentGradesMap.size === 0) {
+                    preRequisiteGradesDiv.innerHTML = `
+                <table class="view-grades-table main-table">
+                    <thead>
+                        <tr>
+                            <th>Subject ID</th>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">No Records Found</td>
+                        </tr>
+                    </tbody>
+                </table>`;
                     return;
                 }
+
+                // Only proceed if there are records
                 preRequisiteGradesDiv.innerHTML = ``;
-                let count = 0; // make sure this is defined above the forEach
+                let count = 0;
                 let rowContainer;
 
                 studentGradesMap.forEach((values, key) => {
@@ -2312,27 +2345,76 @@
         });
     });
 
-    // this will validate the last madrasa year completed (it must only submit 2 succeeding years e.g. 2012-2013)
-    function validateMadrasaYear() {
-        const madrasaYearInput = document.getElementById("studlastMadrasaYearCompleted").value.trim();
-        const regex = /^(\d{4})-(\d{4})$/;
-        const match = madrasaYearInput.match(regex);
-
-        if (!match) {
-            showErrorModal("❌ Error: " + "Invalid format! Please enter the Madrasa year in YYYY-YYYY format.");
-            return false;
-        }
-
-        const startYear = parseInt(match[1], 10);
-        const endYear = parseInt(match[2], 10);
-
-        if (endYear !== startYear + 1) {
-            showErrorModal("❌ Error: " + "Invalid year range! The second year must be exactly one year after the first.");
-            return false;
-        }
-
-        return true;
+    function validateSchoolYear() {
+    const transfereeCheckbox = document.getElementById("isTransferee");
+    const schoolYearInput = document.getElementById("studlastMadrasaYearCompleted");
+    
+    // Only validate if transferee checkbox is checked AND input is visible
+    if (!transfereeCheckbox.checked || schoolYearInput.style.display === "none") {
+        return true; // Skip validation if not a transferee
     }
+    
+    const value = schoolYearInput.value.trim();
+    const regex = /^(\d{4})-(\d{4})$/;
+    const match = value.match(regex);
+
+    if (!match) {
+        showErrorModal("❌ Error: Invalid format! Please enter the school year in YYYY-YYYY format.");
+        return false;
+    }
+
+    const startYear = parseInt(match[1], 10);
+    const endYear = parseInt(match[2], 10);
+
+    if (endYear !== startYear + 1) {
+        showErrorModal("❌ Error: Invalid school year range! The second year must be exactly one year after the first.");
+        return false;
+    }
+
+    return true;
+}
+    function showErrorModal(message) {
+        console.log("Attempting to show modal with message:", message);
+
+        // 1. Get modal elements
+        const modalEl = document.getElementById('errorModal');
+        const modalBody = document.getElementById('errorModalBody');
+
+        // 2. Verify elements exist
+        if (!modalEl || !modalBody) {
+            console.error("Modal elements missing!", { modalEl, modalBody });
+            alert("FALLBACK ERROR: " + message);
+            return;
+        }
+
+        // 3. Set message content
+        modalBody.textContent = message;
+        console.log("Modal message set");
+
+        // 4. Close any other open modals
+        const openModals = document.querySelectorAll('.modal.show');
+        openModals.forEach(modal => {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) bsModal.hide();
+        });
+
+        // 5. Show the error modal
+        const bsModal = new bootstrap.Modal(modalEl);
+        bsModal.show();
+        console.log("Modal show called");
+
+        // 6. Debug visibility after a short delay
+        setTimeout(() => {
+            const style = window.getComputedStyle(modalEl);
+            console.log("Modal visibility check:", {
+                display: style.display,
+                visibility: style.visibility,
+                opacity: style.opacity,
+                zIndex: style.zIndex
+            });
+        }, 100);
+    }
+
 </script>
 
 </html>

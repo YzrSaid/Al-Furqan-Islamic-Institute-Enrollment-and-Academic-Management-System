@@ -1042,12 +1042,18 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "transfereeAddListing":
         if (!validateForm("studentForm")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
-          return;
-        } else {
-          transfereeAddListing();
-          closeConfirmationModal();
+            showErrorModal("⚠️ Please fill in all required fields!");
+            return;
         }
+        
+        // Only validate Madrasa year if transferee is checked
+        const isTransferee = document.getElementById("isTransferee").checked;
+        if (isTransferee && !validateSchoolYear()) {
+            return; // Error message already shown by validateSchoolYear()
+        }
+        
+        transfereeAddListing();
+        closeConfirmationModal();
         break;
       //      case "studAddListing":
       //        // This case is for adding new student to the listing/registration
@@ -1597,7 +1603,6 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.getElementById("scheduleBody");
   const addRowBtn = document.getElementById("addRowBtn");
- 
 
   // Add button click
   if (!addRowBtn || !tableBody) {
@@ -2107,7 +2112,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const transfereeInputs = transfereeFields.querySelectorAll("input");
   if (!transfereeInputs.length) return;
 
-
   // Toggle visibility and readonly state
   transfereeCheckbox.addEventListener("change", () => {
     if (transfereeCheckbox.checked) {
@@ -2147,13 +2151,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initially disable all checkboxes
   checkboxes.forEach((checkbox) => (checkbox.disabled = true));
 
-  if (!updateBtn){
+  if (!updateBtn) {
     return;
   }
 
-   // Initially disable all checkboxes
-   checkboxes.forEach((checkbox) => (checkbox.disabled = true));
-   
+  // Initially disable all checkboxes
+  checkboxes.forEach((checkbox) => (checkbox.disabled = true));
+
   // Toggle function on button click
   updateBtn.addEventListener("click", () => {
     const isDisabled = checkboxes[0].disabled; // Check the current state

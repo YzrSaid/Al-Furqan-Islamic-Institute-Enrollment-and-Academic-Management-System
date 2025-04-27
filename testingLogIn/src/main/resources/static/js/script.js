@@ -981,8 +981,17 @@ document.addEventListener("DOMContentLoaded", function () {
       case "rejectAccount":
         rejectAccount(selectedVerificationId);
         break;
+      case "voidTransaction":
+        voidPaymentTransaction();
+        break;
       case "updateThisAccount":
         updateMyAccount();
+        break;
+      case "addDiscount":
+        addDiscount();
+        break;
+      case "deleteDiscount":
+        removeDiscount();
         break;
       case "restrictAccount":
         restrictUser(selectedManageAccountId);

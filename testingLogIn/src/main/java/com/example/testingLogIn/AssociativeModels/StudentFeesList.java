@@ -27,6 +27,7 @@ public class StudentFeesList {
     @JoinColumn(name="fee")
     private RequiredFees fee;
     private double amount;
+    private double discount;
 
     @ManyToOne
     @JoinColumn(name = "sem")

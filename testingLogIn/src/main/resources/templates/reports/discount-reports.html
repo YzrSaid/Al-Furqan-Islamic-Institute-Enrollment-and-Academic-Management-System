@@ -46,7 +46,7 @@
                     <button type="button" id="select-multiple" class="btn-neutral">Select Multiple</button>
 
                     <input type="checkbox" id="select" style="display: none;">
-                    <button type="button" class="confirm-btn" id="confirm-btn" style="display: none;"><img onclick="sendMultiple()"
+                    <button type="button" class="confirm-btn" id="confirm-btn" style="display: none;"><img
                             src="/images/icons/check.png" alt=""></button>
                 </div>
 
@@ -88,6 +88,22 @@
                 </div>
             </div>
         </div>
+
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -119,11 +135,9 @@
             var url;
             if (viewBy.value === "false") {
                 url = `/discounts/add-student-discounts/${selectedItem}`;
-                alert(url);
             }
             else {
                 url = `/discounts/remove-student-discounts`;
-                alert(url);
             }
 
             const selectedItems = Array.from(document.querySelectorAll(".action-container input[type='checkbox']:checked"))
@@ -144,7 +158,7 @@
                     return response.text();
                 })
                 .then(text => {
-                    alert(text);
+                    showSuccessModal(text,false);
                     resetDisplay();
                 })
                 .catch(error => {
@@ -278,7 +292,10 @@
 
                 data.content.forEach(studDis => {
                     const checkBoxVal = studDis.notDeleted ? studDis.connectionId : studDis.studentId;
-                    const dataAction = studDis.notDeleted ? "deleteDiscount" : "addDiscount";
+                    var dataAction = studDis.notDeleted ? "deleteDiscount" : "addDiscount";
+                    var msg = studDis.notDeleted ?"Are you sure you want to remove this discount fron the student?" : 
+                                                    "Are you sure you want to add this student to the student?";
+                    var classType = studDis.notDeleted ? "btn-cancel" : "btn-confirm";
                     const row = document.createElement("tr");
                     row.innerHTML = `
                 <td>${studDis.studentName}</td>
@@ -290,7 +307,9 @@
                         <div class="action-container action">
                         <input type="checkbox" value=${checkBoxVal}>
                         </div>` : `
-                        <button class="btn-cancel"
+                        <button class="${classType}"
+                            data-open-modal="confirmationModal"
+                            data-message="${msg}"
                             data-action="${dataAction}" data-value="${checkBoxVal}">
                         ${studDis.notDeleted ? "Remove Discount" : "Add Discount"}</button>`}
                     </div>
@@ -310,20 +329,19 @@
             }
         }
 
+        var value= 0;
         document.querySelector("#table-ko tbody").addEventListener("click", function (event) {
             if (event.target && event.target.getAttribute("data-action") === "deleteDiscount") {
-                const val = event.target.getAttribute("data-value");
-                removeDiscount(val);
+                value = event.target.getAttribute("data-value");
             } if (event.target && event.target.getAttribute("data-action") === "addDiscount") {
-                const val = event.target.getAttribute("data-value");
-                addDiscount(val);
+                value = event.target.getAttribute("data-value");
             }
         });
 
-        function removeDiscount(value) {
+        function removeDiscount() {
             myPutMethod(`/discounts/remove-student-discount/${value}`);
         }
-        function addDiscount(value) {
+        function addDiscount() {
             myPutMethod(`/discounts/add-student-discount/${selectedItem}/${value}`);
         }
         function myPutMethod(url) {
@@ -332,7 +350,7 @@
             })
                 .then(response => response.text())
                 .then(text => {
-                    alert(text);
+                    showSuccessModal(text,false);
                     setTableContent();
                 })
                 .catch(error => {

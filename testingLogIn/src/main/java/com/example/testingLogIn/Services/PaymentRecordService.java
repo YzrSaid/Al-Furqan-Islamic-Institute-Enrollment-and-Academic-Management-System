@@ -165,10 +165,10 @@ public class PaymentRecordService {
             double remainingBalance = NonModelServices.adjustDecimal(totalFeeBalance - totalPaidAmount);
             if (remainingBalance > 0 && !forBreakDown) {
                 totalRemaining+=remainingBalance;
-                studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance,NonModelServices.adjustDecimal(totalPaidAmount),totalFeeBalance));
+                studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),0,remainingBalance,NonModelServices.adjustDecimal(totalPaidAmount),totalFeeBalance));
             }else if(forBreakDown && totalFeeBalance > 0 && remainingBalance == 0){
                 totalRemaining+=remainingBalance;
-                studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),remainingBalance,NonModelServices.adjustDecimal(totalPaidAmount),totalFeeBalance));
+                studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(sfl.getFee(),0,remainingBalance,NonModelServices.adjustDecimal(totalPaidAmount),totalFeeBalance));
             }
         }
         studentPaymentForm.setTotalFee(totalRemaining);
@@ -211,10 +211,18 @@ public class PaymentRecordService {
         for (GradeLevelRequiredFees reqFee : requiredFees) {
             double paidAmount = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber()).orElse(0d);
             double initialAmount = reqFee.getRequiredFee().getRequiredAmount();
-            double discountedAmount = initialAmount - ((initialAmount*std.getTotalPercentageDiscount())+std.getTotalFixedDiscount());
+            double discount = NonModelServices.adjustDecimal(((initialAmount*std.getTotalPercentageDiscount())+std.getTotalFixedDiscount()));
+            double discountedAmount = initialAmount - discount;
             double remainingBalance = NonModelServices.adjustDecimal(discountedAmount - paidAmount);
-            if(remainingBalance>0){
-                studentPaymentForm.getFeesAndBalance().add(new FeesAndBalance(reqFee.getRequiredFee(),remainingBalance,paidAmount,discountedAmount));
+            if(remainingBalance+initialAmount>0){
+                studentPaymentForm.getFeesAndBalance().add( FeesAndBalance.builder()
+                                .fee(reqFee.getRequiredFee())
+                                .discount(discount)
+                                .balance(remainingBalance)
+                                .totalPaid(paidAmount)
+                                .totalRequired(discountedAmount)
+                                .build()
+                        /*FeesAndBalance(reqFee.getRequiredFee(),discount,paidAmount,discountedAmount)*/);
                 totalBalance+=remainingBalance;}
         }
         studentPaymentForm.setTotalFee(totalBalance);

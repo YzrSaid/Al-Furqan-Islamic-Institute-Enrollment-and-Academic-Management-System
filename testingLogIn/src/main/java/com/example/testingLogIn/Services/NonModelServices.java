@@ -21,10 +21,9 @@ public class NonModelServices {
     private static final String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static final String CHAR_UPPER = CHAR_LOWER.toUpperCase();
     private static final String DIGITS = "0123456789";
-    private static final String SPECIAL = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 
     private static final String PASSWORD_ALLOW =
-            CHAR_LOWER + CHAR_UPPER + DIGITS + SPECIAL;
+            CHAR_LOWER + CHAR_UPPER + DIGITS;
 
     private static SecureRandom random = new SecureRandom();
 
@@ -37,7 +36,6 @@ public class NonModelServices {
         sb.append(CHAR_LOWER.charAt(random.nextInt(CHAR_LOWER.length())));
         sb.append(CHAR_UPPER.charAt(random.nextInt(CHAR_UPPER.length())));
         sb.append(DIGITS.charAt(random.nextInt(DIGITS.length())));
-        sb.append(SPECIAL.charAt(random.nextInt(SPECIAL.length())));
 
         // Fill remaining with random characters
         for (int i = 4; i < length; i++) {

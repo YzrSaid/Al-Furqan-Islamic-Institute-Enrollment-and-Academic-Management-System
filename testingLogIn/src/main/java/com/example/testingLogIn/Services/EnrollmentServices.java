@@ -161,8 +161,8 @@ public class EnrollmentServices {
             student.setCurrentGradeSection(enrollmentRecord.getSectionToEnroll());
             studentRepo.save(student);
 
-            if(student.isNew())
-                CompletableFuture.runAsync(()->userService.registerStudent(student));
+            if(student.getStatus() == StudentStatus.NEW)
+                userService.registerStudent(student);
 
             CompletableFuture<Void> updateSection = CompletableFuture.runAsync(()-> sscService.updateSectionIfExist(enrollmentRecord));
             CompletableFuture<Void> updateStudent = CompletableFuture.runAsync(() -> studentRepo.save(student));

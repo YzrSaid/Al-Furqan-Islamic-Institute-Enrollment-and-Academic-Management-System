@@ -57,7 +57,6 @@ public class RequiredPaymentsServices {
         return reqPaymentsRepo.findById(reqPaymentId).orElse(null);
     }
 
-    @CacheEvict(value = {"enrollmentPage","studPaymentForm"},allEntries = true)
     public int addNewPayments(RequiredPaymentsDTO paymentsDTO) throws Exception {
         boolean doesNameExist = reqPaymentsRepo.findAll().stream()
                                                 .filter(payment -> payment.isNotDeleted() && 
@@ -105,8 +104,8 @@ public class RequiredPaymentsServices {
                                     .isCurrentlyActive(paymentsDTO.isWillApplyNow())
                             .build()));
 
-                }catch (NullPointerException npe) {}
-                return 1;
+                }catch (NullPointerException npe) {
+                    return 1;}
             }
         }
         return 0;

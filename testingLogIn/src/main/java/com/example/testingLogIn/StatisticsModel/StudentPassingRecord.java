@@ -22,10 +22,6 @@ public class StudentPassingRecord {
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "gradeLevel")
-    private GradeLevel gradeLevel;
-
-    @ManyToOne
     @JoinColumn(name = "section")
     private Section section;
 

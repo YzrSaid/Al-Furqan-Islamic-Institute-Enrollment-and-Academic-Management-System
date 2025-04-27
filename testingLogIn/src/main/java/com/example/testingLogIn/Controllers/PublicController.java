@@ -12,10 +12,6 @@ public class PublicController {
         return "login";
     }
     
-    @GetMapping("/signing")
-    public String signPage(){
-        return "signin";
-    }
 
     @GetMapping("/forgot-password")
     public String forgotPassword(){

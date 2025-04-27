@@ -183,7 +183,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if(user == null)
             throw new NullPointerException("Account not found");
 
-        user.setFullName(updated.getFirstname()+" "+Optional.ofNullable(updated.getMiddlename()).map(s -> s+" ")+updated.getLastname());
+        user.setFullName(updated.getFirstname()+" "+Optional.ofNullable(updated.getMiddlename()).map(s -> s+" ").orElse("")+updated.getLastname());
         user.setFirstname(updated.getFirstname());
         user.setLastname((updated.getLastname()));
         user.setMiddlename(updated.getMiddlename());

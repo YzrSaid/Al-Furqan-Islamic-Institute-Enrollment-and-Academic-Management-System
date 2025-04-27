@@ -181,9 +181,10 @@ public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGra
             SELECT COUNT(ssg) FROM StudentSubjectGrade ssg
             JOIN ssg.semester sem
             WHERE sem.sySemNumber = :semId
+            AND ssg.subject.isNotDeleted
             AND ssg.subjectGrade IS NULL
             """)
-    Optional<Long> countUngraded(int semId);
+    Optional<Integer> countUngraded(int semId);
 
     @Query("""
             SELECT stud FROM Student stud

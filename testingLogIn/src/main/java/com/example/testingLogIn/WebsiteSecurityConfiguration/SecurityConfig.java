@@ -38,7 +38,7 @@ public class SecurityConfig {
                                             ,"/account-confirmation/{token}","/register/confirm/{toke}/{password}").permitAll()
                         .requestMatchers("/reports/*","/enrollment/**","/transaction/**").hasAnyAuthority("ADMIN","ENROLLMENT_STAFF")
                         .requestMatchers("/schedule/**","/grade-management/**","/class-list/**").hasAnyAuthority("ADMIN","TEACHER")
-                        .requestMatchers("/maintenance/**","/settings/**","/accounts/student-accounts","/accounts/verify-accounts","/accounts/manage-accounts").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/maintenance/**","/settings/**","/accounts/student-accounts","/accounts/verify-accounts","/accounts/create-user","/accounts/manage-accounts").hasAnyAuthority("ADMIN")
                         .requestMatchers("/accounts/my-account").hasAnyAuthority("ADMIN","TEACHER","ENROLLMENT_STAFF")
                         .requestMatchers("/class-schedule","/personal-profile","/grades").hasAnyAuthority("STUDENT")
                         .anyRequest().authenticated()

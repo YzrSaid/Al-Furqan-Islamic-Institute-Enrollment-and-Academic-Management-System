@@ -24,12 +24,12 @@ public interface StudentPassingRecordRepo extends CrudRepository<StudentPassingR
     Optional<Integer> countRecord(Integer sy, Semester sem, boolean didPassed);
 
     @Query("""
-            SELECT spc.gradeLevel FROM StudentPassingRecord spc
+            SELECT spc.section.level FROM StudentPassingRecord spc
             JOIN spc.sem semester
             WHERE (:sy IS NULL OR semester.schoolYear.schoolYearNum = :sy)
             AND (:sem IS NULL OR semester.sem = :sem)
             AND spc.didPassed = :didPassed
-            GROUP BY spc.gradeLevel
+            GROUP BY spc.section.level
             """)
     List<GradeLevel> getUniqueGradeLevels(Integer sy, Semester sem, boolean didPassed);
 
@@ -37,9 +37,9 @@ public interface StudentPassingRecordRepo extends CrudRepository<StudentPassingR
            SELECT spd FROM StudentPassingRecord spd
            JOIN spd.student stud
            JOIN spd.sem sem
-           JOIN spd.gradeLevel gl
+           JOIN spd.section sec
            WHERE (:sy IS NULL OR sem.schoolYear.schoolYearNum = :sy)
-           AND (:levelId IS NULL OR gl.levelId = :levelId)
+           AND (:levelId IS NULL OR sec.level.levelId = :levelId)
            AND (:passed IS NULL OR spd.didPassed = :passed)
            AND (:sem IS NULL OR sem.sem = :sem)
            AND (LOWER(stud.fullName) LIKE :search

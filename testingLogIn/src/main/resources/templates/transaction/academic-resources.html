@@ -67,7 +67,7 @@
                     <button type="button" id="select-multiple" class="btn-neutral">Select Multiple</button>
 
                     <input type="checkbox" id="select" style="display: none;">
-                    <button type="button" class="confirm-btn" style="display: none;"><img onclick="sendMultiple()"
+                    <button type="button" id="confirm-btn" style="display: none;"><img onclick="sendMultiple()"
                             src="/images/icons/check.png" alt=""></button>
                 </div>
             </div>
@@ -369,12 +369,12 @@
         var selectMultiple = false;
 
         document.getElementById("select-multiple").addEventListener('click', function () {
-            const btn = this;
-            const confirmBtn = document.getElementById("confirm-btn");
-            const label = btn.textContent.trim();
-            const crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
-            const btnCancel = document.getElementById("btn-cancel");
-            const selectCheckbox = document.getElementById("select");
+            var btn = this;
+            var confirmBtn = document.getElementById("confirm-btn");
+            var label = btn.textContent.trim();
+            var crossIcon = '<img src="/images/icons/cross.png" alt="Cancel" class="icon-cross" />';
+            var btnCancel = document.getElementById("btn-cancel");
+            var selectCheckbox = document.getElementById("select");
 
 
             if (label === "Select Multiple") {

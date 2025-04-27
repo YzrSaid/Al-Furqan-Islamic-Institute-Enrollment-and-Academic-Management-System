@@ -286,15 +286,14 @@
     async function addDistributable() {
         const paymentName = document.getElementById("paymentName").value.trim();
         if (!paymentName) {
-            alert("Please fill in all fields.");
+            showErrorModal("Please fill in all fields.");
             return;
         }
 
         const selectedGradeLevels = Array.from(document.querySelectorAll(".payment input[type='checkbox']:checked"))
             .map(checkbox => checkbox.value);
-        alert(selectedGradeLevels);
         if (selectedGradeLevels.length === 0) {
-            alert("Please select at least one grade level.");
+            showErrorModal("Please select at least one grade level.");
             return;
         }
 
@@ -440,7 +439,6 @@
                 document.getElementById("distributableManagementEditModal").dataset.id = selectedPaymentId;
                 const isChecked = target.getAttribute("data-is-active") === true || target.getAttribute("data-is-active") === "true";
                 document.getElementById("applyThisSemEdit").checked = isChecked;
-
                 populateGradeLevelsForEdit(gradeLevelNames);
             }
         });

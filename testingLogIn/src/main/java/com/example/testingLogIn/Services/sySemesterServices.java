@@ -124,7 +124,6 @@ public class sySemesterServices {
         return true;
     }
 
-    @CacheEvict(value = {"enrollmentPage","countStat","gradeLevelRates"},allEntries = true)
     public boolean deactivateSemester(int semNumber){
         SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
         if(sem == null)
@@ -135,11 +134,10 @@ public class sySemesterServices {
         
         return true;
     }
-    @CacheEvict(value = {"enrollmentPage","countStat","gradeLevelRates"},allEntries = true)
+
     public int finishSemester(int semNumber){
         SchoolYearSemester sem = semesterRepo.findById(semNumber).orElseThrow(() -> new NullPointerException("Semester Not Found"));
-
-        if(ssgr.countUngraded(semNumber).orElse(0L) > 0L)
+        if(ssgr.countUngraded(semNumber).orElse(0) > 0)
             return 1;
         sem.setActive(false);
         sem.setFinished(true);

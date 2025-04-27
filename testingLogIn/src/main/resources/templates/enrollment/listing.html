@@ -35,7 +35,7 @@
                     </div>
 
                     <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
-                    <div class="menu-container">
+                    <!-- <div class="menu-container">
                         <button type="button" class="menu-btn" aria-label="More options">
                             <span class="menu-icon">⋮</span>
                         </button>
@@ -55,7 +55,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
@@ -70,7 +70,7 @@
                         <option value="Listing">Listing</option>
                         <option value="Assessment">Assessment</option>
                         <option value="Payment">Payment</option>
-                        <option value="Not_registered">Not Registered/option>
+                        <option value="Not_registered">Not Registered</option>
                         <option value="Cancelled">Cancelled</option>
                     </select>
                 </div>
@@ -991,6 +991,7 @@
                     row.innerHTML = `
                         <td>${datas.fee.name}</td>
                         <td>${datas.totalRequired}</td>
+                        <td>${datas.discount}</td>
                         <td>${datas.totalPaid}</td>
                         <td>${datas.balance}</td>
                         <td>
@@ -1315,6 +1316,7 @@
     async function goList(pageNo = 1) {
         const search = document.getElementById("search-stud").value;
         currentStat = document.getElementById("sort-select").value;
+        console.log(currentStat);
         currentPage = pageNo;
         const tableBody = document.querySelector("#lamesa tbody");
         const pageSize = parseInt(document.getElementById("pageSizeSelector").value);
@@ -1925,7 +1927,7 @@
         });
 
         paymentAmountInput.max = total.toFixed(2);
-        // Ensure the input value is within valid range
+        paymentAmountInput.min = (total*.2).toFixed(2);
         paymentAmountInput.value = Math.max(parseFloat(paymentAmountInput.value), paymentAmountInput.min); // Enforce minimum value
     }
 
@@ -1934,7 +1936,7 @@
         paymentAmountInput.value = ""; // Keep it empty initially
 
         // Set minimum value only when the form is ready, after data is fetched
-        paymentAmountInput.min = 0.01; // Minimum value (e.g., 1 cent)
+        paymentAmountInput.min = 0.0; // Minimum value (e.g., 1 cent)
 
         let response = await fetch(`/paymentrecord/form/${payerStudentId}?gradeLevelId=${payLevelToEnrollId}`);
         if (!response.ok) throw new Error("Data not found.");

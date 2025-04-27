@@ -1984,8 +1984,9 @@
             label.appendChild(document.createTextNode(labelText));
 
             paymentItem.appendChild(label);
-            if(par.balance > 0){
-                paymentContainer.appendChild(paymentItem);}
+            if (par.balance > 0) {
+                paymentContainer.appendChild(paymentItem);
+            }
         });
 
         // (3) Add "Select All" as last item
@@ -2335,6 +2336,23 @@
         });
     });
 
+    function validateContactNumber() {
+        const contactInput = document.getElementById("studguardianContactNumber").value.trim();
+
+        // Regular expression: exactly 11 digits, no spaces or special characters
+        const contactRegex = /^[0-9]{11}$/;
+
+        if (!contactRegex.test(contactInput)) {
+            setTimeout(() => {
+                showErrorModal("❌ Error: Contact number must be exactly 11 digits, contain no spaces or special characters.");
+            }, 50);
+            return false;
+        }
+
+        return true;
+    }
+
+
     function validateSchoolYear() {
         const transfereeCheckbox = document.getElementById("isTransferee");
         const schoolYearInput = document.getElementById("studlastMadrasaYearCompleted").value;
@@ -2365,6 +2383,43 @@
 
         return true;
     }
+
+    function validateBirthdate() {
+        const input = document.getElementById("studbirthdate").value;
+
+        if (!input) {
+            setTimeout(() => {
+                showErrorModal("⚠️ Error: Please enter the birthdate.");
+            }, 50);
+            return false;
+        }
+
+        const birthdate = new Date(input);
+        const today = new Date();
+
+        let age = today.getFullYear() - birthdate.getFullYear();
+        const monthDiff = today.getMonth() - birthdate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+            age--;
+        }
+
+        if (age < 6) {
+            setTimeout(() => {
+                showErrorModal("❌ Error: Student must be at least 3 years old.");
+            }, 50);
+            return false;
+        }
+
+        if (age > 95) {
+            setTimeout(() => {
+                showErrorModal("❌ Error: Student age cannot be more than 95 years old.");
+            }, 50);
+            return false;
+        }
+
+        return true;
+    }
+
     function showErrorModal(message) {
         console.log("Attempting to show modal with message:", message);
 

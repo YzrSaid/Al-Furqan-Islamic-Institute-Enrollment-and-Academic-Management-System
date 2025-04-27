@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const previewLogo = document.getElementById("previewLogo");
     const coverInput = document.getElementById("coverUpload");
     const previewCover = document.getElementById("coverPreview");
-    const colorPicker = document.getElementById("colorPicker");
   
     // ✅ Logo Preview
     logoInput.addEventListener("change", (event) => {
@@ -62,11 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   
     // ✅ Load saved theme color
-    const savedColor = localStorage.getItem("themeColor");
-    if (savedColor) {
-      colorPicker.value = savedColor;
-      document.documentElement.style.setProperty("--theme-color", savedColor);
-    }
   });
   
   // ✅ Submit using FormData (handles big files)
@@ -77,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     form.append("schoolAddress", document.getElementById("schoolAddress").value);
     form.append("schoolEmail", document.getElementById("schoolEmail").value);
     form.append("schoolContact", document.getElementById("schoolContact").value);
-    form.append("themeColor", document.getElementById("colorPicker").value);
     form.append("graduatingLevel", document.getElementById("graduatingLevel").value);
   
     const logoFile = document.getElementById("logoUpload").files[0];

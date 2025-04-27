@@ -49,12 +49,12 @@
                             placeholder="First Name" required>
                     </div>
                     <div class="input-group">
-                        <input class="input-group-input" type="text" name="lastname" id="lastname"
-                            placeholder="Last Name">
-                    </div>
-                    <div class="input-group">
                         <input class="input-group-input" type="text" name="middlename" id="middlnamee"
                             placeholder="Optional">
+                    </div>
+                    <div class="input-group">
+                        <input class="input-group-input" type="text" name="lastname" id="lastname"
+                            placeholder="Last Name">
                     </div>
                 </div>
 
@@ -67,9 +67,10 @@
                     <div class="account-type-div">
                         <label class="normal-label" for="gender">Gender</label>
                         <select name="gender" id="gender" required>
-                            <option value="">Choose a gender</option>
+                            <option value="" disabled selected>Choose a gender</option>
                             <option value="MALE">Male</option>
                             <option value="FEMALE">Female</option>
+                            <option value="PREFER_NOT_TO_SAY">Prefer not to say</option>
                         </select>
                     </div>
 
@@ -100,8 +101,8 @@
                 </div>
 
                 <div class="input-group">
-                    <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber" placeholder=""
-                        required>
+                    <input class="input-group-input" type="tel" name="contactNumber" id="contactNumber"
+                        placeholder="e.g. 11 digits" required>
                     <label class="input-group-label" for="contactNumber">Contact Number</label>
                 </div>
                 <button type="submit" id="login-btn">Sign Up</button>
@@ -115,7 +116,7 @@
         <div id="successModal">
             <p id="successModalMessage"></p>
         </div>
-        
+
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
             <div class="modal-content scroll-lock">
@@ -131,9 +132,20 @@
     document.getElementById('signup-form-large').addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent default form submission
 
-        const form = event.target; // Define 'form' from the event target
+        // Validate birthdate
+        if (!validateSignupBirthdate()) {
+            return;
+        }
+
+        // Validate contact number
+        if (!validateContactNumber()) {
+            return;
+        }
+
+        const form = event.target;
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries()); // Convert FormData to JSON
+
         fetch("/user/register", {
             method: 'POST',
             headers: {
@@ -148,7 +160,7 @@
                     });
                 } else {
                     return response.text().then(text => {
-                        showErrorModal("❌ " + text); // Show server error response
+                        showErrorModal("❌ " + text);
                     });
                 }
             })
@@ -156,6 +168,105 @@
                 showErrorModal(error.message);
             });
     });
+
+
+    function validateContactNumber() {
+        const contactInput = document.getElementById("contactNumber").value.trim();
+
+        // Regular expression: exactly 11 digits, no spaces or special characters
+        const contactRegex = /^[0-9]{11}$/;
+
+        if (!contactRegex.test(contactInput)) {
+            setTimeout(() => {
+                showErrorModal("❌ Error: Contact number must be exactly 11 digits, contain no spaces or special characters.");
+            }, 50);
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+
+    function validateSignupBirthdate() {
+        const input = document.getElementById("birthdate").value;
+
+        if (!input) {
+            setTimeout(() => {
+                showErrorModal("⚠️ Error: Please enter your birthdate.");
+            }, 50);
+            return false;
+        }
+
+        const birthdate = new Date(input);
+        const today = new Date();
+
+        let age = today.getFullYear() - birthdate.getFullYear();
+        const monthDiff = today.getMonth() - birthdate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+            age--;
+        }
+
+        if (age < 16) {
+            setTimeout(() => {
+                showErrorModal("❌ Error: You must be at least 3 years old to register.");
+            }, 50);
+            return false;
+        }
+
+        if (age > 95) {
+            setTimeout(() => {
+                showErrorModal("❌ Error: Invalid birthdate. Age cannot be more than 95 years old.");
+            }, 50);
+            return false;
+        }
+
+        return true;
+    }
+
+
+    function showErrorModal(message) {
+        console.log("Attempting to show modal with message:", message);
+
+        // 1. Get modal elements
+        const modalEl = document.getElementById('errorModal');
+        const modalBody = document.getElementById('errorModalBody');
+
+        // 2. Verify elements exist
+        if (!modalEl || !modalBody) {
+            console.error("Modal elements missing!", { modalEl, modalBody });
+            // alert("FALLBACK ERROR: " + message);
+            return;
+        }
+
+        // 3. Set message content
+        modalBody.textContent = message;
+        console.log("Modal message set");
+
+        // 4. Close any other open modals
+        const openModals = document.querySelectorAll('.modal.show');
+        openModals.forEach(modal => {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) bsModal.hide();
+        });
+
+        // 5. Show the error modal
+        const bsModal = new bootstrap.Modal(modalEl);
+        bsModal.show();
+        console.log("Modal show called");
+
+        // 6. Debug visibility after a short delay
+        setTimeout(() => {
+            const style = window.getComputedStyle(modalEl);
+            console.log("Modal visibility check:", {
+                display: style.display,
+                visibility: style.visibility,
+                opacity: style.opacity,
+                zIndex: style.zIndex
+            });
+        }, 100);
+    }
 
 </script>
 

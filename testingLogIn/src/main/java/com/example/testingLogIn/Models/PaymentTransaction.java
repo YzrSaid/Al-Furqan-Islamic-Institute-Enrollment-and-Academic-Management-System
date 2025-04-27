@@ -41,7 +41,9 @@ public class PaymentTransaction {
     @Builder.Default
     private LocalDate dateReceived = LocalDate.now();
     private double totalAmount;
+    private double totalAmountDue;
     private boolean isNotVoided;
+    private double remainingBalance;
 
     public PaymentTransactionDTO DTOmapper(){
         PaymentTransactionDTO paymentTransactionDTO = PaymentTransactionDTO.builder()
@@ -50,13 +52,18 @@ public class PaymentTransaction {
                 .transactionReference(transactionId)
                 .receivedBy(staff.getFullName())
                 .studentName(student.getFullName())
+                .remainingBalance(remainingBalance)
                 .date(dateReceived)
                 .SYSemester(Optional.ofNullable(SYSem).map(SchoolYearSemester::toString).orElse("N/A"))
                 .totalAmount(totalAmount)
                 .particulars(new ArrayList<>())
                 .build();
         for(PaymentRecords pr :particulars)
-            paymentTransactionDTO.addNewParticular(pr.getRequiredPayment().getName(), NonModelServices.adjustDecimal(pr.getAmount()));
+                paymentTransactionDTO.addNewParticular(pr.getRequiredPayment().getName(),
+                                                        NonModelServices.adjustDecimal(pr.getAmount()),
+                                                        pr.getDiscount(),
+                                                        pr.getRequiredPayment().getRequiredAmount(),
+                                                        pr.getBalance());
         return paymentTransactionDTO;
     }
 }

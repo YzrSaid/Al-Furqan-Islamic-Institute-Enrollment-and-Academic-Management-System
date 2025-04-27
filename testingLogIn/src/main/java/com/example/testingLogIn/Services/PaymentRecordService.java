@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 class MapperObject{
     private RequiredFees requiredFees;
     private double totalBalance;
+    private double discount;
 }
 
 /**
@@ -74,8 +75,6 @@ public class PaymentRecordService {
         this.studFeesRepo = studFeesRepo;
     }
     //NEW WAY OF PAYING
-    @CacheEvict(value = {"enrollmentPage"//,"studPaymentForm"
-    },allEntries = true)
     public PaymentTransactionDTO addPaymentAutoAllocate(int studentId, Integer gradeLevelId, double amount, List<Integer> feesId){
         PaymentTransaction transaction = generateTransaction();
         Student student = studentRepo.findById(studentId).orElse(null);
@@ -87,24 +86,37 @@ public class PaymentRecordService {
         transaction.setNotVoided(true);
         PaymentTransaction tran = transactionRepo.save(transaction);
         tran.setParticulars(new ArrayList<>());
-
+        List<PaymentRecords> notPaid = new ArrayList<>();
         List<MapperObject> toSortByBalance = new ArrayList<>();
         setTheAmount(amount);
         StudentTotalDiscount std = discService.getStudentTotalDiscount(studentId);
-
+        double totalAmountDue = 0;
         if(gradeLevelId != null) {//during enrollment
             for (GradeLevelRequiredFees reqFee : gradeReqFee.findByGradeLevel(gradeLevelId)) {
-                if(feesId.contains(reqFee.getRequiredFee().getId())) {
-                    double paidAmount = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber()).orElse(0.0);
+                double paidAmount = paymentRepo.totalPaidForSpecificFee(studentId, reqFee.getRequiredFee().getId(), sem.getSySemNumber()).orElse(0.0);
 
-                    double initialAmount = reqFee.getRequiredFee().getRequiredAmount();//initial amount deducted by the discount
-                    double discountedAmount = initialAmount-((initialAmount * std.getTotalPercentageDiscount())+std.getTotalFixedDiscount());
-                    double totalFeeBalance = discountedAmount - paidAmount;
+                double initialAmount = reqFee.getRequiredFee().getRequiredAmount();//initial amount deducted by the discount
+                double discount = ((initialAmount * std.getTotalPercentageDiscount())+std.getTotalFixedDiscount());
+                discount = Math.min(discount, initialAmount);
+                double discountedAmount = initialAmount - discount;
+                double totalFeeBalance = discountedAmount - paidAmount;
+                totalAmountDue +=totalFeeBalance;
+
+                if(feesId.contains(reqFee.getRequiredFee().getId())) {
                     if (totalFeeBalance > 0)
                         toSortByBalance.add(MapperObject.builder()
                                 .requiredFees(reqFee.getRequiredFee())
+                                .discount(discount)
                                 .totalBalance(NonModelServices.adjustDecimal(totalFeeBalance))
                                 .build());
+                }else if(totalFeeBalance > 0){
+                    notPaid.add(PaymentRecords.builder()
+                            .balance(totalFeeBalance)
+                            .transaction(tran)
+                            .discount(discount)
+                            .requiredPayment(reqFee.getRequiredFee())
+                            .amount(0)
+                            .build());
                 }
             }
         }else {//all time fees
@@ -126,8 +138,8 @@ public class PaymentRecordService {
                             .collect(Collectors.toList());
         double average = getTheAmount()/toSortByBalance.size();
         int size = toSortByBalance.size();
-
-        toSortByBalance.forEach(fee -> {
+        double totalRemaining =0;
+        for(MapperObject fee : toSortByBalance){
             double toAllocate = 0;
             if(count.get() != size)
                 toAllocate = Math.min(average,fee.getTotalBalance());
@@ -135,17 +147,23 @@ public class PaymentRecordService {
                 toAllocate = getTheAmount();
             setTheAmount(getTheAmount()-toAllocate);
             count.getAndIncrement();
-
+            totalRemaining += fee.getTotalBalance() - toAllocate;
             PaymentRecords particular = PaymentRecords.builder()
-                    .transaction(tran)
-                    .requiredPayment(fee.getRequiredFees())
-                    .amount(NonModelServices.adjustDecimal(toAllocate))
-                    .build();
+                                        .balance(fee.getTotalBalance())
+                                        .transaction(tran)
+                                        .discount(fee.getDiscount())
+                                        .requiredPayment(fee.getRequiredFees())
+                                        .amount(NonModelServices.adjustDecimal(toAllocate))
+                                        .build();
             paymentRepo.save(particular);
             tran.getParticulars().add(particular);
-        });
+        }
+        tran.getParticulars().addAll(notPaid);
+        paymentRepo.saveAll(notPaid);
         student.setStudentBalance(student.getStudentBalance()-amount);
         studentRepo.save(student);
+        tran.setRemainingBalance(totalRemaining);
+        transactionRepo.save(tran);
         return tran.DTOmapper();
     }
 

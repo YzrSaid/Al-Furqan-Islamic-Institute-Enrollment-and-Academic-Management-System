@@ -34,7 +34,8 @@ public class PaymentRecords {
     @ManyToOne
     @JoinColumn(name = "requiredPayment")
     private RequiredFees requiredPayment;
-
+    private double balance;
+    private double discount;
     private double amount;
     
     public PaymentRecordDTO DTOmapper(){

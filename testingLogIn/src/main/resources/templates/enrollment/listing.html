@@ -747,12 +747,12 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Item #</th>
-                                <th>Description</th>
+                                <th>Item</th>
                                 <th>Req. Amount</th>
                                 <th>Discount</th>
                                 <th>Balance</th>
-                                <th>Amount Due</th>
+                                <th>Paid</th>
+                                <th>Remaining Due</th>
                             </tr>
                         </thead>
                         <tbody id="receipt-items">
@@ -986,9 +986,9 @@
                     const statusClass = getPaymentStatusClass(status);
                     row.innerHTML = `
                         <td>${datas.fee.name}</td>
-                        <td>${datas.totalRequired}</td>
+                        <td>${datas.fee.requiredAmount}</td>
                         <td>${datas.discount}</td>
-                        <td>${datas.totalPaid}</td>
+                        <td>${datas.totalPaid.toFixed(2)}</td>
                         <td>${datas.balance}</td>
                         <td>
                             <div class="status-container">
@@ -1067,6 +1067,7 @@
                 return response.json(); // Parse the response as JSON
             })
             .then(receipt => {
+                console.log(receipt);
                 // Populate the receipt details
                 document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
                 document.getElementById("receipt-date").value = receipt.date;
@@ -1077,16 +1078,19 @@
                 tableBody.innerHTML = "";  // Clear previous content
                 let i = 1;
                 // Loop through each payment item and add it to the table
+                var totalBalance = 0;
+                var totalPaid = 0;
                 receipt.particulars.forEach(dat => {
                     const row = document.createElement("tr");
+                    totalBalance +=dat.balance; 
+                    totalPaid += dat.amountPaid;
                     row.innerHTML = `
-                    <td>${i++}</td>
                     <td>${dat.feeName}</td>
-                    <td>₱ ${parseFloat(dat.requestedAmount).toFixed(2)}</td>
+                    <td>₱ ${parseFloat(dat.fee.requiredAmount).toFixed(2)}</td>
                     <td>₱ ${parseFloat(dat.discount).toFixed(2)}</td>
                     <td>₱ ${parseFloat(dat.balance).toFixed(2)}</td>
-                    <td>₱ ${parseFloat(dat.amountDue).toFixed(2)}</td>
-                `;
+                    <td>₱ ${parseFloat(dat.amountPaid).toFixed(2)}</td>
+                    <td>₱ ${parseFloat(dat.balance - (dat.amountPaid)).toFixed(2)}</td>`;
                     tableBody.appendChild(row);
                 });
 
@@ -1095,9 +1099,9 @@
                 const totalAmountPaidElement = document.getElementById("total-amount-paid");
                 const remainingBalanceElement = document.getElementById("remaining-balance");
 
-                totalAmountDueElement.innerText = `₱ ${parseFloat(receipt.totalAmountDue).toFixed(2)}`;
-                totalAmountPaidElement.innerText = `₱ ${parseFloat(receipt.totalAmountPaid).toFixed(2)}`;
-                remainingBalanceElement.innerText = `₱ ${parseFloat(receipt.remainingBalance).toFixed(2)}`;
+                totalAmountDueElement.innerText = `₱ ${parseFloat(totalBalance).toFixed(2)}`;
+                totalAmountPaidElement.innerText = `₱ ${parseFloat(receipt.totalAmount).toFixed(2)}`;
+                remainingBalanceElement.innerText = `₱ ${parseFloat(totalBalance - totalPaid).toFixed(2)}`;
 
                 // Proceed with the next steps after saving
                 goList(currentPage);

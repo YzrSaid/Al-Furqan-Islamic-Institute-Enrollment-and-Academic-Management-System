@@ -10,10 +10,16 @@ import java.util.List;
 class Particular{
     private String feeName;
     private double amountPaid;
+    private double discount;
+    private double requiredAmount;
+    private double balance;
 
-    public Particular(String feeName, double amountPaid) {
+    public Particular(String feeName, double amountPaid, double discount, double requiredAmount, double balance) {
         this.feeName = feeName;
         this.amountPaid = amountPaid;
+        this.discount = discount;
+        this.requiredAmount = requiredAmount;
+        this.balance = balance;
     }
 }
 
@@ -26,11 +32,12 @@ public class PaymentTransactionDTO {
     private String studentDisplayId;
     private String studentName;
     private LocalDate date;
+    private double remainingBalance;
     private String SYSemester;
     private double totalAmount;
     private List<Particular> particulars;
 
-    public void addNewParticular(String feeName, double amountPaid){
-        particulars.add(new Particular(feeName,amountPaid));
+    public void addNewParticular(String feeName, double amountPaid, double discount, double req, double balance){
+        particulars.add(new Particular(feeName,amountPaid,discount,req,balance));
     }
 }

@@ -31,7 +31,6 @@ public class StudentPaymentController{
                                              @PathVariable double amount,
                                              @RequestBody PaymentObject po){ //requires {"feesId"[1,2]} JSON body, 1 and 2 are feesId(example onlyyy)
         try{
-            System.out.println("Hiii");
             return new ResponseEntity<>(paymentService.addPaymentAutoAllocate(studentId,gradeLevel,amount,po.getFeesId()),HttpStatus.OK);
         }catch(Exception e){
             e.printStackTrace();

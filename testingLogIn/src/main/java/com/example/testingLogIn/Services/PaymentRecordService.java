@@ -121,14 +121,21 @@ public class PaymentRecordService {
             }
         }else {//all time fees
             for(StudentFeesList paid : studFeesRepo.findUniqueFees(studentId)){
+                Double amountPaid = paymentRepo.totalPaidForSpecificFee(studentId,paid.getFee().getId(),null).orElse(0d);
+                double remainingBalance = Optional.ofNullable(studFeesRepo.totalPerFeesByStudent(studentId, paid.getFee().getId())).orElse(0d) - amountPaid;
                 if(feesId.contains(paid.getFee().getId())) {
-                    Double amountPaid = paymentRepo.totalPaidForSpecificFee(studentId,paid.getFee().getId(),null).orElse(0d);
-                    double remainingBalance = Optional.ofNullable(studFeesRepo.totalPerFeesByStudent(studentId, paid.getFee().getId())).orElse(0d) - amountPaid;
                     if (remainingBalance > 0)
                         toSortByBalance.add(MapperObject.builder()
                                 .requiredFees(paid.getFee())
                                 .totalBalance(NonModelServices.adjustDecimal(remainingBalance))
                                 .build());
+                }else if(remainingBalance > 0){
+                    notPaid.add(PaymentRecords.builder()
+                                    .requiredPayment(paid.getFee())
+                            .balance(remainingBalance)
+                            .transaction(tran)
+                            .amount(0)
+                            .build());
                 }
             }
         }
@@ -167,9 +174,6 @@ public class PaymentRecordService {
         return tran.DTOmapper();
     }
 
-//    @Cacheable(
-//            value = "studPaymentForm",
-//            key = "#studentId + #pageNo + #pageSize")
     public Object getStudentPaymentForm(int studentId, boolean forBreakDown, int pageNo, int pageSize, boolean forPayment){
         Student student = studentRepo.findById(studentId).orElse(null);
         assert student != null;

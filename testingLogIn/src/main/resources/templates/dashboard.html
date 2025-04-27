@@ -27,7 +27,7 @@
         <div class="sort-btns-container">
             <div class="sort-year">
                 <label for="school-year">Year</label>
-                <select name="year" onchange="setCounts(),setChartContents(),setGradesChart()" id="school-year">
+                <select name="year" onchange="setCounts(),setChartContents(),setGradesChart(),setUpGender()" id="school-year">
                     <option value="0" selected>All Time</option>
                 </select>
             </div>
@@ -84,17 +84,6 @@
         </div>
         <div class="chart-box-graph">
             <div class="graph-container">
-                <div class="title">
-                    <h6 id="graphTitle">Enrollment by Gender</h6>
-                    <div class="filter-container">
-                        <label for="filter">Filter:</label>
-                        <select id="filter">
-                            <option value="gender" selected>Gender</option>
-                            <option value="ethnicity">Ethnicity</option>
-                            <option value="age">Age</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="graph">
                     <canvas id="enrollmentChart"></canvas>
                 </div>
@@ -131,7 +120,9 @@
                         </select>
                     </div>
                 </div>
-
+                <div class="title">
+                    <h6 id="graphTitle">Enrollment by Gender</h6>
+                </div>
                 <div class="bar-graph">
                     <canvas id="retentionChart"></canvas>
                 </div>
@@ -143,58 +134,6 @@
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const enrollmentCanvas = document.getElementById('enrollmentChart').getContext('2d');
-        const graphTitle = document.getElementById('graphTitle');
-        // Enrollment Chart (Doughnut)
-        const enrollmentChart = new Chart(enrollmentCanvas, {
-            type: 'doughnut',
-            data: {
-                labels: ['Male', 'Female'],
-                datasets: [{
-                    data: [62, 38],
-                    backgroundColor: ['blue', 'red']
-                }]
-            },
-            options: {
-                responsive: true,
-                layout: {
-                    padding: {
-                        top: 0,
-                        right: 20,
-                        bottom: 50,
-                        left: 0
-                    }
-                },
-                plugins: {
-                    legend: { display: true, position: 'right' }
-                }
-            }
-        });
-
-        function updateChartData(filterValue) {
-            let newData = {};
-            let newTitle = '';
-
-            if (filterValue === 'gender') {
-                newData = { labels: ['Male', 'Female'], datasets: [{ data: [62, 38], backgroundColor: ['blue', 'red'] }] };
-                newTitle = 'Enrollment by Gender';
-            } else if (filterValue === 'ethnicity') {
-                newData = { labels: ['Asian', 'Black', 'White'], datasets: [{ data: [40, 35, 25], backgroundColor: ['green', 'purple', 'yellow'] }] };
-                newTitle = 'Enrollment by Ethnicity';
-            } else if (filterValue === 'age') {
-                newData = { labels: ['Under 18', '18-25', '25-40', '40+'], datasets: [{ data: [15, 45, 30, 10], backgroundColor: ['blue', 'orange', 'red', 'gray'] }] };
-                newTitle = 'Enrollment by Age';
-            }
-
-            enrollmentChart.data = newData;
-            enrollmentChart.update();
-            graphTitle.innerText = newTitle;
-        }
-
-        document.getElementById('filter').addEventListener('change', function (e) {
-            updateChartData(e.target.value);
-        });
-
         fetch("/schoolyear/all")
             .then(response => {
                 if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`); }
@@ -216,7 +155,52 @@
         setChartContents();
         setCounts();
         setGradeLevels();
+        setUpGender();
     });
+
+        let enrollmentChart = null;
+        async function setUpGender(){
+            if (enrollmentChart) {
+                enrollmentChart.destroy();
+            }
+            var sem = document.getElementById("semester-sort").value;
+            var sy = document.getElementById("school-year").value;
+            const response = await fetch(`/statistics/gender-rates?semester=${sem}&schoolYear=${sy}`)
+            if(!response.ok){
+                return;
+            }
+            var genderObj = await response.json();
+            var gradeLabels = genderObj.gradeLevelNames;
+            var gradeRates = genderObj.gradeLevelCounts;
+            var enrollmentCanvas = document.getElementById('enrollmentChart').getContext('2d');
+            const graphTitle = document.getElementById('graphTitle');
+            enrollmentChart = new Chart(enrollmentCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: gradeLabels,
+                    datasets: [{
+                        data: gradeRates,
+                        backgroundColor: ['blue', 'red']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    layout: {
+                        padding: {
+                            top: 0,
+                            right: 20,
+                            bottom: 50,
+                            left: 0
+                        }
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'right' }
+                    }
+                }
+            });
+            enrollmentChart.update();
+        }
+
 
     async function setCounts() {
         var sem = document.getElementById("semester-sort").value;
@@ -260,14 +244,6 @@
             const ratesResult = await response.json();
             gradeLabels = ratesResult.gradeLevelNames;
             gradeRates = ratesResult.gradeLevelCounts;
-            // gradeLabels = gradeLabels.concat(gradeLabels);
-            // gradeRates = gradeRates.concat(gradeRates);
-            // gradeLabels = gradeLabels.concat(gradeLabels);
-            // gradeRates = gradeRates.concat(gradeRates);
-            // gradeLabels = gradeLabels.concat(gradeLabels);
-            // gradeRates = gradeRates.concat(gradeRates);
-            // gradeLabels = gradeLabels.concat(gradeLabels);
-            // gradeRates = gradeRates.concat(gradeRates);
         }
 
         const retentionCanvas = document.getElementById('retentionChart').getContext('2d');
@@ -334,14 +310,6 @@
             const ratesResult = await response.json();
             gradeLabels = ratesResult.subjectNames;
             gradeRates = ratesResult.avgGrades;
-            // gradeLabels = gradeLabels.concat(gradeLabels); para matestingan nmo ang length
-            // gradeRates = gradeRates.concat(gradeRates);
-            // gradeLabels = gradeLabels.concat(gradeLabels);
-            // gradeRates = gradeRates.concat(gradeRates);
-            // gradeLabels = gradeLabels.concat(gradeLabels);
-            // gradeRates = gradeRates.concat(gradeRates);
-            // gradeLabels = gradeLabels.concat(gradeLabels);
-            // gradeRates = gradeRates.concat(gradeRates);
         }
 
         const retentionCanvas = document.getElementById('subjectRateChart').getContext('2d');

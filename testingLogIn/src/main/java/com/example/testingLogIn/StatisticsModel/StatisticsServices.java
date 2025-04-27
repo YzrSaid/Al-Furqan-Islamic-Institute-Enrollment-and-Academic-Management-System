@@ -2,6 +2,7 @@ package com.example.testingLogIn.StatisticsModel;
 
 import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
+import com.example.testingLogIn.Enums.Gender;
 import com.example.testingLogIn.Enums.Semester;
 import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.Models.Enrollment;
@@ -38,9 +39,10 @@ public class StatisticsServices {
     private final GradeLevelPassedCountRepo gradeLevelPassedCountRepo;
     private final GradeLevelRepo gradeLevelRepo;
     private final EnrollmentRepo enrollmentRepo;
+    private final EnrolledGenderCountRepo genderCountRepo;
 
     @Autowired
-    public StatisticsServices(EnrolledCountRepo enrolledCountRepo, GraduatesCountRepo graduatesCountRepo, GraduateStudentsRepo graduateStudentsRepo, PreEnrolledCountRepo preEnrolledCountRepo, RetainedCountRepo retainedCountRepo, PassedCountRepo passedCountRepo, GradeLevelEnrolledCountRepo gradeLevelEnrolledCountRepo, StudentPassingRecordRepo studentPassingRecordRepo, StudentSubjectGradeRepo studentSubjectGradeRepo, GradeLevelRetainedCountRepo gradeLevelRetainedCountRepo, GradeLevelPassedCountRepo gradeLevelPassedCountRepo, GradeLevelRepo gradeLevelRepo, EnrollmentRepo enrollmentRepo) {
+    public StatisticsServices(EnrolledCountRepo enrolledCountRepo, GraduatesCountRepo graduatesCountRepo, GraduateStudentsRepo graduateStudentsRepo, PreEnrolledCountRepo preEnrolledCountRepo, RetainedCountRepo retainedCountRepo, PassedCountRepo passedCountRepo, GradeLevelEnrolledCountRepo gradeLevelEnrolledCountRepo, StudentPassingRecordRepo studentPassingRecordRepo, StudentSubjectGradeRepo studentSubjectGradeRepo, GradeLevelRetainedCountRepo gradeLevelRetainedCountRepo, GradeLevelPassedCountRepo gradeLevelPassedCountRepo, GradeLevelRepo gradeLevelRepo, EnrollmentRepo enrollmentRepo, EnrolledGenderCountRepo genderCountRepo) {
         this.enrolledCountRepo = enrolledCountRepo;
         this.graduatesCountRepo = graduatesCountRepo;
         this.graduateStudentsRepo = graduateStudentsRepo;
@@ -54,6 +56,7 @@ public class StatisticsServices {
         this.gradeLevelPassedCountRepo = gradeLevelPassedCountRepo;
         this.gradeLevelRepo = gradeLevelRepo;
         this.enrollmentRepo = enrollmentRepo;
+        this.genderCountRepo = genderCountRepo;
     }
 
     public void setInitialCounts(SchoolYearSemester sem){
@@ -68,6 +71,9 @@ public class StatisticsServices {
             passedCountRepo.save(new PassedCount(0,sem));
         if(retainedCountRepo.findBySemester(semId).orElse(null)==null)
             retainedCountRepo.save(new RetainedCount(0,sem));
+
+        genderCountRepo.save(new EnrolledGenderCount(Gender.MALE, sem,0));
+        genderCountRepo.save(new EnrolledGenderCount(Gender.FEMALE,sem,0));
     }
 
     @Transactional
@@ -88,6 +94,14 @@ public class StatisticsServices {
                 .ifPresentOrElse(
                         levelCount -> gradeLevelEnrolledCountRepo.increaseCount(sem.getSySemNumber(), gradeLevel.getLevelId()),
                         ()->gradeLevelEnrolledCountRepo.save(new GradeLevelEnrolledCount(sem,gradeLevel)));
+
+        Student student = enrollment.getStudent();
+        genderCountRepo.findByGenderSemester(student.getGender(),enrollment.getSYSemester().getSySemNumber())
+                .ifPresentOrElse(egc ->{
+                                    egc.setCount(egc.getCount()+1);
+                                    genderCountRepo.save(egc);
+                                },
+                                ()->{genderCountRepo.save(new EnrolledGenderCount(student.getGender(),sem,1));});
     }
 
     public void setGraduatesInformation(List<Student> graduates, SchoolYearSemester sem){
@@ -114,7 +128,7 @@ public class StatisticsServices {
         }
     }
 
-    public CounterObject getCounts(Integer schoolYear, Semester semester,String semKey){
+    public CounterObject getCounts(Integer schoolYear, Semester semester){
         schoolYear = schoolYear == 0 ? null : schoolYear;
         return CounterObject.builder()
                 .enrolledCount(enrolledCountRepo.getSum(schoolYear,semester).orElse(0L))
@@ -125,6 +139,17 @@ public class StatisticsServices {
                 //.passedCount(gradeLevelPassedCountRepo.getTotal(schoolYear,semester,null).orElse(0L)) //good when testing by directly manipulating ang contents sa database
                 //.retainedCount(gradeLevelRetainedCountRepo.getTotal(schoolYear,semester,null).orElse(0L))
                 .build();
+    }
+
+    public GradeLevelRates getGenderCounts(Integer schoolYear, Semester semester){
+        List<Long> genderRates = new ArrayList<>();
+
+        List<String> genderNames = new ArrayList<>(List.of("Male", "Female"));
+        System.out.println(schoolYear);
+        genderRates.add(genderCountRepo.findTotalCountsByGender(Gender.MALE,schoolYear,semester).orElse(0L));
+        genderRates.add(genderCountRepo.findTotalCountsByGender(Gender.FEMALE,schoolYear,semester).orElse(0L));
+
+        return new GradeLevelRates(genderNames,genderRates);
     }
 
     public GradeLevelRates getGradeLevelRates(Integer schoolYear, Semester semester, boolean didPassed,String semKey, String passed){

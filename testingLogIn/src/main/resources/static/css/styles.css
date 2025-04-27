@@ -1021,6 +1021,27 @@ select option[value=""] {
   width: 20%;
 }
 
+.passing-records-table th:nth-child(1),
+.passing-records-table td:nth-child(1) {
+  width: 15%;
+}
+.passing-records-table th:nth-child(2),
+.passing-records-table td:nth-child(2) {
+  width: 30%;
+}
+.passing-records-table th:nth-child(3),
+.passing-records-table td:nth-child(3) {
+  width: 15%;
+}
+.passing-records-table th:nth-child(4),
+.passing-records-table td:nth-child(4) {
+  width: 20%;
+}
+.passing-records-table th:nth-child(5),
+.passing-records-table td:nth-child(5) {
+  width: 20%;
+}
+
 .payment-table th:nth-child(1),
 .payment-table td:nth-child(1) {
   width: 14%;
@@ -1481,6 +1502,7 @@ table td {
 }
 
 .listing-table,
+.passing-records-table,
 .grade-management-table,
 .grade-level-table,
 .payment-transaction-table,
@@ -1614,7 +1636,6 @@ table td {
   text-align: center;
 }
 
-.paid-status,
 #status-balance {
   background-color: #218838;
   color: white;
@@ -2740,6 +2761,7 @@ input[type="checkbox"] {
 .scholarship-edit-modal-content input,
 .school-year-modal-content select,
 .grade-level-modal-content select,
+.table-wrapper select,
 .subject-modal-content select,
 .student-form-group select,
 .teacher-modal-content select,

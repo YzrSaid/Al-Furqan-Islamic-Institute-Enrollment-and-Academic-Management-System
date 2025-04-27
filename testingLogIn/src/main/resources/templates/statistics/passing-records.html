@@ -16,25 +16,8 @@
             <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-            <div class="sort-btns-container">
-                <div class="sort-year">
-                    <label for="school-year">Year</label>
-                    <select name="year" onchange="getCurrentlyEnrolled(1)" id="school-year">
-                        <option value="0" selected>All Time</option>
-                    </select>
-                </div>
-                <div class="sort-semester">
-                    <label for="semester-sort">Semester</label>
-                    <select name="semester" onchange="getCurrentlyEnrolled(1)" id="semester-sort">
-                        <option value=""selected>All</option>
-                        <option value="First">First</option>
-                        <option value="Second">Second</option>
-                    </select>
-                </div>
-            </div>
-
-             <!-- Overlay -->
-             <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
             <div class="text-link" id="breadcrumb-container">
                 <h4>Enrolled</h4>
@@ -51,21 +34,23 @@
                         <button type="button" onclick="getCurrentlyEnrolled(1)" class="search-btn">Search</button>
                     </div>
                 </div>
+
+
+                <div class="sort-container">
+                    <select title="sort" name="sort" onchange="getCurrentlyEnrolled(1)" id="grades-select"
+                        class="sort-select">
+                        <option value="0" selected>All</option>
+                    </select>
+
+                    <select title="sort" name="sort" onchange="getCurrentlyEnrolled(1)" id="sort-passed"
+                        class="sort-select">
+                        <option value="" selected>All</option>
+                        <option value="true">Passed</option>
+                        <option value="false">Failed</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="sort-container">
-                <select title="sort" name="sort" onchange="getCurrentlyEnrolled(1)" id="grades-select" class="sort-select">
-                    <option value="0" selected>All</option>
-                </select>
-            </div>
-
-            <div class="sort-container">
-                <select title="sort" name="sort" onchange="getCurrentlyEnrolled(1)" id="sort-passed" class="sort-select">
-                    <option value="" selected>All</option>
-                    <option value="true">Passed</option>
-                    <option value="false">Failed</option>
-                </select>
-            </div>
         </div>
 
 
@@ -88,8 +73,25 @@
         </div>
 
         <div class="table-wrapper">
+            <div class="sort-btns-container">
+                <div class="sort-year">
+                    <label for="school-year">Year</label>
+                    <select name="year" onchange="getCurrentlyEnrolled(1)" id="school-year">
+                        <option value="0" selected>All Time</option>
+                    </select>
+                </div>
+                <div class="sort-semester">
+                    <label for="semester-sort">Semester</label>
+                    <select name="semester" onchange="getCurrentlyEnrolled(1)" id="semester-sort">
+                        <option value="" selected>All</option>
+                        <option value="First">First</option>
+                        <option value="Second">Second</option>
+                    </select>
+                </div>
+            </div> <br>
             <!-- Table -->
-            <table id="realginnas" class="listing-table main-table">
+
+            <table id="realginnas" class="passing-records-table main-table">
                 <thead>
                     <tr>
                         <th>Student ID</th>
@@ -102,6 +104,8 @@
                 <tbody>
                 </tbody>
             </table>
+
+
         </div>
 
         <!-- Pagination -->
@@ -259,26 +263,26 @@
                     row.innerHTML = `
                     <td>${rec.student.studentDisplayId || "N/A"}</td>
                     <td>${rec.student.fullName}</td>
-                    <td>${rec.gradeLevel.levelName+"-"+(rec.section?.sectionName || "N/A")}</td>
+                    <td>${rec.gradeLevel.levelName + "-" + (rec.section?.sectionName || "N/A")}</td>
                     <td>${rec.average}</td>
-                    <td>${rec.sem.schoolYear.schoolYear+" "+rec.sem.sem}</td>`;
-                    
+                    <td>${rec.sem.schoolYear.schoolYear + " " + rec.sem.sem}</td>`;
+
                     tableBody.appendChild(row);
                 });
                 totalItems = data.totalElements || 0;
                 const totalPages = data.totalPages || 1;
                 updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
             })
-            .catch(error => {tableBody.innerHTML = "<tr><td colspan='5'>No records found.</td></tr>";});
+            .catch(error => { tableBody.innerHTML = "<tr><td colspan='5'>No records found.</td></tr>"; });
     }
 
-    async function setGradeLevels(){
+    async function setGradeLevels() {
         const response = await fetch("/gradelevel/all");
-        if(response.ok){
+        if (response.ok) {
             const gradeLevels = await response.json();
             var gradeLevelsSelect = document.getElementById("grades-select");
-            
-            if(gradeLevels.length > 0){
+
+            if (gradeLevels.length > 0) {
                 gradeLevelsSelect.innerText = "";
                 var i = 0;
                 gradeLevels.forEach(gradeLvl => {
@@ -286,7 +290,7 @@
                     opt.value = gradeLvl.levelId;
                     opt.textContent = gradeLvl.levelName;
                     // console.log(gradeLvl);
-                    if(i === 0){
+                    if (i === 0) {
                         opt.selected = true;
                         i++;
                     }
@@ -297,55 +301,55 @@
         }
     }
 
-        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
-           // console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
-            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-            const end = Math.min(currentPage * pageSize, totalItems);
+    function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+        // console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
 
-            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
-            document.getElementById("pageInput").value = currentPage;
-            document.getElementById("pageInput").min = 1;
-            document.getElementById("pageInput").max = totalPages;
-            document.getElementById("totalPages").textContent = `of ${totalPages}`;
+        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById("pageInput").value = currentPage;
+        document.getElementById("pageInput").min = 1;
+        document.getElementById("pageInput").max = totalPages;
+        document.getElementById("totalPages").textContent = `of ${totalPages}`;
 
-            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
-            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
-        }
+        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+    }
 
-        document.getElementById("prevPage").addEventListener("click", () => {
-            if (currentPage > 1) {
-                currentPage--;
-                getCurrentlyEnrolled(currentPage);
-            }
-        });
-
-        document.getElementById("nextPage").addEventListener("click", () => {
-            if (currentPage < document.getElementById("pageInput").max) {
-                currentPage++;
-                //console.log("Navigating to page:", currentPage);
-                getCurrentlyEnrolled(currentPage);
-            } else {
-                //console.log("Cannot navigate to next page");
-            }
-        });
-
-        document.getElementById("pageInput").addEventListener("change", (e) => {
-            const totalPages = parseInt(document.getElementById("pageInput").max);
-            let page = parseInt(e.target.value);
-            if (page >= 1 && page <= totalPages) {
-                currentPage = page;
-                getCurrentlyEnrolled(currentPage);
-            } else {
-                e.target.value = currentPage;
-            }
-        });
-
-        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
-            //console.log("pageSizeSelector changed", { value: e.target.value });
-            pageSize = parseInt(e.target.value);
-            currentPage = 1;
+    document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
             getCurrentlyEnrolled(currentPage);
-        });
+        }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < document.getElementById("pageInput").max) {
+            currentPage++;
+            //console.log("Navigating to page:", currentPage);
+            getCurrentlyEnrolled(currentPage);
+        } else {
+            //console.log("Cannot navigate to next page");
+        }
+    });
+
+    document.getElementById("pageInput").addEventListener("change", (e) => {
+        const totalPages = parseInt(document.getElementById("pageInput").max);
+        let page = parseInt(e.target.value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            getCurrentlyEnrolled(currentPage);
+        } else {
+            e.target.value = currentPage;
+        }
+    });
+
+    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        //console.log("pageSizeSelector changed", { value: e.target.value });
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        getCurrentlyEnrolled(currentPage);
+    });
 </script>
 
 </html>

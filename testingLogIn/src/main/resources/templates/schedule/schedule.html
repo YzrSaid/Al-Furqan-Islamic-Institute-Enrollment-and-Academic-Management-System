@@ -185,20 +185,27 @@
                 tableBody.innerHTML = "";
 
                 data.forEach(rec => {
-                    //console.log(rec);
+                    console.log(rec);
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                        <tr>
-                            <td>${rec.gradeLevelName}</td>
-                            <td>${rec.sectionName}</td>
-                            <td>${rec.studentEnrolledCount}</td>
-                            <td>
-                                <div class="action-container">
-                                    <a href="/schedule/sched-board/${rec.number}" class="view-sched">View Schedule</a>
-                                </div>
-                            </td>
-                        </tr>
-                        `;
+                    <tr>
+                        <td>${rec.gradeLevelName}</td>
+                        <td>${rec.sectionName}</td>
+                        <td>${rec.studentEnrolledCount}</td>
+                        <td>
+                            <div class="action-container">
+                                <a href="/schedule/sched-board/${rec.number}" 
+                                class="view-sched" 
+                                data-gradelevel="${rec.gradeLevelName}" 
+                                data-sectionname="${rec.sectionName}" 
+                                data-adviser="${rec.adviserName}">
+                                View Schedule
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+
                     tableBody.appendChild(row);
                 });
             })
@@ -206,6 +213,19 @@
                 //console.error("Error fetching data:", error);
             });
     }
+
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.classList.contains('view-sched')) {
+            const gradeLevel = e.target.getAttribute('data-gradelevel');
+            const sectionName = e.target.getAttribute('data-sectionname');
+            const adviserName = e.target.getAttribute('data-adviser');
+
+            localStorage.setItem('gradeLevel', gradeLevel);
+            localStorage.setItem('sectionName', sectionName);
+            localStorage.setItem('adviserName', adviserName);
+        }
+    });
+
 </script>
 
 </html>

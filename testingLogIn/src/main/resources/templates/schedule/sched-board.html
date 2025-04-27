@@ -21,7 +21,7 @@
             <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
             <div class="text-link">
-                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+                <h4 id="grade-level-and-section-name-bread"></h4>
                 <p>Main</p>
                 <p>/</p>
                 <p>Maintenance</p>
@@ -31,7 +31,7 @@
         </div>
         <div class="sched-board">
             <div class="grade-lev-container">
-                <h4 id="grade-level-and-section-name">Grade 1 - Malunggay</h4>
+                <h4 id="grade-level-and-section-name"></h4>
                 <h4 id="adviser">Sir Jisun</h4>
             </div>
 
@@ -76,7 +76,7 @@
                     </tbody>
                 </table> <br>
             </div>
-          
+
         </div>
 
         <div class="btn-container">
@@ -379,6 +379,19 @@
                 });
         });
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const gradeLevel = localStorage.getItem('gradeLevel');
+        const sectionName = localStorage.getItem('sectionName');
+        const adviserName = localStorage.getItem('adviserName');
+
+        if (gradeLevel && sectionName && adviserName) {
+            document.getElementById('grade-level-and-section-name').textContent = `${gradeLevel} - ${sectionName}`;
+            document.getElementById('grade-level-and-section-name-bread').textContent = `${gradeLevel} - ${sectionName}`;
+            document.getElementById('adviser').textContent = adviserName;
+        }
+    });
+
 
     function attachRowActionHandlers(row) {
         const cancelBtn = row.querySelector(".btn-row-cancel");

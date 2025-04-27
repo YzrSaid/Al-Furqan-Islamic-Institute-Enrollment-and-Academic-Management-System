@@ -740,7 +740,6 @@
                 const receiptId = viewReceiptbtn.getAttribute("data-transaction-id");
                 fetchThisPokemon(receiptId);
             } else if (voidTransaction) {
-                alert("hahaha na void pa kaw roh");
                 const receiptId = voidTransaction.getAttribute("data-transaction-id");
                 voidPaymentTransaction(receiptId);
             }
@@ -920,30 +919,6 @@
                 .catch(error => {
                     console.error("Error fetching student balance:", error);
                 });
-        }
-
-        const paymentAmountInput = document.getElementById('payment-amount');
-        if (paymentAmountInput) {
-            paymentAmountInput.addEventListener('input', function () {
-                const maxValue = parseFloat(this.max);
-                const minValue = parseFloat(this.min);
-                const enteredValue = parseFloat(this.value);
-                const anyChecked = document.querySelector('.payment-container-group input[type="checkbox"]:checked');
-
-                if (!anyChecked) {
-                    showErrorModal("Kindly select a payment first.");
-                    this.value = ''; // Clear the input
-                    return;
-                }
-
-                if (enteredValue > maxValue) {
-                    showErrorModal("Maximum amount is " + maxValue);
-                    this.value = maxValue;
-                }else if(enteredValue < minValue){
-                    showErrorModal("Manimum amount is " + minValue);
-                    this.value = minValue;
-                }
-            });
         }
 
 
@@ -1193,7 +1168,7 @@
 
             // Function to adjust the max value of the payment amount input based on the balance
             function adjustMaxAmountBasedOnBalance(checkbox) {
-                const paymentAmountInput = document.querySelector("#payment-amount"); // Assuming you have an input with id 'payment-amount'
+                const paymentAmountInput = document.querySelector("#payment-amount");
                 if (checkbox.checked) {
                     const amount = Number(checkbox.dataset.amount);
                     paymentAmountInput.max = amount;
@@ -1201,8 +1176,30 @@
                     paymentAmountInput.max = 0;
                 }
             }
-        }
 
+            // Adding the validation and input handling
+            const paymentAmountInput = document.querySelector("#payment-amount");
+
+            paymentAmountInput.addEventListener("input", function () {
+                const checkedCheckboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
+
+                if (checkedCheckboxes.length === 0) {
+                    showErrorModal("Please select a payment first!");
+                    paymentAmountInput.value = ''; // Empty the value
+                } else {
+                    let value = parseFloat(paymentAmountInput.value);
+
+                    // Check for invalid input
+                    if (value <= 0 || isNaN(value) || value < paymentAmountInput.min) {
+                        showErrorModal("Invalid payment amount. Please enter a valid value.");
+                        paymentAmountInput.value = ''; // Empty the value
+                    } else if (value > paymentAmountInput.max) {
+                        showErrorModal("Amount exceeds the maximum allowed payment.");
+                        paymentAmountInput.value = ''; // Empty the value
+                    }
+                }
+            });
+        }
 
         function recalculateTotalSelectedAmount() {
             const paymentAmountInput = document.getElementById("payment-amount");
@@ -1216,6 +1213,7 @@
             paymentAmountInput.max = total.toFixed(2);
             paymentAmountInput.min = (total * .2).toFixed(2);
         }
+
 
 
         // Function to update Amount when Full Payment is checked

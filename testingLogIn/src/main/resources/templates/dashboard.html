@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="analytics-container">
+    <div class="analytics-container" id="inner-content">
         <div class="sort-btns-container">
             <div class="sort-year">
                 <label for="school-year">Year</label>
@@ -303,7 +303,7 @@
                     var opt = document.createElement("option");
                     opt.value = gradeLvl.levelId;
                     opt.textContent = gradeLvl.levelName;
-                    console.log(gradeLvl);
+                    // console.log(gradeLvl);
                     if(i === 0){
                         opt.selected = true;
                         i++;
@@ -320,7 +320,7 @@
     var subjectRateChart = null;
     async function setGradesChart() {
         if (subjectRateChart) {
-            console.log("Destroy Now");
+            // console.log("Destroy Now");
             subjectRateChart.destroy();
         }
 

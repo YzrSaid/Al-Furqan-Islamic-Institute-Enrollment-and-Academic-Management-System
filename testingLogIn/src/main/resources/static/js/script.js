@@ -107,6 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function toggleSidebar() {
   const sidebar = document.getElementById("sidebar");
   const content = document.getElementById("content");
+  const innerContent = document.getElementById("inner-content");
   const overlay = document.getElementById("overlay");
   const body = document.body;
   const isCollapsed = sidebar.classList.contains("collapsed-sidebar");
@@ -125,6 +126,7 @@ function toggleSidebar() {
     } else {
       content.classList.remove("collapsed-content");
       content.style.marginLeft = "320px";
+    //   innerContent.style.padding = "0 1.25rem";
     }
 
     // Run on sidebar open
@@ -147,6 +149,7 @@ function toggleSidebar() {
     } else {
       content.classList.add("collapsed-content");
       content.style.marginLeft = "0";
+    //   innerContent.style.padding = "0 4rem"
     }
 
     // Center card when sidebar is closed
@@ -1042,16 +1045,16 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "transfereeAddListing":
         if (!validateForm("studentForm")) {
-            showErrorModal("⚠️ Please fill in all required fields!");
-            return;
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
         }
-        
+
         // Only validate Madrasa year if transferee is checked
         const isTransferee = document.getElementById("isTransferee").checked;
         if (isTransferee && !validateSchoolYear()) {
-            return; // Error message already shown by validateSchoolYear()
+          return; // Error message already shown by validateSchoolYear()
         }
-        
+
         transfereeAddListing();
         closeConfirmationModal();
         break;
@@ -1074,6 +1077,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "proceedToPayment":
         proceedToPayment(enrollmentIdLet, sectionNumberLet);
+        toggleModal("gradeLevelModal", false);
         break;
       case "proceedToEnrolled":
         proceedToEnrolled(enrollmentIdLet);
@@ -2883,11 +2887,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Form submission validation for all required fields
-  document.getElementById("confirmStudent").addEventListener("click", () => {
-    requiredInputs.forEach((input) => {
-      validateField(input);
+  const confirmStudentBtn = document.getElementById("confirmStudent");
+
+  if (confirmStudentBtn) {
+    confirmStudentBtn.addEventListener("click", () => {
+      requiredInputs.forEach((input) => {
+        validateField(input);
+      });
     });
-  });
+  }
 });
 
 function resetValidationErrors() {
@@ -2948,16 +2956,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuBtn = document.querySelector(".menu-btn");
   const menuDropdown = document.querySelector(".menu-dropdown");
 
-  menuBtn.addEventListener("click", () => {
-    menuDropdown.classList.toggle("show");
-  });
+  if (menuBtn && menuDropdown) {
+    menuBtn.addEventListener("click", () => {
+      menuDropdown.classList.toggle("show");
+    });
+  }
 
   // Close the dropdown when clicking outside
-  document.addEventListener("click", (e) => {
-    if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
-      menuDropdown.classList.remove("show");
-    }
-  });
+  if (menuBtn && menuDropdown) {
+    // Close the dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+        menuDropdown.classList.remove("show");
+      }
+    });
+  }
 });
 
 function positionHamburger() {

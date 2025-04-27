@@ -125,17 +125,23 @@
 
                         <label for="pre-req">Pre-Requisite Grade Level</label>
                         <select name="pre-req" id="pre-req-grade-level" data-preserve>
-                            <option value="NONE" disabled>Choose a pre-requisite</option>
+                            <option value="NONE" disabled>Choose a pre-requisite:</option>
                             <option value="NONE">None</option>
-                        </select>
-                        <label>
-                            <input type="radio"  name="duration" value="1">
-                            1 semester
-                          </label>
-                          <label>
-                            <input type="radio" name="duration" value="2">
-                            2 semester
-                        </label><br>
+                        </select> <br> <br>
+
+                        <label for="semester">Duration:</label>
+                        <div class="full-width-row">
+                            <div>
+                                <input type="radio" name="duration" value="1" id="dur1" required>
+                                <label for="dur1">1 Semester</label>
+                            </div>
+                        </div>
+                        <div class="full-width-row">
+                            <div>
+                                <input type="radio" name="duration" value="2" id="dur2">
+                                <label for="dur2">2 Semesters</label>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-buttons">
@@ -165,14 +171,20 @@
                             <option value="" disabled>Choose a pre-requisite</option>
                             <option value="NONE">None</option>
                         </select>
-                        <label>
-                            <input type="radio"  name="durationEdit" value="1" id="durEdit1"required>
-                            1 semester
-                          </label>
-                          <label>
-                            <input type="radio" name="durationEdit" value="2" id="durEdit2">
-                            2 semester
-                        </label><br>
+                        
+                        <label for="semester">Duration:</label>
+                        <div class="full-width-row">
+                            <div>
+                                <input type="radio" name="duration" value="1" id="durEdit1" required>
+                                <label for="dur1">1 Semester</label>
+                            </div>
+                        </div>
+                        <div class="full-width-row">
+                            <div>
+                                <input type="radio" name="duration" value="2" id="durEdit2">
+                                <label for="dur2">2 Semesters</label>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 

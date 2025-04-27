@@ -130,7 +130,7 @@ function toggleSidebar() {
     }
 
     // Run on sidebar open
-    positionHamburger();
+    // positionHamburger();
 
     // Align left when sidebar is open
     if (!welcomeCardDiv) {
@@ -425,10 +425,8 @@ document.addEventListener("DOMContentLoaded", function () {
       // Handle the confirmation button
       confirmButton.onclick = function () {
         if (action === "proceed-enrollment") {
-          console.log(action + " confirmed!");
           // code for verification
         } else if (action === "cancel-enrollment") {
-          console.log("boogsh");
           // code for reject
         }
         modal.style.display = "none";
@@ -460,10 +458,8 @@ document.addEventListener("DOMContentLoaded", function () {
       // Handle the confirmation button
       confirmButton.onclick = function () {
         if (action === "Restrict") {
-          console.log(action + " confirmed!");
           // Code for restriction
         } else if (action === "Delete Account") {
-          console.log("boogsh");
           // Code for deletion
         }
         modal.style.display = "none";
@@ -530,10 +526,8 @@ document.addEventListener("DOMContentLoaded", function () {
       // Handle the confirmation button
       confirmButton.onclick = function () {
         if (action === "verify") {
-          console.log(action + " confirmed!");
           // code for verification
         } else if (action === "reject") {
-          console.log("boogsh");
           // code for reject
         }
         modal.style.display = "none";
@@ -654,8 +648,6 @@ document.addEventListener("DOMContentLoaded", function () {
       cancelBtn.textContent = "Close";
       confirmBtn.setAttribute("data-mode", "edit");
 
-      console.log(confirmBtn.attributes);
-
       //   if (confirmBtn.hasAttribute("data-mode")){
       //     console.log("yawa2");
       //   }
@@ -774,13 +766,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function handleConfirmAction(action, event) {
     event.preventDefault();
-    if (!action){
-        console.log("no action");
+    if (!action) {
     }
-    console.log("Action triggered:", action);
     if (event && typeof event.preventDefault === "function") {
       event.preventDefault();
-      console.log("Prevented default behavior");
     } else {
       console.warn("⚠️ Warning: Event is missing or invalid");
     }
@@ -793,9 +782,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let confirmationModal = document.getElementById("confirmationModal");
     confirmationModal.style.visibility = "hidden";
     confirmationModal.style.opacity = "0";
-    console.log("Closed confirmation modal");
 
     switch (action) {
+      case "sendMultiple":
+        sendMultiple();
+        break;
       case "updateSchoolSettings":
         // This is for updating/editing the school settings
         //   updateSchoolSettings();
@@ -876,6 +867,11 @@ document.addEventListener("DOMContentLoaded", function () {
       case "deleteGradeLevel":
         if (await validateAdminPassword()) {
           deleteGradeLevel();
+        }
+        break;
+      case "deleteSchoolYear":
+        if (await validateAdminPassword()) {
+          deleteSchoolYear();
         }
         break;
       case "makeSchoolYearInactive":
@@ -1035,7 +1031,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let isAllowed = await canActivateSemester(semNumber); // ⏳ Wait for validation result
 
         if (!isAllowed) {
-          console.log("Activation blocked.");
           return; // 🚀 Stop the function from running
         }
         if (await validateAdminPassword()) {
@@ -1195,7 +1190,6 @@ document.addEventListener("DOMContentLoaded", function () {
     openModals.forEach((modal) => {
       // Check if the click was outside of the modal
       if (!modal.contains(event.target) && event.target !== modal) {
-        console.log(`⛔ Clicked outside ${modal.id}, preventing close...`);
         event.stopPropagation();
       }
     });
@@ -1250,7 +1244,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   window.showErrorModal = function (message) {
-    console.log("showErrorModal called with message:", message); // Debugging line
     const errorModal = document.getElementById("errorModal");
     const errorMessage = document.getElementById("errorMessage");
 
@@ -1262,15 +1255,12 @@ document.addEventListener("DOMContentLoaded", function () {
       errorModal.style.visibility = "visible";
       errorModal.style.opacity = "1";
 
-      console.log("Modal should be visible now!"); // Debugging line
-
       // Optional: Close the modal when the "Close" button is clicked
       const closeBtn = errorModal.querySelector(".error-btn-cancel");
       closeBtn.addEventListener("click", function () {
         errorModal.classList.remove("show");
       });
     } else {
-      alert(`⚠️ Oops! Something went wrong. Please refresh or try again.`);
     }
   };
 
@@ -1350,7 +1340,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document.body.addEventListener("submit", function (event) {
     if (event.target && event.target.id === "studentForm") {
       event.preventDefault();
-      console.log("⛔ Form submission prevented!");
     }
   });
 
@@ -1400,7 +1389,6 @@ document.addEventListener("DOMContentLoaded", function () {
       // Special logic for save button
       if (target === saveBtn) {
         if (saveBtn.textContent.trim() === "Add") {
-          console.log("🔄 Changing text to Save...");
           saveBtn.textContent = "Save";
           return;
         }
@@ -1443,7 +1431,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const cancelBtn = modal.querySelector(".btn-cancel");
 
       if (target.getAttribute("data-mode") === "edit") {
-        console.log("pppp");
         inputs.forEach((input) => {
           if (input.tagName === "SELECT") {
             input.disabled = false;
@@ -1455,7 +1442,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         target.textContent = "Update";
         cancelBtn.textContent = "Cancel";
-        console.log("yawa");
         target.setAttribute("data-mode", "update");
         enableFormInputs();
       } else if (target.getAttribute("data-mode") === "update") {
@@ -3016,3 +3002,66 @@ function positionHamburger() {
 
 // Also re-run on resize for responsiveness
 window.addEventListener("resize", positionHamburger);
+
+/**
+ * Validates all inputs with specified class (letters, spaces, and dashes only)
+ * @param {string} className - The class name to validate
+ * @returns {boolean} - Returns true if all inputs are valid
+ */
+window.validateInputsByClass = function (className) {
+  let allValid = true;
+  const inputs = document.getElementsByClassName(className);
+
+  // Check if any inputs exist
+  if (inputs.length === 0) {
+    showErrorModal(`No input fields found with class '${className}'`);
+    return false;
+  }
+
+  // Validate each input
+  Array.from(inputs).forEach((input) => {
+    const value = input.value.trim();
+
+    // Check empty
+    if (!value) {
+      showErrorModal(
+        `Field cannot be empty: ${input.placeholder || input.name || ""}`
+      );
+      input.focus();
+      input.classList.add("invalid-input");
+      allValid = false;
+      return;
+    }
+
+    // Check numbers
+    if (/\d/.test(value)) {
+      showErrorModal(
+        `Numbers not allowed in: ${input.placeholder || input.name || ""}`
+      );
+      input.focus();
+      input.classList.add("invalid-input");
+      allValid = false;
+      return;
+    }
+
+    // Check special chars (only allow letters, space, dash)
+    if (!/^[A-Za-z\u00C0-\u017F -]+$/.test(value)) {
+      const invalidChars = [
+        ...new Set(value.match(/[^A-Za-z\u00C0-\u017F -]/g)),
+      ];
+      showErrorModal(
+        `Invalid characters (${invalidChars.join(", ")}) in: ` +
+          `${input.placeholder || input.name || ""}`
+      );
+      input.focus();
+      input.classList.add("invalid-input");
+      allValid = false;
+      return;
+    }
+
+    // If valid, remove error styling
+    input.classList.remove("invalid-input");
+  });
+
+  return allValid;
+};

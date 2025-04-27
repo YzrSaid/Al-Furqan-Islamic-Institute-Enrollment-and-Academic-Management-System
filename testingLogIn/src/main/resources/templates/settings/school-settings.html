@@ -144,21 +144,25 @@
         <!-- Modal for adding a transferee req -->
         <div id="transfereeReqModal" class="transferee-req-modal modal">
             <div class="transferee-req-modal-content scroll-lock">
-                <h2>Add New Transferee Requirement</h2>
-                <form method="post" action="" id="transfereeReqForm">
-                    <label for="reqName">Requirement Name:</label>
-                    <input type="text" id="reqName" name="reqName" required>
-                    <br><br>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-confirm" data-action="addTransfereeReq"
-                            data-message="Are you sure you want to add this transferee requirement?"
-                            data-open-modal="confirmationModal">
-                            Confirm
-                        </button>
-                        <button type="button" class="btn-cancel" data-close-modal="transfereeReqModal">Cancel</button>
-                    </div>
-                </form>
+                <div class="modal-body">
+                    <h2>Add New Transferee Requirement</h2>
+                    <form method="post" action="" id="transfereeReqForm">
+                        <label for="reqName">Requirement Name:</label>
+                        <input type="text" id="reqName" name="reqName" required>
+                        <br><br>
+    
+                       
+                    </form>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" data-action="addTransfereeReq"
+                        data-message="Are you sure you want to add this transferee requirement?"
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                    <button type="button" class="btn-cancel" data-close-modal="transfereeReqModal">Cancel</button>
+                </div>
+               
             </div>
         </div>
 

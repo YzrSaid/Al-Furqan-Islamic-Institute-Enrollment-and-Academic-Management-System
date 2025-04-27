@@ -34,23 +34,6 @@
                     <div class="search-container">
                         <input type="text" id="search" placeholder="Search..." class="search-input" />
                         <button type="button" onclick="setUpTables(1)" class="search-btn">Search</button>
-
-                        <div class="add-something-btn-container add-something-dropdown">
-                            <button type="button" class="add-something-btn">
-                                <span style="display:none;">Print</span>
-                                <i class="fas fa-print"></i>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-
-
-                            <div class="add-something-dropdown-content">
-                                <a href="#" class="action" data-open-modal="allResourcesPrintModal">All Resources</a>
-                                <a href="#" class="action" data-open-modal="allResourcesPrintModal">Claimed
-                                    Resources</a>
-                                <a href="#" class="action" data-open-modal="allResourcesPrintModal">Unclaimed
-                                    Resources</a>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -67,7 +50,7 @@
                     <button type="button" id="select-multiple" class="btn-neutral">Select Multiple</button>
 
                     <input type="checkbox" id="select" style="display: none;">
-                    <button type="button" id="confirm-btn" style="display: none;"><img onclick="sendMultiple()"
+                    <button type="button"class="confirm-btn" id="confirm-btn" style="display: none;"><img data-open-modal="confirmationModal" data-message="Are you sure you want to distribute the checked items?" data-action="sendMultiple"
                             src="/images/icons/check.png" alt=""></button>
                 </div>
             </div>
@@ -460,7 +443,7 @@
                 .then(msg => {
                     setUpTables();
                     resetDisplay();
-                    showSuccessModal("Na distribute na", false);
+                    showSuccessModal("Resources has been distributed successfully!", false);
                 })
                 .catch(error => {
                     console.error('Error:', error);

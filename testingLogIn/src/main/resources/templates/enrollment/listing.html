@@ -456,33 +456,6 @@
     </div>
 
 
-
-    <!-- Modal for adding a a section to what grade level it will be enrolled to (assessment) -->
-    <div id="addGradeLevelAssessmentModal" class="add-grade-level-assessment-modal modal">
-        <div class="add-grade-level-assessment-modal-content scroll-lock">
-
-            <h2>Promote To</h2>
-
-            <label for="grade-level">Grade Level:</label>
-            <input type="text" id="grade-level" readonly>
-
-            <label for="section">Section:</label>
-            <select name="section" id="section">
-                <option value="" disabled selected>Choose</option>
-            </select>
-
-
-            <div class="modal-buttons">
-                <button type="button" class="btn-confirm" data-action="proceedToPayment"
-                    data-message="Are you sure you want to proceed with payment?" id=""
-                    data-open-modal="confirmationModal">
-                    Confirm
-                </button>
-                <button type="button" class="btn-cancel" data-close-modal="addGradeLevelAssessmentModal">Cancel</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal for viewing grades -->
     <div id="viewGradesModal" class="view-grades-modal modal">
         <div class="view-grades-modal-content scroll-lock">
@@ -1067,7 +1040,7 @@
                 return response.json(); // Parse the response as JSON
             })
             .then(receipt => {
-                console.log(receipt);
+                // console.log(receipt);
                 // Populate the receipt details
                 document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
                 document.getElementById("receipt-date").value = receipt.date;
@@ -1082,7 +1055,7 @@
                 var totalPaid = 0;
                 receipt.particulars.forEach(dat => {
                     const row = document.createElement("tr");
-                    totalBalance +=dat.balance; 
+                    totalBalance += dat.balance;
                     totalPaid += dat.amountPaid;
                     row.innerHTML = `
                     <td>${dat.feeName}</td>
@@ -1933,7 +1906,7 @@
         });
 
         paymentAmountInput.max = total.toFixed(2);
-        paymentAmountInput.min = (total*.2).toFixed(2);
+        paymentAmountInput.min = (total * .2).toFixed(2);
         paymentAmountInput.value = Math.max(parseFloat(paymentAmountInput.value), paymentAmountInput.min); // Enforce minimum value
     }
 
@@ -2362,12 +2335,12 @@
 
     function validateSchoolYear() {
         const transfereeCheckbox = document.getElementById("isTransferee");
-    const schoolYearInput = document.getElementById("studlastMadrasaYearCompleted");
-    
-    // Only validate if transferee checkbox is checked AND input is visible
-    if (!transfereeCheckbox.checked || schoolYearInput.style.display === "none") {
-        return true; // Skip validation if not a transferee
-    }
+        const schoolYearInput = document.getElementById("studlastMadrasaYearCompleted");
+
+        // Only validate if transferee checkbox is checked AND input is visible
+        if (!transfereeCheckbox.checked || schoolYearInput.style.display === "none") {
+            return true; // Skip validation if not a transferee
+        }
         const regex = /^(\d{4})-(\d{4})$/;
         const match = schoolYearInput.match(regex);
 

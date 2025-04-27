@@ -22,7 +22,7 @@ public class ErrorHandlers {
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<String> notFoundHandler(NullPointerException npe){
-        return new ResponseEntity<>(npe.getMessage(),HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Selected Record Not Found",HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

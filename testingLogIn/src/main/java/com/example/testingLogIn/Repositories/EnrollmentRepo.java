@@ -2,8 +2,8 @@ package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.CustomObjects.EnrollmentHandler;
 import com.example.testingLogIn.Enums.EnrollmentStatus;
+import com.example.testingLogIn.Enums.Semester;
 import com.example.testingLogIn.Models.Enrollment;
-import com.example.testingLogIn.Models.SchoolYearSemester;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,9 +71,9 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
             AND stud.status != 'GRADUATE'
             """)
     Page<EnrollmentHandler> findStudentsEnrollment(@Param("status") EnrollmentStatus status,
-                                        @Param("activeSemNumber")   int activeSemNumber,
-                                        @Param("search")            String search,
-                                                                    Pageable pageable);
+                                                   @Param("activeSemNumber")   int activeSemNumber,
+                                                   @Param("search")            String search,
+                                                   Pageable pageable);
 
 
     @Query("""
@@ -124,5 +124,17 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
            AND section.number = :sectionId
            """)
     Optional<Integer> countSectionTransaction(int sectionId, int semId);
+
+    @Query("""
+           SELECT e FROM Enrollment e
+           JOIN e.student stud
+           JOIN e.SYSemester sem
+           WHERE (:sy IS NULL OR sem.schoolYear.schoolYearNum = :sy)
+           AND (:status IS NULL OR e.enrollmentStatus = :status)
+           AND (:sem IS NULL OR sem.sem = :sem)
+           AND (LOWER(stud.fullName) LIKE :search
+           OR stud.studentDisplayId LIKE :search)
+           """)
+    Page<Enrollment> getEnrollmentPageStatistics(String search, EnrollmentStatus status,Integer sy, Semester sem, Pageable pageable);
 
 }

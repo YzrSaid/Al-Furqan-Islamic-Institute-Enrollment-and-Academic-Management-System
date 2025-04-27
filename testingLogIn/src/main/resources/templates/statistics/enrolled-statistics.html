@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <div class="sort-btns-container">
+                <div class="sort-year">
+                    <label for="school-year">Year</label>
+                    <select name="year" onchange="getCurrentlyEnrolled(1)" id="school-year">
+                        <option value="0" selected>All Time</option>
+                    </select>
+                </div>
+                <div class="sort-semester">
+                    <label for="semester-sort">Semester</label>
+                    <select name="semester" onchange="getCurrentlyEnrolled(1)" id="semester-sort">
+                        <option value=""selected>All</option>
+                        <option value="First">First</option>
+                        <option value="Second">Second</option>
+                    </select>
+                </div>
+            </div>
+
+             <!-- Overlay -->
+             <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+            <div class="text-link" id="breadcrumb-container">
+                <h4>Enrolled</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/enrollment/enrolled" title="You're currently in this page.">Enrollment - Enrolled</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
+                        <button type="button" onclick="getCurrentlyEnrolled(1)" class="search-btn">Search</button>
+                    </div>
+                </div>
+
+                <div class="sort-container">
+                    <select title="sort" name="sort" onchange="getCurrentlyEnrolled(1)" id="sort-select" class="sort-select">
+                        <option value="All" selected>All</option>
+                        <option value="Listing">Listing</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Payment">Payment</option>
+                        <option value="Enrolled">Enrolled/option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
+
+        <div class="table-wrapper">
+            <!-- Table -->
+            <table id="realginnas" class="listing-table main-table">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Student Name</th>
+                        <th>School Year - Semester</th>
+                        <th>Status</th>
+                        <th>Enrolling To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
+            </div>
+        </div>
+        <!-- Confirmation Modal -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="modalText">Are you sure?</p>
+                <div class="modal-buttons">
+                    <button id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button data-close-modal="confirmationModal" class="btn-close-confirm">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for viewing grades -->
+        <div id="viewGradesModal" class="view-grades-modal modal">
+            <div class="view-grades scroll-lock">
+                <h2>Student Grades</h2>
+
+                <div class="half-width view-studId" id="view-grade-studId">
+                    <label for="student-id">Student ID:</label>
+                    <h6 id="student-id">0001</h6>
+                </div>
+                <div class="half-width view-studName" id="view-grade-studName">
+                    <label for="student-name">Student Name:</label>
+                    <h6 id="student-name">Martin Francisco</h6>
+                </div> <br>
+
+                <!-- Grades Table -->
+                <table class="view-grades-table">
+                    <thead>
+                        <tr>
+                            <th>Subject ID</th>
+                            <th>Subject</th>
+                            <th>Grade</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status" id="grade-remarks">Pass</div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr id="average-row">
+                            <td colspan="2">Average</td>
+                            <td>90</td>
+                            <td>
+                                <div class="status-container">
+                                    <div class="status" id="average-remarks">Pass</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="close-button" id="view-grades-close-btn">
+                    <button type="button" data-close-modal="viewGradesModal" class="btn-cancel"
+                        id="close-button">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/schoolyear/all")
+            .then(response => {
+                if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`); }
+                return response.json();
+            })
+            .then(sys => {
+                var school_year_dd = document.getElementById("school-year");
+                sys.forEach(sy => {
+                    let option = document.createElement("option");
+                    option.value = sy.schoolYearNum;
+                    option.textContent = sy.schoolYear;
+                    school_year_dd.appendChild(option);
+                });
+            })
+            .catch(error => {
+                showErrorModal("Failed to retrieve School Years");
+            });
+
+        let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
+
+        savedSubmenus.forEach(submenuId => {
+            let submenu = document.getElementById(submenuId);
+            if (submenu) {
+                submenu.classList.add("open");
+
+                // Make sure parent menus are also opened
+                let parentMenu = submenu.closest(".submenu");
+                if (parentMenu) {
+                    parentMenu.classList.add("open");
+                }
+
+                // Update arrow icon
+                let arrowIconImg = submenu.previousElementSibling?.querySelector(".arrow-icon img");
+                if (arrowIconImg) {
+                    arrowIconImg.src = "/images/icons/greater-than.png";
+                }
+            }
+        });
+        getCurrentlyEnrolled(1);
+    });
+    var totalItems;
+    var currentPage;
+    function getCurrentlyEnrolled(pageNo = 1) {
+        currentPage = pageNo;
+        var status = document.getElementById("sort-select").value;
+        var pageSize = parseInt(document.getElementById("pageSizeSelector").value);
+        var searchBy = document.getElementById("search-stud").value;
+        var sy = document.getElementById("school-year").value;
+        var sem = document.getElementById("semester-sort").value;
+        const tableBody = document.querySelector("#realginnas tbody");
+        if (!tableBody) return
+
+        tableBody.innerHTML = ""; // Clear previous data
+        fetch(`/statistics/enrollment-statistics?status=${status}&pageNo=${pageNo}&pageSize=${pageSize}&search=${searchBy}&sy=${sy}&sem=${sem}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch enrolled students");
+                return res.json();
+            })
+            .then(data => {
+
+                if (!data || !data.content || data.content.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='5'>No records found.</td></tr>";
+                    return;
+                }
+
+                data.content.forEach(rec => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                    <td>${rec.student.studentDisplayId || "N/A"}</td>
+                    <td>${rec.student.fullName}</td>
+                    <td>${rec.schoolYear+" "+rec.semester}</td>
+                    <td>${rec.enrollmentStatus}</td>
+                    <td>${ rec.gradeLevelToEnroll+"-"+rec.sectionToEnroll || "N/A"}</td>`;
+                    
+                    tableBody.appendChild(row);
+                });
+                totalItems = data.totalElements || 0;
+                const totalPages = data.totalPages || 1;
+                updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
+            })
+            .catch(error => {tableBody.innerHTML = "<tr><td colspan='5'>No records found.</td></tr>";});
+    }
+
+        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+           // console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
+
+            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById("pageInput").value = currentPage;
+            document.getElementById("pageInput").min = 1;
+            document.getElementById("pageInput").max = totalPages;
+            document.getElementById("totalPages").textContent = `of ${totalPages}`;
+
+            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+        }
+
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                getCurrentlyEnrolled(currentPage);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage < document.getElementById("pageInput").max) {
+                currentPage++;
+                //console.log("Navigating to page:", currentPage);
+                getCurrentlyEnrolled(currentPage);
+            } else {
+                //console.log("Cannot navigate to next page");
+            }
+        });
+
+        document.getElementById("pageInput").addEventListener("change", (e) => {
+            const totalPages = parseInt(document.getElementById("pageInput").max);
+            let page = parseInt(e.target.value);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                getCurrentlyEnrolled(currentPage);
+            } else {
+                e.target.value = currentPage;
+            }
+        });
+
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            //console.log("pageSizeSelector changed", { value: e.target.value });
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            getCurrentlyEnrolled(currentPage);
+        });
+</script>
+
+</html>

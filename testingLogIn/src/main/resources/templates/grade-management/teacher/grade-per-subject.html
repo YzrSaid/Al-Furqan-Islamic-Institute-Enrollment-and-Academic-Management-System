@@ -116,7 +116,7 @@
                     row.innerHTML = `
                     <tr>
                         <td>${rec.studentId}</td>
-                        <td>${rec.studentLastName}, ${rec.studentFirstName} ${rec.studentMiddleName}</td>
+                        <td>${rec.studentFullName}</td>
                         <td><input type="number" min="1" max="100" name="student-grade" class="student-grade" value="${rec.subjectGrade ?? ''}" id="student-grade-${rec.studGradeId}" readonly></td>`;
                     if (rec.subjectGrade === null) {
                         row.innerHTML += `

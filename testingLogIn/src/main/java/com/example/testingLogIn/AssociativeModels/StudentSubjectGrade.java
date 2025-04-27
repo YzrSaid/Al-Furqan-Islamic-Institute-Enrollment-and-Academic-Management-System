@@ -59,6 +59,7 @@ public class StudentSubjectGrade {
                                     .studentFirstName(student.getFirstName())
                                     .studentLastName(student.getLastName())
                                     .studentMiddleName(student.getLastName())
+                                    .studentFullName(student.getFullName())
                                     .gradeAndSection(section.getLevel().getLevelName()+" - "+section.getSectionName())
                                     .subjectName(subject.getSubjectName())
                                     .subjectGrade(subjectGrade)

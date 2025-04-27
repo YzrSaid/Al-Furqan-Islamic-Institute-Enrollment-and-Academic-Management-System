@@ -1,16 +1,15 @@
 package com.example.testingLogIn.StatisticsModel;
 
+import com.example.testingLogIn.CustomObjects.PagedResponse;
 import com.example.testingLogIn.Enums.Semester;
+import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Services.SubjectServices;
 import jakarta.persistence.Cacheable;
 import jakarta.persistence.GeneratedValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/statistics")
@@ -62,6 +61,37 @@ public class StatisticsController {
             return new ResponseEntity<>(subjectServices.getSubjectStatistics(levelId, schoolYear, sem, semester), HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/enrollment-statistics")
+    public ResponseEntity<PagedResponse> getEnrollmentRecordsByStatusPage(@RequestParam String status,
+                                                                          @RequestParam(required = false,defaultValue = "1") int pageNo,
+                                                                          @RequestParam(required = false,defaultValue = "10") int pageSize,
+                                                                          @RequestParam(required = false) String search,
+                                                                          @RequestParam(required = false) Integer sy,
+                                                                          @RequestParam(required = false) String sem){
+        try{
+            return new ResponseEntity<>(statisticsServices.getEnrollmentStatistics(search, status, sy, sem, pageNo, pageSize),HttpStatus.OK);
+        }catch (NullPointerException npe){
+            npe.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/graduate-statistics")
+    public ResponseEntity<PagedResponse> getGraduateStudents(@RequestParam(required = false,defaultValue = "1") int pageNo,
+                                                            @RequestParam(required = false,defaultValue = "10") int pageSize,
+                                                            @RequestParam(required = false) String search,
+                                                            @RequestParam(required = false) Integer sy,
+                                                            @RequestParam(required = false) String sem){
+        try{
+            return new ResponseEntity<>(statisticsServices.getGraduateStudents(search, sy, sem, pageNo, pageSize),HttpStatus.OK);
+        }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

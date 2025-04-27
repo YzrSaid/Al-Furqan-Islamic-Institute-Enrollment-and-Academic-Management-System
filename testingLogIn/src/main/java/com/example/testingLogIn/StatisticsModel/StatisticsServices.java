@@ -1,16 +1,23 @@
 package com.example.testingLogIn.StatisticsModel;
 
+import com.example.testingLogIn.CustomObjects.PagedResponse;
+import com.example.testingLogIn.Enums.EnrollmentStatus;
 import com.example.testingLogIn.Enums.Semester;
+import com.example.testingLogIn.ModelDTO.EnrollmentDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.SchoolYearSemester;
 import com.example.testingLogIn.Models.Student;
+import com.example.testingLogIn.Repositories.EnrollmentRepo;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
+import com.example.testingLogIn.Services.NonModelServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,9 +37,10 @@ public class StatisticsServices {
     private final GradeLevelRetainedCountRepo gradeLevelRetainedCountRepo;
     private final GradeLevelPassedCountRepo gradeLevelPassedCountRepo;
     private final GradeLevelRepo gradeLevelRepo;
+    private final EnrollmentRepo enrollmentRepo;
 
     @Autowired
-    public StatisticsServices(EnrolledCountRepo enrolledCountRepo, GraduatesCountRepo graduatesCountRepo, GraduateStudentsRepo graduateStudentsRepo, PreEnrolledCountRepo preEnrolledCountRepo, RetainedCountRepo retainedCountRepo, PassedCountRepo passedCountRepo, GradeLevelEnrolledCountRepo gradeLevelEnrolledCountRepo, StudentPassingRecordRepo studentPassingRecordRepo, StudentSubjectGradeRepo studentSubjectGradeRepo, GradeLevelRetainedCountRepo gradeLevelRetainedCountRepo, GradeLevelPassedCountRepo gradeLevelPassedCountRepo, GradeLevelRepo gradeLevelRepo) {
+    public StatisticsServices(EnrolledCountRepo enrolledCountRepo, GraduatesCountRepo graduatesCountRepo, GraduateStudentsRepo graduateStudentsRepo, PreEnrolledCountRepo preEnrolledCountRepo, RetainedCountRepo retainedCountRepo, PassedCountRepo passedCountRepo, GradeLevelEnrolledCountRepo gradeLevelEnrolledCountRepo, StudentPassingRecordRepo studentPassingRecordRepo, StudentSubjectGradeRepo studentSubjectGradeRepo, GradeLevelRetainedCountRepo gradeLevelRetainedCountRepo, GradeLevelPassedCountRepo gradeLevelPassedCountRepo, GradeLevelRepo gradeLevelRepo, EnrollmentRepo enrollmentRepo) {
         this.enrolledCountRepo = enrolledCountRepo;
         this.graduatesCountRepo = graduatesCountRepo;
         this.graduateStudentsRepo = graduateStudentsRepo;
@@ -45,6 +53,7 @@ public class StatisticsServices {
         this.gradeLevelRetainedCountRepo = gradeLevelRetainedCountRepo;
         this.gradeLevelPassedCountRepo = gradeLevelPassedCountRepo;
         this.gradeLevelRepo = gradeLevelRepo;
+        this.enrollmentRepo = enrollmentRepo;
     }
 
     public void setInitialCounts(SchoolYearSemester sem){
@@ -62,7 +71,6 @@ public class StatisticsServices {
     }
 
     @Transactional
-    @CacheEvict(value = {"countStat"}, allEntries = true)
     public void updatePreEnrolledCount(SchoolYearSemester sem, boolean isDecrease){
         if(isDecrease)
             preEnrolledCountRepo.reduceByOne(sem.getSySemNumber());
@@ -71,7 +79,6 @@ public class StatisticsServices {
     }
 
     @Transactional
-    @CacheEvict(value = {"countStat"}, allEntries = true)
     public void updateEnrolledCount(Enrollment enrollment){
         SchoolYearSemester sem = enrollment.getSYSemester();
         GradeLevel gradeLevel = enrollment.getGradeLevelToEnroll();
@@ -106,7 +113,6 @@ public class StatisticsServices {
         }
     }
 
-    @Cacheable(value = "countStat", key = "#schoolYear + #semKey")
     public CounterObject getCounts(Integer schoolYear, Semester semester,String semKey){
         schoolYear = schoolYear == 0 ? null : schoolYear;
         return CounterObject.builder()
@@ -120,7 +126,6 @@ public class StatisticsServices {
                 .build();
     }
 
-    @Cacheable(value = "gradeLevelRates", key = "#schoolYear + #passed + #semKey")
     public GradeLevelRates getGradeLevelRates(Integer schoolYear, Semester semester, boolean didPassed,String semKey, String passed){
         schoolYear = schoolYear == 0 ? null : schoolYear;
         List<String> levelNames = new ArrayList<>();
@@ -135,4 +140,56 @@ public class StatisticsServices {
         }
         return new GradeLevelRates(levelNames,rates);
     }
+
+    public PagedResponse getEnrollmentStatistics(String search, String status, Integer sy,String sem, int pageNo, int pageSize){
+        search = NonModelServices.forLikeOperator(search);
+        EnrollmentStatus estatus = getEnrollmentStatus(status);
+        sy = sy == 0 ? null : sy;
+        Semester semester = getSemFromString(sem);
+        Page<Enrollment> enrollmentPage =enrollmentRepo.getEnrollmentPageStatistics(search,estatus,sy,semester,PageRequest.of(pageNo-1,pageSize));
+        List<EnrollmentDTO> getEnrollmentDTOs = enrollmentPage.getContent().stream().map(Enrollment::DTOmapper).toList();
+        return PagedResponse.builder()
+                .content(getEnrollmentDTOs)
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPages(enrollmentPage.getTotalPages())
+                .totalElements(enrollmentPage.getTotalElements())
+                .build();
+    }
+
+    public PagedResponse getGraduateStudents(String search, Integer sy, String sem, int pageNo, int pageSize){
+        sy = sy == 0 ? null : sy;
+        Semester semester = getSemFromString(sem);
+        Page<GraduateStudents> gradStudPage = graduateStudentsRepo.getGraduatesPage(NonModelServices.forLikeOperator(search),sy,semester,PageRequest.of(pageNo - 1, pageSize));
+
+        return PagedResponse.builder()
+                .content(gradStudPage.getContent())
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(gradStudPage.getTotalElements())
+                .totalPages(gradStudPage.getTotalPages())
+                .build();
+    }
+
+    private Semester getSemFromString(String sem){
+        return sem.equalsIgnoreCase("First") ? Semester.First :
+                sem.equalsIgnoreCase("Second") ? Semester.Second:
+                        null;
+    }
+
+    private EnrollmentStatus getEnrollmentStatus(String status) {
+        if(status.equalsIgnoreCase("All"))
+            return null;
+        else if (status.equalsIgnoreCase("ASSESSMENT"))
+            return EnrollmentStatus.ASSESSMENT;
+        else if (status.equalsIgnoreCase("LISTING"))
+            return EnrollmentStatus.LISTING;
+        else if (status.equalsIgnoreCase("PAYMENT"))
+            return EnrollmentStatus.PAYMENT;
+        else if(status.equalsIgnoreCase("ENROLLED"))
+            return EnrollmentStatus.ENROLLED;
+        else
+            return EnrollmentStatus.CANCELLED;
+    }
+
 }

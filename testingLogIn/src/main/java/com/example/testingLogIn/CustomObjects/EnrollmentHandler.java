@@ -4,7 +4,9 @@ import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.Models.Student;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
 public class EnrollmentHandler {
     private Enrollment enrollment;

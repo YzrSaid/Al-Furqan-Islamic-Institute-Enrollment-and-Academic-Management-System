@@ -93,7 +93,7 @@ public class SubjectController {
             if (subjectService.addNewSubject(subject.getLevelId(), subject.getSubjectName(), subject.isWillApplyNow()))
                 return new ResponseEntity<>("New Subject Added Successfully", HttpStatus.OK);
             else
-                return new ResponseEntity<>("Subject Name Already Exist in the Selected Grade Level",
+                return new ResponseEntity<>("Subject Name Already Exist",
                         HttpStatus.CONFLICT);
         } catch (NullPointerException npe) {
             return new ResponseEntity<>("Grade Level does not exist", HttpStatus.NOT_FOUND);

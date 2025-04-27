@@ -43,21 +43,21 @@
         <div class="chart-box">
             <div class="card-container">
                 <div class="card-grid">
-                    <a href="/enrollment/enrolled" class="card-link">
+                    <a th:href="@{/statistics/enrollment}" class="card-link">
                         <div class="card">
                             <h3 class="card-title" id="num-enrolled">95</h3>
                             <p class="card-label">Enrolled</p>
                         </div>
                     </a>
 
-                    <a href="/enrollment/listing" class="card-link">
+                    <a th:href="@{/statistics/enrollment}" class="card-link">
                         <div class="card">
                             <h3 class="card-title" id="num-pre-enrolled">24</h3>
                             <p class="card-label">Pre-Enrolled</p>
                         </div>
                     </a>
 
-                    <a href="/reports/student" class="card-link">
+                    <a href="/statistics/graduates" class="card-link">
                         <div class="card">
                             <h3 class="card-title" id="graduates-student">100</h3>
                             <p class="card-label">Graduates</p>
@@ -104,7 +104,7 @@
         <div class="chart-box-bar">
             <div class="bar-graph-container">
                 <div class="title-row-bar">
-                    <h6 id="barGraphTitle">Subject Rates</h6>
+                    <h6 id="barGraphTitle">Subject Average Grades</h6>
                     <div class="filter-container-bar">
                         <label for="sort-bar-graph">Filter:</label>
                         <select onchange="setGradesChart()" name="sort" id="grade-levels">

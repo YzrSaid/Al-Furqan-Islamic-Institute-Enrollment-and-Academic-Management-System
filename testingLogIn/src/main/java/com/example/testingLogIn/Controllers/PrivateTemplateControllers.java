@@ -252,7 +252,6 @@ public class PrivateTemplateControllers {
     }
 
     // these are for schedule pages
-
     @GetMapping("/schedule")
     public String getSchedule() {
         if(userDetailsService.getCurrentlyLoggedInUser().getRole() == Role.ADMIN)
@@ -264,5 +263,15 @@ public class PrivateTemplateControllers {
     @GetMapping("/schedule/sched-board/{secNumber}")
     public String getSchedBoard() {
         return "/schedule/sched-board";
+    }
+
+    @GetMapping("/statistics/enrollment")
+    public String enrollmentStatistics(){
+        return "/statistics/enrolled-statistics";
+    }
+
+    @GetMapping("/statistics/graduates")
+    public String graduatetStatistics(){
+        return "/statistics/graduates-records";
     }
 }

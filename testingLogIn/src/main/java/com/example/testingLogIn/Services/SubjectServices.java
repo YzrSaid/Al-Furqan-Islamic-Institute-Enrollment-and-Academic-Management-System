@@ -108,10 +108,9 @@ public class SubjectServices {
                           .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public boolean addNewSubject(int levelId,String subjectName, boolean applyNow){
         gradeLevelService.getGradeLevel(levelId);//icheck if nag exists ba ang grade level
-        if(!doesSubjectNameExist(levelId,subjectName)){
+        if(doesSubjectNameNotExist(subjectName)){
             Subject sub=new Subject();
             sub.setNotDeleted(true);
             sub.setGradeLevel(gradeLevelService.getGradeLevel(levelId));
@@ -237,11 +236,9 @@ public class SubjectServices {
                           .build();
      }
     
-    private boolean doesSubjectNameExist(int levelId,String subjectName){
+    private boolean doesSubjectNameNotExist(String subjectName){
         return subjectRepo.findAll().stream()
-                          .filter(sub ->sub.isNotDeleted() && 
-                                        subjectName.equals(sub.getSubjectName()) &&
-                                        sub.getGradeLevel().getLevelId() == levelId)
-                          .findFirst().orElse(null) != null;
+                .filter(sub -> sub.isNotDeleted() && sub.getSubjectName().equalsIgnoreCase(subjectName))
+                .toList().isEmpty();
     }
 }

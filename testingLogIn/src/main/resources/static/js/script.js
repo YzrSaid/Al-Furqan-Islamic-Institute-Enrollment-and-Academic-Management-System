@@ -784,6 +784,9 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmationModal.style.opacity = "0";
 
     switch (action) {
+      case "updateMyAccount":
+        updateMyAccount();
+        break;
       case "sendMultiple":
         sendMultiple();
         break;

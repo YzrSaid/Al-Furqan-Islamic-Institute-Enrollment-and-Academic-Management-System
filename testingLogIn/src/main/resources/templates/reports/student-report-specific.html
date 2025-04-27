@@ -1085,7 +1085,7 @@
     async function findStudent(studentName) {
         const response = await fetch(`/students/find-student/name/${studentName}`);
         if (!response.ok) {
-            alert("student record not found");
+           // alert("student record not found");
             return;
         }
 
@@ -1614,7 +1614,7 @@
         document.querySelectorAll("#discounts-rec input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
-        alert(selectedTransReq + " ang sulod");
+       // alert(selectedTransReq + " ang sulod");
         fetch(`/discounts/add-student-discounts/${studentId}`, {
             method: 'POST',
             headers: {

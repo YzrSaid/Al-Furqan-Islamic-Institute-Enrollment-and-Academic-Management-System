@@ -784,6 +784,9 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmationModal.style.opacity = "0";
 
     switch (action) {
+      case "updateMyAccount":
+        updateMyAccount();
+        break;
       case "sendMultiple":
         sendMultiple();
         break;
@@ -1254,6 +1257,7 @@ document.addEventListener("DOMContentLoaded", function () {
         errorModal.classList.remove("show");
       });
     } else {
+      //alert(`⚠️ Oops! Something went wrong. Please refresh or try again.`);
     }
   };
 

@@ -358,12 +358,10 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>#</th>
                                     <th>Description</th>
-                                    <th>Req. Amount</th>
-                                    <th>Discount</th>
-                                    <th>Balance</th>
-                                    <th>Amount Due</th>
+                                    <th>Due Amount</th>
+                                    <th>Amount Paid</th>
+                                    <th>Remaining Balance</th>
                                 </tr>
                             </thead>
                             <tbody id="receipt-items">
@@ -562,6 +560,7 @@
             window.print();
         }
         document.addEventListener("DOMContentLoaded", function () {
+            paymentAmountInput = document.querySelector("#payment-amount");
             let savedSubmenus = JSON.parse(localStorage.getItem("openedSubmenus")) || [];
 
             savedSubmenus.forEach(submenuId => {
@@ -794,7 +793,6 @@
             const obj = {
                 feesId: feesSelectedId
             };
-            console.log(obj);
             fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -825,9 +823,9 @@
         }
 
         function viewTheReceipt(receipt) {
-            console.log(receipt);
+            closeOpen();
             receipt = JSON.parse(receipt);
-
+            console.log(receipt);
             document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
             document.getElementById("receipt-date").value = receipt.date;
             document.getElementById("receipt-student-name").value = receipt.studentName;
@@ -838,17 +836,17 @@
 
             let i = 1;
             let totalDue = 0;
-
+            var totalBalance = 0;
+            var totalPaid = 0;
             receipt.particulars.forEach(dat => {
                 const row = document.createElement("tr");
+                totalBalance += dat.balance;
+                totalPaid += dat.amountPaid;
                 row.innerHTML = `
-            <td>${i++}</td>
             <td>${dat.feeName}</td>
-            <td>₱ ${parseFloat(dat.requestedAmount).toFixed(2)}</td>
-            <td>₱ ${parseFloat(dat.discountAmount).toFixed(2)}</td>
             <td>₱ ${parseFloat(dat.balance).toFixed(2)}</td>
             <td>₱ ${parseFloat(dat.amountPaid).toFixed(2)}</td>
-        `;
+            <td>₱ ${parseFloat(dat.balance - dat.amountPaid).toFixed(2)}</td>`;
                 tableBody.appendChild(row);
 
                 totalDue += parseFloat(dat.amountPaid);
@@ -859,9 +857,9 @@
             const remainingBalanceElement = document.getElementById("remaining-balance");
 
             // Populate the amounts in separate divs
-            totalAmountDueElement.innerText = `₱ ${totalDue.toFixed(2)}`;
-            totalAmountPaidElement.innerText = `₱ ${parseFloat(receipt.totalAmount).toFixed(2)}`;
-            remainingBalanceElement.innerText = `₱ ${(totalDue - parseFloat(receipt.totalAmount)).toFixed(2)}`;
+            totalAmountDueElement.innerText = `₱ ${totalBalance.toFixed(2)}`;
+            totalAmountPaidElement.innerText = `₱ ${parseFloat(totalPaid).toFixed(2)}`;
+            remainingBalanceElement.innerText = `₱ ${(parseFloat(totalBalance - totalPaid)).toFixed(2)}`;
         }
 
 
@@ -906,8 +904,6 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log("Student Balance:", data);
-                    const paymentAmountInput = document.getElementById('payment-amount');
                     if (paymentAmountInput) {
                         paymentAmountInput.value = data; // Set the value of the input field
                         paymentAmountInput.max = data;
@@ -1166,7 +1162,6 @@
 
             // Function to adjust the max value of the payment amount input based on the balance
             function adjustMaxAmountBasedOnBalance(checkbox) {
-                const paymentAmountInput = document.querySelector("#payment-amount");
                 if (checkbox.checked) {
                     const amount = Number(checkbox.dataset.amount);
                     paymentAmountInput.max = amount;
@@ -1176,7 +1171,7 @@
             }
 
             // Adding the validation and input handling
-            const paymentAmountInput = document.querySelector("#payment-amount");
+            var paymentAmountInput ;
 
             paymentAmountInput.addEventListener("input", function () {
                 const checkedCheckboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
@@ -1200,7 +1195,6 @@
         }
 
         function recalculateTotalSelectedAmount() {
-            const paymentAmountInput = document.getElementById("payment-amount");
             const checkboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
 
             let total = 0;
@@ -1217,7 +1211,6 @@
         // Function to update Amount when Full Payment is checked
         function updateFullPayment() {
             const fullPaymentCheckbox = document.getElementById("full-payment-checkbox");
-            const paymentAmountInput = document.getElementById("payment-amount");
             const checkboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
 
             if (fullPaymentCheckbox && fullPaymentCheckbox.checked) {
@@ -1233,7 +1226,6 @@
 
         // Function to enable/disable readonly based on Full Payment checkbox
         function toggleAmountReadonly(isChecked) {
-            const paymentAmountInput = document.getElementById("payment-amount");
             if (isChecked) {
                 paymentAmountInput.setAttribute("readonly", "true");
             } else {

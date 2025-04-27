@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<script th:src="@{/js/script.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/fragment :: sidebar}"></div>
+
+    <!-- Topbar with Hamburger & User Icon -->
+    <div class="dashboard-container" id="content">
+        <div class="sticky-header">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/fragment :: topbar}"></div>
+
+            <!-- Overlay -->
+            <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+            <div class="text-link">
+                <h4>Fees Management</h4>
+                <a href="/home">Main</a>
+                <p>/</p>
+                <a href="/maintenance/fees-management" title="You're currently in this page.">Maintenance - Fees
+                    Management</a>
+            </div>
+
+            <div class="search-div">
+                <!-- Searchbox and sort btn -->
+                <div class="left-section">
+                    <div class="search-container">
+                        <input type="text" autocomplete="new-password" placeholder="Search..." class="search-input" />
+                        <button type="button" class="search-btn">Search</button>
+                    </div>
+
+                    <!-- Three-dot menu (hidden on desktop, shown on mobile) -->
+                    <div class="menu-container">
+                        <button type="button" class="menu-btn" aria-label="More options">
+                            <span class="menu-icon">⋮</span>
+                        </button>
+                        <div class="menu-dropdown">
+                            <button type="button" class="menu-item" data-open-modal="feesManagementModal"
+                                title="Add a Fee">Add a Fee</button>
+                            <div class="menu-sort-container">
+                                <select title="sort" name="sort" onchange="goList(1)" id="sort-select"
+                                    class="sort-select">
+                                    <option value="" disabled selected>Sort</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Fees Management Button -->
+                    <div class="add-something-btn-container">
+                        <button type="button" class="btn-confirm" id="addAFeeButton"
+                            data-open-modal="feesManagementModal" title="Click to Add a Fee">Add a
+                            Fee</button>
+                    </div>
+
+                </div>
+                <div class="sort-container">
+                    <select name="sort" id="sort-select" class="sort-select">
+                        <option value="" disabled selected>Sort</option>
+                        <option value="patient-number">Patient Number</option>
+                        <option value="patient-name">Patient Name</option>
+                        <option value="patient-sex">Sex</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+            <table id="lamesa" class="fees-table main-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Grade Level</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> <br> <br>
+        </div>
+
+        <!-- Modal for confirmation -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content admin-confirmation scroll-lock">
+                <p id="modalText"></p>
+                <p id="security-message" class="hidden">To continue, enter the admin password.</p>
+
+                <div class="input-group hidden" id="admin-pass-form">
+                    <label for="adminPassword">Admin Password:</label>
+                    <input type="password" autocomplete="new-password" id="adminPassword"
+                        placeholder="Enter admin password" />
+                </div>
+
+                <div class="modal-buttons not-single">
+                    <button type="button" id="confirmAction" class="btn-confirm">Confirm</button>
+                    <button type="button" class="btn-close-confirm" data-close-modal="confirmationModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
+
+        <!-- Modal for adding fees -->
+        <div id="feesManagementModal" class="fees-management-modal modal">
+            <div class="fees-management-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h2>Add New Fee</h2>
+                    <form method="post" action="" id="feesManagementForm">
+                        <div class="payment-name-row">
+                            <label for="paymentName">Payment Name:</label>
+                        </div>
+
+                        <!-- Input field below -->
+                        <input type="text" id="paymentName">
+                        <br><br>
+
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount">
+                        <br>
+
+                        <div class="full-width-row">
+                            <div>
+                                <!-- Checkbox beside the label -->
+                                <input type="checkbox" id="distributable"><label for="label">Distributable</label>
+                            </div>
+
+                        </div>
+
+                        <div class="full-width-row">
+                            <div>
+                                <input type="checkbox"
+                                    id="applyThisSem"><label for="label">Apply this fee to current semester:</label>
+                            </div>
+                        </div> <br>
+
+                        <label><strong>Grade Levels Required by this Payment:</strong></label>
+                        <div class="payment-container">
+                            <!-- Grade level checkboxes or inputs go here -->
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="modal-buttons not-single">
+                    <button type="button" class="btn-cancel" data-close-modal="feesManagementModal">Cancel</button>
+                    <button type="button" class="btn-confirm" data-action="addFee"
+                        data-message="Are you sure you want to save this Fee?" id="confirmFee"
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for editing fees -->
+        <!-- <div id="feesManagementEditModal" class="fees-management-edit-modal modal">
+            <div class="fees-management-edit-modal-content">
+                <h2>Fee Information</h2>
+                <form method="post" action="" id="feesManagementForm">
+                    <label for="paymentName">Payment Name:</label>
+                    <input type="text" id="paymentNameEdit">
+                    <br><br>
+
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amountEdit"> <br> <br>
+
+                    <h6>Grade Levels Required by this Payment:</h6>
+
+                    <div class="payment-container">
+                        <div class="payment">
+                            <input type="checkbox" id="" name="payment" value="paymentEdit">
+                            <label for="paymentEdit"></label>
+                        </div>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="editFee"
+                            data-message="Are you sure you want to update this Fee?" id="confirmFee">
+                            Edit
+                        </button>
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="feesManagementEditModal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div> -->
+
+        <!-- Modal for editing fees -->
+        <div id="feesManagementEditModal" class="fees-management-edit-modal modal">
+            <div class="fees-management-edit-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h2>Fee Information</h2>
+                    <form method="post" action="" id="feesManagementForm">
+                        <label for="paymentName">Payment Name:</label>
+                        <input type="text" id="paymentNameEdit">
+                        <br><br>
+    
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amountEdit"> <br><br>
+    
+                        <label><strong>Grade Levels Required by this Payment:</strong></label>
+    
+                        <!-- This container will be used for editing payments -->
+                        <div class="payment-container-edit">
+                            <!-- Dynamically populated checkboxes will go here -->
+                        </div>
+                        <div class="full-width-row">
+                            <div>
+                                <label for="label">Will be applied to the current semester:</label><input type="checkbox"
+                                    id="applyThisSemEdit">
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="modal-buttons not-single">
+                        <button type="button" class="btn-confirm" id="editFeeButton" data-require-password="true"
+                            data-action="editFee" data-message="Are you sure you want to update this fee?">Edit</button>
+                        <button type="button" class="btn-cancel"
+                            data-close-modal="feesManagementEditModal">Cancel</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+
+        <!-- Modal for editing the grade level
+        <div id="feesManagementEditModal" class="fees-management-edit-modal modal">
+            <div class="fees-management-edit-modal-content">
+                <h2>Grade Level Information</h2>
+                <form method="" action="" id="gradeLevelEditForm">
+                    <label for="levelName">Grade Level Name:</label>
+                    <input type="text" id="levelNameEdit" name="levelName" readonly required>
+                    <br><br>
+
+                    <label for="pre-req">Pre-Requisite Grade Level</label>
+                    <select name="pre-req" id="pre-req-grade-level-edit">
+                        <option value="" disabled>Choose a pre-requisite</option>
+                        <option value="NONE">None</option>
+                    </select>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-confirm" data-action="editGradeLevel"
+                            data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
+                            Edit
+                        </button>
+                        <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div> -->
+
+    </div>
+</body>
+
+<script>
+    // Function to enable inputs and checkboxes
+    window.enableFormInputs = function () {
+        // Enable all inputs, selects, checkboxes, and radio buttons
+        document.querySelectorAll('input, select').forEach((input) => {
+            if (input.tagName === "SELECT") {
+                input.disabled = false; // Enable selects
+            } else if (input.type === "checkbox" || input.type === "radio") {
+                input.disabled = false; // Enable checkboxes and radio buttons
+            } else {
+                input.readOnly = false; // Set text-based inputs as editable
+                input.disabled = false; // Enable other inputs like text, number, password, etc.
+            }
+        });
+    }
+    // Function to disable inputs and checkboxes after they are populated
+    window.disableFormInputs = function () {
+        // Disable all inputs, selects, checkboxes, and radio buttons
+        document.querySelectorAll('input, select').forEach((input) => {
+            if (input.tagName === "SELECT") {
+                input.disabled = true; // Disable selects
+            } else if (input.type === "checkbox" || input.type === "radio") {
+                input.disabled = true; // Disable checkboxes and radio buttons
+            } else {
+                input.readOnly = true; // Set other text-based inputs as readonly
+                input.disabled = true; // Disable other inputs like text, number, password, etc.
+            }
+        });
+    }
+    document.getElementById("addAFeeButton").addEventListener("click", function () {
+        fetchGradeLevels();
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchPayments();
+    });
+    function fetchPayments() {
+        fetch("/payments/all")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                populateTable(data);
+            })
+            .catch(error => {
+                //console.error("Error fetching payments:", error);
+            });
+    }
+    function populateTable(payments) {
+        const tableBody = document.querySelector("#lamesa tbody");
+        tableBody.innerHTML = ""; // Clear existing rows
+
+        payments.forEach(payment => {
+            const row = document.createElement("tr");
+
+            //console.log(payment);
+
+            row.innerHTML = `
+            <td>${payment.name}</td>
+            <td><span>₱</span>${payment.requiredAmount.toLocaleString()}</td>
+            <td>${payment.gradeLevelNames.map(gl => `${gl}`).join(", ")}</td>
+            <td>
+                <div class="action-container">
+                    <div class="action">
+
+                    <img class="edit-fee" data-id="${payment.id}" data-name="${payment.name}"
+                    data-isActive="${payment.currentlyActive}"
+                    data-amount="${payment.requiredAmount}" data-grade-levels="${payment.gradeLevelNames.join(',')}"
+                    data-open-modal="feesManagementEditModal" src="/images/icons/compose.png" alt="fees-management-icon" title="Click to Edit Fee Information">
+                    
+                        <img data-open-modal="confirmationModal"  data-require-password="true" data-name="${payment.id}" data-action="deleteFee" title="Click to Delete Fee"
+                                     data-message="Are you sure you want to delete this fee?"
+                                     src="/images/icons/bin.png" alt="grade-level-delete-icon">
+                        
+                        </div>
+                    
+                </div>
+            </td>
+        `;
+
+            tableBody.appendChild(row);
+        });
+    }
+    async function addFee() {
+        const paymentName = document.getElementById("paymentName").value.trim();
+        const amount = document.getElementById("amount").value.trim();
+        const willApplyThisSem = document.getElementById("applyThisSem").checked;
+        const isDistributable = document.getElementById("distributable").checked;
+
+        if (!paymentName || !amount) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        const selectedGradeLevels = Array.from(document.querySelectorAll(".payment input[type='checkbox']:checked"))
+            .map(checkbox => checkbox.value);
+
+        if (selectedGradeLevels.length === 0) {
+            alert("Please select at least one grade level.");
+            return;
+        }
+
+        const requestData = {
+            name: paymentName,
+            requiredAmount: parseFloat(amount),
+            gradeLevels: selectedGradeLevels,
+            distributable: isDistributable,
+            willApplyNow: willApplyThisSem
+        };
+        // console.log(requestData);
+
+        try {
+            const response = await fetch("/payments/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            const responseData = await response.text();
+
+            if (response.ok) {
+                showSuccessModal(responseData);
+            } else {
+                showErrorModal(responseData);
+            }
+        } catch (error) {
+            showErrorModal(error.message);
+        }
+    }
+
+    function editFee() {
+        const paymentId = document.getElementById("feesManagementEditModal").dataset.id;
+        const paymentName = document.getElementById("paymentNameEdit").value; // Get the updated payment name
+        const requiredAmount = document.getElementById("amountEdit").value; // Get the updated amount
+        const willApplyThisSem = document.getElementById("applyThisSemEdit").checked;
+
+        // Get the selected grade levels
+        const selectedGradeLevels = [];
+        document.querySelectorAll("input[name='gradeLevels']:checked").forEach(checkbox => {
+            selectedGradeLevels.push(checkbox.value); // Add the selected grade level to the array
+        });
+        alert(selectedGradeLevels);
+        const updatedFeeData = {
+            id: paymentId,
+            name: paymentName,
+            requiredAmount: requiredAmount,
+            gradeLevels: selectedGradeLevels,
+            willApplyNow: willApplyThisSem
+        };
+
+        // console.log(updatedFeeData);
+
+        // console.log("Updated Fee Data:", updatedFeeData); // Debugging
+
+        fetch(`/payments/update/${paymentId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedFeeData),
+        })
+            .then(response => response.text())  // Use .text() since you're getting plain text, not JSON
+            .then(data => {
+                //console.log(data); // You should now get the plain text message from the backend
+                if (data === "Required payment updated successfully") {
+                    showSuccessModal("✅ Success: Payment Record has been updated successfully!");
+                } else if (data === "Updating payment record failed as payment name not found") {
+                    showErrorModal("❌ Updating payment record failed as payment name not found");
+                } else if (data === "Process Failed") {
+                    showErrorModal("❌ An error occurred while updating the payment. Please try again later.");
+                }
+            })
+            .catch(error => {
+                //console.log(error);
+                showErrorModal("❌ An error occurred while updating the payment. Please try again later.");
+            });
+    }
+
+    let selectedPaymentName;
+
+    // Add event delegation to listen for delete button clicks
+    document.querySelector("#lamesa tbody").addEventListener("click", function (event) {
+        if (event.target && event.target.getAttribute("data-action") === "deleteFee") {
+            selectedPaymentName = event.target.getAttribute("data-name");
+            //console.log(selectedPaymentName);
+        }
+    });
+
+    function deleteFee() {
+        // Send DELETE request to the backend
+        fetch(`/payments/delete/${selectedPaymentName}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then(response => response.text())  // Get the response as plain text
+            .then(data => {
+                // console.log(data);  // Log the response for debugging
+
+                // Show a success message if the payment was deleted
+                if (data.includes("deleted successfully")) {
+                    showSuccessModal("✅ Success: Payment record has been deleted successfully!");
+                } else {
+                    showErrorModal(`❌ An error occurred while deleting the payment. Please try again later.`);
+                }
+            })
+            .catch(error => {
+                //console.error(error);
+                showErrorModal("❌ An error occurred while deleting the payment. Please try again later.");
+            });
+    }
+
+
+    function fetchGradeLevels() {
+        fetch("/gradelevel/all")
+            .then(response => response.json())
+            .then(data => {
+                const paymentContainer = document.querySelector(".payment-container");
+                paymentContainer.innerHTML = "";
+
+                data.forEach(gradeLevel => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("payment");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `grade-${gradeLevel.levelId}`;
+                    checkbox.name = "gradeLevels";
+                    checkbox.value = gradeLevel.levelId;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `grade-${gradeLevel.levelId}`;
+                    label.textContent = gradeLevel.levelName;
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    paymentContainer.appendChild(paymentDiv);
+                });
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
+    let selectedPaymentId;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle clicking the edit button to open the fees management modal
+        document.body.addEventListener("click", function (event) {
+            const target = event.target.closest("[data-open-modal='feesManagementEditModal']"); // Find closest modal trigger
+
+            if (target) {
+                selectedPaymentId = target.getAttribute("data-id"); // Get the ID
+                const paymentName = target.getAttribute("data-name"); // Get the payment name
+                const requiredAmount = target.getAttribute("data-amount"); // Get the amount
+                const gradeLevelNames = target.getAttribute("data-grade-levels").split(","); // Get the grade level names (as an array)
+                var val = target.getAttribute("data-isActive");
+                var isActive = val === "true" || val;
+                // console.log("Selected Payment ID:", selectedPaymentId); // Debugging
+                // console.log("Grade Level Names:", gradeLevelNames); // Debugging
+
+                // Set the payment name and amount in the form
+                document.getElementById("paymentNameEdit").value = paymentName;
+                document.getElementById("amountEdit").value = requiredAmount;
+                document.getElementById("applyThisSemEdit").checked = isActive;
+
+                // Store the ID in the form
+                document.getElementById("feesManagementEditModal").dataset.id = selectedPaymentId;
+
+                // Populate the grade levels checkboxes
+                populateGradeLevelsForEdit(gradeLevelNames);
+            }
+        });
+    });
+
+    function populateGradeLevelsForEdit(gradeLevelNames, isUpdateMode = false) {
+        fetch("/gradelevel/all")
+            .then(response => response.json())
+            .then(gradeLevels => {
+                const paymentContainer = document.querySelector(".payment-container-edit");
+                paymentContainer.innerHTML = ""; // Clear previous data
+
+                gradeLevels.forEach(gradeLevel => {
+                    const paymentDiv = document.createElement("div");
+                    paymentDiv.classList.add("payment");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `grade-${gradeLevel.levelId}`;
+                    checkbox.name = "gradeLevels";
+                    checkbox.value = gradeLevel.levelId;
+
+                    const label = document.createElement("label");
+                    label.htmlFor = `grade-${gradeLevel.levelId}`;
+                    label.textContent = gradeLevel.levelName;
+
+                    // Check if the grade level is selected for the current fee and mark the checkbox
+                    if (gradeLevelNames && gradeLevelNames.includes(gradeLevel.levelName)) {
+                        checkbox.checked = true;
+                    }
+
+                    paymentDiv.appendChild(checkbox);
+                    paymentDiv.appendChild(label);
+                    paymentContainer.appendChild(paymentDiv);
+                });
+
+                // After populating the checkboxes, now enable/disable form inputs based on the mode
+                if (isUpdateMode) {
+                    enableFormInputs();
+                } else {
+                    disableFormInputs();
+                }
+            })
+            .catch(error => console.error("Error fetching grade levels:", error));
+    }
+
+</script>
+
+</html>

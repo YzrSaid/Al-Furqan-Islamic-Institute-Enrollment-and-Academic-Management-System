@@ -1051,21 +1051,16 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "transfereeAddListing":
         if (!validateForm("studentForm")) {
-          showErrorModal("⚠️ Please fill in all required fields!");
           return;
-        } else {
-          // Only validate Madrasa year if transferee is checked
-          if (!validateSchoolYear()) {
-            showErrorModal(
-              "❌ Error: Invalid format! Please enter the school year in YYYY-YYYY format."
-            );
+        } else if (!validateBirthdate()) {
+            return;
+          } else if (!validateSchoolYear()) {
+            return;
+          } else if (!validateContactNumber()){
             return;
           } else {
             transfereeAddListing();
-            // closeConfirmationModal();
           }
-        }
-
         break;
       //      case "studAddListing":
       //        // This case is for adding new student to the listing/registration

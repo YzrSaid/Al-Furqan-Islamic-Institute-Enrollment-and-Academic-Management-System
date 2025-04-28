@@ -5257,7 +5257,9 @@ a {
     width: 15px;
     height: 15px;
 }
-
+.sex-label {
+    width: 60px !important;
+}
 /* Mobile Styles */
 @media (max-width: 767px) {
   .basic-modal-buttons.for-mobile {
@@ -5445,15 +5447,17 @@ a {
   }
 
   #left-login-block,
-  #left-signup-block {
+  #left-signup-block,
+  #left-confirm-block {
     display: none;
   }
 
   #right-login-block,
-  #right-signup-block {
+  #right-signup-block,
+  #right-confirm-block {
     flex: none;
     padding: 0.5rem;
-    width: 100%;
+    width: 100% !important;
     height: 100dvh;
   }
 

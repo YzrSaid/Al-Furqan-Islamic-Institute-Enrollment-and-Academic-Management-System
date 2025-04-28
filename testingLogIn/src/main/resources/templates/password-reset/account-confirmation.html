@@ -1,61 +1,62 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{fragments/fragment :: commonHead}">
     <meta charset="UTF-8">
     <title>Enter New Password</title>
 </head>
 <script th:src="@{/js/script.js}"></script>
+
 <body>
-<div class="wrapper">
-    <div id="left-login-block">
-        <img th:src="@{/website-cover}" alt="bg">
-    </div>
-
-    <div id="right-login-block">
-        <div id="signup-header">
-            <img th:src="@{/website-logo}" alt="logo" id="school-logo" class="school-logo-reset-password"><br><br><br>
-            <h2 style="font-weight: bold;">Confirm Your Account Registration</h2>
-            <p class="forgot-password-text">Please enter your account password</p>
+    <div class="wrapper">
+        <div id="left-login-block">
+            <img th:src="@{/website-cover}" alt="bg">
         </div>
 
-        <form id="reset-form">
-            <div class="input-group">
-                <input class="input-group-input" type="password" id="password" name="password" placeholder=" " required>
-                <label class="input-group-label" for="password">New Password</label>
-                <img src="/images/icons/hidden-pass.png"
-                     alt="Show Password"
-                     class="toggle-password"
-                     id="toggleResetPassword">
+        <div id="right-login-block">
+            <div id="signup-header">
+                <img th:src="@{/website-logo}" alt="logo" class="school-logo"><br><br><br>
+                <h2 style="font-weight: bold;">Confirm Your Account Registration</h2>
+                <p class="forgot-password-text">Please enter your account password</p>
             </div>
-            <button type="submit" id="login-btn">Confirm Account</button>
-        </form>
+
+            <form id="reset-form">
+                <div class="input-group">
+                    <input class="input-group-input" type="password" id="password" name="password" placeholder=" "
+                        required>
+                    <label class="input-group-label" for="password">New Password</label>
+                    <img src="/images/icons/hidden-pass.png" alt="Show Password" class="toggle-password"
+                        id="toggleResetPassword">
+                </div>
+                <button type="submit" id="login-btn">Confirm Account</button>
+            </form>
 
 
-        <h4 id="signup-link"><a href="/login">Back to Login</a></h4>
-    </div>
+            <h4 id="signup-link"><a href="/login">Back to Login</a></h4>
+        </div>
 
-    <div id="errorModal" class="modal">
-        <div class="modal-content scroll-lock">
-            <p id="errorMessage"></p>
-            <div class="modal-buttons">
-                <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- Background overlay -->
-    <div id="successModalOverlay"></div>
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
 
-    <!-- Success modal -->
-    <div id="successModal">
-        <p id="successModalMessage"></p>
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
     </div>
-</div>
 </body>
 <style>
-
     .input-group {
         margin-top: -15px;
     }
+
     .wrapper {
         display: flex;
         min-height: 100vh;
@@ -156,8 +157,8 @@
     }
 
     /* Label behavior when input is focused or filled */
-    .input-group-input:focus + .input-group-label,
-    .input-group-input:not(:placeholder-shown) + .input-group-label {
+    .input-group-input:focus+.input-group-label,
+    .input-group-input:not(:placeholder-shown)+.input-group-label {
         top: -8px;
         left: 0;
         font-size: 12px;
@@ -168,7 +169,8 @@
     #login-btn {
         width: 100%;
         padding: 10px 10px;
-        background-color: rgb(4, 210, 9); /* Green background like the login button */
+        background-color: rgb(4, 210, 9);
+        /* Green background like the login button */
         color: white;
         font-weight: 700;
         font-size: 17px;
@@ -180,7 +182,8 @@
 
     /* Button Hover Effect */
     #login-btn:hover {
-        background-color: rgb(3, 175, 8); /* Darker green for hover effect */
+        background-color: rgb(3, 175, 8);
+        /* Darker green for hover effect */
     }
 
     /* "Back to Login" Link */
@@ -199,10 +202,11 @@
         text-decoration: underline;
     }
 </style>
+
 </html>
 
 <script>
-    document.getElementById("reset-form").addEventListener("submit", async function(event) {
+    document.getElementById("reset-form").addEventListener("submit", async function (event) {
         event.preventDefault();
         const newPassword = document.getElementById("password").value;
         const path = window.location.pathname;
@@ -214,7 +218,7 @@
             .then(response => {
                 return response.text().then(message => {
                     if (response.ok) {
-                        showSuccessModal(message,false);
+                        showSuccessModal(message, false);
                         setTimeout(() => {
                             window.location.href = "/";
                         }, 2000);
@@ -228,32 +232,33 @@
             });
     });
 
-document.addEventListener("DOMContentLoaded", function () {
-const toggle = document.getElementById("toggleResetPassword");
-const passwordField = document.getElementById("password");
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.getElementById("toggleResetPassword");
+        const passwordField = document.getElementById("password");
 
-// Debugging output to check if elements are found
-console.log(toggle, passwordField); // Check if these elements are properly selected
+        // Debugging output to check if elements are found
+        console.log(toggle, passwordField); // Check if these elements are properly selected
 
-let isVisible = false;
+        let isVisible = false;
 
-    if (!toggle || !passwordField) {
-      console.warn("Toggle icon or password field not found.");
-      return;
-    }
+        if (!toggle || !passwordField) {
+            console.warn("Toggle icon or password field not found.");
+            return;
+        }
 
-toggle.addEventListener("click", function () {
-  isVisible = !isVisible;
+        toggle.addEventListener("click", function () {
+            isVisible = !isVisible;
 
-  passwordField.type = isVisible ? "text" : "password";
+            passwordField.type = isVisible ? "text" : "password";
 
-  toggle.src = isVisible
-    ? "/images/icons/eye.png"
-    : "/images/icons/hidden-pass.png";
+            toggle.src = isVisible
+                ? "/images/icons/eye.png"
+                : "/images/icons/hidden-pass.png";
 
-  toggle.title = isVisible ? "Hide Password" : "Show Password";
-  toggle.alt = isVisible ? "Hide Password" : "Show Password";
-});
-});
+            toggle.title = isVisible ? "Hide Password" : "Show Password";
+            toggle.alt = isVisible ? "Hide Password" : "Show Password";
+        });
+    });
 </script>
+
 </html>

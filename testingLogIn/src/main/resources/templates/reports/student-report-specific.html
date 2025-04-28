@@ -1440,7 +1440,7 @@
             tableBody.innerHTML = '';
 
             if (!data.content || data.content.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="2">No records found</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
                 updatePaginationUI("DistU", 1, 0, 0, 0);
                 return;
             }

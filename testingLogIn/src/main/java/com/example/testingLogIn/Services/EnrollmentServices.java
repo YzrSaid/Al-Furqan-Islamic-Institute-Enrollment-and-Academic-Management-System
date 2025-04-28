@@ -63,6 +63,9 @@ public class EnrollmentServices {
     public boolean addStudentToListing(Integer studentId,Student newstudent) {
         Student student = newstudent;
         SchoolYearSemester currentSem = Optional.ofNullable(sySemRepo.findCurrentActive()).orElseThrow(NullPointerException::new);
+        if(currentSem.isFinished()){
+            throw new IllegalArgumentException("Cannot add an enrollment transaction as the current active semester is already finished");
+        }
         if(studentId != null)
             student =  studentRepo.findById(studentId).orElse(null);
         if(LocalDate.now().isAfter(currentSem.getEnrollmentDeadline()))
@@ -88,6 +91,11 @@ public class EnrollmentServices {
         GradeLevel gradeLevelToEnroll = gradeLevelRepo.findById(gradeLevelId).orElse(null);
         Optional.ofNullable(enrollmentRecord).orElseThrow(NullPointerException::new);
         Student student = enrollmentRecord.getStudent();
+
+        if(enrollmentRecord.getSYSemester().isFinished()){
+            throw new IllegalArgumentException("Cannot add an enrollment transaction as the current active semester is already finished");
+        }
+
         if (!enrollmentRecord.isNotDeleted())
             return 1;
         else if (gradeLevelToEnroll == null)
@@ -124,7 +132,11 @@ public class EnrollmentServices {
     public int addToPayment(int enrollmentId, int sectionNumber) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         Section section = sectionRepo.findById(sectionNumber).orElse(null);
-        System.out.println(enrollmentRepo.countSectionTransact(sectionNumber,enrollmentRecord.getSYSemester().getSySemNumber()).orElse(0));
+
+        if(enrollmentRecord.getSYSemester().isFinished()){
+            throw new IllegalArgumentException("Cannot add an enrollment transaction as is the current active semester is already finished");
+        }
+
         if (enrollmentRecord == null || !enrollmentRecord.isNotDeleted())
             return 1;
         else if (section == null)
@@ -144,6 +156,11 @@ public class EnrollmentServices {
 
     public int addToEnrolled(int enrollmentId) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
+
+        if(enrollmentRecord.getSYSemester().isFinished()){
+            throw new IllegalArgumentException("Cannot add an enrollment transaction as the current active semester is already finished");
+        }
+
         if (enrollmentRecord == null || !enrollmentRecord.isNotDeleted())
             return 1;
         else {

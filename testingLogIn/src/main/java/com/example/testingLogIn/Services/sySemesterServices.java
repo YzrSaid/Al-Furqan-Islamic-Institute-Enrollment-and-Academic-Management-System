@@ -103,23 +103,24 @@ public class sySemesterServices {
         SchoolYearSemester sem = semesterRepo.findById(semNumber).orElse(null);
         if(sem == null)
             return false;
-        
-        disableAll();
-        sem.setEnrollmentDeadline(LocalDate.now().plusDays(30));
-        sem.setActive(true);
-        semesterRepo.save(sem);
 
-        ExecutorService dbExecutor = Executors.newFixedThreadPool(4);
+        if(!sem.isFinished()){
+            disableAll();
+            sem.setEnrollmentDeadline(LocalDate.now().plusDays(30));
+            sem.setActive(true);
+            semesterRepo.save(sem);
 
-        CompletableFuture.runAsync(()->{
-            reqFee.setRequiredFeesActive();
-            subjectRepo.activeAll();
-            studentRepo.setNewStudentsToOld();
-            statisticsServices.setInitialCounts(sem);
-        },dbExecutor).exceptionally(ex -> {
-            ex.printStackTrace();
-            return null;
-        });
+            ExecutorService dbExecutor = Executors.newFixedThreadPool(4);
+
+            CompletableFuture.runAsync(()->{
+                reqFee.setRequiredFeesActive();
+                subjectRepo.activeAll();
+                studentRepo.setNewStudentsToOld();
+                statisticsServices.setInitialCounts(sem);
+            },dbExecutor).exceptionally(ex -> {
+                ex.printStackTrace();
+                return null;
+            });}
         
         return true;
     }

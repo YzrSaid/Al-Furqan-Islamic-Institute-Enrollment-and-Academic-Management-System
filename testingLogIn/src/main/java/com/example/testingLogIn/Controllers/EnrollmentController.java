@@ -31,8 +31,7 @@ public class EnrollmentController {
         }catch(NullPointerException npe){
             return new ResponseEntity<>("No currently active semester",HttpStatus.NOT_FOUND);
         }catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Transaction Failed",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping("/all/paged/{status}")
@@ -73,17 +72,12 @@ public class EnrollmentController {
     
     @PutMapping("/add/assessment/{enrollmentId}/{gradeLevelId}")
     public ResponseEntity<String> proceedToAssessment(@PathVariable int enrollmentId, @PathVariable int gradeLevelId){
-        try{
             int result = enrollmentService.addToAssessment(enrollmentId, gradeLevelId);
             return switch (result) {
                 case 1 -> new ResponseEntity<>("Enrollment Record Not Found",HttpStatus.NOT_FOUND);
                 case 2 -> new ResponseEntity<>("Grade Level Record Not Found",HttpStatus.NOT_FOUND);
                 default -> new ResponseEntity<>("Enrollment Record Successfully Moved To Assessment",HttpStatus.OK);
             };
-        }catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Transaction Failed. Try Again.",HttpStatus.CONFLICT);
-        }
     }
     
     @PutMapping("/add/payment/{enrollmentId}/{sectionNumber}")
@@ -114,8 +108,10 @@ public class EnrollmentController {
                 case 1 -> new ResponseEntity<>("Enrollment Record Not Found",HttpStatus.NOT_FOUND);
                 default -> new ResponseEntity<>("Student Successfully Enrolled",HttpStatus.OK);
             };
-        }catch(Exception e){
-            e.printStackTrace();
+        }catch (IllegalArgumentException ie){
+            return new ResponseEntity<>(ie.getMessage(),HttpStatus.NOT_ACCEPTABLE);
+        }
+        catch(Exception e){
             return new ResponseEntity<>("Transaction Failed. Try Again.",HttpStatus.CONFLICT);
         }
     }

@@ -41,7 +41,7 @@
                             <div class="menu-dropdown">
                                 <button type="button" class="menu-item" data-open-modal="gradeLevelModal"
                                     title="Add New Student">Add New Grade Level</button>
-                               
+
                             </div>
                         </div>
 
@@ -165,13 +165,13 @@
                         <label for="levelName">Grade Level Name:</label>
                         <input type="text" id="levelNameEdit" name="levelName" readonly required>
                         <br><br>
-    
+
                         <label for="pre-req">Pre-Requisite Grade Level</label>
                         <select name="pre-req" id="pre-req-grade-level-edit">
                             <option value="" disabled>Choose a pre-requisite</option>
                             <option value="NONE">None</option>
                         </select>
-                        
+
                         <label for="semester">Duration:</label>
                         <div class="full-width-row">
                             <div>
@@ -181,17 +181,17 @@
                         </div>
                         <div class="full-width-row">
                             <div>
-                                <input type="radio" name="durationEdit" value="2" id="durEdit2">
+                                <input type="radio" required name="durationEdit" value="2" id="durEdit2">
                                 <label for="dur2">2 Semesters</label>
                             </div>
                         </div>
                     </form>
                 </div>
-                
+
                 <div class="modal-buttons not-single">
                     <button type="button" data-require-password="true" class="btn-confirm btn-confirm-report"
-                        data-action="editGradeLevel"
-                        data-message="Are you sure you want to update this grade level?" id="confirmGradeLevelEdit">
+                        data-action="editGradeLevel" data-message="Are you sure you want to update this grade level?"
+                        id="confirmGradeLevelEdit">
                         Edit
                     </button>
                     <button type="button" class="btn-cancel" data-close-modal="gradeLevelEditModal">Close</button>
@@ -216,12 +216,12 @@
                 return; // Stop function execution
             }
 
-            
+
             const newLevel = {
-                    levelName: levelName,
-                    preRequisite: preRequisite,
-                    semDuration: duration
-                };
+                levelName: levelName,
+                preRequisite: preRequisite,
+                semDuration: duration
+            };
 
             fetch(actionUrl, {
                 method: method,
@@ -262,7 +262,7 @@
                     const dropdown = document.getElementById("pre-req-grade-level");
                     // Clear existing options and add default option
                     dropdown.innerHTML = `
-                <option value="NONE" disabled selected>Choose a pre-requisite</option>
+                <option value="" disabled selected>Choose a pre-requisite</option>
                 <option value="NONE">None</option> 
             `;
 
@@ -275,49 +275,47 @@
                 })
                 .catch(error => console.error("Error:", error));
         }
-        function populateEditDropdown(currentGradeLevelId, selectedPreReqId,duration) {
-            //console.log(selectedPreReqId, ' is the pre-requisite id');
-
+        function populateEditDropdown(currentGradeLevelId, selectedPreReqId, duration) {
             const dropdown = document.getElementById("pre-req-grade-level-edit");
-            dropdown.innerHTML = ""; // Clear previous options
+            dropdown.innerHTML = "";
 
+            // Handle duration radio buttons
             document.getElementById("durEdit1").checked = true;
-            if(duration === 2){
+            if (duration === 2) {
                 document.getElementById("durEdit2").checked = true;
             }
 
             fetch("/gradelevel/no-successor-grade-level")
                 .then(response => response.json())
                 .then(data => {
-                    // Add "Choose a pre-requisite" option as a disabled placeholder
+                    dropdown.innerHTML = ""; 
                     const defaultOption = document.createElement("option");
-                    defaultOption.value = "NONE";
+                    defaultOption.value = "";
                     defaultOption.textContent = "Choose a pre-requisite";
                     defaultOption.disabled = true;
+                    defaultOption.selected = !selectedPreReqId;
                     dropdown.appendChild(defaultOption);
 
-                    // Check if "None" option is needed
-                    if (selectedPreReqId === null || selectedPreReqId === "NONE") {
-                        const noneOption = document.createElement("option");
-                        noneOption.value = "NONE";
-                        noneOption.textContent = "None";
-                        noneOption.selected = true; // Select "None" if no pre-req
-                        dropdown.appendChild(noneOption);
-                    }
+                    // Always add "None"
+                    const noneOption = document.createElement("option");
+                    noneOption.value = "NONE";
+                    noneOption.textContent = "None";
+                    noneOption.selected = (selectedPreReqId === null || selectedPreReqId === "NONE");
+                    dropdown.appendChild(noneOption);
 
-                    // If there's a valid selected pre-requisite, add it
-                    if (selectedPreReqId !== null && selectedPreReqId !== "NONE") {
+                    // Only add selectedPreReq if it's NOT null and NOT "NONE"
+                    if (selectedPreReqId !== null && selectedPreReqId !== "None") {
                         const selectedPreReq = document.createElement("option");
                         selectedPreReq.value = selectedPreReqId;
                         selectedPreReq.textContent = selectedPreReqId;
                         selectedPreReq.selected = true;
                         dropdown.appendChild(selectedPreReq);
-                    }
+                    } 
 
-                    // Filter out the current grade level being edited
+
+                    // Populate remaining grade levels
                     const filteredGrades = data.filter(grade => grade.levelId !== currentGradeLevelId);
 
-                    // Populate dropdown with the remaining grades
                     filteredGrades.forEach(grade => {
                         const option = document.createElement("option");
                         option.value = grade.levelId;
@@ -325,11 +323,10 @@
                         dropdown.appendChild(option);
                     });
                 })
-                .catch(error => console.error("Error fetching grade levels:", error));
+                .catch(error => showErrorModal("Error fetching grade levels:", error));
+
+
         }
-
-
-
         function fetchGradeLevels() {
             fetch("/gradelevel/all")
                 .then(response => {
@@ -402,7 +399,7 @@
                     .then((data) => {
                         document.getElementById("gradeLevelEditModal").dataset.id = data.levelId;
                         document.getElementById("levelNameEdit").value = data.levelName; // ✅ Debugging test
-                        populateEditDropdown(data.levelId, data.preRequisite,data.semDuration);
+                        populateEditDropdown(data.levelId, data.preRequisite, data.semDuration);
                     })
                     .catch((error) => console.error("Error fetching grade level:", error));
             }
@@ -444,7 +441,7 @@
                 levelId: gradeId,
                 levelName: document.getElementById("levelNameEdit").value,
                 preRequisite: prereq,
-                semDuration : duration
+                semDuration: duration
             };
 
             fetch("/gradelevel/update-grade-level", {

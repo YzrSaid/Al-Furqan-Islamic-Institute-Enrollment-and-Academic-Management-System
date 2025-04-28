@@ -5248,6 +5248,16 @@ a {
   }
 }
 
+.delete-school-year-btn {
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+.delete-school-year-btn img {
+    width: 15px;
+    height: 15px;
+}
+
 /* Mobile Styles */
 @media (max-width: 767px) {
   .basic-modal-buttons.for-mobile {

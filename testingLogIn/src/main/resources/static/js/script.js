@@ -1196,7 +1196,12 @@ document.addEventListener("DOMContentLoaded", function () {
       return false;
     }
 
-    let inputs = form.querySelectorAll("input[required], select[required]");
+    let inputs = form.querySelectorAll("input[required]:not([type='radio']), select[required], textarea[required]");
+    let radioGroups = new Set();
+    form.querySelectorAll("input[type='radio'][required]").forEach(radio => {
+        radioGroups.add(radio.name); // Group by radio 'name'
+    });
+
     let valid = true;
 
     inputs.forEach((input) => {

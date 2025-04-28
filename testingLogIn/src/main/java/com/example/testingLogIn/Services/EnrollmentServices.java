@@ -124,13 +124,15 @@ public class EnrollmentServices {
     public int addToPayment(int enrollmentId, int sectionNumber) {
         Enrollment enrollmentRecord = enrollmentRepo.findById(enrollmentId).orElse(null);
         Section section = sectionRepo.findById(sectionNumber).orElse(null);
-
+        System.out.println(enrollmentRepo.countSectionTransact(sectionNumber,enrollmentRecord.getSYSemester().getSySemNumber()).orElse(0));
         if (enrollmentRecord == null || !enrollmentRecord.isNotDeleted())
             return 1;
         else if (section == null)
             return 2;
         else if(!enrollmentRecord.isQualified())
             return 3;
+        else if(enrollmentRepo.countSectionTransact(sectionNumber,enrollmentRecord.getSYSemester().getSySemNumber()).orElse(0) >= section.getCapacity())
+            throw new NullPointerException("Section capacity is full");
         else {
             enrollmentRecord.setEnrollmentStatus(EnrollmentStatus.PAYMENT);
             enrollmentRecord.setSectionToEnroll(section);

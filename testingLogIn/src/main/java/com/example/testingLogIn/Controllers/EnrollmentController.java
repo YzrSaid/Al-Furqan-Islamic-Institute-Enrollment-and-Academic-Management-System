@@ -97,9 +97,11 @@ public class EnrollmentController {
                 case 3 -> new ResponseEntity<>("Student is not qualified to the Grade Level",HttpStatus.NOT_FOUND);
                 default -> new ResponseEntity<>("Enrollment Record Successfully Moved To Payment",HttpStatus.OK);
             };
-        }catch(Exception e){
-            e.printStackTrace();
-            return new ResponseEntity<>("Transaction Failed. Try Again.",HttpStatus.CONFLICT);
+        }catch(NullPointerException npe){
+            return new ResponseEntity<>(npe.getMessage(),HttpStatus.NOT_FOUND);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
         }
     }
     

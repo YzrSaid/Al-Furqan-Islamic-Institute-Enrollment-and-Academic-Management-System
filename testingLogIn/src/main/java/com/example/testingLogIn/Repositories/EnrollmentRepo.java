@@ -137,4 +137,21 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
            """)
     Page<Enrollment> getEnrollmentPageStatistics(String search, EnrollmentStatus status,Integer sy, Semester sem, Pageable pageable);
 
+    @Query("""
+           SELECT COUNT(e) FROM Enrollment e
+           JOIN e.SYSemester sem
+           WHERE (e.enrollmentStatus = 'PAYMENT'
+           OR e.enrollmentStatus = 'ENROLLED')
+           AND sem.sySemNumber = :sem
+           AND e.sectionToEnroll.number = :sectionId
+           """)
+    Optional<Integer> countSectionTransact(int sectionId, int sem);
+
+    @Query("""
+           SELECT COUNT(e) FROM Enrollment e
+           JOIN e.SYSemester sem
+           WHERE sem.sySemNumber = :sem
+           AND e.sectionToEnroll.number = :sectionId
+           """)
+    Optional<Integer> countSectionEnrollment(int sectionId, int sem);
 }

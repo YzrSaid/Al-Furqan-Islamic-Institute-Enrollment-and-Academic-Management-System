@@ -33,16 +33,19 @@ public class SectionServices {
     private final sySemesterRepo semRepo;
     private final EnrollmentServices enrollmentServices;
     private final SectionStudentCountServices sscService;
+    private final EnrollmentRepo enrollmentRepo;
 
     @Autowired
-    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo, sySemesterRepo semRepo, EnrollmentServices enrollmentServices, SectionStudentCountServices sscService) {
+    public SectionServices(GradeLevelRepo gradeRepo, SectionRepo sectionRepo, UserRepo userRepo, sySemesterRepo semRepo, EnrollmentServices enrollmentServices, SectionStudentCountServices sscService, EnrollmentRepo enrollmentRepo) {
         this.gradeRepo = gradeRepo;
         this.sectionRepo = sectionRepo;
         this.userRepo = userRepo;
         this.semRepo = semRepo;
         this.enrollmentServices = enrollmentServices;
         this.sscService = sscService;
+        this.enrollmentRepo = enrollmentRepo;
     }
+
     //Get by Grade Level Name
     public List<SectionDTO> getSectionsByLevel(String gradeLevel){
         return sectionRepo.findAll().stream()
@@ -108,36 +111,48 @@ public class SectionServices {
     }
 
     //UPDATE SECTION RECORD
-    public boolean updateSection(SectionDTO sectionDTO){
+    public void updateSection(SectionDTO sectionDTO){
         Section toUpdate = sectionRepo.findById(sectionDTO.getNumber()).orElseThrow(()->new NullPointerException("Section Record Not Found"));
         Section otherSec = getSectionByName(sectionDTO.getSectionName());
         if(otherSec != null && otherSec.getNumber() != toUpdate.getNumber())
             throw new IllegalArgumentException("Section name already exists");
+        GradeLevel newGradeLevel = gradeRepo.findById(sectionDTO.getLevelId()).orElseThrow(()-> new NullPointerException("Grade Level Record Not Found"));
 
-        toUpdate.setLevel(getGradeLevel(sectionDTO.getGradeLevelName()));
-        toUpdate.setAdviser(getTeacherById(sectionDTO.getAdviserId()));
+        SchoolYearSemester sem = semRepo.findCurrentActive();
+        int semId = Optional.ofNullable(sem).map(SchoolYearSemester::getSySemNumber).orElse(0);
+        int enrollmentCount = enrollmentRepo.countSectionEnrollment(toUpdate.getNumber(),semId).orElse(0);
+        if(newGradeLevel.getLevelId() != toUpdate.getLevel().getLevelId()){
+            if(semId != 0){
+                if(enrollmentCount > 0)
+                    throw new IllegalArgumentException("Cannot change grade level due to ongoing enrollment related to this section");
+            }
+        }
+
+        if(enrollmentCount > sectionDTO.getCapacity())
+            throw new IllegalArgumentException("The new capacity conflicts with current student enrollments in this section.");
+
+        toUpdate.setLevel(newGradeLevel);
+        toUpdate.setAdviser(userRepo.findById(sectionDTO.getAdviserId()).orElseThrow(()->new NullPointerException("Teacher Record Not Found")));
         toUpdate.setSectionName(sectionDTO.getSectionName());
         toUpdate.setCapacity(sectionDTO.getCapacity());
         toUpdate.setNotDeleted(true);
         sectionRepo.save(toUpdate);
-        return true;
     }
     
     //DELETING SECTION RECORD
     public void deleteSection(int sectionNumber){
-        System.out.println(sectionNumber);
         Section todelete = sectionRepo.findById(sectionNumber).orElse(null);
         if(todelete == null || !todelete.isNotDeleted())
             throw new NullPointerException("Section Record not found");
         else if(enrollmentServices.getSectionTransactionCount(sectionNumber) > 0)
-            throw new IllegalArgumentException("Deletion not allowed: This section is part of an active enrollment transaction");
+            throw new IllegalArgumentException("Deletion not allowed: This section is part of an ongoing enrollment transaction");
 
         todelete.setNotDeleted(false);
         sectionRepo.save(todelete);
     }
     
     //Return the List of Teachers that has no advisory class
-    public List<UserDTO > getNoAdvisoryTeachers(){
+    public List<UserDTO> getNoAdvisoryTeachers(){
         List<Integer> adviserStaffIds= new ArrayList<>();
         sectionRepo.findByIsNotDeletedTrue()
                    .forEach(section -> adviserStaffIds.add(section.getAdviser().getStaffId()));

@@ -49,4 +49,10 @@ public interface UserRepo extends JpaRepository<UserModel, Integer> {
            WHERE user.role = :role
            """)
     Optional<Integer> countStaffByRoles(Role role);
+
+    @Query("""
+           SELECT user FROM UserModel user
+           WHERE LOWER(user.fullName) = :fullname 
+           """)
+    Optional<UserModel> findByFullname(String fullname);
 }

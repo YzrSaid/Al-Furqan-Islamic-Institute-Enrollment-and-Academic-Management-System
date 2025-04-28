@@ -226,7 +226,7 @@
             .catch(error => console.error("Error fetching grade levels:", error));
     }
 
-    function fetchGradeLevelsEdit() {
+    function fetchGradeLevelsEdit(levelId) {
         return fetch("/gradelevel/all") // ✅ Return the fetch promise
             .then(response => response.json())
             .then(data => {
@@ -235,8 +235,13 @@
 
                 data.forEach(grade => {
                     let option = document.createElement("option");
-                    option.value = grade.levelName;
+                    option.value = grade.levelId;
                     option.textContent = grade.levelName;
+
+                    if(levelId == grade.levelId){
+                        option.selected=true;
+                    }
+
                     gradeLevelEditSelect.appendChild(option);
                 });
 
@@ -265,40 +270,25 @@
             .catch(error => console.error("Error fetching advisers:", error));
     }
 
-    function fetchAdvisersEdit(currentAdviser) {
+    function fetchAdvisersEdit(adviserId, adviserName) {
         return fetch('/section/adviserids') // Fetch teachers without advisory
             .then(response => response.json())
             .then(advisers => {
                 const adviserSelect = document.getElementById("adviserEdit");
                 adviserSelect.innerHTML = `<option value="" disabled>Select an Adviser</option>`; // Placeholder
                 let currentAdviserExists = false;
-
+                console.log(advisers);
                 advisers.forEach(adviser => {
-                    // console.log(adviser);
                     const option = document.createElement("option");
-                    option.value = teacher.staffId;
+                    option.value = adviser.staffId;
                     option.textContent = adviser.fullName;
-
-                    if (adviser.adviserName === currentAdviser) {
-                        option.selected = true;
-                        currentAdviserExists = true;
-                    }
-
                     adviserSelect.appendChild(option);
                 });
-
-                // If current adviser is not in the fetched list, add them manually
-                if (!currentAdviserExists && currentAdviser) {
-                    // console.log(currentAdviser);
-                    let option = document.createElement("option");
-                    option.value = currentAdviser;
-                    option.textContent = currentAdviser;
-                    option.selected = true;
-
-                    adviserSelect.appendChild(option);
-                }
-
-                //console.log("📌 Advisers loaded.");
+                const option = document.createElement("option");
+                option.value = adviserId;
+                option.textContent = adviserName;
+                option.selected = true;
+                adviserSelect.appendChild(option);
             });
     }
 
@@ -347,36 +337,23 @@
                 //console.error("Error:", error);
             });
     }
-
     document.addEventListener("click", function (event) {
         const target = event.target;
         if (target.dataset.openModal === "sectionEditModal") {
-            const sectionId = target.dataset.id;
-            if (!sectionId) {
-                //console.error("Error: sectionId is undefined!");
+            selectedSectionId = target.dataset.id;
+            if (!selectedSectionId) {
                 return;
             }
 
-            fetch(`/section/${sectionId}`)
+            fetch(`/section/${selectedSectionId}`)
                 .then(response => response.json())
                 .then(data => {
-                    // console.log("Fetched data:", data);
-
+                    console.log(data);
                     document.getElementById("sectionNameEdit").value = data.sectionName;
                     document.getElementById("capacityEdit").value = data.capacity;
 
-                    const gradeLevelName = data.gradeLevelName;
-                    const adviser = data.adviserName;
-                    const schedNum = data.number;
-
-                    // console.log("📌 Grade Level from API:", gradeLevelName);
-                    //console.log("📌 Adviser from API:", adviser);
-                    document.getElementById("schedId").innerText = schedNum;
-                    Promise.all([fetchGradeLevelsEdit(), fetchAdvisersEdit(adviser)]).then(() => {
-                        document.getElementById("gradeLevelEdit").value = gradeLevelName;
-                        document.getElementById("adviserEdit").value = adviser;
-
-                    });
+                    fetchAdvisersEdit(data.adviserId,data.adviserName);
+                    fetchGradeLevelsEdit(data.levelId);
                 });
         }
 
@@ -426,23 +403,23 @@
     }
 
     function editSection() {
-        const form = document.getElementById("sectionEditForm");
+        //const form = document.getElementById("sectionEditForm");
 
         // Collect input values
-        const adviser = document.getElementById("adviserEdit").value;
-
-        if (adviser === "") {
+        const adviserSelected = document.getElementById("adviserEdit").value;
+        if (adviserSelected === 0) {
             showErrorModal("❌ Error: Please choose an adviser.");
             return;
         }
 
         const sectionData = {
-            number: document.getElementById("schedId").innerText,
+            number: selectedSectionId,
             sectionName: document.getElementById("sectionNameEdit").value,
-            gradeLevelName: document.getElementById("gradeLevelEdit").value,
+            levelId: document.getElementById("gradeLevelEdit").value,
             capacity: document.getElementById("capacityEdit").value,
             adviserId: document.getElementById("adviserEdit").value
         };
+        console.log(sectionData);
         fetch("/section/update", {
             method: "PUT",
             headers: {
@@ -460,7 +437,7 @@
                 showSuccessModal("✅ Success: This record has been updated successfully!");
             })
             .catch(error => {
-                showErrorModal(`❌ Error: ${JSON.parse(error.message).message}`);
+                showErrorModal(`❌ Error: ${error.message}`);
             });
     }
 

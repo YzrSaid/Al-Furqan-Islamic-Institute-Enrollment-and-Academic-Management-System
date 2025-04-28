@@ -65,12 +65,11 @@
 
                 <div class="input-group">
                     <div class="account-type-div">
-                        <label class="normal-label" for="gender">Gender</label>
+                        <label class="normal-label" for="gender">Sex</label>
                         <select name="gender" id="gender" required>
-                            <option value="" disabled selected>Choose a gender</option>
+                            <option value="" disabled selected>Choose a Sex</option>
                             <option value="MALE">Male</option>
                             <option value="FEMALE">Female</option>
-                            <option value="PREFER_NOT_TO_SAY">Prefer not to say</option>
                         </select>
                     </div>
 
@@ -210,7 +209,7 @@
 
         if (age < 16) {
             setTimeout(() => {
-                showErrorModal("❌ Error: You must be at least 3 years old to register.");
+                showErrorModal("❌ Error: You must be at least 16 years old to register.");
             }, 50);
             return false;
         }

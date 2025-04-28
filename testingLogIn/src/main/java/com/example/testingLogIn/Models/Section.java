@@ -41,6 +41,7 @@ public class Section {
                                 .gradeLevelName(level.getLevelName())
                                 .levelId(level.getLevelId())
                                 .adviserName(adviser.getFullName())
+                                .adviserId(adviser.getStaffId())
                                 .sectionName(getSectionName())
                                 .capacity(getCapacity())
                                  .isNotDeleted(true)

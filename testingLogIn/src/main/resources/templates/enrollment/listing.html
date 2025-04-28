@@ -225,7 +225,7 @@
                                 </div>
                                 <div class="column2">
                                     <div class="student-form-group">
-                                        <label for="gender">Gender:</label>
+                                        <label for="gender">Sex:</label>
                                         <input readonly type="text" class="gender" id="gender">
 
                                         <label for="birthdate">Birthdate:</label>
@@ -321,7 +321,7 @@
                                 <input readonly type="text" id="lastGradeLevelCompleted">
 
                                 <label for="lastMadrasaYearCompleted">Last Madrasa Year Completed:</label>
-                                <input readonly type="text" id="lastMadrasaYearCompleted">
+                                <input readonly type="text" value="2022-2023" id="lastMadrasaYearCompleted">
                             </div> <br>
 
                             <div class="student-form-group">
@@ -512,9 +512,9 @@
                     </div> <br>
 
                     <div class="student-form-group address-div">
-                        <label for="gender">Gender:</label>
+                        <label for="gender">Sex:</label>
                         <select id="studgender" required>
-                            <option value="" disabled selected>Select Gender</option>
+                            <option value="" disabled selected>Choose a Sex</option>
                             <option value="MALE">Male</option>
                             <option value="FEMALE">Female</option>
                         </select>
@@ -886,7 +886,7 @@
                 }
             })
             .catch(error => {
-                showErrorModal("❌ Error: Transaction failed. Please try again!");
+                showErrorModal(error.message);
             });
     }
 
@@ -2357,10 +2357,10 @@
         const transfereeCheckbox = document.getElementById("isTransferee");
         const schoolYearInput = document.getElementById("studlastMadrasaYearCompleted").value;
 
-        // Only validate if transferee checkbox is checked AND input is visible
-        // if (!transfereeCheckbox.checked || schoolYearInput.style.display === "none") {
-        //     return true; // Skip validation if not a transferee
-        // }
+        //Only validate if transferee checkbox is checked AND input is visible
+        if (!transfereeCheckbox.checked || schoolYearInput.style.display === "none") {
+            return true; // Skip validation if not a transferee
+        }
         const regex = /^(\d{4})-(\d{4})$/;
         const match = schoolYearInput.match(regex);
 

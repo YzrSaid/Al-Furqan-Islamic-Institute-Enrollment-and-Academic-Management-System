@@ -1614,11 +1614,11 @@
                 const reqWrapper = document.createElement("div");
                 reqWrapper.classList.add("checkbox-container-popover");
 
+                const heading = document.createElement("h6");
+                heading.textContent = "Requirements:";
+                reqContainer.appendChild(heading);
                 data.forEach(transReq => {
                     // Create and append the heading
-                    const heading = document.createElement("h6");
-                    heading.textContent = "Requirements:";
-                    popover.appendChild(heading);
 
                     //console.log(transReq);
                     const reqDiv = document.createElement("div");
@@ -2312,7 +2312,7 @@
 
         transfereeCheckbox.addEventListener("change", function () {
             if (this.checked) {
-                fetchTransRequirements();
+                fetchTransRequirements("transfereeReq");
                 transfereeFields.style.display = "block";
                 requiredInputs.forEach(input => {
                     input.setAttribute("required", "required");

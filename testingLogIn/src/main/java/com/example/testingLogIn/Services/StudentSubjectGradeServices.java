@@ -47,7 +47,6 @@ public class StudentSubjectGradeServices {
 
     public boolean didStudentPassed(int studentId, int gradeLevelId, int duration){
         try{
-            System.out.println(duration);
             if(duration == 1)
                 return ssgRepo.didStudentPassed(studentId, gradeLevelId);
 

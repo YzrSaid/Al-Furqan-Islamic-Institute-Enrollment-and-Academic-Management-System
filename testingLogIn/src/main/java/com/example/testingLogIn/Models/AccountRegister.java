@@ -21,6 +21,7 @@ public class AccountRegister {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     private String username;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;

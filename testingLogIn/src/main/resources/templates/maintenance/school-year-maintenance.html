@@ -373,7 +373,6 @@
                 tableBody.innerHTML = ""; // Clear existing rows
 
                 schoolYears.forEach(sy => {
-                    console.log(sy);
                     const relatedSemesters = semesterArray.filter(sem => sem.schoolYear.schoolYear === sy.schoolYear);
                     const rowSpanCount = relatedSemesters.length || 1; // At least 1 row needed
 
@@ -394,23 +393,26 @@
                         }
 
                         let semesterClass = sem.sem.toLowerCase() === "first" ? "first-sem" : "second-sem";
-
+                        var syName = sy.schoolYear+"";
+                        console.log(syName);
                         // Add School Year column only in the first row (rowspan)
                         if (index === 0) {
-                            let schoolYearContent = `<span class="school-year-text">${sy.schoolYear}</span>`;
+                            let schoolYearContent = `<span class="school-year-text">${syName}</span>
+                            <button class="delete-school-year-btn" 
+                                        onclick="printReport(${sy.schoolYearNum},'${syName}')">Print enrollment Report
+                                </button>`;
 
                             // Add delete icon only if school year can be deleted
                             if (canDeleteSchoolYear) {
                                 schoolYearContent += `
                                  <button class="delete-school-year-btn" 
-            data-action="deleteSchoolYear"
-            data-message="Are you sure you want to delete this entire school year?"
-            data-id="${sy.schoolYearNum}"
-            data-require-password="true"
-            data-open-modal="confirmationModal">
-        <img src="/images/icons/bin.png" title="Delete School Year">
-    </button>
-                            `;
+                                        data-action="deleteSchoolYear"
+                                        data-message="Are you sure you want to delete this entire school year?"
+                                        data-id="${sy.schoolYearNum}"
+                                        data-require-password="true"
+                                        data-open-modal="confirmationModal">
+                                    <img src="/images/icons/bin.png" title="Delete School Year">
+                                </button>`;
                             }
 
                             row.innerHTML = `<td rowspan="${rowSpanCount}" class="school-year-cell">${schoolYearContent}</td>`;
@@ -863,6 +865,36 @@
             updateSchoolYearStatus(syNum, "Archived");
         }
     });
+
+    async function printReport(syNum,schoolYear){
+        try {
+            console.log(schoolYear);
+            const response = await fetch(`/schoolyear/reports/${syNum}`);
+            
+            if (!response.ok) throw new Error('File download failed');
+            
+            // Get filename from headers
+            const filename = response.headers
+            .get('Content-Disposition')
+            ?.split('filename=')[1]
+            .replace(/"/g, '');
+
+            // Convert to Blob
+            const blob = await response.blob();
+            
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${schoolYear}EnrollmentRecords.csv` || 'file.csv';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        
+            } catch (error) {
+                console.error('Download error:', error);}
+    }
 </script>
 
 </html>

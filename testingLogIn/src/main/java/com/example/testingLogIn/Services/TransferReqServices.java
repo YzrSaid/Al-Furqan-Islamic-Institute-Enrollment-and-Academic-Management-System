@@ -39,8 +39,8 @@ public class TransferReqServices {
                             .name(requirementName)
                             .isNotDeleted(true)
                             .build());
-        }
-        throw new NullPointerException("Requirement name already exists");
+        }else{
+            throw new NullPointerException("Requirement name already exists");}
     }
     @CacheEvict(value = {"enrollmentPage"},allEntries = true)
     public void deleteRequirement(int requirementId){

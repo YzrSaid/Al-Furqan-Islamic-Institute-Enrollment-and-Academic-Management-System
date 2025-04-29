@@ -167,7 +167,6 @@ public class WebsiteConfigurationServices {
         return "UNKNOWN";
     }
 
-    @Cacheable("currentSY")
     public String getSchoolYear() {
         try {
             return semService.getCurrentActive().getSchoolYear().getSchoolYear();
@@ -176,7 +175,6 @@ public class WebsiteConfigurationServices {
         }
     }
 
-    @Cacheable("currentSem")
     public String Sem() {
         try {
             return semService.getCurrentActive().getSem() == Semester.First ? "First" : "Second";

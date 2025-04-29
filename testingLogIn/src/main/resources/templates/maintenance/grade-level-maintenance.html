@@ -396,7 +396,7 @@
 
                 fetch(`/gradelevel/${gradeLevelId}`)
                     .then((response) => response.json())
-                    .then((data) => {
+                    .then((data) => {   
                         document.getElementById("gradeLevelEditModal").dataset.id = data.levelId;
                         document.getElementById("levelNameEdit").value = data.levelName; // ✅ Debugging test
                         populateEditDropdown(data.levelId, data.preRequisite, data.semDuration);

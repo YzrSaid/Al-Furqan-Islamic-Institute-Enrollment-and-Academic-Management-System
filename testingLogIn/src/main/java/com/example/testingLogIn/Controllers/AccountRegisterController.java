@@ -50,15 +50,15 @@ public class AccountRegisterController {
         }
     }
     
-    @PutMapping("/confirm/{token}/{password}")
-    public ResponseEntity<String> confirmAccountRegistration(@PathVariable String token, @PathVariable String password){
-        try{
-            customUserDetailsService.registerNewUser(token,password);
-            return new ResponseEntity<>("Account Registration is Now Complete",HttpStatus.OK);
-        }catch(Exception e){
-            return new ResponseEntity<>("Process Error",HttpStatus.CONFLICT);
-        }
-    }
+//    @PutMapping("/confirm/{token}/{password}")
+//    public ResponseEntity<String> confirmAccountRegistration(@PathVariable String token, @PathVariable String password){
+//        try{
+//            customUserDetailsService.registerNewUser(token,password);
+//            return new ResponseEntity<>("Account Registration is Now Complete",HttpStatus.OK);
+//        }catch(Exception e){
+//            return new ResponseEntity<>("Process Error",HttpStatus.CONFLICT);
+//        }
+//    }
     
     @PutMapping("/reject/{id}")
     public ResponseEntity<String> rejectAccountRegistration(@PathVariable int id){

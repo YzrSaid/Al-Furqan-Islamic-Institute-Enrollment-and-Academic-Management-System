@@ -104,6 +104,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public PagedResponse getAllUsers(String role, String name, int pageNo, int pageSize, boolean isNotRestricted) {
         Role userRole = role.equalsIgnoreCase("all") ? null :
                         role.equalsIgnoreCase("STUDENT") ? Role.STUDENT :
+                        role.equalsIgnoreCase("Teacher") ? Role.TEACHER :
                          Role.ENROLLMENT_STAFF;
         Page<UserDTO> userPage = userRepo.findUsersByPageRole(userRole,NonModelServices.forLikeOperator(name),isNotRestricted,PageRequest.of(pageNo-1,pageSize))
                 .map(UserModel::mapperDTO);
@@ -127,27 +128,31 @@ public class CustomUserDetailsService implements UserDetailsService {
                           .toList();
     }
 
-    public void registerNewUser(String token, String password) {
-        AccountConfirmationToken tokenAct = confirmTokenRepo.findByToken(token)
-                .orElseThrow(()->new NullPointerException("Invalid Token"));
-
-        AccountRegister account = tokenAct.getAccountRegister();
-        if(usernameExist(account.getUsername())) {
-            throw new IllegalArgumentException("Email Address is Already Used by an Existing User");
-        }else if(account.getStatus() == RegistrationStatus.REJECTED){
-            throw new IllegalArgumentException("Account is already rejected");
-        }else if(tokenAct.getExpiryDate().isBefore(LocalDateTime.now()))
-            throw new IllegalArgumentException("Account Confirmation Transaction is Expired. Contact the renew the account confirmation process");
-
-        userRepo.save(AccountRegToUserModel(tokenAct.getAccountRegister(), password));
-
-        CompletableFuture.runAsync(()-> {
-            emailService.registrationComplete(tokenAct.getAccountRegister().getUsername());
-            account.setStatus(RegistrationStatus.APPROVED);
-            accountRegisterRepo.save(account);
-            confirmTokenRepo.deleteUserTokens(account.getUsername());
-        });
+    public void registerUser(AccountRegister newAccount){
+        userRepo.save(AccountRegToUserModel(newAccount));
     }
+
+//    public void registerNewUser(String token, String password) {
+//        AccountConfirmationToken tokenAct = confirmTokenRepo.findByToken(token)
+//                .orElseThrow(()->new NullPointerException("Invalid Token"));
+//
+//        AccountRegister account = tokenAct.getAccountRegister();
+//        if(usernameExist(account.getUsername())) {
+//            throw new IllegalArgumentException("Email Address is Already Used by an Existing User");
+//        }else if(account.getStatus() == RegistrationStatus.REJECTED){
+//            throw new IllegalArgumentException("Account is already rejected");
+//        }else if(tokenAct.getExpiryDate().isBefore(LocalDateTime.now()))
+//            throw new IllegalArgumentException("Account Confirmation Transaction is Expired. Contact the renew the account confirmation process");
+//
+//        userRepo.save(AccountRegToUserModel(tokenAct.getAccountRegister(), password));
+//
+//        CompletableFuture.runAsync(()-> {
+//            emailService.registrationComplete(tokenAct.getAccountRegister().getUsername());
+//            account.setStatus(RegistrationStatus.APPROVED);
+//            accountRegisterRepo.save(account);
+//            confirmTokenRepo.deleteUserTokens(account.getUsername());
+//        });
+//    }
 
     public void registerStudent(Student student){
         CompletableFuture.runAsync(()->{
@@ -259,7 +264,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return null;
     }
 
-    private UserModel AccountRegToUserModel(AccountRegister accountRegister,String password) {
+    private UserModel AccountRegToUserModel(AccountRegister accountRegister) {
         String fullName = accountRegister.getFirstname()+" "+ Optional.ofNullable(accountRegister.getMiddlename()).map(s-> s+" ").orElse("") + accountRegister.getLastname();
         return UserModel.builder()
                 .isNotRestricted(true)
@@ -274,7 +279,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .birthdate(accountRegister.getBirthdate())
                 .gender(accountRegister.getGender())
                 .username(accountRegister.getUsername())
-                .password(encoder.encode(password))
+                .password(accountRegister.getPassword())
                 .build();
     }
 

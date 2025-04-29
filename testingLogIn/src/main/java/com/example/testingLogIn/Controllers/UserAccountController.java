@@ -92,11 +92,14 @@ public class UserAccountController {
         if(customUserDetailsService.usernameExist(toRegister.getUsername()))
             return new ResponseEntity<>("Email Already Taken",HttpStatus.CONFLICT);
         else{
-            toRegister.setStatus(RegistrationStatus.PENDING);
+            toRegister.setStatus(RegistrationStatus.APPROVED);
             accountRegisterService.registerAccount(toRegister);
-            return new ResponseEntity<>("Account confirmation has been sent successfully",HttpStatus.OK);
+//            customUserDetailsService.registerNewUser(toRegister);
+            customUserDetailsService.registerUser(toRegister);
+            return new ResponseEntity<>("User Account Successfully Created",HttpStatus.OK);
         }
     }
+
     @PutMapping("/restrict/{id}")
     public ResponseEntity<String> restrictUserAccount(@PathVariable int id){
         if(customUserDetailsService.restrictUser(id))

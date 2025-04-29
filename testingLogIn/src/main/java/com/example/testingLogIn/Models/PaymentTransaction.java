@@ -35,6 +35,10 @@ public class PaymentTransaction {
     @JoinColumn(name = "student")
     private Student student;
 
+    @ManyToOne
+    @JoinColumn(name = "sem")
+    private SchoolYearSemester semester;
+
     @OneToMany(mappedBy = "transaction")
     private List<PaymentRecords> particulars;
 

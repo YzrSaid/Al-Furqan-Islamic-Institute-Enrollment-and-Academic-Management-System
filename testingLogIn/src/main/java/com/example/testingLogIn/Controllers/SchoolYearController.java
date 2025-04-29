@@ -2,9 +2,19 @@ package com.example.testingLogIn.Controllers;
 
 import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Services.SchoolYearServices;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
+
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.InputStreamSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -80,5 +90,14 @@ public class SchoolYearController {
             return new ResponseEntity<>("School Year Deleted Updated",HttpStatus.OK);
         else
             return new ResponseEntity<>("School Year Not Found",HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/reports/{sy}")
+    public ResponseEntity<InputStreamSource> downloadEnrollmentReports(@PathVariable int sy) throws IOException {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"EnrollmentRecord.csv\"")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(schoolYearService.schoolYearEnrollmentReport(sy));
     }
 }

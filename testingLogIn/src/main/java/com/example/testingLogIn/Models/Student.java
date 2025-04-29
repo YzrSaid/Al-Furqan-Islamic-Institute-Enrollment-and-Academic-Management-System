@@ -114,7 +114,7 @@ public class Student{
                         .balanceAmount(studentBalance)
                         .currentGradeLevel(currentLevel)
                         .currentGradeSection(Optional.ofNullable(currentGradeSection).map(Section::toString).orElse("NONE"))
-                
+                .email(email)
                         .motherName(motherName)
                         .motherOccupation(motherOccupation)
                         .fatherName(fatherName)

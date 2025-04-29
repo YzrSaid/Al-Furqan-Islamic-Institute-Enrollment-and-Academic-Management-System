@@ -26,4 +26,9 @@ public class PublicController {
     public String accountConfirmationPage(){
         return "password-reset/account-confirmation";
     }
+
+    @GetMapping("/file-download")
+    public String download(){
+        return "test-download";
+    }
 }

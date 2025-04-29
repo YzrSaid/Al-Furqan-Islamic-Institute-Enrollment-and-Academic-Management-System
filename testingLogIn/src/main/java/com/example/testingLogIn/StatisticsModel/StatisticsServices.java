@@ -145,7 +145,6 @@ public class StatisticsServices {
         List<Long> genderRates = new ArrayList<>();
 
         List<String> genderNames = new ArrayList<>(List.of("Male", "Female"));
-        System.out.println(schoolYear);
         genderRates.add(genderCountRepo.findTotalCountsByGender(Gender.MALE,schoolYear,semester).orElse(0L));
         genderRates.add(genderCountRepo.findTotalCountsByGender(Gender.FEMALE,schoolYear,semester).orElse(0L));
 

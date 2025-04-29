@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragment :: commonHead}">
+</head>
+<body>
+    <input type="text" name="path" id="path" placeholder="Path">
+    <button onclick="download()">Download</button>
+</body>
+<script>
+    async function download(){
+        try {
+            var path = document.getElementById("path").value;
+    const response = await fetch(`/schoolyear/reports/${path}`);
+    
+    if (!response.ok) throw new Error('File download failed');
+    
+    // Get filename from headers
+    const filename = response.headers
+      .get('Content-Disposition')
+      ?.split('filename=')[1]
+      .replace(/"/g, '');
+
+    // Convert to Blob
+    const blob = await response.blob();
+    
+    // Create download link
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'file.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+    
+  } catch (error) {
+    console.error('Download error:', error);
+  }
+    }
+</script>
+</html>

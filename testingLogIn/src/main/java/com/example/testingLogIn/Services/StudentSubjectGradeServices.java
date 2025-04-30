@@ -1,16 +1,16 @@
 package com.example.testingLogIn.Services;
 
+import com.example.testingLogIn.AssociativeModels.StudentSubjectGradeLogs;
 import com.example.testingLogIn.Enums.Role;
+import com.example.testingLogIn.ModelDTO.GradeLogsDTO;
 import com.example.testingLogIn.ModelDTO.StudentGradesPerSem;
 import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import com.example.testingLogIn.Models.Enrollment;
 import com.example.testingLogIn.AssociativeModels.StudentSubjectGrade;
 import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Models.SchoolYearSemester;
-import com.example.testingLogIn.Repositories.ScheduleRepo;
-import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
-import com.example.testingLogIn.Repositories.SubjectRepo;
-import com.example.testingLogIn.Repositories.sySemesterRepo;
+import com.example.testingLogIn.Repositories.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,13 +36,15 @@ public class StudentSubjectGradeServices {
     private final SubjectRepo subjectRepo;
     private final sySemesterRepo semRepo;
     private final ScheduleRepo scheduleRepo;
+    private final StudentSubjectGradeLogsRepo subjGradeLogs;
 
     @Autowired
-    public StudentSubjectGradeServices(StudentSubjectGradeRepo ssgRepo, SubjectRepo subjectRepo, sySemesterRepo semRepo, ScheduleRepo scheduleRepo) {
+    public StudentSubjectGradeServices(StudentSubjectGradeRepo ssgRepo, SubjectRepo subjectRepo, sySemesterRepo semRepo, ScheduleRepo scheduleRepo, StudentSubjectGradeLogsRepo subjGradeLogs) {
         this.ssgRepo = ssgRepo;
         this.subjectRepo = subjectRepo;
         this.semRepo = semRepo;
         this.scheduleRepo = scheduleRepo;
+        this.subjGradeLogs = subjGradeLogs;
     }
 
     public boolean didStudentPassed(int studentId, int gradeLevelId, int duration){
@@ -61,7 +63,6 @@ public class StudentSubjectGradeServices {
     }
 
     @Async
-    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public void addStudentGrades(Enrollment enrollment){
         subjectRepo.findActiveSubjectsNotDeletedByGradeLevel(enrollment.getGradeLevelToEnroll().getLevelId())
                         .forEach(subject ->{
@@ -142,14 +143,22 @@ public class StudentSubjectGradeServices {
         return studentGrades;
     }
 
-    @CacheEvict(value = {"subjectRates"}, allEntries = true)
     public boolean updateStudentGrade(StudentSubjectGradeDTO studGrade){
         StudentSubjectGrade studSubGrade = ssgRepo.findById(studGrade.getStudGradeId()).orElse(null);
         if(studSubGrade == null)
             return false;
-        
-        studSubGrade.setSubjectGrade(studGrade.getSubjectGrade());
-        ssgRepo.save(studSubGrade);
-        return true;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            subjGradeLogs.save(new StudentSubjectGradeLogs(studSubGrade,(UserModel)auth.getPrincipal()));
+            studSubGrade.setSubjectGrade(studGrade.getSubjectGrade());
+            ssgRepo.save(studSubGrade);
+            return true;
+        }
+        throw new IllegalArgumentException("Transaction Not Secured. Please Re-log in your user account");
+    }
+
+    public List<GradeLogsDTO> gradeLogs(int ssgId){
+        return subjGradeLogs.getLogs(ssgId).stream()
+                .map(logs -> new GradeLogsDTO(logs.getGradedBy().getFullName(),NonModelServices.getDateTimeFormatter().format(logs.getDateModified()))).toList();
     }
 }

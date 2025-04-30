@@ -1332,22 +1332,23 @@
 
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId}</td>
-                    <td>${enr.student.firstName} ${enr.student.middleName ? enr.student.middleName + ' ' : ''} ${enr.student.lastName}</td>`;
+                    <td>${enr.student.firstName} ${enr.student.middleName ? enr.student.middleName + ' ' : ''} ${enr.student.lastName}</td>
+                    <td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
 
-                    if (enr.enrollmentStatus === "ASSESSMENT") {
-                        const levelId = enr.student.currentGradeLevel?.levelId ?? null;
-                        row.innerHTML += `
-                        <td>
-                            <select onChange="updateGradeLevel(${enr.enrollmentId}, this.options[this.selectedIndex].value)"
-                                    class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" 
-                                    data-isStudent-new="${enr.student.new}" data-current-grade-Id="${levelId}" 
-                                    data-isStudent-transferee="${enr.student.transferee}">
-                                <option>Loading...</option> <!-- Placeholder -->
-                            </select>
-                        </td>`;
-                    } else {
-                        row.innerHTML += `<td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
-                    }
+                    // if (enr.enrollmentStatus === "ASSESSMENT") {
+                    //     const levelId = enr.student.currentGradeLevel?.levelId ?? null;
+                    //     row.innerHTML += `
+                    //     <td>
+                    //         <select onChange="updateGradeLevel(${enr.enrollmentId}, this.options[this.selectedIndex].value)"
+                    //                 class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" 
+                    //                 data-isStudent-new="${enr.student.new}" data-current-grade-Id="${levelId}" 
+                    //                 data-isStudent-transferee="${enr.student.transferee}">
+                    //             <option>Loading...</option> <!-- Placeholder -->
+                    //         </select>
+                    //     </td>`;
+                    // } else {
+                    //     row.innerHTML += `<td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
+                    // }
 
                     const status = enr.notDeleted === false ? "CANCELLED" : enr.enrollmentStatus;
                     row.innerHTML += `

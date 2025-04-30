@@ -146,6 +146,7 @@
                                 </tr>
                             `;
                     }
+                    row.innerHTML +=`<td><button onclick="viewLogs(${rec.studGradeId})">Logs</button><td>`;
                     tableBody.appendChild(row);
                 });
                 document.querySelector("#theTextLink").innerHTML = `
@@ -287,6 +288,19 @@
             .catch(error => {
                 showErrorModal("❌ Failed to save grade. Please try again.");
             });
+    }
+
+    async function viewLogs(subjGradeId){
+        const response = await fetch(`/student-grades/gradeLogs/${subjGradeId}`)
+
+        if(response.ok){
+            const logs = await response.json();
+
+            logs.forEach(log =>{
+                console.log(log.modifiedBY);
+                console.log(log.modifiedOn);
+            });
+        }
     }
 </script>
 

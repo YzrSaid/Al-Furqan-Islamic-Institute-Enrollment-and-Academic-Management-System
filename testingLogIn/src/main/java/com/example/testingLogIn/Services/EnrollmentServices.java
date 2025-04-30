@@ -67,15 +67,26 @@ public class EnrollmentServices {
             throw new IllegalArgumentException("Cannot add an enrollment transaction as the current active semester is already finished");
         }
         if(studentId != null)
-            student =  studentRepo.findById(studentId).orElse(null);
+            student =  studentRepo.findById(studentId).orElseThrow(()->new NullPointerException("Student Record Not Found"));
         if(LocalDate.now().isAfter(currentSem.getEnrollmentDeadline()))
             return false;
+
         Enrollment enroll = new Enrollment();
         enroll.setEnrollmentStatus(EnrollmentStatus.LISTING);
         enroll.setStudent(student);
         enroll.setSYSemester(currentSem);
         enroll.setNotDeleted(true);
-        enrollmentRepo.save(enroll);
+        Enrollment result = enrollmentRepo.save(enroll);
+        assert student != null;
+        if(student.getStatus() == StudentStatus.OLD){
+            GradeLevel currentLevel = student.getCurrentGradeSection().getLevel();
+            GradeLevel nextLevel = gradeLevelRepo.findSuccessorOnly(currentLevel.getLevelId()).orElse(null);
+            if(ssgService.didStudentPassed(student.getStudentId(), currentLevel.getLevelId(),currentLevel.getDuration()) && nextLevel != null)
+                addToAssessment(result.getEnrollmentId(), nextLevel.getLevelId());
+            else
+                addToAssessment(result.getEnrollmentId(), currentLevel.getLevelId());
+
+        }
         statisticsServices.updatePreEnrolledCount(currentSem,false);
         return true;
     }

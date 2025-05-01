@@ -558,7 +558,7 @@
 
                                     <div class="checkbox">
                                         <label for="isTransfereeRec">Transferee:</label>
-                                        <input type="checkbox" name="transferee" id="transfereeRec">
+                                        <input type="checkbox" class="isTransfereeRecBulk">
                                     </div>
                                 </div><br>
 
@@ -620,6 +620,36 @@
 
                                     <label>Address:</label>
                                     <input required type="text" name="guardianAddress" class="guardian-address">
+                                </div> <br>
+
+                                <div class="transferee-section transfereeFieldsBulk">
+                                    <div style="display: flex; align-content: center; justify-items: left;">
+                                        <h2>For Transferees Only</h2>
+                                    </div>
+
+                                    <div class="transferee-requirements">
+                                        <div class="student-form-group">
+                                            <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
+                                            <select id="lastGradeLevelIdCompleted"
+                                                class="lastGradeLevelCompletedSelect">
+                                            </select>
+
+                                            <label for="studlastMadrasaYearCompleted">Last Madrasa Year
+                                                Completed:</label>
+                                            <input type="text" id="studlastMadrasaYearCompleted">
+
+                                        </div> <br>
+
+                                        <div class="student-form-group">
+                                            <label for="studmadrasaNameLastAttended">Madrasa Name Last Attended:</label>
+                                            <input type="text" id="studmadrasaNameLastAttended">
+                                        </div> <br>
+
+                                        <div class="student-form-group">
+                                            <label for="studmadrasaAddress">Madrasa Address:</label>
+                                            <input type="text" id="studmadrasaAddress">
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -635,6 +665,8 @@
             <!-- Modal Footer Buttons -->
             <div class="modal-buttons">
                 <button type="button" class="btn-confirm" data-open-modal="confirmationModal" data-action="addAllStudent" data-message="Are you sure you want to submit these records?">Submit All
+                <button type="button" class="btn-confirm" data-open-modal="confirmationModal"
+                    data-message="Are you sure you want to submit these records?">Submit All
                     Enrollments</button>
                 <button type="button" class="btn-cancel" id="cancelStudent" data-close-modal="newStudentModalBulk"
                     onclick="cancelBulkEnrollment()">Cancel</button>
@@ -822,13 +854,9 @@
                 <!-- Receipt Header -->
                 <div class="header-container-payment">
                     <div class="left-header">
-                        <!-- Dynamic School Logo -->
                         <img th:src="@{/website-logo}" alt="School Logo" class="school-logo-payment">
-
-                        <!-- Dynamic School Information -->
                         <div class="school-info">
-                            <h3 th:text="${#strings.toUpperCase(schoolName)}">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED
-                            </h3>
+                            <h3 th:text="${schoolName}">AL-FURQAN ISLAMIC INSTITUTE INCORPORATED</h3>
                             <p th:text="${schoolAddress}">Talabaan, Zamboanga City</p>
                             <p th:text="'Phone #: ' + ${schoolNum}">Phone #: 09358268263</p>
                             <p th:text="'Email: ' + ${schoolEmail}">Email: example@school.com</p>
@@ -836,15 +864,11 @@
                     </div>
 
                     <div class="right-header">
-                        <!-- Dynamic Receipt Box Title -->
                         <div class="receipt-box">
                             <h2>RECEIPT</h2>
                         </div>
-
-                        <!-- Dynamic Semester and School Year -->
-                        <p>Semester & SY: <strong th:text="'${currentSem} + ' + ${currentSY}">1ST SEM |
+                        <p>Semester & SY: <strong th:text="${currentSem} + ' | ' + ${currentSY}">1ST SEM |
                                 2021-2022</strong></p>
-
                     </div>
 
                 </div>
@@ -855,22 +879,22 @@
                 <div class="payment-student-info-container" id="receipt-student-info">
                     <div class="payment-student-info-row">
                         <label for="receipt-student-id">Student ID:</label>
-                        <input type="text" id="receipt-student-id" placeholder="">
+                        <input type="text" readonly id="receipt-student-id" placeholder="">
                     </div>
 
                     <div class="payment-student-info-row">
                         <label for="receipt-date">Date:</label>
-                        <input type="date" id="receipt-date">
+                        <input readonly type="date" id="receipt-date">
                     </div>
 
                     <div class="payment-student-info-row">
                         <label for="receipt-student-name">Student Name:</label>
-                        <input type="text" id="receipt-student-name" placeholder="">
+                        <input readonly type="text" id="receipt-student-name" placeholder="">
                     </div>
 
                     <div class="payment-student-info-row">
                         <label for="receipt-number">Receipt Number:</label>
-                        <input type="text" id="receipt-number" placeholder="">
+                        <input readonly type="text" id="receipt-number" placeholder="">
                     </div>
                 </div>
 
@@ -1143,7 +1167,6 @@
         });
     }
 
-
     function addEnrollmentForm() {
         const container = document.getElementById("bulkEnrollmentContainer");
         const existingForms = container.querySelectorAll(".enrollment-form");
@@ -1162,10 +1185,10 @@
             return;
         }
 
-        // Clone the last form if any form exists
+        // Clone the last form
         let newForm = existingForms[existingForms.length - 1].cloneNode(true);
 
-        // Reset all form inputs to their default values
+        // Reset all form inputs
         const inputs = newForm.querySelectorAll("input, select");
         inputs.forEach(input => {
             if (input.type === "checkbox") {
@@ -1176,7 +1199,7 @@
         });
 
         // Update student number
-        const studentNumber = studentCount + 1; // Start from the next available number
+        const studentNumber = studentCount + 1;
         newForm.querySelector("h6").textContent = `Student #${studentNumber}`;
 
         // Re-bind delete button
@@ -1186,9 +1209,13 @@
             removeEnrollmentForm(this);
         };
 
-        // Append the new form before the "Add" button
+        // Append the new form
         container.insertBefore(newForm, container.lastElementChild);
+
+        // ✅ Bind transferee checkbox logic to this new form
+        bindTransfereeCheckbox(newForm);
     }
+
 
 
     function toggleAccordion(element) {
@@ -1418,7 +1445,7 @@
                 return response.json(); // Parse the response as JSON
             })
             .then(receipt => {
-                // console.log(receipt);
+                console.log(receipt);
                 // Populate the receipt details
                 document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
                 document.getElementById("receipt-date").value = receipt.date;
@@ -2714,6 +2741,51 @@
             }
         });
     });
+
+    // this will hide and unhide the transferee-section when user checks and unchecks the checkbox
+    document.addEventListener("DOMContentLoaded", function () {
+        function bindTransfereeCheckbox(form) {
+            const transfereeCheckbox = form.querySelector(".isTransfereeRecBulk");
+            const transfereeFields = form.querySelector(".transfereeFieldsBulk");
+            const requiredInputs = transfereeFields.querySelectorAll("input, select, textarea");
+
+            // Initially hide the transferee section
+            transfereeFields.style.display = transfereeCheckbox.checked ? "block" : "none";
+
+            // Set or remove 'required' attributes based on checkbox state
+            requiredInputs.forEach(input => {
+                if (transfereeCheckbox.checked) {
+                    input.setAttribute("required", "required");
+                } else {
+                    input.removeAttribute("required");
+                }
+            });
+
+            // Bind change event
+            transfereeCheckbox.addEventListener("change", function () {
+                if (this.checked) {
+                    transfereeFields.style.display = "block";
+                    requiredInputs.forEach(input => {
+                        input.setAttribute("required", "required");
+                    });
+                } else {
+                    transfereeFields.style.display = "none";
+                    requiredInputs.forEach(input => {
+                        input.removeAttribute("required");
+                    });
+                }
+            });
+        }
+
+        // Bind all forms
+        const forms = document.querySelectorAll(".enrollment-form");
+        forms.forEach(form => bindTransfereeCheckbox(form));
+
+        // Expose the function if needed later
+        window.bindTransfereeCheckbox = bindTransfereeCheckbox;
+    });
+
+
 
     function validateContactNumber() {
         const contactInput = document.getElementById("studguardianContactNumber").value.trim();

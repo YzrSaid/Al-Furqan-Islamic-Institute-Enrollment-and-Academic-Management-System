@@ -1,15 +1,16 @@
 package com.example.testingLogIn.Services;
 
-import com.example.testingLogIn.Models.Enrollment;
-import com.example.testingLogIn.Models.SchoolYear;
-import com.example.testingLogIn.Models.SchoolYearSemester;
+import com.example.testingLogIn.CustomObjects.FeeReports;
+import com.example.testingLogIn.CustomObjects.GradeLevelEnrolledReports;
+import com.example.testingLogIn.CustomObjects.SchoolYearReports;
+import com.example.testingLogIn.Models.*;
 import com.example.testingLogIn.Repositories.EnrollmentRepo;
+import com.example.testingLogIn.Repositories.PaymentsRecordRepo;
 import com.example.testingLogIn.Repositories.SchoolYearRepo;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,9 @@ public class SchoolYearServices {
     private sySemesterServices semService;
     @Autowired
     private EnrollmentRepo enrollmentRepo;
-    
+    @Autowired
+    private PaymentsRecordRepo paymentsRecordRepo;
+
     public boolean addNewSchoolYear(SchoolYear sy){
         if(doesSchoolYearExist(sy.getSchoolYear()))
             return false;
@@ -112,5 +115,26 @@ public class SchoolYearServices {
 
         }
         return new InputStreamResource(new ByteArrayInputStream(outputStream.toByteArray()));
+    }
+
+    public Map<String, SchoolYearReports> schoolYearReports(int syId) throws IOException {
+        SchoolYear sy = schoolYearRepo.findById(syId)
+                .orElseThrow(() -> new NullPointerException("School Year Not Found"));
+        Map<String,SchoolYearReports> yearlyReports = new HashMap<>();
+        for(SchoolYearSemester sem : sy.getSemesterList()){
+            List<FeeReports> feeReports = new ArrayList<>();
+            List<GradeLevelEnrolledReports> enrolledReports = new ArrayList<>();
+
+            //for reports per fees
+            for(RequiredFees req : paymentsRecordRepo.uniquePaidFeesBySem(sem.getSySemNumber()))
+                feeReports.add(new FeeReports(req.getName(),paymentsRecordRepo.totalPaidForSpecificFeeBySem(req.getId(),sem.getSySemNumber()).orElse(0D)));
+
+            //for reports on number of enrolled students per grade level
+            for(GradeLevel level : enrollmentRepo.uniqueGradeLevelsEnrolled(sem.getSySemNumber()))
+                enrolledReports.add(new GradeLevelEnrolledReports(level.getLevelName(),enrollmentRepo.countSectionGradeEnrollment(null, sem.getSySemNumber(), level.getLevelId()).orElse(0)));
+
+            yearlyReports.put(sem.toString(),new SchoolYearReports(feeReports,enrolledReports));
+        }
+        return yearlyReports;
     }
 }

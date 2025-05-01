@@ -5,6 +5,7 @@ import com.example.testingLogIn.Models.PaymentRecords;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.testingLogIn.Models.RequiredFees;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -55,6 +56,7 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
             "JOIN t.SYSem s "+
             "JOIN t.student stud "+
             "WHERE stud.studentId = :studentId "+
+            "AND t.isNotVoided "+
             "AND rp.id = :reqPaymentId "+
             "AND (:semId IS NULL OR s.sySemNumber = :semId)")
     Optional<Double> totalPaidForSpecificFee(@Param("studentId") int studentId,
@@ -68,4 +70,23 @@ public interface PaymentsRecordRepo extends JpaRepository<PaymentRecords,Integer
             "WHERE pt.isNotVoided = TRUE AND " +
             "rp.id=:reqPaymentId")
     Page<PaymentRecords> getRecordsByFee(@Param("reqPaymentId") int reqPaymentId, Pageable pageable);
+
+    @Query("""
+           SELECT pr.requiredPayment FROM PaymentRecords pr
+           JOIN pr.transaction.SYSem sem
+           WHERE pr.transaction.isNotVoided
+           AND sem.sySemNumber = :semId
+           GROUP BY pr.requiredPayment
+           """)
+    List<RequiredFees> uniquePaidFeesBySem(int semId);
+
+    @Query("SELECT SUM(pr.amount) from PaymentRecords pr "+
+            "JOIN pr.requiredPayment rp "+
+            "JOIN pr.transaction t "+
+            "JOIN t.SYSem s "+
+            "WHERE t.isNotVoided "+
+            "AND rp.id = :reqPaymentId "+
+            "AND (:semId IS NULL OR s.sySemNumber = :semId)")
+    Optional<Double> totalPaidForSpecificFeeBySem(@Param("reqPaymentId") int reqPaymentId,
+                                                  @Param("semId") Integer semId);
 }

@@ -120,7 +120,7 @@ public class SectionServices {
 
         SchoolYearSemester sem = semRepo.findCurrentActive();
         int semId = Optional.ofNullable(sem).map(SchoolYearSemester::getSySemNumber).orElse(0);
-        int enrollmentCount = enrollmentRepo.countSectionEnrollment(toUpdate.getNumber(),semId).orElse(0);
+        int enrollmentCount = enrollmentRepo.countSectionGradeEnrollment(toUpdate.getNumber(),semId,null).orElse(0);
         if(newGradeLevel.getLevelId() != toUpdate.getLevel().getLevelId()){
             if(semId != 0){
                 if(enrollmentCount > 0)

@@ -79,6 +79,27 @@
                 </tbody>
             </table>
         </div>
+        <div id="logsModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p>Grade Logs</p>
+                <div class="table-wrapper">
+                    <!-- Table -->
+                    <table id="grade-logs" class="main-table" >
+                        <thead>
+                            <tr>
+                                <th>Graded By</th>
+                                <th>Graded On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" id="confirmAction" data-close-modal="logsModal">Close</button>
+                </div>
+            </div>
+        </div>
 
         <!-- Error Modal -->
         <div id="errorModal" class="modal">
@@ -158,7 +179,7 @@
                                 <a href="#" class="cancel-edit" data-grade-id="${rec.studGradeId}" style="display: none;">
                                     <img src="/images/icons/cross.png" alt="cancel-icon">
                                 </a>
-                                <button onclick="viewLogs(${rec.studGradeId})">Logs</button>
+                                <button data-open-modal="logsModal" data-message="Grade Logs" onclick="viewLogs(${rec.studGradeId})">Logs</button>
                             </div>
                         </td>`;
                     } else {
@@ -174,7 +195,7 @@
                                     <a href="#" class="cancel-edit" data-grade-id="${rec.studGradeId}" style="display: none;">
                                         <img src="/images/icons/cross.png" alt="cancel-icon">
                                     </a>
-                                    <button onclick="viewLogs(${rec.studGradeId})">Logs</button>
+                                    <button data-open-modal="logsModal" data-message="Grade Logs" onclick="viewLogs(${rec.studGradeId})">Logs</button>
                                 </div>
                             </td>
                         `;
@@ -323,17 +344,22 @@
                 showErrorModal("❌ Failed to save grade. Please try again.");
             });
     }
-
+    const tableLogs = document.querySelector("#grade-logs tbody");
     async function viewLogs(subjGradeId){
-        const response = await fetch(`/student-grades/gradeLogs/${subjGradeId}`)
-
+        const response = await fetch(`/student-grades/gradeLogs/${subjGradeId}`);
+        tableLogs.innerHTML = "<tr><td colspan='2'>No records found</td></tr>";
         if(response.ok){
             const logs = await response.json();
-
+            if(logs.length > 0){
+            tableLogs.innerHTML = "";
             logs.forEach(log =>{
-                console.log(log.modifiedBY);
-                console.log(log.modifiedOn);
+                tableLogs.innerHTML += `
+                        <tr>
+                            <td>${log.modifiedBY}</td>
+                            <td>${log.modifiedOn}</td>
+                        </tr>`;
             });
+        }
         }
     }
 </script>

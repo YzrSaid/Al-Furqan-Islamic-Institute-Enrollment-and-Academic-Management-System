@@ -7,6 +7,7 @@ import com.example.testingLogIn.Models.Enrollment;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.testingLogIn.Models.GradeLevel;
 import com.example.testingLogIn.Models.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -150,10 +151,12 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
     @Query("""
            SELECT COUNT(e) FROM Enrollment e
            JOIN e.SYSemester sem
+           JOIN e.gradeLevelToEnroll gl
            WHERE sem.sySemNumber = :sem
-           AND e.sectionToEnroll.number = :sectionId
+           AND (:sectionId IS NULL OR e.sectionToEnroll.number = :sectionId)
+           AND (:levelId IS NULL OR gl.levelId = :levelId)
            """)
-    Optional<Integer> countSectionEnrollment(int sectionId, int sem);
+    Optional<Integer> countSectionGradeEnrollment(Integer sectionId, int sem, Integer levelId);
 
     @Query("""
            SELECT e FROM Enrollment e
@@ -162,4 +165,12 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
            AND e.enrollmentStatus = 'ENROLLED'
            """)
     List<Enrollment> findBySchoolYear(int semId);
+
+    @Query("""
+           SELECT gl FROM Enrollment e
+           JOIN e.gradeLevelToEnroll gl
+           WHERE e.enrollmentStatus = 'ENROLLED'
+           GROUP BY gl
+           """)
+    List<GradeLevel> uniqueGradeLevelsEnrolled(int semId);
 }

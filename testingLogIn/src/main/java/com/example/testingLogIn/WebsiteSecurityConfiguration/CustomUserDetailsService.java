@@ -230,7 +230,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public void authenticateAdminPassword(String pw) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            if(encoder.matches(pw,((UserModel)authentication.getPrincipal()).getPassword())){
+            if(pw.equals(((UserModel)authentication.getPrincipal()).getPassword())){
                 return;
             }
         }

@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.CustomObjects.SchoolYearReports;
 import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Services.SchoolYearServices;
 
@@ -7,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,6 @@ public class SchoolYearController {
         }catch(NumberFormatException e){
             return new ResponseEntity<>("School Year Contains Letter/s",HttpStatus.NOT_ACCEPTABLE);
         }catch(Exception e){
-            e.printStackTrace(); // Debugging line to check the real error
             return new ResponseEntity<>("Process Failed: " + e.getMessage(), HttpStatus.CONFLICT);
         }
     }
@@ -87,7 +88,7 @@ public class SchoolYearController {
     @DeleteMapping("/delete/{syNum}")
     public ResponseEntity<String> deleteSchoolYear(@PathVariable int syNum){
         if(schoolYearService.deleteSchoolYear(syNum))
-            return new ResponseEntity<>("School Year Deleted Updated",HttpStatus.OK);
+            return new ResponseEntity<>("School Year Deleted Successfully",HttpStatus.OK);
         else
             return new ResponseEntity<>("School Year Not Found",HttpStatus.NOT_FOUND);
     }
@@ -99,5 +100,12 @@ public class SchoolYearController {
                         "attachment; filename=\"EnrollmentRecord.csv\"")
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(schoolYearService.schoolYearEnrollmentReport(sy));
+    }
+
+    @GetMapping("/another-reports/{sy}")
+    public ResponseEntity<Map<String, SchoolYearReports>> getPrintable(@PathVariable int sy) throws IOException {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(schoolYearService.schoolYearReports(sy));
     }
 }

@@ -1042,6 +1042,11 @@ select option[value=""] {
   width: 20%;
 }
 
+.payment-label {
+    display: flex;
+    align-items: center;
+}
+
 .payment-table th:nth-child(1),
 .payment-table td:nth-child(1) {
   width: 14%;

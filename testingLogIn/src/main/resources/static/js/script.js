@@ -1053,14 +1053,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!validateForm("studentForm")) {
           return;
         } else if (!validateBirthdate()) {
-            return;
-          } else if (!validateSchoolYear()) {
-            return;
-          } else if (!validateContactNumber()){
-            return;
-          } else {
-            transfereeAddListing();
-          }
+          return;
+        } else if (!validateSchoolYear()) {
+          return;
+        } else if (!validateContactNumber()) {
+          return;
+        } else {
+          transfereeAddListing();
+        }
         break;
       //      case "studAddListing":
       //        // This case is for adding new student to the listing/registration
@@ -1199,10 +1199,12 @@ document.addEventListener("DOMContentLoaded", function () {
       return false;
     }
 
-    let inputs = form.querySelectorAll("input[required]:not([type='radio']), select[required], textarea[required]");
+    let inputs = form.querySelectorAll(
+      "input[required]:not([type='radio']), select[required], textarea[required]"
+    );
     let radioGroups = new Set();
-    form.querySelectorAll("input[type='radio'][required]").forEach(radio => {
-        radioGroups.add(radio.name); // Group by radio 'name'
+    form.querySelectorAll("input[type='radio'][required]").forEach((radio) => {
+      radioGroups.add(radio.name); // Group by radio 'name'
     });
 
     let valid = true;
@@ -2122,6 +2124,27 @@ function clearForm() {
         }
       }
     });
+
+   // Handle hiding the transferee section
+   const transfereeCheckboxBulk = document.querySelector(".isTransfereeRecBulk");
+   const transfereeCheckbox = document.querySelector("#isTransfereeRec");
+   if (transfereeCheckboxBulk) {
+     transfereeCheckboxBulk.checked = false;
+     transfereeCheckboxBulk.dispatchEvent(new Event("change"));
+   } else if (transfereeCheckbox) {
+     transfereeCheckbox.checked = false; 
+     transfereeCheckbox.dispatchEvent(new Event("change"));
+   }
+  
+   const transfereeFieldsBulk = document.querySelector(".transfereeFieldsBulk");
+   if (transfereeFieldsBulk) {
+     transfereeFieldsBulk.style.display = "none"; 
+   } 
+ 
+   const transfereeFields = document.querySelector("#transfereeFields");
+   if (transfereeFields) {
+     transfereeFields.style.display = "none"; 
+   }
 }
 
 // this is for the checkbox in new student modal form

@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface StudentSubjectGradeRepo extends JpaRepository<StudentSubjectGrade, Integer> {
 
-    @Query("SELECT CASE WHEN COUNT(DISTINCT sem) >= :duration THEN true ELSE false END " +
+    @Query("SELECT CASE WHEN COUNT(DISTINCT sem) >= 1 THEN true ELSE false END " +
             "FROM StudentSubjectGrade sg " +
             "JOIN sg.student stud " +
             "JOIN sg.section.level lvl " +

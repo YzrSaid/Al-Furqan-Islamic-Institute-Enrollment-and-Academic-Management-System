@@ -158,12 +158,11 @@
                                 <a href="#" class="cancel-edit" data-grade-id="${rec.studGradeId}" style="display: none;">
                                     <img src="/images/icons/cross.png" alt="cancel-icon">
                                 </a>
+                                <button onclick="viewLogs(${rec.studGradeId})">Logs</button>
                             </div>
-                        </td>
-                    `;
+                        </td>`;
                     } else {
                         row.innerHTML += `
-       
                             <td>
                                 <div class="action-container action">
                                     <a href="#" class="edit-grade" data-grade-id="${rec.studGradeId}">
@@ -175,6 +174,7 @@
                                     <a href="#" class="cancel-edit" data-grade-id="${rec.studGradeId}" style="display: none;">
                                         <img src="/images/icons/cross.png" alt="cancel-icon">
                                     </a>
+                                    <button onclick="viewLogs(${rec.studGradeId})">Logs</button>
                                 </div>
                             </td>
                         `;
@@ -324,7 +324,18 @@
             });
     }
 
+    async function viewLogs(subjGradeId){
+        const response = await fetch(`/student-grades/gradeLogs/${subjGradeId}`)
 
+        if(response.ok){
+            const logs = await response.json();
+
+            logs.forEach(log =>{
+                console.log(log.modifiedBY);
+                console.log(log.modifiedOn);
+            });
+        }
+    }
 </script>
 
 </html>

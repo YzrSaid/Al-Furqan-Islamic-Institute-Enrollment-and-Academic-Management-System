@@ -53,7 +53,6 @@ public class StudentServices {
         return studentRepo.findByName(studentName).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
     }
 
-    @CacheEvict(value = "enrollmentPage",allEntries = true)
     public boolean addStudent(StudentDTO student){
         String fullName = student.getFirstName()+" "+ Optional.ofNullable(student.getMiddleName()).map(mn -> mn+" ").orElse(" ")+student.getLastName();
         GradeLevel gradeLevel = null;

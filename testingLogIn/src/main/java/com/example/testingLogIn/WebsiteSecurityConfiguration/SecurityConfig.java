@@ -35,11 +35,11 @@ public class SecurityConfig {
                     .authorizeHttpRequests(req -> req
                         .requestMatchers("/css/**", "/website-logo", "/website-cover",
                                             "/images/**","/js/**","/signing","/register/add","/authentication/**","/forgot-password","/reset-password/{token}"
-                                            ,"/account-confirmation/{token}","/register/confirm/{toke}/{password}").permitAll()
+                                            ,"/account-confirmation/{token}","/register/confirm/{toke}/{password}","/file-download","/download/**").permitAll()
                         .requestMatchers("/reports/*","/enrollment/**","/transaction/**").hasAnyAuthority("ADMIN","ENROLLMENT_STAFF")
                         .requestMatchers("/schedule/**","/grade-management/**","/class-list/**").hasAnyAuthority("ADMIN","TEACHER")
                         .requestMatchers("/maintenance/**","/settings/**","/accounts/student-accounts","/accounts/verify-accounts","/accounts/create-user","/accounts/manage-accounts").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/accounts/my-account").hasAnyAuthority("ADMIN","TEACHER","ENROLLMENT_STAFF")
+                        .requestMatchers("/accounts/my-account").hasAnyAuthority("ADMIN","TEACHER","ENROLLMENT_STAFF","STUDENT")
                         .requestMatchers("/class-schedule","/personal-profile","/grades").hasAnyAuthority("STUDENT")
                         .anyRequest().authenticated()
                     )
@@ -55,7 +55,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(11));
+        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
         provider.setUserDetailsService(userService);
         return provider;
     }

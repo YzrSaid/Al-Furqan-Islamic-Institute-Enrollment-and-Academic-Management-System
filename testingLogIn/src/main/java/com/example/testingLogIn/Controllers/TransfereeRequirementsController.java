@@ -43,7 +43,7 @@ public class TransfereeRequirementsController {
             transferReqServices.addNewRequirement(reqName);
             return new ResponseEntity<>("New transferee requirement successfully added",HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>("Server error",HttpStatus.CONFLICT);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
         }
     }
     @PutMapping("/update/{requirementId}")

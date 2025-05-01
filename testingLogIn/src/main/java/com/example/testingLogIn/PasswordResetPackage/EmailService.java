@@ -60,7 +60,6 @@ public class EmailService {
                     InternetAddress.parse(recipientEmail));
             message.setSubject("Password Reset Request");
             String resetLink = "http://"+websiteAddress+"/reset-password/" + token;
-            System.out.println(resetLink);
             // HTML email content
             String htmlContent = 
                     "<h3>Password Reset</h3>"
@@ -94,12 +93,18 @@ public class EmailService {
 
     public void registrationComplete(String recipientEmail){
         try {
+            String websiteName = webService.getName();
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(recipientEmail));
             message.setSubject("Account Registration Complete");
-            String htmlContent = "<p>Pag log in na</p>";
+            String htmlContent =
+                    "<p>Welcome to"+websiteName+"!</p>" +
+                    "<p>We're excited to have you. Click below to log in and get started:</p>" +
+                    "<p><a href='http://websiteaddress'>Log in now</a></p>"
+                    .replace("websiteaddress",websiteAddress);
+
             message.setContent(htmlContent, "text/html; charset=utf-8");
             Transport.send(message);
         } catch (Exception e) {

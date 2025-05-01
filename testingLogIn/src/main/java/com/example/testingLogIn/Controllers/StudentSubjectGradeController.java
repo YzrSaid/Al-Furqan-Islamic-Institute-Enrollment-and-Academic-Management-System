@@ -1,5 +1,6 @@
 package com.example.testingLogIn.Controllers;
 
+import com.example.testingLogIn.ModelDTO.GradeLogsDTO;
 import com.example.testingLogIn.ModelDTO.StudentGradesPerSem;
 import com.example.testingLogIn.ModelDTO.StudentSubjectGradeDTO;
 import com.example.testingLogIn.Services.StudentSubjectGradeServices;
@@ -13,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,7 +63,6 @@ public class StudentSubjectGradeController {
         try{
             return new ResponseEntity<>(ssgService.getStudentGradesBySemester(studentId),HttpStatus.OK);
         }catch(Exception e){
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
@@ -86,8 +87,14 @@ public class StudentSubjectGradeController {
             else
                 return new ResponseEntity<>("Student Subject Grade Record Not Found",HttpStatus.NOT_FOUND);
         }catch(Exception e){
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+    }
+
+    @GetMapping("/gradeLogs/{ssgId}")
+    public ResponseEntity<List<GradeLogsDTO>> getGradeLogs(@PathVariable int ssgId){
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(ssgService.gradeLogs(ssgId));
     }
 }

@@ -1332,22 +1332,23 @@
 
                     row.innerHTML = `
                     <td>${enr.student.studentDisplayId}</td>
-                    <td>${enr.student.firstName} ${enr.student.middleName ? enr.student.middleName + ' ' : ''} ${enr.student.lastName}</td>`;
+                    <td>${enr.student.firstName} ${enr.student.middleName ? enr.student.middleName + ' ' : ''} ${enr.student.lastName}</td>
+                    <td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
 
-                    if (enr.enrollmentStatus === "ASSESSMENT") {
-                        const levelId = enr.student.currentGradeLevel?.levelId ?? null;
-                        row.innerHTML += `
-                        <td>
-                            <select onChange="updateGradeLevel(${enr.enrollmentId}, this.options[this.selectedIndex].value)"
-                                    class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" 
-                                    data-isStudent-new="${enr.student.new}" data-current-grade-Id="${levelId}" 
-                                    data-isStudent-transferee="${enr.student.transferee}">
-                                <option>Loading...</option> <!-- Placeholder -->
-                            </select>
-                        </td>`;
-                    } else {
-                        row.innerHTML += `<td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
-                    }
+                    // if (enr.enrollmentStatus === "ASSESSMENT") {
+                    //     const levelId = enr.student.currentGradeLevel?.levelId ?? null;
+                    //     row.innerHTML += `
+                    //     <td>
+                    //         <select onChange="updateGradeLevel(${enr.enrollmentId}, this.options[this.selectedIndex].value)"
+                    //                 class="grade-level-dropdown" data-enrollment-id="${enr.enrollmentId}" 
+                    //                 data-isStudent-new="${enr.student.new}" data-current-grade-Id="${levelId}" 
+                    //                 data-isStudent-transferee="${enr.student.transferee}">
+                    //             <option>Loading...</option> <!-- Placeholder -->
+                    //         </select>
+                    //     </td>`;
+                    // } else {
+                    //     row.innerHTML += `<td>${enr.gradeLevelToEnroll || "NONE"}</td>`;
+                    // }
 
                     const status = enr.notDeleted === false ? "CANCELLED" : enr.enrollmentStatus;
                     row.innerHTML += `
@@ -1614,11 +1615,11 @@
                 const reqWrapper = document.createElement("div");
                 reqWrapper.classList.add("checkbox-container-popover");
 
+                const heading = document.createElement("h6");
+                heading.textContent = "Requirements:";
+                reqContainer.appendChild(heading);
                 data.forEach(transReq => {
                     // Create and append the heading
-                    const heading = document.createElement("h6");
-                    heading.textContent = "Requirements:";
-                    popover.appendChild(heading);
 
                     //console.log(transReq);
                     const reqDiv = document.createElement("div");
@@ -2312,7 +2313,7 @@
 
         transfereeCheckbox.addEventListener("change", function () {
             if (this.checked) {
-                fetchTransRequirements();
+                fetchTransRequirements("transfereeReq");
                 transfereeFields.style.display = "block";
                 requiredInputs.forEach(input => {
                     input.setAttribute("required", "required");

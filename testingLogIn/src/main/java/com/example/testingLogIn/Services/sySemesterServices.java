@@ -117,10 +117,7 @@ public class sySemesterServices {
                 subjectRepo.activeAll();
                 studentRepo.setNewStudentsToOld();
                 statisticsServices.setInitialCounts(sem);
-            },dbExecutor).exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });}
+            },dbExecutor).exceptionally(ex -> null);}
         
         return true;
     }

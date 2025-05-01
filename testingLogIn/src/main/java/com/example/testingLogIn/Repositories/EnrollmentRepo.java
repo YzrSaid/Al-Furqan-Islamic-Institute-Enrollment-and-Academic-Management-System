@@ -154,4 +154,12 @@ public interface EnrollmentRepo extends JpaRepository<Enrollment, Integer> {
            AND e.sectionToEnroll.number = :sectionId
            """)
     Optional<Integer> countSectionEnrollment(int sectionId, int sem);
+
+    @Query("""
+           SELECT e FROM Enrollment e
+           JOIN e.SYSemester sem
+           WHERE sem.sySemNumber = :semId
+           AND e.enrollmentStatus = 'ENROLLED'
+           """)
+    List<Enrollment> findBySchoolYear(int semId);
 }

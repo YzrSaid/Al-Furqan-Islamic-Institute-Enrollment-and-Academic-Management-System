@@ -88,7 +88,9 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Student stud SET stud.status = 'OLD' WHERE stud.status = 'NEW'")
+    @Query("UPDATE Student stud SET stud.status = 'OLD' " +
+            "WHERE stud.status = 'NEW' " +
+            "AND stud.currentGradeSection IS NOT NULL")
     void setNewStudentsToOld();
 
     @Modifying

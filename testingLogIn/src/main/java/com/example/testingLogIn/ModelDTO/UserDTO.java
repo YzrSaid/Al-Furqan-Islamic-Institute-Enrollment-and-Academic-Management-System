@@ -9,6 +9,8 @@ import com.example.testingLogIn.Enums.Role;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import java.time.LocalDate;
+import java.util.Optional;
+
 import lombok.*;
 
 @Builder
@@ -33,4 +35,8 @@ public class UserDTO {
     private String middlename;
     private String fullName;
     private boolean isNotDeleted;
+
+    public String generatedFullName(){
+        return firstname.trim()+" "+ Optional.ofNullable(middlename).map(s -> s.trim()+" ").orElse("")+lastname.trim();
+    }
 }

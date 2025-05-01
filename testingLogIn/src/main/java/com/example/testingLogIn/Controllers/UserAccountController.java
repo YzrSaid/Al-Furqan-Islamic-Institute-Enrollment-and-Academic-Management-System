@@ -14,6 +14,7 @@ import com.example.testingLogIn.Services.StudentSubjectGradeServices;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,25 @@ public class UserAccountController {
                                                      @RequestParam(defaultValue = "",required = false) String q,
                                                      @RequestParam(defaultValue = "true",required = false) boolean isNotRestricted) {
         return new ResponseEntity<>(customUserDetailsService.getAllUsers(accType, q, pageNo, pageSize, isNotRestricted), HttpStatus.OK);}
+
+    @GetMapping("/staffs-records")
+    public ResponseEntity<PagedResponse> getStaffsPage(@RequestParam(defaultValue = "1",required = false) int pageNo,
+                                                       @RequestParam(defaultValue = "10", required = false) int pageSize,
+                                                       @RequestParam(defaultValue = "",required = false) String q){
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(customUserDetailsService.getStaffRecords(pageNo, pageSize, q));
+    }
+
+    @GetMapping("/specific-staff/{fullName}")
+    public ResponseEntity<UserDTO> getSpecificUser(@PathVariable String fullName){
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(customUserDetailsService.getStaffRecordByName(fullName));
+    }
+
+    @PutMapping("/update-info")
+    public ResponseEntity<String> updateStaffInfo(@RequestBody UserDTO updateUser){
+        return new ResponseEntity<>(customUserDetailsService.updateStaffInfo(updateUser),HttpStatus.OK);
+    }
     
     @GetMapping("/teachers")
     public ResponseEntity<List<UserDTO>> getAllTeachers() {

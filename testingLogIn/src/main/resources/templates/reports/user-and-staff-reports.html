@@ -30,8 +30,8 @@
                 <!-- Searchbox and sort btn -->
                 <div class="left-section">
                     <div class="search-container">
-                        <input type="text" placeholder="Search..." class="search-input" />
-                        <button class="search-btn">Search</button>
+                        <input type="text" id="search" placeholder="Search..." class="search-input" />
+                        <button class="search-btn" onclick="staffRecords()">Search</button>
                     </div>
                 </div>
                 <div class="sort-container">
@@ -44,13 +44,13 @@
 
         <div class="table-wrapper">
             <!-- Table -->
-            <table class="teacher-report-table main-table">
+            <table id="staff-table" class="teacher-report-table main-table">
                 <thead>
                     <tr>
                         <th>Staff ID</th>
                         <th>Staff Name</th>
-                        <th>Gender</th>
-                        <th>Status</th>
+                        <th>Sex</th>
+                        <th>Role</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -59,7 +59,7 @@
                         <td>2025-0001</td>
                         <td>Jose Rizal</td>
                         <td>Male</td>
-                        <td>UNRESTRICTED</td>
+                        <td>Teacher</td>
                         <td>
                             <div class="dropdown">
                                 <div class="action-container action">
@@ -73,9 +73,117 @@
                 </tbody>
             </table> <br> <br>
         </div>
-
-
+        <div class="pagination-container">
+            <div class="pagination-controls">
+                <span id="itemRange">1–10 of 37</span>
+                <select id="pageSizeSelector">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+                <button type="button" id="prevPage">«</button>
+                <input type="number" id="pageInput" min="1" value="1">
+                <span id="totalPages">of 4</span>
+                <button type="button" id="nextPage">»</button>
+            </div>
+        </div>
     </div>
 </body>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        staffRecords();
+    });
+    var currentPage;
+    const tableBody = document.querySelector("#staff-table tbody");
+    async function staffRecords(currentP = 1){
+        currentPage = currentP;
+        var search = document.getElementById("search").value;
+        var pageSize = document.getElementById("pageSizeSelector").value;
+
+        const response = await fetch(`/user/staffs-records?pageNo=${currentPage}&pageSize=${pageSize}&q=${search}`);
+        tableBody.innerHTML ="<tr><td colspan='5'>No records found</td></tr>";
+        updatePaginationUI(1,pageSize,0,0);
+        if(response.ok){
+
+            const page = await response.json();
+
+            if(page.content.length > 0){
+                tableBody.innerHTML ="";
+                
+                page.content.forEach(staff =>{
+                    tableBody.innerHTML +=`
+                        <tr>
+                            <td>${staff.staffDisplayId}</td>
+                            <td>${staff.fullName}</td>
+                            <td>${staff.gender}</td>
+                            <td>${staff.role}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <div class="action-container action">
+                                        <a href="/reports/user-and-staff/${staff.fullName}" class="view-student">
+                                            <img data-path="/reports/user-and-staff/${staff.fullName}" th:src="@{/images/icons/eye.png}" alt="edit-icon">
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+
+                updatePaginationUI(currentPage,pageSize,page.totalElements,page.totalPages);
+            }
+        }
+        
+    }
+
+    function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
+        //console.log("updatePaginationUI:", { currentPage, pageSize, totalItems, totalPages });
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
+
+        document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById("pageInput").value = currentPage;
+        document.getElementById("pageInput").min = 1;
+        document.getElementById("pageInput").max = totalPages;
+        document.getElementById("totalPages").textContent = `of ${totalPages}`;
+
+        document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
+    }
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            staffRecords(currentPage);
+        }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+        if (currentPage < document.getElementById("pageInput").max) {
+            currentPage++;
+            //console.log("Navigating to page:", currentPage);
+            staffRecords(currentPage);
+        } else {
+            //console.log("Cannot navigate to next page");
+        }
+    });
+
+    document.getElementById("pageInput").addEventListener("change", (e) => {
+        const totalPages = parseInt(document.getElementById("pageInput").max);
+        let page = parseInt(e.target.value);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            staffRecords(currentPage);
+        } else {
+            e.target.value = currentPage;
+        }
+    });
+
+    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        //console.log("pageSizeSelector changed", { value: e.target.value });
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        staffRecords(currentPage);
+    });
+</script>
 </html>

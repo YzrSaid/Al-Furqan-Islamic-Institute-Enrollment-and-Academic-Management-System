@@ -782,7 +782,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let confirmationModal = document.getElementById("confirmationModal");
     confirmationModal.style.visibility = "hidden";
     confirmationModal.style.opacity = "0";
-    console.log(action);
     switch (action) {
       case "updateMyAccount":
         updateMyAccount();
@@ -895,6 +894,9 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "clearSched":
         window.clearSched();
+        break;
+      case "editStaffReport":
+        confirmEdit();
         break;
       case "makeSchoolYearActive":
         actionUrl = "/school-year/activate";

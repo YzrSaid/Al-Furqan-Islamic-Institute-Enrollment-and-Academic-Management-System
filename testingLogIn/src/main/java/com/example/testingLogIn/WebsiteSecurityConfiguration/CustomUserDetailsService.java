@@ -117,6 +117,44 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .build();
     }
 
+    public PagedResponse getStaffRecords(int pageNo, int pageSize, String search){
+        search = NonModelServices.forLikeOperator(search);
+        Page<UserModel> userpage = userRepo.getStaffProfiles(search,PageRequest.of(pageNo - 1, pageSize));
+
+        return PagedResponse.builder()
+                .content(userpage.getContent().stream().map(UserModel::mapperDTO).toList())
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(userpage.getTotalElements())
+                .totalPages(userpage.getTotalPages())
+                .build();
+    }
+
+    public UserDTO getStaffRecordByName(String fullName){
+        return userRepo.findByFullName(fullName.toLowerCase()).map(UserModel::mapperDTO).orElseThrow(()->new NullPointerException("Staff Defailts Not Found"));
+    }
+
+    public String updateStaffInfo(UserDTO staff){
+        UserModel update = userRepo.findById(staff.getStaffId()).orElseThrow(()->new NullPointerException("Staff Record Not Found"));
+        if(!userRepo.findFullNameDifferentId(staff.generatedFullName().trim(), staff.getStaffId()).isEmpty())
+            throw new IllegalArgumentException("Staff Full Name is Already Used");
+        else if(!userRepo.findUserNameDifferentId(staff.getUsername().trim().toLowerCase(),staff.getStaffId()).isEmpty())
+            throw new IllegalArgumentException("User Email is Already Used");
+
+        update.setUsername(staff.getUsername());
+        update.setFirstname(staff.getFirstname());
+        update.setMiddlename(Optional.ofNullable(staff.getMiddlename()).orElse(""));
+        update.setLastname(staff.getLastname());
+        update.setFullName(staff.generatedFullName());
+        update.setRole(staff.getRole());
+        update.setGender(staff.getGender());
+        update.setAddress(staff.getAddress());
+        update.setBirthdate(staff.getBirthdate());
+        userRepo.save(update);
+
+        return staff.generatedFullName();
+    }
+
     public UserModel getuser(int staffId) {
         return userRepo.findById(staffId).orElse(null);
     }

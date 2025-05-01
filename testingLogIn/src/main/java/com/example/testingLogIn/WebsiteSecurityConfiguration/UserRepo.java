@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepo extends JpaRepository<UserModel, Integer> {
@@ -53,6 +54,28 @@ public interface UserRepo extends JpaRepository<UserModel, Integer> {
     @Query("""
            SELECT user FROM UserModel user
            WHERE LOWER(user.fullName) = :fullName
+           GROUP BY user.fullName
            """)
     Optional<UserModel> findByFullName(String fullName);
+
+    @Query("""
+           SELECT user FROM UserModel user
+           WHERE user.staffId != :staffId
+           AND LOWER(user.fullName) = :fullName
+           """)
+    List<UserModel> findFullNameDifferentId(String fullName, int staffId);
+
+    @Query("""
+           SELECT user FROM UserModel user
+           WHERE user.staffId != :staffId
+           AND LOWER(user.username) = :username
+           """)
+    List<UserModel> findUserNameDifferentId(String username, int staffId);
+
+    @Query("""
+           SELECT user FROM UserModel user
+           WHERE (user.role = 'TEACHER' OR user.role = 'ENROLLMENT_STAFF')
+           AND LOWER(user.fullName) LIKE :search
+           """)
+    Page<UserModel> getStaffProfiles(String search, Pageable pageable);
 }

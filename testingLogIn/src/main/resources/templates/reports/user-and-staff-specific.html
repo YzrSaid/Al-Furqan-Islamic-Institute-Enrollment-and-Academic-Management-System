@@ -205,7 +205,6 @@
             </div>
         </div>
 
-        <!-- Modal for editing the student information -->
         <div id="staffInformationEditModal" class="staff-information-edit-modal modal">
             <div class="staff-information-edit-modal-content">
                 <div class="modal-body">
@@ -225,14 +224,6 @@
                                         <option value="ENROLLMENT_STAFF">Enrollment Staff</option>
                                     </select>
                                 </div>
-
-                                <div class="half-other-info" id="staff-status-row">
-                                    <label for="staff-status">Status:</label>
-                                    <select name="status" id="status-edit" required>
-                                        <option value="UNRESTRICTED">Unrestricted</option>
-                                        <option value="RESTRICTED">Restricted</option>
-                                    </select>
-                                </div>
                             </div>
                         </div>
 
@@ -246,9 +237,9 @@
                                     <div>
                                         <label for="name">Name</label>
                                         <div class="student-form-group half">
-                                            <input type="text" required class="name" id="firstNameEdit">
-                                            <input type="text" required class="name" id="middleNameEdit">
-                                            <input type="text" required class="name" id="lastNameEdit">
+                                            <input type="text" required name="firstname" class="name" id="firstNameEdit">
+                                            <input type="text" required name="middlename" class="name" id="middleNameEdit">
+                                            <input type="text" required name="lastname" class="name" id="lastNameEdit">
                                         </div>
                                         <div class="small-text">
                                             <p>First</p>
@@ -260,29 +251,29 @@
                                 <div class="column2">
                                     <!-- Gender, BDate, and Scholar -->
                                     <div class="student-form-group half-stud-info-small">
-                                        <label for="gender-edit">Gender:</label>
-                                        <select name="gender-edit" title="Gender" class="gender" id="gender-edit"
+                                        <label for="gender-edit">Sex:</label>
+                                        <select title="Gender" name=gender class="gender" id="gender-edit"
                                             required>
                                             <option value="MALE">Male</option>
                                             <option value="FEMALE">Female</option>
                                         </select>
 
                                         <label for="birthdate">Birthdate:</label>
-                                        <input required type="date" class="birthdate" id="birthdate-edit">
+                                        <input required type="date" class="birthdate" name="birthdate" id="birthdate-edit">
                                     </div>
                                 </div>
 
                                 <div class="column1">
                                     <label for="address">Address:</label>
                                     <div class="student-form-group">
-                                        <input type="text" id="staff-address-edit" required placeholder="">
+                                        <input type="text" id="staff-address-edit" name="address" required placeholder="">
                                     </div>
                                 </div>
 
                                 <div class="column2">
                                     <div class="student-form-group">
                                         <label>Email:</label>
-                                        <input required type="email" class="place-of-birth" id="staff-email-edit">
+                                        <input required type="email" class="place-of-birth" name="username" id="staff-email-edit">
                                     </div>
                                 </div>
                             </div>
@@ -348,7 +339,7 @@
                             <div class="column2">
                                 <!-- Gender, BDate, and Scholar -->
                                 <div class="student-form-group half-stud-info-small">
-                                    <label for="gender">Gender:</label>
+                                    <label for="gender">Sex:</label>
                                     <input readonly type="text" id="gender">
 
                                     <label for="birthdate">Birthdate:</label>
@@ -373,228 +364,70 @@
                     </div>
                 </form>
             </div>
+
+                    <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content scroll-lock">
+                <p id="errorMessage"></p>
+                <div class="modal-buttons">
+                    <button class="error-btn-cancel" data-close-modal="errorModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background overlay -->
+        <div id="successModalOverlay"></div>
+
+        <!-- Success modal -->
+        <div id="successModal">
+            <p id="successModalMessage"></p>
+        </div>
         </div>
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const path = window.location.pathname;
         const wordArray = (path.split("/"));
-        const studentName = ((wordArray[wordArray.length - 1]));
-        // findStudent(studentName);
+        const staffName = ((wordArray[wordArray.length - 1]));
+        getStaff(staffName);
     });
-    var studentId;
-    async function findStudent(studentName) {
-        const response = await fetch(`/students/find-student/name/${studentName}`);
-        if (!response.ok) { alert("student record no found"); }
-        const student = await response.json();
 
-        document.getElementById("stud-type").textContent = student.status;
-        document.getElementById("transferee").textContent = (student.transferee === "true" || student.transferee) ? "YES" : "NO";
-        document.getElementById("student-id").value = student.studentDisplayId;
-        document.getElementById("firstName").value = student.firstName;
-        document.getElementById("middleName").value = student.middleName;
-        document.getElementById("lastName").value = student.lastName;
-        document.getElementById("gender").value = student.gender;
-        document.getElementById("birthdate").value = student.birthdate;
-        document.getElementById("placeOfBirth").value = student.birthPlace;
+    var staff;
+    var staffId;
+    async function getStaff(staffName){
+        const response = await fetch(`/user/specific-staff/${staffName}`);
 
-        document.getElementById("fatherName").value = student.fatherName;
-        document.getElementById("fatherOccupation").value = student.fatherOccupation;
-        document.getElementById("motherName").value = student.motherName;
-        document.getElementById("motherOccupation").value = student.motherOccupation;
-        document.getElementById("guardianName").value = student.guardianName;
-        document.getElementById("guardianOccupation").value = student.fatherOccupation;
-        document.getElementById("guardianContactNumber").value = student.guardianContactNum;
-        document.getElementById("guardianAddress").value = student.guardianAddress;
-
-        document.getElementById("street").value = student.address.street;
-        document.getElementById("barangay").value = student.address.barangay;
-        document.getElementById("city").value = student.address.city;
-        document.getElementById("lastGradeLevelCompleted").value = student.currentGradeLevel ? student.currentGradeLevel.levelName : 'None';
-        document.getElementById("lastMadrasaYearCompleted").value = student.lastMadrasaYearCompleted;
-        document.getElementById("madrasaNameLastAttended").value = student.madrasaName;
-        document.getElementById("madrasaAddress").value = student.madrasaAddress;
-        fetchTransRequirements("transReqRecord", student.transfereeRequirements);
-
-        studentId = student.studentId;
-        fetchRemainingFees();
-        setStudentGrades();
-        setUpDistribution(student.fullName)
-    }
-    async function setStudentGrades() {
-        const response = await fetch(`/student-grades/student/${studentId}`);
-        if (!response.ok) { return; }
-
-        const grades = await response.json();
-        const gradesview = document.getElementById("grades-container");
-        gradesview.innerHTML = ""; // clear previous content
-
-        // 👉 Check if no grades were returned
-        if (!grades || grades.length === 0) {
-            gradesview.innerHTML = `
-            <div class="no-records-message">
-                <p>No grade records found for this student.<p>
-            </div>`;
-            return;
-        }
-
-        grades.forEach(sem => {
-            var allFilled = true;
-            let gradesRow = '';
-            let totalGrade = 0;
-            let count = 0;
-
-            sem.grades.forEach(grade => {
-                if (allFilled) {
-                    allFilled = grade.subjectGrade;
-                }
-                totalGrade += grade.subjectGrade;
-                count++;
-                gradesRow += `
-                <tr>
-                    <td>${grade.subjectName}</td>
-                    <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
-                    <td>
-                        <div class="status-container">
-                            <div class="status" id="grade-remarks">
-                                ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
-                            </div>
-                        </div>
-                    </td>
-                </tr>`;
-            });
-
-            const average = totalGrade / count;
-
-            const semesterFormatted = sem.sectionSemester.includes("First semester")
-                ? sem.sectionSemester.replace("First semester", "1st Sem")
-                : sem.sectionSemester.includes("Second semester")
-                    ? sem.sectionSemester.replace("Second semester", "2nd Sem")
-                    : sem.sectionSemester;
-
-            const row = document.createElement("div");
-            row.classList.add("column-main");
-
-            row.innerHTML = `
-            <div class="table-container">
-                <div style="display: flex; justify-content: space-between;">
-                    <div class="grade-table-header">
-                        <div>
-                            <label>SY & Sem:</label>
-                            <h6 id="sy">${semesterFormatted}</h6>
-                        </div>
-                        <div>
-                            <label>Level:</label>
-                            <h6>${sem.gradeSection}</h6>
-                        </div>
-                    </div>
-                </div> <br>
-                <table class="mini-table" id="grades-table">
-                    <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>Grade</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${gradesRow}
-                        <tr id="average-row">
-                            <td>Average</td>
-                            <td>${allFilled ? average : ""}</td>
-                            <td>
-                                <div class="status-container">
-                                    <div class="status">
-                                        <div class="average-remarks">
-                                            ${average === "N/A" || !allFilled ? "" : (average > 49 ? "PASSED" : "FAILED")}
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>`;
-
-            gradesview.appendChild(row);
-        });
-    }
-
-
-    async function setUpDistribution(fullName) {
-        try {
-            const claimed = false;
-            const response = await fetch(`/distributable/student-distribution/all?isClaimed=false&student=${fullName}&itemType=0&sortBy=none`);
-            if (!response.ok) {
-                //console.error("Failed to fetch data:", response.status);
-                return;
-            }
-
-            const data = await response.json();
-
-            const tableBody = document.querySelector("#distribution-table tbody");
-            if (!tableBody) {
-                //console.error("Table body not found");
-                return;
-            }
-
-            // Clear existing rows
-            tableBody.innerHTML = '';
-
-            if (!data.content || data.content.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="3">No records found</td></tr>`;
-                return;
-            }
-
-            const fragment = document.createDocumentFragment();
-
-            data.content.forEach(studDis => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${studDis.itemName || 'N/A'}</td>
-                    <td>${studDis.gradeLevel?.levelName || 'N/A'}</td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="action-container action">
-                                <button
-                                    data-open-modal="confirmationModal" class="add-something-btn"
-                                    data-action="itemDistributed"
-                                    data-message="Confirm item is distributed to the student"
-                                    data-item-id="${studDis.distId}">Distribute
-                                </button>
-                            </div>
-                        </div>
-                    </td>`;
-                fragment.appendChild(row);
-            });
-
-            tableBody.appendChild(fragment);
-
-        } catch (error) {
-            const tableBody = document.querySelector("#table-ko tbody");
-            if (tableBody) {
-                tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
-            }
+        if(response.ok){
+            staff = await response.json();
+            staffId = staff.staffId;
+            updateFields(['staff-email','staff-address','birthdate-report','gender','lastName','middleName','firstName','staff-type','student-id','staff-status']);
+            updateFields(['staff-email-edit','staff-address-edit','birthdate-edit','gender-edit','lastNameEdit','middleNameEdit','firstNameEdit','role-edit','staff-id-edit']);
+        }else{
+            var msg = await response.text();
+            showErrorModal(msg);
+            setTimeout(()=>{
+                window.location.href="/home";
+            },3000);
         }
     }
 
-    function confirmDistribution() {
-        fetch(`/distributable/student-distribution/received/${selectedDistId}`, {
-            method: 'PUT'
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(msg => {
-                showSuccessModal(msg);
-            })
-            .catch(error => {
-                //console.error('Error:', error);
-            });
+    function updateFields(fieldIds){
+        document.getElementById(fieldIds[0]).value = staff.username || "";
+        document.getElementById(fieldIds[1]).value = staff.address;
+        document.getElementById(fieldIds[2]).value = staff.birthdate;
+        document.getElementById(fieldIds[3]).value = staff.gender;
+        document.getElementById(fieldIds[4]).value = staff.lastname;
+        document.getElementById(fieldIds[5]).value = staff.middlename;
+        document.getElementById(fieldIds[6]).value = staff.firstname;
+        if(fieldIds.length === 10){
+            document.getElementById(fieldIds[7]).textContent = staff.role;
+        }else{
+            document.getElementById(fieldIds[7]).value = staff.role;
+        }
+        document.getElementById(fieldIds[8]).value = staff.staffDisplayId;
     }
+
+    
 
     var selectedDistId;
     document.body.addEventListener("click", function (event) {
@@ -603,66 +436,6 @@
             selectedDistId = target.getAttribute("data-item-id");
         }
     });
-
-    async function fetchRemainingFees() {
-        //console.log(`/paymentrecord/form/${studentId}`);
-        const feesTable = document.querySelector("#payment-table tbody");
-        const response = await fetch(`/paymentrecord/form/${studentId}`);
-        if (!response.ok) { return; }
-
-        const remainingFees = await response.json();
-
-        feesTable.innerHTML = `<tr><td colspan="6">No records found</td></tr>`;
-        if (remainingFees.feesAndBalance.length === 0) { return; }
-        feesTable.innerHTML = ``;
-        document.getElementById("total-balance").textContent = `P${remainingFees.totalFee}`;
-        remainingFees.feesAndBalance.forEach(data => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${data.fee.name}</td>
-                <td>${data.totalRequired}</td>
-                <td>${data.totalPaid}</td>
-                <td>
-                    <div class="status-container">
-                        <div class="status" id="status-payments">${data.totalPaid > 0 ? "Partially Paid" : "Not Paid"}</div>
-                    </div>
-                </td>
-                <td><span>P</span>${data.balance}</td>`;
-            feesTable.appendChild(row);
-        });
-    }
-
-    function fetchTransRequirements(divId = "transfereeReq", reqIds = []) {
-        fetch("/trans-req/all")
-            .then(response => response.json())
-            .then(data => {
-                const reqContainer = document.getElementById(divId);
-                reqContainer.innerHTML = "";
-                data.forEach(transReq => {
-                    const paymentDiv = document.createElement("div");
-                    paymentDiv.classList.add("checkbox-each");
-
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.id = `transReq-${transReq.levelId}`;
-                    checkbox.name = "transferRequirements";
-                    checkbox.value = transReq.id;
-
-                    const label = document.createElement("label");
-                    label.htmlFor = `transReq-${transReq.idd}`;
-                    label.textContent = transReq.name;
-
-                    if (reqIds.includes(transReq.id)) {
-                        checkbox.checked = true;
-                    }
-
-                    paymentDiv.appendChild(checkbox);
-                    paymentDiv.appendChild(label);
-                    reqContainer.appendChild(paymentDiv);
-                });
-            })
-            .catch(error => console.error("Error fetching grade levels:", error));
-    }
 
     document.getElementById('savePdf').addEventListener('click', () => {
         const { jsPDF } = window.jspdf;
@@ -700,12 +473,6 @@
         const topMargin = 0;
         const adjustedOffsetY = offsetY + topMargin;
 
-        console.log('Content Width:', contentWidth);
-        console.log('Content Height:', contentHeight);
-        console.log('Scaled Width:', scaledWidth);
-        console.log('Scaled Height:', scaledHeightFinal);
-        console.log('Offset X:', offsetX);
-        console.log('Offset Y:', offsetY);
         doc.html(testContent, {
             callback: function (doc) {
                 // Save the PDF after rendering and centering the content
@@ -760,13 +527,6 @@
         const topMargin = 0;
         const adjustedOffsetY = offsetY + topMargin;
 
-        console.log('Content Width:', contentWidth);
-        console.log('Content Height:', contentHeight);
-        console.log('Scaled Width:', scaledWidth);
-        console.log('Scaled Height:', scaledHeightFinal);
-        console.log('Offset X:', offsetX);
-        console.log('Offset Y:', offsetY);
-
         doc.html(testContent, {
             callback: function (doc) {
                 // Open the print window for printing (no save)
@@ -785,6 +545,30 @@
             windowWidth: document.body.scrollWidth  // Ensure content fits within the page width
         });
     });
+
+    async function confirmEdit(){
+        const form = document.getElementById('staffInformationEditForm');
+        const formData = new FormData(form);
+        const staffUpdate = Object.fromEntries(formData.entries());
+        staffUpdate.staffId = staffId;
+
+        const response = await fetch("/user/update-info",{
+                method: "PUT",
+                headers: {
+                "Content-Type": "application/json",},
+                body: JSON.stringify(staffUpdate),
+            });
+        if(response.ok){
+            var text = await response.text();
+            showSuccessModal("Staff Information Updated Successfully",false);
+            setTimeout(()=>{
+                window.location.href=`/reports/user-and-staff/${text}`;
+            },3000);
+        }else{
+            var text = await response.text();
+            showErrorModal(text);
+        }
+    }
 </script>
 
 </html>

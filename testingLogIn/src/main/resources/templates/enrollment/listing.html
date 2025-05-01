@@ -558,7 +558,7 @@
 
                                     <div class="checkbox">
                                         <label for="isTransfereeRec">Transferee:</label>
-                                        <input type="checkbox" class="isTransfereeRecBulk">
+                                        <input type="checkbox" name="transferee" class="isTransfereeRecBulk">
                                     </div>
                                 </div><br>
 
@@ -630,24 +630,24 @@
                                     <div class="transferee-requirements">
                                         <div class="student-form-group">
                                             <label for="lastGradeLevelIdCompleted">Last Grade Level Completed:</label>
-                                            <select id="lastGradeLevelIdCompleted"
+                                            <select id="lastGradeLevelIdCompleted" name="lastGradeLevelId"
                                                 class="lastGradeLevelCompletedSelect">
                                             </select>
 
-                                            <label for="studlastMadrasaYearCompleted">Last Madrasa Year
+                                            <label for="lastMadrasaYearCompleted">Last Madrasa Year
                                                 Completed:</label>
-                                            <input type="text" id="studlastMadrasaYearCompleted">
+                                            <input type="text" id="lastMadrasaYearCompleted" name="lastMadrasaYearCompleted">
 
                                         </div> <br>
 
                                         <div class="student-form-group">
-                                            <label for="studmadrasaNameLastAttended">Madrasa Name Last Attended:</label>
-                                            <input type="text" id="studmadrasaNameLastAttended">
+                                            <label for="madrasaName">Madrasa Name Last Attended:</label>
+                                            <input type="text" id="madrasaName" name="madrasaName">
                                         </div> <br>
 
                                         <div class="student-form-group">
-                                            <label for="studmadrasaAddress">Madrasa Address:</label>
-                                            <input type="text" id="studmadrasaAddress">
+                                            <label for="madrasaAddress">Madrasa Address:</label>
+                                            <input type="text" id="madrasaAddress" name="madrasaAddress">
                                         </div>
                                     </div>
                                 </div>
@@ -2924,6 +2924,7 @@
             formValues.transferee = formValues.transferee === "on";
             formValues.scholar = formValues.scholar === "on";
             formValues.discountsAvailed = [];
+            formValues.transfereeRequirements = [];
             formValues.address = {
                 "barangay" : formValues.barangay,
                 "city": formValues.city,

@@ -235,6 +235,7 @@
         }
 
         accounts.content.forEach(account => {
+            console.log(account);
             const row = document.createElement("tr");
 
             // console.log(account);
@@ -251,10 +252,13 @@
                 : "Are you sure you want to unrestrict this account?";
 
             // ✅ Use the new color function
+            var dlSched = account.role === "TEACHER"? 
+                            `<a href="#" onclick="downloadSchedule('${account.fullName}')">
+                                Download Schedule
+                            </a>`: ``;
             const statusClass = getAccountStatusClass(statusText);
-            console.log(account);
             row.innerHTML = `
-            <td>${account.firstname} ${account.lastname}</td>
+            <td>${account.fullName}</td>
             <td>${account.username}</td>
             <td>${readableRole}</td> <!-- Use the mapped role -->
             <td>
@@ -274,6 +278,7 @@
                                 data-open-modal="confirmationModal">
                                 ${oppositeActionText}
                             </a>
+                            ${dlSched}
                         </div>
                     
                 </div>
@@ -476,6 +481,10 @@
                 setUpFunction(currentPage);
             });
         });
+    }
+
+    function downloadSchedule(teacherName){
+        downloadFile(`/schedules/teacher/download-schedule/${teacherName}`);
     }
     document.addEventListener("DOMContentLoaded", initializePaginationListeners);
 </script>

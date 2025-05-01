@@ -80,6 +80,7 @@
         </div>
 
         <div class="btn-container">
+            <button onclick="downloadSchedule()">Download Schedule</button>
             <button type="button" class="btn-confirm" id="addRowBtn">Add</button>
         </div>
 
@@ -340,32 +341,32 @@
                         return response.json().then(rec => {
                             showSuccessModal("Schedule updated successfully", false);
                             row.innerHTML = `
-            <tr class="sched-row hidden-row">
-                <td>${rec.subject}</td>
-                <td>${rec.teacherName}</td>
-                <td>${rec.day}</td>
-                <td>${rec.timeStartString}</td>
-                <td>${rec.timeEndString}</td>
-                <td>
+                                <tr class="sched-row hidden-row">
+                                    <td>${rec.subject}</td>
+                                    <td>${rec.teacherName}</td>
+                                    <td>${rec.day}</td>
+                                    <td>${rec.timeStartString}</td>
+                                    <td>${rec.timeEndString}</td>
+                                    <td>
 
-                     <div class="action-container action">
-                        <button id="delete-btn" data-id="${rec.scheduleNumber}" class="action-btn">
-                            <img src="/images/icons/bin.png" alt="delete-icon">
-                            </button>
-                                        <button class="action-btn" id="edit-btn"
-                                                data-id="${rec.scheduleNumber}"
-                                                data-subj-id="${rec.subjectId}"
-                                                data-teacher-id="${rec.teacherId}"
-                                                data-sect-id="${rec.sectionId}"
-                                                data-day="${rec.day}"
-                                                class="action-btn">
-                                        <img src="/images/icons/compose.png" alt="edit-icon">
-                                        </button>
-                                
-                                </div>
-                   
-                </td>
-            </tr>`;
+                                        <div class="action-container action">
+                                            <button id="delete-btn" data-id="${rec.scheduleNumber}" class="action-btn">
+                                                <img src="/images/icons/bin.png" alt="delete-icon">
+                                                </button>
+                                                            <button class="action-btn" id="edit-btn"
+                                                                    data-id="${rec.scheduleNumber}"
+                                                                    data-subj-id="${rec.subjectId}"
+                                                                    data-teacher-id="${rec.teacherId}"
+                                                                    data-sect-id="${rec.sectionId}"
+                                                                    data-day="${rec.day}"
+                                                                    class="action-btn">
+                                                            <img src="/images/icons/compose.png" alt="edit-icon">
+                                                            </button>
+                                                    
+                                                    </div>
+                                    
+                                    </td>
+                                </tr>`;
                             attachedDeleteHandler(row);
                         });
                     } else {
@@ -435,45 +436,48 @@
                 body: JSON.stringify(data)
             })
                 .then(response => {
+                    console.log(response);
                     if (response.ok) {
                         return response.json().then(rec => {
                             showSuccessModal("New schedule added successfully", false);
                             row.innerHTML = `
-            <tr class="sched-row hidden-row">
-                <td>${rec.subject}</td>
-                <td>${rec.teacherName}</td>
-                <td>${rec.day}</td>
-                <td>${rec.timeStartString}</td>
-                <td>${rec.timeEndString}</td>
-                <td>
-                                 <div class="action-container action">
-                                   
-                                        <button id="delete-btn" data-id="${rec.scheduleNumber}" class="action-btn">
-                                        <img src="/images/icons/bin.png" alt="delete-icon">
-                                        </button>
+                                    <tr class="sched-row hidden-row">
+                                        <td>${rec.subject}</td>
+                                        <td>${rec.teacherName}</td>
+                                        <td>${rec.day}</td>
+                                        <td>${rec.timeStartString}</td>
+                                        <td>${rec.timeEndString}</td>
+                                        <td>
+                                                        <div class="action-container action">
+                                                        
+                                                                <button id="delete-btn" data-id="${rec.scheduleNumber}" class="action-btn">
+                                                                <img src="/images/icons/bin.png" alt="delete-icon">
+                                                                </button>
 
-                                        <button class="action-btn" id="edit-btn"
-                                                data-id="${rec.scheduleNumber}"
-                                                data-subj-id="${rec.subjectId}"
-                                                data-teacher-id="${rec.teacherId}"
-                                                data-sect-id="${rec.sectionId}"
-                                                data-day="${rec.day}"
-                                                class="action-btn">
-                                        <img src="/images/icons/compose.png" alt="edit-icon">
-                                        </button>
-                                
-                                </div>
-                </td>
-            </tr>`;
+                                                                <button class="action-btn" id="edit-btn"
+                                                                        data-id="${rec.scheduleNumber}"
+                                                                        data-subj-id="${rec.subjectId}"
+                                                                        data-teacher-id="${rec.teacherId}"
+                                                                        data-sect-id="${rec.sectionId}"
+                                                                        data-day="${rec.day}"
+                                                                        class="action-btn">
+                                                                <img src="/images/icons/compose.png" alt="edit-icon">
+                                                                </button>
+                                                        
+                                                        </div>
+                                        </td>
+                                    </tr>`;
                             attachedDeleteHandler(row);
                         });
                     } else {
+                        console.log("Nag error");
                         return response.text().then(message => {
                             showErrorModal(message);
                         });
                     }
                 })
                 .catch(error => {
+                    console.log("Diri error");
                     showErrorModal(error.message);
                 });
         });
@@ -552,6 +556,10 @@
                 draggedRow = null;
             }
         });
+    }
+
+    function downloadSchedule(){
+      downloadFile(`/schedules/download/section?sectionId=${selectedSectionId}`);
     }
 </script>
 

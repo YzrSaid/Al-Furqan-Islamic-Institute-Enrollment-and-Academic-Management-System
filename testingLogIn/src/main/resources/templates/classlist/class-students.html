@@ -41,6 +41,7 @@
                     </div>
                 </div>
                 <div class="sort-container">
+                    <button onclick="downloadClassList()">Download Records</button>
                     <select name="sort" id="sort-select" class="sort-select">
                         <option value="" disabled selected>Sort</option>
                     </select>
@@ -179,14 +180,14 @@
         }
         const result = await response.json();
         // console.log(result);
-        setUpTables(result.number);
+        sectionId = result.number;
+        setUpTables();
     }
-
-    function setUpTables(sectionId) {
+    var sectionId;
+    function setUpTables() {
         fetch(`/section/students/${sectionId}`)
             .then(response => response.json())
             .then(data => {
-                // console.log(data.length);
                 if (data.length === 0) return;
                 const tableBody = document.querySelector("#table-ba-to tbody");
                 tableBody.innerHTML = ``;
@@ -201,6 +202,10 @@
                 });
             })
             .catch(error => console.error("Error fetching subject data:", error));
+    }
+
+    function downloadClassList(){
+        downloadFile(`/section/download-students/${sectionId}`);
     }
 </script>
 

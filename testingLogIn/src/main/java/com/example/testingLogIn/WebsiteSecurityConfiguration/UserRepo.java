@@ -52,7 +52,7 @@ public interface UserRepo extends JpaRepository<UserModel, Integer> {
 
     @Query("""
            SELECT user FROM UserModel user
-           WHERE LOWER(user.fullName) = :fullname 
+           WHERE LOWER(user.fullName) = :fullName
            """)
-    Optional<UserModel> findByFullname(String fullname);
+    Optional<UserModel> findByFullName(String fullName);
 }

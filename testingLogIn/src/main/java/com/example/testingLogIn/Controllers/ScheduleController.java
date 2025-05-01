@@ -10,7 +10,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +38,14 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping("/teacher/download-schedule/{teacherName}")
+    public ResponseEntity<InputStreamResource> downloadTeacherSchedules(@PathVariable String teacherName){
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\""+teacherName+"_Schedules.csv\"")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(scheduleService.downloadTeacherSchedule(teacherName));
+    }
+
     @GetMapping("/my-schedules")
     public ResponseEntity<List<ScheduleDTO>> getTeacherSchedule(){
         try{
@@ -44,6 +55,15 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping("/download/section")
+    public ResponseEntity<InputStreamResource> getSectionSchedules(@RequestParam int sectionId){
+        List<?> toreturn = scheduleService.downloadSectionSchedules(sectionId);
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\""+toreturn.getFirst().toString()+"_Schedules.csv\"")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body((InputStreamResource) toreturn.getLast());
+    }
 
     @GetMapping("/section")
     public ResponseEntity<List<ScheduleDTO>> getSchedulesBySection(@RequestParam int sectionId){
@@ -61,7 +81,8 @@ public class ScheduleController {
     }
     
     @PostMapping("/add")
-    public ResponseEntity<Object> addSchedules(@RequestBody ScheduleDTO schedule){
+    public ResponseEntity<?> addSchedules(@RequestBody ScheduleDTO schedule){
+        System.out.println("Added");
         try{
             Map<Integer,ScheduleDTO> res = scheduleService.addNewSchedule(schedule);
             if (!res.isEmpty()) {
@@ -79,35 +100,14 @@ public class ScheduleController {
             }else
                 throw new Exception();
         }catch(Exception e){
-            e.printStackTrace();
             return new ResponseEntity<>("Server conflict.",HttpStatus.BAD_REQUEST);
         }
     }
     
     @PutMapping("/update")
-    public ResponseEntity<Object> updateSchedule(@RequestBody ScheduleDTO schedDTO){
-        try{
-            Map<Integer,ScheduleDTO> res = scheduleService.updateSchedule(schedDTO);
-            int result = res.keySet().iterator().next();
-            switch(result){
-                case 1:
-                    return new ResponseEntity<>("Conflict with the Teacher's other existing schedule",HttpStatus.CONFLICT);
-                case 2:
-                    return new ResponseEntity<>("Conflict with the Section's other existing schedule",HttpStatus.CONFLICT);
-                case 3:
-                    return new ResponseEntity<>("Someone is already handling this subject on this section",HttpStatus.OK);
-                case 4:
-                    return new ResponseEntity<>(res.get(result),HttpStatus.OK);
-                default:
-                    return new ResponseEntity<>("Schedule Not Found",HttpStatus.NOT_FOUND);
-            }
-        }catch (NullPointerException npe){
-            return new ResponseEntity<>("Schedule not found",HttpStatus.NOT_FOUND);
-        }catch (UnknownError u){
-            return new ResponseEntity<>("Selected teacher not found",HttpStatus.NOT_FOUND);
-        }catch (Exception e){
-            return new ResponseEntity<>("Server error",HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<ScheduleDTO> updateSchedule(@RequestBody ScheduleDTO schedDTO){
+        ScheduleDTO schedule = scheduleService.updateSchedule(schedDTO);
+        return new ResponseEntity<>(schedule,HttpStatus.OK);
     }
     
     @DeleteMapping("/delete/{scheduleId}")

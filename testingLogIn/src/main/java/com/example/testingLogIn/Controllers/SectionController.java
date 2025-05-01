@@ -5,8 +5,13 @@ import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.ModelDTO.UserDTO;
 import com.example.testingLogIn.Models.Section;
 import com.example.testingLogIn.Services.SectionServices;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author magno
- */
+@AllArgsConstructor
+@Getter
+class Downloadable{
+    private Map<String, InputStreamResource> resources;
+}
+
 @RequestMapping("/section")
 @Controller
 public class SectionController {
@@ -40,6 +47,17 @@ public class SectionController {
     @GetMapping("/students/{sectionId}")
     public ResponseEntity<List<StudentDTO>> getStudentsOfSection(@PathVariable int sectionId){
         return new ResponseEntity<>(sectionService.getEnrolledStudentToSection(sectionId),HttpStatus.OK);
+    }
+
+    @GetMapping("/download-students/{sectionId}")
+    public ResponseEntity<InputStreamResource> downloadSectionStudents(@PathVariable int sectionId){
+        Downloadable toDownload = new Downloadable(sectionService.downloadEnrolledStudentToSection(sectionId));
+        String fileName = (String) toDownload.getResources().keySet().toArray()[0];
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\""+fileName+"\"")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(toDownload.getResources().get(fileName));
     }
 
     @GetMapping("/all")

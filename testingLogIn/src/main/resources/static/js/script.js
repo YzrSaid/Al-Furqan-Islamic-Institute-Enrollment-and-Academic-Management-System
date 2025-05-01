@@ -3065,3 +3065,33 @@ window.validateInputsByClass = function (className) {
 
   return allValid;
 };
+
+window.downloadFile = async function(link){
+  try {
+    const response = await fetch(link);
+    
+    if (!response.ok) { return response.text().then(text => {throw new Error(text)})};
+    
+    // Get filename from headers
+    const filename = response.headers
+    .get('Content-Disposition')
+    ?.split('filename=')[1]
+    .replace(/"/g, '');
+
+    // Convert to Blob
+    const blob = await response.blob();
+    
+    // Create download link
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'file.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+        showErrorModal(error.message);}
+}
+;

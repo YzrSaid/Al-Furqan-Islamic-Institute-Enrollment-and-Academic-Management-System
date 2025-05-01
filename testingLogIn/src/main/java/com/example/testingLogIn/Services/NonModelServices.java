@@ -3,6 +3,7 @@ package com.example.testingLogIn.Services;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.SecureRandom;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class NonModelServices {
@@ -59,5 +60,9 @@ public class NonModelServices {
 
     public static DateTimeFormatter getDateTimeFormatter(){
         return DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
+    }
+
+    public static String formattedTime(LocalTime time){
+        return DateTimeFormatter.ofPattern("hh:mm a").format(time);
     }
 }

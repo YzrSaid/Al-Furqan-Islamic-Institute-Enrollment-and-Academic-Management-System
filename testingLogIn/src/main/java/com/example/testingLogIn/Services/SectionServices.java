@@ -13,11 +13,18 @@ import com.example.testingLogIn.Repositories.*;
 import com.example.testingLogIn.StatisticsModel.SectionStudentCount;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -80,6 +87,21 @@ public class SectionServices {
 
     public List<StudentDTO> getEnrolledStudentToSection(int sectionId){
         return enrollmentServices.getEnrolledStudentsBySection(sectionId);
+    }
+
+    public Map<String,InputStreamResource> downloadEnrolledStudentToSection(int sectionId){
+        Section section = sectionRepo.findById(sectionId).orElseThrow(()->new NullPointerException("Section Information Not Found"));
+        SchoolYearSemester sem = Optional.ofNullable(semRepo.findCurrentActive()).orElseThrow(()->new NullPointerException("School Year Not Found"));
+        String fileName = section.getSectionName()+"_"+sem.toString()+"Records.csv";
+        ByteArrayOutputStream boas = new ByteArrayOutputStream();
+        try {
+            boas.write("Student Name\n".getBytes(StandardCharsets.UTF_8));
+            for(StudentDTO student : enrollmentServices.getEnrolledStudentsBySection(sectionId))
+                boas.write((student.getFullName()+"\n").getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return Map.of(fileName,new InputStreamResource(new ByteArrayInputStream(boas.toByteArray())));
     }
 
     public List<SectionDTO> getAllSections(boolean willCountStud,String sortBy, String search){

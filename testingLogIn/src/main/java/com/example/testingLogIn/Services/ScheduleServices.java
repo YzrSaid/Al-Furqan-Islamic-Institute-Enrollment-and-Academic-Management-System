@@ -16,9 +16,14 @@ import com.example.testingLogIn.Repositories.sySemesterRepo;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserModel;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.UserRepo;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,10 +69,7 @@ public class ScheduleServices {
     }
 
     public List<ScheduleDTO> getSchedulesByTeacher(String teacherName){
-        UserModel teacher = getTeacherByName(teacherName.toLowerCase());
-        if(teacher == null){
-            throw new NullPointerException();
-        }
+        UserModel teacher = userRepo.findByFullName(teacherName.toLowerCase()).orElseThrow(()->new NullPointerException("Teacher Information Not Found"));
         return  scheduleRepo.findTeacherchedules(teacher.getStaffId()).stream()
                             .sorted(Comparator
                                     .comparing(Schedule::getDay)
@@ -75,6 +77,33 @@ public class ScheduleServices {
                             .map(Schedule::mapper)
                             .collect(Collectors.toList());
     }
+
+    public InputStreamResource downloadTeacherSchedule(String teacherName){
+        UserModel teacher = userRepo.findByFullName(teacherName.toLowerCase()).orElseThrow(()->new NullPointerException("Teacher Information Not Found"));
+        List<Schedule> teacherSchedule =  scheduleRepo.findTeacherchedules(teacher.getStaffId()).stream()
+                .sorted(Comparator
+                        .comparing(Schedule::getDay)
+                        .thenComparing(Schedule::getTimeStart)).toList();
+
+        if(teacherSchedule.isEmpty())
+            throw new NullPointerException("Selected teacher doest not have a schedule");
+
+        ByteArrayOutputStream boas = new ByteArrayOutputStream();
+        try {
+            boas.write("Section,Subject,Start,End\n".getBytes(StandardCharsets.UTF_8));
+            for(Schedule schedule : teacherSchedule){
+                boas.write(String.format("%s,%s,%s,%s\n",schedule.getSection().toString(),
+                            schedule.getSubject().getSubjectName(),
+                            NonModelServices.formattedTime(schedule.getTimeStart()),
+                            NonModelServices.formattedTime(schedule.getTimeEnd())).getBytes(StandardCharsets.UTF_8));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new InputStreamResource(new ByteArrayInputStream(boas.toByteArray()));
+    }
+
+
 
     public List<ScheduleDTO> getLoggedInTeacherSched(){
         UserModel teacher = null;
@@ -93,10 +122,31 @@ public class ScheduleServices {
         return null;
     }
 
+    public List<?> downloadSectionSchedules(int sectionNum){
+        SectionDTO section = sectionService.getSection(sectionNum);
+
+        List<Schedule> schedules = scheduleRepo.findSectionSchedules(section.getNumber()).stream()
+                .sorted(Comparator
+                        .comparing(Schedule::getDay)
+                        .thenComparing(Schedule::getTimeStart)).toList();
+
+        ByteArrayOutputStream boas = new ByteArrayOutputStream();
+        try {
+            boas.write("Teacher,Subject,Start,End\n".getBytes(StandardCharsets.UTF_8));
+            for(Schedule schedule : schedules){
+                boas.write(String.format("%s,%s,%s,%s\n",schedule.getTeacher().getFullName(),
+                        schedule.getSubject().getSubjectName(),
+                        NonModelServices.formattedTime(schedule.getTimeStart()),
+                        NonModelServices.formattedTime(schedule.getTimeEnd())).getBytes(StandardCharsets.UTF_8));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return List.of(section.getSectionName()+"_Schedule.csv",new InputStreamResource(new ByteArrayInputStream(boas.toByteArray())));
+    }
+
     public List<ScheduleDTO> getSchedulesBySection(int sectionNum){
         SectionDTO section = sectionService.getSection(sectionNum);
-        if(section == null)
-            throw new NullPointerException("Section Information Not Found");
 
         return scheduleRepo.findSectionSchedules(section.getNumber()).stream()
                 .sorted(Comparator
@@ -141,21 +191,20 @@ public class ScheduleServices {
                     }).toList();
     }
 
-    public Map<Integer,ScheduleDTO> updateSchedule(ScheduleDTO schedDTO){
-        Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElseThrow(NullPointerException::new);
-        UserModel t = userRepo.findById(schedDTO.getTeacherId()).orElseThrow(UnknownError::new);
+    public ScheduleDTO updateSchedule(ScheduleDTO schedDTO){
+        Schedule toUpdate = scheduleRepo.findById(schedDTO.getScheduleNumber()).orElseThrow(()->new NullPointerException("Schedule Record Not Found"));
+        UserModel t = userRepo.findById(schedDTO.getTeacherId()).orElseThrow(()->new NullPointerException("Selected teacher not found"));
         List<Schedule> res = scheduleRepo.findSubjectSectionSchedule(schedDTO.getSubjectId()
                 ,toUpdate.getSection().getNumber(),t.getStaffId());
         if(toUpdate.isNotDeleted()){
             Schedule updated = ScheduleDTOtoSchedule(schedDTO);
             UserModel teacher = updated.getTeacher();
             Section section = updated.getSection();
-            if(isTeacherSchedConflict(teacher,schedDTO,false)){
-                return Map.of(1,new ScheduleDTO());
-            }else if(isSectionSchedConflict(section, schedDTO,false)){
-                return Map.of(2,new ScheduleDTO());
-            }else if(!res.isEmpty())
-                return Map.of(3,new ScheduleDTO());
+
+            if(isTeacherSchedConflict(teacher,schedDTO,false))
+                throw new IllegalArgumentException("Conflict with the Teacher's other existing schedule");
+            else if(isSectionSchedConflict(section, schedDTO,false))
+                throw new IllegalArgumentException("Conflict with the Section's other existing schedule");
             
             toUpdate.setTeacher(updated.getTeacher());
             toUpdate.setSubject(updated.getSubject());
@@ -165,10 +214,10 @@ public class ScheduleServices {
             toUpdate.setTimeEnd(updated.getTimeEnd());
             
             Schedule updatedSched = scheduleRepo.save(toUpdate);
-            return Map.of(4,updatedSched.mapper());
+            return updatedSched.mapper();
             
         }
-        return Map.of(5,new ScheduleDTO());
+        throw new NullPointerException("Schedule Record Not Found");
     }
     
     public boolean deleteSchedule(int schedNum){
@@ -225,16 +274,6 @@ public class ScheduleServices {
                        .isNotDeleted(true)
                        .build();
     }
-    
-    private UserModel getTeacherByName(String teacherName){
-        return userRepo.findAll().stream()
-                            .filter(t -> t.isNotDeleted() &&
-                                        t.getRole().equals(Role.TEACHER) &&
-                                       teacherName.toLowerCase().contains(t.getFirstname().toLowerCase()) &&
-                                       teacherName.toLowerCase().contains(t.getLastname().toLowerCase()))
-                            .findFirst().orElse(null);
-    }
-
     //FOR TEACHER UNIQUE SUBJECTS HANDLING
     public List<SubjectSectionCount> getTeacherSubjects(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -59,8 +59,21 @@
 
                     <!-- Enrollment Buttons -->
                     <div class="enrollment-buttons">
-                        <button type="button" class="btn-confirm" data-open-modal="newStudentModal"
-                            title="Add New Student">Add New Student</button>
+                        <div class="dropdown">
+                            <div class="status-container">
+
+                                <button type="button" class="btn-confirm dropdown-status-btn" id="bulk-enroll-btn"
+                                    title="Add New Student">
+                                    Add New Student <i class="fas fa-chevron-down"></i>
+                                </button>
+
+                            </div>
+                            <div class="dropdown-status-content" id="dropdown-listing">
+                                <a href="" data-open-modal="newStudentModal">Individual Enrollment</a>
+                                <a href="" data-open-modal="newStudentModalBulk">Bulk Enrollment</a>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -485,6 +498,151 @@
         </div>
     </div>
 
+    <!-- Modal for new/transferee Student Enrollment (bulk) -->
+    <div id="newStudentModalBulk" class="student-bulk-modal modal">
+        <div class="student-bulk-modal-content scroll-lock">
+            <div class="modal-body">
+                <h1>Bulk Enrollment</h1>
+                <div class="bulk-enrollment-container" id="bulkEnrollmentContainer">
+                    <!-- Enrollment Form Template -->
+                    <div class="enrollment-form">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <h6>Student #1</h6>
+                            <div class="right-section">
+                                <button type="button" class="delete-btn btn-none"
+                                    onclick="event.stopPropagation(); removeEnrollmentForm(this);">
+                                    <img th:src="@{/images/icons/cross.png}" alt="delete-icon">
+                                </button>
+                                <span class="accordion-toggle">▼</span>
+                            </div>
+
+                        </div>
+                        <div class="accordion-body">
+                            <form class="studentForm">
+                                <h5>Student Information</h5>
+                                <div class="header">
+                                    <h2>Personal Information</h2>
+                                </div>
+
+                                <div class="student-form-group address-div fullName">
+                                    <div>
+                                        <label for="studentFirstName">First Name:</label>
+                                        <input type="text" name="firstname" class="name first-name" required>
+                                    </div>
+                                    <div>
+                                        <label for="studentMiddleName">Middle Name:</label>
+                                        <input type="text" name="middlename" class="name middle-name"
+                                            placeholder="Optional">
+                                    </div>
+                                    <div>
+                                        <label for="studentLastName">Last Name:</label>
+                                        <input type="text" name="lastname" class="name last-name" required>
+                                    </div>
+                                </div><br>
+
+                                <div class="student-form-group address-div fullName">
+                                    <label class="sex-label">Sex:</label>
+                                    <select name="gender" class="name" required>
+                                        <option value="" disabled selected>Choose a Sex</option>
+                                        <option value="MALE">Male</option>
+                                        <option value="FEMALE">Female</option>
+                                    </select>
+
+                                    <label>Birthdate:</label>
+                                    <input type="date" class="name" name="birthdate" required>
+
+                                    <div class="checkbox">
+                                        <label for="scholar">Scholar:</label>
+                                        <input type="checkbox" id="scholar">
+                                    </div>
+
+                                    <div class="checkbox">
+                                        <label for="isTransfereeRec">Transferee:</label>
+                                        <input type="checkbox" id="isTransfereeRec">
+                                    </div>
+                                </div><br>
+
+                                <div class="student-form-group address-div fullName">
+                                    <label>Place of Birth:</label>
+                                    <input required type="text" name="placeOfBirth" class="place-of-birth">
+
+                                    <label>Email:</label>
+                                    <input type="email" name="email" class="name" placeholder="Optional">
+
+                                </div><br>
+
+                                <div>
+                                    <label>Address:</label>
+                                    <div class="student-form-group address-div">
+                                        <input type="text" name="street" class="bulkAddress" required
+                                            placeholder="Street">
+                                        <input type="text" name="barangay" class="bulkAddress" required
+                                            placeholder="Barangay">
+                                        <input type="text" name="city" class="bulkAddress" required placeholder="City">
+                                    </div>
+                                </div><br>
+
+                                <div class="header">
+                                    <h2>Parent's/Guardian's Information</h2>
+                                </div>
+
+
+                                <h6>Father's Information</h6>
+                                <div class="student-form-group address-div">
+                                    <label>Name:</label>
+                                    <input required type="text" name="fatherName" class="parent-name">
+
+                                    <label>Occupation:</label>
+                                    <input required type="text" name="fatherOccupation" class="parent-occupation">
+                                </div><br>
+
+                                <h6>Mother's Information</h6>
+                                <div class="student-form-group address-div">
+                                    <label>Name:</label>
+                                    <input required type="text" name="motherName" class="parent-name">
+
+                                    <label>Occupation:</label>
+                                    <input required type="text" name="motherOccupation" class="parent-occupation">
+                                </div><br>
+
+                                <h6>Guardian's Information</h6>
+                                <div class="student-form-group address-div">
+                                    <label>Name:</label>
+                                    <input required type="text" name="guardianName" class="parent-name">
+
+                                    <label>Occupation:</label>
+                                    <input required type="text" name="guardianOccupation" class="parent-occupation">
+                                </div><br>
+
+                                <div class="student-form-group address-div">
+                                    <label>Contact Number:</label>
+                                    <input required type="text" name="guardianContactNumber" class="guardian-number">
+
+                                    <label>Address:</label>
+                                    <input required type="text" name="guardianAddress" class="guardian-address">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Add Button -->
+                    <button type="button" class="btn-none" onclick="addEnrollmentForm()">
+                        <img th:src="@{/images/icons/add-button.png}" alt="Add" width="20">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Footer Buttons -->
+            <div class="modal-buttons">
+                <button type="button" class="btn-confirm" data-open-modal="confirmationModal" data-message="Are you sure you want to submit these records?">Submit All
+                    Enrollments</button>
+                <button type="button" class="btn-cancel" id="cancelStudent" data-close-modal="newStudentModalBulk"
+                    onclick="cancelBulkEnrollment()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Modal for New/Transferee Student Enrollment -->
     <div id="newStudentModal" class="student-modal modal">
         <div class="student-modal-content scroll-lock">
@@ -850,6 +1008,226 @@
 </body>
 
 <script>
+    let formCount = 1;
+
+    function cancelBulkEnrollment() {
+        const container = document.getElementById("bulkEnrollmentContainer");
+        const forms = container.querySelectorAll(".enrollment-form");
+
+        // Keep only the first form; remove the rest
+        forms.forEach((form, index) => {
+            if (index > 0) {
+                form.remove();
+            } else {
+                // Optional: also reset the first form
+                const inputs = form.querySelectorAll("input, select");
+                inputs.forEach(input => {
+                    if (input.type === "checkbox") {
+                        input.checked = false;
+                    } else {
+                        input.value = "";
+                    }
+                });
+
+                // Collapse it
+                const body = form.querySelector(".accordion-body");
+                body.style.display = "none";
+
+                // Reset heading
+                const header = form.querySelector(".accordion-header h6");
+                header.textContent = `Student #1`;
+            }
+        });
+
+        // Reset form count
+        formCount = 1;
+    }
+    window.addEventListener("DOMContentLoaded", () => {
+        const container = document.getElementById("bulkEnrollmentContainer");
+
+        // Function to update the header of the form based on name input
+        const updateHeader = (form) => {
+            const header = form.querySelector(".accordion-header h6");
+            const firstName = form.querySelector(".first-name");
+            const middleName = form.querySelector(".middle-name");
+            const lastName = form.querySelector(".last-name");
+
+            const fullName = [firstName.value, middleName.value, lastName.value]
+                .filter(name => name.trim() !== '')
+                .join(' ');
+
+            header.textContent = fullName ? `${header.textContent.split(' - ')[0]} - ${fullName}` : header.textContent.split(' - ')[0];
+        };
+
+        // Add event listener to the container to handle input changes for all forms
+        container.addEventListener("input", (event) => {
+            // Only handle input events from relevant fields (first, middle, last name inputs)
+            const form = event.target.closest('.enrollment-form');
+            if (form && (event.target.classList.contains('first-name') ||
+                event.target.classList.contains('middle-name') ||
+                event.target.classList.contains('last-name'))) {
+                updateHeader(form);
+            }
+        });
+
+        // Ensure the headers are updated for all forms when the page loads or a new form is added
+        const updateAllHeaders = () => {
+            const forms = container.querySelectorAll(".enrollment-form");
+            forms.forEach(form => updateHeader(form));
+        };
+
+        // Initial header update when the page is loaded
+        updateAllHeaders();
+
+        // Ensure headers are updated when a new form is added
+        document.getElementById("addFormButton").addEventListener("click", () => {
+            setTimeout(updateAllHeaders, 10);
+        });
+    });
+
+
+    function removeEnrollmentForm(button) {
+        const enrollmentForm = button.closest('.enrollment-form');
+        const container = document.getElementById("bulkEnrollmentContainer");
+        const existingForms = container.querySelectorAll(".enrollment-form");
+
+        if (existingForms.length <= 1) {
+            showErrorModal("Bulk Enrollment must have at least one item.")
+            return;
+        }
+
+        if (enrollmentForm) {
+            enrollmentForm.remove();
+        }
+
+        updateStudentNumbers();
+        updateAllHeaders();
+    }
+
+    function updateStudentNumbers() {
+        const container = document.getElementById("bulkEnrollmentContainer");
+        const existingForms = container.querySelectorAll(".enrollment-form");
+
+        // Update student numbers for each form
+        existingForms.forEach((form, index) => {
+            const header = form.querySelector(".accordion-header h6");
+            const studentNumber = index + 1;
+            const firstName = form.querySelector(".first-name").value;
+            const middleName = form.querySelector(".middle-name").value;
+            const lastName = form.querySelector(".last-name").value;
+
+            const fullName = [firstName, middleName, lastName]
+                .filter(name => name.trim() !== '')
+                .join(' ');
+
+            header.textContent = fullName ? `Student #${studentNumber} - ${fullName}` : `Student #${studentNumber}`;
+        });
+    }
+
+    function updateAllHeaders() {
+        const container = document.getElementById("bulkEnrollmentContainer");
+        const forms = container.querySelectorAll(".enrollment-form");
+
+        forms.forEach((form, index) => {
+            const header = form.querySelector(".accordion-header h6");
+            const studentNumber = index + 1;
+            const firstName = form.querySelector(".first-name").value;
+            const middleName = form.querySelector(".middle-name").value;
+            const lastName = form.querySelector(".last-name").value;
+
+            const fullName = [firstName, middleName, lastName]
+                .filter(name => name.trim() !== '')
+                .join(' ');
+
+            header.textContent = fullName ? `Student #${studentNumber} - ${fullName}` : `Student #${studentNumber}`;
+        });
+    }
+
+
+    function addEnrollmentForm() {
+        const container = document.getElementById("bulkEnrollmentContainer");
+        const existingForms = container.querySelectorAll(".enrollment-form");
+
+        // Count the number of visible forms
+        let studentCount = 0;
+        existingForms.forEach(form => {
+            if (form.style.display !== 'none') {  // Ensure we only count visible forms
+                studentCount++;
+            }
+        });
+
+        // If no forms exist, show an error message
+        if (studentCount === 0) {
+            alert("Bulk enrollment must have at least one item.");
+            return;
+        }
+
+        // Clone the last form if any form exists
+        let newForm = existingForms[existingForms.length - 1].cloneNode(true);
+
+        // Reset all form inputs to their default values
+        const inputs = newForm.querySelectorAll("input, select");
+        inputs.forEach(input => {
+            if (input.type === "checkbox") {
+                input.checked = false;
+            } else {
+                input.value = "";
+            }
+        });
+
+        // Update student number
+        const studentNumber = studentCount + 1; // Start from the next available number
+        newForm.querySelector("h6").textContent = `Student #${studentNumber}`;
+
+        // Re-bind delete button
+        const deleteBtn = newForm.querySelector(".delete-btn");
+        deleteBtn.onclick = function (event) {
+            event.stopPropagation();
+            removeEnrollmentForm(this);
+        };
+
+        // Append the new form before the "Add" button
+        container.insertBefore(newForm, container.lastElementChild);
+    }
+
+
+    function toggleAccordion(element) {
+        const body = element.nextElementSibling;
+        const toggleIcon = element.querySelector(".accordion-toggle");
+
+        if (body.style.display === "none" || body.style.display === "") {
+            body.style.display = "block";
+            toggleIcon.textContent = "▲";
+        } else {
+            body.style.display = "none";
+            toggleIcon.textContent = "▼";
+        }
+    }
+
+
+    function submitAllEnrollments() {
+        const allForms = document.querySelectorAll(".studentForm");
+        const enrollmentData = [];
+
+        allForms.forEach(form => {
+            const data = {};
+            const inputs = form.querySelectorAll("input, select");
+
+            inputs.forEach(input => {
+                if (input.type === "checkbox") {
+                    data[input.name] = input.checked;
+                } else {
+                    data[input.name] = input.value;
+                }
+            });
+
+            enrollmentData.push(data);
+        });
+
+        console.log("Submitting bulk enrollment data:", enrollmentData);
+
+        // You can send `enrollmentData` via AJAX/fetch to your server
+    }
     // // this is for the popover for the scholar
     // const dropdownScholarBtn = document.getElementById("dropdown-scholar");
     // const popover = document.getElementById("scholar-popover");
@@ -1238,7 +1616,7 @@
             middleName: document.getElementById("studentMiddleName")?.value?.trim() || null,
             gender: document.getElementById("studgender").value || null,
             birthdate: document.getElementById("studbirthdate").value || null,
-            email : document.getElementById("studEmail").value || null,
+            email: document.getElementById("studEmail").value || null,
             birthPlace: birthplace,
             address: {
                 street: document.getElementById("studstreet")?.value?.trim(),

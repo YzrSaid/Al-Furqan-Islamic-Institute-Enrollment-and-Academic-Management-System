@@ -782,7 +782,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let confirmationModal = document.getElementById("confirmationModal");
     confirmationModal.style.visibility = "hidden";
     confirmationModal.style.opacity = "0";
-
+    console.log(action);
     switch (action) {
       case "updateMyAccount":
         updateMyAccount();
@@ -1149,6 +1149,9 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "editDiscounts":
         updateDiscounts();
+        break;
+      case "addAllStudent":
+        addAllStudent();
         break;
       case "editStudentReport":
         updateStudentRecord();

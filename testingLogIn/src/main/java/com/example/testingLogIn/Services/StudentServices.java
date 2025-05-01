@@ -9,6 +9,7 @@ import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -53,8 +54,16 @@ public class StudentServices {
         return studentRepo.findByName(studentName).map(Student::DTOmapper).orElseThrow(NullPointerException::new);
     }
 
+    public List<String> addBulkStudent(List<StudentDTO> students){
+        List<String> existingNames = new ArrayList<>();
+        for(StudentDTO stud : students){
+            if(!addStudent(stud))
+                existingNames.add(stud.generatedFullName());
+        }
+        return existingNames;
+    }
+
     public boolean addStudent(StudentDTO student){
-        String fullName = student.getFirstName()+" "+ Optional.ofNullable(student.getMiddleName()).map(mn -> mn+" ").orElse(" ")+student.getLastName();
         GradeLevel gradeLevel = null;
         if(student.getLastGradeLevelId() != null)
             gradeLevel = gradeLevelRepo.findById(student.getLastGradeLevelId()).orElse(null);
@@ -64,7 +73,7 @@ public class StudentServices {
         for(int i=count.length() ; i<4 ; i++){
             count.insert(0, "0");
         }
-        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(null,fullName))
+        if(studentRepo.existsByNameIgnoreCaseAndNotDeleted(null,student.generatedFullName().toLowerCase()))
             return false;
         else{
             Student newStudent = Student.builder()
@@ -72,7 +81,7 @@ public class StudentServices {
                                     .firstName(student.getFirstName())
                                     .lastName(student.getLastName())
                                     .middleName(student.getMiddleName())
-                                    .fullName(student.getFirstName()+" "+ Optional.ofNullable(student.getMiddleName()).map(mn -> mn+" ").orElse("")+student.getLastName())
+                                    .fullName(student.generatedFullName())
                                     .gender(student.getGender())
                                     .email(student.getEmail())
                                     .birthPlace(student.getBirthPlace())

@@ -70,7 +70,16 @@ public class StudentController {
         else
             return new ResponseEntity<>(studentService.getTransfereeStudents(),HttpStatus.OK);
     }
- 
+
+    @PostMapping("/add-bulk")
+    public ResponseEntity<Object> addBulkNewStudents(@RequestBody List<StudentDTO> newStudents){
+        List<String> result = studentService.addBulkStudent(newStudents);
+        if(result.isEmpty())
+            return ResponseEntity.ok().body("Successfully saved new students");
+        else
+            return ResponseEntity.badRequest().body(result);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<String> addStudents(@RequestBody StudentDTO students){
         try{

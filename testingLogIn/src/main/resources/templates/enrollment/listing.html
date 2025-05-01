@@ -505,7 +505,7 @@
                 <h1>Bulk Enrollment</h1>
                 <div class="bulk-enrollment-container" id="bulkEnrollmentContainer">
                     <!-- Enrollment Form Template -->
-                    <div class="enrollment-form">
+                    <form class="enrollment-form">
                         <div class="accordion-header" onclick="toggleAccordion(this)">
                             <h6>Student #1</h6>
                             <div class="right-section">
@@ -527,16 +527,16 @@
                                 <div class="student-form-group address-div fullName">
                                     <div>
                                         <label for="studentFirstName">First Name:</label>
-                                        <input type="text" name="firstname" class="name first-name" required>
+                                        <input type="text" name="firstName" class="name first-name" required>
                                     </div>
                                     <div>
                                         <label for="studentMiddleName">Middle Name:</label>
-                                        <input type="text" name="middlename" class="name middle-name"
+                                        <input type="text" name="middleName" class="name middle-name"
                                             placeholder="Optional">
                                     </div>
                                     <div>
                                         <label for="studentLastName">Last Name:</label>
-                                        <input type="text" name="lastname" class="name last-name" required>
+                                        <input type="text" name="lastName" class="name last-name" required>
                                     </div>
                                 </div><br>
 
@@ -553,18 +553,18 @@
 
                                     <div class="checkbox">
                                         <label for="scholar">Scholar:</label>
-                                        <input type="checkbox" id="scholar">
+                                        <input type="checkbox" name="scholar" id="scholar">
                                     </div>
 
                                     <div class="checkbox">
                                         <label for="isTransfereeRec">Transferee:</label>
-                                        <input type="checkbox" id="isTransfereeRec">
+                                        <input type="checkbox" name="transferee" id="transfereeRec">
                                     </div>
                                 </div><br>
 
                                 <div class="student-form-group address-div fullName">
                                     <label>Place of Birth:</label>
-                                    <input required type="text" name="placeOfBirth" class="place-of-birth">
+                                    <input required type="text" name="birthPlace" class="place-of-birth">
 
                                     <label>Email:</label>
                                     <input type="email" name="email" class="name" placeholder="Optional">
@@ -616,14 +616,14 @@
 
                                 <div class="student-form-group address-div">
                                     <label>Contact Number:</label>
-                                    <input required type="text" name="guardianContactNumber" class="guardian-number">
+                                    <input required type="text" name="guardianContactNum" class="guardian-number">
 
                                     <label>Address:</label>
                                     <input required type="text" name="guardianAddress" class="guardian-address">
                                 </div>
                             </form>
                         </div>
-                    </div>
+                    </form>
 
                     <!-- Add Button -->
                     <button type="button" class="btn-none" onclick="addEnrollmentForm()">
@@ -634,7 +634,7 @@
 
             <!-- Modal Footer Buttons -->
             <div class="modal-buttons">
-                <button type="button" class="btn-confirm" data-open-modal="confirmationModal" data-message="Are you sure you want to submit these records?">Submit All
+                <button type="button" class="btn-confirm" data-open-modal="confirmationModal" data-action="addAllStudent" data-message="Are you sure you want to submit these records?">Submit All
                     Enrollments</button>
                 <button type="button" class="btn-cancel" id="cancelStudent" data-close-modal="newStudentModalBulk"
                     onclick="cancelBulkEnrollment()">Cancel</button>
@@ -2840,6 +2840,43 @@
         }, 100);
     }
 
+    async function addAllStudent(){
+        const container = document.getElementById('bulkEnrollmentContainer');
+
+        // Get all form elements inside the container
+        const forms = container.querySelectorAll('form');
+        const newStudents = [];
+        forms.forEach((form, index) => {
+            const formData = new FormData(form);
+            const formValues = Object.fromEntries(formData.entries());
+            formValues.transferee = formValues.transferee === "on";
+            formValues.scholar = formValues.scholar === "on";
+            formValues.discountsAvailed = [];
+            formValues.address = {
+                "barangay" : formValues.barangay,
+                "city": formValues.city,
+                "street" : formValues.street
+            };
+            newStudents.push(formValues);
+        });
+
+        const response = await fetch("/students/add-bulk", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newStudents),
+            });
+
+        if(response.ok){
+            showSuccessModal("New students successfully registered",false);
+        }else{
+            const existingNames = await response.json();
+            console.log(existingNames);
+            showErrorModal("The following student names already exists. Check console");
+        }
+        goList(1);
+    }
 </script>
 
 </html>

@@ -1575,7 +1575,27 @@ table td {
     color: green;
     font-weight: bold;
 }
-
+.school-year-header {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+}
+.school-year-actions {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.school-year-actions .delete-school-year-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* or set a fixed height if needed */
+    background: none;
+    border: none;
+    padding: 5px;
+}
 .text-red {
     color: red;
     font-weight: bold;

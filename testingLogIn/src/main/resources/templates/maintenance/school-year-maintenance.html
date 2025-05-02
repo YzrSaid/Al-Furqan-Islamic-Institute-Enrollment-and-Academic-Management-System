@@ -133,6 +133,27 @@
             </div>
         </div>
 
+        <div id="revenueModal" class="revenue-modal modal">
+            <div class="revenue-modal croll-lock">
+                <div class="modal-body">
+                    <h2>Add New School Year</h2>
+                    <form method="post" id="schoolYearForm">
+                        <label for="school-year-name">School Year:</label>
+                        <input type="text" id="schoolYearName" required placeholder="YYYY-YYYY" pattern="\d{4}-\d{4}"
+                            title="Format: YYYY-YYYY">
+                    </form>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-confirm" data-action="addSchoolYear"
+                        data-message="Are you sure you want to add this school year?" id="confirmSchoolYear"
+                        data-open-modal="confirmationModal">
+                        Confirm
+                    </button>
+                    <button type="button" data-close-modal="schoolYearModal" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
         <div id="evaluations" class="list-of-payments-modal modal">
             <div class="list-of-payments-modal-content scroll-lock">
                 <div class="modal-body">
@@ -356,6 +377,7 @@
     //         })
     //         .catch(error => console.error("Error fetching school years or semesters:", error));
     // }
+    
 
     function fetchSchoolYears() {
         Promise.all([
@@ -393,33 +415,40 @@
                         }
 
                         let semesterClass = sem.sem.toLowerCase() === "first" ? "first-sem" : "second-sem";
-                        var syName = sy.schoolYear+"";
+                        var syName = sy.schoolYear + "";
                         console.log(syName);
                         // Add School Year column only in the first row (rowspan)
                         if (index === 0) {
-                            let schoolYearContent = `<span class="school-year-text">${syName}</span>
-                            <button class="delete-school-year-btn" 
-                                        onclick="printReport(${sy.schoolYearNum},'${syName}')">Print enrollment Report
-                                </button>
-                                <button class="delete-school-year-btn" 
-                                        onclick="viewReports(${sy.schoolYearNum})">View reports
-                                </button>`;
-
-                            // Add delete icon only if school year can be deleted
-                            if (canDeleteSchoolYear) {
-                                schoolYearContent += `
-                                 <button class="delete-school-year-btn" 
-                                        data-action="deleteSchoolYear"
-                                        data-message="Are you sure you want to delete this entire school year?"
-                                        data-id="${sy.schoolYearNum}"
-                                        data-require-password="true"
-                                        data-open-modal="confirmationModal">
-                                    <img src="/images/icons/bin.png" title="Delete School Year">
-                                </button>`;
-                            }
+                            let schoolYearContent = `
+                                <div class="school-year-header">
+                                    <span class="school-year-text">${syName}</span>
+                                    <div class="school-year-actions">
+                                        <div class="dropdown school-year-dropdown">
+                                            <button class="dropdown-status-btn">
+                                                <i class="fas fa-ellipsis-v" title="School Year Actions"></i>
+                                            </button>
+                                            <div class="dropdown-status-content normal-mob-text">
+                                                <a href="#" onclick="printReport(${sy.schoolYearNum}, '${syName}')">Print Enrollment Report</a>
+                                                <a href="#" onclick="viewReports(${sy.schoolYearNum})">View Revenue Reports</a>
+                                            </div>
+                                        </div>
+                                        ${canDeleteSchoolYear
+                                            ? `<button class="delete-school-year-btn" 
+                                                    data-action="deleteSchoolYear"
+                                                    data-message="Are you sure you want to delete this entire school year?"
+                                                    data-id="${sy.schoolYearNum}"
+                                                    data-require-password="true"
+                                                    data-open-modal="confirmationModal">
+                                                <img src="/images/icons/bin.png" title="Delete School Year">
+                                            </button>`
+                                            : ""}
+                                    </div>
+                                </div>
+                            `;
 
                             row.innerHTML = `<td rowspan="${rowSpanCount}" class="school-year-cell">${schoolYearContent}</td>`;
                         }
+
 
                         // Show "Finish Semester" only ONCE per school year under the first active & NOT finished semester
                         let finishSemesterOption = "";
@@ -854,8 +883,8 @@
         const deleteButton = event.target.closest('.delete-school-year-btn');
         if (deleteButton && deleteButton.dataset.action === "deleteSchoolYear") {
             const syNum = deleteButton.dataset.id;
-                deleteSchoolYear(syNum);
-        
+            deleteSchoolYear(syNum);
+
             return;
         }
         const target = event.target;
@@ -869,22 +898,22 @@
         }
     });
 
-    async function printReport(syNum,schoolYear){
+    async function printReport(syNum, schoolYear) {
         try {
             console.log(schoolYear);
             const response = await fetch(`/schoolyear/reports/${syNum}`);
-            
+
             if (!response.ok) throw new Error('File download failed');
-            
+
             // Get filename from headers
             const filename = response.headers
-            .get('Content-Disposition')
-            ?.split('filename=')[1]
-            .replace(/"/g, '');
+                .get('Content-Disposition')
+                ?.split('filename=')[1]
+                .replace(/"/g, '');
 
             // Convert to Blob
             const blob = await response.blob();
-            
+
             // Create download link
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -894,18 +923,19 @@
             a.click();
             a.remove();
             window.URL.revokeObjectURL(url);
-        
-            } catch (error) {
-                console.error('Download error:', error);}
+
+        } catch (error) {
+            console.error('Download error:', error);
+        }
     }
 
-    async function viewReports(syNum){
+    async function viewReports(syNum) {
         const response = await fetch(`/schoolyear/another-reports/${syNum}`);
 
-        if(response.ok){
+        if (response.ok) {
             const result = await response.json();
             console.log(result);
-        }else{
+        } else {
             showErrorModal("Transaction Failed. Please try again later");
         }
     }

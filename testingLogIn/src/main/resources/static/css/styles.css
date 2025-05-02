@@ -551,6 +551,7 @@ body {
 .sort-btns-container {
   display: flex;
   width: 60%;
+  gap: 30px;
 }
 .sort-year,
 .sort-grade,
@@ -1042,9 +1043,31 @@ select option[value=""] {
   width: 20%;
 }
 
+.enrollment-report-table th:nth-child(1),
+.enrollment-report-table td:nth-child(1) {
+  width: 15%;
+}
+.enrollment-report-table th:nth-child(2),
+.enrollment-report-table td:nth-child(2) {
+  width: 30%;
+}
+.enrollment-report-table th:nth-child(3),
+.enrollment-report-table td:nth-child(3) {
+  width: 15%;
+}
+.enrollment-report-table th:nth-child(4),
+.enrollment-report-table td:nth-child(4) {
+  width: 20%;
+}
+.enrollment-report-table th:nth-child(5),
+.enrollment-report-table td:nth-child(5) {
+  width: 20%;
+}
+
+
 .payment-label {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .payment-table th:nth-child(1),
@@ -1531,7 +1554,8 @@ table td {
 .view-list-of-students-table,
 .view-list-of-payments-table,
 .itemized-table,
-.grade-table {
+.grade-table,
+.enrollment-report-table {
   width: 100%;
 }
 .mini-table {
@@ -1547,9 +1571,17 @@ table td {
   background-color: rgb(255, 255, 255);
   width: 70%;
 }
+.text-green {
+    color: green;
+    font-weight: bold;
+}
 
+.text-red {
+    color: red;
+    font-weight: bold;
+}
 .status {
-  color: rgb(231, 20, 20);
+  /* color: rgb(231, 20, 20); */
   padding: 5px 0px;
   border-radius: 5px;
   font-weight: 500;
@@ -2009,13 +2041,13 @@ table td {
   justify-content: center;
 }
 .btn-none img {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 .btn-none {
-    border: none;
-    background-color: transparent;
-    outline: none;
+  border: none;
+  background-color: transparent;
+  outline: none;
 }
 .add-something-btn {
   padding: 12px;
@@ -2179,16 +2211,16 @@ table td {
   z-index: 1001;
 }
 .student-bulk-modal-content {
-    overflow-y: auto;
-    background: white !important;
-    border-radius: 5px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    width: 1150px;
-    height: 90vh;
-    text-align: left;
-    overflow-x: hidden;
-    position: relative;
-    z-index: 1001;
+  overflow-y: auto;
+  background: white !important;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 1150px;
+  height: 90vh;
+  text-align: left;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1001;
 }
 .half {
   width: 65%;
@@ -2266,7 +2298,7 @@ input.guardian-address {
 }
 
 .student-form-group .place-of-birth-bulk {
-    width: 100%;
+  width: 100%;
 }
 
 .input-label-pair {
@@ -2804,6 +2836,7 @@ input[type="checkbox"] {
 .grade-level-modal-content select,
 .table-wrapper select,
 .subject-modal-content select,
+.sort-btns-container select,
 .student-form-group select,
 .teacher-modal-content select,
 .section-modal-content select,
@@ -3954,7 +3987,6 @@ input.place-of-birth-report {
   width: 400px;
 }
 
-
 .half {
   width: 65%;
 }
@@ -4025,6 +4057,14 @@ input.staff-id-report {
   border-radius: 8px;
   padding: 20px;
   min-height: 20vh;
+  font-weight: 600;
+  background-color: #cbe9cc;
+}
+.full-column-main {
+  width: 100%;
+  border-radius: 8px;
+  padding: 20px;
+  min-height: 50vh;
   font-weight: 600;
   background-color: #cbe9cc;
 }

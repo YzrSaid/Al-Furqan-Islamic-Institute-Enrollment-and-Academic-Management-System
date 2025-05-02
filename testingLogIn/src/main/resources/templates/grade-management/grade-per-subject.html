@@ -20,12 +20,12 @@
             <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
             <div id="theTextLink" class="text-link">
-                <h4>Science</h4>
+                <h4></h4>
                 <p>Main</p>
                 <p>/</p>
                 <p>Grade Management</p>
                 <p>/</p>
-                <p id="grade-and-section">Grade 1 - Rose</p>
+                <p id="grade-and-section"></p>
                 <p>/</p>
                 <p>Science</p>
             </div>
@@ -84,7 +84,7 @@
                 <p>Grade Logs</p>
                 <div class="table-wrapper">
                     <!-- Table -->
-                    <table id="grade-logs" class="main-table" >
+                    <table id="grade-logs" class="grade-logs-table main-table" >
                         <thead>
                             <tr>
                                 <th>Graded By</th>
@@ -179,7 +179,15 @@
                                 <a href="#" class="cancel-edit" data-grade-id="${rec.studGradeId}" style="display: none;">
                                     <img src="/images/icons/cross.png" alt="cancel-icon">
                                 </a>
-                                <button data-open-modal="logsModal" data-message="Grade Logs" onclick="viewLogs(${rec.studGradeId})">Logs</button>
+                                <img 
+    src="/images/icons/log-file.png" 
+    alt="Logs" 
+    style="cursor: pointer; width: 20px; height: 30px;" 
+    data-open-modal="logsModal" 
+    data-message="Grade Logs" 
+    onclick="viewLogs(${rec.studGradeId})"
+/>
+
                             </div>
                         </td>`;
                     } else {
@@ -195,7 +203,15 @@
                                     <a href="#" class="cancel-edit" data-grade-id="${rec.studGradeId}" style="display: none;">
                                         <img src="/images/icons/cross.png" alt="cancel-icon">
                                     </a>
-                                    <button data-open-modal="logsModal" data-message="Grade Logs" onclick="viewLogs(${rec.studGradeId})">Logs</button>
+                                   <img 
+    src="/images/icons/log-file.png" 
+    alt="Logs" 
+    style="cursor: pointer; width: 20px; height: 30px;" 
+    data-open-modal="logsModal" 
+    data-message="Grade Logs" 
+    onclick="viewLogs(${rec.studGradeId})"
+/>
+
                                 </div>
                             </td>
                         `;

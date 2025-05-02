@@ -20,11 +20,27 @@
             <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
             <div class="text-link" id="breadcrumb-container">
-                <h4>Enrolled</h4>
+                <h4>Enrollment Reports</h4>
                 <a href="/home">Main</a>
                 <p>/</p>
-                <a href="/enrollment/enrolled" title="You're currently in this page.">Enrollment - Enrolled</a>
+                <a href="/enrollment/enrolled" title="You're currently in this page.">Reports - Enrollment Reports</a>
             </div>
+            <div class="sort-btns-container">
+                <div class="sort-year">
+                    <label for="school-year">Year</label>
+                    <select name="year" onchange="getCurrentlyEnrolled(1)" id="school-year">
+                        <option value="0" selected>All Time</option>
+                    </select>
+                </div>
+                <div class="sort-semester">
+                    <label for="semester-sort">Semester</label>
+                    <select name="semester" onchange="getCurrentlyEnrolled(1)" id="semester-sort">
+                        <option value="" selected>All</option>
+                        <option value="First">First</option>
+                        <option value="Second">Second</option>
+                    </select>
+                </div>
+            </div> <br>
 
             <div class="search-div">
                 <!-- Searchbox and sort btn -->
@@ -32,6 +48,9 @@
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
                         <button type="button" onclick="getCurrentlyEnrolled(1)" class="search-btn">Search</button>
+                        <button type="button" class="btn-confirm" onclick="printReport()">Download Report
+                        </button>
+                        <button type="button" class="btn-neutral">Print</button>
                     </div>
                 </div>
 
@@ -67,32 +86,16 @@
         <div id="successModal">
             <p id="successModalMessage"></p>
         </div>
-       
+
 
         <div class="table-wrapper">
-            <div class="sort-btns-container">
-                <div class="sort-year">
-                    <label for="school-year">Year</label>
-                    <select name="year" onchange="getCurrentlyEnrolled(1)" id="school-year">
-                        <option value="0" selected>All Time</option>
-                    </select>
-                </div>
-                <div class="sort-semester">
-                    <label for="semester-sort">Semester</label>
-                    <select name="semester" onchange="getCurrentlyEnrolled(1)" id="semester-sort">
-                        <option value="" selected>All</option>
-                        <option value="First">First</option>
-                        <option value="Second">Second</option>
-                    </select>
-                </div>
-            </div> <br>
             <!-- Table -->
-            <table id="realginnas" class="listing-table main-table">
+            <table id="realginnas" class="enrollment-report-table main-table">
                 <thead>
                     <tr>
                         <th>Student ID</th>
                         <th>Student Name</th>
-                        <th>School Year - Semester</th>
+                        <th>SY - Sem</th>
                         <th>Status</th>
                         <th>Enrolling To</th>
                     </tr>

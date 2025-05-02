@@ -40,7 +40,7 @@
                 <div class="report-main-btns-right">
                     <button onclick="setUpEditForm()" type="button" class="btn-gray" id="editStudInfo"
                         data-open-modal="studentInformationEditModal">Edit</button>
-                    <button type="button" class="btn-neutral" id="savePdf">Save PDF</button>
+                    <!-- <button type="button" class="btn-neutral" id="savePdf">Save PDF</button> -->
                     <button type="button" class="btn-neutral" id="printStud">Print</button>
                 </div>
 
@@ -919,6 +919,51 @@
                             <input readonly type="text" id="madrasaAddress-print">
                         </div> <br>
                     </div>
+
+                    <div class="container-two">
+                        <div class="column-main">
+                            <h2>Balance Information</h2>
+                            <p>Remaining Balance</p>
+                            <div class="table-container">
+                                <table class="mini-table" id="payment-mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Req. Amount</th>
+                                            <th>Paid</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="basic-modal-buttons">
+                                <h6>Balance:</h6>
+                                <h6 id="total-balance">P0</h6>
+                            </div> <br>
+
+                        </div>
+
+                        <div class="column-main">
+                            <h2>Resources Distribution</h2>
+                            <p>Unclaimed Resources</p>
+                            <div class="table-container">
+                                <table class="mini-table" id="distribution-mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Grade Level</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div> <br>
                 </form>
             </div>
         </div>
@@ -983,7 +1028,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
 
 
                     <!-- Print Button -->
@@ -1083,7 +1128,7 @@
     async function findStudent(studentName) {
         const response = await fetch(`/students/find-student/name/${studentName}`);
         if (!response.ok) {
-           // alert("student record not found");
+            // alert("student record not found");
             return;
         }
 
@@ -1266,11 +1311,11 @@
                     <td>${grade.subjectName}</td>
                     <td>${grade.subjectGrade ? grade.subjectGrade : ""}</td>
                     <td>
-                        <div class="status-container">
-                            <div class="status" id="grade-remarks">
-                                ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
-                            </div>
+                       <div class="status-container">
+                        <div class="status ${!grade.subjectGrade ? '' : (grade.subjectGrade > 49 ? 'text-green' : 'text-red')}" id="grade-remarks">
+                            ${!grade.subjectGrade ? "" : grade.subjectGrade > 49 ? "PASSED" : "FAILED"}
                         </div>
+                    </div>
                     </td>
                 </tr>`;
                 });
@@ -1315,9 +1360,9 @@
                             <td>
                                 <div class="status-container">
                                     <div class="status">
-                                        <div class="average-remarks">
-                                            ${average === "N/A" || !allFilled ? "" : (average > 49 ? "PASSED" : "FAILED")}
-                                        </div>
+                                            <div class="average-remarks ${average === 'N/A' || !allFilled ? '' : (average > 49 ? 'text-green' : 'text-red')}">
+                                                ${average === "N/A" || !allFilled ? "" : (average > 49 ? "PASSED" : "FAILED")}
+                                            </div>
                                     </div>
                                 </div>
                             </td>
@@ -1613,7 +1658,7 @@
         document.querySelectorAll("#discounts-rec input[name='studDiscounts']:checked").forEach(checkbox => {
             selectedTransReq.push(checkbox.value);
         });
-       // alert(selectedTransReq + " ang sulod");
+        // alert(selectedTransReq + " ang sulod");
         fetch(`/discounts/add-student-discounts/${studentId}`, {
             method: 'POST',
             headers: {
@@ -1965,65 +2010,68 @@
     // });
 
 
-    document.getElementById('savePdf').addEventListener('click', () => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+    // document.getElementById('savePdf').addEventListener('click', () => {
+    //     const { jsPDF } = window.jspdf;
+    //     const doc = new jsPDF();
 
-        const testContent = document.getElementById("studPrint");
+    //     const testContent = document.getElementById("studPrint");
 
-        // Get the dimensions of the modal content
-        const contentWidth = testContent.offsetWidth;
-        const contentHeight = testContent.offsetHeight;
+    //     // Get the dimensions of the modal content
+    //     const contentWidth = testContent.offsetWidth;
+    //     const contentHeight = testContent.offsetHeight;
 
-        // Get the PDF page width and height
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
+    //     // Get the PDF page width and height
+    //     const pageWidth = doc.internal.pageSize.getWidth();
+    //     const pageHeight = doc.internal.pageSize.getHeight();
 
-        // Calculate scale factor to fit the content within the page width
-        let scaleFactor = pageWidth / contentWidth;
+    //     // Calculate scale factor to fit the content within the page width
+    //     let scaleFactor = pageWidth / contentWidth;
 
-        // If the content's scaled height exceeds the page height, adjust the scale
-        const scaledHeight = contentHeight * scaleFactor;
-        if (scaledHeight > pageHeight) {
-            const heightScaleFactor = pageHeight / contentHeight;
-            scaleFactor = heightScaleFactor;
-        }
+    //     // If the content's scaled height exceeds the page height, adjust the scale
+    //     const scaledHeight = contentHeight * scaleFactor;
+    //     if (scaledHeight > pageHeight) {
+    //         const heightScaleFactor = pageHeight / contentHeight;
+    //         scaleFactor = heightScaleFactor;
+    //     }
 
-        // Calculate the scaled width and height
-        const scaledWidth = contentWidth * scaleFactor;
-        const scaledHeightFinal = contentHeight * scaleFactor;
+    //     // Calculate the scaled width and height
+    //     const scaledWidth = contentWidth * scaleFactor;
+    //     const scaledHeightFinal = contentHeight * scaleFactor;
 
-        // Calculate horizontal and vertical positioning to center the content
-        const offsetX = (pageWidth - scaledWidth) / 2;  // Horizontal centering
-        const offsetY = (pageHeight - scaledHeightFinal) / 4;  // Vertical centering
+    //     // Calculate horizontal and vertical positioning to center the content
+    //     const offsetX = (pageWidth - scaledWidth) / 2;  // Horizontal centering
+    //     const offsetY = (pageHeight - scaledHeightFinal) / 4;  // Vertical centering
 
-        // Add a small margin for top positioning (e.g., 10 units)
-        const topMargin = 0;
-        const adjustedOffsetY = offsetY + topMargin;
+    //     // Add a small margin for top positioning (e.g., 10 units)
+    //     const topMargin = 0;
+    //     const adjustedOffsetY = offsetY + topMargin;
 
-        console.log('Content Width:', contentWidth);
-        console.log('Content Height:', contentHeight);
-        console.log('Scaled Width:', scaledWidth);
-        console.log('Scaled Height:', scaledHeightFinal);
-        console.log('Offset X:', offsetX);
-        console.log('Offset Y:', offsetY);
-        doc.html(testContent, {
-            callback: function (doc) {
-                // Save the PDF after rendering and centering the content
-                doc.save('student-report.pdf');
-            },
-            x: offsetX,  // Set the X position to center the content
-            y: adjustedOffsetY,  // Adjusted Y position with added margin
-            width: scaledWidth,  // Use the scaled width
-            height: scaledHeightFinal, // Use the scaled height
-            windowWidth: document.body.scrollWidth  // Ensure content fits within the page width
-        });
-    });
+    //     console.log('Content Width:', contentWidth);
+    //     console.log('Content Height:', contentHeight);
+    //     console.log('Scaled Width:', scaledWidth);
+    //     console.log('Scaled Height:', scaledHeightFinal);
+    //     console.log('Offset X:', offsetX);
+    //     console.log('Offset Y:', offsetY);
+    //     doc.html(testContent, {
+    //         callback: function (doc) {
+    //             // Save the PDF after rendering and centering the content
+    //             doc.save('student-report.pdf');
+    //         },
+    //         x: offsetX,  // Set the X position to center the content
+    //         y: adjustedOffsetY,  // Adjusted Y position with added margin
+    //         width: scaledWidth,  // Use the scaled width
+    //         height: scaledHeightFinal, // Use the scaled height
+    //         windowWidth: document.body.scrollWidth  // Ensure content fits within the page width
+    //     });
+    // });
 
     document.getElementById('printStud').addEventListener('click', () => {
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
+        const doc = new jsPDF({
+            orientation: "portrait",
+            unit: "px",
+            format: [1000, 1400]
+        });
         const testContent = document.getElementById("studPrint");
 
         // Temporarily show the modal content for PDF generation
@@ -2055,18 +2103,10 @@
 
         // Calculate horizontal and vertical positioning to center the content
         const offsetX = (pageWidth - scaledWidth) / 2;  // Horizontal centering
-        const offsetY = (pageHeight - scaledHeightFinal) / 4;  // Vertical centering
+        const offsetY = (pageHeight - scaledHeightFinal) / 8;  // Vertical centering
 
-        // Add a small margin for top positioning (e.g., 10 units)
         const topMargin = 0;
         const adjustedOffsetY = offsetY + topMargin;
-
-        console.log('Content Width:', contentWidth);
-        console.log('Content Height:', contentHeight);
-        console.log('Scaled Width:', scaledWidth);
-        console.log('Scaled Height:', scaledHeightFinal);
-        console.log('Offset X:', offsetX);
-        console.log('Offset Y:', offsetY);
 
         doc.html(testContent, {
             callback: function (doc) {
@@ -2075,17 +2115,19 @@
                 window.open(doc.output('bloburl'), '_blank');
 
                 // Re-hide the content after printing
-                testContent.style.display = 'none';  // Re-hide the modal after printing
-                testContent.style.position = 'static';   // Restore the position
-                testContent.style.zIndex = '';  // Remove any specific z-index
+                testContent.style.display = 'none';
+                testContent.style.position = 'static';
+                testContent.style.zIndex = '';
             },
-            x: offsetX,  // Set the X position to center the content
-            y: adjustedOffsetY,  // Adjusted Y position with added margin
-            width: scaledWidth,  // Use the scaled width
-            height: scaledHeightFinal, // Use the scaled height
-            windowWidth: document.body.scrollWidth  // Ensure content fits within the page width
+            x: offsetX,
+            y: adjustedOffsetY,
+            width: scaledWidth,
+            height: scaledHeightFinal,
+            windowWidth: document.body.scrollWidth
         });
     });
+
+
 </script>
 
 </html>

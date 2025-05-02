@@ -234,7 +234,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="column1">
-                                    <div>
+                                    <!-- <div>
                                         <label for="name">Name</label>
                                         <div class="student-form-group half">
                                             <input type="text" required name="firstname" class="name" id="firstNameEdit">
@@ -245,6 +245,23 @@
                                             <p>First</p>
                                             <p>Middle</p>
                                             <p>Last</p>
+                                        </div>
+                                    </div> -->
+                                    <div>
+                                        <label for="name">Name</label>
+                                        <div class="student-form-group">
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="firstNameEdit">
+                                                <p class="small-text first-name-p">First</p>
+                                            </div>
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="middleNameEdit">
+                                                <p class="small-text middle-name-p">Middle</p>
+                                            </div>
+                                            <div class="input-label-pair">
+                                                <input readonly type="text" id="lastNameEdit">
+                                                <p class="small-text last-name-p">Last</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -324,17 +341,22 @@
                             <div class="column1">
                                 <div>
                                     <label for="name">Name</label>
-                                    <div class="student-form-group half">
-                                        <input readonly type="text" id="firstName">
-                                        <input readonly type="text" id="middleName">
-                                        <input readonly type="text" id="lastName">
-                                    </div>
-                                    <div class="small-text">
-                                        <p>First</p>
-                                        <p>Middle</p>
-                                        <p>Last</p>
+                                    <div class="student-form-group">
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="firstName">
+                                            <p class="small-text first-name-p">First</p>
+                                        </div>
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="middleName">
+                                            <p class="small-text middle-name-p">Middle</p>
+                                        </div>
+                                        <div class="input-label-pair">
+                                            <input readonly type="text" id="lastName">
+                                            <p class="small-text last-name-p">Last</p>
+                                        </div>
                                     </div>
                                 </div>
+                                
                             </div>
                             <div class="column2">
                                 <!-- Gender, BDate, and Scholar -->

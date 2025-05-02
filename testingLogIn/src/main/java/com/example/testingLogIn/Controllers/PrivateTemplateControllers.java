@@ -265,7 +265,7 @@ public class PrivateTemplateControllers {
         return "/schedule/sched-board";
     }
 
-    @GetMapping("/statistics/enrollment")
+    @GetMapping("/reports/enrollment")
     public String enrollmentStatistics(){
         return "/statistics/enrolled-statistics";
     }

@@ -1064,7 +1064,6 @@ select option[value=""] {
   width: 20%;
 }
 
-
 .payment-label {
   display: flex;
   align-items: center;
@@ -1572,33 +1571,33 @@ table td {
   width: 70%;
 }
 .text-green {
-    color: green;
-    font-weight: bold;
+  color: green;
+  font-weight: bold;
 }
 .school-year-header {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    gap: 10px;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
 }
 .school-year-actions {
-    display: flex;
-    gap: 5px;
-    align-items: center;
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
 .school-year-actions .delete-school-year-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%; /* or set a fixed height if needed */
-    background: none;
-    border: none;
-    padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* or set a fixed height if needed */
+  background: none;
+  border: none;
+  padding: 5px;
 }
 .text-red {
-    color: red;
-    font-weight: bold;
+  color: red;
+  font-weight: bold;
 }
 .status {
   /* color: rgb(231, 20, 20); */
@@ -2681,6 +2680,7 @@ input[type="checkbox"] {
 }
 
 .grade-level-modal-content h2,
+.revenue-modal-content h2,
 .school-year-modal-content h2,
 .subject-modal-content h2,
 .teacher-modal-content h2,
@@ -2781,6 +2781,7 @@ input[type="checkbox"] {
 .student-bulk-modal-content label,
 .modal-content label,
 .grade-level-modal-content label,
+.revenue-modal-content label,
 .school-year-modal-content label,
 .subject-modal-content label,
 .teacher-modal-content label,
@@ -2927,6 +2928,7 @@ input[type="checkbox"] {
 }
 /* grade level modal and school year modal*/
 .grade-level-modal,
+.revenue-modal,
 .add-grade-level-assessment-modal,
 .school-year-modal,
 .fees-management-modal,
@@ -2961,7 +2963,7 @@ input[type="checkbox"] {
 }
 
 .grade-level-modal.show,
-.school-year-modal.show,
+.revenue-modal.show .school-year-modal.show,
 .fees-management-modal.show,
 .fees-management-edit-modal.show,
 .distributable-management-modal.show,
@@ -3055,6 +3057,16 @@ input[type="checkbox"] {
   z-index: 1001;
 }
 
+.item-container {
+  display: flex;
+  align-items: center;
+}
+
+.item-container p {
+  margin: 0;
+  padding: 0;
+}
+
 .grade-level-modal-content,
 .school-year-modal-content,
 .transferee-req-modal-content,
@@ -3067,6 +3079,17 @@ input[type="checkbox"] {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   width: 500px;
   min-height: 40vh;
+  text-align: left;
+  position: relative;
+  z-index: 1001;
+}
+
+.revenue-modal-content {
+  background: white !important;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 900px;
+  min-height: 30vh;
   text-align: left;
   position: relative;
   z-index: 1001;
@@ -4373,6 +4396,24 @@ input.staff-id-report {
 .separator-line {
   border-bottom: 3px solid #000;
   width: 100%;
+}
+
+.report-container {
+    display: flex;
+    justify-content: space-between;
+}
+.first-sem-container, .second-sem-container {
+width: 45%;
+background-color: #eaf9ea;
+padding: 20px;
+border-radius: 8px;
+}
+
+.separator-line-mini {
+  border-bottom: 3px solid #000;
+  width: 70%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .school-info h3 {

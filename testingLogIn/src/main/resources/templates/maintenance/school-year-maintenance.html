@@ -134,22 +134,99 @@
         </div>
 
         <div id="revenueModal" class="revenue-modal modal">
-            <div class="revenue-modal croll-lock">
+            <div class="revenue-modal-content croll-lock">
                 <div class="modal-body">
-                    <h2>Add New School Year</h2>
-                    <form method="post" id="schoolYearForm">
-                        <label for="school-year-name">School Year:</label>
-                        <input type="text" id="schoolYearName" required placeholder="YYYY-YYYY" pattern="\d{4}-\d{4}"
-                            title="Format: YYYY-YYYY">
-                    </form>
+                    <h2>2024-2025 Reports</h2>
+                    <div class="report-container">
+                        <div class="first-sem-container">   
+                            <h6><strong>First Semester</strong></h6>
+                            <div class="enrollees-container">
+                                <h6>Enrollees Per Grade Level</h6>
+                                <div class="item-container">
+                                    <label for="gradeLevel">Grade 1 - </label>
+                                    <p> 1</p>
+                                </div>
+                                <div class="item-container">
+                                    <label for="gradeLevel">Grade 2 - </label>
+                                    <p> 100</p>
+                                </div> 
+        
+                                <div class="separator-line-mini"></div> 
+        
+                                <!-- Total -->
+                                <div class="item-container">
+                                    <label for="totalEnrollees">Total Enrollees:</label>
+                                    <p> 100</p>
+                                </div>
+                            </div> <br>
+                            
+                            <div class="revenue-container">
+                                <h6>Revenue Report</h6>
+                                <div class="item-container">
+                                    <label for="item">Tuition - </label>
+                                    <p> ₱200, 000.00</p>
+                                </div>
+                                <div class="item-container">
+                                    <label for="item">Books - </label>
+                                    <p> ₱200, 000.00</p>
+                                </div>
+        
+                                <div class="separator-line-mini"></div> 
+        
+                                <!-- Total -->
+                                <div class="item-container">
+                                    <label for="totalRevenue">Total Revenue: </label>
+                                    <p> ₱999, 000.00</p>
+                                </div>
+                            </div>
+                        </div> <br> <br>
+
+                        <div class="second-sem-container">
+                            <h6><strong>Second Semester</strong></h6>
+                            <div class="enrollees-container">
+                                <h6>Enrollees Per Grade Level</h6>
+                                <div class="item-container">
+                                    <label for="gradeLevel">Grade 1 - </label>
+                                    <p> 1</p>
+                                </div>
+                                <div class="item-container">
+                                    <label for="gradeLevel">Grade 2 - </label>
+                                    <p> 100</p>
+                                </div> 
+        
+                                <div class="separator-line-mini"></div> 
+        
+                                <!-- Total -->
+                                <div class="item-container">
+                                    <label for="totalEnrollees">Total Enrollees: </label>
+                                    <p> 100</p>
+                                </div>
+                            </div> <br>
+                            
+                            <div class="revenue-container">
+                                <h6>Revenue Report</h6>
+                                <div class="item-container">
+                                    <label for="item">Tuition - </label>
+                                    <p> ₱200, 000.00</p>
+                                </div>
+                                <div class="item-container">
+                                    <label for="item">Books - </label>
+                                    <p> ₱200, 000.00</p>
+                                </div> 
+        
+                                <div class="separator-line-mini"></div> 
+        
+                                <!-- Total -->
+                                <div class="item-container">
+                                    <label for="totalRevenue">Total Revenue: </label>
+                                    <p> ₱999, 000.00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-buttons">
-                    <button type="button" class="btn-confirm" data-action="addSchoolYear"
-                        data-message="Are you sure you want to add this school year?" id="confirmSchoolYear"
-                        data-open-modal="confirmationModal">
-                        Confirm
-                    </button>
-                    <button type="button" data-close-modal="schoolYearModal" class="btn-cancel">Cancel</button>
+                    <button type="button" data-close-modal="revenueModal" class="btn-cancel">Close</button>
                 </div>
             </div>
         </div>
@@ -377,7 +454,7 @@
     //         })
     //         .catch(error => console.error("Error fetching school years or semesters:", error));
     // }
-    
+
 
     function fetchSchoolYears() {
         Promise.all([
@@ -429,11 +506,11 @@
                                             </button>
                                             <div class="dropdown-status-content normal-mob-text">
                                                 <a href="#" onclick="printReport(${sy.schoolYearNum}, '${syName}')">Print Enrollment Report</a>
-                                                <a href="#" onclick="viewReports(${sy.schoolYearNum})">View Revenue Reports</a>
+                                                <a href="#" data-open-modal="revenueModal" onclick="viewReports(${sy.schoolYearNum})">View SY Report</a>
                                             </div>
                                         </div>
                                         ${canDeleteSchoolYear
-                                            ? `<button class="delete-school-year-btn" 
+                                    ? `<button class="delete-school-year-btn" 
                                                     data-action="deleteSchoolYear"
                                                     data-message="Are you sure you want to delete this entire school year?"
                                                     data-id="${sy.schoolYearNum}"
@@ -441,7 +518,7 @@
                                                     data-open-modal="confirmationModal">
                                                 <img src="/images/icons/bin.png" title="Delete School Year">
                                             </button>`
-                                            : ""}
+                                    : ""}
                                     </div>
                                 </div>
                             `;

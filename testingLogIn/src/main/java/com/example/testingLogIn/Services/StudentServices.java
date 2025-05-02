@@ -8,6 +8,10 @@ import com.example.testingLogIn.Models.Student;
 import com.example.testingLogIn.Repositories.GradeLevelRepo;
 import com.example.testingLogIn.Repositories.StudentRepo;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import com.example.testingLogIn.WebsiteSecurityConfiguration.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -194,16 +199,17 @@ public class StudentServices {
         return false;
     }
 
-    public PagedResponse getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize, Boolean isFullyPaid){
+    public PagedResponse getStudentByNameOrDisplayId(String word,String sortBy, int pageNo, int pageSize, Boolean isFullyPaid, String status){
         word = NonModelServices.forLikeOperator(word);
         Pageable pageable = PageRequest.of(pageNo-1,pageSize,orderBy(sortBy));
         Page<StudentDTO> studentPage;
+        StudentStatus studentStatus = getStudStatus(status);
 
         if(sortBy.equalsIgnoreCase("gradelevel"))
             studentPage = studentRepo.findByStudentHandlerDisplayIdOrName(word,pageable,isFullyPaid)
                     .map(Student::DTOmapper);
         else
-            studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable,isFullyPaid)
+            studentPage = studentRepo.findByStudentDisplayIdOrName(word,pageable,isFullyPaid,studentStatus)
                     .map(Student::DTOmapper);
 
         return PagedResponse.builder()
@@ -214,6 +220,36 @@ public class StudentServices {
                             .totalPages(studentPage.getTotalPages())
                             .isLast(studentPage.isLast())
                             .build();
+    }
+
+    public InputStreamResource downloadStudents(String word, String status){
+        word = NonModelServices.forLikeOperator(word);
+        StudentStatus studentStatus = getStudStatus(status);
+
+        ByteArrayOutputStream boas = new ByteArrayOutputStream();
+
+        try {
+            boas.write(("Student Id,Student Name, Grade & Section, Sex, Academic Status"+"\n").getBytes(StandardCharsets.UTF_8));
+            for(StudentDTO student : studentRepo.findStudents(NonModelServices.forLikeOperator(word),studentStatus).stream().map(Student::DTOmapper).toList()){
+                boas.write(String.format("%s,%s,%s,%s,%s\n",
+                        student.getStudentDisplayId(),
+                        student.getFullName(),
+                        student.getCurrentGradeSection(),
+                        student.getGender(),
+                        student.getStatus()).getBytes(StandardCharsets.UTF_8));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new InputStreamResource(new ByteArrayInputStream(boas.toByteArray()));
+    }
+
+    private StudentStatus getStudStatus(String stat){
+        return stat.equalsIgnoreCase("All") ? null :
+                stat.equalsIgnoreCase("new") ? StudentStatus.NEW :
+                stat.equalsIgnoreCase("Old") ? StudentStatus.OLD :
+                                                            StudentStatus.GRADUATE;
     }
 
     private Sort orderBy(String condition){

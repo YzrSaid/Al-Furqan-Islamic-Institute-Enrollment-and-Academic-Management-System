@@ -5,9 +5,14 @@ import com.example.testingLogIn.ModelDTO.StudentDTO;
 import com.example.testingLogIn.Models.SchoolYear;
 import com.example.testingLogIn.Repositories.StudentSubjectGradeRepo;
 import com.example.testingLogIn.Services.StudentServices;
+
+import java.io.InputStreamReader;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +34,26 @@ public class StudentController {
             @RequestParam(required = false,defaultValue = "") String q,
             @RequestParam(required = false,defaultValue = "") String sortBy,
             @RequestParam(required = false,defaultValue = "1") int pageNo,
-            @RequestParam(required = false, defaultValue = "10") int pageSize){
+            @RequestParam(required = false, defaultValue = "10") int pageSize,
+            @RequestParam(required = false,defaultValue = "All") String status){
         try{
-            return new ResponseEntity<>(studentService.getStudentByNameOrDisplayId(q,sortBy,pageNo,pageSize,fullyPaid),HttpStatus.OK);
+            return new ResponseEntity<>(studentService.getStudentByNameOrDisplayId(q,sortBy,pageNo,pageSize,fullyPaid,status),HttpStatus.OK);
         }catch(Exception e){
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+    }
+
+    @GetMapping("/download-all")
+    public ResponseEntity<InputStreamResource> downloadStudents(
+            @RequestParam(required = false,defaultValue = "") String q,
+            @RequestParam(required = false,defaultValue = "All") String status){
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"Alfurqan"+status+"-Students.csv\"")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(studentService.downloadStudents(q,status));
+
     }
 
     @GetMapping("/find-student/name/{studentName}")

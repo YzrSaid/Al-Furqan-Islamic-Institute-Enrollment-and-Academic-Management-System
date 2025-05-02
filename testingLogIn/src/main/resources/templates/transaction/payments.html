@@ -29,7 +29,6 @@
             </div>
 
             <div class="search-div">
-                <!-- Searchbox and sort btn -->
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
@@ -41,11 +40,6 @@
                                 <span class="menu-icon">⋮</span>
                             </button>
                             <div class="menu-dropdown">
-                                <!-- Add Payment -->
-                                <button type="button" class="menu-item" onclick="viewStudents(1)"
-                                    data-open-modal="viewStudentListModal">
-                                    Add Payment
-                                </button>
 
                                 <!-- Print Options as Select -->
                                 <!-- <div class="menu-sort-container">
@@ -270,6 +264,59 @@
             </div>
         </div>
 
+        <div id="viewStudentReceipts" class="view-student-list-modal modal">
+            <div class="view-student-list-modal-content scroll-lock">
+                <div class="modal-body">
+                    <h2>Student Transaction Records</h2>
+
+                    <div class="half-width">
+                        <label for="student-id">Student ID:</label>
+                        <h6 id="receipt-student-id-rec"></h6>
+                    </div>
+                    <div class="half-width">
+                        <label for="student-name">Student Name:</label>
+                        <h6 id="receipt-student-name-rec"></h6>
+                    </div> <br>
+                    <table id="student-receipt-table" class="view-list-of-students-table main-table">
+                        <thead>
+                        <tr>
+                            <th>Transaction Reference</th>
+                            <th>Date Paid</th>
+                            <th>Amount Paid</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td colspan="5">No Student Record</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="pagination-container">
+                        <div class="pagination-controls inside-modal">
+                            <span id="itemRangeStudR">1–10 of 37</span>
+                            <select id="pageSizeSelectorStudR">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                            </select>
+                            <button type="button" id="prevPageStudR">«</button>
+                            <input type="number" id="pageInputStudR" min="1" value="1">
+                            <span id="totalPagesStudR">of 4</span>
+                            <button type="button" id="nextPageStudR">»</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Payment button -->
+                <div class="modal-buttons">
+                    <button type="button" class="btn-cancel" data-close-modal="viewStudentReceipts">Close</button>
+                </div>
+
+            </div>
+        </div>
+
 
         <!-- Modal for listOfPaymentsModal -->
         <div id="listOfPaymentsModal" class="list-of-payments-modal modal">
@@ -359,33 +406,33 @@
                             <thead>
                                 <tr>
                                     <th>Description</th>
-                                    <th>Due Amount</th>
+                                    <!-- <th>Due Amount</th> -->
                                     <th>Amount Paid</th>
-                                    <th>Remaining Balance</th>
+                                    <!-- <th>Remaining Balance</th> -->
                                 </tr>
                             </thead>
                             <tbody id="receipt-items">
                                 <!-- Rows will be filled dynamically -->
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <td colspan="5" style="text-align: right; border: none;">Total Amount Due:</td>
+                                <!-- <tr>
+                                    <td colspan="3" style="text-align: right; border: none;">Total Amount Due:</td>
                                     <td style="border: 1px solid black; text-align: center; vertical-align: middle;">
                                         <div id="total-amount-due">₱ 0.00</div>
                                     </td>
-                                </tr>
+                                </tr> -->
                                 <tr>
-                                    <td colspan="5" style="text-align: right; border: none;">Total Amount Paid:</td>
+                                    <td colspan="1" style="text-align: right; border: none;">Total Amount Paid:</td>
                                     <td style="border: 1px solid black; text-align: center; vertical-align: middle;">
                                         <div id="total-amount-paid">₱ 0.00</div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td colspan="5" style="text-align: right; border: none; font-weight: bold;">
+                                <!-- <tr>
+                                    <td colspan="3" style="text-align: right; border: none; font-weight: bold;">
                                         Remaining Balance:</td>
                                     <td style="border: 1px solid black; text-align: center; font-weight: bold;"
                                         id="remaining-balance">₱ 0.00</td>
-                                </tr>
+                                </tr> -->
                             </tfoot>
                         </table>
                     </div>
@@ -585,37 +632,36 @@
             getRecords(1);
         });
 
-        let currentPage;
         var totalItems = 0;
         function getRecords(pageNo = 1) {
-            currentPage = pageNo;
             pageSize = parseInt(document.getElementById("pageSizeSelector").value);
             const searchBy = document.getElementById("search-stud").value;
             const sortBy = document.getElementById("view-by-select").value;
-
-            // Update table headers based on selected view
-            if (sortBy == "Transaction" || sortBy == "Voided") {
+            var particulars = false;
+            var url = `/students/all?q=${searchBy}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=balance`;
+            if (sortBy == "Transaction" || sortBy !== "Voided") {
                 document.querySelector("#realginnas thead").innerHTML = `
-            <tr>
-                <th>Student Name</th>
-                <th>Date Paid</th>
-                <th>Transaction Number</th>
-                <th>Amount Paid</th>
-                <th>Action</th>
-            </tr>`;
+                    <tr>
+                        <th>Student Id</th>
+                        <th>Student Name</th>
+                        <th>Grade Level</th>
+                        <th>Balance</th>
+                        <th>Action</th>
+                    </tr>`;
             } else {
+                particulars = true;
+                url = `/paymentrecord/transactions/all?pageNum=${pageNo}&pageSize=${pageSize}&particular=${sortBy}&q=${searchBy}`;
                 document.querySelector("#realginnas thead").innerHTML = `
-            <tr>
-                <th>Student Name</th>
-                <th>Date Paid</th>
-                <th>Particular</th>
-                <th>Amount Paid</th>
-                <th>Action</th>
-            </tr>`;
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Date Paid</th>
+                        <th>Particular</th>
+                        <th>Amount Paid</th>
+                        <th>Action</th>
+                    </tr>`;
             }
 
-            // Fetch records
-            fetch(`/paymentrecord/transactions/all?pageNum=${pageNo}&pageSize=${pageSize}&particular=${sortBy}&q=${searchBy}`)
+            fetch(url)
                 .then(res => {
                     if (!res.ok) throw new Error("Failed to fetch payment records");
                     return res.json();
@@ -630,102 +676,70 @@
                         tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
                         return;
                     }
-
+                    console.log(data);
+                    console.log(!particulars && sortBy !== "Voided");
                     data.content.forEach(rec => {
                         let row = document.createElement("tr");
-
-                        row.innerHTML = `
-                    <td>${rec.studentName}</td>
-                    <td>${rec.date}</td>
-                    <td>${rec.transactionReference}</td>
-                    <td>${rec.totalAmount}</td>
-                    <td>
-                        <div class="dropdown">
-                            <div class="status-container">
-                                <button class="dropdown-status-btn">
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                            </div>
-                            <div class="dropdown-status-content normal-mob-text" id="dropdown-listing">
-                                <a href="#" class="action" data-open-modal="receiptModal"
-                                   data-transaction-id="${rec.transactionId}">
-                                   View Receipt
-                                </a>
-                                <a href="#" class="action" data-action="voidTransaction"
-                                    data-open-modal="confirmationModal"
-                                   data-message="Are you sure you want to void this transaction?"
-                                   data-transaction-id="${rec.transactionId}">
-                                   Void
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-                `;
+                        if(!particulars && sortBy !== "Voided"){
+                            row.innerHTML = `
+                                <td>${rec.studentDisplayId}</td>
+                                <td>${rec.fullName}</td>
+                                <td>${rec.currentGradeLevel?.levelName ?? 'None'}</td>
+                                <td>${rec.balanceAmount.toFixed(2)}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <div class="status-container">
+                                            <button class="dropdown-status-btn">
+                                                <i class="fas fa-chevron-down"></i>
+                                            </button>
+                                        </div>
+                                        <div class="dropdown-status-content normal-mob-text" id="dropdown-listing">
+                                            <a class="action" data-open-modal="listOfPaymentsModal" onclick="viewToPaid(${rec.studentId})" >
+                                                View List of Payments
+                                            </a>
+                                            <a href="#" class="action" data-open-modal="viewStudentReceipts"
+                                            onclick="setStudentName('${rec.fullName}')">View Student Records</a>
+                                        </div>
+                                    </div>
+                                </td>`;
+                        }else{
+                            row.innerHTML = `
+                                <td>${rec.studentName}</td>
+                                <td>${rec.date}</td>
+                                <td>${rec.transactionReference}</td>
+                                <td>${rec.totalAmount}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <div class="status-container">
+                                            <button class="dropdown-status-btn">
+                                                <i class="fas fa-chevron-down"></i>
+                                            </button>
+                                        </div>
+                                        <div class="dropdown-status-content normal-mob-text" id="dropdown-listing">
+                                            <a href="#" class="action" data-open-modal="receiptModal"
+                                            onclick="fetchThisPokemon('${rec.transactionId}')">
+                                            View Receipt</a>
+                                        </div>
+                                    </div>
+                                </td>`;
+                        }
                         tableBody.appendChild(row);
+
                     });
 
                     totalItems = data.totalElements || 0;
                     const totalPages = data.totalPages || 1;
-                    updatePaginationUI(currentPage, pageSize, totalItems, totalPages);
+                    updatePaginationUI("Students",pageNo, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
         }
-
-        function updatePaginationUI(currentPage, pageSize, totalItems, totalPages) {
-            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-            const end = Math.min(currentPage * pageSize, totalItems);
-
-            document.getElementById("itemRange").textContent = `${start}–${end} of ${totalItems}`;
-            document.getElementById("pageInput").value = currentPage;
-            document.getElementById("pageInput").min = 1;
-            document.getElementById("pageInput").max = totalPages;
-            document.getElementById("totalPages").textContent = `of ${totalPages}`;
-
-            document.getElementById("prevPage").disabled = currentPage <= 1 || totalPages === 0;
-            document.getElementById("nextPage").disabled = currentPage >= totalPages || totalPages === 0;
-        }
-
-        document.getElementById("prevPage").addEventListener("click", () => {
-            if (currentPage > 1) {
-                currentPage--;
-                getRecords(currentPage);
-            }
-        });
-
-        document.getElementById("nextPage").addEventListener("click", () => {
-            if (currentPage < document.getElementById("pageInput").max) {
-                currentPage++;
-                console.log("Navigating to page:", currentPage);
-                getRecords(currentPage);
-            } else {
-                console.log("Cannot navigate to next page");
-            }
-        });
-
-        document.getElementById("pageInput").addEventListener("change", (e) => {
-            const totalPages = parseInt(document.getElementById("pageInput").max);
-            let page = parseInt(e.target.value);
-            if (page >= 1 && page <= totalPages) {
-                currentPage = page;
-                getRecords(currentPage);
-            } else {
-                e.target.value = currentPage;
-            }
-        });
-
-        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
-            console.log("pageSizeSelector changed", { value: e.target.value });
-            pageSize = parseInt(e.target.value);
-            currentPage = 1;
-            getRecords(currentPage);
-        });
 
         let studentId;
         let gradeLevelId;
         var selectedTransaction = 0;
         document.addEventListener("click", function (event) {
             //const viewListbtn = event.target.closest('[data-open-modal="listOfPaymentsModal"]');
-            const viewReceiptbtn = event.target.closest('[data-open-modal="receiptModal"]');
+            //const viewReceiptbtn = event.target.closest('[data-open-modal="receiptModal"]');
             const voidTransaction = event.target.closest('[data-action="voidTransaction"]');
             //if (viewListbtn) {
             //studentId = viewListbtn.getAttribute("data-student-id");
@@ -734,10 +748,7 @@
             // if (!enrollmentId) return console.error("Enrollment Id Not Found");
             // fetchPayments(enrollmentId);
             //} else 
-            if (viewReceiptbtn) {
-                const receiptId = viewReceiptbtn.getAttribute("data-transaction-id");
-                fetchThisPokemon(receiptId);
-            } else if (voidTransaction) {
+            if (voidTransaction) {
                 selectedTransaction = voidTransaction.getAttribute("data-transaction-id");
             }
         });
@@ -804,9 +815,9 @@
                     }
                     return response.json(); // Parse the response as JSON
                 })
-                .then(receipt => {
-                    const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
-                    viewTheReceipt(decodeURIComponent(receiptJSON));
+                .then(rec => {
+                    receipt = rec;
+                    viewTheReceipt();
                 })
                 .catch(error => {
                     console.error("Error adding payment:", error);
@@ -814,18 +825,16 @@
         }
 
         async function fetchThisPokemon(receiptReference) {
+            console.log(receiptReference);
             const response = await fetch(`/paymentrecord/testing/${receiptReference}`);
             if (!response.ok) throw new Error("Failed to fetch required payments");
 
-            const receipt = await response.json();
-            const receiptJSON = encodeURIComponent(JSON.stringify(receipt));
-            viewTheReceipt(decodeURIComponent(receiptJSON));
+            receipt = await response.json();
+            viewTheReceipt();
         }
-
-        function viewTheReceipt(receipt) {
+        var receipt;
+        function viewTheReceipt() {
             closeOpen();
-            receipt = JSON.parse(receipt);
-            console.log(receipt);
             document.getElementById("receipt-student-id").value = receipt.studentDisplayId;
             document.getElementById("receipt-date").value = receipt.date;
             document.getElementById("receipt-student-name").value = receipt.studentName;
@@ -843,10 +852,8 @@
                 totalBalance += dat.balance;
                 totalPaid += dat.amountPaid;
                 row.innerHTML = `
-            <td>${dat.feeName}</td>
-            <td>₱ ${parseFloat(dat.balance).toFixed(2)}</td>
-            <td>₱ ${parseFloat(dat.amountPaid).toFixed(2)}</td>
-            <td>₱ ${parseFloat(dat.balance - dat.amountPaid).toFixed(2)}</td>`;
+                    <td>${dat.feeName}</td>
+                    <td>₱ ${parseFloat(dat.amountPaid).toFixed(2)}</td>`;
                 tableBody.appendChild(row);
 
                 totalDue += parseFloat(dat.amountPaid);
@@ -857,9 +864,9 @@
             const remainingBalanceElement = document.getElementById("remaining-balance");
 
             // Populate the amounts in separate divs
-            totalAmountDueElement.innerText = `₱ ${totalBalance.toFixed(2)}`;
+            //totalAmountDueElement.innerText = `₱ ${totalBalance.toFixed(2)}`;
             totalAmountPaidElement.innerText = `₱ ${parseFloat(totalPaid).toFixed(2)}`;
-            remainingBalanceElement.innerText = `₱ ${(parseFloat(totalBalance - totalPaid)).toFixed(2)}`;
+            getRecords(1);
         }
 
 
@@ -955,11 +962,12 @@
             const orderBy = document.getElementById("view-stud-by-select").value;
             const search = document.getElementById("search-student").value;
             const studentsTable = document.querySelector("#table-ni-martin tbody");
-            var url = `/students/all?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=${orderBy}&fullyPaid=true`;
+            var url = `/students/all?q=${search}&pageNo=${pageNo}&pageSize=${pageSize}&sortBy=balance&fullyPaid=true`;
             fetch(url)
                 .then(res => res.json())
                 .then(data => {
-                    studentsTable.innerHTML = `<tr><td colspan="5">No records found.</td></tr>`;
+                    studentsTable.innerHTML = 
+                    `<tr><td colspan="5">No records found.</td></tr>`;
                     if (data.content.length > 0) {
                         studentsTable.innerHTML = ``;
                         data.content.forEach(stud => {
@@ -984,7 +992,7 @@
                     }
                     totalItems = data.totalElements || 0;
                     const totalPages = data.totalPages || 1;
-                    updatePaginationUIStud(currentPage, pageSize, totalItems, totalPages);
+                    updatePaginationUI("StudentB",pageNo, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching sections:", error));
         }
@@ -1019,53 +1027,108 @@
                 .catch(error => console.error("Error fetching sections:", error));
         }
 
-        function updatePaginationUIStud(currentPage, pageSize, totalItems, totalPages) {
-            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-            const end = Math.min(currentPage * pageSize, totalItems);
+        function updatePaginationUI(paginationKey, currentPage, pageSize, totalItems, totalPages) {
+        const config = paginationConfigs[paginationKey];
+        if (!config) {
+            console.log("Not found");
+            return;}
 
-            document.getElementById("itemRangeStud").textContent = `${start}–${end} of ${totalItems}`;
-            document.getElementById("pageInputStud").value = currentPage;
-            document.getElementById("pageInputStud").min = 1;
-            document.getElementById("pageInputStud").max = totalPages;
-            document.getElementById("totalPagesStud").textContent = `of ${totalPages}`;
+        const { elements } = config;
+        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+        const end = Math.min(currentPage * pageSize, totalItems);
 
-            document.getElementById("prevPageStud").disabled = currentPage <= 1 || totalPages === 0;
-            document.getElementById("nextPageStud").disabled = currentPage >= totalPages || totalPages === 0;
+        // Update UI elements
+        document.getElementById(elements.itemRange).textContent = `${start}–${end} of ${totalItems}`;
+        document.getElementById(elements.pageInput).value = currentPage;
+        document.getElementById(elements.pageInput).min = 1;
+        document.getElementById(elements.pageInput).max = totalPages;
+        document.getElementById(elements.totalPages).textContent = `of ${totalPages}`;
+
+        // Update button states
+        document.getElementById(elements.prevPage).disabled = currentPage <= 1 || totalPages === 0;
+        document.getElementById(elements.nextPage).disabled = currentPage >= totalPages || totalPages === 0;
+
+        // Update current page in config
+        config.currentPage = currentPage;
+    }
+
+    const paginationConfigs = {
+        'StudentB': {
+            currentPage: 1,
+            setUpFunction: viewStudents,
+            elements: {
+                itemRange: "itemRangeStud",
+                pageInput: "pageInputStud",
+                totalPages: "totalPagesStud",
+                prevPage: "prevPageStud",
+                nextPage: "nextPageStud"
+            }
+        },'StudentR': {
+            currentPage: 1,
+            setUpFunction: viewStudentTransaction,
+            elements: {
+                itemRange: "itemRangeStudR",
+                pageInput: "pageInputStudR",
+                totalPages: "totalPagesStudR",
+                prevPage: "prevPageStudR",
+                nextPage: "nextPageStudR"
+            }
+        },
+        'Students': {
+            currentPage: 1,
+            setUpFunction: getRecords,
+            elements: {
+                itemRange: "itemRange",
+                pageInput: "pageInput",
+                totalPages: "totalPages",
+                prevPage: "prevPage",
+                nextPage: "nextPage"
+            }
         }
+    };
 
-        document.getElementById("prevPageStud").addEventListener("click", () => {
-            if (currentPage > 1) {
-                currentPage--;
-                viewStudents(currentPage);
-            }
-        });
+    function initializePaginationListeners() {
+        Object.keys(paginationConfigs).forEach(key => {
+            const config = paginationConfigs[key];
+            const { elements, setUpFunction } = config;
 
-        document.getElementById("nextPageStud").addEventListener("click", () => {
-            if (currentPage < document.getElementById("pageInput").max) {
-                currentPage++;
-                viewStudents(currentPage);
-            } else {
-                console.log("Cannot navigate to next page");
-            }
-        });
+            // Previous page button
+            document.getElementById(elements.prevPage).addEventListener("click", () => {
+                if (config.currentPage > 1) {
+                    config.currentPage--;
+                    setUpFunction(config.currentPage);
+                }
+            });
 
-        document.getElementById("pageInputStud").addEventListener("change", (e) => {
-            const totalPages = parseInt(document.getElementById("pageInput").max);
-            let page = parseInt(e.target.value);
-            if (page >= 1 && page <= totalPages) {
-                currentPage = page;
-                viewStudents(currentPage);
-            } else {
-                e.target.value = currentPage;
-            }
-        });
+            // Next page button
+            document.getElementById(elements.nextPage).addEventListener("click", () => {
+                const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+                if (config.currentPage < totalPages) {
+                    config.currentPage++;
+                    setUpFunction(config.currentPage);
+                }
+            });
 
-        document.getElementById("pageSizeSelectorStud").addEventListener("change", (e) => {
-            console.log("pageSizeSelector changed", { value: e.target.value });
-            pageSize = parseInt(e.target.value);
-            currentPage = 1;
-            viewStudents(currentPage);
+            // Page input change
+            document.getElementById(elements.pageInput).addEventListener("change", (e) => {
+                const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+                let page = parseInt(e.target.value);
+                if (page >= 1 && page <= totalPages) {
+                    config.currentPage = page;
+                    setUpFunction(config.currentPage);
+                } else {
+                    e.target.value = config.currentPage;
+                }
+            });
         });
+    }
+    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+        getRecords();
+    });
+    document.getElementById("pageSizeSelectorStudR").addEventListener("change", (e) => {
+        viewStudentTransaction();
+    });
+    document.addEventListener("DOMContentLoaded", initializePaginationListeners);
 
         function setUpForm(theForm) {
             theForm = JSON.parse(theForm);
@@ -1242,6 +1305,65 @@
             selectAll.checked = allCheckboxes.length === checkedCheckboxes.length;
         }
 
+        function setStudentName(name){
+            studentName = name;
+            viewStudentTransaction();
+        }
+        var studentName;
+        function viewStudentTransaction(pageNo = 1){
+            var pageSize = document.getElementById("pageSizeSelectorStudR").value;
+            fetch(`/paymentrecord/transactions/all?pageNum=${pageNo}&pageSize=${pageSize}&q=${studentName}`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Failed to fetch payment records");
+                    return res.json();
+                })
+                .then(data => {
+                    const tableBody = document.querySelector("#student-receipt-table tbody");
+
+                    if (!tableBody) return console.error("Table body not found");
+                    tableBody.innerHTML = "";
+
+                    if (!data || !data.content || data.content.length === 0) {
+                        tableBody.innerHTML = "<tr><td colspan='6'>No records found.</td></tr>";
+                        return;
+                    }
+
+                    data.content.forEach(rec => {
+                        let row = document.createElement("tr");
+
+                        row.innerHTML = `
+                            <td>${rec.transactionReference}</td>
+                            <td>${rec.date}</td>
+                            <td>${rec.totalAmount}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <div class="status-container">
+                                        <button class="dropdown-status-btn">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-status-content normal-mob-text" id="dropdown-listing">
+                                        <a href="#" class="action" data-open-modal="receiptModal"
+                                        onclick="fetchThisPokemon('${rec.transactionId}')">View Receipt
+                                        </a>
+                                        <a href="#" class="action" data-action="voidTransaction"
+                                            data-open-modal="confirmationModal"
+                                        data-message="Are you sure you want to void this transaction?"
+                                        data-transaction-id="${rec.transactionId}">
+                                        Void
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>`;
+                        tableBody.appendChild(row);
+                    });
+                    console.log(data);
+                    var totalItems = data.totalElements || 0;
+                    var totalPages = data.totalPages || 1;
+                    updatePaginationUI("StudentR",pageNo, pageSize, totalItems, totalPages);
+                })
+                .catch(error => console.error("Error fetching payment records:", error));
+        }
 
     </script>
 </body>

@@ -1,6 +1,7 @@
 package com.example.testingLogIn.Repositories;
 
 import com.example.testingLogIn.CustomObjects.StudentHandler;
+import com.example.testingLogIn.Enums.StudentStatus;
 import com.example.testingLogIn.Models.Student;
 
 import java.util.List;
@@ -39,9 +40,10 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
     @Query("SELECT s FROM Student s " +
             "WHERE (:isFullyPaid IS NULL OR s.studentBalance > 0) " +
             "AND s.isNotDeleted = true " +
+            "AND (:status IS NULL OR s.status = :status) "+
             "AND (s.studentDisplayId LIKE :search " +
             "OR LOWER(s.fullName) LIKE :search)")
-    Page<Student> findByStudentDisplayIdOrName(@Param("search")String searching, Pageable pageable, Boolean isFullyPaid);
+    Page<Student> findByStudentDisplayIdOrName(@Param("search")String searching, Pageable pageable, Boolean isFullyPaid, StudentStatus status);
 
     @Query("""
     SELECT s FROM Student s
@@ -97,5 +99,12 @@ public interface StudentRepo extends JpaRepository<Student,Integer> {
     @Transactional
     @Query("UPDATE Student stud SET stud.isEnrolled =  false")
     void setAllUnEnrolled();
+
+    @Query("SELECT s FROM Student s " +
+            "WHERE s.isNotDeleted = true " +
+            "AND (:status IS NULL OR s.status = :status) "+
+            "AND (s.studentDisplayId LIKE :search " +
+            "OR LOWER(s.fullName) LIKE :search)")
+    List<Student> findStudents(@Param("search")String searching, StudentStatus status);
 }
 

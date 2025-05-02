@@ -10,5 +10,5 @@ package com.example.testingLogIn.Enums;
  */
 public enum Semester {
     First,
-    Second
+    Second;
 }

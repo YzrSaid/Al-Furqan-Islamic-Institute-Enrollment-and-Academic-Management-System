@@ -136,47 +136,51 @@
         <div id="revenueModal" class="revenue-modal modal">
             <div class="revenue-modal-content croll-lock">
                 <div class="modal-body">
-                    <h2>2024-2025 Reports</h2>
+                    <h2 id="school-year">2024-2025 Reports</h2>
                     <div class="report-container">
                         <div class="first-sem-container">   
                             <h6><strong>First Semester</strong></h6>
                             <div class="enrollees-container">
                                 <h6>Enrollees Per Grade Level</h6>
-                                <div class="item-container">
-                                    <label for="gradeLevel">Grade 1 - </label>
-                                    <p> 1</p>
+                                <div id="firstSemLevels">
+                                    <div class="item-container">
+                                        <label for="gradeLevel">Grade 1 - </label>
+                                        <p> 1</p>
+                                    </div>
+                                    <div class="item-container">
+                                        <label for="gradeLevel">Grade 2 - </label>
+                                        <p> 100</p>
+                                    </div> 
+
                                 </div>
-                                <div class="item-container">
-                                    <label for="gradeLevel">Grade 2 - </label>
-                                    <p> 100</p>
-                                </div> 
         
                                 <div class="separator-line-mini"></div> 
         
                                 <!-- Total -->
                                 <div class="item-container">
                                     <label for="totalEnrollees">Total Enrollees:</label>
-                                    <p> 100</p>
+                                    <p id="firstSemTotalEnrolled"> 100</p>
                                 </div>
                             </div> <br>
                             
                             <div class="revenue-container">
                                 <h6>Revenue Report</h6>
-                                <div class="item-container">
-                                    <label for="item">Tuition - </label>
-                                    <p> ₱200, 000.00</p>
+                                <div id="firstSemRevenues">
+                                    <div class="item-container">
+                                        <label for="item">Tuition - </label>
+                                        <p> ₱200, 000.00</p>
+                                    </div>
+                                    <div class="item-container">
+                                        <label for="item">Books - </label>
+                                        <p> ₱200, 000.00</p>
+                                    </div>
                                 </div>
-                                <div class="item-container">
-                                    <label for="item">Books - </label>
-                                    <p> ₱200, 000.00</p>
-                                </div>
-        
                                 <div class="separator-line-mini"></div> 
         
                                 <!-- Total -->
                                 <div class="item-container">
                                     <label for="totalRevenue">Total Revenue: </label>
-                                    <p> ₱999, 000.00</p>
+                                    <p id="firstSemTotalRevenue"> ₱999, 000.00</p>
                                 </div>
                             </div>
                         </div> <br> <br>
@@ -185,6 +189,7 @@
                             <h6><strong>Second Semester</strong></h6>
                             <div class="enrollees-container">
                                 <h6>Enrollees Per Grade Level</h6>
+                                <div id="secondSemLevels">
                                 <div class="item-container">
                                     <label for="gradeLevel">Grade 1 - </label>
                                     <p> 1</p>
@@ -193,33 +198,34 @@
                                     <label for="gradeLevel">Grade 2 - </label>
                                     <p> 100</p>
                                 </div> 
-        
+                                </div>
                                 <div class="separator-line-mini"></div> 
         
                                 <!-- Total -->
                                 <div class="item-container">
                                     <label for="totalEnrollees">Total Enrollees: </label>
-                                    <p> 100</p>
+                                    <p id="secondSemTotalEnrolled"> 100</p>
                                 </div>
                             </div> <br>
                             
                             <div class="revenue-container">
                                 <h6>Revenue Report</h6>
-                                <div class="item-container">
-                                    <label for="item">Tuition - </label>
-                                    <p> ₱200, 000.00</p>
+                                <div id="secondSemRevenues">
+                                    <div class="item-container">
+                                        <label for="item">Tuition - </label>
+                                        <p> ₱200, 000.00</p>
+                                    </div>
+                                    <div class="item-container">
+                                        <label for="item">Books - </label>
+                                        <p> ₱200, 000.00</p>
+                                    </div> 
                                 </div>
-                                <div class="item-container">
-                                    <label for="item">Books - </label>
-                                    <p> ₱200, 000.00</p>
-                                </div> 
-        
                                 <div class="separator-line-mini"></div> 
         
                                 <!-- Total -->
                                 <div class="item-container">
                                     <label for="totalRevenue">Total Revenue: </label>
-                                    <p> ₱999, 000.00</p>
+                                    <p id="secondSemTotalRevenue"> ₱999, 000.00</p>
                                 </div>
                             </div>
                         </div>
@@ -506,7 +512,7 @@
                                             </button>
                                             <div class="dropdown-status-content normal-mob-text">
                                                 <a href="#" onclick="printReport(${sy.schoolYearNum}, '${syName}')">Print Enrollment Report</a>
-                                                <a href="#" data-open-modal="revenueModal" onclick="viewReports(${sy.schoolYearNum})">View SY Report</a>
+                                                <a href="#" data-open-modal="revenueModal" onclick="viewReports(${sy.schoolYearNum},'${syName}')">View SY Report</a>
                                             </div>
                                         </div>
                                         ${canDeleteSchoolYear
@@ -1006,12 +1012,56 @@
         }
     }
 
-    async function viewReports(syNum) {
+    async function viewReports(syNum,schoolYear) {
+        document.getElementById("school-year").textContent = `${schoolYear} Reports`;
         const response = await fetch(`/schoolyear/another-reports/${syNum}`);
 
         if (response.ok) {
             const result = await response.json();
+            var current = 2;
             console.log(result);
+            for (const semester in result) {
+                    const semesterData = result[semester];
+
+                    var semLevels;
+                    var totalEnrolled;
+                    var semRevenues;
+                    var totalRevenue;
+                    if(current==2){
+                        semLevels = document.getElementById("secondSemLevels");
+                        totalEnrolled = document.getElementById("secondSemTotalEnrolled");
+                        semRevenues = document.getElementById("secondSemRevenues");
+                        totalRevenue = document.getElementById("secondSemTotalRevenue");
+                    }else{
+                        semLevels = document.getElementById("firstSemLevels");
+                        totalEnrolled = document.getElementById("firstSemTotalEnrolled");
+                        semRevenues = document.getElementById("firstSemRevenues");
+                        totalRevenue = document.getElementById("firstSemTotalRevenue");
+                    }
+                    semLevels.innerHTML = ``;
+                    semRevenues.innerHTML = ``;
+                    var totalrev = 0;
+                    semesterData.feeReports.forEach(fee=>{
+                        totalrev+=fee.totalPaid;
+                        semRevenues.innerHTML +=`
+                            <div class="item-container">
+                                <label for="item">${fee.feeName} - </label>
+                                <p> ₱${fee.totalPaid.toFixed(2)}</p>
+                            </div>`;
+                    });
+                    var totalCountEnrolled = 0;
+                    semesterData.totalEnrolled.forEach(enr=>{
+                        totalCountEnrolled+=enr.totalEnrolled;
+                        semLevels.innerHTML +=`
+                                <div class="item-container">
+                                    <label for="gradeLevel">${enr.levelName} - </label>
+                                    <p>${enr.totalEnrolled}</p>
+                                </div>`;
+                    });
+                    totalRevenue.textContent = `₱${totalrev.toFixed(2)}`;
+                    totalEnrolled.textContent = ` ${totalCountEnrolled}`;
+                    current--;
+                }
         } else {
             showErrorModal("Transaction Failed. Please try again later");
         }

@@ -131,9 +131,9 @@ public class SchoolYearServices {
 
             //for reports on number of enrolled students per grade level
             for(GradeLevel level : enrollmentRepo.uniqueGradeLevelsEnrolled(sem.getSySemNumber()))
-                enrolledReports.add(new GradeLevelEnrolledReports(level.getLevelName(),enrollmentRepo.countSectionGradeEnrollment(null, sem.getSySemNumber(), level.getLevelId()).orElse(0)));
+                enrolledReports.add(new GradeLevelEnrolledReports(level.getLevelName(),enrollmentRepo.countGradeEnrollment(null, sem.getSySemNumber(), level.getLevelId()).orElse(0)));
 
-            yearlyReports.put(sem.toString(),new SchoolYearReports(feeReports,enrolledReports));
+            yearlyReports.put(sem.getSem().toString(),new SchoolYearReports(feeReports,enrolledReports));
         }
         return yearlyReports;
     }

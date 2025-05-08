@@ -500,7 +500,7 @@
                 <h1>Bulk Enrollment</h1>
                 <div class="bulk-enrollment-container" id="bulkEnrollmentContainer">
                     <!-- Enrollment Form Template -->
-                    <form class="enrollment-form">
+                    <form class="enrollment-form-bulk">
                         <div class="accordion-header" onclick="toggleAccordion(this)">
                             <h6>Student #1</h6>
                             <div class="right-section">
@@ -1053,7 +1053,7 @@
 
     function cancelBulkEnrollment() {
         const container = document.getElementById("bulkEnrollmentContainer");
-        const forms = container.querySelectorAll(".enrollment-form");
+        const forms = container.querySelectorAll(".enrollment-form-bulk");
 
         // Keep only the first form; remove the rest
         forms.forEach((form, index) => {
@@ -1103,7 +1103,7 @@
         // Add event listener to the container to handle input changes for all forms
         container.addEventListener("input", (event) => {
             // Only handle input events from relevant fields (first, middle, last name inputs)
-            const form = event.target.closest('.enrollment-form');
+            const form = event.target.closest('.enrollment-form-bulk');
             if (form && (event.target.classList.contains('first-name') ||
                 event.target.classList.contains('middle-name') ||
                 event.target.classList.contains('last-name'))) {
@@ -1113,7 +1113,7 @@
 
         // Ensure the headers are updated for all forms when the page loads or a new form is added
         const updateAllHeaders = () => {
-            const forms = container.querySelectorAll(".enrollment-form");
+            const forms = container.querySelectorAll(".enrollment-form-bulk");
             forms.forEach(form => updateHeader(form));
         };
 
@@ -1128,9 +1128,9 @@
 
 
     function removeEnrollmentForm(button) {
-        const enrollmentForm = button.closest('.enrollment-form');
+        const enrollmentForm = button.closest('.enrollment-form-bulk');
         const container = document.getElementById("bulkEnrollmentContainer");
-        const existingForms = container.querySelectorAll(".enrollment-form");
+        const existingForms = container.querySelectorAll(".enrollment-form-bulk");
 
         if (existingForms.length <= 1) {
             showErrorModal("Bulk Enrollment must have at least one item.")
@@ -1147,7 +1147,7 @@
 
     function updateStudentNumbers() {
         const container = document.getElementById("bulkEnrollmentContainer");
-        const existingForms = container.querySelectorAll(".enrollment-form");
+        const existingForms = container.querySelectorAll(".enrollment-form-bulk");
 
         // Update student numbers for each form
         existingForms.forEach((form, index) => {
@@ -1167,7 +1167,7 @@
 
     function updateAllHeaders() {
         const container = document.getElementById("bulkEnrollmentContainer");
-        const forms = container.querySelectorAll(".enrollment-form");
+        const forms = container.querySelectorAll(".enrollment-form-bulk");
 
         forms.forEach((form, index) => {
             const header = form.querySelector(".accordion-header h6");
@@ -1186,7 +1186,7 @@
 
     function addEnrollmentForm() {
         const container = document.getElementById("bulkEnrollmentContainer");
-        const existingForms = container.querySelectorAll(".enrollment-form");
+        const existingForms = container.querySelectorAll(".enrollment-form-bulk");
 
         // Count the number of visible forms
         let studentCount = 0;
@@ -2795,7 +2795,7 @@
         }
 
         // Bind all forms
-        const forms = document.querySelectorAll(".enrollment-form");
+        const forms = document.querySelectorAll(".enrollment-form-bulk");
         forms.forEach(form => bindTransfereeCheckbox(form));
 
         // Expose the function if needed later

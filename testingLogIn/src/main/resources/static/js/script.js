@@ -1153,7 +1153,14 @@ document.addEventListener("DOMContentLoaded", function () {
         updateDiscounts();
         break;
       case "addAllStudent":
-        addAllStudent();
+        if (!validateFormByClass(".enrollment-form-bulk")) {
+          showErrorModal("⚠️ Please fill in all required fields!");
+          return;
+        } else {
+          addAllStudent();
+          closeConfirmationModal();
+        }
+
         break;
       case "editStudentReport":
         updateStudentRecord();
@@ -1222,6 +1229,63 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     return valid;
+  }
+
+  function validateFormByClass(
+    className,
+    errorMsg = "⚠️ Please fill in all required fields!"
+  ) {
+    const forms = document.querySelectorAll(className); // Select all forms by class
+    let allValid = true;
+
+    // Loop through each form and validate manually
+    forms.forEach((form) => {
+      let valid = true;
+
+      // Validate required inputs (excluding radio buttons)
+      const inputs = form.querySelectorAll(
+        "input[required]:not([type='radio']), select[required], textarea[required]"
+      );
+      inputs.forEach((input) => {
+        if (!input.value.trim()) {
+          valid = false;
+          input.classList.add("error");
+        } else {
+          input.classList.remove("error");
+        }
+      });
+
+      // Validate required radio button groups
+      const radioGroups = new Set();
+      form
+        .querySelectorAll("input[type='radio'][required]")
+        .forEach((radio) => {
+          radioGroups.add(radio.name); // Group radios by 'name'
+        });
+
+      radioGroups.forEach((groupName) => {
+        const radios = form.querySelectorAll(`input[name='${groupName}']`);
+        const isChecked = Array.from(radios).some((radio) => radio.checked);
+
+        if (!isChecked) {
+          valid = false;
+          radios.forEach((radio) => radio.classList.add("error"));
+        } else {
+          radios.forEach((radio) => radio.classList.remove("error"));
+        }
+      });
+
+      // If any form is invalid, mark all as invalid
+      if (!valid) {
+        allValid = false;
+      }
+    });
+
+    if (!allValid) {
+      showErrorModal(errorMsg);
+    }
+
+    return allValid;
   }
 
   function validateFormListing(formId) {
@@ -2127,26 +2191,26 @@ function clearForm() {
       }
     });
 
-   // Handle hiding the transferee section
-   const transfereeCheckboxBulk = document.querySelector(".isTransfereeRecBulk");
-   const transfereeCheckbox = document.querySelector("#isTransfereeRec");
-   if (transfereeCheckboxBulk) {
-     transfereeCheckboxBulk.checked = false;
-     transfereeCheckboxBulk.dispatchEvent(new Event("change"));
-   } else if (transfereeCheckbox) {
-     transfereeCheckbox.checked = false; 
-     transfereeCheckbox.dispatchEvent(new Event("change"));
-   }
-  
-   const transfereeFieldsBulk = document.querySelector(".transfereeFieldsBulk");
-   if (transfereeFieldsBulk) {
-     transfereeFieldsBulk.style.display = "none"; 
-   } 
- 
-   const transfereeFields = document.querySelector("#transfereeFields");
-   if (transfereeFields) {
-     transfereeFields.style.display = "none"; 
-   }
+  // Handle hiding the transferee section
+  const transfereeCheckboxBulk = document.querySelector(".isTransfereeRecBulk");
+  const transfereeCheckbox = document.querySelector("#isTransfereeRec");
+  if (transfereeCheckboxBulk) {
+    transfereeCheckboxBulk.checked = false;
+    transfereeCheckboxBulk.dispatchEvent(new Event("change"));
+  } else if (transfereeCheckbox) {
+    transfereeCheckbox.checked = false;
+    transfereeCheckbox.dispatchEvent(new Event("change"));
+  }
+
+  const transfereeFieldsBulk = document.querySelector(".transfereeFieldsBulk");
+  if (transfereeFieldsBulk) {
+    transfereeFieldsBulk.style.display = "none";
+  }
+
+  const transfereeFields = document.querySelector("#transfereeFields");
+  if (transfereeFields) {
+    transfereeFields.style.display = "none";
+  }
 }
 
 // this is for the checkbox in new student modal form
@@ -3091,32 +3155,35 @@ window.validateInputsByClass = function (className) {
   return allValid;
 };
 
-window.downloadFile = async function(link){
+window.downloadFile = async function (link) {
   try {
     const response = await fetch(link);
-    
-    if (!response.ok) { return response.text().then(text => {throw new Error(text)})};
-    
+
+    if (!response.ok) {
+      return response.text().then((text) => {
+        throw new Error(text);
+      });
+    }
+
     // Get filename from headers
     const filename = response.headers
-    .get('Content-Disposition')
-    ?.split('filename=')[1]
-    .replace(/"/g, '');
+      .get("Content-Disposition")
+      ?.split("filename=")[1]
+      .replace(/"/g, "");
 
     // Convert to Blob
     const blob = await response.blob();
-    
+
     // Create download link
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = filename || 'file.csv';
+    a.download = filename || "file.csv";
     document.body.appendChild(a);
     a.click();
     a.remove();
     window.URL.revokeObjectURL(url);
-
-    } catch (error) {
-        showErrorModal(error.message);}
-}
-;
+  } catch (error) {
+    showErrorModal(error.message);
+  }
+};

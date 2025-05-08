@@ -7,16 +7,12 @@
 <script th:src="@{/js/sidebar.js}"></script>
 
 <body>
-    <!-- Sidebar (ADMIN) -->
     <div th:replace="~{fragments/fragment :: sidebar}"></div>
 
-    <!-- Topbar with Hamburger & User Icon -->
     <div class="dashboard-container" id="content">
         <div class="sticky-header">
-            <!-- Topbar -->
             <div th:replace="~{fragments/fragment :: topbar}"></div>
 
-            <!-- Overlay -->
             <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
             <div class="text-link" id="breadcrumb-container">
@@ -27,7 +23,6 @@
             </div>
 
             <div class="search-div">
-                <!-- Searchbox and sort btn -->
                 <div class="left-section">
                     <div class="search-container">
                         <input type="text" id="search-stud" placeholder="Search..." class="search-input" />
@@ -664,12 +659,34 @@
 
             <!-- Modal Footer Buttons -->
             <div class="modal-buttons">
-                <button type="button" class="btn-confirm" data-open-modal="confirmationModal" data-action="addAllStudent" data-message="Are you sure you want to submit these records?">Submit All
-                <button type="button" class="btn-confirm" data-open-modal="confirmationModal"
-                    data-message="Are you sure you want to submit these records?">Submit All
-                    Enrollments</button>
+                <button type="button" class="btn-confirm" data-open-modal="confirmationModal" data-action="addAllStudent" data-message="Are you sure you want to submit these records?">Submit All</button>
                 <button type="button" class="btn-cancel" id="cancelStudent" data-close-modal="newStudentModalBulk"
                     onclick="cancelBulkEnrollment()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewStudentReceipts" class="view-student-list-modal modal">
+        <div class="view-student-list-modal-content scroll-lock">
+            <div class="modal-body">
+                <h2>The following student names already exists.</h2><br>
+                <table id="existing-students" class="view-list-of-students-table main-table">
+                    <thead>
+                    <tr>
+                        <th>Student Names</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td colspan="1">No Student Record</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- Add Payment button -->
+            <div class="modal-buttons">
+                <button type="button" class="btn-cancel" data-close-modal="viewStudentReceipts">Close</button>
             </div>
         </div>
     </div>
@@ -2940,15 +2957,31 @@
                 },
                 body: JSON.stringify(newStudents),
             });
-
+        modalCloser('data-close-modal', 'newStudentModalBulk');
         if(response.ok){
             showSuccessModal("New students successfully registered",false);
         }else{
             const existingNames = await response.json();
-            console.log(existingNames);
-            showErrorModal("The following student names already exists. Check console");
+            modalCloser('data-open-modal', 'viewStudentReceipts');
+            var existTable = document.querySelector("#existing-students tbody");
+
+            existTable.innerHTML = "";
+
+            existingNames.forEach(eName =>{
+                existTable.innerHTML += `
+                <tr><td>${eName}</td></tr>`;
+            });
         }
         goList(1);
+    }
+
+    function modalCloser(attr,theId){
+        const tempLink = document.createElement('a');
+        tempLink.setAttribute(attr, theId);
+        tempLink.style.display = 'none';
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        setTimeout(() => tempLink.remove(), 0);
     }
 </script>
 

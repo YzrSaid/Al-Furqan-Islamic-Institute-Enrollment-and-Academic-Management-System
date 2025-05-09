@@ -2960,6 +2960,7 @@
         modalCloser('data-close-modal', 'newStudentModalBulk');
         if(response.ok){
             showSuccessModal("New students successfully registered",false);
+            cancelBulkEnrollment();
         }else{
             const existingNames = await response.json();
             modalCloser('data-open-modal', 'viewStudentReceipts');
@@ -2971,6 +2972,7 @@
                 existTable.innerHTML += `
                 <tr><td>${eName}</td></tr>`;
             });
+            cancelBulkEnrollment();
         }
         goList(1);
     }

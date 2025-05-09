@@ -2907,7 +2907,9 @@ input[type="checkbox"] {
 #pageSizeSelector,
 #pageInput,
 #pageSizeSelectorStud,
+#pageSizeSelectorStudR,
 #pageInputStud,
+#pageInputStudR,
 #pageInputUFee,
 #pageInputDistU {
   width: 50px;
@@ -4264,6 +4266,10 @@ input.staff-id-report {
   font-size: 15px;
 }
 
+.pagination-controls-inside {
+    width: 50%;
+}
+
 /* Hover effect */
 .pagination-button:hover {
   background-color: #ddd;
@@ -5134,6 +5140,7 @@ select + p {
 .inside-modal {
   padding: 0;
 }
+
 
 .pagination-controls button {
   padding: 5.5px 8px;

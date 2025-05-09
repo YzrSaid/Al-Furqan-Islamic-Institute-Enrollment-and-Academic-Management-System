@@ -27,7 +27,7 @@
                 <a href="/transaction/tuition" title="You're currently in this page.">Transaction - Payment
                     Transactions</a>
             </div>
-
+            n
             <div class="search-div">
                 <div class="left-section">
                     <div class="search-container">
@@ -241,7 +241,7 @@
                     </table>
                     <!-- Pagination -->
                     <div class="pagination-container">
-                        <div class="pagination-controls inside-modal">
+                        <div class="pagination-controls pagination-controls-inside">
                             <span id="itemRangeStud">1–10 of 37</span>
                             <select id="pageSizeSelectorStud">
                                 <option value="10" selected>10</option>
@@ -279,36 +279,36 @@
                     </div> <br>
                     <table id="student-receipt-table" class="view-list-of-students-table main-table">
                         <thead>
-                        <tr>
-                            <th>Transaction Reference</th>
-                            <th>Date Paid</th>
-                            <th>Amount Paid</th>
-                            <th>Action</th>
-                        </tr>
+                            <tr>
+                                <th>Transaction Reference</th>
+                                <th>Date Paid</th>
+                                <th>Amount Paid</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td colspan="5">No Student Record</td>
-                        </tr>
+                            <tr>
+                                <td colspan="5">No Student Record</td>
+                            </tr>
                         </tbody>
                     </table>
 
-                </div>
-                <div class="pagination-container">
-                    <div class="pagination-controls inside-modal">
-                        <span id="itemRangeStudR">1–10 of 37</span>
-                        <select id="pageSizeSelectorStudR">
-                            <option value="10" selected>10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                        </select>
-                        <button type="button" id="prevPageStudR">«</button>
-                        <input type="number" id="pageInputStudR" min="1" value="1">
-                        <span id="totalPagesStudR">of 4</span>
-                        <button type="button" id="nextPageStudR">»</button>
+                    <div class="pagination-container inside">
+                        <div class="pagination-controls inside-modal">
+                            <span id="itemRangeStudR">1–10 of 37</span>
+                            <select id="pageSizeSelectorStudR">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                            </select>
+                            <button type="button" id="prevPageStudR">«</button>
+                            <input type="number" id="pageInputStudR" min="1" value="1">
+                            <span id="totalPagesStudR">of 4</span>
+                            <button type="button" id="nextPageStudR">»</button>
+                        </div>
                     </div>
-                </div>
 
+                </div>
                 <!-- Add Payment button -->
                 <div class="modal-buttons">
                     <button type="button" class="btn-cancel" data-close-modal="viewStudentReceipts">Close</button>
@@ -484,7 +484,7 @@
                             <label for="semester">Semester:</label>
                             <input th:value="${currentSem}" type="text" id="semester" readonly>
 
-                            <label for="school-year">S.Y.</label>
+                            <label for="school-year">M.Y.</label>
                             <input th:value="${currentSY}" type="text" id="school-year" readonly>
                         </div>
                         <div class="student-form-group">
@@ -679,7 +679,7 @@
                     console.log(!particulars && sortBy !== "Voided");
                     data.content.forEach(rec => {
                         let row = document.createElement("tr");
-                        if(!particulars && sortBy !== "Voided"){
+                        if (!particulars && sortBy !== "Voided") {
                             row.innerHTML = `
                                 <td>${rec.studentDisplayId}</td>
                                 <td>${rec.fullName}</td>
@@ -701,7 +701,7 @@
                                         </div>
                                     </div>
                                 </td>`;
-                        }else{
+                        } else {
                             row.innerHTML = `
                                 <td>${rec.studentName}</td>
                                 <td>${rec.date}</td>
@@ -728,7 +728,7 @@
 
                     totalItems = data.totalElements || 0;
                     const totalPages = data.totalPages || 1;
-                    updatePaginationUI("Students",pageNo, pageSize, totalItems, totalPages);
+                    updatePaginationUI("Students", pageNo, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
         }
@@ -929,7 +929,7 @@
                     return response.text();
                 })
                 .then(text => {
-                    showSuccessModal(text,false);
+                    showSuccessModal(text, false);
                     getRecords(currentPage); // Refresh the records
                 })
                 .catch(error => console.error("Error voiding payment transaction:", error));
@@ -965,8 +965,8 @@
             fetch(url)
                 .then(res => res.json())
                 .then(data => {
-                    studentsTable.innerHTML = 
-                    `<tr><td colspan="5">No records found.</td></tr>`;
+                    studentsTable.innerHTML =
+                        `<tr><td colspan="5">No records found.</td></tr>`;
                     if (data.content.length > 0) {
                         studentsTable.innerHTML = ``;
                         data.content.forEach(stud => {
@@ -991,7 +991,7 @@
                     }
                     totalItems = data.totalElements || 0;
                     const totalPages = data.totalPages || 1;
-                    updatePaginationUI("StudentB",pageNo, pageSize, totalItems, totalPages);
+                    updatePaginationUI("StudentB", pageNo, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching sections:", error));
         }
@@ -1027,107 +1027,108 @@
         }
 
         function updatePaginationUI(paginationKey, currentPage, pageSize, totalItems, totalPages) {
-        const config = paginationConfigs[paginationKey];
-        if (!config) {
-            console.log("Not found");
-            return;}
-
-        const { elements } = config;
-        const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-        const end = Math.min(currentPage * pageSize, totalItems);
-
-        // Update UI elements
-        document.getElementById(elements.itemRange).textContent = `${start}–${end} of ${totalItems}`;
-        document.getElementById(elements.pageInput).value = currentPage;
-        document.getElementById(elements.pageInput).min = 1;
-        document.getElementById(elements.pageInput).max = totalPages;
-        document.getElementById(elements.totalPages).textContent = `of ${totalPages}`;
-
-        // Update button states
-        document.getElementById(elements.prevPage).disabled = currentPage <= 1 || totalPages === 0;
-        document.getElementById(elements.nextPage).disabled = currentPage >= totalPages || totalPages === 0;
-
-        // Update current page in config
-        config.currentPage = currentPage;
-    }
-
-    const paginationConfigs = {
-        'StudentB': {
-            currentPage: 1,
-            setUpFunction: viewStudents,
-            elements: {
-                itemRange: "itemRangeStud",
-                pageInput: "pageInputStud",
-                totalPages: "totalPagesStud",
-                prevPage: "prevPageStud",
-                nextPage: "nextPageStud"
+            const config = paginationConfigs[paginationKey];
+            if (!config) {
+                console.log("Not found");
+                return;
             }
-        },'StudentR': {
-            currentPage: 1,
-            setUpFunction: viewStudentTransaction,
-            elements: {
-                itemRange: "itemRangeStudR",
-                pageInput: "pageInputStudR",
-                totalPages: "totalPagesStudR",
-                prevPage: "prevPageStudR",
-                nextPage: "nextPageStudR"
-            }
-        },
-        'Students': {
-            currentPage: 1,
-            setUpFunction: getRecords,
-            elements: {
-                itemRange: "itemRange",
-                pageInput: "pageInput",
-                totalPages: "totalPages",
-                prevPage: "prevPage",
-                nextPage: "nextPage"
-            }
+
+            const { elements } = config;
+            const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalItems);
+
+            // Update UI elements
+            document.getElementById(elements.itemRange).textContent = `${start}–${end} of ${totalItems}`;
+            document.getElementById(elements.pageInput).value = currentPage;
+            document.getElementById(elements.pageInput).min = 1;
+            document.getElementById(elements.pageInput).max = totalPages;
+            document.getElementById(elements.totalPages).textContent = `of ${totalPages}`;
+
+            // Update button states
+            document.getElementById(elements.prevPage).disabled = currentPage <= 1 || totalPages === 0;
+            document.getElementById(elements.nextPage).disabled = currentPage >= totalPages || totalPages === 0;
+
+            // Update current page in config
+            config.currentPage = currentPage;
         }
-    };
 
-    function initializePaginationListeners() {
-        Object.keys(paginationConfigs).forEach(key => {
-            const config = paginationConfigs[key];
-            const { elements, setUpFunction } = config;
-
-            // Previous page button
-            document.getElementById(elements.prevPage).addEventListener("click", () => {
-                if (config.currentPage > 1) {
-                    config.currentPage--;
-                    setUpFunction(config.currentPage);
+        const paginationConfigs = {
+            'StudentB': {
+                currentPage: 1,
+                setUpFunction: viewStudents,
+                elements: {
+                    itemRange: "itemRangeStud",
+                    pageInput: "pageInputStud",
+                    totalPages: "totalPagesStud",
+                    prevPage: "prevPageStud",
+                    nextPage: "nextPageStud"
                 }
-            });
-
-            // Next page button
-            document.getElementById(elements.nextPage).addEventListener("click", () => {
-                const totalPages = parseInt(document.getElementById(elements.pageInput).max);
-                if (config.currentPage < totalPages) {
-                    config.currentPage++;
-                    setUpFunction(config.currentPage);
+            }, 'StudentR': {
+                currentPage: 1,
+                setUpFunction: viewStudentTransaction,
+                elements: {
+                    itemRange: "itemRangeStudR",
+                    pageInput: "pageInputStudR",
+                    totalPages: "totalPagesStudR",
+                    prevPage: "prevPageStudR",
+                    nextPage: "nextPageStudR"
                 }
-            });
-
-            // Page input change
-            document.getElementById(elements.pageInput).addEventListener("change", (e) => {
-                const totalPages = parseInt(document.getElementById(elements.pageInput).max);
-                let page = parseInt(e.target.value);
-                if (page >= 1 && page <= totalPages) {
-                    config.currentPage = page;
-                    setUpFunction(config.currentPage);
-                } else {
-                    e.target.value = config.currentPage;
+            },
+            'Students': {
+                currentPage: 1,
+                setUpFunction: getRecords,
+                elements: {
+                    itemRange: "itemRange",
+                    pageInput: "pageInput",
+                    totalPages: "totalPages",
+                    prevPage: "prevPage",
+                    nextPage: "nextPage"
                 }
+            }
+        };
+
+        function initializePaginationListeners() {
+            Object.keys(paginationConfigs).forEach(key => {
+                const config = paginationConfigs[key];
+                const { elements, setUpFunction } = config;
+
+                // Previous page button
+                document.getElementById(elements.prevPage).addEventListener("click", () => {
+                    if (config.currentPage > 1) {
+                        config.currentPage--;
+                        setUpFunction(config.currentPage);
+                    }
+                });
+
+                // Next page button
+                document.getElementById(elements.nextPage).addEventListener("click", () => {
+                    const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+                    if (config.currentPage < totalPages) {
+                        config.currentPage++;
+                        setUpFunction(config.currentPage);
+                    }
+                });
+
+                // Page input change
+                document.getElementById(elements.pageInput).addEventListener("change", (e) => {
+                    const totalPages = parseInt(document.getElementById(elements.pageInput).max);
+                    let page = parseInt(e.target.value);
+                    if (page >= 1 && page <= totalPages) {
+                        config.currentPage = page;
+                        setUpFunction(config.currentPage);
+                    } else {
+                        e.target.value = config.currentPage;
+                    }
+                });
             });
+        }
+        document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
+            getRecords();
         });
-    }
-    document.getElementById("pageSizeSelector").addEventListener("change", (e) => {
-        getRecords();
-    });
-    document.getElementById("pageSizeSelectorStudR").addEventListener("change", (e) => {
-        viewStudentTransaction();
-    });
-    document.addEventListener("DOMContentLoaded", initializePaginationListeners);
+        document.getElementById("pageSizeSelectorStudR").addEventListener("change", (e) => {
+            viewStudentTransaction();
+        });
+        document.addEventListener("DOMContentLoaded", initializePaginationListeners);
 
         function setUpForm(theForm) {
             theForm = JSON.parse(theForm);
@@ -1233,7 +1234,7 @@
             }
 
             // Adding the validation and input handling
-            var paymentAmountInput ;
+            var paymentAmountInput;
 
             paymentAmountInput.addEventListener("input", function () {
                 const checkedCheckboxes = document.querySelectorAll(".payment-container-group .payment-checkbox:checked:not(#select-all)");
@@ -1304,12 +1305,12 @@
             selectAll.checked = allCheckboxes.length === checkedCheckboxes.length;
         }
 
-        function setStudentName(name){
+        function setStudentName(name) {
             studentName = name;
             viewStudentTransaction();
         }
         var studentName;
-        function viewStudentTransaction(pageNo = 1){
+        function viewStudentTransaction(pageNo = 1) {
             var pageSize = document.getElementById("pageSizeSelectorStudR").value;
             fetch(`/paymentrecord/transactions/all?pageNum=${pageNo}&pageSize=${pageSize}&q=${studentName}`)
                 .then(res => {
@@ -1359,7 +1360,7 @@
                     console.log(data);
                     var totalItems = data.totalElements || 0;
                     var totalPages = data.totalPages || 1;
-                    updatePaginationUI("StudentR",pageNo, pageSize, totalItems, totalPages);
+                    updatePaginationUI("StudentR", pageNo, pageSize, totalItems, totalPages);
                 })
                 .catch(error => console.error("Error fetching payment records:", error));
         }
